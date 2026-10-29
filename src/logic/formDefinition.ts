@@ -60,6 +60,7 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     'consistencyRules',
     'matchKeys',
     'legalNotes',
+    'partLinks',
   ]);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, FORM_ID);
@@ -83,6 +84,10 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
   );
   const matchKeys = d.array(o.matchKeys, `${path}.matchKeys`, (v, p) => decodeMatchKey(d, v, p));
   const legalNotes = d.array(o.legalNotes, `${path}.legalNotes`, (v, p) => d.string(v, p));
+  const partLinks =
+    o.partLinks === undefined
+      ? undefined
+      : d.array(o.partLinks, `${path}.partLinks`, (v, p) => decodeRolePair(d, v, p), 1);
   if (
     id === undefined ||
     version === undefined ||
@@ -110,7 +115,18 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     consistencyRules,
     matchKeys,
     legalNotes,
+    ...(partLinks === undefined ? {} : { partLinks }),
   };
+}
+
+function decodeRolePair(d: Decoder, raw: unknown, path: string): [string, string] | undefined {
+  const ids = d.array(raw, path, (v, p) => d.string(v, p, ID), 2);
+  if (!ids) return undefined;
+  const [first, second, ...rest] = ids;
+  if (first === undefined || second === undefined || rest.length > 0) {
+    return d.report(path, 'needs exactly 2 role ids');
+  }
+  return [first, second];
 }
 
 function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | undefined {
@@ -190,6 +206,8 @@ const FIELD_KEYS = [
   'showIf',
   'columns',
   'computed',
+  'initial',
+  'masterData',
 ] as const;
 
 function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | undefined {
@@ -221,6 +239,12 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
       : d.array(o.columns, `${path}.columns`, (v, p) => decodeField(d, v, p), 1);
   const computed =
     o.computed === undefined ? undefined : decodeComputed(d, o.computed, `${path}.computed`);
+  const initial =
+    o.initial === undefined || typeof o.initial === 'boolean'
+      ? o.initial
+      : d.string(o.initial, `${path}.initial`, OPTION_ID);
+  const masterData =
+    o.masterData === undefined ? undefined : d.string(o.masterData, `${path}.masterData`, ID);
   if (
     id === undefined ||
     role === undefined ||
@@ -245,6 +269,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(showIf === undefined ? {} : { showIf }),
     ...(columns === undefined ? {} : { columns }),
     ...(computed === undefined ? {} : { computed }),
+    ...(initial === undefined ? {} : { initial }),
+    ...(masterData === undefined ? {} : { masterData }),
   };
 }
 
@@ -619,6 +645,58 @@ function matchKeys({ definition, fields, roleIds, report }: CheckContext): void 
   });
 }
 
+/** A preselection is a valid answer of an always available yes/no or choice field. */
+function initialValues({ fields, report }: CheckContext): void {
+  for (const { field, path, isColumn } of fields.values()) {
+    if (field.initial === undefined) continue;
+    const at = `${path}.initial`;
+    if (field.type === 'boolean') {
+      if (typeof field.initial !== 'boolean') report(at, 'expected a boolean');
+    } else if (field.type === 'choice') {
+      if (!field.options?.some((option) => option.id === field.initial)) {
+        report(at, `"${String(field.initial)}" is not an option id`);
+      }
+    } else {
+      report(at, 'only yes/no and choice fields can be preselected');
+    }
+    if (field.showIf || isColumn)
+      report(at, 'only always available top-level fields can be preselected');
+  }
+}
+
+/** A master-data key names one top-level field per form. */
+function masterDataKeys({ fields, report }: CheckContext): void {
+  const seen = new Map<string, string>();
+  for (const { field, path, isColumn } of fields.values()) {
+    if (field.masterData === undefined) continue;
+    const at = `${path}.masterData`;
+    if (isColumn || field.type === 'repeatGroup' || field.type === 'file') {
+      report(at, 'only single top-level values can be master data');
+    }
+    const other = seen.get(field.masterData);
+    if (other !== undefined) report(at, `key "${field.masterData}" is already used by "${other}"`);
+    else seen.set(field.masterData, field.id);
+  }
+}
+
+/** Linked parts belong to two different unconditional roles; each pair is listed once. */
+function partLinks({ definition, roleIds, report }: CheckContext): void {
+  const pairs = new Set<string>();
+  definition.partLinks?.forEach((pair, i) => {
+    const path = `$.partLinks[${i}]`;
+    for (const role of pair) {
+      if (!roleIds.has(role)) report(path, `unknown role "${role}"`);
+      else if (definition.roles.find((candidate) => candidate.id === role)?.requiredIf) {
+        report(path, `role "${role}" is conditional and binds the person's part itself`);
+      }
+    }
+    if (pair[0] === pair[1]) report(path, 'links a role with itself');
+    const key = [...pair].sort().join(' ');
+    if (pairs.has(key)) report(path, `the pair ${pair.join(' / ')} is listed twice`);
+    pairs.add(key);
+  });
+}
+
 const DEFINITION_RULES: readonly DefinitionRule[] = [
   uniqueIds,
   fieldShapes,
@@ -628,4 +706,7 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   infoBlocks,
   consistencyRules,
   matchKeys,
+  initialValues,
+  masterDataKeys,
+  partLinks,
 ];

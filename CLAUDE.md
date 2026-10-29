@@ -80,7 +80,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/support/formFiles.ts`                          | Reads `forms/` and `form-drafts/` (lazy, so misnamed files are reported)                                                                                                                                                                    |
 | `tests/forms/formDrafts.test.ts`                      | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                       |
 | `tests/forms/catalogue.test.ts`                       | `docs/formulare/` matches the definitions (file snapshots), no stale catalogues                                                                                                                                                             |
-| `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung draft through the engine: with/without Versicherungsnummer, notices, minor + guardian, employer part, name cross-check                                                                                                    |
+| `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung draft through the engine: what is asked, preselections, notices, both station orders, part link, minor + guardian, name cross-check, master data                                                                          |
+| `src/logic/masterData.ts`                             | `masterDataOf` / `applyMasterData`: a station's own master data (`FieldDefinition.masterData` keys) to remember on its device and fill in again; refused values reported                                                                    |
 | `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests; frozen by golden files                                                                                                                |
 | `tests/fixtures/forms/beispiel/1.1.0.json`            | Same form with a required guardian name field (`signerNameField`); frozen by golden files                                                                                                                                                   |
 | `tests/forms/publishedForms.test.ts`                  | Guards the real `forms/` folder: valid, published, unchanged hash, file naming, field-id stability                                                                                                                                          |
@@ -131,6 +132,8 @@ Key design decisions (details in `docs/plan.md`):
   transmission PDF is only written when `transmissionBlockers` is empty — no open draft, every
   role with `signature: required` signed, no invalid part. The role whose birth date triggers the
   guardian must have `signature: required` (definition rule). Interim state can always be saved.
+  This gate governs every hand-over to the next station; "complete for the recipient" is the
+  stricter `completenessGaps` (all required roles present, all `partLinks` linked).
 - **Legal guardian** (`requiredIf: minorOnSigning`): required when the person is under 18 on the
   **local date of their own signature** (device clock, §§ 187/188 BGB). The guardian must sign
   (definition rule: conditional roles have `signature: required`), state a name (`signerNameField`,
@@ -171,11 +174,27 @@ Key design decisions (details in `docs/plan.md`):
   `docs/formulare/` is generated from the JSON (so the approved text is exactly what gets frozen)
   and names the `definitionHash`. After Tobias's approval the file moves to `forms/` and its hash
   goes into `published.json`.
-- **Sofortmeldung draft (1.0.0):** birth place/land, gender and address are available only without
-  a Versicherungsnummer (`showIf answered: false`) — data minimisation per § 28a Abs. 4 SGB IV; the
-  birth date is always required (guardian check). Tag der Beschäftigungsaufnahme is an employer
-  field (the template had it on the employee side). The ID-carrying notice (§ 2a SchwarzArbG) is a
-  `paperHandout` with the sector list as amended by SchwarzArbMoDiG (template 10/2024 outdated).
+- **Sofortmeldung draft (1.0.0, review of 2026-10-29 applied):** birth and address details are
+  always asked (Tobias: needed later anyway, all easily at hand); the Versicherungsnummer stays
+  "falls bekannt". Birth name via a preselected yes/no ("gleich Familienname?" = Ja), address abroad
+  via a preselected yes/no (= Nein) that opens "Staat". Tag der Beschäftigungsaufnahme exists
+  **once**, as an employer field — so person and employer can never state different dates. The
+  ID-carrying notice (§ 2a SchwarzArbG) is a `paperHandout` with the sector list as amended by
+  SchwarzArbMoDiG (template 10/2024 outdated). The privacy notice stays with a confirmation click
+  for now (Tobias: review in detail later).
+- **Station order is free** (Tobias 2026-10-29): employer first (the person then signs over the
+  employer part) or person first (the employer confirms the person part), on one device (role
+  choice "Wer füllt jetzt aus?") or by passing the PDF. `partLinks` makes the link mandatory for
+  completeness: whoever seals last confirms the other's current version; an employer change after
+  the person signed breaks it (`partsNotLinked`) until one side re-seals. Passing on is never
+  blocked by a missing part (`transmissionBlockers` only looks at existing parts).
+- **Employer master data** (Tobias: the employer should be able to store Stammdaten on its device):
+  fields carry a cross-form key (`masterData`, e.g. `firma`, `betriebsnummer`); `masterDataOf` /
+  `applyMasterData` are pure, a loaded record is untrusted and every refused value is reported.
+  The storage itself (step 6) is a deliberate, scoped exception to "store nothing" — only these
+  keys, never the person's data; mechanism to be agreed with Tobias.
+- **Preselection** (`initial`): yes/no or choice answers set when the role's first version opens;
+  only on always available fields.
 
 ---
 
@@ -234,6 +253,11 @@ Key design decisions (details in `docs/plan.md`):
   The national BBAN structure (e.g. German bank code) is not checked.
 - **Betriebsnummer:** only "exactly 8 digits"; the check digit is not checked (algorithm not
   publicly documented).
+- **Master data cannot be stored yet:** the logic exists, the device storage comes with the UI
+  (step 6); on `file://` Chromium shares storage between all local files, so only the flagged
+  employer keys may ever go there.
+- **Privacy notice of the Sofortmeldung** is a first version (confirmation click); a detailed
+  review is pending (Tobias, 2026-10-29).
 - **No form is published yet:** the Sofortmeldung is a draft awaiting approval; drafts are never
   bundled into the app.
 - **Versicherungsnummer:** only shape and check digit; area number and the birth-date part are not
@@ -303,10 +327,12 @@ logic: `requiredIf`, input only when available, condition operators, rule texts;
 4c (merge with the agreed rules, link proposals, contradictions, gaps, signature layout) done. Spike code is throw-away in
 `.tmp/spike-pdf/` (re-check any PDF with `node .tmp/spike-pdf/check.ts <pdf>`). The spike's manual
 counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`).
-**Step 5 in progress — forms:** the Sofortmeldung draft (`form-drafts/sofortmeldung/1.0.0.json`)
-and its catalogue (`docs/formulare/sofortmeldung-1.0.0.md`) await Tobias's approval; field type
-`betriebsnummer` and the catalogue generator exist; condition texts now use German subordinate
-word order („… leer ist“). **Next:** apply the review, publish the Sofortmeldung (move to `forms/`,
-add the hash), then draft the general Personalfragebogen the same way.
+**Step 5 in progress — forms:** 5a (draft, catalogue generator, `betriebsnummer`, German condition
+word order) and 5b (review applied: all birth/address data, preselected yes/no questions, `initial`,
+`masterData`, `partLinks` + `partsNotLinked`) done. The revised Sofortmeldung draft and catalogue
+(`docs/formulare/sofortmeldung-1.0.0.md`) await Tobias's final approval. **Next:** publish it (move
+to `forms/`, add the hash), then draft the general Personalfragebogen the same way. Decided for
+step 8: the PDF carries a visible address of the app plus a clickable URI link (address from
+configuration, never data in the link).
 
 _Last updated: 2026-10-29_

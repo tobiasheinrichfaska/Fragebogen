@@ -1,4 +1,4 @@
-import { beispielForm, guardianForm, logicForm } from '../../tests/support/sample';
+import { beispielForm, guardianForm, linkedForm, logicForm } from '../../tests/support/sample';
 import { formCatalogue, tableCell } from './catalogue';
 import type { RegisteredForm } from './formRegistry';
 
@@ -87,6 +87,19 @@ describe('formCatalogue', () => {
     expect(markdown).toContain(
       '## Zuordnung getrennt eingegangener Teile\n\nKeine.\n\n## Rechtliche',
     );
+  });
+
+  it('names preselections, master data and linked parts', () => {
+    const markdown = formCatalogue(linkedForm(), 'draft');
+    expect(lineWith(markdown, '(weitereBeschaeftigung)')).toContain('| Ja/Nein; vorbelegt: Nein |');
+    expect(lineWith(markdown, '(agFirma)')).toContain(
+      '| Text; Stammdatum, kann auf dem Gerät gemerkt werden |',
+    );
+    expect(markdown).toContain(
+      '## Verknüpfung der Teile\n\n- Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, ' +
+        'bestätigt die aktuelle Fassung des anderen Teils.',
+    );
+    expect(formCatalogue(beispielForm(), 'draft')).toContain('## Verknüpfung der Teile\n\nKeine.');
   });
 
   it('keeps table cells intact', () => {

@@ -6,7 +6,15 @@
 import { AGE_OF_MAJORITY, ageOn, compareIsoDates, formatGermanDate, isIsoDate } from './dates';
 import { missingRequired, ownerOfField, signerName } from './form';
 import { registryOf, type RegisteredForm } from './formRegistry';
-import type { FormDefinition, IsoDate, Questionnaire, RoleDefinition, RoleId } from './model';
+import type {
+  FormDefinition,
+  IsoDate,
+  Questionnaire,
+  RoleDefinition,
+  RoleId,
+  Seal,
+  Sha256Hex,
+} from './model';
 import { currentPart, latestSealed } from './questionnaire';
 import { verifyQuestionnaire } from './verify';
 
@@ -70,7 +78,8 @@ export type BlockerCode =
   | 'guardianNotBound'
   | 'guardianNameMissing'
   | 'ageUnknown'
-  | 'roleMissing';
+  | 'roleMissing'
+  | 'partsNotLinked';
 
 export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   nothingSealed: 'Es gibt noch keinen abgeschlossenen Teil, der übermittelt werden kann.',
@@ -86,6 +95,8 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   ageUnknown:
     'Das Alter am Tag der Unterschrift lässt sich nicht bestimmen. Bitte das Geburtsdatum prüfen.',
   roleMissing: 'Ein erforderlicher Teil fehlt noch.',
+  partsNotLinked:
+    'Zwei Teile verweisen nicht aufeinander. Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; nach einer Änderung muss neu abgeschlossen werden.',
 };
 
 export interface Blocker {
@@ -179,12 +190,32 @@ function guardianBlockers(
   }
 }
 
-/** What the Kanzlei still misses: all transmission blockers plus required roles without a part. */
+/**
+ * What the recipient still misses: all transmission blockers, required roles without a part, and
+ * linked parts (`partLinks`) of which neither confirms the other's current version. A missing part
+ * or a missing link does not stop passing the questionnaire on to the next station.
+ */
 export function completenessGaps(questionnaire: Questionnaire, form: RegisteredForm): Blocker[] {
+  const { definition } = form;
   const gaps = transmissionBlockers(questionnaire, form).filter((b) => b.code !== 'nothingSealed');
-  for (const role of form.definition.roles) {
+  for (const role of definition.roles) {
     if (role.requiredIf || currentPart(questionnaire, role.id)) continue;
     gaps.push({ code: 'roleMissing', role: role.id, detail: [role.label] });
   }
+  const label = (role: RoleId) => definition.roles.find((r) => r.id === role)?.label ?? role;
+  for (const [a, b] of definition.partLinks ?? []) {
+    const sealA = latestSealed(questionnaire, a)?.seal;
+    const sealB = latestSealed(questionnaire, b)?.seal;
+    if (!sealA || !sealB) continue;
+    if (!confirms(sealA, b, sealB.contentHash) && !confirms(sealB, a, sealA.contentHash)) {
+      gaps.push({ code: 'partsNotLinked', detail: [label(a), label(b)] });
+    }
+  }
   return gaps;
+}
+
+function confirms(seal: Seal, role: RoleId, contentHash: Sha256Hex): boolean {
+  return seal.payload.receivedParts.some(
+    (part) => part.role === role && part.contentHash === contentHash,
+  );
 }

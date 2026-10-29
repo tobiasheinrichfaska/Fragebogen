@@ -56,42 +56,57 @@
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
         },
         {
+          "id": "geburtsnameWieFamilienname",
+          "role": "person",
+          "type": "boolean",
+          "label": "Ist Ihr Geburtsname gleich Ihrem Familiennamen?",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "initial": true
+        },
+        {
+          "id": "geburtsname",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsname",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "showIf": {
+            "field": "geburtsnameWieFamilienname",
+            "equals": false
+          }
+        },
+        {
           "id": "geburtsdatum",
           "role": "person",
           "type": "date",
           "label": "Geburtsdatum",
           "required": true,
-          "purpose": "Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; ohne Versicherungsnummer Inhalt der Sofortmeldung"
+          "purpose": "Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV)"
         },
         {
-          "id": "staatsangehoerigkeit",
+          "id": "geburtsort",
           "role": "person",
           "type": "text",
-          "label": "Staatsangehörigkeit",
+          "label": "Geburtsort",
           "required": true,
-          "purpose": "Meldungen zur Sozialversicherung"
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
         {
-          "id": "versicherungsnummer",
+          "id": "geburtsland",
           "role": "person",
-          "type": "svNumber",
-          "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
-          "required": false,
-          "purpose": "Inhalt der Sofortmeldung; ersetzt die Angaben zu Geburt und Anschrift"
-        }
-      ]
-    },
-    {
-      "id": "ohneVersicherungsnummer",
-      "title": "Nur ohne Versicherungsnummer: Angaben für ihre Vergabe",
-      "fields": [
+          "type": "text",
+          "label": "Geburtsland",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung"
+        },
         {
           "id": "geschlecht",
           "role": "person",
           "type": "choice",
           "label": "Geschlecht",
           "required": true,
-          "purpose": "Vergabe einer Versicherungsnummer",
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
           "options": [
             {
               "id": "maennlich",
@@ -109,59 +124,37 @@
               "id": "unbestimmt",
               "label": "unbestimmt"
             }
-          ],
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
+          ]
         },
         {
-          "id": "geburtsname",
+          "id": "staatsangehoerigkeit",
           "role": "person",
           "type": "text",
-          "label": "Geburtsname (falls abweichend vom Familiennamen)",
+          "label": "Staatsangehörigkeit",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung"
+        },
+        {
+          "id": "versicherungsnummer",
+          "role": "person",
+          "type": "svNumber",
+          "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
           "required": false,
-          "purpose": "Vergabe einer Versicherungsnummer",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
-        },
-        {
-          "id": "geburtsort",
-          "role": "person",
-          "type": "text",
-          "label": "Geburtsort",
-          "required": true,
-          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
-        },
-        {
-          "id": "geburtsland",
-          "role": "person",
-          "type": "text",
-          "label": "Geburtsland",
-          "required": true,
-          "purpose": "Vergabe einer Versicherungsnummer",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
-        },
+          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+        }
+      ]
+    },
+    {
+      "id": "anschrift",
+      "title": "Anschrift",
+      "fields": [
         {
           "id": "strasse",
           "role": "person",
           "type": "text",
           "label": "Straße und Hausnummer",
           "required": true,
-          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
         {
           "id": "anschriftZusatz",
@@ -169,11 +162,7 @@
           "type": "text",
           "label": "Anschriftenzusatz",
           "required": false,
-          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
         {
           "id": "postleitzahl",
@@ -181,11 +170,7 @@
           "type": "text",
           "label": "Postleitzahl",
           "required": true,
-          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
         {
           "id": "wohnort",
@@ -193,22 +178,27 @@
           "type": "text",
           "label": "Wohnort",
           "required": true,
-          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
-          "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
-          }
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
+        },
+        {
+          "id": "anschriftAusland",
+          "role": "person",
+          "type": "boolean",
+          "label": "Liegt die Anschrift im Ausland?",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung",
+          "initial": false
         },
         {
           "id": "wohnstaat",
           "role": "person",
           "type": "text",
-          "label": "Wohnsitzstaat (nur wenn nicht Deutschland)",
-          "required": false,
-          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "label": "Staat",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung",
           "showIf": {
-            "field": "versicherungsnummer",
-            "answered": false
+            "field": "anschriftAusland",
+            "equals": true
           }
         }
       ]
@@ -237,7 +227,8 @@
           "type": "text",
           "label": "Firma des Arbeitgebers",
           "required": true,
-          "purpose": "Kopfzeile des Fragebogens, Zuordnung"
+          "purpose": "Kopfzeile des Fragebogens, Zuordnung",
+          "masterData": "firma"
         },
         {
           "id": "agBetriebsnummer",
@@ -245,7 +236,8 @@
           "type": "betriebsnummer",
           "label": "Betriebsnummer des Arbeitgebers",
           "required": true,
-          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)",
+          "masterData": "betriebsnummer"
         },
         {
           "id": "agFamilienname",
@@ -332,5 +324,6 @@
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für die Angaben zur Sofortmeldung schreibt das Gesetz keine besondere Form vor.",
     "Dieser Fragebogen ist nicht die Sofortmeldung selbst. Der Arbeitgeber meldet den Beginn der Beschäftigung bei deren Aufnahme an die Datenstelle der Träger der Rentenversicherung (§ 28a Abs. 4 SGB IV).",
     "Den Hinweis auf die Pflicht, Ausweispapiere mitzuführen, gibt der Arbeitgeber nachweislich und schriftlich (§ 2a Abs. 2 SchwarzArbG). Er wird deshalb auf Papier ausgehändigt; im Fragebogen wird nur die Aushändigung bestätigt."
-  ]
+  ],
+  "partLinks": [["person", "arbeitgeber"]]
 }

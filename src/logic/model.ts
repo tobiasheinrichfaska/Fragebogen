@@ -100,6 +100,17 @@ export interface FieldDefinition {
   columns?: FieldDefinition[];
   /** Derived value: name of a pure function in the logic layer, never code in data. */
   computed?: { fn: string; args: FieldId[] };
+  /**
+   * Preselected answer of a yes/no field (boolean) or a choice field (option id), set when the
+   * role's first version is opened; it can be changed like any other answer. Not on conditional
+   * fields.
+   */
+  initial?: boolean | string;
+  /**
+   * Key of a master datum (e.g. `betriebsnummer`) that a station may remember on its own device and
+   * reuse in every form with the same key. Only for the station's own data, never the person's.
+   */
+  masterData?: string;
 }
 
 export interface SectionDefinition {
@@ -151,6 +162,12 @@ export interface FormDefinition {
   consistencyRules: ConsistencyRule[];
   matchKeys: MatchKey[];
   legalNotes: string[];
+  /**
+   * Pairs of roles whose parts must reference each other: whoever seals later confirms the
+   * current version of the other part (`receivedParts`). Without that link the questionnaire is
+   * not complete; passing it on to the next station stays possible.
+   */
+  partLinks?: [RoleId, RoleId][];
 }
 
 // ---------------------------------------------------------------------------

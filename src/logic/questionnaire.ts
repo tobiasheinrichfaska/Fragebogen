@@ -8,6 +8,7 @@ import {
   fieldsById,
   fieldsOfRole,
   infoBlocksOfRole,
+  initialData,
   missingRequired,
   noticeHash,
   ownerOfField,
@@ -165,7 +166,10 @@ function matchesForm(questionnaire: Questionnaire, form: RegisteredForm): boolea
   return questionnaire.form.definitionHash === form.definitionHash;
 }
 
-/** Opens a draft for the role; after an earlier seal the draft starts from its data (new version). */
+/**
+ * Opens a draft for the role. The first version starts with the form's preselected answers; after
+ * an earlier seal the draft starts from that version's data (new version).
+ */
 export function startPart(
   questionnaire: Questionnaire,
   form: RegisteredForm,
@@ -175,7 +179,8 @@ export function startPart(
   if (!roleOf(form.definition, role)) return refuse('unknownRole', [role]);
   if (currentPart(questionnaire, role)?.status === 'draft') return refuse('draftExists', [role]);
   const previous = latestSealed(questionnaire, role);
-  const draft: Part = { role, status: 'draft', data: { ...(previous?.data ?? {}) } };
+  const data = previous ? { ...previous.data } : initialData(form.definition, role);
+  const draft: Part = { role, status: 'draft', data };
   return done(withVersions(questionnaire, role, [...versionsOf(questionnaire, role), draft]));
 }
 

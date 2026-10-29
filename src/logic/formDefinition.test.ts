@@ -2,7 +2,7 @@ import beispiel from '../../tests/fixtures/forms/beispiel/1.0.0.json';
 import beispiel110 from '../../tests/fixtures/forms/beispiel/1.1.0.json';
 import { checkFormDefinition, findCycle, parseFormDefinition } from './formDefinition';
 import { canonicalHash } from './hash';
-import { logicForm } from '../../tests/support/sample';
+import { linkedForm, logicForm } from '../../tests/support/sample';
 import type { FieldDefinition, FormDefinition, RoleDefinition } from './model';
 
 const REMOVE = Symbol('remove');
@@ -759,3 +759,144 @@ describe('conditions — operators and requiredIf', () => {
     expect(checkFormDefinition(logicForm().definition)).toEqual([]);
   });
 });
+
+describe('preselection, master data and linked parts', () => {
+  it('accepts them and decodes without adding anything', () => {
+    const raw = structuredClone(beispiel) as unknown as Record<string, unknown>;
+    const parsed = parseFormDefinition(linkedFormRaw(raw));
+    expect(parsed.ok ? [] : parsed.issues).toEqual([]);
+    if (parsed.ok) expect(canonicalHash(parsed.definition)).toBe(canonicalHash(raw));
+    expect(checkFormDefinition(linkedForm().definition)).toEqual([]);
+  });
+
+  it.each<[string, readonly (string | number)[], unknown, string, string]>([
+    [
+      'a numeric preselection',
+      ['sections', 0, 'fields', 3, 'initial'],
+      1,
+      '$.sections[0].fields[3].initial',
+      'expected a string',
+    ],
+    [
+      'a master-data key that is no id',
+      ['sections', 1, 'fields', 0, 'masterData'],
+      'Firma Name',
+      '$.sections[1].fields[0].masterData',
+      'must match',
+    ],
+    [
+      'a link of three roles',
+      ['partLinks'],
+      [['person', 'arbeitgeber', 'vertretung']],
+      '$.partLinks[0]',
+      'needs exactly 2 role ids',
+    ],
+    ['an empty list of links', ['partLinks'], [], '$.partLinks', 'needs at least 1'],
+  ])('rejects %s', (_label, path, change, issuePath, message) => {
+    const result = parseFormDefinition(rawWith(path, change));
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.issues).toContainEqual({
+      path: issuePath,
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it.each<[string, (d: FormDefinition) => void, string, string]>([
+    [
+      'a preselected text field',
+      (d) => {
+        fieldAt(d, 0, 0).initial = 'x';
+      },
+      '$.sections[0].fields[0].initial',
+      'only yes/no and choice fields',
+    ],
+    [
+      'a yes/no field preselected with an option id',
+      (d) => {
+        fieldAt(d, 0, 3).initial = 'ja';
+      },
+      '$.sections[0].fields[3].initial',
+      'expected a boolean',
+    ],
+    [
+      'an unknown option as preselection',
+      (d) => {
+        fieldAt(d, 0, 4).initial = 'teilzeit';
+      },
+      '$.sections[0].fields[4].initial',
+      'not an option id',
+    ],
+    [
+      'a preselected conditional field',
+      (d) => {
+        fieldAt(d, 0, 4).initial = 'minijob';
+      },
+      '$.sections[0].fields[4].initial',
+      'only always available',
+    ],
+    [
+      'a master-data key used twice',
+      (d) => {
+        fieldAt(d, 1, 0).masterData = 'name';
+        fieldAt(d, 1, 1).masterData = 'name';
+      },
+      '$.sections[1].fields[1].masterData',
+      'already used by "agNachname"',
+    ],
+    [
+      'a link to an unknown role',
+      (d) => {
+        d.partLinks = [['person', 'kanzlei']];
+      },
+      '$.partLinks[0]',
+      'unknown role "kanzlei"',
+    ],
+    [
+      'a role linked with itself',
+      (d) => {
+        d.partLinks = [['person', 'person']];
+      },
+      '$.partLinks[0]',
+      'with itself',
+    ],
+    [
+      'a link to the conditional guardian',
+      (d) => {
+        d.partLinks = [['person', 'vertretung']];
+      },
+      '$.partLinks[0]',
+      'conditional',
+    ],
+    [
+      'the same pair twice',
+      (d) => {
+        d.partLinks = [
+          ['person', 'arbeitgeber'],
+          ['arbeitgeber', 'person'],
+        ];
+      },
+      '$.partLinks[1]',
+      'listed twice',
+    ],
+  ])('reports %s', (_label, mutate, path, message) => {
+    const d = definition();
+    mutate(d);
+    expect(checkFormDefinition(d)).toContainEqual({
+      path,
+      message: expect.stringContaining(message),
+    });
+  });
+});
+
+/** The fixture with a preselection, a master-data field and a part link (raw JSON). */
+function linkedFormRaw(raw: Record<string, unknown>): Record<string, unknown> {
+  const sections = raw.sections as { fields: Record<string, unknown>[] }[];
+  const question = sections[0]?.fields[3];
+  const employer = sections[1]?.fields[0];
+  if (!question || !employer) throw new Error('fixture changed');
+  question.initial = false;
+  employer.masterData = 'name';
+  raw.partLinks = [['person', 'arbeitgeber']];
+  return raw;
+}

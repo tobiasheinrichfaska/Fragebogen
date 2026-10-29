@@ -128,6 +128,15 @@ export function visibleFields(
   return fieldsOfRole(definition, role).filter((field) => visible.get(field.id) === true);
 }
 
+/** Preselected answers (`initial`) of the role's fields — the start of its first version. */
+export function initialData(definition: FormDefinition, role: RoleId): Record<FieldId, FieldValue> {
+  return Object.fromEntries(
+    fieldsOfRole(definition, role).flatMap((field) =>
+      field.initial === undefined ? [] : [[field.id, field.initial]],
+    ),
+  );
+}
+
 /** The data as it is sealed: visible fields only, unanswered ones as null. */
 export function sealableData(
   definition: FormDefinition,

@@ -7,7 +7,7 @@
 | --- | --- |
 | Formular | sofortmeldung, Version 1.0.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | 0e7aa81515f0f9f52f4e9bea417e4c3febfdc44ddf7be29b5f450fe1ef4284e5 |
+| Definition (SHA-256) | 7bb09e6a8fc3411bb9a3060cd7915ae21b5771ec9e922865dd46dd4d23529ca0 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Empfänger | Lohnabrechnende Stelle |
 
@@ -27,23 +27,25 @@
 | --- | --- | --- | --- | --- | --- |
 | Familienname (familienname) | Beschäftigte Person | Text | immer | Pflicht | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
 | Vornamen (vorname) | Beschäftigte Person | Text | immer | Pflicht | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
-| Geburtsdatum (geburtsdatum) | Beschäftigte Person | Datum | immer | Pflicht | Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; ohne Versicherungsnummer Inhalt der Sofortmeldung |
+| Ist Ihr Geburtsname gleich Ihrem Familiennamen? (geburtsnameWieFamilienname) | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
+| Geburtsname (geburtsname) | Beschäftigte Person | Text | erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
+| Geburtsdatum (geburtsdatum) | Beschäftigte Person | Datum | immer | Pflicht | Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV) |
+| Geburtsort (geburtsort) | Beschäftigte Person | Text | immer | Pflicht | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
+| Geburtsland (geburtsland) | Beschäftigte Person | Text | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
+| Geschlecht (geschlecht) | Beschäftigte Person | Auswahl: männlich, weiblich, divers, unbestimmt | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Staatsangehörigkeit (staatsangehoerigkeit) | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung |
-| Versicherungsnummer der Rentenversicherung (falls bekannt) (versicherungsnummer) | Beschäftigte Person | Versicherungsnummer | immer | optional | Inhalt der Sofortmeldung; ersetzt die Angaben zu Geburt und Anschrift |
+| Versicherungsnummer der Rentenversicherung (falls bekannt) (versicherungsnummer) | Beschäftigte Person | Versicherungsnummer | immer | optional | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
 
-### 2. Nur ohne Versicherungsnummer: Angaben für ihre Vergabe
+### 2. Anschrift
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Geschlecht (geschlecht) | Beschäftigte Person | Auswahl: männlich, weiblich, divers, unbestimmt | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | Pflicht | Vergabe einer Versicherungsnummer |
-| Geburtsname (falls abweichend vom Familiennamen) (geburtsname) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | optional | Vergabe einer Versicherungsnummer |
-| Geburtsort (geburtsort) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | Pflicht | Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV) |
-| Geburtsland (geburtsland) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | Pflicht | Vergabe einer Versicherungsnummer |
-| Straße und Hausnummer (strasse) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | Pflicht | Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV) |
-| Anschriftenzusatz (anschriftZusatz) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | optional | Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV) |
-| Postleitzahl (postleitzahl) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | Pflicht | Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV) |
-| Wohnort (wohnort) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | Pflicht | Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV) |
-| Wohnsitzstaat (nur wenn nicht Deutschland) (wohnstaat) | Beschäftigte Person | Text | erst wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ leer ist | optional | Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV) |
+| Straße und Hausnummer (strasse) | Beschäftigte Person | Text | immer | Pflicht | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
+| Anschriftenzusatz (anschriftZusatz) | Beschäftigte Person | Text | immer | optional | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
+| Postleitzahl (postleitzahl) | Beschäftigte Person | Text | immer | Pflicht | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
+| Wohnort (wohnort) | Beschäftigte Person | Text | immer | Pflicht | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
+| Liegt die Anschrift im Ausland? (anschriftAusland) | Beschäftigte Person | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
+| Staat (wohnstaat) | Beschäftigte Person | Text | erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist | Pflicht | Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung |
 
 ### 3. Gesetzliche Vertretung (nur bei Minderjährigen)
 
@@ -55,8 +57,8 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Firma des Arbeitgebers (agFirma) | Arbeitgeber | Text | immer | Pflicht | Kopfzeile des Fragebogens, Zuordnung |
-| Betriebsnummer des Arbeitgebers (agBetriebsnummer) | Arbeitgeber | Betriebsnummer (8 Ziffern) | immer | Pflicht | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
+| Firma des Arbeitgebers (agFirma) | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Kopfzeile des Fragebogens, Zuordnung |
+| Betriebsnummer des Arbeitgebers (agBetriebsnummer) | Arbeitgeber | Betriebsnummer (8 Ziffern); Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
 | Familienname der beschäftigten Person (agFamilienname) | Arbeitgeber | Text | immer | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
 | Vornamen der beschäftigten Person (agVorname) | Arbeitgeber | Text | immer | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
 | Personalnummer (agPersonalnummer) | Arbeitgeber | Text | immer | optional | Zuordnung in der Lohnabrechnung |
@@ -99,6 +101,10 @@
 > - Friseur- und Kosmetikgewerbe
 >
 > Ihr Arbeitgeber muss Sie darauf nachweislich und schriftlich hinweisen und diesen Hinweis aufbewahren, solange Sie die Arbeit erbringen (§ 2a Abs. 2 SchwarzArbG).
+
+## Verknüpfung der Teile
+
+- Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils. Ohne diese Verknüpfung ist der Fragebogen nicht vollständig.
 
 ## Prüfregeln
 

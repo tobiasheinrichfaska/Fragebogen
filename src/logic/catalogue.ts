@@ -84,11 +84,18 @@ function roleLabel(definition: FormDefinition, id: string): string {
   return definition.roles.find((role) => role.id === id)?.label ?? id;
 }
 
+function initialLabel(field: FieldDefinition, initial: boolean | string): string {
+  if (typeof initial === 'boolean') return initial ? 'Ja' : 'Nein';
+  return field.options?.find((option) => option.id === initial)?.label ?? initial;
+}
+
 function fieldKind(field: FieldDefinition): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
   if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
   if (field.computed) kind += ` (berechnet: ${field.computed.fn})`;
+  if (field.initial !== undefined) kind += `; vorbelegt: ${initialLabel(field, field.initial)}`;
+  if (field.masterData !== undefined) kind += '; Stammdatum, kann auf dem Gerät gemerkt werden';
   return kind;
 }
 
@@ -195,6 +202,17 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
     return field ? `„${field.label}“ (${roleLabel(definition, field.role)})` : id;
   };
   lines.push(
+    '',
+    '## Verknüpfung der Teile',
+    '',
+    ...list(
+      (definition.partLinks ?? []).map(
+        ([a, b]) =>
+          `${roleLabel(definition, a)} und ${roleLabel(definition, b)}: Wer zuletzt abschließt, ` +
+          'bestätigt die aktuelle Fassung des anderen Teils. Ohne diese Verknüpfung ist der ' +
+          'Fragebogen nicht vollständig.',
+      ),
+    ),
     '',
     '## Prüfregeln',
     '',

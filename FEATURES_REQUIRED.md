@@ -7,7 +7,7 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 
 - [ ] **Open the single HTML file by double-click (file://)** — app renders, no console errors
 - [ ] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest
-- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow
+- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow, except the employer master data the user chose to remember (flagged keys only, never the person's data)
 - [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean
 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
@@ -19,7 +19,7 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 - [ ] **No transmission without the person's signature** — the PDF for passing on is refused while a draft is open, a required signature is missing or a part is altered (`transmissionBlockers`); the reason is shown in German. Saving the interim state stays possible.
 - [ ] **Minor on the signing day (device date)** — the legal guardian must sign with name (name field or typed name) and confirm exactly the current version of the person's part; re-signing by the person requires the guardian again; otherwise no transmission
 - [ ] **Re-sign before sending** — "Unterschrift zurücknehmen" turns the not-yet-sent version back into a draft; the old signature disappears (no version chain); refused once the version was received or confirmed
-- [ ] **Download the PDF** — readable sections, signature with system note, Prüfblatt, data pages, footer "Seite x von y"
+- [ ] **Download the PDF** — readable sections, signature with system note, Prüfblatt, data pages, footer "Seite x von y", visible and clickable address of the app
 - [ ] **Save/load interim state as a file** — round-trips without loss
 
 ## Station 2 — import & complete (e.g. Arbeitgeber)
@@ -28,7 +28,10 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 - [ ] **Tampered PDF** — verdict names the changed fields (or "Datensatz verändert, Feldvergleich nicht möglich")
 - [ ] **Scanned PDF / PDF without data pages** — rejected with a clear German message
 - [ ] **Complete own part, seal or sign** — receipt with the imported part's hash is part of the seal
-- [ ] **Same-device flow (Gerätemodus)** — role locked, nothing stored, wiped at the end
+- [ ] **Same-device flow (Gerätemodus)** — "Wer füllt jetzt aus?" picks the role; role locked, nothing stored, wiped at the end
+- [ ] **Either station first** — employer first (person sees the employer data read-only and signs over it) or person first (employer confirms the person part); the questionnaire is complete only when the parts are linked (`partsNotLinked` otherwise), and passing on to the next station is never blocked by a missing part
+- [ ] **Employer master data** — company name and Betriebsnummer can be remembered on the employer's device and are filled in again; a remembered value in the wrong format is shown with its reason
+- [ ] **Preselected answers** — e.g. "Geburtsname gleich Familienname?" starts with Ja and can be changed
 
 ## Station 3 — Kanzlei (merge)
 

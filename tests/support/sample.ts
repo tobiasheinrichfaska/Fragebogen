@@ -316,3 +316,32 @@ export function logicForm(): RegisteredForm {
   });
   return registered(raw);
 }
+
+/**
+ * In-memory variant of the fixture (never published) for station order and master data: the
+ * yes/no question is preselected with "Nein", the employer states the company name (master datum
+ * `firma`) and the parts of person and employer must be linked.
+ */
+export function linkedForm(): RegisteredForm {
+  const raw = structuredClone(beispiel) as unknown as {
+    version: string;
+    sections: { id: string; title: string; fields: Record<string, unknown>[] }[];
+    partLinks?: string[][];
+  };
+  raw.version = '1.8.0';
+  const [personal, employment] = raw.sections;
+  const question = personal?.fields.find((field) => field.id === 'weitereBeschaeftigung');
+  if (!question || !employment) throw new Error('fixture changed');
+  question.initial = false;
+  employment.fields.unshift({
+    id: 'agFirma',
+    role: 'arbeitgeber',
+    type: 'text',
+    label: 'Firma',
+    required: true,
+    purpose: 'Test der Stammdaten',
+    masterData: 'firma',
+  });
+  raw.partLinks = [['person', 'arbeitgeber']];
+  return registered(raw);
+}
