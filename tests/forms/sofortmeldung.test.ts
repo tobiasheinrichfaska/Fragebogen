@@ -1,4 +1,4 @@
-// The Sofortmeldung draft run through the engine: what is asked, the preselected questions, both
+// The Sofortmeldung 0.1.0 run through the engine: what is asked, the preselected questions, both
 // notices, the guardian of a minor, both station orders (employer first or person first), the
 // link between the parts, the name cross-check and the employer's master data. All data invented.
 import { join } from 'node:path';
@@ -19,7 +19,7 @@ import {
   startPart,
 } from '../../src/logic/questionnaire';
 import { completenessGaps, transmissionBlockers } from '../../src/logic/requirements';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import {
   NONCE_EMPLOYER,
   NONCE_GUARDIAN,
@@ -30,7 +30,7 @@ import {
   personSealInput,
 } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.0.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.1.0.json')));
 const { definition } = form;
 
 const PERSON = {
@@ -113,7 +113,7 @@ function employerSeals(
   );
 }
 
-describe('Sofortmeldung draft — what is asked', () => {
+describe('Sofortmeldung 0.1.0 — what is asked', () => {
   it('preselects "birth name = family name" and "address in Germany"', () => {
     const q = ok(startPart(empty(), form, 'person'));
     expect(dataOf(q, 'person')).toEqual({
@@ -186,7 +186,7 @@ describe('Sofortmeldung draft — what is asked', () => {
   });
 });
 
-describe('Sofortmeldung draft — station order', () => {
+describe('Sofortmeldung 0.1.0 — station order', () => {
   it('employer first: the person signs over the employer part, nothing is missing', () => {
     const employer = employerSeals(
       empty(),
@@ -268,7 +268,7 @@ describe('Sofortmeldung draft — station order', () => {
   });
 });
 
-describe('Sofortmeldung draft — employer master data', () => {
+describe('Sofortmeldung 0.1.0 — employer master data', () => {
   it('remembers company name and Betriebsnummer, nothing about the person', () => {
     const q = draft(empty(), 'arbeitgeber', EMPLOYER);
     expect(masterDataOf(definition, 'arbeitgeber', dataOf(q, 'arbeitgeber'))).toEqual({
@@ -318,7 +318,7 @@ describe('Sofortmeldung draft — employer master data', () => {
   });
 });
 
-describe('Sofortmeldung draft — interview', () => {
+describe('Sofortmeldung 0.1.0 — interview', () => {
   it('starts with both notices for the person and asks the birth name right after its question', () => {
     let q = ok(startPart(empty(), form, 'person'));
     q = ok(setValue(q, form, 'person', 'geburtsnameWieFamilienname', false));

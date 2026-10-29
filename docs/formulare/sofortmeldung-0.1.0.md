@@ -5,9 +5,9 @@
 
 | Angabe | Wert |
 | --- | --- |
-| Formular | sofortmeldung, Version 1.0.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | 3895328d4ba0bb407fc29bb48c7e1e545314ea1da5aed700bd6b79005a1bf034 |
+| Formular | sofortmeldung, Version 0.1.0 |
+| Status | Eingefrorene Testfassung (0.x): darf vor dem ersten Release gelöscht werden, solange kein echter Fragebogen damit ausgefüllt wurde |
+| Definition (SHA-256) | e9cd772846b6bd751b7e560545ae406eb8d5cabaafcfc9b881320cbcb8d3964d |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Empfänger | Lohnabrechnende Stelle |
 

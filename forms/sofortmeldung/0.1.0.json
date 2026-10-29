@@ -1,6 +1,6 @@
 {
   "id": "sofortmeldung",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "title": "Personalfragebogen: Angaben für die Sofortmeldung",
   "signaturePolicy": "electronic",
   "roles": [

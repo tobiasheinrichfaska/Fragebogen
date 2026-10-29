@@ -29,7 +29,9 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 
 - [ ] **Import the PDF** — data recovered from the data pages; verdict "unverändert seit Unterschrift"
 - [ ] **Tampered PDF** — verdict names the changed fields (or "Datensatz verändert, Feldvergleich nicht möglich")
-- [ ] **Scanned PDF / PDF without data pages** — rejected with a clear German message
+- [ ] **Scanned PDF / PDF without data pages** — rejected with a clear German message, unless its QR codes can be read
+- [ ] **Paper path via QR codes** — a scan or a phone photo of the printed PDF is read back from the QR codes on the data pages and verified like the PDF; missing or unreadable codes are named
+- [ ] **Explainer videos** — a field or notice with a configured video shows a link that opens outside the app (https only, never embedded)
 - [ ] **Complete own part, seal or sign** — receipt with the imported part's hash is part of the seal
 - [ ] **Same-device flow (Gerätemodus)** — "Wer füllt jetzt aus?" picks the role; role locked, nothing stored, wiped at the end
 - [ ] **Either station first** — employer first (person sees the employer data read-only and signs over it) or person first (employer confirms the person part); the questionnaire is complete only when the parts are linked (`partsNotLinked` otherwise), and passing on to the next station is never blocked by a missing part

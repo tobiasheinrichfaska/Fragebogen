@@ -42,6 +42,15 @@ export function definitionHash(definition: FormDefinition): Sha256Hex {
   return canonicalHash(definition);
 }
 
+/**
+ * Versions 0.x.y are test versions (Tobias, 2026-10-29): frozen like any other, but they may be
+ * removed before the app's first release as long as no real questionnaire was filled in with
+ * them. From 1.0.0 on a published version stays forever.
+ */
+export function isTestVersion(version: string): boolean {
+  return version.startsWith('0.');
+}
+
 /** Numeric semver comparison of `MAJOR.MINOR.PATCH`. */
 export function compareVersions(a: string, b: string): number {
   const left = a.split('.').map(Number);

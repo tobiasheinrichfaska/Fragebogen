@@ -14,7 +14,8 @@ auf den Namen einer Funktion in `src/logic/compute.ts`.
 2. **Änderung = neue Version.** Eine neue Datei mit höherer Versionsnummer, dazu ein neuer Eintrag
    in `published.json`. Der Test `tests/forms/publishedForms.test.ts` nennt den Hash, der
    einzutragen ist.
-3. **Einträge in `published.json` werden nie entfernt** und nie geändert.
+3. **Einträge in `published.json` werden nie entfernt** und nie geändert. Einzige Ausnahme sind
+   **Testfassungen** (siehe unten).
 4. **Eine Feld-ID wird nie umgedeutet.** Innerhalb eines Formulars behält eine ID über alle
    Versionen denselben Typ und dieselbe Rolle. Für eine neue Bedeutung gibt es eine neue ID.
 5. Dateiname und Ordner müssen zu `id` und `version` in der Datei passen.
@@ -23,6 +24,15 @@ Der Test prüft die Regeln bei jedem `npm test`. Eine Lücke bleibt: Werden ein 
 Datei **gemeinsam** entfernt oder gemeinsam geändert, merkt der Test das nicht. Das prüft später die
 CI gegen das letzte Release (Schritt 12). Bis dahin sichern die Golden-Dateien aus Schritt 3 ab,
 denn sie verweisen per Hash auf ihre Definition.
+
+## Testfassungen (Version 0.x)
+
+Versionen mit führender 0, etwa `sofortmeldung/0.1.0.json`, sind Testfassungen. Sie werden
+eingefroren wie jede andere Version, damit Oberfläche und PDF gegen einen festen Stand gebaut
+werden können. **Vor dem ersten Release der App dürfen sie samt Eintrag gelöscht werden**, aber
+nur, solange kein echter Fragebogen damit ausgefüllt wurde. Wer eine Testfassung mit echten
+Daten einsetzt, macht sie dauerhaft. Ab Version 1.0.0 bleibt jede veröffentlichte Version für
+immer. Golden-Dateien gibt es erst für dauerhafte Versionen.
 
 ## Entwürfe
 

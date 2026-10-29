@@ -4,7 +4,7 @@
 import { formatGermanDate } from './dates';
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
-import type { RegisteredForm } from './formRegistry';
+import { isTestVersion, type RegisteredForm } from './formRegistry';
 import type {
   AcknowledgementKind,
   FieldDefinition,
@@ -63,6 +63,16 @@ const STATUS_LABELS: Readonly<Record<CatalogueStatus, string>> = {
   draft: 'Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht',
   published: 'Veröffentlicht und eingefroren',
 };
+
+const TEST_VERSION_LABEL =
+  'Eingefrorene Testfassung (0.x): darf vor dem ersten Release gelöscht werden, solange kein ' +
+  'echter Fragebogen damit ausgefüllt wurde';
+
+function statusLabel(status: CatalogueStatus, version: string): string {
+  return status === 'published' && isTestVersion(version)
+    ? TEST_VERSION_LABEL
+    : STATUS_LABELS[status];
+}
 
 /** Escapes a value for one Markdown table cell. */
 export function tableCell(text: string): string {
@@ -188,7 +198,7 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       ['Angabe', 'Wert'],
       [
         ['Formular', `${definition.id}, Version ${definition.version}`],
-        ['Status', STATUS_LABELS[status]],
+        ['Status', statusLabel(status, definition.version)],
         ['Definition (SHA-256)', form.definitionHash],
         ['Unterschrift', SIGNATURE_POLICY_LABELS[definition.signaturePolicy]],
         ['Empfänger', definition.recipient.label],

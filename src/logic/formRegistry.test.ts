@@ -3,6 +3,7 @@ import {
   buildFormRegistry,
   checkFieldIdStability,
   compareVersions,
+  isTestVersion,
   definitionHash,
   parsePublishedList,
   type FormSource,
@@ -200,5 +201,16 @@ describe('compareVersions / definitionHash', () => {
 
   it('hashes the decoded definition exactly like its source JSON', () => {
     expect(definitionHash(decoded(beispiel))).toBe(canonicalHash(beispiel));
+  });
+});
+
+describe('isTestVersion', () => {
+  it.each<[string, boolean]>([
+    ['0.1.0', true],
+    ['0.10.3', true],
+    ['1.0.0', false],
+    ['10.0.0', false],
+  ])('%s → %s', (version, expected) => {
+    expect(isTestVersion(version)).toBe(expected);
   });
 });

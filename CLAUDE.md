@@ -74,13 +74,13 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/support/sample.ts`                             | Shared fictitious scenarios (person signs, employer seals + chains, Kanzlei/DATEV receipt; second version; minor + guardian on form 1.1.0)                                                                                                              |
 | `tests/golden/`                                       | Golden questionnaires (`beispiel-<version>/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                                                                                                            |
 | `src/logic/*.test.ts`                                 | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                                                                                                                   |
-| `forms/`                                              | Form definitions `forms/<id>/<version>.json` (none yet), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                                                                                                           |
-| `form-drafts/`                                        | Drafts under expert review, same layout (`sofortmeldung/1.0.0.json`); never bundled; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                                 |
+| `forms/`                                              | Form definitions `forms/<id>/<version>.json` (`sofortmeldung/0.1.0.json`, test version), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                                                                           |
+| `form-drafts/`                                        | Drafts under expert review, same layout (currently none); never bundled; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                                             |
 | `docs/formulare/`                                     | Generated field catalogues `<id>-<version>.md` for every form and draft (`npm run catalogue`; never edit by hand), `README.md`                                                                                                                          |
 | `tests/support/formFiles.ts`                          | Reads `forms/` and `form-drafts/` (lazy, so misnamed files are reported)                                                                                                                                                                                |
 | `tests/forms/formDrafts.test.ts`                      | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                                   |
 | `tests/forms/catalogue.test.ts`                       | `docs/formulare/` matches the definitions (file snapshots), no stale catalogues                                                                                                                                                                         |
-| `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung draft through the engine: what is asked, preselections, notices, both station orders, part link, minor + guardian, name cross-check, master data                                                                                      |
+| `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung 0.1.0 through the engine: what is asked, preselections, notices, both station orders, part link, minor + guardian, name cross-check, master data                                                                                      |
 | `src/logic/interview.ts`                              | Interview logic: `interviewSteps` (notices, available questions in form order with level and state, summary), `stepAfter`/`stepBefore`/`resumeStep`, `interviewProgress`, `interviewSummary` (missing, deferred, inactive answers with reason, notices) |
 | `src/logic/dependencies.ts`                           | `fieldDependencies`: which answers rest on others (showIf level 0…n, requiredIf separately, what a field enables)                                                                                                                                       |
 | `src/logic/masterDataLink.ts`                         | `masterDataFragment` / `parseMasterDataFragment`: master data in the bookmark link (`#stammdaten=1&…`), strict all-or-nothing parsing with German messages                                                                                              |
@@ -177,7 +177,7 @@ Key design decisions (details in `docs/plan.md`):
   `docs/formulare/` is generated from the JSON (so the approved text is exactly what gets frozen)
   and names the `definitionHash`. After Tobias's approval the file moves to `forms/` and its hash
   goes into `published.json`.
-- **Sofortmeldung draft (1.0.0, review of 2026-10-29 applied):** birth and address details are
+- **Sofortmeldung 0.1.0 (frozen test version, 2026-10-29; review applied):** birth and address details are
   always asked (Tobias: needed later anyway, all easily at hand); the Versicherungsnummer stays
   "falls bekannt". Birth name via a preselected yes/no ("gleich Familienname?" = Ja), address abroad
   via a preselected yes/no (= Nein) that opens "Staat". Tag der Beschäftigungsaufnahme exists
@@ -208,6 +208,19 @@ Key design decisions (details in `docs/plan.md`):
   draft** and return when it holds again; they are dropped only at signing, and the summary lists
   them with the reason first. Dependencies are explicit per level (`fieldDependencies`, catalogue
   tree). Definition rule: `showIf` only looks back in form order (`requiredIf` may look ahead).
+- **Form versions 0.x are test versions** (Tobias 2026-10-29, `isTestVersion`): frozen like any
+  other, but deletable before the first release as long as no real questionnaire used them;
+  from 1.0.0 on a version stays forever. The app itself is 0.1.0 as well.
+- **QR codes for the paper path** (decided 2026-10-29, step 8): the data pages additionally carry
+  the compressed data block as numbered QR codes (byte mode, error correction), so a scan or a
+  phone photo of the printed PDF can be read back and verified like the PDF. The electronic file
+  stays the original. Libraries to check then: encoder qrcode-generator or node-qrcode (MIT),
+  decoder jsQR or zxing-js (Apache-2.0).
+- **Explainer videos** (wish 2026-10-29, design): links only, opened outside the app (never
+  embedded: offline, CSP, no tracking inside the app), https only. URLs are Kanzlei
+  configuration keyed by field or notice id (optionally per form), so a moved video never needs a
+  new form version. Hosting on the Kanzlei site is preferable; YouTube passes viewer data to
+  Google.
 - **Preselection** (`initial`): yes/no or choice answers set when the role's first version opens;
   only on always available fields.
 
@@ -249,8 +262,9 @@ Key design decisions (details in `docs/plan.md`):
   (or QES / scan + advanced employer signature); paper notices are handed out on paper.
 - **iPhone/iPad cannot run the HTML file locally** — they need the hosted copy (step 12). Android:
   Chrome only, via the Files app.
-- **Printing and re-scanning** a PDF destroys the machine-readable data pages (OCR of base64 is
-  unreliable); a QR code for the paper path is a later option.
+- **Printing and re-scanning** a PDF destroys the machine-readable text lines of the data pages
+  (OCR of base64 is unreliable). QR codes on the data pages are decided (Tobias 2026-10-29) and
+  arrive with step 8; until then paper is a readable copy only.
 - **No autosave:** closing the tab loses unsaved input (a warning will be shown, step 6).
 - **Device key (ECDSA) deliberately not built** — proves a browser profile, not a person, and
   conflicts with "store nothing".
@@ -273,8 +287,9 @@ Key design decisions (details in `docs/plan.md`):
   for the employer's own data, never for the person's.
 - **Privacy notice of the Sofortmeldung** is a first version (confirmation click); a detailed
   review is pending (Tobias, 2026-10-29).
-- **No form is published yet:** the Sofortmeldung is a draft awaiting approval; drafts are never
-  bundled into the app.
+- **Only a test version is published:** Sofortmeldung 0.1.0 may still be deleted before the first
+  release (no real questionnaires yet); no golden files for it until a permanent 1.0.0. Drafts are
+  never bundled into the app.
 - **Versicherungsnummer:** only shape and check digit; area number and the birth-date part are not
   checked (a cross-check with the birth date will be a form rule).
 - **Money:** at most 2 decimals, no negative amounts, at most 12 integer digits.
@@ -346,12 +361,12 @@ counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`)
 word order) and 5b (review applied: all birth/address data, preselected yes/no questions, `initial`,
 `masterData`, `partLinks` + `partsNotLinked`), master data as bookmark link (decision C) and 5c
 (interview logic: `interview.ts`, `dependencies.ts`, `deferQuestion`, `question`/`help` texts,
-interview-order rule; Sofortmeldung question and help texts drafted) done. The Sofortmeldung draft
-and catalogue (`docs/formulare/sofortmeldung-1.0.0.md`) await Tobias's final approval. **Next:**
-publish it (move to `forms/`, add the hash), then draft the general Personalfragebogen the same
-way. Paper path: printing is fine for reading; reading back from paper needs QR codes on the data
-pages (option, see Known Limitations). Decided for
-step 8: the PDF carries a visible address of the app plus a clickable URI link (address from
-configuration, never data in the link).
+interview-order rule; Sofortmeldung question and help texts drafted) done. The Sofortmeldung is frozen as
+test version **0.1.0** (`forms/sofortmeldung/0.1.0.json`, catalogue
+`docs/formulare/sofortmeldung-0.1.0.md`). **Next:** draft the general Personalfragebogen the
+same way (draft → catalogue → approval → 0.x freeze). Decided for step 8: QR codes on the data
+pages (paper path) and a visible address of the app plus a clickable URI link (address from
+configuration, never data in the link). Planned for step 6: links to explainer videos from the
+configuration.
 
 _Last updated: 2026-10-29_

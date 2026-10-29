@@ -139,6 +139,15 @@ describe('formCatalogue', () => {
     );
   });
 
+  it('marks a published 0.x version as a deletable test version', () => {
+    const form: RegisteredForm = structuredClone(beispielForm());
+    form.definition.version = '0.3.0';
+    expect(formCatalogue(form, 'published')).toContain(
+      '| Status | Eingefrorene Testfassung (0.x):',
+    );
+    expect(formCatalogue(form, 'draft')).toContain('| Status | Entwurf zur fachlichen Freigabe');
+  });
+
   it('keeps table cells intact', () => {
     expect(tableCell('a | b\nc')).toBe('a \\| b<br>c');
   });
