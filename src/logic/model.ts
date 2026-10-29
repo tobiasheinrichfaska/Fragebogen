@@ -1,5 +1,6 @@
-// Data model (draft from step 0). Behaviour follows in steps 2–4 (canon, seal/verify, merge).
-// Keep docs/data-model.html in sync whenever these types change.
+// Data model. Behaviour lives next to it in src/logic (canon, registry; seal/verify and merge follow
+// in steps 3–4). Keep docs/data-model.html in sync whenever these types change.
+// Enumerations are const arrays so that the decoder and the types share one source.
 
 /** Calendar date `YYYY-MM-DD`. Never parsed through `Date` (UTC off-by-one). */
 export type IsoDate = string;
@@ -12,10 +13,12 @@ export type FieldId = string;
 // Form definition (bundled, frozen once published, keyed by definitionHash)
 // ---------------------------------------------------------------------------
 
-export type SignatureRequirement = 'required' | 'optional' | 'none';
+export const SIGNATURE_REQUIREMENTS = ['required', 'optional', 'none'] as const;
+export type SignatureRequirement = (typeof SIGNATURE_REQUIREMENTS)[number];
 
 /** Whether the form's legal form requirement allows the in-app simple e-signature. */
-export type SignaturePolicy = 'electronic' | 'paperRecommended' | 'paperRequired';
+export const SIGNATURE_POLICIES = ['electronic', 'paperRecommended', 'paperRequired'] as const;
+export type SignaturePolicy = (typeof SIGNATURE_POLICIES)[number];
 
 /** A role becomes mandatory only when its condition holds (e.g. legal guardian of a minor). */
 export interface RoleCondition {
@@ -33,18 +36,20 @@ export interface RoleDefinition {
   requiredIf?: RoleCondition;
 }
 
-export type FieldType =
-  | 'text'
-  | 'date'
-  | 'choice'
-  | 'multiChoice'
-  | 'boolean'
-  | 'iban'
-  | 'taxId'
-  | 'svNumber'
-  | 'money'
-  | 'repeatGroup'
-  | 'file';
+export const FIELD_TYPES = [
+  'text',
+  'date',
+  'choice',
+  'multiChoice',
+  'boolean',
+  'iban',
+  'taxId',
+  'svNumber',
+  'money',
+  'repeatGroup',
+  'file',
+] as const;
+export type FieldType = (typeof FIELD_TYPES)[number];
 
 export interface ChoiceOption {
   id: string;
@@ -66,6 +71,8 @@ export interface FieldDefinition {
   purpose: string;
   /** Answer is voluntary (e.g. severe disability during the first six months). */
   voluntary?: boolean;
+  /** `text` only: keep line breaks (e.g. remarks); otherwise all whitespace collapses. */
+  multiline?: boolean;
   options?: ChoiceOption[];
   showIf?: Condition;
   /** Columns of a repeat group; a column may belong to another role (referenced by row id). */
@@ -85,7 +92,8 @@ export interface SectionDefinition {
  * - `read`: shown in the app and confirmed there.
  * - `paperHandout`: the notice is handed out on paper; the form only confirms the handout.
  */
-export type AcknowledgementKind = 'read' | 'paperHandout';
+export const ACKNOWLEDGEMENT_KINDS = ['read', 'paperHandout'] as const;
+export type AcknowledgementKind = (typeof ACKNOWLEDGEMENT_KINDS)[number];
 
 export interface InfoBlock {
   id: string;

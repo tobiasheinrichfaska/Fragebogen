@@ -42,10 +42,11 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 · App-Version 0.1.0 · Quelle: <code>src/logic/model.ts</code>, <code>src/logic/dates.ts</code></p>
-<p class="note"><strong>Entwurf aus Schritt 0.</strong> Die Typen sind festgelegt. Verhalten (Kanonisierung, Siegel,
-Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wird neu erzeugt, sobald sich das Modell
-ändert</strong>, und zwar in derselben Sitzung wie die Code-Änderung.</p>
+<p class="meta">Stand: 29.10.2026 (Schritt 2) · App-Version 0.1.0 · Quelle: <code>src/logic/model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code></p>
+<p class="note"><strong>Stand Schritt 2.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern
+und das Formularregister sind umgesetzt. Siegel, Prüfung und Zusammenführung folgen in den Schritten 3–4.
+<strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
+Code-Änderung.</p>
 
 <nav>
 <ul>
@@ -55,6 +56,7 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
   <li><a href="#beziehungen">Beziehungstabelle</a></li>
   <li><a href="#definition">Formulardefinition</a></li>
   <li><a href="#instanz">Fragebogen (Instanz)</a></li>
+  <li><a href="#kanon">Kanonisierung und Normalisierung</a></li>
   <li><a href="#methoden">Methoden der Datenmanipulation</a></li>
   <li><a href="#werkseinstellungen">Werkseinstellungen</a></li>
 </ul>
@@ -63,10 +65,10 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
 <h2 id="architektur">Architektur</h2>
 <table>
   <tr><th>Schicht</th><th>Ort</th><th>Aufgabe</th></tr>
-  <tr><td>Daten + Logik</td><td><code>src/logic/</code></td><td>Typen, reine Regeln (Datum, später Kanonisierung, Siegel, Prüfung, Zusammenführung). Ohne UI, ohne Browser-APIs, ohne Ein-/Ausgabe; ESLint erzwingt das.</td></tr>
-  <tr><td>Ein-/Ausgabe</td><td><code>src/io/</code> (ab Schritt 1/8)</td><td>PDF schreiben und lesen, Dateien, Gerätedaten für den Systemvermerk.</td></tr>
+  <tr><td>Daten + Logik</td><td><code>src/logic/</code></td><td>Typen, reine Regeln: Datum, Kanonisierung (JCS), Hash, Normalisierung, Prüfziffern, Formular-Decoder, Register; später Siegel, Prüfung, Zusammenführung. Ohne UI, ohne Browser-APIs, ohne Ein-/Ausgabe; ESLint erzwingt das.</td></tr>
+  <tr><td>Ein-/Ausgabe</td><td><code>src/io/</code> (ab Schritt 8)</td><td>PDF schreiben und lesen, Dateien, Gerätedaten für den Systemvermerk.</td></tr>
   <tr><td>Oberfläche</td><td><code>src/ui/</code></td><td>React: nur Darstellung und Bedienung; ruft die Logik auf.</td></tr>
-  <tr><td>Formulare</td><td><code>forms/</code> (ab Schritt 5)</td><td>Formulardefinitionen als JSON; veröffentlichte Versionen sind eingefroren.</td></tr>
+  <tr><td>Formulare</td><td><code>forms/</code></td><td>Formulardefinitionen als <code>forms/&lt;id&gt;/&lt;version&gt;.json</code>, dazu <code>forms/published.json</code> mit den eingefrorenen Hashes. Das Register gibt es seit Schritt 2, die ersten Formulare folgen in Schritt 5.</td></tr>
 </table>
 
 <h2 id="lebenslauf">Lebenslauf der Daten</h2>
@@ -81,7 +83,7 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
 <p class="legend">
   <span><i class="sw" style="border-color:var(--blue)"></i>enthält (Komposition)</span>
   <span><i class="sw" style="border-color:var(--green)"></i>verweist per ID auf Definition</span>
-  <span><i class="sw" style="border-color:var(--amber);border-top-style:dashed"></i>verweist per <code>contentHash</code></span>
+  <span><i class="sw" style="border-color:var(--amber);border-top-style:dashed"></i>verweist per Hash (<code>contentHash</code>, <code>definitionHash</code>)</span>
   <span><i class="sw" style="border-color:var(--purple);border-top-style:dotted"></i>Versionskette</span>
 </p>
 <svg viewBox="0 0 1000 520" role="img" aria-label="Beziehungskarte der Entitäten">
@@ -123,9 +125,11 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
   <path class="edge e-amber" d="M930 450 C 985 400, 985 300, 832 268" marker-end="url(#a-amber)"/>
   <path class="edge e-amber" d="M930 170 C 960 210, 920 245, 832 252" marker-end="url(#a-amber)"/>
   <path class="edge e-purple" d="M640 362 C 600 340, 600 280, 638 266" marker-end="url(#a-purple)"/>
+  <path class="edge e-amber" d="M152 40 L168 40" marker-end="url(#a-amber)"/>
 
   <!-- entities -->
   <g class="ent"><rect x="170" y="20" width="190" height="40"/><text x="265" y="40">FormDefinition</text></g>
+  <g class="ent"><rect x="16" y="20" width="136" height="40"/><text x="84" y="40">PublishedForm</text></g>
   <g class="ent"><rect x="20" y="130" width="170" height="40"/><text x="105" y="150">RoleDefinition</text></g>
   <g class="ent"><rect x="210" y="130" width="170" height="40"/><text x="295" y="150">SectionDefinition</text></g>
   <g class="ent"><rect x="400" y="130" width="150" height="40"/><text x="475" y="150">InfoBlock</text></g>
@@ -147,6 +151,7 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
 <h2 id="beziehungen">Beziehungstabelle (maßgeblich)</h2>
 <table>
   <tr><th>Von</th><th>Feld</th><th>Nach</th><th>Kardinalität</th><th>Art</th></tr>
+  <tr><td>PublishedForm (<code>forms/published.json</code>)</td><td><code>id</code>, <code>version</code>, <code>definitionHash</code></td><td>FormDefinition</td><td>1 : 1</td><td>Hash (eingefroren)</td></tr>
   <tr><td>FormDefinition</td><td><code>roles</code></td><td>RoleDefinition</td><td>1 : n</td><td>enthält</td></tr>
   <tr><td>FormDefinition</td><td><code>sections</code></td><td>SectionDefinition</td><td>1 : n</td><td>enthält</td></tr>
   <tr><td>FormDefinition</td><td><code>infoBlocks</code></td><td>InfoBlock</td><td>1 : n</td><td>enthält</td></tr>
@@ -231,6 +236,7 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
   <tr><td><code>required</code></td><td>boolean</td><td>ja</td><td>Pflichtfeld (für Lückenanzeige)</td></tr>
   <tr><td><code>purpose</code></td><td>string</td><td>ja</td><td>Zweck der Erhebung; speist die Information nach Art. 13 DSGVO</td></tr>
   <tr><td><code>voluntary</code></td><td>boolean</td><td>nein</td><td>Freiwillige Angabe (z. B. Schwerbehinderung in den ersten 6 Monaten)</td></tr>
+  <tr><td><code>multiline</code></td><td>boolean</td><td>nein</td><td>Nur <code>text</code>: Zeilenumbrüche bleiben erhalten (z. B. Bemerkungen); sonst wird aller Leerraum zu einem Leerzeichen</td></tr>
   <tr><td><code>options</code></td><td>ChoiceOption[] ({ id, label })</td><td>nein</td><td>Auswahlmöglichkeiten; gespeichert wird die ID</td></tr>
   <tr><td><code>showIf</code></td><td>Condition</td><td>nein</td><td>Sichtbarkeit; nur Felder derselben Rolle (<code>{field, equals}</code>, <code>{all}</code>, <code>{any}</code>)</td></tr>
   <tr><td><code>columns</code></td><td>FieldDefinition[]</td><td>nein</td><td>Spalten einer Wiederholgruppe; Spalten anderer Rollen verweisen per Zeilen-ID</td></tr>
@@ -256,6 +262,19 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
   <tr><td>MatchKey</td><td><code>label</code></td><td>string</td><td>Bezeichnung, z. B. „Name + Geburtsdatum“</td></tr>
   <tr><td>MatchKey</td><td><code>fields</code></td><td>Record&lt;RoleId, FieldId&gt;</td><td>Je Rolle das Feld, das dieselbe Person bezeichnet</td></tr>
 </table>
+
+<h3>PublishedForm (<code>forms/published.json</code>)</h3>
+<p>Liste der veröffentlichten Formularversionen. Ein Eintrag wird nie geändert und nie entfernt; eine Änderung am
+Formular ergibt eine neue Version. Jede mitgelieferte Definition muss hier mit unverändertem Hash stehen.</p>
+<table>
+  <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
+  <tr><td><code>id</code></td><td>string (<code>^[a-z][a-z0-9]*(-[a-z0-9]+)*$</code>)</td><td>ja</td><td>Formular-ID, zugleich Ordnername unter <code>forms/</code></td></tr>
+  <tr><td><code>version</code></td><td>string (<code>MAJOR.MINOR.PATCH</code>)</td><td>ja</td><td>Version, zugleich Dateiname</td></tr>
+  <tr><td><code>definitionHash</code></td><td>Sha256Hex</td><td>ja</td><td>SHA-256 über JCS(Definition); darüber verweist ein Fragebogen auf seine Definition</td></tr>
+</table>
+<p><strong>Kennungen</strong> von Rollen, Abschnitten, Feldern und Hinweisen: <code>^[a-z][a-zA-Z0-9]{0,63}$</code>.
+Options-IDs dürfen auch Schlüssel wie <code>101</code> sein: <code>^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$</code>.
+Alle Texte einer Definition sind nicht leer und liegen in NFC vor.</p>
 
 <h2 id="instanz">Fragebogen (Instanz)</h2>
 <p>Gespeicherte Wurzel ist <code>Questionnaire</code>. Sie reist auf den Datenseiten der PDF und in der Zwischenstand-Datei. Werte (<code>FieldValue</code>) sind nur Strings, Booleans, <code>null</code> sowie Arrays und Objekte daraus, <strong>nie JSON-Zahlen</strong>. Ein Datum ist ein String <code>YYYY-MM-DD</code>.</p>
@@ -331,8 +350,30 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
   <tr><td>MergeRecord</td><td><code>sources</code>, <code>decisions</code></td><td>Arrays</td><td>Quelldateien und menschliche Entscheidungen der Zusammenführung</td></tr>
 </table>
 
+<h2 id="kanon">Kanonisierung und Normalisierung (<code>canon: 1</code>)</h2>
+<p>Werte werden <strong>einmal bei der Eingabe</strong> normalisiert und so gespeichert. Die Prüfung hasht die gespeicherten
+Werte unverändert. Eine spätere Änderung dieser Regeln kann alte Urteile deshalb nicht kippen; sie bekäme eine neue
+<code>CANON_VERSION</code>. Jede Normalisierung bildet ihr eigenes Ergebnis auf sich selbst ab (Eigenschaftstests).</p>
+<table>
+  <tr><th>Feldtyp</th><th>Eingabe</th><th>Gespeichert</th><th>Abgelehnt</th></tr>
+  <tr><td><code>text</code></td><td>beliebiger Text</td><td>Weiches Trennzeichen (U+00AD), Nullbreite-Zeichen (U+200B–U+200D, U+2060) und BOM (U+FEFF) entfernt; Steuerzeichen entfernt; jeder Zeilenumbruch → LF, Tab → Leerzeichen; NFC; Leerraum zusammengefasst (bei <code>multiline</code> je Zeile, Umbrüche bleiben), getrimmt. Groß- und Kleinschreibung bleibt.</td><td>Unpaarige Surrogates</td></tr>
+  <tr><td><code>date</code></td><td><code>TT.MM.JJJJ</code>, <code>T.M.JJJJ</code>, <code>YYYY-MM-DD</code></td><td><code>YYYY-MM-DD</code></td><td>Zweistellige Jahre, nicht existierende Tage</td></tr>
+  <tr><td><code>money</code></td><td><code>1234</code>, <code>1234,56</code>, <code>1.234,56</code>, <code>1 234,56 €</code>; <code>1.234</code> = Tausender</td><td><code>"1234.56"</code> (immer 2 Nachkommastellen)</td><td>Mehr als 2 Nachkommastellen, negative Beträge, mehr als 12 Vorkommastellen, US-Schreibweise <code>1,234.56</code></td></tr>
+  <tr><td><code>iban</code></td><td>mit Leerzeichen, klein oder groß</td><td>ohne Leerzeichen, groß</td><td>Form, Länge (bekanntes Land), MOD 97-10. Unbekanntes Land: angenommen mit Warnung</td></tr>
+  <tr><td><code>taxId</code></td><td>mit Leerzeichen</td><td>11 Ziffern</td><td>Führende 0, Ziffernmuster, Prüfziffer (ISO 7064 MOD 11,10)</td></tr>
+  <tr><td><code>svNumber</code></td><td>mit Leerzeichen, klein oder groß</td><td>12 Zeichen, groß</td><td>Form, Prüfziffer</td></tr>
+  <tr><td><code>choice</code></td><td>Options-ID</td><td>Options-ID (nie das Label)</td><td>Unbekannte ID</td></tr>
+  <tr><td><code>multiChoice</code></td><td>Liste von Options-IDs</td><td>eindeutig, nach Code-Einheiten sortiert (unabhängig von der Reihenfolge der Optionen)</td><td>Unbekannte ID</td></tr>
+  <tr><td><code>boolean</code></td><td><code>true</code> / <code>false</code></td><td>unverändert</td><td>Andere Typen</td></tr>
+  <tr><td><code>repeatGroup</code>, <code>file</code></td><td colspan="3">Noch nicht unterstützt (<code>type.unsupported</code>); folgt mit dem ersten Formular, das sie braucht (Schritt 5).</td></tr>
+</table>
+<p><strong>Leer</strong> (leerer Text, leere Auswahl, <code>null</code>) wird als <code>null</code> gespeichert, also „nicht beantwortet“.
+<strong>JCS</strong> (RFC 8785): Schlüssel nach UTF-16-Code-Einheiten sortiert, Zahlen und Strings wie in ECMAScript, kein Leerraum.
+Abgelehnt werden <code>undefined</code>, <code>NaN</code>/<code>Infinity</code>, Lücken in Arrays, Klasseninstanzen und unpaarige Surrogates, außerdem Verschachtelung tiefer als 64.</p>
+
 <h2 id="methoden">Methoden der Datenmanipulation</h2>
-<p>Stand Schritt 0: nur die Datumslogik. Reducer, Kanonisierung, Siegel, Prüfung und Zusammenführung folgen in den Schritten 2–4 und werden hier ergänzt.</p>
+<p>Stand Schritt 2. Es gibt noch keinen Reducer und noch keine Zustandsübergänge; Siegel, Prüfung und Zusammenführung folgen in den Schritten 3–4.
+Alle Funktionen sind rein und laufen ohne UI.</p>
 <table>
   <tr><th>Funktion (<code>src/logic/dates.ts</code>)</th><th>Signatur</th><th>Zweck</th></tr>
   <tr><td><code>isLeapYear</code></td><td><code>(year: number) =&gt; boolean</code></td><td>Gregorianisches Schaltjahr</td></tr>
@@ -344,10 +385,43 @@ Prüfung, Zusammenführung) folgt in den Schritten 2–4. <strong>Diese Seite wi
   <tr><td><code>isMinorOn</code></td><td><code>(birthDate: IsoDate, onDate: IsoDate) =&gt; boolean</code></td><td>Unter 18 am Stichtag → gesetzlicher Vertreter muss mitunterschreiben</td></tr>
 </table>
 
+<table>
+  <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
+  <tr><td colspan="3"><code>src/logic/jcs.ts</code> · <code>src/logic/hash.ts</code></td></tr>
+  <tr><td><code>canonicalize</code></td><td><code>(value: unknown) =&gt; string</code></td><td>JCS-Text nach RFC 8785; wirft <code>CanonicalizationError</code> mit Pfad</td></tr>
+  <tr><td><code>isWellFormed</code></td><td><code>(value: string) =&gt; boolean</code></td><td>Keine unpaarigen Surrogates (sonst nicht als UTF-8 darstellbar)</td></tr>
+  <tr><td><code>isPlainObject</code></td><td><code>(value: unknown) =&gt; value is Record&lt;string, unknown&gt;</code></td><td>Objektliteral oder JSON-Objekt, auch aus einem anderen Realm</td></tr>
+  <tr><td><code>sha256Hex</code></td><td><code>(data: Uint8Array | string) =&gt; Sha256Hex</code></td><td>SHA-256; Strings als UTF-8, unpaarige Surrogates werfen</td></tr>
+  <tr><td><code>canonicalHash</code></td><td><code>(value: unknown) =&gt; Sha256Hex</code></td><td>SHA-256 über JCS(value), der einzige Weg, strukturierte Daten zu hashen</td></tr>
+  <tr><td><code>isSha256Hex</code></td><td><code>(value: string) =&gt; value is Sha256Hex</code></td><td>64 Hex-Zeichen, klein</td></tr>
+  <tr><td colspan="3"><code>src/logic/normalize.ts</code> · <code>src/logic/validators.ts</code> (Ergebnis <code>Checked&lt;T&gt;</code>: <code>{ ok: true, value, warnings }</code> oder <code>{ ok: false, issue }</code>)</td></tr>
+  <tr><td><code>normalizeFieldValue</code></td><td><code>(field: FieldDefinition, raw: unknown) =&gt; Checked&lt;FieldValue&gt;</code></td><td>Normalisiert eine Eingabe nach ihrem Feldtyp (Tabelle je Typ); das Ergebnis wird gespeichert und gehasht</td></tr>
+  <tr><td><code>normalizeText</code></td><td><code>(raw: string, multiline?: boolean) =&gt; Checked&lt;string&gt;</code></td><td>Textregeln, siehe oben</td></tr>
+  <tr><td><code>normalizeDate</code> · <code>normalizeMoney</code></td><td><code>(raw: string) =&gt; Checked&lt;string&gt;</code></td><td>Datum → <code>YYYY-MM-DD</code>; Betrag → <code>"1234.56"</code></td></tr>
+  <tr><td><code>normalizeIban</code> · <code>normalizeTaxId</code> · <code>normalizeSvNumber</code></td><td><code>(raw: string) =&gt; Checked&lt;string&gt;</code></td><td>Kompakt schreiben, dann prüfen</td></tr>
+  <tr><td><code>normalizeChoice</code> · <code>normalizeMultiChoice</code></td><td><code>(raw, options: ChoiceOption[]) =&gt; Checked&lt;…&gt;</code></td><td>Nur bekannte Options-IDs; Mehrfachauswahl eindeutig und sortiert</td></tr>
+  <tr><td><code>checkIban</code></td><td><code>(iban: string) =&gt; Checked&lt;string&gt;</code></td><td>Form, Länge je Land, MOD 97-10; unbekanntes Land: Warnung <code>iban.unknownCountry</code></td></tr>
+  <tr><td><code>checkTaxId</code></td><td><code>(id: string) =&gt; Checked&lt;string&gt;</code></td><td>§ 139b AO: 11 Ziffern, keine führende 0; in den ersten 10 Ziffern wiederholt sich genau eine (zweimal, oder dreimal, aber nie dreimal hintereinander); Prüfziffer ISO 7064 MOD 11,10</td></tr>
+  <tr><td><code>checkSvNumber</code></td><td><code>(number: string) =&gt; Checked&lt;string&gt;</code></td><td>Versicherungsnummer (VKVV): 8 Ziffern, Buchstabe, 3 Ziffern; Prüfziffer über gewichtete Quersummen (Gewichte 2 1 2 5 7 1 2 1 2 1 2 1, Buchstabe als zweistellige Position im Alphabet)</td></tr>
+  <tr><td colspan="3"><code>src/logic/formDefinition.ts</code> · <code>src/logic/formRegistry.ts</code></td></tr>
+  <tr><td><code>parseFormDefinition</code></td><td><code>(raw: unknown) =&gt; { ok: true, definition } | { ok: false, issues }</code></td><td>Strikt dekodieren (unbekannte Schlüssel, fehlende Werte, falsche Typen, Nicht-NFC-Texte sind Fehler; nichts wird ergänzt), dann alle Verweise prüfen</td></tr>
+  <tr><td><code>checkFormDefinition</code></td><td><code>(definition: FormDefinition) =&gt; DecodeIssue[]</code></td><td>Regelliste: eindeutige IDs (Felder formularweit, Spalten eingeschlossen); Feldrolle existiert; Optionen nur und immer bei Auswahlfeldern; Spalten nur bei <code>repeatGroup</code>, nicht verschachtelt; <code>multiline</code> nur bei Text; <code>showIf</code> nur auf Ja/Nein- oder Auswahlfelder derselben Rolle, passende Vergleichswerte, keine Zyklen; <code>computed</code> nur mit bekannter Funktion; <code>requiredIf</code> auf ein Datumsfeld; Rolle hat Felder oder eine Unterschrift; Hinweise mit gültiger Rolle und gültigem Datum; Regeln und <code>matchKeys</code> nur auf passende Felder</td></tr>
+  <tr><td><code>findCycle</code></td><td><code>(graph: Map&lt;string, string[]&gt;) =&gt; string[] | undefined</code></td><td>Ein Zyklus im Abhängigkeitsgraphen</td></tr>
+  <tr><td><code>buildFormRegistry</code></td><td><code>(sources: FormSource[], published: unknown) =&gt; { ok: true, registry } | { ok: false, issues }</code></td><td>Alle Definitionen prüfen; jede muss mit unverändertem Hash in <code>published.json</code> stehen, kein veröffentlichter Eintrag darf fehlen, keine Doppelungen, Feld-IDs stabil</td></tr>
+  <tr><td><code>FormRegistry.get</code> · <code>byHash</code> · <code>latest</code></td><td><code>(id, version)</code> · <code>(hash)</code> · <code>(id)</code></td><td>Nachschlagen nach Version, nach <code>definitionHash</code>, höchste Version (numerisch)</td></tr>
+  <tr><td><code>checkFieldIdStability</code></td><td><code>(definitions: FormDefinition[]) =&gt; DecodeIssue[]</code></td><td>Eine Feld-ID behält in allen Versionen eines Formulars Typ und Rolle, auch nachdem sie zwischendurch entfernt war</td></tr>
+  <tr><td><code>definitionHash</code> · <code>compareVersions</code> · <code>parsePublishedList</code></td><td>–</td><td>Hash einer Definition; numerischer Versionsvergleich; strikte Prüfung der veröffentlichten Liste</td></tr>
+</table>
+
 <h2 id="werkseinstellungen">Werkseinstellungen</h2>
 <table>
   <tr><th>Was</th><th>Wann</th><th>Änderbar?</th></tr>
-  <tr><td><strong>Formulardefinitionen</strong> (ab Schritt 5: Sofortmeldung, Personalfragebogen …)</td><td>Fest in die HTML-Datei einkompiliert; bei jedem Start vorhanden</td><td>Nein. Veröffentlichte Versionen sind eingefroren; Änderungen ergeben eine neue Version. <em>In Schritt 0 gibt es noch keine.</em></td></tr>
+  <tr><td><strong>Formulardefinitionen</strong> (ab Schritt 5: Sofortmeldung, Personalfragebogen …)</td><td>Fest in die HTML-Datei einkompiliert; bei jedem Start vorhanden</td><td>Nein. Veröffentlichte Versionen sind eingefroren; Änderungen ergeben eine neue Version. <em>Noch gibt es keine.</em></td></tr>
+  <tr><td><code>forms/published.json</code></td><td>Feste Liste im Repo; ein Test vergleicht sie bei jedem Lauf mit den Definitionen</td><td>Nur ergänzen, nie ändern oder entfernen. Derzeit leer.</td></tr>
+  <tr><td><code>IBAN_LENGTHS</code> (<code>src/logic/data/ibanLengths.ts</code>)</td><td>Fest einkompilierte Referenztabelle: IBAN-Länge für 78 Länder (SWIFT-IBAN-Register)</td><td>Nein; Pflege im Code. Für fehlende Länder gilt: Form und Prüfziffer werden geprüft, die Länge nicht (Warnung).</td></tr>
+  <tr><td><code>ISSUE_MESSAGES</code> (<code>src/logic/issues.ts</code>)</td><td>Fest einkompiliert: deutscher Meldungstext je Prüfcode</td><td>Nein</td></tr>
+  <tr><td><code>COMPUTE_FUNCTIONS</code> (<code>src/logic/compute.ts</code>)</td><td>Fest einkompiliert: benannte reine Funktionen für abgeleitete Felder</td><td>Nein. Derzeit leer.</td></tr>
+  <tr><td><code>CANON_VERSION = 1</code>, <code>MONEY_MAX_INTEGER_DIGITS = 12</code>, <code>MAX_DEPTH = 64</code></td><td>Konstanten in <code>normalize.ts</code> bzw. <code>jcs.ts</code></td><td>Nein. Eine Änderung der Normalisierung erfordert eine neue <code>CANON_VERSION</code>.</td></tr>
   <tr><td><code>AGE_OF_MAJORITY = 18</code></td><td>Konstante in <code>dates.ts</code></td><td>Nein (Gesetz)</td></tr>
 </table>
 <p>Es gibt <strong>keine</strong> editierbaren, einmalig angelegten Bestände („seed once“), denn die App speichert nichts im Browser.</p>

@@ -24,9 +24,10 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Testfälle
 
-| Datei                        | Bereich                                          |
-| ---------------------------- | ------------------------------------------------ |
-| [`01_start.md`](01_start.md) | Datei öffnen, Startseite, keine Netzverbindungen |
+| Datei                                            | Bereich                                                                                  |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                         |
+| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts |
 
 Weitere Bereiche kommen mit den nächsten Schritten hinzu: Ausfüllen, Unterschrift, PDF, Einlesen,
 Zusammenführung und Gerätemodus.

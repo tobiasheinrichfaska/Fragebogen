@@ -69,20 +69,26 @@ Gut 70 % des komprimierten Blocks entfallen auf **Unterschriftsstriche (2,0 kB)*
 - Feld-Hashes auf 64 Bit kürzen. Die Integrität sichert der 256-Bit-`contentHash`; die Feld-Hashes
   dienen nur dazu, geänderte Felder zu benennen.
 
-## Offen – braucht Tests am echten Gerät (Tobias)
+## Offene Gegenproben – verschoben und anders abgebildet (Stand 29.10.2026)
 
-Beispiel-PDFs, nur mit erfundenen Daten:
+Die Gegenproben an Acrobat und DATEV **blockieren nichts mehr**. Tobias arbeitet derzeit aus der
+Ferne. Was sich automatisieren lässt, wird automatisiert. Der Rest steht als Testfall in
+[`manual_tests/90_pdf_gegenproben.md`](../manual_tests/90_pdf_gegenproben.md) und wird bei
+Gelegenheit am Kanzlei-PC erledigt.
+
+| Ursprüngliche Gegenprobe    | Neue Abbildung                                                                                                                                                                                                                                                                                                                            | Wann                        |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Acrobat Preflight PDF/A-2u  | **veraPDF**, der Referenz-Validator der PDF Association, prüft automatisch jede erzeugte Golden-PDF in der CI. Das kommt **vorgezogen in Schritt 8** statt erst in Schritt 12. Acrobat bleibt eine optionale Zweitmeinung (MT-90).                                                                                                        | Schritt 8                   |
+| Acrobat „Speichern unter“   | Automatische Neuspeicher-Tests in Schritt 8: mit pdf-lib, wie im Spike, und zusätzlich mit **qpdf** als unabhängiger zweiter Implementierung (CI). Acrobat selbst: MT-92.                                                                                                                                                                 | Schritt 8                   |
+| DATEV-Ablage hin und zurück | DATEV legt Dateien unverändert ab und gibt sie unverändert wieder heraus. Aus früheren Projekten ist belegt, dass Dateityp und eingebettete Struktur erhalten bleiben. Die Prüfung schrumpft damit auf „SHA-256 vorher = nachher“ (MT-91). Das ist ohne Entwicklerwerkzeuge machbar und erst sinnvoll, sobald die App echte PDFs erzeugt. | bei Gelegenheit             |
+| „Microsoft Print to PDF“    | **Kein unterstützter Weg:** Die App verlangt die Originaldatei. Automatisch geprüft wird in Schritt 8, dass eine PDF **ohne lesbare Datenseiten mit klarer Meldung abgelehnt** wird, statt still falsche Daten zu liefern. Das Verhalten echter Druck-PDFs prüft MT-93.                                                                   | Schritt 8 / bei Gelegenheit |
+| Firefox und Safari (WebKit) | Playwright unter `file://`                                                                                                                                                                                                                                                                                                                | Schritt 10                  |
+
+Die Spike-Beispiele liegen weiterhin auf dem Entwicklungsrechner und sind nicht im Repo; sie
+enthalten nur erfundene Daten:
 
 - `.tmp/spike-pdf/out/sample-pdfa-2u.pdf`
 - `.tmp/spike-pdf/out/sample-aes256.pdf` (Kennwort `Test-1234`)
 
-1. **Acrobat Pro → Werkzeuge → Druckproduktion bzw. Standards → Preflight → „Konformität mit PDF/A-2u
-   prüfen“.** Das ist die eigentliche PDF/A-Prüfung; mein Strukturcheck ist kein Validator.
-2. **Acrobat „Speichern unter“** als neue Datei, danach
-   `node .tmp/spike-pdf/check.ts <datei.pdf>` (zeigt PASS oder FAIL).
-3. **DATEV-Ablage:** die PDF in die Personalakte bzw. Dokumentenablage hochladen, wieder
-   herunterladen und genauso prüfen.
-4. **„Microsoft Print to PDF“** (Drucken als PDF) und prüfen. Erwartung: Der Text bleibt meist
-   erhalten, Garantie gibt es keine. Mein Headless-Test war hier **nicht aussagekräftig**, weil
-   ohne PDF-Viewer eine leere Datei entstand.
-5. **Firefox und Safari** sind noch nicht getestet; das kommt mit Playwright in Schritt 10.
+Mit `node .tmp/spike-pdf/check.ts <datei.pdf>` lassen sie sich nach einer Gegenprobe erneut prüfen
+(Ergebnis PASS oder FAIL). Ab Schritt 8 übernimmt das die App selbst beim Einlesen.
