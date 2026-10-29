@@ -1,7 +1,7 @@
 # Critical User Paths — Fragebogen
 
 **Purpose:** Core workflows that must not break. Audit validates these end-to-end.
-Status 2026-10-29: logic layer up to the transmission rules exists, no UI yet — every path below is still **open** (end-to-end).
+Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path below is still **open** (end-to-end).
 
 ## Offline & privacy (applies to every path)
 

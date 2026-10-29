@@ -16,6 +16,7 @@ import type {
   Sha256Hex,
 } from './model';
 import { contentHashOf, diffFieldHashes, isEmptyDiff, strokesHashOf, type FieldDiff } from './seal';
+import { linkedQuestionnaireIds, mergeHashOf } from './mergeRecord';
 import { decodeStrokes, signatureShapeProblem } from './strokes';
 import { days, minutes, sameInstant, utcMillis } from './time';
 
@@ -42,7 +43,9 @@ export type FindingCode =
   | 'timeImplausible'
   | 'staleAtReceipt'
   | 'referencesOtherVersion'
-  | 'referencesUnknownPart';
+  | 'referencesUnknownPart'
+  | 'linkedByDecision'
+  | 'mergeAltered';
 
 export type Severity = 'error' | 'warning';
 
@@ -65,6 +68,8 @@ export const FINDING_SEVERITY: Readonly<Record<FindingCode, Severity>> = {
   staleAtReceipt: 'warning',
   referencesOtherVersion: 'warning',
   referencesUnknownPart: 'warning',
+  linkedByDecision: 'warning',
+  mergeAltered: 'error',
 };
 
 export const FINDING_MESSAGES: Readonly<Record<FindingCode, string>> = {
@@ -89,6 +94,10 @@ export const FINDING_MESSAGES: Readonly<Record<FindingCode, string>> = {
   staleAtReceipt: 'Der Teil war beim Eingang ungewöhnlich alt.',
   referencesOtherVersion: 'Der Verweis gilt einer älteren Fassung.',
   referencesUnknownPart: 'Der Verweis gilt einer Fassung, die nicht vorliegt.',
+  linkedByDecision:
+    'Zugeordnet durch Entscheidung bei der Zusammenführung – es gibt keine kryptografische Verknüpfung.',
+  mergeAltered:
+    'Der Zusammenführungsvermerk passt nicht mehr zu seinem Hash: Quellen, Entscheidungen oder Eingangsvermerke wurden verändert.',
 };
 
 export type PartLevel = 'draft' | 'invalid' | 'consistent' | 'confirmed';
@@ -165,12 +174,27 @@ export function verifyQuestionnaire(
   const maxAge = options.maxPartAgeAtReceiptMs ?? MAX_PART_AGE_AT_RECEIPT_MS;
   const global: Finding[] = [];
   const definition = resolveDefinition(questionnaire, options.registry, global);
+  const linked = linkedQuestionnaireIds(questionnaire);
+  if (
+    (questionnaire.mergeRecord !== undefined || questionnaire.mergeHash !== undefined) &&
+    questionnaire.mergeHash !== mergeHashOf(questionnaire)
+  ) {
+    global.push(finding('mergeAltered'));
+  }
 
   const parts: PartVerdict[] = [];
   const sealedParts = new Map<PartVerdict, Part>();
   for (const [role, versions] of Object.entries(questionnaire.parts)) {
     const verdicts = versions.map((part, position) =>
-      checkPart(questionnaire, role, part, position, position === versions.length - 1, definition),
+      checkPart(
+        questionnaire,
+        role,
+        part,
+        position,
+        position === versions.length - 1,
+        definition,
+        linked,
+      ),
     );
     checkChain(versions, verdicts);
     const current = verdicts.filter((v) => v.contentHash !== undefined).at(-1);
@@ -226,6 +250,7 @@ function checkPart(
   position: number,
   isLast: boolean,
   definition: FormDefinition | undefined,
+  linked: ReadonlySet<string>,
 ): PartVerdict {
   const verdict: PartVerdict = {
     role,
@@ -256,7 +281,10 @@ function checkPart(
     return verdict;
   }
 
-  if (payload.questionnaireId !== questionnaire.questionnaireId) add('misfiled', ['Fragebogen-ID']);
+  if (payload.questionnaireId !== questionnaire.questionnaireId) {
+    if (linked.has(payload.questionnaireId)) add('linkedByDecision', [payload.questionnaireId]);
+    else add('misfiled', ['Fragebogen-ID']);
+  }
   if (canonicalize(payload.form) !== canonicalize(questionnaire.form))
     add('misfiled', ['Formular']);
   if (payload.role !== role) add('misfiled', [`Siegel nennt Rolle ${payload.role}`]);

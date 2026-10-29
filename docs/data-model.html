@@ -42,9 +42,9 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 4b) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>)</p>
-<p class="note"><strong>Stand Schritt 4b.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
-Feldlogik und das Formularregister sind umgesetzt. Die Zusammenführung folgt in Schritt 4c.
+<p class="meta">Stand: 29.10.2026 (Schritt 4c) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>)</p>
+<p class="note"><strong>Stand Schritt 4c.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
+Feldlogik, Zusammenführung und das Formularregister sind umgesetzt. Formulare folgen in Schritt 5.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
 Code-Änderung.</p>
 
@@ -182,6 +182,8 @@ Code-Änderung.</p>
   <tr><td>Acknowledgement</td><td><code>infoBlockId</code></td><td>InfoBlock.<code>id</code></td><td>n : 1</td><td>ID</td></tr>
   <tr><td>ReceivedPart</td><td><code>contentHash</code></td><td>Seal.<code>contentHash</code> (Teil einer anderen Rolle)</td><td>n : 1</td><td>Hash</td></tr>
   <tr><td>Receipt</td><td><code>parts[].contentHash</code></td><td>Seal.<code>contentHash</code></td><td>n : m</td><td>Hash</td></tr>
+  <tr><td>MergeDecision (<code>link</code>)</td><td><code>questionnaireIds</code></td><td>Questionnaire.<code>questionnaireId</code> / SealPayload.<code>questionnaireId</code></td><td>1 : n (≥ 2)</td><td>ID</td></tr>
+  <tr><td>MergeDecision (<code>chooseVersion</code>)</td><td><code>contentHash</code></td><td>Seal.<code>contentHash</code> (die beibehaltene Fassung)</td><td>n : 1</td><td>Hash</td></tr>
 </table>
 
 <h2 id="definition">Formulardefinition</h2>
@@ -360,7 +362,9 @@ Die letzte gesiegelte Fassung ist die <strong>aktuelle</strong>.</p>
   <tr><td>Receipt</td><td><code>station</code>, <code>receivedAtLocal</code>, <code>receivedAtUtc</code>, <code>timeZone</code></td><td>string</td><td>Eingangsvermerk einer Station</td></tr>
   <tr><td>Receipt</td><td><code>source</code></td><td><code>app</code> | <code>datev</code></td><td>Zeit aus dieser App oder das DATEV-Ablagedatum (vertrauenswürdiger Zeitanker)</td></tr>
   <tr><td>Receipt</td><td><code>fileName</code>, <code>fileSha256</code>, <code>parts</code>, <code>appVersion</code></td><td>–</td><td>Welche Datei mit welchen Teil-Hashes einging</td></tr>
-  <tr><td>MergeRecord</td><td><code>sources</code>, <code>decisions</code></td><td>Arrays</td><td>Quelldateien und menschliche Entscheidungen der Zusammenführung</td></tr>
+  <tr><td>MergeRecord</td><td><code>sources</code></td><td>{ fileSha256, questionnaireId }[]</td><td>Die <em>Original</em>dateien; eine zusammengeführte Datei bringt ihre eigenen Quellen ein, nicht sich selbst</td></tr>
+  <tr><td>MergeRecord</td><td><code>decisions</code></td><td>MergeDecision[]</td><td>Nur menschliche Entscheidungen: <code>{ kind: "link", questionnaireIds }</code> (getrennte Fragebögen gehören zusammen) · <code>{ kind: "chooseVersion", questionnaireId, role, contentHash }</code> (von konkurrierenden Fassungen gilt diese)</td></tr>
+  <tr><td>Questionnaire</td><td><code>mergeHash</code></td><td>Sha256Hex</td><td>SHA-256(JCS({ mergeRecord, receipts, parts: Hashes aller Fassungen })); eine Änderung meldet die Prüfung als <code>mergeAltered</code></td></tr>
 </table>
 
 <h2 id="kanon">Kanonisierung und Normalisierung (<code>canon: 1</code>)</h2>
@@ -385,9 +389,9 @@ Werte unverändert. Eine spätere Änderung dieser Regeln kann alte Urteile desh
 Abgelehnt werden <code>undefined</code>, <code>NaN</code>/<code>Infinity</code>, Lücken in Arrays, Klasseninstanzen und unpaarige Surrogates, außerdem Verschachtelung tiefer als 64.</p>
 
 <h2 id="methoden">Methoden der Datenmanipulation</h2>
-<p>Stand Schritt 4b. Alle Funktionen sind rein und laufen ohne UI. Zustandsübergänge geben einen <strong>neuen</strong> Fragebogen
+<p>Stand Schritt 4c. Alle Funktionen sind rein und laufen ohne UI. Zustandsübergänge geben einen <strong>neuen</strong> Fragebogen
 zurück oder eine Ablehnung mit Code (<code>TRANSITION_MESSAGES</code>, deutsch) und Einzelheiten; die Eingabe bleibt unverändert.
-Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. Die Zusammenführung folgt in Schritt 4c.</p>
+Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. Die Zusammenführung ist unten beschrieben.</p>
 
 <h3>Zustandsübergänge (<code>src/logic/questionnaire.ts</code>)</h3>
 <table>
@@ -432,6 +436,8 @@ und ein Gesamturteil <code>ok</code> · <code>warnings</code> · <code>invalid</
   <tr><td><code>staleAtReceipt</code></td><td>warning</td><td>Teil war beim Eingang älter als 90 Tage (Hinweis auf wiederverwendete Teile)</td></tr>
   <tr><td><code>referencesOtherVersion</code></td><td>warning</td><td>Ein Verweis gilt einer älteren Fassung</td></tr>
   <tr><td><code>referencesUnknownPart</code></td><td>warning</td><td>Ein Verweis gilt einer Fassung, die nicht vorliegt, etwa nach einer Neuerzeugung durch Fälscher</td></tr>
+  <tr><td><code>linkedByDecision</code></td><td>warning</td><td>Das Siegel nennt eine andere Fragebogen-ID, die eine <code>link</code>-Entscheidung im Zusammenführungsvermerk verknüpft hat; es gibt keine kryptografische Verknüpfung</td></tr>
+  <tr><td><code>mergeAltered</code></td><td>error</td><td><code>mergeHash</code> passt nicht zu Vermerk, Eingangsvermerken und Fassungen</td></tr>
 </table>
 <p><strong>Ehrliche Grenze:</strong> Wer Daten ändert und das Siegel vollständig neu berechnet, erreicht wieder Stufe 1. Die Bestätigungen anderer Rollen
 und Stationen gehen dabei verloren, und ihre Verweise laufen ins Leere. Das zeigt die Prüfung an.</p>
@@ -458,6 +464,25 @@ Einen Zwischenstand speichern geht jederzeit. <code>completenessGaps(q, form)</c
   <tr><td><code>transmissionBlockers</code></td><td><code>(q, form: RegisteredForm) =&gt; Blocker[]</code></td><td>Alles, was die Übermittlung verhindert; wirft bei einem fremden Formular</td></tr>
   <tr><td><code>completenessGaps</code></td><td><code>(q, form) =&gt; Blocker[]</code></td><td>Sperren plus fehlende erforderliche Rollen (für die Kanzlei)</td></tr>
 </table>
+
+<h3>Zusammenführung (<code>src/logic/merge.ts</code>)</h3>
+<p><code>mergeSources(sources: { questionnaire, fileSha256 }[], { registry, decisions? }) =&gt; { groups, proposals }</code>. Jede Gruppe enthält den
+zusammengeführten Fragebogen (fehlt, solange Konflikte bestehen), Hinweise, Konflikte, Widersprüche und Lücken. Das Ergebnis ist wieder ein Fragebogen.
+Das Verfahren ist <strong>assoziativ, unabhängig von der Reihenfolge und idempotent</strong> (Eigenschaftstests).</p>
+<table>
+  <tr><th>Schritt</th><th>Regel</th></tr>
+  <tr><td>1. Prüfen</td><td>Jede Quelle wird geprüft. Veränderte Fassungen (<code>invalidExcluded</code>) und Entwürfe (<code>draftIgnored</code>) werden nicht übernommen. Eine Datei mit verändertem Zusammenführungsvermerk liefert gar nichts.</td></tr>
+  <tr><td>2. Gruppieren</td><td>Nach Fragebogen-ID. Getrennte Fragebögen nur durch eine <code>link</code>-Entscheidung; die Gruppe trägt dann die kleinste ID (<code>linked</code>). Verschiedene Formularversionen unter einer ID: Konflikt <code>formMismatch</code>.</td></tr>
+  <tr><td>3. Fassungen</td><td>Gleicher <code>contentHash</code> → einmal übernommen (<code>duplicateCollapsed</code>). Verschiedene Fassungen einer Rolle nur als <code>supersedes</code>-Kette → die neuere gilt, mit Hinweis <code>newerVersionWins</code> („Fassung 2 vom … ersetzt Fassung 1 vom …, geändert: …“). Gabelung: Konflikt <code>versionConflict</code> mit Feldvergleich; fehlende Vorfassung: <code>chainIncomplete</code>. Eine <code>chooseVersion</code>-Entscheidung behält die gewählte Fassung samt Vorfassungen und Nachfolgern (<code>versionChosen</code>); eine Wahl ohne passende Fassung: <code>choiceInvalid</code>.</td></tr>
+  <tr><td>4. Vermerk</td><td>Eingangsvermerke aller Quellen (ohne Doppelungen), Quellen und Entscheidungen im <code>mergeRecord</code>, dazu <code>mergeHash</code>. Bei nur einer Quelle ohne Entscheidung entsteht kein Vermerk.</td></tr>
+  <tr><td>5. Auswerten</td><td><code>contradictions</code> (Widersprüche nach <code>consistencyRules</code>, Text ohne Groß-/Kleinschreibung) und <code>completenessGaps</code> (Lücken)</td></tr>
+  <tr><td>Vorschläge</td><td>Zwei Gruppen desselben Formulars ohne gemeinsame Rolle, deren <code>matchKeys</code> übereinstimmen (z. B. Nachname), werden zur Verknüpfung vorgeschlagen; verknüpft wird nur auf Entscheidung.</td></tr>
+</table>
+
+<h3>Unterschriftszeilen und Fußnoten (<code>src/logic/provenance.ts</code>)</h3>
+<p><code>signatureLayout(q, definition) =&gt; { lines, fields }</code>: Jede gesiegelte Fassung bekommt eine nummerierte Unterschriftszeile (Rolle, Fassung,
+Art, Name, Ortszeit, Hash). Je Feld nennt <code>coveredBy</code> die Zeilen der Fassungen mit genau diesem Wert. Wurde ein Wert in einer späteren Fassung
+geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichendes Unterschriftsdatum am Feld sichtbar.</p>
 
 <h3>Bausteine</h3>
 <table>
@@ -534,7 +559,7 @@ Einen Zwischenstand speichern geht jederzeit. <code>completenessGaps(q, form)</c
   <tr><td><code>SEAL_SCHEMA = "fragebogen.siegel/1"</code>, <code>FIELD_HASH_LENGTH = 16</code>, <code>FORMAT_VERSION = 1</code>, <code>MAX_VALUE_DEPTH = 8</code></td><td>Konstanten in <code>seal.ts</code> bzw. <code>questionnaireFile.ts</code></td><td>Nein; eine Formatänderung braucht eine neue Version.</td></tr>
   <tr><td><code>STROKE_BOX = 1000 × 400</code>, <code>MAX_STROKES = 64</code>, <code>MAX_POINTS = 4000</code>, <code>MIN_SIGNATURE_POINTS = 5</code>, <code>MIN_SIGNATURE_WIDTH = 40</code></td><td>Konstanten in <code>strokes.ts</code></td><td>Nein</td></tr>
   <tr><td><code>CLOCK_TOLERANCE_MS</code> = 15 Minuten, <code>MAX_PART_AGE_AT_RECEIPT_MS</code> = 90 Tage</td><td>Voreinstellungen in <code>verify.ts</code></td><td>Je Prüfung über <code>VerifyOptions</code> änderbar</td></tr>
-  <tr><td><code>TRANSITION_MESSAGES</code>, <code>FINDING_MESSAGES</code>, <code>LEVEL_LABELS</code>, <code>BLOCKER_MESSAGES</code></td><td>Fest einkompiliert: deutsche Texte je Code</td><td>Nein</td></tr>
+  <tr><td><code>TRANSITION_MESSAGES</code>, <code>FINDING_MESSAGES</code>, <code>LEVEL_LABELS</code>, <code>BLOCKER_MESSAGES</code>, <code>MERGE_NOTE_MESSAGES</code>, <code>MERGE_CONFLICT_MESSAGES</code></td><td>Fest einkompiliert: deutsche Texte je Code</td><td>Nein</td></tr>
   <tr><td><code>AGE_OF_MAJORITY = 18</code></td><td>Konstante in <code>dates.ts</code></td><td>Nein (Gesetz)</td></tr>
 </table>
 <p>Es gibt <strong>keine</strong> editierbaren, einmalig angelegten Bestände („seed once“), denn die App speichert nichts im Browser.</p>

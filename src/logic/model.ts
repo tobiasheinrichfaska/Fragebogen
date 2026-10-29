@@ -267,9 +267,19 @@ export interface Receipt {
   appVersion: string;
 }
 
+/**
+ * Human decisions of a merge — the app never takes them itself:
+ * - `link`: questionnaires without a shared id belong together (proposed via matchKeys).
+ * - `chooseVersion`: of competing versions of a role, this one is kept; the others are dropped.
+ */
+export type MergeDecision =
+  | { kind: 'link'; questionnaireIds: string[] }
+  | { kind: 'chooseVersion'; questionnaireId: string; role: RoleId; contentHash: Sha256Hex };
+
 export interface MergeRecord {
+  /** The original files (a merged file contributes its own sources, not itself). */
   sources: { fileSha256: Sha256Hex; questionnaireId: string }[];
-  decisions: { kind: string; detail: string }[];
+  decisions: MergeDecision[];
 }
 
 export interface Questionnaire {

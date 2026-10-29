@@ -1,6 +1,6 @@
 // Points in time as ISO 8601 strings: UTC ("…Z") and device-local with offset ("…+01:00").
 // Only these two exact shapes are accepted; parsing never depends on the runtime's time zone.
-import { parseIsoDate } from './dates';
+import { formatGermanDate, parseIsoDate } from './dates';
 
 const UTC = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{3})?Z$/;
 const LOCAL = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{3})?[+-](\d{2}):(\d{2})$/;
@@ -42,6 +42,12 @@ export function isLocalTime(value: string): boolean {
 export function sameInstant(local: string, utc: string): boolean {
   const a = localMillis(local);
   return a !== undefined && a === utcMillis(utc);
+}
+
+/** Local time with offset → "31.10.2026, 11:00 Uhr" (the signer's wall clock, as shown on paper). */
+export function formatLocalDateTime(local: string): string {
+  if (!isLocalTime(local)) return local;
+  return `${formatGermanDate(local.slice(0, 10))}, ${local.slice(11, 16)} Uhr`;
 }
 
 export function minutes(count: number): number {

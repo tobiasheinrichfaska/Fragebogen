@@ -15,6 +15,7 @@ import {
   type Acknowledgement,
   type FieldValue,
   type FormReference,
+  type MergeDecision,
   type MergeRecord,
   type Part,
   type Questionnaire,
@@ -431,14 +432,47 @@ function decodeMergeRecord(d: Decoder, raw: unknown, path: string): MergeRecord 
       ? undefined
       : { fileSha256, questionnaireId };
   });
-  const decisions = d.array(o.decisions, `${path}.decisions`, (v, p) => {
-    const decision = d.object(v, p, ['kind', 'detail']);
-    const kind = decision && d.string(decision.kind, `${p}.kind`);
-    const detail = decision && d.string(decision.detail, `${p}.detail`);
-    return kind === undefined || detail === undefined ? undefined : { kind, detail };
-  });
+  const decisions = d.array(o.decisions, `${path}.decisions`, (v, p) =>
+    decodeMergeDecision(d, v, p),
+  );
   if (sources === undefined || decisions === undefined) return undefined;
   return { sources, decisions };
+}
+
+export function decodeMergeDecision(
+  d: Decoder,
+  raw: unknown,
+  path: string,
+): MergeDecision | undefined {
+  if (isPlainObject(raw) && raw.kind === 'link') {
+    const o = d.object(raw, path, ['kind', 'questionnaireIds']);
+    const ids =
+      o &&
+      d.array(
+        o.questionnaireIds,
+        `${path}.questionnaireIds`,
+        (v, p) => d.string(v, p, QUESTIONNAIRE_ID),
+        2,
+      );
+    if (ids && new Set(ids).size !== ids.length)
+      return d.report(`${path}.questionnaireIds`, 'lists an id twice');
+    return ids === undefined ? undefined : { kind: 'link', questionnaireIds: ids };
+  }
+  if (isPlainObject(raw) && raw.kind === 'chooseVersion') {
+    const o = d.object(raw, path, ['kind', 'questionnaireId', 'role', 'contentHash']);
+    if (!o) return undefined;
+    const questionnaireId = d.string(
+      o.questionnaireId,
+      `${path}.questionnaireId`,
+      QUESTIONNAIRE_ID,
+    );
+    const role = d.string(o.role, `${path}.role`, ID);
+    const contentHash = d.string(o.contentHash, `${path}.contentHash`, SHA256_HEX);
+    if (questionnaireId === undefined || role === undefined || contentHash === undefined)
+      return undefined;
+    return { kind: 'chooseVersion', questionnaireId, role, contentHash };
+  }
+  return d.report(path, 'expected a decision of kind "link" or "chooseVersion"');
 }
 
 function localTime(d: Decoder, raw: unknown, path: string): string | undefined {
