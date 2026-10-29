@@ -836,6 +836,14 @@ describe('preselection, master data and linked parts', () => {
       'only always available',
     ],
     [
+      'a yes/no field as master data',
+      (d) => {
+        fieldAt(d, 0, 3).masterData = 'frage';
+      },
+      '$.sections[0].fields[3].masterData',
+      'only single text values',
+    ],
+    [
       'a master-data key used twice',
       (d) => {
         fieldAt(d, 1, 0).masterData = 'name';

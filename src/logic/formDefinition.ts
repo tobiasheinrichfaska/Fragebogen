@@ -14,6 +14,7 @@ import {
   type Condition,
   type ConsistencyRule,
   type FieldDefinition,
+  type FieldType,
   type FormDefinition,
   type InfoBlock,
   type MatchKey,
@@ -664,14 +665,26 @@ function initialValues({ fields, report }: CheckContext): void {
   }
 }
 
-/** A master-data key names one top-level field per form. */
+/** Field types whose stored value is one string — the only ones a bookmark link can carry. */
+const MASTER_DATA_TYPES: readonly FieldType[] = [
+  'text',
+  'date',
+  'choice',
+  'iban',
+  'taxId',
+  'svNumber',
+  'betriebsnummer',
+  'money',
+];
+
+/** A master-data key names one top-level text-like field per form. */
 function masterDataKeys({ fields, report }: CheckContext): void {
   const seen = new Map<string, string>();
   for (const { field, path, isColumn } of fields.values()) {
     if (field.masterData === undefined) continue;
     const at = `${path}.masterData`;
-    if (isColumn || field.type === 'repeatGroup' || field.type === 'file') {
-      report(at, 'only single top-level values can be master data');
+    if (isColumn || !MASTER_DATA_TYPES.includes(field.type)) {
+      report(at, 'only single text values (top-level, not yes/no or lists) can be master data');
     }
     const other = seen.get(field.masterData);
     if (other !== undefined) report(at, `key "${field.masterData}" is already used by "${other}"`);

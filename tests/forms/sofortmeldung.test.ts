@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { contradictions } from '../../src/logic/consistency';
 import { missingRequired, visibleFields } from '../../src/logic/form';
 import { applyMasterData, masterDataOf } from '../../src/logic/masterData';
+import { masterDataFragment, parseMasterDataFragment } from '../../src/logic/masterDataLink';
 import type { Questionnaire, ReceivedPart } from '../../src/logic/model';
 import {
   createQuestionnaire,
@@ -272,6 +273,28 @@ describe('Sofortmeldung draft — employer master data', () => {
       firma: 'Beispiel Bau GmbH',
       betriebsnummer: '12345678',
     });
+  });
+
+  it('carries company name and Betriebsnummer through a bookmark link into a new questionnaire', () => {
+    const link = masterDataFragment(
+      masterDataOf(
+        definition,
+        'arbeitgeber',
+        dataOf(draft(empty(), 'arbeitgeber', EMPLOYER), 'arbeitgeber'),
+      ),
+    );
+    if (!link.ok) throw new Error(link.issue);
+    expect(link.fragment).toBe('#stammdaten=1&betriebsnummer=12345678&firma=Beispiel+Bau+GmbH');
+    const parsed = parseMasterDataFragment(link.fragment);
+    if (!parsed.ok || !parsed.data) throw new Error('no master data');
+    const result = applyMasterData(
+      ok(startPart(empty(), form, 'arbeitgeber')),
+      form,
+      'arbeitgeber',
+      parsed.data,
+    );
+    if (!result.ok) throw new Error(result.code);
+    expect([result.applied, result.skipped]).toEqual([['agFirma', 'agBetriebsnummer'], []]);
   });
 
   it('fills a new employer part and reports a remembered value in the wrong format', () => {

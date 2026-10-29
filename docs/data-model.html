@@ -42,7 +42,7 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 5b, Entwurf Sofortmeldung nach Durchsicht) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>, <code>masterData.ts</code>)</p>
+<p class="meta">Stand: 29.10.2026 (Schritt 5b, Entwurf Sofortmeldung nach Durchsicht) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>, <code>masterData.ts</code>, <code>masterDataLink.ts</code>)</p>
 <p class="note"><strong>Stand Schritt 4c.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
 Feldlogik, Zusammenführung und das Formularregister sind umgesetzt. Das erste Formular (Sofortmeldung) liegt als Entwurf zur Freigabe vor.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
@@ -249,7 +249,7 @@ Code-Änderung.</p>
   <tr><td><code>columns</code></td><td>FieldDefinition[]</td><td>nein</td><td>Spalten einer Wiederholgruppe; Spalten anderer Rollen verweisen per Zeilen-ID</td></tr>
   <tr><td><code>computed</code></td><td>{ fn, args }</td><td>nein</td><td>Abgeleiteter Wert: Name einer reinen Funktion der Logikschicht, nie Code in Daten</td></tr>
   <tr><td><code>initial</code></td><td>boolean | Options-ID</td><td>nein</td><td>Vorbelegte Antwort eines Ja/Nein- oder Auswahlfelds; gesetzt, wenn die erste Fassung der Rolle angelegt wird, und änderbar wie jede Antwort. Nicht bei Feldern mit <code>showIf</code>.</td></tr>
-  <tr><td><code>masterData</code></td><td>string (ID)</td><td>nein</td><td>Schlüssel eines Stammdatums (z. B. <code>betriebsnummer</code>), das eine Station auf ihrem eigenen Gerät merken und in jedem Formular mit demselben Schlüssel wieder einsetzen darf. Nur eigene Daten der Station, nie Daten der Person. Je Formular eindeutig.</td></tr>
+  <tr><td><code>masterData</code></td><td>string (ID)</td><td>nein</td><td>Schlüssel eines Stammdatums (z. B. <code>betriebsnummer</code>), das eine Station auf ihrem eigenen Gerät merken und in jedem Formular mit demselben Schlüssel wieder einsetzen darf. Nur eigene Daten der Station, nie Daten der Person. Je Formular eindeutig; nur einzelne Textwerte (nicht Ja/Nein, Mehrfachauswahl, Tabellen, Dateien), weil sie im Lesezeichen-Link reisen.</td></tr>
 </table>
 
 <h3>Condition (Bedingung)</h3>
@@ -473,6 +473,9 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
   <tr><td><code>completenessGaps</code></td><td><code>(q, form) =&gt; Blocker[]</code></td><td>Sperren plus fehlende erforderliche Rollen und fehlende Verknüpfungen (<code>partLinks</code>)</td></tr>
   <tr><td colspan="3"><code>src/logic/masterData.ts</code></td></tr>
   <tr><td><code>masterDataOf</code></td><td><code>(definition, role, data) =&gt; Record&lt;Schlüssel, FieldValue&gt;</code></td><td>Die beantworteten Stammdaten der Rolle nach Schlüssel, zum Merken auf dem Gerät</td></tr>
+  <tr><td colspan="3"><code>src/logic/masterDataLink.ts</code> (Speicherort der Stammdaten: Lesezeichen-Link, Entscheidung C)</td></tr>
+  <tr><td><code>masterDataFragment</code></td><td><code>(data: MasterData) =&gt; { ok, fragment } | { ok: false, issue, detail }</code></td><td>Fragment für ein Lesezeichen, z. B. <code>#stammdaten=1&amp;betriebsnummer=12345678&amp;firma=Beispiel+Bau+GmbH</code>; Schlüssel sortiert, höchstens 32 Schlüssel und 2000 Zeichen</td></tr>
+  <tr><td><code>parseMasterDataFragment</code></td><td><code>(hash: string) =&gt; { ok, data | undefined } | { ok: false, issue, detail }</code></td><td>Ohne Kennung <code>stammdaten=1</code>: kein Stammdaten-Link. Sonst streng und als Ganzes: fremde Version, ungültige oder doppelte Schlüssel, leere oder unlesbare Werte, Überlänge werden abgelehnt (<code>MASTER_DATA_LINK_MESSAGES</code>). Das Ergebnis läuft danach durch <code>applyMasterData</code>.</td></tr>
   <tr><td><code>applyMasterData</code></td><td><code>(q, form, role, stored: unknown) =&gt; { ok, questionnaire, applied, kept, skipped } | { ok: false, code }</code></td><td>Füllt leere Stammdatenfelder des offenen Entwurfs aus einem gemerkten Datensatz. Der Datensatz ist nicht vertrauenswürdig und läuft durch <code>setValue</code>; abgelehnte Werte stehen mit Grund in <code>skipped</code>, vorhandene Antworten bleiben (<code>kept</code>), Schlüssel anderer Formulare werden übergangen.</td></tr>
 </table>
 

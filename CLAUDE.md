@@ -81,6 +81,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/formDrafts.test.ts`                      | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                       |
 | `tests/forms/catalogue.test.ts`                       | `docs/formulare/` matches the definitions (file snapshots), no stale catalogues                                                                                                                                                             |
 | `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung draft through the engine: what is asked, preselections, notices, both station orders, part link, minor + guardian, name cross-check, master data                                                                          |
+| `src/logic/masterDataLink.ts`                         | `masterDataFragment` / `parseMasterDataFragment`: master data in the bookmark link (`#stammdaten=1&…`), strict all-or-nothing parsing with German messages                                                                                  |
 | `src/logic/masterData.ts`                             | `masterDataOf` / `applyMasterData`: a station's own master data (`FieldDefinition.masterData` keys) to remember on its device and fill in again; refused values reported                                                                    |
 | `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests; frozen by golden files                                                                                                                |
 | `tests/fixtures/forms/beispiel/1.1.0.json`            | Same form with a required guardian name field (`signerNameField`); frozen by golden files                                                                                                                                                   |
@@ -191,8 +192,10 @@ Key design decisions (details in `docs/plan.md`):
 - **Employer master data** (Tobias: the employer should be able to store Stammdaten on its device):
   fields carry a cross-form key (`masterData`, e.g. `firma`, `betriebsnummer`); `masterDataOf` /
   `applyMasterData` are pure, a loaded record is untrusted and every refused value is reported.
-  The storage itself (step 6) is a deliberate, scoped exception to "store nothing" — only these
-  keys, never the person's data; mechanism to be agreed with Tobias.
+  **Storage = bookmark link (Tobias 2026-10-29, option C):** `masterDataLink.ts` writes the keys
+  into the URL fragment (`#stammdaten=1&betriebsnummer=…&firma=…`), the employer bookmarks it
+  (or the Kanzlei sends one per Mandant). The browser stores nothing, so "store nothing" holds
+  without exception. Master data are single text values only (definition rule).
 - **Preselection** (`initial`): yes/no or choice answers set when the role's first version opens;
   only on always available fields.
 
@@ -253,9 +256,9 @@ Key design decisions (details in `docs/plan.md`):
   The national BBAN structure (e.g. German bank code) is not checked.
 - **Betriebsnummer:** only "exactly 8 digits"; the check digit is not checked (algorithm not
   publicly documented).
-- **Master data cannot be stored yet:** the logic exists, the device storage comes with the UI
-  (step 6); on `file://` Chromium shares storage between all local files, so only the flagged
-  employer keys may ever go there.
+- **Master-data link without UI yet:** creating and reading the bookmark link comes with step 6.
+  The fragment never reaches the server but stays in bookmarks and the browser history — fine
+  for the employer's own data, never for the person's.
 - **Privacy notice of the Sofortmeldung** is a first version (confirmation click); a detailed
   review is pending (Tobias, 2026-10-29).
 - **No form is published yet:** the Sofortmeldung is a draft awaiting approval; drafts are never

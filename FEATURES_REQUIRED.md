@@ -7,7 +7,7 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 
 - [ ] **Open the single HTML file by double-click (file://)** — app renders, no console errors
 - [ ] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest
-- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow, except the employer master data the user chose to remember (flagged keys only, never the person's data)
+- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow
 - [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean
 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
@@ -30,7 +30,7 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 - [ ] **Complete own part, seal or sign** — receipt with the imported part's hash is part of the seal
 - [ ] **Same-device flow (Gerätemodus)** — "Wer füllt jetzt aus?" picks the role; role locked, nothing stored, wiped at the end
 - [ ] **Either station first** — employer first (person sees the employer data read-only and signs over it) or person first (employer confirms the person part); the questionnaire is complete only when the parts are linked (`partsNotLinked` otherwise), and passing on to the next station is never blocked by a missing part
-- [ ] **Employer master data** — company name and Betriebsnummer can be remembered on the employer's device and are filled in again; a remembered value in the wrong format is shown with its reason
+- [ ] **Employer master data via bookmark link** — "Link mit meinen Stammdaten" puts company name and Betriebsnummer into the link; opening the bookmark fills them in; a broken link or a value in the wrong format is shown with its reason
 - [ ] **Preselected answers** — e.g. "Geburtsname gleich Familienname?" starts with Ja and can be changed
 
 ## Station 3 — Kanzlei (merge)
