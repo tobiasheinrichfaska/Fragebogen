@@ -161,10 +161,11 @@ export function buildFormRegistry(
   }
 
   issues.push(...checkFieldIdStability(forms.map((form) => form.definition)));
-  return issues.length > 0 ? { ok: false, issues } : { ok: true, registry: createRegistry(forms) };
+  return issues.length > 0 ? { ok: false, issues } : { ok: true, registry: registryOf(forms) };
 }
 
-function createRegistry(forms: readonly RegisteredForm[]): FormRegistry {
+/** Registry over already trusted forms (the bundled ones), without the published-list check. */
+export function registryOf(forms: readonly RegisteredForm[]): FormRegistry {
   const byHash = new Map(forms.map((form) => [form.definitionHash, form]));
   return {
     forms,

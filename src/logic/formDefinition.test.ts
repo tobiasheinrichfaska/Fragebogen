@@ -1,4 +1,5 @@
 import beispiel from '../../tests/fixtures/forms/beispiel/1.0.0.json';
+import beispiel110 from '../../tests/fixtures/forms/beispiel/1.1.0.json';
 import { checkFormDefinition, findCycle, parseFormDefinition } from './formDefinition';
 import { canonicalHash } from './hash';
 import type { FieldDefinition, FormDefinition, RoleDefinition } from './model';
@@ -550,5 +551,78 @@ describe('findCycle', () => {
         ]),
       ),
     ).toEqual(['b', 'c', 'b']);
+  });
+});
+
+describe('checkFormDefinition — signer name and conditional roles', () => {
+  it('accepts the fixture with a guardian name field (1.1.0)', () => {
+    const result = parseFormDefinition(beispiel110);
+    expect(result.ok ? [] : result.issues).toEqual([]);
+  });
+
+  it.each<[string, (d: FormDefinition) => void, string, string]>([
+    [
+      'a signer name on an unknown field',
+      (d) => {
+        roleAt(d, 1).signerNameField = 'gibtEsNicht';
+      },
+      '$.roles[1].signerNameField',
+      'unknown field',
+    ],
+    [
+      "a signer name on another role's field",
+      (d) => {
+        roleAt(d, 1).signerNameField = 'nachname';
+      },
+      '$.roles[1].signerNameField',
+      'same role',
+    ],
+    [
+      'a signer name on a date field',
+      (d) => {
+        roleAt(d, 0).signerNameField = 'geburtsdatum';
+      },
+      '$.roles[0].signerNameField',
+      'required, always visible text field',
+    ],
+    [
+      'a signer name on an optional field',
+      (d) => {
+        roleAt(d, 0).signerNameField = 'bemerkungen';
+      },
+      '$.roles[0].signerNameField',
+      'required, always visible text field',
+    ],
+    [
+      'a conditional role that may skip signing',
+      (d) => {
+        roleAt(d, 1).signature = 'optional';
+      },
+      '$.roles[1].signature',
+      'must sign',
+    ],
+    [
+      'a person who may skip signing although the guardian depends on the age',
+      (d) => {
+        roleAt(d, 0).signature = 'optional';
+      },
+      '$.roles[1].requiredIf.birthDateField',
+      'role "person" must sign',
+    ],
+    [
+      'a role conditional on its own birth date',
+      (d) => {
+        roleAt(d, 0).requiredIf = { kind: 'minorOnSigning', birthDateField: 'geburtsdatum' };
+      },
+      '$.roles[0].requiredIf.birthDateField',
+      'another role',
+    ],
+  ])('reports %s', (_label, mutate, path, message) => {
+    const d = definition();
+    mutate(d);
+    expect(checkFormDefinition(d)).toContainEqual({
+      path,
+      message: expect.stringContaining(message),
+    });
   });
 });

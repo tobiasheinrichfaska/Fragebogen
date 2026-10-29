@@ -1,6 +1,7 @@
 import {
   ageOn,
   compareIsoDates,
+  formatGermanDate,
   daysInMonth,
   isIsoDate,
   isLeapYear,
@@ -124,5 +125,19 @@ describe('isMinorOn', () => {
   it('applies the 29 February rule', () => {
     expect(isMinorOn('2008-02-29', '2026-02-28')).toBe(true);
     expect(isMinorOn('2008-02-29', '2026-03-01')).toBe(false);
+  });
+});
+
+describe('formatGermanDate', () => {
+  it.each([
+    ['2026-10-29', '29.10.2026'],
+    ['2010-03-01', '01.03.2010'],
+    ['0099-01-02', '02.01.0099'],
+  ])('%s → %s', (iso, german) => {
+    expect(formatGermanDate(iso)).toBe(german);
+  });
+
+  it('rejects invalid dates', () => {
+    expect(() => formatGermanDate('2026-02-30')).toThrow(RangeError);
   });
 });

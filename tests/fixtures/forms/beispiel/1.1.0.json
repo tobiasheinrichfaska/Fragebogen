@@ -1,0 +1,179 @@
+{
+  "id": "beispiel",
+  "version": "1.1.0",
+  "title": "Beispielformular (nur für Tests)",
+  "signaturePolicy": "electronic",
+  "roles": [
+    {
+      "id": "person",
+      "label": "Beschäftigte Person",
+      "stationHeading": "Angaben der beschäftigten Person",
+      "confirmationText": "Ich bestätige, dass meine Angaben richtig und vollständig sind.",
+      "signature": "required"
+    },
+    {
+      "id": "vertretung",
+      "label": "Gesetzliche Vertretung",
+      "stationHeading": "Zustimmung der gesetzlichen Vertretung",
+      "confirmationText": "Ich stimme als gesetzliche Vertretung zu.",
+      "signature": "required",
+      "requiredIf": {
+        "kind": "minorOnSigning",
+        "birthDateField": "geburtsdatum"
+      },
+      "signerNameField": "vertretungName"
+    },
+    {
+      "id": "arbeitgeber",
+      "label": "Arbeitgeber",
+      "stationHeading": "Angaben des Arbeitgebers",
+      "confirmationText": "Ich bestätige die Angaben des Arbeitgebers.",
+      "signature": "optional"
+    }
+  ],
+  "recipient": {
+    "label": "Lohnbüro"
+  },
+  "sections": [
+    {
+      "id": "persoenlich",
+      "title": "Persönliche Angaben",
+      "fields": [
+        {
+          "id": "nachname",
+          "role": "person",
+          "type": "text",
+          "label": "Nachname",
+          "required": true,
+          "purpose": "Identifikation, Meldungen zur Sozialversicherung"
+        },
+        {
+          "id": "geburtsdatum",
+          "role": "person",
+          "type": "date",
+          "label": "Geburtsdatum",
+          "required": true,
+          "purpose": "Altersprüfung, Meldungen zur Sozialversicherung"
+        },
+        {
+          "id": "steuerId",
+          "role": "person",
+          "type": "taxId",
+          "label": "Steuer-Identifikationsnummer",
+          "required": true,
+          "purpose": "Abruf der Lohnsteuerabzugsmerkmale"
+        },
+        {
+          "id": "weitereBeschaeftigung",
+          "role": "person",
+          "type": "boolean",
+          "label": "Üben Sie eine weitere Beschäftigung aus?",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung"
+        },
+        {
+          "id": "weitereArt",
+          "role": "person",
+          "type": "choice",
+          "label": "Art der weiteren Beschäftigung",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung",
+          "options": [
+            {
+              "id": "minijob",
+              "label": "Minijob"
+            },
+            {
+              "id": "sv",
+              "label": "Sozialversicherungspflichtig"
+            }
+          ],
+          "showIf": {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          }
+        },
+        {
+          "id": "bemerkungen",
+          "role": "person",
+          "type": "text",
+          "label": "Bemerkungen",
+          "required": false,
+          "purpose": "Ergänzende Hinweise",
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "id": "beschaeftigung",
+      "title": "Beschäftigung",
+      "fields": [
+        {
+          "id": "agNachname",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Nachname der beschäftigten Person",
+          "required": true,
+          "purpose": "Zuordnung der Angaben"
+        },
+        {
+          "id": "eintritt",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Eintrittsdatum",
+          "required": true,
+          "purpose": "Beginn der Beschäftigung"
+        },
+        {
+          "id": "bruttoMonat",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Monatliches Bruttoentgelt",
+          "required": true,
+          "purpose": "Lohnabrechnung"
+        }
+      ]
+    },
+    {
+      "id": "vertretung",
+      "title": "Gesetzliche Vertretung",
+      "fields": [
+        {
+          "id": "vertretungName",
+          "role": "vertretung",
+          "type": "text",
+          "label": "Vor- und Nachname der gesetzlichen Vertretung",
+          "required": true,
+          "purpose": "Nachweis der Zustimmung bei Minderjährigen"
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "datenschutz",
+      "role": "person",
+      "title": "Datenschutzhinweis",
+      "text": "Erfundener Hinweistext für Tests.",
+      "asOf": "2026-10-29",
+      "acknowledgement": "read"
+    }
+  ],
+  "consistencyRules": [
+    {
+      "kind": "equal",
+      "fields": ["nachname", "agNachname"],
+      "message": "Der Nachname weicht zwischen den Angaben ab."
+    }
+  ],
+  "matchKeys": [
+    {
+      "label": "Nachname",
+      "fields": {
+        "person": "nachname",
+        "arbeitgeber": "agNachname"
+      }
+    }
+  ],
+  "legalNotes": ["Einfache elektronische Signatur; nur für Tests."]
+}

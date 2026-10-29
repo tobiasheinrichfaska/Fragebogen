@@ -1,7 +1,9 @@
-// Shared test scenario on the fictitious fixture form "beispiel": the person signs, the employer
-// seals with a receipt note for the person's part, the Kanzlei records the DATEV filing.
-// All data is invented. The golden files under tests/golden are built from these functions.
+// Shared test scenarios on the fictitious fixture form "beispiel": the person signs, the employer
+// seals with a receipt note for the person's part, the Kanzlei records the DATEV filing; version
+// 1.1.0 adds a name field for the legal guardian of a minor. All data is invented. The golden files
+// under tests/golden are built from these functions — changing a builder breaks them on purpose.
 import beispiel from '../fixtures/forms/beispiel/1.0.0.json';
+import beispiel110 from '../fixtures/forms/beispiel/1.1.0.json';
 import { parseFormDefinition } from '../../src/logic/formDefinition';
 import {
   buildFormRegistry,
@@ -27,6 +29,7 @@ export const QUESTIONNAIRE_ID = '3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c';
 export const NONCE_PERSON = '0123456789abcdef0123456789abcdef';
 export const NONCE_PERSON_V2 = '00112233445566778899aabbccddeeff';
 export const NONCE_EMPLOYER = 'fedcba9876543210fedcba9876543210';
+export const NONCE_GUARDIAN = '13579bdf02468ace13579bdf02468ace';
 export const FILE_SHA256 = 'a'.repeat(64);
 
 export const STROKES = encodeStrokes([
@@ -42,17 +45,33 @@ export const STROKES = encodeStrokes([
   ],
 ]);
 
-export function beispielForm(): RegisteredForm {
-  const parsed = parseFormDefinition(structuredClone(beispiel));
+function registered(raw: unknown): RegisteredForm {
+  const parsed = parseFormDefinition(structuredClone(raw));
   if (!parsed.ok) throw new Error(JSON.stringify(parsed.issues));
   return { definition: parsed.definition, definitionHash: definitionHash(parsed.definition) };
 }
 
+/** Fixture form 1.0.0: the guardian has no fields and can only sign with a typed name. */
+export function beispielForm(): RegisteredForm {
+  return registered(beispiel);
+}
+
+/** Fixture form 1.1.0: the guardian states the name in the field vertretungName. */
+export function guardianForm(): RegisteredForm {
+  return registered(beispiel110);
+}
+
 export function beispielRegistry(): FormRegistry {
-  const form = beispielForm();
   const result = buildFormRegistry(
-    [{ name: 'tests/fixtures/forms/beispiel/1.0.0.json', raw: structuredClone(beispiel) }],
-    [{ id: 'beispiel', version: '1.0.0', definitionHash: form.definitionHash }],
+    [
+      { name: 'tests/fixtures/forms/beispiel/1.0.0.json', raw: structuredClone(beispiel) },
+      { name: 'tests/fixtures/forms/beispiel/1.1.0.json', raw: structuredClone(beispiel110) },
+    ],
+    [beispielForm(), guardianForm()].map(({ definition, definitionHash }) => ({
+      id: definition.id,
+      version: definition.version,
+      definitionHash,
+    })),
   );
   if (!result.ok) throw new Error(JSON.stringify(result.issues));
   return result.registry;
@@ -201,4 +220,42 @@ export function newVersion(): Questionnaire {
       }),
     ),
   );
+}
+
+export const MINOR_VALUES = { ...PERSON_VALUES, geburtsdatum: '01.03.2010' };
+
+/** A 16-year-old signs on 29.10.2026 (device date); the guardian has not signed yet. */
+export function minorSigned(form = guardianForm()): Questionnaire {
+  let q = createQuestionnaire(QUESTIONNAIRE_ID, form);
+  q = ok(startPart(q, form, 'person'));
+  q = fill(q, 'person', MINOR_VALUES, form);
+  return ok(sealPart(q, form, 'person', personSealInput()));
+}
+
+/** The guardian signs on the same device, five minutes later, binding the person's part. */
+export function withGuardian(questionnaire: Questionnaire, form = guardianForm()): Questionnaire {
+  const person = latestSealed(questionnaire, 'person');
+  if (!person) throw new Error('person part missing');
+  let q = ok(startPart(questionnaire, form, 'vertretung'));
+  q = fill(q, 'vertretung', { vertretungName: 'Max Musterfrau' }, form);
+  return ok(
+    sealPart(q, form, 'vertretung', {
+      nonce: NONCE_GUARDIAN,
+      systemNote: note('2026-10-29T10:20:00.000+01:00', '2026-10-29T09:20:00.000Z', ['touch']),
+      acknowledged: [],
+      signature: { method: 'drawn', strokes: STROKES },
+      receivedParts: [
+        receivedPartFor(
+          person,
+          { local: '2026-10-29T10:16:00.000+01:00', utc: '2026-10-29T09:16:00.000Z' },
+          'same-device',
+        ),
+      ],
+    }),
+  );
+}
+
+/** Minor with the guardian's signature — ready to be passed on. */
+export function minorWithGuardian(): Questionnaire {
+  return withGuardian(minorSigned());
 }

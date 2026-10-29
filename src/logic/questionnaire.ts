@@ -8,8 +8,11 @@ import {
   infoBlocksOfRole,
   missingRequired,
   noticeHash,
+  ownerOfField,
   roleOf,
   sealableData,
+  signerName,
+  typedNameIsPlausible,
 } from './form';
 import type { RegisteredForm } from './formRegistry';
 import { SHA256_HEX } from './hash';
@@ -35,7 +38,7 @@ import {
   decodeSystemNote,
 } from './questionnaireFile';
 import { NONCE_PATTERN, SEAL_SCHEMA, contentHashOf, fieldHashesOf, strokesHashOf } from './seal';
-import { decodeStrokes } from './strokes';
+import { decodeStrokes, signatureShapeProblem } from './strokes';
 import { sameInstant } from './time';
 
 export type TransitionCode =
@@ -56,7 +59,9 @@ export type TransitionCode =
   | 'invalidSystemNote'
   | 'invalidReceivedPart'
   | 'invalidReceipt'
-  | 'unknownPart';
+  | 'unknownPart'
+  | 'mustBindPart'
+  | 'signerNameMissing';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -77,6 +82,9 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   invalidReceivedPart: 'Ein Eingangsvermerk ist ungültig.',
   invalidReceipt: 'Der Eingangsvermerk ist ungültig.',
   unknownPart: 'Der Eingangsvermerk verweist auf einen Teil, der nicht vorliegt.',
+  mustBindPart:
+    'Die gesetzliche Vertretung bestätigt den abgeschlossenen Teil der Person. Dieser Teil fehlt oder ist nicht verknüpft.',
+  signerNameMissing: 'Der Name der unterschreibenden Person fehlt.',
 };
 
 export type Transition =
@@ -216,7 +224,7 @@ export function sealPart(
     return refuse('signatureRequired');
   if (roleDefinition.signature === 'none' && input.signature) return refuse('signatureNotAllowed');
   const signature = input.signature && signatureOf(input.signature);
-  if (signature === null) return refuse('invalidSignature');
+  if (typeof signature === 'string') return refuse('invalidSignature', [signature]);
 
   const notices = infoBlocksOfRole(definition, role);
   const unknownNotices = input.acknowledged.filter((id) => !notices.some((b) => b.id === id));
@@ -240,6 +248,33 @@ export function sealPart(
   const receivedParts = input.receivedParts ?? [];
   const receivedProblems = receivedPartProblems(receivedParts, role, form);
   if (receivedProblems.length > 0) return refuse('invalidReceivedPart', receivedProblems);
+
+  // A conditional role (legal guardian) signs with its name and confirms exactly the current
+  // sealed part of the role whose data triggers it.
+  if (roleDefinition.requiredIf) {
+    if (!signature) return refuse('signatureRequired');
+    const triggerRole = ownerOfField(definition, roleDefinition.requiredIf.birthDateField);
+    const trigger =
+      triggerRole === undefined ? undefined : latestSealed(questionnaire, triggerRole);
+    const bound = receivedParts.some(
+      (part) => part.role === triggerRole && part.contentHash === trigger?.seal?.contentHash,
+    );
+    if (!trigger?.seal || !bound) return refuse('mustBindPart', [triggerRole ?? '?']);
+    if (signerName(roleDefinition, data, signature.seal) === undefined) {
+      return refuse('signerNameMissing');
+    }
+  }
+  const warnings: IssueCode[] = [];
+  const typedName = signature?.seal.method === 'typed' ? signature.seal.typedName : undefined;
+  const nameField = roleDefinition.signerNameField;
+  const statedName = nameField === undefined ? undefined : data[nameField];
+  if (
+    typedName !== undefined &&
+    typeof statedName === 'string' &&
+    !sameName(typedName, statedName)
+  ) {
+    warnings.push('signature.nameMismatch');
+  }
 
   const previous = latestSealed(questionnaire, role)?.seal;
   const payload: SealPayload = {
@@ -271,20 +306,31 @@ export function sealPart(
   };
   const versions = [...versionsOf(questionnaire, role)];
   versions[versions.length - 1] = sealed;
-  return done(withVersions(questionnaire, role, versions));
+  return done(withVersions(questionnaire, role, versions), warnings);
 }
 
-function signatureOf(input: SignatureInput): { seal: SealSignature; strokes?: string } | null {
+/** The signature for the seal, or why it is refused (German, shown to the user). */
+function signatureOf(input: SignatureInput): { seal: SealSignature; strokes?: string } | string {
   if (input.method === 'drawn') {
-    if (!decodeStrokes(input.strokes).ok) return null;
+    const decoded = decodeStrokes(input.strokes);
+    if (!decoded.ok) return 'Die gezeichnete Unterschrift ist leer oder ungültig.';
+    if (signatureShapeProblem(decoded.strokes)) {
+      return 'Die gezeichnete Unterschrift ist zu kurz. Bitte vollständig unterschreiben.';
+    }
     return {
       seal: { method: 'drawn', strokesHash: strokesHashOf(input.strokes) },
       strokes: input.strokes,
     };
   }
   const name = normalizeText(input.name);
-  if (!name.ok || name.value === '') return null;
+  if (!name.ok || !typedNameIsPlausible(name.value)) {
+    return 'Bitte den vollständigen Namen eintippen.';
+  }
   return { seal: { method: 'typed', typedName: name.value } };
+}
+
+function sameName(a: string, b: string): boolean {
+  return a.toLocaleLowerCase('de') === b.toLocaleLowerCase('de');
 }
 
 function systemNoteProblems(note: SystemNote): string[] {

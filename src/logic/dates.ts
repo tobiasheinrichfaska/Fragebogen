@@ -72,6 +72,12 @@ export function ageOn(birthDate: IsoDate, onDate: IsoDate): number {
   return compareParts(on, birthdayThisYear) < 0 ? years - 1 : years;
 }
 
+/** `YYYY-MM-DD` → `TT.MM.JJJJ` for German texts. */
+export function formatGermanDate(date: IsoDate): string {
+  const { year, month, day } = requireDate(date, 'date');
+  return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${String(year).padStart(4, '0')}`;
+}
+
 /** True when the person is under 18 on `onDate` — then the legal guardian must co-sign. */
 export function isMinorOn(birthDate: IsoDate, onDate: IsoDate): boolean {
   return ageOn(birthDate, onDate) < AGE_OF_MAJORITY;

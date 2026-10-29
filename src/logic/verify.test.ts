@@ -11,7 +11,7 @@ import {
 import { buildFormRegistry } from './formRegistry';
 import type { Part, Questionnaire } from './model';
 import { addReceipt, startPart } from './questionnaire';
-import { contentHashOf, fieldHash } from './seal';
+import { contentHashOf, fieldHash, strokesHashOf } from './seal';
 import { encodeStrokes } from './strokes';
 import {
   FINDING_MESSAGES,
@@ -395,5 +395,28 @@ describe('messages', () => {
       expect(message).toMatch(/^[A-ZÄÖÜ]/);
     }
     expect(Object.keys(FINDING_MESSAGES).sort()).toEqual(Object.keys(FINDING_SEVERITY).sort());
+  });
+});
+
+describe('verifyQuestionnaire — implausible signatures in imported files', () => {
+  it('warns about a forged tap signature without invalidating the part', () => {
+    const q = structuredClone(personSigned());
+    const person = versionOf(q, 'person');
+    const tap = encodeStrokes([[{ x: 500, y: 200 }]]);
+    person.signatureStrokes = tap;
+    sealOf(person).payload.signature = { method: 'drawn', strokesHash: strokesHashOf(tap) };
+    forgeReseal(person);
+    const verdict = verify(q);
+    expect(codes(verdict)).toEqual(['signatureImplausible@person']);
+    expect(verdict.parts[0]?.level).toBe('consistent');
+  });
+
+  it('warns about a typed signature that is not a name', () => {
+    const q = structuredClone(personSigned());
+    const person = versionOf(q, 'person');
+    delete person.signatureStrokes;
+    sealOf(person).payload.signature = { method: 'typed', typedName: '-' };
+    forgeReseal(person);
+    expect(codes(verify(q))).toEqual(['signatureImplausible@person']);
   });
 });

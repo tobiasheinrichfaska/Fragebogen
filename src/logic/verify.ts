@@ -4,7 +4,7 @@
 // the same contentHash. Hashes reveal changes; they do not prove who sealed, because anyone can
 // produce a fresh, self-consistent seal.
 import { canonicalize } from './jcs';
-import { infoBlocksOfRole, noticeHash, roleOf, sealableData } from './form';
+import { infoBlocksOfRole, noticeHash, roleOf, sealableData, typedNameIsPlausible } from './form';
 import type { FormRegistry } from './formRegistry';
 import type {
   FormDefinition,
@@ -16,7 +16,7 @@ import type {
   Sha256Hex,
 } from './model';
 import { contentHashOf, diffFieldHashes, isEmptyDiff, strokesHashOf, type FieldDiff } from './seal';
-import { decodeStrokes } from './strokes';
+import { decodeStrokes, signatureShapeProblem } from './strokes';
 import { days, minutes, sameInstant, utcMillis } from './time';
 
 /** Device clocks differ; a receipt may appear slightly before the signature it receives. */
@@ -33,6 +33,7 @@ export type FindingCode =
   | 'chainBroken'
   | 'draftNotLast'
   | 'signatureMissing'
+  | 'signatureImplausible'
   | 'unknownDefinition'
   | 'fieldSetMismatch'
   | 'confirmationTextChanged'
@@ -54,6 +55,7 @@ export const FINDING_SEVERITY: Readonly<Record<FindingCode, Severity>> = {
   chainBroken: 'error',
   draftNotLast: 'error',
   signatureMissing: 'warning',
+  signatureImplausible: 'warning',
   unknownDefinition: 'warning',
   fieldSetMismatch: 'warning',
   confirmationTextChanged: 'warning',
@@ -76,6 +78,7 @@ export const FINDING_MESSAGES: Readonly<Record<FindingCode, string>> = {
   chainBroken: 'Die Fassungen dieser Rolle bilden keine lückenlose Kette.',
   draftNotLast: 'Ein Entwurf steht vor einer abgeschlossenen Fassung.',
   signatureMissing: 'Für diese Rolle ist eine Unterschrift vorgesehen, das Siegel enthält keine.',
+  signatureImplausible: 'Die Unterschrift ist unplausibel kurz.',
   unknownDefinition:
     'Diese Formularversion ist der App nicht bekannt. Felder und Hinweise wurden nicht gegen das Formular geprüft.',
   fieldSetMismatch: 'Die gesiegelten Felder entsprechen nicht dem Formular.',
@@ -273,9 +276,16 @@ function checkPart(
     const strokes = part.signatureStrokes;
     if (strokes === undefined) add('signatureImageChanged', ['Striche fehlen']);
     else if (strokesHashOf(strokes) !== signature.strokesHash) add('signatureImageChanged');
-    else if (!decodeStrokes(strokes).ok) add('signatureImageChanged', ['Striche nicht lesbar']);
+    else {
+      const decoded = decodeStrokes(strokes);
+      if (!decoded.ok) add('signatureImageChanged', ['Striche nicht lesbar']);
+      else if (signatureShapeProblem(decoded.strokes)) add('signatureImplausible', ['gezeichnet']);
+    }
   } else if (part.signatureStrokes !== undefined) {
     add('signatureImageChanged', ['Striche ohne gezeichnete Unterschrift']);
+  }
+  if (signature?.method === 'typed' && !typedNameIsPlausible(signature.typedName)) {
+    add('signatureImplausible', ['getippt']);
   }
 
   const note = payload.systemNote;

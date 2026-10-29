@@ -42,9 +42,9 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 3) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>)</p>
-<p class="note"><strong>Stand Schritt 3.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel und Prüfung
-und das Formularregister sind umgesetzt. Die Zusammenführung folgt in Schritt 4.
+<p class="meta">Stand: 29.10.2026 (Schritt 4a) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>)</p>
+<p class="note"><strong>Stand Schritt 4a.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln
+und das Formularregister sind umgesetzt. Die Zusammenführung folgt in Schritt 4b.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
 Code-Änderung.</p>
 
@@ -126,6 +126,7 @@ Code-Änderung.</p>
   <path class="edge e-amber" d="M930 170 C 960 210, 920 245, 832 252" marker-end="url(#a-amber)"/>
   <path class="edge e-purple" d="M640 362 C 600 340, 600 280, 638 266" marker-end="url(#a-purple)"/>
   <path class="edge e-amber" d="M152 40 L168 40" marker-end="url(#a-amber)"/>
+  <path class="edge e-green" d="M90 172 C 95 240, 150 272, 208 272" marker-end="url(#a-green)"/>
 
   <!-- entities -->
   <g class="ent"><rect x="170" y="20" width="190" height="40"/><text x="265" y="40">FormDefinition</text></g>
@@ -160,7 +161,8 @@ Code-Änderung.</p>
   <tr><td>FieldDefinition</td><td><code>columns</code></td><td>FieldDefinition</td><td>1 : n (nur <code>repeatGroup</code>)</td><td>enthält</td></tr>
   <tr><td>FieldDefinition</td><td><code>role</code></td><td>RoleDefinition.<code>id</code></td><td>n : 1</td><td>ID</td></tr>
   <tr><td>FieldDefinition</td><td><code>showIf.field</code>, <code>computed.args</code></td><td>FieldDefinition.<code>id</code> (gleiche Rolle)</td><td>n : m</td><td>ID</td></tr>
-  <tr><td>RoleDefinition</td><td><code>requiredIf.birthDateField</code></td><td>FieldDefinition.<code>id</code></td><td>n : 1</td><td>ID</td></tr>
+  <tr><td>RoleDefinition</td><td><code>requiredIf.birthDateField</code></td><td>FieldDefinition.<code>id</code> (andere Rolle)</td><td>n : 1</td><td>ID</td></tr>
+  <tr><td>RoleDefinition</td><td><code>signerNameField</code></td><td>FieldDefinition.<code>id</code> (gleiche Rolle)</td><td>1 : 0..1</td><td>ID</td></tr>
   <tr><td>InfoBlock</td><td><code>role</code></td><td>RoleDefinition.<code>id</code></td><td>n : 1</td><td>ID</td></tr>
   <tr><td>MatchKey</td><td><code>fields[roleId]</code></td><td>FieldDefinition.<code>id</code></td><td>1 : n (je Rolle eines)</td><td>ID</td></tr>
   <tr><td>ConsistencyRule</td><td><code>fields</code></td><td>FieldDefinition.<code>id</code></td><td>1 : 2</td><td>ID</td></tr>
@@ -207,15 +209,16 @@ Code-Änderung.</p>
   <tr><td><code>label</code></td><td>string</td><td>ja</td><td>Anzeigename</td></tr>
   <tr><td><code>stationHeading</code></td><td>string</td><td>ja</td><td>PDF-Kopf, z. B. „Fassung Arbeitnehmer“</td></tr>
   <tr><td><code>confirmationText</code></td><td>string</td><td>ja</td><td>Text, den die Person vor dem Unterschreiben bestätigt</td></tr>
-  <tr><td><code>signature</code></td><td><code>required</code> | <code>optional</code> | <code>none</code></td><td>ja</td><td>Unterschrift Pflicht, freiwillig oder nicht vorgesehen (dann nur Abschluss/Siegel)</td></tr>
+  <tr><td><code>signature</code></td><td><code>required</code> | <code>optional</code> | <code>none</code></td><td>ja</td><td>Unterschrift Pflicht, freiwillig oder nicht vorgesehen (dann nur Abschluss/Siegel). Bedingte Rollen und die Rolle, deren Geburtsdatum sie auslöst, müssen <code>required</code> haben.</td></tr>
   <tr><td><code>requiredIf</code></td><td>RoleCondition</td><td>nein</td><td>Rolle nur unter Bedingung Pflicht</td></tr>
+  <tr><td><code>signerNameField</code></td><td>FieldId</td><td>nein</td><td>Pflicht-Textfeld derselben Rolle mit dem Namen der unterschreibenden Person (immer sichtbar). Ohne dieses Feld kann eine bedingte Rolle nur mit getipptem Namen unterschreiben; der Name ist in jedem Fall Pflicht.</td></tr>
 </table>
 
 <h3>RoleCondition</h3>
 <table>
   <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
   <tr><td><code>kind</code></td><td><code>minorOnSigning</code></td><td>ja</td><td>Pflicht, wenn die Person am Unterschriftstag unter 18 ist (<code>isMinorOn</code>)</td></tr>
-  <tr><td><code>birthDateField</code></td><td>FieldId</td><td>ja</td><td>Feld mit dem Geburtsdatum</td></tr>
+  <tr><td><code>birthDateField</code></td><td>FieldId</td><td>ja</td><td>Datumsfeld einer <em>anderen</em> Rolle mit dem Geburtsdatum. Maßgeblich ist das Alter am <strong>Ortsdatum der Unterschrift</strong> dieser Rolle, laut Gerät.</td></tr>
 </table>
 
 <h3>SectionDefinition</h3>
@@ -369,9 +372,9 @@ Werte unverändert. Eine spätere Änderung dieser Regeln kann alte Urteile desh
 Abgelehnt werden <code>undefined</code>, <code>NaN</code>/<code>Infinity</code>, Lücken in Arrays, Klasseninstanzen und unpaarige Surrogates, außerdem Verschachtelung tiefer als 64.</p>
 
 <h2 id="methoden">Methoden der Datenmanipulation</h2>
-<p>Stand Schritt 3. Alle Funktionen sind rein und laufen ohne UI. Zustandsübergänge geben einen <strong>neuen</strong> Fragebogen
+<p>Stand Schritt 4a. Alle Funktionen sind rein und laufen ohne UI. Zustandsübergänge geben einen <strong>neuen</strong> Fragebogen
 zurück oder eine Ablehnung mit Code (<code>TRANSITION_MESSAGES</code>, deutsch) und Einzelheiten; die Eingabe bleibt unverändert.
-Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. Die Zusammenführung folgt in Schritt 4.</p>
+Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. Die Zusammenführung folgt in Schritt 4b.</p>
 
 <h3>Zustandsübergänge (<code>src/logic/questionnaire.ts</code>)</h3>
 <table>
@@ -380,7 +383,7 @@ Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. D
   <tr><td><code>startPart</code></td><td><code>(q, form, role) =&gt; Transition</code></td><td>Neuer Entwurf der Rolle. Nach einem früheren Abschluss übernimmt er dessen Daten, das ergibt die nächste Fassung. Abgelehnt: <code>wrongForm</code>, <code>unknownRole</code>, <code>draftExists</code></td></tr>
   <tr><td><code>setValue</code></td><td><code>(q, form, role, fieldId, raw) =&gt; Transition</code></td><td>Normalisiert (<code>normalizeFieldValue</code>) und speichert einen Wert im Entwurf; Warnungen werden durchgereicht. Abgelehnt: <code>noDraft</code>, <code>unknownField</code>, <code>notOwnField</code>, <code>invalidValue</code></td></tr>
   <tr><td><code>discardDraft</code></td><td><code>(q, role) =&gt; Transition</code></td><td>Verwirft den Entwurf; gesiegelte Fassungen bleiben</td></tr>
-  <tr><td><code>sealPart</code></td><td><code>(q, form, role, input: SealInput) =&gt; Transition</code></td><td>Schließt den Entwurf ab. Versteckte Felder fallen weg. Alle Werte werden erneut geprüft, Pflichtfelder und alle Hinweise der Rolle müssen erledigt sein, die Unterschrift muss zur Rolle passen. Dann entstehen Feld-Hashes, Kenntnisnahmen, Systemvermerk, Eingangsvermerke und <code>contentHash</code>. Status <code>signed</code> mit, <code>sealed</code> ohne Unterschrift; eine neue Fassung bekommt <code>version</code> + 1 und <code>supersedes</code>. Abgelehnt: <code>noDraft</code>, <code>invalidNonce</code>, <code>invalidSystemNote</code> (auch wenn Orts- und UTC-Zeit verschiedene Zeitpunkte sind), <code>signatureRequired</code>, <code>signatureNotAllowed</code>, <code>invalidSignature</code>, <code>unknownNotice</code>, <code>noticeNotAcknowledged</code>, <code>invalidValue</code>, <code>missingRequired</code>, <code>invalidReceivedPart</code> (eigene Rolle, unbekannte Rolle, doppelt, widersprüchliche Zeiten)</td></tr>
+  <tr><td><code>sealPart</code></td><td><code>(q, form, role, input: SealInput) =&gt; Transition</code></td><td>Schließt den Entwurf ab. Versteckte Felder fallen weg. Alle Werte werden erneut geprüft, Pflichtfelder und alle Hinweise der Rolle müssen erledigt sein, die Unterschrift muss zur Rolle passen. Dann entstehen Feld-Hashes, Kenntnisnahmen, Systemvermerk, Eingangsvermerke und <code>contentHash</code>. Status <code>signed</code> mit, <code>sealed</code> ohne Unterschrift; eine neue Fassung bekommt <code>version</code> + 1 und <code>supersedes</code>. Abgelehnt: <code>noDraft</code>, <code>invalidNonce</code>, <code>invalidSystemNote</code> (auch wenn Orts- und UTC-Zeit verschiedene Zeitpunkte sind), <code>signatureRequired</code>, <code>signatureNotAllowed</code>, <code>invalidSignature</code>, <code>unknownNotice</code>, <code>noticeNotAcknowledged</code>, <code>invalidValue</code>, <code>missingRequired</code>, <code>invalidReceivedPart</code> (eigene Rolle, unbekannte Rolle, doppelt, widersprüchliche Zeiten). Unterschrift: gezeichnet mindestens 5 Punkte und 40 Einheiten breit, getippt mindestens 2 Buchstaben, sonst <code>invalidSignature</code> mit deutscher Begründung. Bedingte Rolle (gesetzliche Vertretung): Unterschrift Pflicht, Name Pflicht (<code>signerNameMissing</code>), und <code>receivedParts</code> muss die aktuelle gesiegelte Fassung der auslösenden Rolle nennen (<code>mustBindPart</code>). Weicht ein getippter Name vom Namensfeld ab (Groß-/Kleinschreibung zählt nicht), gibt es die Warnung <code>signature.nameMismatch</code>.</td></tr>
   <tr><td><code>addReceipt</code></td><td><code>(q, receipt: Receipt) =&gt; Transition</code></td><td>Hängt einen Eingangsvermerk an, etwa „Kanzlei“ mit Quelle <code>app</code> oder <code>datev</code>. Abgelehnt: <code>invalidReceipt</code>, <code>unknownPart</code> (verweist auf eine Fassung, die nicht vorliegt)</td></tr>
   <tr><td><code>receivedPartFor</code></td><td><code>(part, { local, utc }, source, fileSha256?) =&gt; ReceivedPart</code></td><td>Eingangsvermerk für einen gesiegelten Teil einer anderen Rolle, zur Übergabe an <code>sealPart</code></td></tr>
   <tr><td><code>versionsOf</code> · <code>currentPart</code> · <code>latestSealed</code></td><td><code>(q, role)</code></td><td>Alle Fassungen · letzte Fassung (auch Entwurf) · letzte gesiegelte Fassung</td></tr>
@@ -406,7 +409,8 @@ und ein Gesamturteil <code>ok</code> · <code>warnings</code> · <code>invalid</
   <tr><td><code>statusMismatch</code></td><td>error</td><td>Status passt nicht zum Siegel (z. B. <code>sealed</code> trotz Unterschrift)</td></tr>
   <tr><td><code>chainBroken</code></td><td>error</td><td>Fassungen nicht 1…n oder <code>supersedes</code> zeigt nicht auf die Vorfassung</td></tr>
   <tr><td><code>draftNotLast</code></td><td>error</td><td>Ein Entwurf steht vor einer gesiegelten Fassung</td></tr>
-  <tr><td><code>signatureMissing</code></td><td>warning</td><td>Rolle verlangt eine Unterschrift, das Siegel hat keine</td></tr>
+  <tr><td><code>signatureMissing</code></td><td>warning</td><td>Rolle verlangt eine Unterschrift, das Siegel hat keine (die Übermittlung sperrt das, siehe unten)</td></tr>
+  <tr><td><code>signatureImplausible</code></td><td>warning</td><td>Gezeichnete Unterschrift zu kurz oder zu schmal, getippter Name ohne zwei Buchstaben</td></tr>
   <tr><td><code>unknownDefinition</code></td><td>warning</td><td>Formularversion nicht im Register; Felder und Hinweise ungeprüft</td></tr>
   <tr><td><code>fieldSetMismatch</code> · <code>confirmationTextChanged</code> · <code>noticeMismatch</code></td><td>warning</td><td>Gesiegelte Felder, bestätigter Text oder Kenntnisnahmen entsprechen nicht dem Formular</td></tr>
   <tr><td><code>timeInconsistent</code></td><td>warning</td><td>Orts- und UTC-Zeit einer Angabe sind verschiedene Zeitpunkte</td></tr>
@@ -418,6 +422,28 @@ und ein Gesamturteil <code>ok</code> · <code>warnings</code> · <code>invalid</
 <p><strong>Ehrliche Grenze:</strong> Wer Daten ändert und das Siegel vollständig neu berechnet, erreicht wieder Stufe 1. Die Bestätigungen anderer Rollen
 und Stationen gehen dabei verloren, und ihre Verweise laufen ins Leere. Das zeigt die Prüfung an.</p>
 
+<h3>Übermittlungsregeln (<code>src/logic/requirements.ts</code>)</h3>
+<p><strong>Ohne Unterschrift kein Übermitteln.</strong> Die Übermittlungs-PDF entsteht nur, wenn <code>transmissionBlockers(q, form)</code> leer ist.
+Einen Zwischenstand speichern geht jederzeit. <code>completenessGaps(q, form)</code> ergänzt für die Kanzlei die erforderlichen Rollen, die noch fehlen.</p>
+<table>
+  <tr><th>Sperre (<code>BlockerCode</code>)</th><th>Wann</th></tr>
+  <tr><td><code>nothingSealed</code></td><td>Es gibt noch keinen gesiegelten Teil</td></tr>
+  <tr><td><code>draftOpen</code></td><td>Ein Teil ist ein Entwurf, auch eine neu geöffnete Fassung. Entwürfe werden nie übermittelt.</td></tr>
+  <tr><td><code>signatureMissing</code></td><td>Eine Rolle mit <code>signature: required</code> ist nur gesiegelt, nicht unterschrieben</td></tr>
+  <tr><td><code>partInvalid</code></td><td>Die Prüfung stuft eine Fassung als „verändert oder fehlerhaft“ ein</td></tr>
+  <tr><td><code>guardianMissing</code></td><td>Die Person ist am Ortsdatum ihrer Unterschrift unter 18, die gesetzliche Vertretung hat noch nicht unterschrieben (Einzelheit z. B. „16 Jahre am 29.10.2026“)</td></tr>
+  <tr><td><code>guardianNotBound</code></td><td>Die Vertretung hat eine ältere Fassung der Person bestätigt; die Person hat danach neu unterschrieben</td></tr>
+  <tr><td><code>guardianNameMissing</code></td><td>Die Vertretung hat keinen Namen angegeben (nur bei manipulierten Dateien möglich)</td></tr>
+  <tr><td><code>ageUnknown</code></td><td>Geburtsdatum ist kein Datum oder liegt nach dem Unterschriftstag; gilt vorsichtshalber als „Vertretung erforderlich“</td></tr>
+  <tr><td><code>roleMissing</code></td><td>Nur in <code>completenessGaps</code>: Eine unbedingte Rolle hat noch keinen Teil</td></tr>
+</table>
+<table>
+  <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
+  <tr><td><code>roleRequirement</code> · <code>roleRequirements</code></td><td><code>(definition, q, role) =&gt; RoleRequirement</code></td><td>Ist die Rolle jetzt erforderlich? <code>always</code> · <code>pending</code> (auslösender Teil noch nicht gesiegelt) · <code>minor</code> · <code>adult</code> · <code>ageUnknown</code>, jeweils mit Unterschriftstag und Alter</td></tr>
+  <tr><td><code>transmissionBlockers</code></td><td><code>(q, form: RegisteredForm) =&gt; Blocker[]</code></td><td>Alles, was die Übermittlung verhindert; wirft bei einem fremden Formular</td></tr>
+  <tr><td><code>completenessGaps</code></td><td><code>(q, form) =&gt; Blocker[]</code></td><td>Sperren plus fehlende erforderliche Rollen (für die Kanzlei)</td></tr>
+</table>
+
 <h3>Bausteine</h3>
 <table>
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
@@ -427,10 +453,14 @@ und Stationen gehen dabei verloren, und ihre Verweise laufen ins Leere. Das zeig
   <tr><td><code>missingRequired</code></td><td><code>(definition, role, data) =&gt; FieldId[]</code></td><td>Sichtbare Pflichtfelder ohne Antwort</td></tr>
   <tr><td><code>noticeHash</code></td><td><code>(block: InfoBlock) =&gt; Sha256Hex</code></td><td>Hash von Titel, Text und Stand eines Hinweises</td></tr>
   <tr><td><code>roleOf</code> · <code>fieldsOfRole</code> · <code>infoBlocksOfRole</code></td><td>–</td><td>Nachschlagen in der Definition</td></tr>
+  <tr><td><code>ownerOfField</code></td><td><code>(definition, fieldId) =&gt; RoleId | undefined</code></td><td>Welche Rolle ein Feld ausfüllt (z. B. wem das Geburtsdatum gehört)</td></tr>
+  <tr><td><code>signerName</code></td><td><code>(role, data, signature) =&gt; string | undefined</code></td><td>Name der unterschreibenden Person: Namensfeld der Rolle, sonst der getippte Name</td></tr>
+  <tr><td><code>typedNameIsPlausible</code></td><td><code>(name) =&gt; boolean</code></td><td>Mindestens zwei Buchstaben</td></tr>
   <tr><td colspan="3"><code>src/logic/seal.ts</code> · <code>src/logic/strokes.ts</code> · <code>src/logic/time.ts</code> · <code>src/logic/questionnaireFile.ts</code></td></tr>
   <tr><td><code>fieldHash</code> · <code>fieldHashesOf</code></td><td><code>(nonce, fieldId, value)</code> · <code>(nonce, data)</code></td><td>Gesalzene Feld-Hashes, 64 Bit</td></tr>
   <tr><td><code>contentHashOf</code> · <code>strokesHashOf</code></td><td><code>(payload)</code> · <code>(encoded)</code></td><td>SHA-256 über JCS(payload) bzw. über den Strich-Text</td></tr>
   <tr><td><code>diffFieldHashes</code></td><td><code>(payload, data) =&gt; { changed, missing, extra }</code></td><td>Welche Felder nicht mehr zum Siegel passen</td></tr>
+  <tr><td><code>signatureShapeProblem</code></td><td><code>(strokes) =&gt; string | undefined</code></td><td>Plausibilität: mindestens 5 Punkte, mindestens 40 Einheiten breit</td></tr>
   <tr><td><code>encodeStrokes</code> · <code>decodeStrokes</code></td><td><code>(Point[][]) =&gt; string</code> · <code>(string) =&gt; { ok, strokes } | { ok: false, reason }</code></td><td>Kompakte, kanonische Strich-Kodierung; Grenzen 64 Striche, 4000 Punkte</td></tr>
   <tr><td><code>utcMillis</code> · <code>localMillis</code> · <code>sameInstant</code></td><td><code>(string)</code> · <code>(local, utc)</code></td><td>Strikte ISO-8601-Formen <code>…Z</code> und <code>…+01:00</code>, unabhängig von der Zeitzone der Laufzeit</td></tr>
   <tr><td><code>decodeQuestionnaire</code></td><td><code>(raw: unknown) =&gt; { ok, questionnaire } | { ok: false, issues }</code></td><td>Strikter Decoder der Fragebogen-Datei: keine Zahlen in Werten, Verschachtelung höchstens 8, alle Formate geprüft; das Ergebnis ist kanonisch identisch mit der Eingabe</td></tr>
@@ -484,9 +514,9 @@ und Stationen gehen dabei verloren, und ihre Verweise laufen ins Leere. Das zeig
   <tr><td><code>COMPUTE_FUNCTIONS</code> (<code>src/logic/compute.ts</code>)</td><td>Fest einkompiliert: benannte reine Funktionen für abgeleitete Felder</td><td>Nein. Derzeit leer.</td></tr>
   <tr><td><code>CANON_VERSION = 1</code>, <code>MONEY_MAX_INTEGER_DIGITS = 12</code>, <code>MAX_DEPTH = 64</code></td><td>Konstanten in <code>normalize.ts</code> bzw. <code>jcs.ts</code></td><td>Nein. Eine Änderung der Normalisierung erfordert eine neue <code>CANON_VERSION</code>.</td></tr>
   <tr><td><code>SEAL_SCHEMA = "fragebogen.siegel/1"</code>, <code>FIELD_HASH_LENGTH = 16</code>, <code>FORMAT_VERSION = 1</code>, <code>MAX_VALUE_DEPTH = 8</code></td><td>Konstanten in <code>seal.ts</code> bzw. <code>questionnaireFile.ts</code></td><td>Nein; eine Formatänderung braucht eine neue Version.</td></tr>
-  <tr><td><code>STROKE_BOX = 1000 × 400</code>, <code>MAX_STROKES = 64</code>, <code>MAX_POINTS = 4000</code></td><td>Konstanten in <code>strokes.ts</code></td><td>Nein</td></tr>
+  <tr><td><code>STROKE_BOX = 1000 × 400</code>, <code>MAX_STROKES = 64</code>, <code>MAX_POINTS = 4000</code>, <code>MIN_SIGNATURE_POINTS = 5</code>, <code>MIN_SIGNATURE_WIDTH = 40</code></td><td>Konstanten in <code>strokes.ts</code></td><td>Nein</td></tr>
   <tr><td><code>CLOCK_TOLERANCE_MS</code> = 15 Minuten, <code>MAX_PART_AGE_AT_RECEIPT_MS</code> = 90 Tage</td><td>Voreinstellungen in <code>verify.ts</code></td><td>Je Prüfung über <code>VerifyOptions</code> änderbar</td></tr>
-  <tr><td><code>TRANSITION_MESSAGES</code>, <code>FINDING_MESSAGES</code>, <code>LEVEL_LABELS</code></td><td>Fest einkompiliert: deutsche Texte je Code</td><td>Nein</td></tr>
+  <tr><td><code>TRANSITION_MESSAGES</code>, <code>FINDING_MESSAGES</code>, <code>LEVEL_LABELS</code>, <code>BLOCKER_MESSAGES</code></td><td>Fest einkompiliert: deutsche Texte je Code</td><td>Nein</td></tr>
   <tr><td><code>AGE_OF_MAJORITY = 18</code></td><td>Konstante in <code>dates.ts</code></td><td>Nein (Gesetz)</td></tr>
 </table>
 <p>Es gibt <strong>keine</strong> editierbaren, einmalig angelegten Bestände („seed once“), denn die App speichert nichts im Browser.</p>

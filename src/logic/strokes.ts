@@ -5,6 +5,9 @@
 export const STROKE_BOX = { width: 1000, height: 400 } as const;
 export const MAX_STROKES = 64;
 export const MAX_POINTS = 4000;
+/** Plausibility only — rejects an accidental tap, it cannot tell whose signature it is. */
+export const MIN_SIGNATURE_POINTS = 5;
+export const MIN_SIGNATURE_WIDTH = 40;
 
 export interface Point {
   x: number;
@@ -36,6 +39,15 @@ export function strokesProblem(strokes: Strokes): string | undefined {
   if (!strokes.every((stroke) => stroke.every(inBox))) {
     return `point outside the ${STROKE_BOX.width}×${STROKE_BOX.height} integer box`;
   }
+  return undefined;
+}
+
+/** Why valid strokes do not look like a signature (too few points, too narrow), if so. */
+export function signatureShapeProblem(strokes: Strokes): string | undefined {
+  const points = strokes.flat();
+  if (points.length < MIN_SIGNATURE_POINTS) return 'too few points';
+  const xs = points.map((point) => point.x);
+  if (Math.max(...xs) - Math.min(...xs) < MIN_SIGNATURE_WIDTH) return 'too narrow';
   return undefined;
 }
 

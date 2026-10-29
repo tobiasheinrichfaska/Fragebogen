@@ -1,9 +1,12 @@
 import {
   MAX_POINTS,
   MAX_STROKES,
+  MIN_SIGNATURE_POINTS,
+  MIN_SIGNATURE_WIDTH,
   STROKE_BOX,
   decodeStrokes,
   encodeStrokes,
+  signatureShapeProblem,
   strokesProblem,
   type Point,
 } from './strokes';
@@ -76,5 +79,45 @@ describe('encodeStrokes / decodeStrokes', () => {
     ['1001,0', 'outside the box'],
   ])('rejects the non-canonical or invalid text %j (%s)', (text) => {
     expect(decodeStrokes(text).ok).toBe(false);
+  });
+});
+
+describe('signatureShapeProblem', () => {
+  it.each<[string, Point[][], string | undefined]>([
+    [
+      'a real signature',
+      SAMPLE.concat([
+        [
+          { x: 40, y: 30 },
+          { x: 80, y: 35 },
+        ],
+      ]),
+      undefined,
+    ],
+    ['a tap', [[{ x: 10, y: 10 }]], 'too few points'],
+    [
+      'four points',
+      [
+        [
+          { x: 0, y: 0 },
+          { x: 100, y: 0 },
+          { x: 200, y: 0 },
+          { x: 300, y: 0 },
+        ],
+      ],
+      'too few points',
+    ],
+    [
+      'a vertical line',
+      [Array.from({ length: 10 }, (_, i) => ({ x: 500, y: i * 10 }))],
+      'too narrow',
+    ],
+  ])('%s → %s', (_label, strokes, problem) => {
+    expect(signatureShapeProblem(strokes)).toBe(problem);
+  });
+
+  it('holds the plausibility limits', () => {
+    expect(MIN_SIGNATURE_POINTS).toBe(5);
+    expect(MIN_SIGNATURE_WIDTH).toBe(40);
   });
 });

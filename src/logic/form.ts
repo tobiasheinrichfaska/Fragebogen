@@ -11,6 +11,7 @@ import type {
   InfoBlock,
   RoleDefinition,
   RoleId,
+  SealSignature,
   Sha256Hex,
 } from './model';
 
@@ -25,6 +26,30 @@ export function fieldsOfRole(definition: FormDefinition, role: RoleId): FieldDef
   return definition.sections.flatMap((section) =>
     section.fields.filter((field) => field.role === role),
   );
+}
+
+export function ownerOfField(definition: FormDefinition, fieldId: FieldId): RoleId | undefined {
+  return definition.sections
+    .flatMap((section) => section.fields)
+    .find((field) => field.id === fieldId)?.role;
+}
+
+/** At least two letters: a typed signature must be a name, not a mark. */
+export function typedNameIsPlausible(name: string): boolean {
+  return (name.match(/\p{L}/gu) ?? []).length >= 2;
+}
+
+/** The signer's name: the role's name field if it has one, otherwise the typed signature. */
+export function signerName(
+  role: RoleDefinition,
+  data: PartData,
+  signature: SealSignature | undefined,
+): string | undefined {
+  if (role.signerNameField !== undefined) {
+    const value = data[role.signerNameField];
+    return typeof value === 'string' && value !== '' ? value : undefined;
+  }
+  return signature?.method === 'typed' ? signature.typedName : undefined;
 }
 
 export function infoBlocksOfRole(definition: FormDefinition, role: RoleId): InfoBlock[] {

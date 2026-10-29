@@ -32,8 +32,14 @@ export interface RoleDefinition {
   /** PDF heading of this station, e.g. "Fassung Arbeitnehmer". */
   stationHeading: string;
   confirmationText: string;
+  /** Conditional roles (`requiredIf`) must have `required`. */
   signature: SignatureRequirement;
   requiredIf?: RoleCondition;
+  /**
+   * Required text field of this role holding the signer's name. Without it, a conditional role
+   * (legal guardian) can only sign with a typed name — the name is mandatory either way.
+   */
+  signerNameField?: FieldId;
 }
 
 export const FIELD_TYPES = [

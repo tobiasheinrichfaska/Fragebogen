@@ -120,6 +120,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     'confirmationText',
     'signature',
     'requiredIf',
+    'signerNameField',
   ]);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
@@ -131,6 +132,10 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     o.requiredIf === undefined
       ? undefined
       : decodeRoleCondition(d, o.requiredIf, `${path}.requiredIf`);
+  const signerNameField =
+    o.signerNameField === undefined
+      ? undefined
+      : d.string(o.signerNameField, `${path}.signerNameField`, ID);
   if (
     id === undefined ||
     label === undefined ||
@@ -147,6 +152,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     confirmationText,
     signature,
     ...(requiredIf === undefined ? {} : { requiredIf }),
+    ...(signerNameField === undefined ? {} : { signerNameField }),
   };
 }
 
@@ -523,6 +529,30 @@ function roles({ definition, fields, report }: CheckContext): void {
         report(`${path}.requiredIf.birthDateField`, `unknown field "${condition.birthDateField}"`);
       } else if (target.field.type !== 'date') {
         report(`${path}.requiredIf.birthDateField`, 'must reference a date field');
+      } else if (target.field.role === role.id) {
+        report(`${path}.requiredIf.birthDateField`, 'must belong to another role');
+      } else {
+        // The person whose age triggers the guardian must sign as well — no signature, no transmission.
+        const subject = definition.roles.find((candidate) => candidate.id === target.field.role);
+        if (subject && subject.signature !== 'required') {
+          report(
+            `${path}.requiredIf.birthDateField`,
+            `role "${subject.id}" must sign ("required")`,
+          );
+        }
+      }
+      if (role.signature !== 'required') {
+        report(`${path}.signature`, 'a conditional role must sign ("required")');
+      }
+    }
+    if (role.signerNameField !== undefined) {
+      const name = fields.get(role.signerNameField);
+      const fieldPath = `${path}.signerNameField`;
+      if (!name) report(fieldPath, `unknown field "${role.signerNameField}"`);
+      else if (name.isColumn || name.field.role !== role.id) {
+        report(fieldPath, 'must be a top-level field of the same role');
+      } else if (name.field.type !== 'text' || !name.field.required || name.field.showIf) {
+        report(fieldPath, 'must be a required, always visible text field');
       }
     }
     const hasFields = [...fields.values()].some((entry) => entry.field.role === role.id);

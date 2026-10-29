@@ -28,59 +28,61 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 
 ## Project Directory
 
-| File/Folder                                           | Purpose                                                                                                                                                        |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CLAUDE.md`                                           | This file — project conventions and status                                                                                                                     |
-| `README.md`                                           | Public description (German), legal status, license                                                                                                             |
-| `FEATURES_REQUIRED.md`                                | Critical user paths the audit validates end-to-end                                                                                                             |
-| `LICENSE`, `LICENSE_COMMERCIAL.md`, `CONTRIBUTING.md` | AGPLv3 + commercial dual licensing, CLA                                                                                                                        |
-| `.gitattributes`                                      | LF line endings (workspace template)                                                                                                                           |
-| `.gitignore`                                          | Ignores `node_modules/`, `dist/`, `.tmp/`, test reports, editor/OS junk                                                                                        |
-| `package.json` / `package-lock.json`                  | Scripts and pinned dependencies                                                                                                                                |
-| `vite.config.ts`                                      | Vite + singlefile build (`base: './'`, no modulePreload polyfill) and Vitest config (`pool: 'vmThreads'`)                                                      |
-| `tsconfig.json`                                       | Strict TS (incl. `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`)                                                                                     |
-| `eslint.config.js`                                    | Flat config: TS strict, React hooks/refresh for `src/ui`, layering rules for `src/logic`                                                                       |
-| `.prettierrc.json`, `.prettierignore`                 | Formatting                                                                                                                                                     |
-| `index.html`                                          | Entry HTML (`lang="de"`, `data:` favicon, no external URLs)                                                                                                    |
-| `src/main.tsx`                                        | Mounts the React app                                                                                                                                           |
-| `src/appInfo.ts`                                      | App name + version (version injected from `package.json` as `__APP_VERSION__`)                                                                                 |
-| `src/vite-env.d.ts`                                   | Vite client types, `__APP_VERSION__` declaration                                                                                                               |
-| `src/logic/model.ts`                                  | Data model types + enumeration constants (`FIELD_TYPES`, …): form definition, questionnaire, part, seal, receipts                                              |
-| `src/logic/dates.ts`                                  | Date-only arithmetic on `YYYY-MM-DD` strings; `ageOn` / `isMinorOn` (§§ 187, 188 BGB)                                                                          |
-| `src/logic/jcs.ts`                                    | RFC 8785 canonical JSON (`canonicalize`), `isWellFormed` (no unpaired surrogates), realm-independent `isPlainObject`                                           |
-| `src/logic/hash.ts`                                   | SHA-256 via `@noble/hashes`: `sha256Hex`, `canonicalHash` (= SHA-256 of JCS), `isSha256Hex`                                                                    |
-| `src/logic/issues.ts`                                 | `Checked<T>` result type, user-facing issue codes and their German messages (`ISSUE_MESSAGES`)                                                                 |
-| `src/logic/normalize.ts`                              | Input normalisation `canon: 1` (text, date, money, IBAN, tax id, SV number, choices); `normalizeFieldValue` dispatch table per field type                      |
-| `src/logic/validators.ts`                             | Check digits: IBAN (MOD 97-10), Steuer-ID (digit pattern + MOD 11,10), Versicherungsnummer                                                                     |
-| `src/logic/data/ibanLengths.ts`                       | IBAN length per country (78 countries; others: warning, length unchecked)                                                                                      |
-| `src/logic/decode.ts`                                 | `Decoder`: strict decoding of untrusted JSON with issue paths, no coercion/defaults                                                                            |
-| `src/logic/formDefinition.ts`                         | `parseFormDefinition` = strict decode + reference checks (`checkFormDefinition`, rule list); id patterns; `findCycle`                                          |
-| `src/logic/formRegistry.ts`                           | Registry by (id, version) and `definitionHash`; published list check; `checkFieldIdStability`; `compareVersions`                                               |
-| `src/logic/compute.ts`                                | Named pure functions for `computed` fields (empty until step 5)                                                                                                |
-| `src/logic/form.ts`                                   | Evaluating a definition against data: `visibility` (chained `showIf`), `sealableData`, `missingRequired`, `noticeHash`, role/field lookups                     |
-| `src/logic/seal.ts`                                   | `SEAL_SCHEMA`, salted 64-bit `fieldHash`, `contentHashOf`, `strokesHashOf`, `diffFieldHashes`                                                                  |
-| `src/logic/strokes.ts`                                | Canonical delta text encoding of drawn signatures (`encodeStrokes` / strict `decodeStrokes`), limits                                                           |
-| `src/logic/time.ts`                                   | Strict ISO 8601 UTC/local-with-offset parsing, `sameInstant`, durations                                                                                        |
-| `src/logic/questionnaireFile.ts`                      | File format constants (`FORMAT`, `QUESTIONNAIRE_ID`) and the strict `decodeQuestionnaire` for untrusted files                                                  |
-| `src/logic/questionnaire.ts`                          | Pure state transitions: create, `startPart`, `setValue`, `discardDraft`, `sealPart`, `addReceipt`, `receivedPartFor`                                           |
-| `src/logic/verify.ts`                                 | `verifyQuestionnaire`: graded verdicts, findings with severity + German messages, hash chain, receipts, time plausibility                                      |
-| `tests/support/sample.ts`                             | Shared fictitious scenario (person signs, employer seals + chains, Kanzlei/DATEV receipt; second-version variant)                                              |
-| `tests/golden/`                                       | Golden questionnaires (`beispiel-1.0.0/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                       |
-| `src/logic/*.test.ts`                                 | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                          |
-| `forms/`                                              | Form definitions `forms/<id>/<version>.json` (none yet), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                  |
-| `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests                                                           |
-| `tests/forms/publishedForms.test.ts`                  | Guards the real `forms/` folder: valid, published, unchanged hash, file naming, field-id stability                                                             |
-| `tests/static/sourceCharacters.test.ts`               | Fails on literal invisible/combining/separator characters in sources and docs (must be `\u` escapes)                                                           |
-| `src/ui/App.tsx`                                      | Start screen (placeholder until step 6)                                                                                                                        |
-| `src/ui/styles.css`                                   | Base styles, light/dark                                                                                                                                        |
-| `tests/static/indexHtml.test.ts`                      | Guards `index.html` against external URLs/stylesheets                                                                                                          |
-| `docs/data-model.html`                                | Self-contained data-model reference (German) — regenerate when the model changes                                                                               |
-| `docs/plan.md`                                        | Approved plan, step table with status (German)                                                                                                                 |
-| `docs/rechtliches.md`                                 | Legal background with sources (German, not legal advice)                                                                                                       |
-| `docs/spike-pdf.md`                                   | Step-1 PDF spike results + **data-page format v1** spec (German)                                                                                               |
-| `assets/fonts/`                                       | Embedded PDF fonts: Noto Sans Regular/SemiBold + Noto Sans Mono, Latin subsets (OFL), `README.md` with source URLs, SHA-256 and the exact `pyftsubset` command |
-| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md`, `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)                     |
-| `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                                                                              |
+| File/Folder                                           | Purpose                                                                                                                                                                     |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CLAUDE.md`                                           | This file — project conventions and status                                                                                                                                  |
+| `README.md`                                           | Public description (German), legal status, license                                                                                                                          |
+| `FEATURES_REQUIRED.md`                                | Critical user paths the audit validates end-to-end                                                                                                                          |
+| `LICENSE`, `LICENSE_COMMERCIAL.md`, `CONTRIBUTING.md` | AGPLv3 + commercial dual licensing, CLA                                                                                                                                     |
+| `.gitattributes`                                      | LF line endings (workspace template)                                                                                                                                        |
+| `.gitignore`                                          | Ignores `node_modules/`, `dist/`, `.tmp/`, test reports, editor/OS junk                                                                                                     |
+| `package.json` / `package-lock.json`                  | Scripts and pinned dependencies                                                                                                                                             |
+| `vite.config.ts`                                      | Vite + singlefile build (`base: './'`, no modulePreload polyfill) and Vitest config (`pool: 'vmThreads'`)                                                                   |
+| `tsconfig.json`                                       | Strict TS (incl. `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`)                                                                                                  |
+| `eslint.config.js`                                    | Flat config: TS strict, React hooks/refresh for `src/ui`, layering rules for `src/logic`                                                                                    |
+| `.prettierrc.json`, `.prettierignore`                 | Formatting                                                                                                                                                                  |
+| `index.html`                                          | Entry HTML (`lang="de"`, `data:` favicon, no external URLs)                                                                                                                 |
+| `src/main.tsx`                                        | Mounts the React app                                                                                                                                                        |
+| `src/appInfo.ts`                                      | App name + version (version injected from `package.json` as `__APP_VERSION__`)                                                                                              |
+| `src/vite-env.d.ts`                                   | Vite client types, `__APP_VERSION__` declaration                                                                                                                            |
+| `src/logic/model.ts`                                  | Data model types + enumeration constants (`FIELD_TYPES`, …): form definition, questionnaire, part, seal, receipts                                                           |
+| `src/logic/dates.ts`                                  | Date-only arithmetic on `YYYY-MM-DD` strings; `ageOn` / `isMinorOn` (§§ 187, 188 BGB)                                                                                       |
+| `src/logic/jcs.ts`                                    | RFC 8785 canonical JSON (`canonicalize`), `isWellFormed` (no unpaired surrogates), realm-independent `isPlainObject`                                                        |
+| `src/logic/hash.ts`                                   | SHA-256 via `@noble/hashes`: `sha256Hex`, `canonicalHash` (= SHA-256 of JCS), `isSha256Hex`                                                                                 |
+| `src/logic/issues.ts`                                 | `Checked<T>` result type, user-facing issue codes and their German messages (`ISSUE_MESSAGES`)                                                                              |
+| `src/logic/normalize.ts`                              | Input normalisation `canon: 1` (text, date, money, IBAN, tax id, SV number, choices); `normalizeFieldValue` dispatch table per field type                                   |
+| `src/logic/validators.ts`                             | Check digits: IBAN (MOD 97-10), Steuer-ID (digit pattern + MOD 11,10), Versicherungsnummer                                                                                  |
+| `src/logic/data/ibanLengths.ts`                       | IBAN length per country (78 countries; others: warning, length unchecked)                                                                                                   |
+| `src/logic/decode.ts`                                 | `Decoder`: strict decoding of untrusted JSON with issue paths, no coercion/defaults                                                                                         |
+| `src/logic/formDefinition.ts`                         | `parseFormDefinition` = strict decode + reference checks (`checkFormDefinition`, rule list); id patterns; `findCycle`                                                       |
+| `src/logic/formRegistry.ts`                           | Registry by (id, version) and `definitionHash`; published list check; `checkFieldIdStability`; `compareVersions`                                                            |
+| `src/logic/compute.ts`                                | Named pure functions for `computed` fields (empty until step 5)                                                                                                             |
+| `src/logic/form.ts`                                   | Evaluating a definition against data: `visibility` (chained `showIf`), `sealableData`, `missingRequired`, `noticeHash`, role/field lookups                                  |
+| `src/logic/seal.ts`                                   | `SEAL_SCHEMA`, salted 64-bit `fieldHash`, `contentHashOf`, `strokesHashOf`, `diffFieldHashes`                                                                               |
+| `src/logic/strokes.ts`                                | Canonical delta text encoding of drawn signatures (`encodeStrokes` / strict `decodeStrokes`), limits                                                                        |
+| `src/logic/time.ts`                                   | Strict ISO 8601 UTC/local-with-offset parsing, `sameInstant`, durations                                                                                                     |
+| `src/logic/questionnaireFile.ts`                      | File format constants (`FORMAT`, `QUESTIONNAIRE_ID`) and the strict `decodeQuestionnaire` for untrusted files                                                               |
+| `src/logic/questionnaire.ts`                          | Pure state transitions: create, `startPart`, `setValue`, `discardDraft`, `sealPart`, `addReceipt`, `receivedPartFor`                                                        |
+| `src/logic/verify.ts`                                 | `verifyQuestionnaire`: graded verdicts, findings with severity + German messages, hash chain, receipts, time plausibility                                                   |
+| `src/logic/requirements.ts`                           | Transmission gate `transmissionBlockers` (no transmission without signatures; minor → guardian with name, bound to the current part), `roleRequirement`, `completenessGaps` |
+| `tests/support/sample.ts`                             | Shared fictitious scenarios (person signs, employer seals + chains, Kanzlei/DATEV receipt; second version; minor + guardian on form 1.1.0)                                  |
+| `tests/golden/`                                       | Golden questionnaires (`beispiel-<version>/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                                |
+| `src/logic/*.test.ts`                                 | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                                       |
+| `forms/`                                              | Form definitions `forms/<id>/<version>.json` (none yet), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                               |
+| `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests; frozen by golden files                                                |
+| `tests/fixtures/forms/beispiel/1.1.0.json`            | Same form with a required guardian name field (`signerNameField`); frozen by golden files                                                                                   |
+| `tests/forms/publishedForms.test.ts`                  | Guards the real `forms/` folder: valid, published, unchanged hash, file naming, field-id stability                                                                          |
+| `tests/static/sourceCharacters.test.ts`               | Fails on literal invisible/combining/separator characters in sources and docs (must be `\u` escapes)                                                                        |
+| `src/ui/App.tsx`                                      | Start screen (placeholder until step 6)                                                                                                                                     |
+| `src/ui/styles.css`                                   | Base styles, light/dark                                                                                                                                                     |
+| `tests/static/indexHtml.test.ts`                      | Guards `index.html` against external URLs/stylesheets                                                                                                                       |
+| `docs/data-model.html`                                | Self-contained data-model reference (German) — regenerate when the model changes                                                                                            |
+| `docs/plan.md`                                        | Approved plan, step table with status (German)                                                                                                                              |
+| `docs/rechtliches.md`                                 | Legal background with sources (German, not legal advice)                                                                                                                    |
+| `docs/spike-pdf.md`                                   | Step-1 PDF spike results + **data-page format v1** spec (German)                                                                                                            |
+| `assets/fonts/`                                       | Embedded PDF fonts: Noto Sans Regular/SemiBold + Noto Sans Mono, Latin subsets (OFL), `README.md` with source URLs, SHA-256 and the exact `pyftsubset` command              |
+| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md`, `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)                                  |
+| `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                                                                                           |
 
 ---
 
@@ -113,8 +115,17 @@ Key design decisions (details in `docs/plan.md`):
 - **Notices:** `InfoBlock.acknowledgement` is `read` (confirmed in-app) or `paperHandout` (notice is
   handed out on paper; the form only confirms the handout). The hash of the exact text goes into
   the seal.
-- **Legal guardian** role becomes mandatory when the person is under 18 on the signing day
-  (`RoleCondition.kind = 'minorOnSigning'`, `isMinorOn`).
+- **No transmission without signature** (user requirement 2026-10-29, `requirements.ts`): the
+  transmission PDF is only written when `transmissionBlockers` is empty — no open draft, every
+  role with `signature: required` signed, no invalid part. The role whose birth date triggers the
+  guardian must have `signature: required` (definition rule). Interim state can always be saved.
+- **Legal guardian** (`requiredIf: minorOnSigning`): required when the person is under 18 on the
+  **local date of their own signature** (device clock, §§ 187/188 BGB). The guardian must sign
+  (definition rule: conditional roles have `signature: required`), state a name (`signerNameField`,
+  or the typed signature on forms without that field) and bind exactly the person's current
+  contentHash in `receivedParts`; after the person re-signs, the guardian must sign again.
+- **Signature plausibility:** drawn ≥ 5 points and ≥ 40 units wide (box 1000), typed ≥ 2 letters;
+  rejects accidental taps, says nothing about whose signature it is.
 - **Receipts** carry `source: 'app' | 'datev'` — the DATEV filing date is the trusted time anchor.
 - **No JSON numbers** in questionnaire data; dates are strings, never routed through `Date`.
 - **Canon 1** (`normalize.ts`): text → remove soft hyphen/zero-width/BOM and controls, all line
@@ -189,8 +200,10 @@ Key design decisions (details in `docs/plan.md`):
 - **`forms/published.json` immutability** is only checked against the current files; removing or
   editing an entry _together with_ its file is caught once CI compares with the last release (step
   12). Golden files guard only the fixture form so far.
-- **Legal guardian requirement is not evaluated yet** — `requiredIf: minorOnSigning` is checked in the
-  definition, but "guardian part missing" is a gap reported by the merge step (step 4).
+- **Age check relies on self-reported data:** the birth date is the person's own answer and the
+  signing day comes from the device clock; a wrong birth date or a manipulated clock is not
+  detectable (a signature dated after a receipt is flagged as implausible).
+- **The transmission gate is logic only so far** — the PDF writer must enforce it (step 8).
 - **Fields of type `repeatGroup`/`file` cannot be sealed yet** (their values are not normalised).
 - **Verification proves consistency, not authorship:** anyone can produce a fresh, self-consistent
   seal; only confirmations (other roles' seals, receipts, later the DATEV filing) raise the level,
@@ -235,12 +248,13 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 Steps 0 (foundation), 1 (PDF spike, `docs/spike-pdf.md`), 2 (canonicalisation, normalisation,
 validators, form definition decoder, registry) and 3 (seal, transitions, strict file decoder,
-graded verification, tamper matrix, golden files) done. Spike code is throw-away in
+graded verification, tamper matrix, golden files) and 4a (transmission rules: no transmission without
+signature, guardian with name for minors, signature plausibility, completeness gaps) done. Spike code is throw-away in
 `.tmp/spike-pdf/` (re-check any PDF with `node .tmp/spike-pdf/check.ts <pdf>`). The spike's manual
 counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`).
-**Next: step 4 — merge (logic):** duplicates with the same hash, version conflicts (field
+**Next: step 4b — merge (logic):** duplicates with the same hash, version conflicts (field
 comparison, a human decides), forks, matching without a shared id via `matchKeys`,
-contradictions (`consistencyRules`), gaps (missing parts incl. the guardian for minors, missing
-required fields/signatures), `mergeRecord` + `mergeHash`, associativity as a property test.
+contradictions (`consistencyRules`), gaps via `completenessGaps`, `mergeRecord` + `mergeHash`,
+associativity as a property test.
 
 _Last updated: 2026-10-29_

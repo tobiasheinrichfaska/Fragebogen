@@ -1,7 +1,7 @@
 # Critical User Paths — Fragebogen
 
 **Purpose:** Core workflows that must not break. Audit validates these end-to-end.
-Status 2026-10-29: project foundation only — every path below is still **open**.
+Status 2026-10-29: logic layer up to the transmission rules exists, no UI yet — every path below is still **open** (end-to-end).
 
 ## Offline & privacy (applies to every path)
 
@@ -14,7 +14,9 @@ Status 2026-10-29: project foundation only — every path below is still **open*
 
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
 - [ ] **Acknowledge notices** — `read` notices confirmed in-app; `paperHandout` notices confirmed as handed out on paper
-- [ ] **Sign (draw or typed name) after explicit confirmation** — part locks; system note shown under the signature
+- [ ] **Sign (draw or typed name) after explicit confirmation** — part locks; system note shown under the signature; an accidental tap or a single letter is refused
+- [ ] **No transmission without the person's signature** — the PDF for passing on is refused while a draft is open, a required signature is missing or a part is altered (`transmissionBlockers`); the reason is shown in German. Saving the interim state stays possible.
+- [ ] **Minor on the signing day (device date)** — the legal guardian must sign with name (name field or typed name) and confirm exactly the current version of the person's part; re-signing by the person requires the guardian again; otherwise no transmission
 - [ ] **Download the PDF** — readable sections, signature with system note, Prüfblatt, data pages, footer "Seite x von y"
 - [ ] **Save/load interim state as a file** — round-trips without loss
 
@@ -33,10 +35,11 @@ Status 2026-10-29: project foundation only — every path below is still **open*
 - [ ] **Contradictions and gaps shown** — consistency rules, missing required fields/signatures/parts
 - [ ] **Merged output** — one PDF per form (no attachment, PDF/A-2u target) plus JSON; originals stay verifiable
 
-| Path              | Impact                                  | Audit Check                                                                       |
-| ----------------- | --------------------------------------- | --------------------------------------------------------------------------------- |
-| file:// start     | Users cannot open the app at all        | E2E loads `file://…/dist/index.html` in Chromium, Firefox, WebKit                 |
-| No network        | Personal data could leak                | Playwright request guard + CSP violation listener over the full flow              |
-| PDF round-trip    | Data cannot travel between stations     | Write PDF → extract data pages with pdf.js → JSON bit-identical                   |
-| Seal verification | Tampering goes unnoticed                | Tamper matrix (field, payload, signature, swapped parts) yields expected verdicts |
-| Merge             | Kanzlei retypes data / misses conflicts | Merge property tests + E2E with separately arriving parts                         |
+| Path              | Impact                                                                    | Audit Check                                                                                            |
+| ----------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| file:// start     | Users cannot open the app at all                                          | E2E loads `file://…/dist/index.html` in Chromium, Firefox, WebKit                                      |
+| No network        | Personal data could leak                                                  | Playwright request guard + CSP violation listener over the full flow                                   |
+| PDF round-trip    | Data cannot travel between stations                                       | Write PDF → extract data pages with pdf.js → JSON bit-identical                                        |
+| Seal verification | Tampering goes unnoticed                                                  | Tamper matrix (field, payload, signature, swapped parts) yields expected verdicts                      |
+| Transmission gate | Unsigned data or a minor's data without guardian reaches employer/Kanzlei | Unit tests on `transmissionBlockers`; E2E: download refused with reason until signed / guardian signed |
+| Merge             | Kanzlei retypes data / misses conflicts                                   | Merge property tests + E2E with separately arriving parts                                              |

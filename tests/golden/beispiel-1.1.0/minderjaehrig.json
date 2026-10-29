@@ -1,0 +1,137 @@
+{
+  "format": "fragebogen",
+  "formatVersion": 1,
+  "questionnaireId": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c",
+  "form": {
+    "id": "beispiel",
+    "version": "1.1.0",
+    "definitionHash": "7cc828bbbd5dcbd8e021d33ce0e82844047f52e6728482214404b297e0bfc5f6"
+  },
+  "parts": {
+    "person": [
+      {
+        "role": "person",
+        "status": "signed",
+        "data": {
+          "nachname": "Musterfrau",
+          "geburtsdatum": "2010-03-01",
+          "steuerId": "86095742719",
+          "weitereBeschaeftigung": true,
+          "weitereArt": "minijob",
+          "bemerkungen": "Erste Zeile\nZweite Zeile"
+        },
+        "signatureStrokes": "100,200,12,-12,18,-7,21,9;300,210,6,-6",
+        "seal": {
+          "payload": {
+            "schema": "fragebogen.siegel/1",
+            "canon": 1,
+            "questionnaireId": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c",
+            "form": {
+              "id": "beispiel",
+              "version": "1.1.0",
+              "definitionHash": "7cc828bbbd5dcbd8e021d33ce0e82844047f52e6728482214404b297e0bfc5f6"
+            },
+            "role": "person",
+            "version": 1,
+            "fieldHashes": {
+              "nachname": "d77a9a5e763c0f96",
+              "geburtsdatum": "86207fc88f03ecfe",
+              "steuerId": "7498ff714b794218",
+              "weitereBeschaeftigung": "079ff240551cc709",
+              "weitereArt": "b7081a35feace12e",
+              "bemerkungen": "dda8845ade14c531"
+            },
+            "confirmationText": "Ich bestätige, dass meine Angaben richtig und vollständig sind.",
+            "acknowledgements": [
+              {
+                "infoBlockId": "datenschutz",
+                "kind": "read",
+                "textHash": "741fe19b2a8c5512a60b8109aa998e7e5638bfcd3b0e5629b3b66354a42d2cdd"
+              }
+            ],
+            "signature": {
+              "method": "drawn",
+              "strokesHash": "d6e5074b224ce3cc59374fc73262ef3959e7e30450ceab1b2758414ec203fca4"
+            },
+            "systemNote": {
+              "signedAtLocal": "2026-10-29T10:15:00.000+01:00",
+              "timeZone": "Europe/Berlin",
+              "signedAtUtc": "2026-10-29T09:15:00.000Z",
+              "os": "Windows",
+              "browser": "Edge",
+              "browserVersion": "141",
+              "uaSource": "ua-ch",
+              "language": "de-DE",
+              "inputTypes": [
+                "mouse"
+              ],
+              "appVersion": "0.1.0"
+            },
+            "receivedParts": [],
+            "nonce": "0123456789abcdef0123456789abcdef"
+          },
+          "contentHash": "b010e54b24ac27ac32322a403194c16a27c484e53e9d751810f25737093ac636"
+        }
+      }
+    ],
+    "vertretung": [
+      {
+        "role": "vertretung",
+        "status": "signed",
+        "data": {
+          "vertretungName": "Max Musterfrau"
+        },
+        "signatureStrokes": "100,200,12,-12,18,-7,21,9;300,210,6,-6",
+        "seal": {
+          "payload": {
+            "schema": "fragebogen.siegel/1",
+            "canon": 1,
+            "questionnaireId": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c",
+            "form": {
+              "id": "beispiel",
+              "version": "1.1.0",
+              "definitionHash": "7cc828bbbd5dcbd8e021d33ce0e82844047f52e6728482214404b297e0bfc5f6"
+            },
+            "role": "vertretung",
+            "version": 1,
+            "fieldHashes": {
+              "vertretungName": "c120cd3dcb1e0613"
+            },
+            "confirmationText": "Ich stimme als gesetzliche Vertretung zu.",
+            "acknowledgements": [],
+            "signature": {
+              "method": "drawn",
+              "strokesHash": "d6e5074b224ce3cc59374fc73262ef3959e7e30450ceab1b2758414ec203fca4"
+            },
+            "systemNote": {
+              "signedAtLocal": "2026-10-29T10:20:00.000+01:00",
+              "timeZone": "Europe/Berlin",
+              "signedAtUtc": "2026-10-29T09:20:00.000Z",
+              "os": "Windows",
+              "browser": "Edge",
+              "browserVersion": "141",
+              "uaSource": "ua-ch",
+              "language": "de-DE",
+              "inputTypes": [
+                "touch"
+              ],
+              "appVersion": "0.1.0"
+            },
+            "receivedParts": [
+              {
+                "role": "person",
+                "contentHash": "b010e54b24ac27ac32322a403194c16a27c484e53e9d751810f25737093ac636",
+                "receivedAtLocal": "2026-10-29T10:16:00.000+01:00",
+                "receivedAtUtc": "2026-10-29T09:16:00.000Z",
+                "source": "same-device"
+              }
+            ],
+            "nonce": "13579bdf02468ace13579bdf02468ace"
+          },
+          "contentHash": "86bd728e897a6aca1c1b903f054362d9bb2c3392afe1d78364c4080fd4be29b9"
+        }
+      }
+    ]
+  },
+  "receipts": []
+}

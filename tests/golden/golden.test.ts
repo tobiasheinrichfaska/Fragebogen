@@ -10,7 +10,7 @@ import { canonicalize } from '../../src/logic/jcs';
 import type { Questionnaire } from '../../src/logic/model';
 import { decodeQuestionnaire } from '../../src/logic/questionnaireFile';
 import { verifyQuestionnaire } from '../../src/logic/verify';
-import { beispielRegistry, newVersion, twoRoles } from '../support/sample';
+import { beispielRegistry, minorWithGuardian, newVersion, twoRoles } from '../support/sample';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -31,6 +31,12 @@ const GOLDEN: {
     build: newVersion,
     level: 'warnings',
     parts: { 'person#0': 'confirmed', 'person#1': 'consistent', 'arbeitgeber#0': 'consistent' },
+  },
+  {
+    file: 'beispiel-1.1.0/minderjaehrig.json',
+    build: minorWithGuardian,
+    level: 'ok',
+    parts: { 'person#0': 'confirmed', 'vertretung#0': 'consistent' },
   },
 ];
 

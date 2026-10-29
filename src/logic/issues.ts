@@ -20,7 +20,8 @@ export type IssueCode =
   | 'taxId.checksum'
   | 'svNumber.format'
   | 'svNumber.checksum'
-  | 'choice.unknown';
+  | 'choice.unknown'
+  | 'signature.nameMismatch';
 
 export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'text.illFormed': 'Der Text enthält ein ungültiges Zeichen.',
@@ -44,6 +45,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
     'Die Versicherungsnummer hat 12 Stellen: 8 Ziffern, einen Buchstaben und 3 Ziffern.',
   'svNumber.checksum': 'Die Versicherungsnummer stimmt nicht (Prüfziffer).',
   'choice.unknown': 'Bitte eine der angebotenen Möglichkeiten wählen.',
+  'signature.nameMismatch': 'Der getippte Name weicht vom angegebenen Namen ab. Bitte prüfen.',
 };
 
 /** A value accepted (possibly with warnings), or rejected with exactly one issue. */
