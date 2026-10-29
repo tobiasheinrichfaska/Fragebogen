@@ -954,3 +954,29 @@ describe('interview texts and order', () => {
     expect(checkFormDefinition(logicForm().definition)).toEqual([]);
   });
 });
+
+describe('explainer video paths', () => {
+  it.each(['versicherungsnummer', 'sofortmeldung/versicherungsnummer', 'a-b/c-d-1'])(
+    'accepts %j',
+    (path) => {
+      expect(parseFormDefinition(rawWith(['sections', 0, 'fields', 0, 'explainer'], path)).ok).toBe(
+        true,
+      );
+      expect(parseFormDefinition(rawWith(['infoBlocks', 0, 'explainer'], path)).ok).toBe(true);
+    },
+  );
+
+  it.each([
+    'https://example.org/video',
+    '/absolut',
+    'Gross',
+    'a//b',
+    'a/b/c/d/e',
+    '../oben',
+    'a b',
+  ])('refuses %j (paths only, never a full address)', (path) => {
+    expect(parseFormDefinition(rawWith(['sections', 0, 'fields', 0, 'explainer'], path)).ok).toBe(
+      false,
+    );
+  });
+});

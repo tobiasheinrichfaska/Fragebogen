@@ -116,6 +116,7 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
     `${prefix}${field.label} (${field.id})`,
     ...(field.question === undefined ? [] : [`Frage: ${field.question}`]),
     ...(field.help === undefined ? [] : [`Hilfe: ${field.help}`]),
+    ...(field.explainer === undefined ? [] : [`Erklärvideo: ${field.explainer}`]),
   ].join('\n');
   const own = [
     name,
@@ -253,6 +254,7 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       `- Kenntnisnahme durch: ${roleLabel(definition, block.role)}`,
       `- Art: ${ACKNOWLEDGEMENT_LABELS[block.acknowledgement]}`,
       `- Stand: ${formatGermanDate(block.asOf)}`,
+      ...(block.explainer === undefined ? [] : [`- Erklärvideo: ${block.explainer}`]),
       '',
       ...quote(block.text),
     );

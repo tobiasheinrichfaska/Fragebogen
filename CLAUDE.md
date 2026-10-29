@@ -83,6 +83,10 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung 0.1.0 through the engine: what is asked, preselections, notices, both station orders, part link, minor + guardian, name cross-check, master data                                                                                      |
 | `src/logic/interview.ts`                              | Interview logic: `interviewSteps` (notices, available questions in form order with level and state, summary), `stepAfter`/`stepBefore`/`resumeStep`, `interviewProgress`, `interviewSummary` (missing, deferred, inactive answers with reason, notices) |
 | `src/logic/dependencies.ts`                           | `fieldDependencies`: which answers rest on others (showIf level 0…n, requiredIf separately, what a field enables)                                                                                                                                       |
+| `src/logic/dataPackage.ts`                            | Data package = questionnaire + its form definition (`fragebogen-paket` 1): `buildPackage`, `packageText` (JCS), strict `decodePackage` (definition must hash to the sealed one; origin `published` / `embedded`)                                        |
+| `src/logic/dataPages.ts`                              | Data-page codec v1: deflate + base64url in numbered, checksummed lines; `encodeDataLines` / `decodeDataLines` (any order, names bad/missing lines), `inflatePackage`                                                                                    |
+| `src/logic/qrParts.ts`                                | QR payloads `FBQ1 <id> <i>/<n> <sha16>\n` + binary chunk (700 bytes); `assembleQrPayloads` (any order, duplicates, names missing parts, refuses mixed/conflicting codes)                                                                                |
+| `src/io/qr.ts`                                        | `qrMatrix` (qrcode-generator, MIT) and `readQrCodes` (jsQR, Apache-2.0): cuts the image along white rows/columns into cells, decodes each; `rasterize` for tests                                                                                        |
 | `src/logic/masterDataLink.ts`                         | `masterDataFragment` / `parseMasterDataFragment`: master data in the bookmark link (`#stammdaten=1&…`), strict all-or-nothing parsing with German messages                                                                                              |
 | `src/logic/masterData.ts`                             | `masterDataOf` / `applyMasterData`: a station's own master data (`FieldDefinition.masterData` keys) to remember on its device and fill in again; refused values reported                                                                                |
 | `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests; frozen by golden files                                                                                                                            |
@@ -211,16 +215,23 @@ Key design decisions (details in `docs/plan.md`):
 - **Form versions 0.x are test versions** (Tobias 2026-10-29, `isTestVersion`): frozen like any
   other, but deletable before the first release as long as no real questionnaire used them;
   from 1.0.0 on a version stays forever. The app itself is 0.1.0 as well.
-- **QR codes for the paper path** (decided 2026-10-29, step 8): the data pages additionally carry
-  the compressed data block as numbered QR codes (byte mode, error correction), so a scan or a
-  phone photo of the printed PDF can be read back and verified like the PDF. The electronic file
-  stays the original. Libraries to check then: encoder qrcode-generator or node-qrcode (MIT),
-  decoder jsQR or zxing-js (Apache-2.0).
-- **Explainer videos** (wish 2026-10-29, design): links only, opened outside the app (never
-  embedded: offline, CSP, no tracking inside the app), https only. URLs are Kanzlei
-  configuration keyed by field or notice id (optionally per form), so a moved video never needs a
-  new form version. Hosting on the Kanzlei site is preferable; YouTube passes viewer data to
-  Google.
+- **QR codes for the paper path** (decided 2026-10-29): the data pages additionally carry the
+  compressed package as numbered QR codes (byte mode, error correction M, 700 bytes each), so a
+  scan or a phone photo of the printed PDF can be read back and verified like the PDF. The
+  electronic file stays the original. Libraries (pinned, no install scripts, no dependencies):
+  qrcode-generator 2.0.4 (MIT) and jsQR 1.4.0 (Apache-2.0). **Probed 2026-10-30: jsQR finds no
+  code at all when several are visible** — the layout keeps 12-module white gaps and the reader
+  cuts the image along white rows and columns into cells first.
+- **The form definition travels in the PDF** (Tobias 2026-10-29): data pages, QR codes and the
+  interim file carry one package `{ questionnaire, definition }`. The seal pins the definition
+  by hash, so a changed definition is refused; the published list still decides whether the app
+  vouches for the form (`origin: published`) or only the file describes it (`embedded`, shown
+  as such). Bundled forms can therefore be retired later without old PDFs becoming unreadable.
+- **Explainer videos on the Kanzlei homepage** (Tobias 2026-10-29): the form freezes a **path**
+  per field or notice (`explainer`, e.g. `sofortmeldung/versicherungsnummer`); the host comes
+  from the Kanzlei configuration, so the public repo stays neutral. Links open outside the app
+  (never embedded: offline, CSP, no tracking inside the app). The frozen link does not freeze the
+  video itself.
 - **Preselection** (`initial`): yes/no or choice answers set when the role's first version opens;
   only on always available fields.
 

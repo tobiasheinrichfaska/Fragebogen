@@ -42,7 +42,7 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 5e, Sofortmeldung 0.1.0 eingefroren) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>, <code>masterData.ts</code>, <code>masterDataLink.ts</code>, <code>interview.ts</code>, <code>dependencies.ts</code>)</p>
+<p class="meta">Stand: 29.10.2026 (Schritt 5e, Sofortmeldung 0.1.0 eingefroren) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>, <code>masterData.ts</code>, <code>masterDataLink.ts</code>, <code>interview.ts</code>, <code>dependencies.ts</code>, <code>dataPackage.ts</code>, <code>dataPages.ts</code>, <code>qrParts.ts</code>; <code>src/io/qr.ts</code>)</p>
 <p class="note"><strong>Stand Schritt 4c.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
 Feldlogik, Zusammenführung und das Formularregister sind umgesetzt. Das erste Formular (Sofortmeldung) liegt als Entwurf zur Freigabe vor.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
@@ -240,6 +240,7 @@ Code-Änderung.</p>
   <tr><td><code>type</code></td><td><code>text</code> · <code>date</code> · <code>choice</code> · <code>multiChoice</code> · <code>boolean</code> · <code>iban</code> · <code>taxId</code> · <code>svNumber</code> · <code>betriebsnummer</code> · <code>money</code> · <code>repeatGroup</code> · <code>file</code></td><td>ja</td><td>Feldtyp; bestimmt Normalisierung und Prüfung</td></tr>
   <tr><td><code>label</code></td><td>string</td><td>ja</td><td>Beschriftung</td></tr>
   <tr><td><code>question</code></td><td>string</td><td>nein</td><td>Wortlaut im Interview, z. B. „Wie lautet Ihr Familienname?“; ohne Angabe die Beschriftung</td></tr>
+  <tr><td><code>explainer</code></td><td>string (Pfad)</td><td>nein</td><td>Erklärvideo: Pfad unter der konfigurierten Video-Adresse der Kanzlei-Homepage, z. B. <code>sofortmeldung/versicherungsnummer</code> (Kleinbuchstaben, Ziffern, Bindestriche, höchstens vier Ebenen; nie eine volle Adresse). Wird mit dem Formular eingefroren, die Adresse bleibt Konfiguration.</td></tr>
   <tr><td><code>help</code></td><td>string</td><td>nein</td><td>Kurze Hilfe zur Frage, z. B. wo eine Nummer steht</td></tr>
   <tr><td><code>required</code></td><td>boolean</td><td>ja</td><td>Immer Pflicht, solange das Feld verfügbar ist. Schließt <code>requiredIf</code> aus.</td></tr>
   <tr><td><code>requiredIf</code></td><td>Condition</td><td>nein</td><td>Pflicht nur, solange die Bedingung gilt, z. B. „Pflicht, wenn ‚Telefon‘ leer ist“</td></tr>
@@ -274,6 +275,7 @@ Nur <code>showIf</code>-Abhängigkeiten müssen kreisfrei sein; gegenseitiges <c
   <tr><td><code>title</code>, <code>text</code></td><td>string</td><td>ja</td><td>Hinweis bzw. Belehrung</td></tr>
   <tr><td><code>asOf</code></td><td>IsoDate</td><td>ja</td><td>Stand des Texts</td></tr>
   <tr><td><code>acknowledgement</code></td><td><code>read</code> | <code>paperHandout</code></td><td>ja</td><td><code>read</code>: in der App gelesen und bestätigt. <code>paperHandout</code>: Die Belehrung wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die zusätzliche Aushändigung auf Papier.</td></tr>
+  <tr><td><code>explainer</code></td><td>string (Pfad)</td><td>nein</td><td>Erklärvideo zum Hinweis, wie bei Feldern</td></tr>
 </table>
 
 <h3>ConsistencyRule · MatchKey</h3>
@@ -481,6 +483,17 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
   <tr><td><code>masterDataFragment</code></td><td><code>(data: MasterData) =&gt; { ok, fragment } | { ok: false, issue, detail }</code></td><td>Fragment für ein Lesezeichen, z. B. <code>#stammdaten=1&amp;betriebsnummer=12345678&amp;firma=Beispiel+Bau+GmbH</code>; Schlüssel sortiert, höchstens 32 Schlüssel und 2000 Zeichen</td></tr>
   <tr><td><code>parseMasterDataFragment</code></td><td><code>(hash: string) =&gt; { ok, data | undefined } | { ok: false, issue, detail }</code></td><td>Ohne Kennung <code>stammdaten=1</code>: kein Stammdaten-Link. Sonst streng und als Ganzes: fremde Version, ungültige oder doppelte Schlüssel, leere oder unlesbare Werte, Überlänge werden abgelehnt (<code>MASTER_DATA_LINK_MESSAGES</code>). Das Ergebnis läuft danach durch <code>applyMasterData</code>.</td></tr>
   <tr><td><code>applyMasterData</code></td><td><code>(q, form, role, stored: unknown) =&gt; { ok, questionnaire, applied, kept, skipped } | { ok: false, code }</code></td><td>Füllt leere Stammdatenfelder des offenen Entwurfs aus einem gemerkten Datensatz. Der Datensatz ist nicht vertrauenswürdig und läuft durch <code>setValue</code>; abgelehnte Werte stehen mit Grund in <code>skipped</code>, vorhandene Antworten bleiben (<code>kept</code>), Schlüssel anderer Formulare werden übergangen.</td></tr>
+</table>
+
+<h3>Datenpaket, Datenseiten und QR-Codes (<code>dataPackage.ts</code>, <code>dataPages.ts</code>, <code>qrParts.ts</code>, <code>src/io/qr.ts</code>)</h3>
+<p><strong>Datenpaket</strong> <code>{ format: "fragebogen-paket", formatVersion: 1, questionnaire, definition }</code>: der Fragebogen und seine
+Formulardefinition in einem JCS-Dokument. Es steht auf den Datenseiten, in den QR-Codes und im Zwischenstand. <code>decodePackage</code> prüft streng; die
+Definition muss den Hash haben, den das Siegel nennt. Kennt die App den Hash, gilt <code>origin: "published"</code>, sonst <code>"embedded"</code>
+(unverändert, aber nicht von dieser App veröffentlicht – wird so angezeigt).</p>
+<table>
+  <tr><th>Träger</th><th>Format</th><th>Lesen</th></tr>
+  <tr><td>Datenseiten (Text)</td><td>Kopf <code>FRAGEBOGEN-DATEN 1 ID … ZEILEN n BYTES len</code> und <code>SHA256 …</code>; dann deflate + base64url in Zeilen zu 96 Zeichen mit Nummer und 4-stelliger Prüfsumme</td><td>Beliebige Reihenfolge, zusätzlicher Leerraum egal; beschädigte und fehlende Zeilen werden mit Nummer genannt (<code>DATA_LINES_MESSAGES</code>)</td></tr>
+  <tr><td>QR-Codes (Papier)</td><td>Byte-Modus, Fehlerkorrektur M, je 700 Byte: ASCII-Kopf <code>FBQ1 &lt;id&gt; &lt;i&gt;/&lt;n&gt; &lt;16 hex SHA-256&gt;</code>, Zeilenumbruch, dann das Stück</td><td>Beliebige Reihenfolge, aus mehreren Fotos, doppelt erlaubt; fehlende Teile werden genannt, gemischte oder widersprüchliche Codes abgelehnt (<code>QR_MESSAGES</code>). Das Bild wird an weißen Zeilen und Spalten in Zellen zerlegt, weil jsQR bei mehreren sichtbaren Codes keinen findet.</td></tr>
 </table>
 
 <h3>Interview (<code>src/logic/interview.ts</code>, <code>src/logic/dependencies.ts</code>)</h3>

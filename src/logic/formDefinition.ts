@@ -30,6 +30,8 @@ export const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 export const ID = /^[a-z][a-zA-Z0-9]{0,63}$/;
 /** Option ids may also be codes such as "101". */
 export const OPTION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
+/** Explainer video path below the configured address: lower-case segments, e.g. `a/b-c`. */
+export const EXPLAINER_PATH = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,3}$/;
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_CONDITION_DEPTH = 8;
 
@@ -200,6 +202,7 @@ const FIELD_KEYS = [
   'label',
   'question',
   'help',
+  'explainer',
   'required',
   'requiredIf',
   'purpose',
@@ -222,6 +225,10 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const label = d.string(o.label, `${path}.label`);
   const question = o.question === undefined ? undefined : d.string(o.question, `${path}.question`);
   const help = o.help === undefined ? undefined : d.string(o.help, `${path}.help`);
+  const explainer =
+    o.explainer === undefined
+      ? undefined
+      : d.string(o.explainer, `${path}.explainer`, EXPLAINER_PATH);
   const required = d.boolean(o.required, `${path}.required`);
   const requiredIf =
     o.requiredIf === undefined
@@ -267,6 +274,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     label,
     ...(question === undefined ? {} : { question }),
     ...(help === undefined ? {} : { help }),
+    ...(explainer === undefined ? {} : { explainer }),
     required,
     ...(requiredIf === undefined ? {} : { requiredIf }),
     purpose,
@@ -352,7 +360,15 @@ function decodeComputed(
 }
 
 function decodeInfoBlock(d: Decoder, raw: unknown, path: string): InfoBlock | undefined {
-  const o = d.object(raw, path, ['id', 'role', 'title', 'text', 'asOf', 'acknowledgement']);
+  const o = d.object(raw, path, [
+    'id',
+    'role',
+    'title',
+    'text',
+    'asOf',
+    'acknowledgement',
+    'explainer',
+  ]);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
   const role = d.string(o.role, `${path}.role`, ID);
@@ -374,7 +390,19 @@ function decodeInfoBlock(d: Decoder, raw: unknown, path: string): InfoBlock | un
   ) {
     return undefined;
   }
-  return { id, role, title, text, asOf, acknowledgement };
+  const explainer =
+    o.explainer === undefined
+      ? undefined
+      : d.string(o.explainer, `${path}.explainer`, EXPLAINER_PATH);
+  return {
+    id,
+    role,
+    title,
+    text,
+    asOf,
+    acknowledgement,
+    ...(explainer === undefined ? {} : { explainer }),
+  };
 }
 
 function decodeConsistencyRule(

@@ -87,6 +87,11 @@ export interface FieldDefinition {
   question?: string;
   /** Short help shown with the question, e.g. where to find a number. */
   help?: string;
+  /**
+   * Explainer video: path below the configured video address of the Kanzlei homepage (e.g.
+   * `sofortmeldung/versicherungsnummer`). Frozen with the form; the host stays configuration.
+   */
+  explainer?: string;
   /** Always required while available. Mutually exclusive with `requiredIf`. */
   required: boolean;
   /** Required only while this condition holds (and the field is available). */
@@ -140,6 +145,8 @@ export interface InfoBlock {
   /** "Stand" of the text. */
   asOf: IsoDate;
   acknowledgement: AcknowledgementKind;
+  /** Explainer video path, as for fields. */
+  explainer?: string;
 }
 
 export interface ConsistencyRule {

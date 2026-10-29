@@ -156,3 +156,17 @@ describe('formCatalogue', () => {
     expect(formCatalogue(logicForm(), 'draft')).toBe(formCatalogue(logicForm(), 'draft'));
   });
 });
+
+describe('formCatalogue — explainer videos', () => {
+  it('names the video path of a field and a notice', () => {
+    const form: RegisteredForm = structuredClone(beispielForm());
+    const field = form.definition.sections[0]?.fields[0];
+    const notice = form.definition.infoBlocks[0];
+    if (!field || !notice) throw new Error('fixture changed');
+    field.explainer = 'beispiel/nachname';
+    notice.explainer = 'beispiel/datenschutz';
+    const markdown = formCatalogue(form, 'draft');
+    expect(markdown).toContain('<br>Erklärvideo: beispiel/nachname |');
+    expect(markdown).toContain('- Erklärvideo: beispiel/datenschutz');
+  });
+});
