@@ -51,6 +51,7 @@ export const FIELD_TYPES = [
   'iban',
   'taxId',
   'svNumber',
+  'betriebsnummer',
   'money',
   'repeatGroup',
   'file',

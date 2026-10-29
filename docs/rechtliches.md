@@ -15,6 +15,21 @@
 | Nachweis der Elterneigenschaft          | **Die Unterschrift beweist nichts.** Seit 01.07.2025 ist der digitale Abruf beim BZSt (DaBPV) Pflicht. Kinder ohne steuerliche Erfassung sind per Urkundenkopie zu belegen; ein Vermerk „hat vorgelegen“ genügt nicht.                                                     | § 55a SGB XI; GKV-SV, Grundsätzliche Hinweise vom 31.03.2025 |
 | Sofortmeldung (Angaben)                 | Für die Angaben des Arbeitnehmers **ja**. Den Hinweis auf die Mitführungspflicht von Ausweispapieren muss der Arbeitgeber aber „nachweislich und schriftlich“ geben. Dieser Hinweis erfolgt daher auf Papier; im Fragebogen wird nur die Aushändigung bestätigt.           | § 28a Abs. 4 SGB IV; § 2a Abs. 2 SchwarzArbG                 |
 
+**Branchen seit 30.12.2025 (am Gesetzestext geprüft am 29.10.2026):** Das Gesetz zur
+Modernisierung und Digitalisierung der Schwarzarbeitsbekämpfung (BGBl. vom 29.12.2025) hat die
+Listen in § 28a Abs. 4 SGB IV und § 2a Abs. 1 SchwarzArbG geändert. Die Kanzlei-Vorlage „Stand
+10/2024“ ist deshalb veraltet:
+
+- **neu:** Friseur- und Kosmetikgewerbe; im Logistikgewerbe ausdrücklich auch plattformbasierte
+  Lieferdienste;
+- **entfallen:** Forstwirtschaft; in der Fleischwirtschaft ist das Fleischerhandwerk ausgenommen.
+
+Ob die neue Liste ab 30.12.2025 oder ab 01.01.2026 gilt, nennen die Quellen unterschiedlich
+(_nicht verifiziert_). Der Hinweistext im Formular (Stand 29.10.2026) nennt die aktuelle Liste.
+Die Sofortmeldung enthält weiterhin nur Familien- und Vornamen, die Versicherungsnummer (sonst Tag
+und Ort der Geburt und Anschrift), die Betriebsnummer des Arbeitgebers und den Tag der
+Beschäftigungsaufnahme.
+
 **Grundsatz der App:** Belehrungen, die auf Papier erfolgen müssen, werden auf Papier ausgehändigt.
 Im Fragebogen wird bestätigt, dass die betreffende Belehrung zusätzlich auf Papier ausgehändigt
 wurde (Art der Kenntnisnahme `paperHandout`).
@@ -116,6 +131,10 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
 - GKV-Spitzenverband, Grundsätzliche Hinweise Beitragssatzdifferenzierung (31.03.2025):
   https://www.gkv-spitzenverband.de/media/dokumente/pflegeversicherung/grundprinzipien/2025-03-31_GH_Beitragssatzdifferenzierung_sPV.pdf
 - § 2a SchwarzArbG: https://www.gesetze-im-internet.de/schwarzarbg_2004/__2a.html
+- TK, Sofortmeldung: Änderungen in den Branchen ab 2026:
+  https://www.tk.de/firmenkunden/versicherung/meldeverfahren-faq/haeufige-fragen-meldeverfahren/sofortmeldung-zu-beschaeftigungsbeginn-2035960
+- Handwerkskammer Südthüringen, Pflichten für das Friseur- und Kosmetikgewerbe ab 01.01.2026:
+  https://www.hwk-suedthueringen.de/wp-content/uploads/2026/01/Pflichten-fuer-das-Friseur-und-Kosmetikgewerbe-ab-01.01.2026.pdf
 - § 94 BetrVG: https://www.gesetze-im-internet.de/betrvg/__94.html
 - § 14 TzBfG: https://www.gesetze-im-internet.de/tzbfg/__14.html
 - § 11 BBiG: https://www.gesetze-im-internet.de/bbig_2005/__11.html

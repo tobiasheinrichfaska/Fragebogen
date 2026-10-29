@@ -20,6 +20,7 @@ export type IssueCode =
   | 'taxId.checksum'
   | 'svNumber.format'
   | 'svNumber.checksum'
+  | 'betriebsnummer.format'
   | 'choice.unknown'
   | 'signature.nameMismatch';
 
@@ -44,6 +45,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'svNumber.format':
     'Die Versicherungsnummer hat 12 Stellen: 8 Ziffern, einen Buchstaben und 3 Ziffern.',
   'svNumber.checksum': 'Die Versicherungsnummer stimmt nicht (Prüfziffer).',
+  'betriebsnummer.format': 'Die Betriebsnummer hat genau 8 Ziffern.',
   'choice.unknown': 'Bitte eine der angebotenen Möglichkeiten wählen.',
   'signature.nameMismatch': 'Der getippte Name weicht vom angegebenen Namen ab. Bitte prüfen.',
 };

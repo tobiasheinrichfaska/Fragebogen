@@ -1,5 +1,5 @@
 import { IBAN_LENGTHS } from './data/ibanLengths';
-import { checkIban, checkSvNumber, checkTaxId } from './validators';
+import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
 // Deterministic PRNG (mulberry32) for property tests: same cases on every run.
 function prng(seed: number): () => number {
@@ -136,6 +136,19 @@ describe('checkSvNumber', () => {
     'rejects the malformed %j',
     (number) => {
       expect(checkSvNumber(number)).toEqual({ ok: false, issue: 'svNumber.format' });
+    },
+  );
+});
+
+describe('checkBetriebsnummer', () => {
+  it.each(['12345678', '00000001'])('accepts %s', (number) => {
+    expect(checkBetriebsnummer(number)).toEqual({ ok: true, value: number, warnings: [] });
+  });
+
+  it.each(['', '1234567', '123456789', '1234567a', '1234 5678', '１２３４５６７８'])(
+    'rejects the malformed %j',
+    (number) => {
+      expect(checkBetriebsnummer(number)).toEqual({ ok: false, issue: 'betriebsnummer.format' });
     },
   );
 });

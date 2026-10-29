@@ -24,6 +24,13 @@ Datei **gemeinsam** entfernt oder gemeinsam geändert, merkt der Test das nicht.
 CI gegen das letzte Release (Schritt 12). Bis dahin sichern die Golden-Dateien aus Schritt 3 ab,
 denn sie verweisen per Hash auf ihre Definition.
 
+## Entwürfe
+
+Ein neues Formular entsteht zuerst als Entwurf in [`form-drafts/`](../form-drafts/README.md). Zu
+jedem Entwurf gibt es einen lesbaren Feldkatalog in [`docs/formulare/`](../docs/formulare/README.md)
+zur fachlichen Freigabe. Erst nach der Freigabe wird die Datei hierher verschoben und in
+`published.json` eingetragen.
+
 ## Aufbau
 
 Die maßgebliche Beschreibung aller Felder steht in

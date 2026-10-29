@@ -150,19 +150,19 @@ describe('describeCondition', () => {
   it.each<[Condition, string]>([
     [
       { field: 'weitereBeschaeftigung', equals: true },
-      '„Üben Sie eine weitere Beschäftigung aus?“ ist „Ja“',
+      '„Üben Sie eine weitere Beschäftigung aus?“ mit „Ja“ beantwortet ist',
     ],
-    [{ field: 'kvArt', equals: 'keine' }, '„Krankenversicherung“ ist „keine Angabe“'],
+    [{ field: 'kvArt', equals: 'keine' }, 'bei „Krankenversicherung“ „keine Angabe“ gewählt ist'],
     [
       { field: 'kvArt', in: ['gesetzlich', 'privat'] },
-      '„Krankenversicherung“ ist „gesetzlich“ oder „privat“',
+      'bei „Krankenversicherung“ „gesetzlich“ oder „privat“ gewählt ist',
     ],
-    [{ field: 'sprachen', contains: 'pl' }, '„Sprachen“ enthält „Polnisch“'],
-    [{ field: 'telefon', answered: false }, '„Telefon“ ist leer'],
-    [{ field: 'telefon', answered: true }, '„Telefon“ ist ausgefüllt'],
+    [{ field: 'sprachen', contains: 'pl' }, 'bei „Sprachen“ „Polnisch“ angekreuzt ist'],
+    [{ field: 'telefon', answered: false }, '„Telefon“ leer ist'],
+    [{ field: 'telefon', answered: true }, '„Telefon“ ausgefüllt ist'],
     [
       { not: { field: 'kvArt', equals: 'keine' } },
-      'nicht („Krankenversicherung“ ist „keine Angabe“)',
+      'nicht zutrifft, dass bei „Krankenversicherung“ „keine Angabe“ gewählt ist',
     ],
     [
       {
@@ -176,7 +176,7 @@ describe('describeCondition', () => {
           },
         ],
       },
-      '„Telefon“ ist ausgefüllt und („E-Mail“ ist ausgefüllt oder „Krankenversicherung“ ist „privat“)',
+      '„Telefon“ ausgefüllt ist und („E-Mail“ ausgefüllt ist oder bei „Krankenversicherung“ „privat“ gewählt ist)',
     ],
     [{ field: 'gibtEsNicht', answered: true }, '„gibtEsNicht“ (unbekanntes Feld)'],
   ])('%j', (condition, text) => {

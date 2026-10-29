@@ -42,9 +42,9 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 4c) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>)</p>
+<p class="meta">Stand: 29.10.2026 (Schritt 5, Entwurf Sofortmeldung) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>)</p>
 <p class="note"><strong>Stand Schritt 4c.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
-Feldlogik, Zusammenführung und das Formularregister sind umgesetzt. Formulare folgen in Schritt 5.
+Feldlogik, Zusammenführung und das Formularregister sind umgesetzt. Das erste Formular (Sofortmeldung) liegt als Entwurf zur Freigabe vor.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
 Code-Änderung.</p>
 
@@ -68,7 +68,7 @@ Code-Änderung.</p>
   <tr><td>Daten + Logik</td><td><code>src/logic/</code></td><td>Typen, reine Regeln: Datum, Kanonisierung (JCS), Hash, Normalisierung, Prüfziffern, Formular-Decoder, Register; später Siegel, Prüfung, Zusammenführung. Ohne UI, ohne Browser-APIs, ohne Ein-/Ausgabe; ESLint erzwingt das.</td></tr>
   <tr><td>Ein-/Ausgabe</td><td><code>src/io/</code> (ab Schritt 8)</td><td>PDF schreiben und lesen, Dateien, Gerätedaten für den Systemvermerk.</td></tr>
   <tr><td>Oberfläche</td><td><code>src/ui/</code></td><td>React: nur Darstellung und Bedienung; ruft die Logik auf.</td></tr>
-  <tr><td>Formulare</td><td><code>forms/</code></td><td>Formulardefinitionen als <code>forms/&lt;id&gt;/&lt;version&gt;.json</code>, dazu <code>forms/published.json</code> mit den eingefrorenen Hashes. Das Register gibt es seit Schritt 2, die ersten Formulare folgen in Schritt 5.</td></tr>
+  <tr><td>Formulare</td><td><code>forms/</code></td><td>Formulardefinitionen als <code>forms/&lt;id&gt;/&lt;version&gt;.json</code>, dazu <code>forms/published.json</code> mit den eingefrorenen Hashes. Das Register gibt es seit Schritt 2. Entwürfe zur Freigabe liegen in <code>form-drafts/</code> (nie in der App), ihre lesbaren Feldkataloge in <code>docs/formulare/</code>.</td></tr>
 </table>
 
 <h2 id="lebenslauf">Lebenslauf der Daten</h2>
@@ -236,7 +236,7 @@ Code-Änderung.</p>
   <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
   <tr><td><code>id</code></td><td>string</td><td>ja</td><td>Stabile Feld-ID; wird nie umgedeutet</td></tr>
   <tr><td><code>role</code></td><td>RoleId</td><td>ja</td><td>Wer das Feld ausfüllt (Zuständigkeit je Feld)</td></tr>
-  <tr><td><code>type</code></td><td><code>text</code> · <code>date</code> · <code>choice</code> · <code>multiChoice</code> · <code>boolean</code> · <code>iban</code> · <code>taxId</code> · <code>svNumber</code> · <code>money</code> · <code>repeatGroup</code> · <code>file</code></td><td>ja</td><td>Feldtyp; bestimmt Normalisierung und Prüfung</td></tr>
+  <tr><td><code>type</code></td><td><code>text</code> · <code>date</code> · <code>choice</code> · <code>multiChoice</code> · <code>boolean</code> · <code>iban</code> · <code>taxId</code> · <code>svNumber</code> · <code>betriebsnummer</code> · <code>money</code> · <code>repeatGroup</code> · <code>file</code></td><td>ja</td><td>Feldtyp; bestimmt Normalisierung und Prüfung</td></tr>
   <tr><td><code>label</code></td><td>string</td><td>ja</td><td>Beschriftung</td></tr>
   <tr><td><code>required</code></td><td>boolean</td><td>ja</td><td>Immer Pflicht, solange das Feld verfügbar ist. Schließt <code>requiredIf</code> aus.</td></tr>
   <tr><td><code>requiredIf</code></td><td>Condition</td><td>nein</td><td>Pflicht nur, solange die Bedingung gilt, z. B. „Pflicht, wenn ‚Telefon‘ leer ist“</td></tr>
@@ -254,11 +254,11 @@ Code-Änderung.</p>
 Nur <code>showIf</code>-Abhängigkeiten müssen kreisfrei sein; gegenseitiges <code>requiredIf</code> („Telefon oder E-Mail“) ist erlaubt.</p>
 <table>
   <tr><th>Form</th><th>Für Feldtypen</th><th>Gilt, wenn</th><th>Deutscher Text</th></tr>
-  <tr><td><code>{ field, equals }</code></td><td>boolean (Wert <code>true</code>/<code>false</code>), choice (Options-ID)</td><td>der Wert gleich ist</td><td>„Feld“ ist „Ja“</td></tr>
-  <tr><td><code>{ field, in: [...] }</code></td><td>choice</td><td>der Wert eine der Options-IDs ist (Liste nicht leer, ohne Doppelungen)</td><td>„Feld“ ist „A“ oder „B“</td></tr>
-  <tr><td><code>{ field, contains }</code></td><td>multiChoice</td><td>die Auswahl die Option enthält</td><td>„Feld“ enthält „A“</td></tr>
-  <tr><td><code>{ field, answered }</code></td><td>alle</td><td>das Feld beantwortet (<code>true</code>) bzw. leer (<code>false</code>) ist; „Nein“ zählt als Antwort</td><td>„Feld“ ist ausgefüllt / leer</td></tr>
-  <tr><td><code>{ not }</code> · <code>{ all: [...] }</code> · <code>{ any: [...] }</code></td><td>–</td><td>Verneinung, alle, mindestens eine (höchstens 8 Ebenen)</td><td>nicht (…) · … und … · … oder …</td></tr>
+  <tr><td><code>{ field, equals }</code></td><td>boolean (Wert <code>true</code>/<code>false</code>), choice (Options-ID)</td><td>der Wert gleich ist</td><td>„Feld“ mit „Ja“ beantwortet ist · bei „Feld“ „A“ gewählt ist</td></tr>
+  <tr><td><code>{ field, in: [...] }</code></td><td>choice</td><td>der Wert eine der Options-IDs ist (Liste nicht leer, ohne Doppelungen)</td><td>bei „Feld“ „A“ oder „B“ gewählt ist</td></tr>
+  <tr><td><code>{ field, contains }</code></td><td>multiChoice</td><td>die Auswahl die Option enthält</td><td>bei „Feld“ „A“ angekreuzt ist</td></tr>
+  <tr><td><code>{ field, answered }</code></td><td>alle</td><td>das Feld beantwortet (<code>true</code>) bzw. leer (<code>false</code>) ist; „Nein“ zählt als Antwort</td><td>„Feld“ ausgefüllt ist / leer ist</td></tr>
+  <tr><td><code>{ not }</code> · <code>{ all: [...] }</code> · <code>{ any: [...] }</code></td><td>–</td><td>Verneinung, alle, mindestens eine (höchstens 8 Ebenen)</td><td>nicht zutrifft, dass … · … und … · … oder …</td></tr>
 </table>
 
 <h3>InfoBlock</h3>
@@ -379,6 +379,7 @@ Werte unverändert. Eine spätere Änderung dieser Regeln kann alte Urteile desh
   <tr><td><code>iban</code></td><td>mit Leerzeichen, klein oder groß</td><td>ohne Leerzeichen, groß</td><td>Form, Länge (bekanntes Land), MOD 97-10. Unbekanntes Land: angenommen mit Warnung</td></tr>
   <tr><td><code>taxId</code></td><td>mit Leerzeichen</td><td>11 Ziffern</td><td>Führende 0, Ziffernmuster, Prüfziffer (ISO 7064 MOD 11,10)</td></tr>
   <tr><td><code>svNumber</code></td><td>mit Leerzeichen, klein oder groß</td><td>12 Zeichen, groß</td><td>Form, Prüfziffer</td></tr>
+  <tr><td><code>betriebsnummer</code></td><td>mit Leerzeichen</td><td>8 Ziffern</td><td>Alles außer genau 8 Ziffern. Die letzte Ziffer soll eine Prüfziffer sein; das Verfahren ist nicht öffentlich dokumentiert und wird nicht geprüft.</td></tr>
   <tr><td><code>choice</code></td><td>Options-ID</td><td>Options-ID (nie das Label)</td><td>Unbekannte ID</td></tr>
   <tr><td><code>multiChoice</code></td><td>Liste von Options-IDs</td><td>eindeutig, nach Code-Einheiten sortiert (unabhängig von der Reihenfolge der Optionen)</td><td>Unbekannte ID</td></tr>
   <tr><td><code>boolean</code></td><td><code>true</code> / <code>false</code></td><td>unverändert</td><td>Andere Typen</td></tr>
@@ -489,7 +490,7 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
   <tr><td colspan="3"><code>src/logic/form.ts</code></td></tr>
   <tr><td><code>fieldStates</code></td><td><code>(definition, role, data) =&gt; Map&lt;FieldId, { visible, required, missing }&gt;</code></td><td>Je Feld: verfügbar, Pflicht (immer oder per <code>requiredIf</code>), Pflicht und leer</td></tr>
-  <tr><td><code>describeFieldRules</code></td><td><code>(definition, field) =&gt; { input, requirement }</code></td><td>Regeln als Text, z. B. <code>input</code> „erst wenn „Weitere Beschäftigung“ ist „Ja““, <code>requirement</code> „Pflicht, wenn „Telefon“ ist leer“</td></tr>
+  <tr><td><code>describeFieldRules</code></td><td><code>(definition, field) =&gt; { input, requirement }</code></td><td>Regeln als Text, z. B. <code>input</code> „erst wenn „Weitere Beschäftigung“ mit „Ja“ beantwortet ist“, <code>requirement</code> „Pflicht, wenn „Telefon“ leer ist“</td></tr>
   <tr><td><code>evaluateCondition</code> · <code>leafProblem</code> · <code>describeCondition</code></td><td><code>src/logic/conditions.ts</code></td><td>Auswerten, Prüfen gegen das Zielfeld, deutscher Text; die Operatoren sind eine Datentabelle</td></tr>
   <tr><td><code>visibility</code> · <code>visibleFields</code></td><td><code>(definition, role, data)</code></td><td>Sichtbarkeit nach <code>showIf</code>; ein verstecktes Feld zählt als unbeantwortet, auch für Bedingungen, die von ihm abhängen</td></tr>
   <tr><td><code>sealableData</code></td><td><code>(definition, role, data) =&gt; Record&lt;FieldId, FieldValue&gt;</code></td><td>Nur sichtbare Felder der Rolle, unbeantwortete als <code>null</code></td></tr>
@@ -532,11 +533,15 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
   <tr><td><code>normalizeFieldValue</code></td><td><code>(field: FieldDefinition, raw: unknown) =&gt; Checked&lt;FieldValue&gt;</code></td><td>Normalisiert eine Eingabe nach ihrem Feldtyp (Tabelle je Typ); das Ergebnis wird gespeichert und gehasht</td></tr>
   <tr><td><code>normalizeText</code></td><td><code>(raw: string, multiline?: boolean) =&gt; Checked&lt;string&gt;</code></td><td>Textregeln, siehe oben</td></tr>
   <tr><td><code>normalizeDate</code> · <code>normalizeMoney</code></td><td><code>(raw: string) =&gt; Checked&lt;string&gt;</code></td><td>Datum → <code>YYYY-MM-DD</code>; Betrag → <code>"1234.56"</code></td></tr>
-  <tr><td><code>normalizeIban</code> · <code>normalizeTaxId</code> · <code>normalizeSvNumber</code></td><td><code>(raw: string) =&gt; Checked&lt;string&gt;</code></td><td>Kompakt schreiben, dann prüfen</td></tr>
+  <tr><td><code>normalizeIban</code> · <code>normalizeTaxId</code> · <code>normalizeSvNumber</code> · <code>normalizeBetriebsnummer</code></td><td><code>(raw: string) =&gt; Checked&lt;string&gt;</code></td><td>Kompakt schreiben, dann prüfen</td></tr>
   <tr><td><code>normalizeChoice</code> · <code>normalizeMultiChoice</code></td><td><code>(raw, options: ChoiceOption[]) =&gt; Checked&lt;…&gt;</code></td><td>Nur bekannte Options-IDs; Mehrfachauswahl eindeutig und sortiert</td></tr>
   <tr><td><code>checkIban</code></td><td><code>(iban: string) =&gt; Checked&lt;string&gt;</code></td><td>Form, Länge je Land, MOD 97-10; unbekanntes Land: Warnung <code>iban.unknownCountry</code></td></tr>
   <tr><td><code>checkTaxId</code></td><td><code>(id: string) =&gt; Checked&lt;string&gt;</code></td><td>§ 139b AO: 11 Ziffern, keine führende 0; in den ersten 10 Ziffern wiederholt sich genau eine (zweimal, oder dreimal, aber nie dreimal hintereinander); Prüfziffer ISO 7064 MOD 11,10</td></tr>
   <tr><td><code>checkSvNumber</code></td><td><code>(number: string) =&gt; Checked&lt;string&gt;</code></td><td>Versicherungsnummer (VKVV): 8 Ziffern, Buchstabe, 3 Ziffern; Prüfziffer über gewichtete Quersummen (Gewichte 2 1 2 5 7 1 2 1 2 1 2 1, Buchstabe als zweistellige Position im Alphabet)</td></tr>
+  <tr><td><code>checkBetriebsnummer</code></td><td><code>(number: string) =&gt; Checked&lt;string&gt;</code></td><td>Betriebsnummer (§ 18i SGB IV): genau 8 Ziffern. Die Prüfziffer wird nicht geprüft, weil ihr Verfahren nicht öffentlich dokumentiert ist.</td></tr>
+  <tr><td colspan="3"><code>src/logic/catalogue.ts</code></td></tr>
+  <tr><td><code>formCatalogue</code></td><td><code>(form: RegisteredForm, status: "draft" | "published") =&gt; string</code></td><td>Lesbarer Feldkatalog (Markdown) zur fachlichen Freigabe: Kopf mit <code>definitionHash</code>, Rollen (Unterschrift, wann erforderlich, Name, Bestätigungstext), je Abschnitt alle Felder mit Zuständigkeit, Art, Eingabe, Pflicht und Zweck, Hinweistexte, Prüfregeln, Zuordnungsmerkmale, rechtliche Hinweise. Nur aus der Definition erzeugt; <code>npm run catalogue</code> schreibt <code>docs/formulare/&lt;id&gt;-&lt;version&gt;.md</code>, ein Test hält beides gleich.</td></tr>
+  <tr><td><code>FIELD_TYPE_LABELS</code> · <code>SIGNATURE_POLICY_LABELS</code> · <code>tableCell</code></td><td>–</td><td>Deutsche Bezeichnungen je Feldtyp und Unterschriftsregel; Tabellenzelle maskieren (<code>|</code>, Zeilenumbruch)</td></tr>
   <tr><td colspan="3"><code>src/logic/formDefinition.ts</code> · <code>src/logic/formRegistry.ts</code></td></tr>
   <tr><td><code>parseFormDefinition</code></td><td><code>(raw: unknown) =&gt; { ok: true, definition } | { ok: false, issues }</code></td><td>Strikt dekodieren (unbekannte Schlüssel, fehlende Werte, falsche Typen, Nicht-NFC-Texte sind Fehler; nichts wird ergänzt), dann alle Verweise prüfen</td></tr>
   <tr><td><code>checkFormDefinition</code></td><td><code>(definition: FormDefinition) =&gt; DecodeIssue[]</code></td><td>Regelliste: eindeutige IDs (Felder formularweit, Spalten eingeschlossen); Feldrolle existiert; Optionen nur und immer bei Auswahlfeldern; Spalten nur bei <code>repeatGroup</code>, nicht verschachtelt; <code>multiline</code> nur bei Text; <code>showIf</code> nur auf Ja/Nein- oder Auswahlfelder derselben Rolle, passende Vergleichswerte, keine Zyklen; <code>computed</code> nur mit bekannter Funktion; <code>requiredIf</code> auf ein Datumsfeld; Rolle hat Felder oder eine Unterschrift; Hinweise mit gültiger Rolle und gültigem Datum; Regeln und <code>matchKeys</code> nur auf passende Felder</td></tr>
@@ -550,7 +555,7 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
 <h2 id="werkseinstellungen">Werkseinstellungen</h2>
 <table>
   <tr><th>Was</th><th>Wann</th><th>Änderbar?</th></tr>
-  <tr><td><strong>Formulardefinitionen</strong> (ab Schritt 5: Sofortmeldung, Personalfragebogen …)</td><td>Fest in die HTML-Datei einkompiliert; bei jedem Start vorhanden</td><td>Nein. Veröffentlichte Versionen sind eingefroren; Änderungen ergeben eine neue Version. <em>Noch gibt es keine.</em></td></tr>
+  <tr><td><strong>Formulardefinitionen</strong> (ab Schritt 5: Sofortmeldung, Personalfragebogen …)</td><td>Fest in die HTML-Datei einkompiliert; bei jedem Start vorhanden</td><td>Nein. Veröffentlichte Versionen sind eingefroren; Änderungen ergeben eine neue Version. <em>Noch ist keine veröffentlicht; die Sofortmeldung 1.0.0 ist ein Entwurf in <code>form-drafts/</code> und wird nicht einkompiliert.</em></td></tr>
   <tr><td><code>forms/published.json</code></td><td>Feste Liste im Repo; ein Test vergleicht sie bei jedem Lauf mit den Definitionen</td><td>Nur ergänzen, nie ändern oder entfernen. Derzeit leer.</td></tr>
   <tr><td><code>IBAN_LENGTHS</code> (<code>src/logic/data/ibanLengths.ts</code>)</td><td>Fest einkompilierte Referenztabelle: IBAN-Länge für 78 Länder (SWIFT-IBAN-Register)</td><td>Nein; Pflege im Code. Für fehlende Länder gilt: Form und Prüfziffer werden geprüft, die Länge nicht (Warnung).</td></tr>
   <tr><td><code>ISSUE_MESSAGES</code> (<code>src/logic/issues.ts</code>)</td><td>Fest einkompiliert: deutscher Meldungstext je Prüfcode</td><td>Nein</td></tr>

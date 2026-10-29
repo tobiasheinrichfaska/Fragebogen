@@ -212,16 +212,18 @@ describe('describeFieldRules', () => {
     [
       'weitereArt',
       {
-        input: 'erst wenn „Üben Sie eine weitere Beschäftigung aus?“ ist „Ja“',
+        input: 'erst wenn „Üben Sie eine weitere Beschäftigung aus?“ mit „Ja“ beantwortet ist',
         requirement: 'Pflicht',
       },
     ],
-    ['email', { input: 'immer', requirement: 'Pflicht, wenn „Telefon“ ist leer' }],
+    ['email', { input: 'immer', requirement: 'Pflicht, wenn „Telefon“ leer ist' }],
     [
       'kvName',
       {
-        input: 'erst wenn nicht („Krankenversicherung“ ist „keine Angabe“)',
-        requirement: 'Pflicht, wenn „Krankenversicherung“ ist „gesetzlich“ oder „privat“',
+        input:
+          'erst wenn nicht zutrifft, dass bei „Krankenversicherung“ „keine Angabe“ gewählt ist',
+        requirement:
+          'Pflicht, wenn bei „Krankenversicherung“ „gesetzlich“ oder „privat“ gewählt ist',
       },
     ],
   ])('%s', (id, expected) => {

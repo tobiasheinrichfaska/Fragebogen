@@ -69,11 +69,18 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/mergeRecord.ts`                            | `mergeHashOf` (record + receipts + all part hashes), `linkedQuestionnaireIds`                                                                                                                                                               |
 | `src/logic/consistency.ts`                            | `contradictions` from the form's `consistencyRules` (text compared case-insensitively)                                                                                                                                                      |
 | `src/logic/provenance.ts`                             | `signatureLayout`: one numbered signature line per sealed version, per field the covering lines and a footnote when changed in a later version                                                                                              |
+| `src/logic/catalogue.ts`                              | `formCatalogue`: readable German field catalogue (Markdown) of a definition for the expert review — roles, fields with owner/kind/availability/requirement/purpose, notices, rules, legal notes, `definitionHash`                           |
 | `src/logic/requirements.ts`                           | Transmission gate `transmissionBlockers` (no transmission without signatures; minor → guardian with name, bound to the current part), `roleRequirement`, `completenessGaps`                                                                 |
 | `tests/support/sample.ts`                             | Shared fictitious scenarios (person signs, employer seals + chains, Kanzlei/DATEV receipt; second version; minor + guardian on form 1.1.0)                                                                                                  |
 | `tests/golden/`                                       | Golden questionnaires (`beispiel-<version>/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                                                                                                |
 | `src/logic/*.test.ts`                                 | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                                                                                                       |
 | `forms/`                                              | Form definitions `forms/<id>/<version>.json` (none yet), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                                                                                               |
+| `form-drafts/`                                        | Drafts under expert review, same layout (`sofortmeldung/1.0.0.json`); never bundled; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                     |
+| `docs/formulare/`                                     | Generated field catalogues `<id>-<version>.md` for every form and draft (`npm run catalogue`; never edit by hand), `README.md`                                                                                                              |
+| `tests/support/formFiles.ts`                          | Reads `forms/` and `form-drafts/` (lazy, so misnamed files are reported)                                                                                                                                                                    |
+| `tests/forms/formDrafts.test.ts`                      | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                       |
+| `tests/forms/catalogue.test.ts`                       | `docs/formulare/` matches the definitions (file snapshots), no stale catalogues                                                                                                                                                             |
+| `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung draft through the engine: with/without Versicherungsnummer, notices, minor + guardian, employer part, name cross-check                                                                                                    |
 | `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests; frozen by golden files                                                                                                                |
 | `tests/fixtures/forms/beispiel/1.1.0.json`            | Same form with a required guardian name field (`signerNameField`); frozen by golden files                                                                                                                                                   |
 | `tests/forms/publishedForms.test.ts`                  | Guards the real `forms/` folder: valid, published, unchanged hash, file naming, field-id stability                                                                                                                                          |
@@ -155,10 +162,20 @@ Key design decisions (details in `docs/plan.md`):
 - **Canon 1** (`normalize.ts`): text → remove soft hyphen/zero-width/BOM and controls, all line
   breaks → LF, tab → space, NFC, collapse whitespace (per line for `multiline`), trim; empty → `null`.
   Date `TT.MM.JJJJ`/ISO → `YYYY-MM-DD`. Money German input (`1.234,56`; `1.234` = thousands) →
-  `"1234.56"`. IBAN/SV number compact upper-case, tax id digits only. Multi-choice sorted, unique.
+  `"1234.56"`. IBAN/SV number compact upper-case, tax id and Betriebsnummer digits only. Multi-choice
+  sorted, unique.
   Every normaliser maps its own output to itself (property tests).
 - **Form definitions** are decoded strictly (`decode.ts`): unknown keys, missing values, non-NFC
   strings are errors; nothing is defaulted, so `definitionHash` of raw JSON = of decoded object.
+- **Form review workflow (2026-10-29):** a form starts as a draft in `form-drafts/`; its catalogue in
+  `docs/formulare/` is generated from the JSON (so the approved text is exactly what gets frozen)
+  and names the `definitionHash`. After Tobias's approval the file moves to `forms/` and its hash
+  goes into `published.json`.
+- **Sofortmeldung draft (1.0.0):** birth place/land, gender and address are available only without
+  a Versicherungsnummer (`showIf answered: false`) — data minimisation per § 28a Abs. 4 SGB IV; the
+  birth date is always required (guardian check). Tag der Beschäftigungsaufnahme is an employer
+  field (the template had it on the employee side). The ID-carrying notice (§ 2a SchwarzArbG) is a
+  `paperHandout` with the sector list as amended by SchwarzArbMoDiG (template 10/2024 outdated).
 
 ---
 
@@ -215,6 +232,10 @@ Key design decisions (details in `docs/plan.md`):
   known to keep files unchanged).
 - **IBAN:** lengths known for 78 countries; other countries only get shape + MOD 97 and a warning.
   The national BBAN structure (e.g. German bank code) is not checked.
+- **Betriebsnummer:** only "exactly 8 digits"; the check digit is not checked (algorithm not
+  publicly documented).
+- **No form is published yet:** the Sofortmeldung is a draft awaiting approval; drafts are never
+  bundled into the app.
 - **Versicherungsnummer:** only shape and check digit; area number and the birth-date part are not
   checked (a cross-check with the birth date will be a form rule).
 - **Money:** at most 2 decimals, no negative amounts, at most 12 integer digits.
@@ -282,8 +303,10 @@ logic: `requiredIf`, input only when available, condition operators, rule texts;
 4c (merge with the agreed rules, link proposals, contradictions, gaps, signature layout) done. Spike code is throw-away in
 `.tmp/spike-pdf/` (re-check any PDF with `node .tmp/spike-pdf/check.ts <pdf>`). The spike's manual
 counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`).
-**Next: step 5 — forms:** Sofortmeldung as pilot, then the general Personalfragebogen; field
-catalogue (sections, fields, roles, required/conditions, purpose) as a readable overview for
-Tobias's approval before anything is published.
+**Step 5 in progress — forms:** the Sofortmeldung draft (`form-drafts/sofortmeldung/1.0.0.json`)
+and its catalogue (`docs/formulare/sofortmeldung-1.0.0.md`) await Tobias's approval; field type
+`betriebsnummer` and the catalogue generator exist; condition texts now use German subordinate
+word order („… leer ist“). **Next:** apply the review, publish the Sofortmeldung (move to `forms/`,
+add the hash), then draft the general Personalfragebogen the same way.
 
 _Last updated: 2026-10-29_

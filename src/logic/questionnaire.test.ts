@@ -443,7 +443,10 @@ describe('input only where the field is available', () => {
     });
     expect(refused(setValue(q, form, 'person', 'weitereArt', 'minijob'))).toEqual({
       code: 'fieldNotAvailable',
-      detail: ['weitereArt', 'erst wenn „Üben Sie eine weitere Beschäftigung aus?“ ist „Ja“'],
+      detail: [
+        'weitereArt',
+        'erst wenn „Üben Sie eine weitere Beschäftigung aus?“ mit „Ja“ beantwortet ist',
+      ],
     });
   });
 

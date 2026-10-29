@@ -5,7 +5,7 @@ import { parseIsoDate } from './dates';
 import { accept, reject, type Checked } from './issues';
 import { isWellFormed } from './jcs';
 import type { ChoiceOption, FieldDefinition, FieldType, FieldValue, IsoDate } from './model';
-import { checkIban, checkSvNumber, checkTaxId } from './validators';
+import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
 export const CANON_VERSION = 1;
 
@@ -91,6 +91,10 @@ export function normalizeSvNumber(raw: string): Checked<string> {
   return checkSvNumber(raw.replace(/\s/g, '').toUpperCase());
 }
 
+export function normalizeBetriebsnummer(raw: string): Checked<string> {
+  return checkBetriebsnummer(raw.replace(/\s/g, ''));
+}
+
 export function normalizeChoice(raw: string, options: readonly ChoiceOption[]): Checked<string> {
   return options.some((option) => option.id === raw) ? accept(raw) : reject('choice.unknown');
 }
@@ -125,6 +129,7 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
   iban: fromText(normalizeIban),
   taxId: fromText(normalizeTaxId),
   svNumber: fromText(normalizeSvNumber),
+  betriebsnummer: fromText(normalizeBetriebsnummer),
   boolean: (raw) => (raw === null || typeof raw === 'boolean' ? accept(raw) : reject('value.type')),
   choice: (raw, field) => {
     if (raw === null || raw === '') return accept(null);

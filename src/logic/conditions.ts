@@ -41,7 +41,10 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
       return isOption(target, operand) ? undefined : `"${String(operand)}" is not an option id`;
     },
     evaluate: (value, operand) => value === operand,
-    describe: (label, operand, target) => `„${label}“ ist „${shown(target, operand)}“`,
+    describe: (label, operand, target) =>
+      typeof operand === 'boolean'
+        ? `„${label}“ mit „${shown(target, operand)}“ beantwortet ist`
+        : `bei „${label}“ „${shown(target, operand)}“ gewählt ist`,
   },
   in: {
     targets: ['choice'],
@@ -55,7 +58,7 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
       typeof value === 'string' && Array.isArray(operand) && operand.includes(value),
     describe: (label, operand, target) => {
       const options = (Array.isArray(operand) ? operand : []).map((id) => `„${shown(target, id)}“`);
-      return `„${label}“ ist ${options.join(' oder ')}`;
+      return `bei „${label}“ ${options.join(' oder ')} gewählt ist`;
     },
   },
   contains: {
@@ -64,13 +67,14 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
       isOption(target, operand) ? undefined : `"${String(operand)}" is not an option id`,
     evaluate: (value, operand) =>
       Array.isArray(value) && typeof operand === 'string' && value.includes(operand),
-    describe: (label, operand, target) => `„${label}“ enthält „${shown(target, operand)}“`,
+    describe: (label, operand, target) =>
+      `bei „${label}“ „${shown(target, operand)}“ angekreuzt ist`,
   },
   answered: {
     targets: FIELD_TYPES,
     checkOperand: (operand) => (typeof operand === 'boolean' ? undefined : 'expected a boolean'),
     evaluate: (value, operand) => (value !== null) === operand,
-    describe: (label, operand) => (operand ? `„${label}“ ist ausgefüllt` : `„${label}“ ist leer`),
+    describe: (label, operand) => (operand ? `„${label}“ ausgefüllt ist` : `„${label}“ leer ist`),
   },
 };
 
@@ -133,7 +137,10 @@ export function forEachLeaf(
   }
 }
 
-/** The condition as a German sentence fragment, e.g. „Weitere Beschäftigung“ ist „Ja“. */
+/**
+ * The condition as a German subordinate clause (verb last) that follows "wenn", e.g.
+ * „Weitere Beschäftigung“ mit „Ja“ beantwortet ist.
+ */
 export function describeCondition(
   condition: Condition,
   fields: ReadonlyMap<FieldId, FieldDefinition>,
@@ -144,7 +151,7 @@ export function describeCondition(
   };
   if ('all' in condition) return condition.all.map(nested).join(' und ');
   if ('any' in condition) return condition.any.map(nested).join(' oder ');
-  if ('not' in condition) return `nicht (${describeCondition(condition.not, fields)})`;
+  if ('not' in condition) return `nicht zutrifft, dass ${nested(condition.not)}`;
   const target = fields.get(condition.field);
   if (!target) return `„${condition.field}“ (unbekanntes Feld)`;
   const { operator, operand } = leafOperator(condition);

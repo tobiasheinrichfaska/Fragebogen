@@ -1,0 +1,336 @@
+{
+  "id": "sofortmeldung",
+  "version": "1.0.0",
+  "title": "Personalfragebogen: Angaben für die Sofortmeldung",
+  "signaturePolicy": "electronic",
+  "roles": [
+    {
+      "id": "person",
+      "label": "Beschäftigte Person",
+      "stationHeading": "Angaben der beschäftigten Person",
+      "confirmationText": "Ich versichere, dass meine Angaben richtig und vollständig sind.",
+      "signature": "required"
+    },
+    {
+      "id": "vertretung",
+      "label": "Gesetzliche Vertretung",
+      "stationHeading": "Unterschrift der gesetzlichen Vertretung",
+      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "signature": "required",
+      "requiredIf": {
+        "kind": "minorOnSigning",
+        "birthDateField": "geburtsdatum"
+      },
+      "signerNameField": "vertretungName"
+    },
+    {
+      "id": "arbeitgeber",
+      "label": "Arbeitgeber",
+      "stationHeading": "Angaben des Arbeitgebers",
+      "confirmationText": "Ich bestätige die Angaben des Arbeitgebers.",
+      "signature": "optional"
+    }
+  ],
+  "recipient": {
+    "label": "Lohnabrechnende Stelle"
+  },
+  "sections": [
+    {
+      "id": "person",
+      "title": "Angaben der beschäftigten Person",
+      "fields": [
+        {
+          "id": "familienname",
+          "role": "person",
+          "type": "text",
+          "label": "Familienname",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+        },
+        {
+          "id": "vorname",
+          "role": "person",
+          "type": "text",
+          "label": "Vornamen",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+        },
+        {
+          "id": "geburtsdatum",
+          "role": "person",
+          "type": "date",
+          "label": "Geburtsdatum",
+          "required": true,
+          "purpose": "Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; ohne Versicherungsnummer Inhalt der Sofortmeldung"
+        },
+        {
+          "id": "staatsangehoerigkeit",
+          "role": "person",
+          "type": "text",
+          "label": "Staatsangehörigkeit",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung"
+        },
+        {
+          "id": "versicherungsnummer",
+          "role": "person",
+          "type": "svNumber",
+          "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
+          "required": false,
+          "purpose": "Inhalt der Sofortmeldung; ersetzt die Angaben zu Geburt und Anschrift"
+        }
+      ]
+    },
+    {
+      "id": "ohneVersicherungsnummer",
+      "title": "Nur ohne Versicherungsnummer: Angaben für ihre Vergabe",
+      "fields": [
+        {
+          "id": "geschlecht",
+          "role": "person",
+          "type": "choice",
+          "label": "Geschlecht",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer",
+          "options": [
+            {
+              "id": "maennlich",
+              "label": "männlich"
+            },
+            {
+              "id": "weiblich",
+              "label": "weiblich"
+            },
+            {
+              "id": "divers",
+              "label": "divers"
+            },
+            {
+              "id": "unbestimmt",
+              "label": "unbestimmt"
+            }
+          ],
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "geburtsname",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsname (falls abweichend vom Familiennamen)",
+          "required": false,
+          "purpose": "Vergabe einer Versicherungsnummer",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "geburtsort",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsort",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "geburtsland",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsland",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "strasse",
+          "role": "person",
+          "type": "text",
+          "label": "Straße und Hausnummer",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "anschriftZusatz",
+          "role": "person",
+          "type": "text",
+          "label": "Anschriftenzusatz",
+          "required": false,
+          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "postleitzahl",
+          "role": "person",
+          "type": "text",
+          "label": "Postleitzahl",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "wohnort",
+          "role": "person",
+          "type": "text",
+          "label": "Wohnort",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        },
+        {
+          "id": "wohnstaat",
+          "role": "person",
+          "type": "text",
+          "label": "Wohnsitzstaat (nur wenn nicht Deutschland)",
+          "required": false,
+          "purpose": "Inhalt der Sofortmeldung ohne Versicherungsnummer (§ 28a Abs. 4 SGB IV)",
+          "showIf": {
+            "field": "versicherungsnummer",
+            "answered": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "vertretung",
+      "title": "Gesetzliche Vertretung (nur bei Minderjährigen)",
+      "fields": [
+        {
+          "id": "vertretungName",
+          "role": "vertretung",
+          "type": "text",
+          "label": "Vor- und Familienname der gesetzlichen Vertretung",
+          "required": true,
+          "purpose": "Nachweis, wer für die minderjährige Person unterschreibt"
+        }
+      ]
+    },
+    {
+      "id": "arbeitgeber",
+      "title": "Angaben des Arbeitgebers",
+      "fields": [
+        {
+          "id": "agFirma",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Firma des Arbeitgebers",
+          "required": true,
+          "purpose": "Kopfzeile des Fragebogens, Zuordnung"
+        },
+        {
+          "id": "agBetriebsnummer",
+          "role": "arbeitgeber",
+          "type": "betriebsnummer",
+          "label": "Betriebsnummer des Arbeitgebers",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+        },
+        {
+          "id": "agFamilienname",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Familienname der beschäftigten Person",
+          "required": true,
+          "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
+        },
+        {
+          "id": "agVorname",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Vornamen der beschäftigten Person",
+          "required": true,
+          "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
+        },
+        {
+          "id": "agPersonalnummer",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Personalnummer",
+          "required": false,
+          "purpose": "Zuordnung in der Lohnabrechnung"
+        },
+        {
+          "id": "agBeschaeftigungsbeginn",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Tag der Beschäftigungsaufnahme",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "datenschutz",
+      "role": "person",
+      "title": "Datenschutzhinweis",
+      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den Beginn Ihrer Beschäftigung an die Datenstelle der Träger der Rentenversicherung zu melden (Sofortmeldung nach § 28a Abs. 4 SGB IV) und um Ihre Beschäftigung abzurechnen. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Sie sind gesetzlich verpflichtet, diese Angaben zu machen (§ 28o Abs. 1 SGB IV); ohne sie kann die Meldung nicht erstattet werden.\n\nVerantwortlich ist Ihr Arbeitgeber. Seine Kontaktdaten und gegebenenfalls die seines Datenschutzbeauftragten stehen in der Datenschutzinformation für Beschäftigte, die Sie von Ihrem Arbeitgeber erhalten. Empfänger sind die vom Arbeitgeber beauftragte lohnabrechnende Stelle und die Datenstelle der Träger der Rentenversicherung. Die Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen (unter anderem § 28f SGB IV, § 41 EStG).\n\nSie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.\n\nDiese App speichert und versendet nichts. Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben.",
+      "asOf": "2026-10-29",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "mitfuehrungspflicht",
+      "role": "person",
+      "title": "Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)",
+      "text": "Wer in einem der folgenden Wirtschaftsbereiche Dienst- oder Werkleistungen erbringt, muss während der Arbeit den Personalausweis, Pass, Passersatz oder Ausweisersatz bei sich haben und den Behörden der Zollverwaltung auf Verlangen vorlegen:\n\n- Baugewerbe\n- Gaststätten- und Beherbergungsgewerbe\n- Personenbeförderungsgewerbe\n- Speditions-, Transport- und damit verbundenes Logistikgewerbe einschließlich plattformbasierter Lieferdienste\n- Schaustellergewerbe\n- Gebäudereinigungsgewerbe\n- Unternehmen, die sich am Auf- und Abbau von Messen und Ausstellungen beteiligen\n- Fleischwirtschaft (ohne Fleischerhandwerk)\n- Prostitutionsgewerbe\n- Wach- und Sicherheitsgewerbe\n- Friseur- und Kosmetikgewerbe\n\nIhr Arbeitgeber muss Sie darauf nachweislich und schriftlich hinweisen und diesen Hinweis aufbewahren, solange Sie die Arbeit erbringen (§ 2a Abs. 2 SchwarzArbG).",
+      "asOf": "2026-10-29",
+      "acknowledgement": "paperHandout"
+    }
+  ],
+  "consistencyRules": [
+    {
+      "kind": "equal",
+      "fields": ["familienname", "agFamilienname"],
+      "message": "Der Familienname weicht zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["vorname", "agVorname"],
+      "message": "Die Vornamen weichen zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
+    }
+  ],
+  "matchKeys": [
+    {
+      "label": "Familienname",
+      "fields": {
+        "person": "familienname",
+        "arbeitgeber": "agFamilienname"
+      }
+    },
+    {
+      "label": "Vornamen",
+      "fields": {
+        "person": "vorname",
+        "arbeitgeber": "agVorname"
+      }
+    }
+  ],
+  "legalNotes": [
+    "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für die Angaben zur Sofortmeldung schreibt das Gesetz keine besondere Form vor.",
+    "Dieser Fragebogen ist nicht die Sofortmeldung selbst. Der Arbeitgeber meldet den Beginn der Beschäftigung bei deren Aufnahme an die Datenstelle der Träger der Rentenversicherung (§ 28a Abs. 4 SGB IV).",
+    "Den Hinweis auf die Pflicht, Ausweispapiere mitzuführen, gibt der Arbeitgeber nachweislich und schriftlich (§ 2a Abs. 2 SchwarzArbG). Er wird deshalb auf Papier ausgehändigt; im Fragebogen wird nur die Aushändigung bestätigt."
+  ]
+}
