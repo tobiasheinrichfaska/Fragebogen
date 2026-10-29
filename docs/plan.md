@@ -1,0 +1,50 @@
+# Arbeitsplan Fragebogen
+
+Freigegeben am 29.10.2026. Ein Schritt entspricht einem Commit. Nach jedem Schritt wird die Doku
+nachgezogen, berichtet und angehalten.
+
+## Leitentscheidungen
+
+| Thema         | Entscheidung                                                                                                                                                                                                                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Form          | **Eine HTML-Datei** (React + TypeScript, Vite + vite-plugin-singlefile). Sie läuft per Doppelklick (`file://`) oder von einer Subdomain der Kanzlei-Homepage (nötig für iPhone/iPad).                                                                                                            |
+| Netz          | **Keinerlei Netzverkehr.** Strenge CSP (`default-src 'none'`, `connect-src 'none'`), keine CDNs, kein Tracking. Ein Test erzwingt das.                                                                                                                                                           |
+| Speicher      | **Nichts im Browser.** Kein localStorage, kein IndexedDB. Einen Zwischenstand speichert man ausdrücklich als Datei. Beim Schließen des Tabs warnt die App.                                                                                                                                       |
+| Formulare     | **Datengetrieben.** Rollen, Abschnitte, Felder, Regeln und Texte stehen in Formulardefinitionen (JSON). Die Zuständigkeit gilt **je Feld**, nicht je Abschnitt. Gemeinsame Feldbausteine werden wiederverwendet. Veröffentlichte Definitionen sind eingefroren und über ihren Hash adressierbar. |
+| PDF           | **Eine PDF** mit lesbarem Teil, Prüfblatt und **Datenseiten**: Die Daten stehen als sichtbarer, maschinenlesbarer Text, komprimiert, base64url-kodiert und in nummerierten Zeilen mit Prüfsumme. Es gibt **keinen Dateianhang** (Gemeinsame Grundsätze § 9a BVV). Ziel ist PDF/A-2u.             |
+| Unterschrift  | Zeichnen (Finger, Maus, Stift) oder Namen tippen, erst nach ausdrücklicher Bestätigung. Gespeichert wird ein Vektorpfad **ohne Zeit- oder Druckwerte**.                                                                                                                                          |
+| Systemvermerk | Gerätezeit (ISO 8601 mit Versatz, IANA-Zeitzone, UTC), Betriebssystem, Browser und Version, Sprache, Eingabeart, App- und Formularversion sowie der SHA-256 des Siegels.                                                                                                                         |
+| Siegel        | JCS (RFC 8785) über den Payload, darin Feld-Hashes, Bestätigungstext, Kenntnisnahmen, Unterschrift, Systemvermerk, Eingangsvermerke und eine Nonce. Der `contentHash` steht außerhalb des Payloads.                                                                                              |
+| Hash-Kette    | Jede Station vermerkt die Hashes der Teile, die sie erhalten hat, und ihre Eingangszeit. Prüfurteile in Stufen: „in sich stimmig“ → „bestätigt durch …“.                                                                                                                                         |
+| Belehrungen   | Wo Papier nötig ist, wird auf Papier ausgehändigt. Im Fragebogen wird **die Aushändigung bestätigt** (`paperHandout`). Andere Hinweise werden in der App zur Kenntnis genommen (`read`). In beiden Fällen kommt der Hash des Texts ins Siegel.                                                   |
+| Minderjährige | Die Rolle „gesetzlicher Vertreter“ wird Pflicht, wenn die Person am Unterschriftstag unter 18 ist (§§ 187, 188 BGB).                                                                                                                                                                             |
+| Zeitanker     | Die **Ablage in der DATEV-Personalakte** liefert die vertrauenswürdige Zeit. Ein eigener Internet-Zeitstempel ist vorerst nicht geplant (Option für später).                                                                                                                                     |
+| Rechtsstatus  | Einfache elektronische Signatur. Der Status wird ehrlich benannt, nie „rechtsgültig“. Siehe [`rechtliches.md`](rechtliches.md).                                                                                                                                                                  |
+
+## Schritte
+
+| Nr. | Inhalt                                                                                                                                                                                                               | Status   |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| 0   | Projektgerüst: Lizenzen, Doku, Lint/Format, Vitest, Logikschicht mit Datenmodell-Entwurf und Datumslogik                                                                                                             | erledigt |
+| 1   | **PDF-Spike** (`.tmp/`): PDF/A-2u, Datenseiten schreiben (@cantoo/pdf-lib) und mit pdf.js zurücklesen; Gegenprobe Acrobat „Speichern unter“ und DATEV-Ablage; AES-256; Seitenzahl; Bundle-Größe; CSP-Verträglichkeit | offen    |
+| 2   | Kanonisierung (`canon.ts`, RFC-8785-Vektoren), Hash, Validatoren (IBAN, Steuer-ID, SV-Nummer), Formular-Schema, Register nach `definitionHash`                                                                       | offen    |
+| 3   | Siegel und Prüfung (Logik): Zustände, Versionen, Eingangsvermerke, abgestufte Urteile, Zeitplausibilität, Manipulationsmatrix, Golden-Dateien                                                                        | offen    |
+| 4   | Zusammenführung (Logik): Dubletten, Fassungskonflikte, Forks, Zuordnung ohne gemeinsame ID, Widersprüche, Lücken, `mergeHash`                                                                                        | offen    |
+| 5   | Formulare: **Sofortmeldung als Pilot**, dann der **Personalfragebogen allgemein**; Feldkatalog zur fachlichen Freigabe                                                                                               | offen    |
+| 6   | UI-Grundgerüst: Start, Formular-Renderer, Zwischenstand als Datei, „Alle Daten auf diesem Gerät löschen“, Gerätemodus                                                                                                | offen    |
+| 7   | Unterschrift-UI, Systemvermerk, Sperre                                                                                                                                                                               | offen    |
+| 8   | PDF schreiben und lesen in der App, Prüfanzeige, Import-Grenzen                                                                                                                                                      | offen    |
+| 9   | Station Kanzlei: Stapel-Import, Zusammenführung, Ausgabe                                                                                                                                                             | offen    |
+| 10  | Härtung: CSP-Injektion, Kein-Netz- und Kein-Speicher-Tests, E2E in Chromium, Firefox und WebKit unter `file://`                                                                                                      | offen    |
+| 11  | Kennwortschutz (AES-256), nur bei positivem Spike                                                                                                                                                                    | offen    |
+| 12  | CI (Lint, Typecheck, Unit, Golden, E2E, veraPDF), Release mit SHA-256, Auslieferung auf der Subdomain, täglicher Integritäts-Wächter                                                                                 | offen    |
+| 13  | DATEV-Ablagedatum als Eingangsvermerk; Anleitung „Scan + fortgeschrittene Signatur“ für den RV-Befreiungsantrag                                                                                                      | offen    |
+
+**Später:**
+
+- weitere Formulare: Minijob/kurzfristig, RV-Befreiung, Auszubildende, Elterneigenschaft (mit
+  Belegdateien), Mandantenaufnahme, Mieterselbstauskunft;
+- Export in den DATEV-Lohn-Stammdatenimport;
+- QR-Code für den Papierweg;
+- optionaler Internet-Zeitstempel (RFC 3161);
+- Korrekturvermerk der Kanzlei.

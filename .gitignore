@@ -1,0 +1,23 @@
+# Dependencies & build output
+node_modules/
+dist/
+coverage/
+
+# Test runners
+playwright-report/
+test-results/
+
+# Project-bound scratch area (workspace rule: never use global temp)
+.tmp/
+
+# Local environment / editor
+.env
+.env.*
+.vscode/
+.idea/
+*.wsb
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
