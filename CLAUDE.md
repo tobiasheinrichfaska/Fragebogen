@@ -28,34 +28,36 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 
 ## Project Directory
 
-| File/Folder                                           | Purpose                                                                                                   |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `CLAUDE.md`                                           | This file — project conventions and status                                                                |
-| `README.md`                                           | Public description (German), legal status, license                                                        |
-| `FEATURES_REQUIRED.md`                                | Critical user paths the audit validates end-to-end                                                        |
-| `LICENSE`, `LICENSE_COMMERCIAL.md`, `CONTRIBUTING.md` | AGPLv3 + commercial dual licensing, CLA                                                                   |
-| `.gitattributes`                                      | LF line endings (workspace template)                                                                      |
-| `.gitignore`                                          | Ignores `node_modules/`, `dist/`, `.tmp/`, test reports, editor/OS junk                                   |
-| `package.json` / `package-lock.json`                  | Scripts and pinned dependencies                                                                           |
-| `vite.config.ts`                                      | Vite + singlefile build (`base: './'`, no modulePreload polyfill) and Vitest config (`pool: 'vmThreads'`) |
-| `tsconfig.json`                                       | Strict TS (incl. `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`)                                |
-| `eslint.config.js`                                    | Flat config: TS strict, React hooks/refresh for `src/ui`, layering rules for `src/logic`                  |
-| `.prettierrc.json`, `.prettierignore`                 | Formatting                                                                                                |
-| `index.html`                                          | Entry HTML (`lang="de"`, `data:` favicon, no external URLs)                                               |
-| `src/main.tsx`                                        | Mounts the React app                                                                                      |
-| `src/appInfo.ts`                                      | App name + version (version injected from `package.json` as `__APP_VERSION__`)                            |
-| `src/vite-env.d.ts`                                   | Vite client types, `__APP_VERSION__` declaration                                                          |
-| `src/logic/model.ts`                                  | Data model types (draft from step 0): form definition, questionnaire, part, seal, receipts                |
-| `src/logic/dates.ts`                                  | Date-only arithmetic on `YYYY-MM-DD` strings; `ageOn` / `isMinorOn` (§§ 187, 188 BGB)                     |
-| `src/logic/dates.test.ts`                             | Unit tests for `dates.ts` (leap years, 29 February rule, invalid input)                                   |
-| `src/ui/App.tsx`                                      | Start screen (placeholder until step 6)                                                                   |
-| `src/ui/styles.css`                                   | Base styles, light/dark                                                                                   |
-| `tests/static/indexHtml.test.ts`                      | Guards `index.html` against external URLs/stylesheets                                                     |
-| `docs/data-model.html`                                | Self-contained data-model reference (German) — regenerate when the model changes                          |
-| `docs/plan.md`                                        | Approved plan, step table with status (German)                                                            |
-| `docs/rechtliches.md`                                 | Legal background with sources (German, not legal advice)                                                  |
-| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md`                                            |
-| `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                         |
+| File/Folder                                           | Purpose                                                                                                                                                        |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CLAUDE.md`                                           | This file — project conventions and status                                                                                                                     |
+| `README.md`                                           | Public description (German), legal status, license                                                                                                             |
+| `FEATURES_REQUIRED.md`                                | Critical user paths the audit validates end-to-end                                                                                                             |
+| `LICENSE`, `LICENSE_COMMERCIAL.md`, `CONTRIBUTING.md` | AGPLv3 + commercial dual licensing, CLA                                                                                                                        |
+| `.gitattributes`                                      | LF line endings (workspace template)                                                                                                                           |
+| `.gitignore`                                          | Ignores `node_modules/`, `dist/`, `.tmp/`, test reports, editor/OS junk                                                                                        |
+| `package.json` / `package-lock.json`                  | Scripts and pinned dependencies                                                                                                                                |
+| `vite.config.ts`                                      | Vite + singlefile build (`base: './'`, no modulePreload polyfill) and Vitest config (`pool: 'vmThreads'`)                                                      |
+| `tsconfig.json`                                       | Strict TS (incl. `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`)                                                                                     |
+| `eslint.config.js`                                    | Flat config: TS strict, React hooks/refresh for `src/ui`, layering rules for `src/logic`                                                                       |
+| `.prettierrc.json`, `.prettierignore`                 | Formatting                                                                                                                                                     |
+| `index.html`                                          | Entry HTML (`lang="de"`, `data:` favicon, no external URLs)                                                                                                    |
+| `src/main.tsx`                                        | Mounts the React app                                                                                                                                           |
+| `src/appInfo.ts`                                      | App name + version (version injected from `package.json` as `__APP_VERSION__`)                                                                                 |
+| `src/vite-env.d.ts`                                   | Vite client types, `__APP_VERSION__` declaration                                                                                                               |
+| `src/logic/model.ts`                                  | Data model types (draft from step 0): form definition, questionnaire, part, seal, receipts                                                                     |
+| `src/logic/dates.ts`                                  | Date-only arithmetic on `YYYY-MM-DD` strings; `ageOn` / `isMinorOn` (§§ 187, 188 BGB)                                                                          |
+| `src/logic/dates.test.ts`                             | Unit tests for `dates.ts` (leap years, 29 February rule, invalid input)                                                                                        |
+| `src/ui/App.tsx`                                      | Start screen (placeholder until step 6)                                                                                                                        |
+| `src/ui/styles.css`                                   | Base styles, light/dark                                                                                                                                        |
+| `tests/static/indexHtml.test.ts`                      | Guards `index.html` against external URLs/stylesheets                                                                                                          |
+| `docs/data-model.html`                                | Self-contained data-model reference (German) — regenerate when the model changes                                                                               |
+| `docs/plan.md`                                        | Approved plan, step table with status (German)                                                                                                                 |
+| `docs/rechtliches.md`                                 | Legal background with sources (German, not legal advice)                                                                                                       |
+| `docs/spike-pdf.md`                                   | Step-1 PDF spike results + **data-page format v1** spec (German)                                                                                               |
+| `assets/fonts/`                                       | Embedded PDF fonts: Noto Sans Regular/SemiBold + Noto Sans Mono, Latin subsets (OFL), `README.md` with source URLs, SHA-256 and the exact `pyftsubset` command |
+| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md`                                                                                                 |
+| `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                                                                              |
 
 ---
 
@@ -93,6 +95,10 @@ Key design decisions (details in `docs/plan.md`):
 | No own internet timestamp (for now)                                | Filing in the DATEV Personalakte provides the trusted time anchor; browsers cannot reach most TSAs (no CORS). RFC 3161 stays an option.                                                                  |
 | Hosting on a dedicated subdomain of the Kanzlei homepage (step 12) | iOS cannot run local HTML; separate origin, static only, security headers, daily integrity watcher.                                                                                                      |
 | Kanzlei branding is configuration, never committed                 | Public repo stays neutral.                                                                                                                                                                               |
+| PDF write: `@cantoo/pdf-lib` + `@cantoo/fontkit` (no pdfkit)       | Spike: subset fonts with ToUnicode, `convertToPDFA('2U')` (bundled sRGB), AES-256 V5/R6 encrypt + password reload all work. See `docs/spike-pdf.md`.                                                     |
+| PDF read: `pdfjs-dist` in the **main thread** ("fake worker")      | Chromium refuses `blob:` workers on `file://` (opaque origin) and pdf.js then hangs. One code path for file:// and https. `isEvalSupported: false` (CSP).                                                |
+| Fonts: Noto Sans / Noto Sans Mono subsets (not Source Sans/Code)   | Source fonts carry the OFL Reserved Font Name "Source" — a distributed subset would have to be renamed. Noto has no RFN. Subsets drop ligatures/kerning (1 glyph = 1 char → reliable extraction).        |
+| Data-page lines must fit inside the page                           | pdf.js drops glyphs beyond the page edge (spike bug: a too-wide header line lost SHA-256 chars). Header is two lines; step 8 adds a width test.                                                          |
 
 ---
 
@@ -113,6 +119,13 @@ Key design decisions (details in `docs/plan.md`):
 - **No autosave:** closing the tab loses unsaved input (a warning will be shown, step 6).
 - **Device key (ECDSA) deliberately not built** — proves a browser profile, not a person, and
   conflicts with "store nothing".
+- **PDF parsing runs in the main thread** (pdf.js "fake worker", because `file://` forbids blob
+  workers): a huge or hostile PDF can freeze the tab — mitigated by import size limits (step 8).
+- **Bundle ≈ 2.7 MB** once PDF support is wired in (pdf.js ≈ 1.7 MB, pdf-lib ≈ 0.6 MB).
+- **PDF/A-2u not yet externally validated** — the spike passes a structural self-check only;
+  Acrobat Preflight (manual) and veraPDF (CI, step 12) decide. Never advertise "PDF/A" before that.
+- **Print-to-PDF survival unverified** — headless Edge could not print a PDF (empty output); must be
+  checked by hand ("Microsoft Print to PDF").
 
 ---
 
@@ -149,8 +162,12 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-Step 0 (foundation) done. **Next: step 1 — PDF spike** in `.tmp/` (write PDF/A-2u + data pages with
-@cantoo/pdf-lib, read back with pdf.js, Acrobat "Speichern unter" + DATEV round-trip, AES-256,
-page count, bundle size, CSP compatibility). Then stop and report.
+Step 0 (foundation) and step 1 (PDF spike, results in `docs/spike-pdf.md`) done. Spike code is
+throw-away in `.tmp/spike-pdf/` (Node runner `run.ts`, re-check `check.ts <pdf>`, browser bundle +
+CDP runner in `browser/`). **Waiting on Tobias:** Acrobat Preflight PDF/A-2u, Acrobat "Speichern
+unter" and DATEV round-trip of `.tmp/spike-pdf/out/sample-pdfa-2u.pdf`.
+**Next: step 2 — canonicalisation + registry** (`canon.ts` with RFC 8785 vectors, hash, validators,
+form schema, definition registry). Recommendation from the spike for step 3: delta-encode signature
+strokes and shorten field hashes to 64 bit (data block → ~1 page).
 
 _Last updated: 2026-10-29_
