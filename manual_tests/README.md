@@ -24,17 +24,20 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Testfälle
 
-| Datei                                            | Bereich                                                                                  |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                         |
-| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts |
+| Datei                                            | Bereich                                                                                   |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                          |
+| [`02_ausfuellen.md`](02_ausfuellen.md)           | Rollenwahl, Interview, „Weiß ich gerade nicht“, Zusammenfassung, Zwischenstand            |
+| [`03_abschluss.md`](03_abschluss.md)             | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung |
+| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts  |
 
-Weitere Bereiche kommen mit den nächsten Schritten hinzu: Ausfüllen, Unterschrift, PDF, Einlesen,
-Zusammenführung und Gerätemodus.
+Weitere Bereiche kommen mit den nächsten Schritten hinzu: PDF, Einlesen, QR-Codes und
+Zusammenführung.
 
 ## Bitte nicht als Fehler melden
 
-- „Es sind noch keine Fragebögen verfügbar.“ Das ist der aktuelle Entwicklungsstand (v0.1.0).
+- „Testfassung“ beim Formular: Version 0.x ist gewollt, solange die App vor ihrem ersten Release steht.
+- „PDF erstellen“ meldet nur „folgt im nächsten Schritt“: Die PDF-Ausgabe kommt mit Schritt 8.
 
 ## Pflege (für Entwickler)
 

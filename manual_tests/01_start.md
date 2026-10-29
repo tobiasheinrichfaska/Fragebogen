@@ -11,9 +11,11 @@
 
 **Erwartet:**
 
-- Die Überschrift **„Fragebogen“** erscheint, darunter der Kasten **„Ihre Daten bleiben auf diesem
-  Gerät“**.
-- Ganz unten steht **„Version 0.1.0“** (oder eine höhere Version).
+- Die Überschrift **„Fragebogen“** erscheint, darunter drei Kästen: **„Neuer Fragebogen“** mit
+  dem Knopf **„Personalfragebogen: Angaben für die Sofortmeldung“** (Version 0.1.0 · Testfassung),
+  **„Weiterbearbeiten oder prüfen“** und **„Ihre Daten bleiben auf diesem Gerät“**.
+- Ganz unten steht **„Fragebogen 0.1.0 · läuft vollständig auf diesem Gerät“** (oder eine höhere
+  Version).
 - _Nicht offensichtlich:_ In der Adresszeile steht `file:///…` statt einer Internetadresse. Das ist
   richtig, denn die Seite läuft ohne Server.
 

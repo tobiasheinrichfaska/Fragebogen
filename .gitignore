@@ -21,3 +21,6 @@ test-results/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Kanzlei configuration with real names/addresses (see config/README.md)
+config/kanzlei.local.json

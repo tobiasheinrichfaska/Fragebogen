@@ -93,7 +93,27 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/fixtures/forms/beispiel/1.1.0.json`            | Same form with a required guardian name field (`signerNameField`); frozen by golden files                                                                                                                                                               |
 | `tests/forms/publishedForms.test.ts`                  | Guards the real `forms/` folder: valid, published, unchanged hash, file naming, field-id stability                                                                                                                                                      |
 | `tests/static/sourceCharacters.test.ts`               | Fails on literal invisible/combining/separator characters in sources and docs (must be `\u` escapes)                                                                                                                                                    |
-| `src/ui/App.tsx`                                      | Start screen (placeholder until step 6)                                                                                                                                                                                                                 |
+| `src/ui/App.tsx`                                      | App frame: screens start → "Wer füllt jetzt aus?" → interview → signature → done; banners, beforeunload warning, master-data link, file open/save                                                                                                       |
+| `src/ui/StartScreen.tsx`                              | New questionnaire (latest published version per form, test versions marked), open file, delete all data                                                                                                                                                 |
+| `src/ui/RolesScreen.tsx`                              | Role choice with state per role (guardian requirement), blockers and gaps, reopen / new version, save, PDF                                                                                                                                              |
+| `src/ui/InterviewScreen.tsx`                          | Interview steps: notice (confirm), question (help, explainer, "Weiß ich gerade nicht"), summary (missing, deferred, inactive, other roles read-only, master-data link)                                                                                  |
+| `src/ui/FieldInput.tsx`                               | Input per field type (text-like kept locally until "Weiter", choices/yes-no as buttons)                                                                                                                                                                 |
+| `src/ui/fieldKinds.ts`                                | `isTextLike`                                                                                                                                                                                                                                            |
+| `src/ui/SignatureScreen.tsx`                          | Step 7: confirmation text, draw / type / complete without signature (per role), seal with device time + system note                                                                                                                                     |
+| `src/ui/SignaturePad.tsx`                             | Canvas drawing in the 1000×400 box (pointer events, no timing/pressure)                                                                                                                                                                                 |
+| `src/ui/DoneScreen.tsx`                               | After sealing: time, system note, content hash, hand the device on                                                                                                                                                                                      |
+| `src/ui/common.tsx`                                   | Banner, explainer link (configured host + frozen path), notice text, card                                                                                                                                                                               |
+| `src/ui/pdfActions.ts`                                | PDF out/in glue (step 8)                                                                                                                                                                                                                                |
+| `src/io/environment.ts`                               | UUID v4 + nonce via crypto.getRandomValues, device time (local with offset + UTC + IANA zone), system note (UA-CH or UA string), `InputTracker`                                                                                                         |
+| `src/io/files.ts`                                     | Download via short-lived blob URL, size-limited file reading (25 MB)                                                                                                                                                                                    |
+| `src/io/bundledForms.ts`                              | Published forms compiled in (import.meta.glob of forms/_/_.json + published.json), checked at start                                                                                                                                                     |
+| `src/config.ts`                                       | Kanzlei configuration of this build (`__KANZLEI_CONFIG__`)                                                                                                                                                                                              |
+| `config/`                                             | `kanzlei.example.json` (neutral, committed), `kanzlei.local.json` (gitignored, real name/addresses), `README.md`                                                                                                                                        |
+| `src/logic/session.ts`                                | Device session as pure functions: start/from file, `roleStates`, `enterRole`/`startNewVersion`/`reopen`, interview navigation, `answer`/`defer`/`acknowledge`, `seal` (receipt notes from arrivals), master data                                        |
+| `src/logic/display.ts`                                | `displayValue` / `editValue`: stored values as people read and type them (screen and PDF)                                                                                                                                                               |
+| `src/logic/userAgent.ts`                              | OS/browser from UA Client Hints or the UA string (major version only)                                                                                                                                                                                   |
+| `src/logic/appConfig.ts`                              | Strict decoder of the Kanzlei configuration (https only), `explainerUrl`                                                                                                                                                                                |
+| `src/logic/fileNames.ts`                              | File names after § 9a BVV (≤ 64 chars, A–Z a–z 0–9 _), never a person's name                                                                                                                                                                            |
 | `src/ui/styles.css`                                   | Base styles, light/dark                                                                                                                                                                                                                                 |
 | `tests/static/indexHtml.test.ts`                      | Guards `index.html` against external URLs/stylesheets                                                                                                                                                                                                   |
 | `docs/data-model.html`                                | Self-contained data-model reference (German) — regenerate when the model changes                                                                                                                                                                        |
@@ -262,8 +282,13 @@ Key design decisions (details in `docs/plan.md`):
 
 ## Known Limitations
 
-- **Foundation only (v0.1.0):** logic for canonicalisation, normalisation, validation and the form
-  registry exists; no forms, no signature, no PDF yet — start screen placeholder.
+- **UI checked by a throw-away headless smoke run only** (Edge via CDP on `file://`, screenshots,
+  2026-10-30: employer first → person signs with the mouse → "Vollständig"); automated E2E in three
+  engines comes with step 10. Touch/pen on real devices: manual tests MT-21.
+- **No form view for the Kanzlei yet** (step 9); the Kanzlei can open files and see the overview.
+- **Interview progress counts preselected answers** as answered ("2 von etwa 14" at the start).
+- **Notice confirmations are not saved in the interim file** — they must be given again in the
+  session that signs (deliberate: they belong to the signing).
 - **No CSP yet:** the strict Content-Security-Policy and the built-file no-network test arrive in
   step 10. The source `index.html` is already guarded against external URLs.
 - **Simple electronic signature only** (eIDAS Art. 3 Nr. 10) — not qualified; device time is not
@@ -368,6 +393,9 @@ logic: `requiredIf`, input only when available, condition operators, rule texts;
 4c (merge with the agreed rules, link proposals, contradictions, gaps, signature layout) done. Spike code is throw-away in
 `.tmp/spike-pdf/` (re-check any PDF with `node .tmp/spike-pdf/check.ts <pdf>`). The spike's manual
 counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`).
+**Steps 6 (UI: start, role choice, interview, summary, interim file, master-data link) and 7
+(signature: draw / type / without, system note) done** with the Sofortmeldung; smoke-tested headless.
+**Next: step 8 — PDF** (write with data pages + QR codes + signature lines, read back, scans).
 **Step 5 in progress — forms:** 5a (draft, catalogue generator, `betriebsnummer`, German condition
 word order) and 5b (review applied: all birth/address data, preselected yes/no questions, `initial`,
 `masterData`, `partLinks` + `partsNotLinked`), master data as bookmark link (decision C) and 5c
