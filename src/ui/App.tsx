@@ -6,7 +6,7 @@ import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS } from '../io/bundledForms';
 import { deviceNow, InputTracker, newQuestionnaireId } from '../io/environment';
 import { downloadFile, readFileBytes } from '../io/files';
-import { ORIGIN_MESSAGES, buildPackage, decodePackage, packageText } from '../logic/dataPackage';
+import { buildPackage, packageText } from '../logic/dataPackage';
 import { fileNameFor } from '../logic/fileNames';
 import type { FormRegistry, RegisteredForm } from '../logic/formRegistry';
 import { sha256Hex } from '../logic/hash';
@@ -17,7 +17,6 @@ import {
   leaveRole,
   markSaved,
   reopen,
-  sessionFromFile,
   startNewVersion,
   startSession,
   type Session,
@@ -29,7 +28,7 @@ import { InterviewScreen } from './InterviewScreen';
 import { RolesScreen } from './RolesScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
-import { createPdf, openPdfOrImage } from './pdfActions';
+import { createPdf, fromPackageText, openPdfOrImage } from './pdfActions';
 
 type Screen =
   | { kind: 'start' }
@@ -60,6 +59,8 @@ export function App() {
 function Workspace({ registry }: { registry: FormRegistry }) {
   const [session, setSession] = useState<Session | undefined>();
   const [screen, setScreen] = useState<Screen>({ kind: 'start' });
+  // QR codes read so far from photos of a print-out, until all parts are there.
+  const [collected, setCollected] = useState<Uint8Array[]>([]);
   const remembered = useMemo(() => parseMasterDataFragment(location.hash), []);
   const [banner, setBanner] = useState<BannerMessage | undefined>(() =>
     remembered.ok
@@ -148,34 +149,25 @@ function Workspace({ registry }: { registry: FormRegistry }) {
   const open = async (file: File) => {
     const read = await readFileBytes(file);
     if (!read.ok) return setBanner({ tone: 'error', text: read.message });
-    const arrival = { ...deviceNow(), source: 'file' as const, fileSha256: sha256Hex(read.bytes) };
-    const { local, utc, source, fileSha256 } = arrival;
-    if (file.name.toLowerCase().endsWith('.json') || file.type === 'application/json') {
-      let raw: unknown;
-      try {
-        raw = JSON.parse(new TextDecoder().decode(read.bytes));
-      } catch {
-        return setBanner({ tone: 'error', text: 'Die Datei ist kein Zwischenstand dieser App.' });
-      }
-      const decoded = decodePackage(raw, registry);
-      if (!decoded.ok) {
-        return setBanner({
-          tone: 'error',
-          text: 'Der Zwischenstand lässt sich nicht lesen.',
-          detail: decoded.issues.slice(0, 5).map((issue) => `${issue.path}: ${issue.message}`),
-        });
-      }
-      setSession(sessionFromFile(decoded, { local, utc, source, fileSha256 }));
-      setScreen({ kind: 'roles' });
-      setBanner(
-        decoded.origin === 'embedded'
-          ? { tone: 'warning', text: ORIGIN_MESSAGES.embedded }
-          : undefined,
-      );
-      return;
+    const now = deviceNow();
+    const arrival = {
+      local: now.local,
+      utc: now.utc,
+      source: 'file' as const,
+      fileSha256: sha256Hex(read.bytes),
+    };
+    const isJson = file.name.toLowerCase().endsWith('.json') || file.type === 'application/json';
+    const opened = isJson
+      ? fromPackageText(new TextDecoder().decode(read.bytes), registry, arrival, [
+          'Zwischenstand geöffnet.',
+        ])
+      : await openPdfOrImage(file, read.bytes, registry, arrival, collected);
+    if (opened.kind === 'partial') {
+      setCollected(opened.collected);
+      return setBanner(opened.message);
     }
-    const opened = await openPdfOrImage(file);
-    if (!opened.ok) return setBanner(opened.message);
+    setCollected([]);
+    if (opened.kind === 'error') return setBanner(opened.message);
     setSession(opened.session);
     setScreen({ kind: 'roles' });
     setBanner(opened.message);
@@ -184,7 +176,8 @@ function Workspace({ registry }: { registry: FormRegistry }) {
   const pdf = async () => {
     if (!session) return;
     const result = await createPdf(session);
-    setBanner(result);
+    setSession(result.session);
+    setBanner(result.message);
   };
 
   const clearAll = () => {

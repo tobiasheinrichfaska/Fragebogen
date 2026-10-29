@@ -30,7 +30,15 @@ endgültige Umsetzung mit Tests folgt in Schritt 8. Hier stehen die Entscheidung
 4. **Ohne Ligaturen und Kerning** (beim Verkleinern entfernt): Jede Glyphe entspricht genau einem
    Zeichen.
 
-## Format der Datenseiten, Version 1
+## Format der Datenseiten, Version 1 (umgesetzt in Schritt 8)
+
+Seit Schritt 5f tragen die Datenseiten das **Datenpaket** `{ format: "fragebogen-paket", formatVersion: 1, questionnaire, definition }`
+(Fragebogen **und** Formulardefinition, JCS). Zusätzlich steht derselbe komprimierte Block als **QR-Codes** auf eigenen
+Seiten: Byte-Modus, Fehlerkorrektur M, je 700 Byte, Kopf `FBQ1 <id> <i>/<n> <16 hex SHA-256>` + Zeilenumbruch + Stück; Modul
+0,5 mm, 12 Module weißer Abstand zwischen den Codes (jsQR findet keinen Code, wenn mehrere sichtbar sind; die App zerlegt das
+Bild deshalb an weißen Zeilen und Spalten). Die Sofortmeldung ergibt 67 Datenzeilen (eine Seite) und 7 QR-Codes (eine Seite).
+
+### Ursprüngliches Format (Spike)
 
 ```
 Anlage: Daten in maschinenlesbarer Form                  (Noto Sans SemiBold 12 pt)

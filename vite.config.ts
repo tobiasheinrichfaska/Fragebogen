@@ -37,8 +37,9 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
     environment: 'node',
-    // Vitest 4.1.8 forks/threads pools run 0 tests ("failed to find the current suite")
-    pool: 'vmThreads',
+    // forks again since Vitest 4.1.12 (4.1.8 ran 0 tests there). pdf.js needs it: under vmThreads it
+    // fails with "Linked modules must use the same context" (2026-10-30).
+    pool: 'forks',
     globals: true,
   },
 });

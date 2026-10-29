@@ -1,7 +1,7 @@
 # Critical User Paths — Fragebogen
 
 **Purpose:** Core workflows that must not break. Audit validates these end-to-end.
-Status 2026-10-30: filling in, interview and signing exist in the UI (steps 6–7, smoke-tested headless); PDF and import follow — every path below is still **open** (end-to-end).
+Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, scan, photos) exist (steps 6–8, smoke-tested headless under file://); Kanzlei merge UI follows — every path below is still **open** (end-to-end).
 
 ## Offline & privacy (applies to every path)
 

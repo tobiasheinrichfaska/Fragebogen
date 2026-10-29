@@ -29,15 +29,14 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 | [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                          |
 | [`02_ausfuellen.md`](02_ausfuellen.md)           | Rollenwahl, Interview, „Weiß ich gerade nicht“, Zusammenfassung, Zwischenstand            |
 | [`03_abschluss.md`](03_abschluss.md)             | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung |
+| [`04_pdf.md`](04_pdf.md)                         | PDF erstellen und wieder öffnen, neu gespeicherte PDF, Scan und Fotos der QR-Codes, Link  |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts  |
 
-Weitere Bereiche kommen mit den nächsten Schritten hinzu: PDF, Einlesen, QR-Codes und
-Zusammenführung.
+Weitere Bereiche kommen mit den nächsten Schritten hinzu: Station Kanzlei (Zusammenführung).
 
 ## Bitte nicht als Fehler melden
 
 - „Testfassung“ beim Formular: Version 0.x ist gewollt, solange die App vor ihrem ersten Release steht.
-- „PDF erstellen“ meldet nur „folgt im nächsten Schritt“: Die PDF-Ausgabe kommt mit Schritt 8.
 
 ## Pflege (für Entwickler)
 

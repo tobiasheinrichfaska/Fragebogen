@@ -42,7 +42,7 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 7, Oberfläche und Unterschrift) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>, <code>masterData.ts</code>, <code>masterDataLink.ts</code>, <code>interview.ts</code>, <code>dependencies.ts</code>, <code>dataPackage.ts</code>, <code>dataPages.ts</code>, <code>qrParts.ts</code>; <code>src/io/qr.ts</code>)</p>
+<p class="meta">Stand: 29.10.2026 (Schritt 8, PDF und Papierweg) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>, <code>merge.ts</code>, <code>mergeRecord.ts</code>, <code>consistency.ts</code>, <code>provenance.ts</code>, <code>catalogue.ts</code>, <code>masterData.ts</code>, <code>masterDataLink.ts</code>, <code>interview.ts</code>, <code>dependencies.ts</code>, <code>dataPackage.ts</code>, <code>dataPages.ts</code>, <code>qrParts.ts</code>; <code>src/io/qr.ts</code>)</p>
 <p class="note"><strong>Stand Schritt 4c.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
 Feldlogik, Zusammenführung und das Formularregister sind umgesetzt. Das erste Formular (Sofortmeldung) liegt als Entwurf zur Freigabe vor.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
@@ -484,6 +484,19 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
   <tr><td><code>parseMasterDataFragment</code></td><td><code>(hash: string) =&gt; { ok, data | undefined } | { ok: false, issue, detail }</code></td><td>Ohne Kennung <code>stammdaten=1</code>: kein Stammdaten-Link. Sonst streng und als Ganzes: fremde Version, ungültige oder doppelte Schlüssel, leere oder unlesbare Werte, Überlänge werden abgelehnt (<code>MASTER_DATA_LINK_MESSAGES</code>). Das Ergebnis läuft danach durch <code>applyMasterData</code>.</td></tr>
   <tr><td><code>applyMasterData</code></td><td><code>(q, form, role, stored: unknown) =&gt; { ok, questionnaire, applied, kept, skipped } | { ok: false, code }</code></td><td>Füllt leere Stammdatenfelder des offenen Entwurfs aus einem gemerkten Datensatz. Der Datensatz ist nicht vertrauenswürdig und läuft durch <code>setValue</code>; abgelehnte Werte stehen mit Grund in <code>skipped</code>, vorhandene Antworten bleiben (<code>kept</code>), Schlüssel anderer Formulare werden übergangen.</td></tr>
 </table>
+
+<h3>PDF (<code>src/io/pdfWriter.ts</code>, <code>src/io/pdfReader.ts</code>)</h3>
+<table>
+  <tr><th>Teil</th><th>Inhalt</th></tr>
+  <tr><td>Kopf</td><td>Titel, Kanzlei (Konfiguration), Fragebogen-ID, Formular und Version; „Vollständig“ oder „Zur Weitergabe … Noch offen: …“; Hinweis „Diese PDF ist das Original“; Adresse der App als Text und Link (nur mit Konfiguration)</td></tr>
+  <tr><td>Angaben</td><td>Je Abschnitt alle gesiegelten Felder (aktuelle Fassung je Rolle) mit <code>displayValue</code>; Felder anderer Rollen als der ersten grau hinterlegt; Fußnote <code>[n]</code> bei Werten aus einer späteren Fassung</td></tr>
+  <tr><td>Hinweise</td><td>Titel, Art der Kenntnisnahme, ob bestätigt, Stand, Text</td></tr>
+  <tr><td>Unterschriften und Abschlüsse</td><td>Eine Zeile je Fassung (<code>signatureLayout</code>, nach Rollen nummeriert): Status, Ortszeit, Name; Unterschrift als Vektorpfad, getippter Name, Systemvermerk, SHA-256</td></tr>
+  <tr><td>Prüfblatt</td><td>IDs und Hashes, Herkunft des Formulars, Prüfergebnis beim Erstellen je Teil mit Bestätigungen, Eingangsvermerke, Rechtsstatus</td></tr>
+  <tr><td>Datenseiten</td><td>Datenpaket als Textzeilen und als QR-Codes</td></tr>
+  <tr><td>Fußzeile</td><td>„Fragebogen-ID · Daten (8 hex) · Formular · Seite x von y“</td></tr>
+</table>
+<p>PDF/A-2u-Kennzeichen; gespeichert ohne Objektströme, damit jede Struktur durchsuchbar bleibt: kein JavaScript, kein Dateianhang, keine Startaktion, keine Verschlüsselung (getestet). Beim Einlesen: <code>readPdfText</code> → <code>decodeDataLines</code> → <code>decodePackage</code>; ohne Datenseiten werden die Seiten gerendert und die QR-Codes gelesen. <code>editClues</code> meldet ein angehängtes Update oder ein fremdes Programm als Hinweis.</p>
 
 <h3>Sitzung eines Geräts (<code>src/logic/session.ts</code>)</h3>
 <p>Alle Bedienschritte der Oberfläche sind reine Funktionen über einer unveränderlichen <code>Session</code>: Fragebogen, Formular, Herkunft, aktive Rolle (Gerätemodus), Interview-Schritt, bestätigte Hinweise je Rolle, <strong>Eingänge</strong> (wann jede gesiegelte Fassung auf dieses Gerät kam, aus Datei oder auf demselben Gerät) und <code>dirty</code>. Nichts davon wird gespeichert; der Nutzer speichert Dateien.</p>
