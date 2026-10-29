@@ -8,3 +8,4 @@ LICENSE
 # Verbatim copies of the workspace templates
 LICENSE_COMMERCIAL.md
 CONTRIBUTING.md
+tests/golden/**/*.json

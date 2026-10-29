@@ -5,7 +5,7 @@ import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { canonicalize, isWellFormed } from './jcs';
 import type { Sha256Hex } from './model';
 
-const SHA256_HEX = /^[0-9a-f]{64}$/;
+export const SHA256_HEX = /^[0-9a-f]{64}$/;
 
 /** Strings are hashed as UTF-8; an unpaired surrogate would be replaced silently, so it throws. */
 export function sha256Hex(data: Uint8Array | string): Sha256Hex {

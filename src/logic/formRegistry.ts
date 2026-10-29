@@ -5,7 +5,7 @@
 // questionnaires verifiable.
 import { Decoder, type DecodeIssue } from './decode';
 import { FORM_ID, SEMVER, parseFormDefinition } from './formDefinition';
-import { canonicalHash } from './hash';
+import { SHA256_HEX, canonicalHash } from './hash';
 import type { FieldDefinition, FormDefinition, Sha256Hex } from './model';
 
 export interface PublishedForm {
@@ -37,7 +37,6 @@ export type RegistryResult =
   { ok: true; registry: FormRegistry } | { ok: false; issues: DecodeIssue[] };
 
 export const PUBLISHED_LIST_NAME = 'forms/published.json';
-const SHA256_HEX = /^[0-9a-f]{64}$/;
 
 export function definitionHash(definition: FormDefinition): Sha256Hex {
   return canonicalHash(definition);

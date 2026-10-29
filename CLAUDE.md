@@ -57,6 +57,15 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/formDefinition.ts`                         | `parseFormDefinition` = strict decode + reference checks (`checkFormDefinition`, rule list); id patterns; `findCycle`                                          |
 | `src/logic/formRegistry.ts`                           | Registry by (id, version) and `definitionHash`; published list check; `checkFieldIdStability`; `compareVersions`                                               |
 | `src/logic/compute.ts`                                | Named pure functions for `computed` fields (empty until step 5)                                                                                                |
+| `src/logic/form.ts`                                   | Evaluating a definition against data: `visibility` (chained `showIf`), `sealableData`, `missingRequired`, `noticeHash`, role/field lookups                     |
+| `src/logic/seal.ts`                                   | `SEAL_SCHEMA`, salted 64-bit `fieldHash`, `contentHashOf`, `strokesHashOf`, `diffFieldHashes`                                                                  |
+| `src/logic/strokes.ts`                                | Canonical delta text encoding of drawn signatures (`encodeStrokes` / strict `decodeStrokes`), limits                                                           |
+| `src/logic/time.ts`                                   | Strict ISO 8601 UTC/local-with-offset parsing, `sameInstant`, durations                                                                                        |
+| `src/logic/questionnaireFile.ts`                      | File format constants (`FORMAT`, `QUESTIONNAIRE_ID`) and the strict `decodeQuestionnaire` for untrusted files                                                  |
+| `src/logic/questionnaire.ts`                          | Pure state transitions: create, `startPart`, `setValue`, `discardDraft`, `sealPart`, `addReceipt`, `receivedPartFor`                                           |
+| `src/logic/verify.ts`                                 | `verifyQuestionnaire`: graded verdicts, findings with severity + German messages, hash chain, receipts, time plausibility                                      |
+| `tests/support/sample.ts`                             | Shared fictitious scenario (person signs, employer seals + chains, Kanzlei/DATEV receipt; second-version variant)                                              |
+| `tests/golden/`                                       | Golden questionnaires (`beispiel-1.0.0/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                       |
 | `src/logic/*.test.ts`                                 | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                          |
 | `forms/`                                              | Form definitions `forms/<id>/<version>.json` (none yet), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                  |
 | `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests                                                           |
@@ -85,8 +94,22 @@ Key design decisions (details in `docs/plan.md`):
 - **Ownership per field** (`FieldDefinition.role`), sections shared; repeat-group columns may belong
   to another role and reference rows by stable row id.
 - **Seal** = SHA-256 over JCS (RFC 8785) of `SealPayload`; `contentHash` lives outside the payload.
-  Per-field hashes (128-bit) let verification name changed fields. Payload never travels without its
-  data. Values are normalised once at input and hashed exactly as stored (`canon: 1`).
+  Per-field hashes are SHA-256(JCS({f, n: nonce, v})) truncated to **64 bit** and **salted with the
+  part nonce** (low-entropy values stay unguessable; integrity rests on the 256-bit contentHash).
+  Values are normalised once at input and hashed exactly as stored (`canon: 1`). Only visible fields
+  of the role are sealed; unanswered ones as `null`, hidden values are dropped.
+- **Signature image** = `Part.signatureStrokes`, canonical delta text (`strokes.ts`, integer box
+  1000×400, no timing/pressure); the payload holds only its SHA-256. Typed signatures store the
+  normalised name in the payload.
+- **Versions:** re-sealing appends version n+1 with `supersedes` = previous contentHash; only the last
+  entry of a role may be a draft; the last sealed one is current.
+- **Verification grades** (`verify.ts`): `consistent` (level 1, recomputed) → `confirmed` (level 2:
+  another role's seal lists the hash in `receivedParts`, or a receipt does). Errors make a part
+  `invalid`; warnings (time plausibility with 15 min tolerance, >90 days at receipt, references to
+  older/unknown versions, mismatch against the form) do not. A forger who re-seals consistently
+  reaches level 1 again but loses all confirmations — stated honestly, never hidden.
+- **All transitions are pure** (`questionnaire.ts`): time, nonce and device data are arguments from
+  the io layer; refusals carry a code (`TRANSITION_MESSAGES`, German) and details.
 - **Notices:** `InfoBlock.acknowledgement` is `read` (confirmed in-app) or `paperHandout` (notice is
   handed out on paper; the form only confirms the handout). The hash of the exact text goes into
   the seal.
@@ -164,7 +187,16 @@ Key design decisions (details in `docs/plan.md`):
   cross-role columns are designed with the first form that needs them (step 5). No compute
   functions exist yet, so `computed` fields are rejected.
 - **`forms/published.json` immutability** is only checked against the current files; removing or
-  editing an entry _together with_ its file is caught once CI compares with the last release (step 12) and by golden files (step 3).
+  editing an entry _together with_ its file is caught once CI compares with the last release (step
+  12). Golden files guard only the fixture form so far.
+- **Legal guardian requirement is not evaluated yet** — `requiredIf: minorOnSigning` is checked in the
+  definition, but "guardian part missing" is a gap reported by the merge step (step 4).
+- **Fields of type `repeatGroup`/`file` cannot be sealed yet** (their values are not normalised).
+- **Verification proves consistency, not authorship:** anyone can produce a fresh, self-consistent
+  seal; only confirmations (other roles' seals, receipts, later the DATEV filing) raise the level,
+  and receipts are as trustworthy as the station that wrote them.
+- **Device clocks are trusted only within limits:** plausibility uses a 15-minute tolerance; a
+  wrong but consistent device clock is not detectable.
 
 ---
 
@@ -201,13 +233,14 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-Steps 0 (foundation), 1 (PDF spike, `docs/spike-pdf.md`) and 2 (canonicalisation, normalisation,
-validators, form definition decoder, registry) done. Spike code is throw-away in `.tmp/spike-pdf/`
-(re-check any PDF with `node .tmp/spike-pdf/check.ts <pdf>`). The spike's manual counter-checks are
-no longer blocking (see `manual_tests/90_pdf_gegenproben.md`).
-**Next: step 3 — seal and verification (logic):** payload, states draft/sealed/signed, versions with
-`supersedes`, receipts, graded verdicts, time plausibility, tamper matrix, first golden files.
-Spike recommendation for step 3: delta-encode signature strokes and shorten field hashes to 64 bit
-(data block → ~1 page).
+Steps 0 (foundation), 1 (PDF spike, `docs/spike-pdf.md`), 2 (canonicalisation, normalisation,
+validators, form definition decoder, registry) and 3 (seal, transitions, strict file decoder,
+graded verification, tamper matrix, golden files) done. Spike code is throw-away in
+`.tmp/spike-pdf/` (re-check any PDF with `node .tmp/spike-pdf/check.ts <pdf>`). The spike's manual
+counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`).
+**Next: step 4 — merge (logic):** duplicates with the same hash, version conflicts (field
+comparison, a human decides), forks, matching without a shared id via `matchKeys`,
+contradictions (`consistencyRules`), gaps (missing parts incl. the guardian for minors, missing
+required fields/signatures), `mergeRecord` + `mergeHash`, associativity as a property test.
 
 _Last updated: 2026-10-29_

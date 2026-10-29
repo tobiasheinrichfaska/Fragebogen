@@ -140,14 +140,15 @@ export interface FormDefinition {
 export type FieldValue = string | boolean | null | FieldValue[] | { [key: string]: FieldValue };
 
 /** `sealed` = completed without signature (still hashed and chained). */
-export type PartStatus = 'draft' | 'sealed' | 'signed';
+export const PART_STATUSES = ['draft', 'sealed', 'signed'] as const;
+export type PartStatus = (typeof PART_STATUSES)[number];
 
-export type InputType = 'pen' | 'touch' | 'mouse' | 'keyboard';
+export const INPUT_TYPES = ['pen', 'touch', 'mouse', 'keyboard'] as const;
+export type InputType = (typeof INPUT_TYPES)[number];
 
-/** Signature shape as quantised x/y pairs — deliberately no timing or pressure (biometrics). */
-export interface Stroke {
-  points: number[];
-}
+/** Source of browser and OS in the system note: UA Client Hints or the User-Agent string. */
+export const UA_SOURCES = ['ua-ch', 'ua-string'] as const;
+export const RECEIVED_SOURCES = ['file', 'same-device'] as const;
 
 export interface SystemNote {
   /** ISO 8601 with UTC offset, from the signer's device. */
@@ -158,7 +159,7 @@ export interface SystemNote {
   os: string;
   browser: string;
   browserVersion: string;
-  uaSource: 'ua-ch' | 'ua-string';
+  uaSource: (typeof UA_SOURCES)[number];
   language: string;
   inputTypes: InputType[];
   appVersion: string;
@@ -169,7 +170,7 @@ export interface ReceivedPart {
   contentHash: Sha256Hex;
   receivedAtLocal: string;
   receivedAtUtc: string;
-  source: 'file' | 'same-device';
+  source: (typeof RECEIVED_SOURCES)[number];
   fileSha256?: Sha256Hex;
 }
 
@@ -180,21 +181,38 @@ export interface Acknowledgement {
   textHash: Sha256Hex;
 }
 
+/** Drawn: hash of the encoded strokes (`Part.signatureStrokes`). Typed: the name as typed. */
+export type SealSignature =
+  { method: 'drawn'; strokesHash: Sha256Hex } | { method: 'typed'; typedName: string };
+
+export interface FormReference {
+  id: string;
+  version: string;
+  definitionHash: Sha256Hex;
+}
+
 export interface SealPayload {
   schema: 'fragebogen.siegel/1';
   canon: 1;
   questionnaireId: string;
-  form: { id: string; version: string; definitionHash: Sha256Hex };
+  form: FormReference;
   role: RoleId;
+  /** 1 for the first seal of a role, +1 per re-seal. */
   version: number;
+  /** contentHash of the previous version of the same role. */
   supersedes?: Sha256Hex;
-  /** Per-field digests (truncated to 128 bit) — lets verification name the changed fields. */
+  /**
+   * Per visible field of the role: SHA-256(JCS({f, n: nonce, v})) truncated to 64 bit. Names the
+   * changed fields; integrity itself rests on the 256-bit contentHash. The nonce makes low-entropy
+   * values (tax id, birth date) unguessable from the digest.
+   */
   fieldHashes: Record<FieldId, string>;
   confirmationText: string;
   acknowledgements: Acknowledgement[];
-  signature?: { method: 'drawn' | 'typed'; strokesHash?: Sha256Hex; typedName?: string };
+  signature?: SealSignature;
   systemNote: SystemNote;
   receivedParts: ReceivedPart[];
+  /** 128-bit random, lower-case hex. */
   nonce: string;
 }
 
@@ -208,12 +226,14 @@ export interface Part {
   role: RoleId;
   status: PartStatus;
   data: Record<FieldId, FieldValue>;
-  strokes?: Stroke[];
+  /** Drawn signature, encoded by strokes.ts (shape only, no timing or pressure). */
+  signatureStrokes?: string;
   seal?: Seal;
 }
 
 /** Where a receipt time comes from: this app's clock or the DATEV filing date. */
-export type ReceiptSource = 'app' | 'datev';
+export const RECEIPT_SOURCES = ['app', 'datev'] as const;
+export type ReceiptSource = (typeof RECEIPT_SOURCES)[number];
 
 export interface Receipt {
   station: string;
@@ -237,7 +257,7 @@ export interface Questionnaire {
   formatVersion: 1;
   questionnaireId: string;
   /** Pinned to the form version of the first part. */
-  form: { id: string; version: string; definitionHash: Sha256Hex };
+  form: FormReference;
   /** Versions per role, oldest first (re-signing appends with `supersedes`). */
   parts: Record<RoleId, Part[]>;
   receipts: Receipt[];

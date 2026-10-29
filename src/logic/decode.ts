@@ -47,6 +47,14 @@ export class Decoder {
     return value;
   }
 
+  integer(value: unknown, path: string, min = 0): number | undefined {
+    if (value === undefined) return this.missing(path);
+    if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < min) {
+      return this.report(path, `expected an integer ≥ ${min}`);
+    }
+    return value;
+  }
+
   boolean(value: unknown, path: string): boolean | undefined {
     if (value === undefined) return this.missing(path);
     return typeof value === 'boolean' ? value : this.report(path, 'expected a boolean');

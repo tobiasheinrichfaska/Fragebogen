@@ -1,0 +1,158 @@
+{
+  "format": "fragebogen",
+  "formatVersion": 1,
+  "questionnaireId": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c",
+  "form": {
+    "id": "beispiel",
+    "version": "1.0.0",
+    "definitionHash": "8fda4c6b1004770dfbc288f6dda6fe847bdd9cfbf4ef8ec39db633e3c4b579d3"
+  },
+  "parts": {
+    "person": [
+      {
+        "role": "person",
+        "status": "signed",
+        "data": {
+          "nachname": "Musterfrau",
+          "geburtsdatum": "1990-05-17",
+          "steuerId": "86095742719",
+          "weitereBeschaeftigung": true,
+          "weitereArt": "minijob",
+          "bemerkungen": "Erste Zeile\nZweite Zeile"
+        },
+        "signatureStrokes": "100,200,12,-12,18,-7,21,9;300,210,6,-6",
+        "seal": {
+          "payload": {
+            "schema": "fragebogen.siegel/1",
+            "canon": 1,
+            "questionnaireId": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c",
+            "form": {
+              "id": "beispiel",
+              "version": "1.0.0",
+              "definitionHash": "8fda4c6b1004770dfbc288f6dda6fe847bdd9cfbf4ef8ec39db633e3c4b579d3"
+            },
+            "role": "person",
+            "version": 1,
+            "fieldHashes": {
+              "nachname": "d77a9a5e763c0f96",
+              "geburtsdatum": "ef032e2e011d2031",
+              "steuerId": "7498ff714b794218",
+              "weitereBeschaeftigung": "079ff240551cc709",
+              "weitereArt": "b7081a35feace12e",
+              "bemerkungen": "dda8845ade14c531"
+            },
+            "confirmationText": "Ich bestätige, dass meine Angaben richtig und vollständig sind.",
+            "acknowledgements": [
+              {
+                "infoBlockId": "datenschutz",
+                "kind": "read",
+                "textHash": "741fe19b2a8c5512a60b8109aa998e7e5638bfcd3b0e5629b3b66354a42d2cdd"
+              }
+            ],
+            "signature": {
+              "method": "drawn",
+              "strokesHash": "d6e5074b224ce3cc59374fc73262ef3959e7e30450ceab1b2758414ec203fca4"
+            },
+            "systemNote": {
+              "signedAtLocal": "2026-10-29T10:15:00.000+01:00",
+              "timeZone": "Europe/Berlin",
+              "signedAtUtc": "2026-10-29T09:15:00.000Z",
+              "os": "Windows",
+              "browser": "Edge",
+              "browserVersion": "141",
+              "uaSource": "ua-ch",
+              "language": "de-DE",
+              "inputTypes": [
+                "mouse"
+              ],
+              "appVersion": "0.1.0"
+            },
+            "receivedParts": [],
+            "nonce": "0123456789abcdef0123456789abcdef"
+          },
+          "contentHash": "c816a2e4dd0c24d70aee342b6a70977198dd7d31b4982ebdf694d86c5fccaaf8"
+        }
+      }
+    ],
+    "arbeitgeber": [
+      {
+        "role": "arbeitgeber",
+        "status": "sealed",
+        "data": {
+          "agNachname": "Musterfrau",
+          "eintritt": "2026-11-01",
+          "bruttoMonat": "2450.00"
+        },
+        "seal": {
+          "payload": {
+            "schema": "fragebogen.siegel/1",
+            "canon": 1,
+            "questionnaireId": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c",
+            "form": {
+              "id": "beispiel",
+              "version": "1.0.0",
+              "definitionHash": "8fda4c6b1004770dfbc288f6dda6fe847bdd9cfbf4ef8ec39db633e3c4b579d3"
+            },
+            "role": "arbeitgeber",
+            "version": 1,
+            "fieldHashes": {
+              "agNachname": "52e2012dfb9e1924",
+              "eintritt": "939a5080b872d8be",
+              "bruttoMonat": "1f92a2bc3b852cf8"
+            },
+            "confirmationText": "Ich bestätige die Angaben des Arbeitgebers.",
+            "acknowledgements": [],
+            "systemNote": {
+              "signedAtLocal": "2026-10-30T08:30:00.000+01:00",
+              "timeZone": "Europe/Berlin",
+              "signedAtUtc": "2026-10-30T07:30:00.000Z",
+              "os": "Windows",
+              "browser": "Edge",
+              "browserVersion": "141",
+              "uaSource": "ua-ch",
+              "language": "de-DE",
+              "inputTypes": [
+                "keyboard"
+              ],
+              "appVersion": "0.1.0"
+            },
+            "receivedParts": [
+              {
+                "role": "person",
+                "contentHash": "c816a2e4dd0c24d70aee342b6a70977198dd7d31b4982ebdf694d86c5fccaaf8",
+                "receivedAtLocal": "2026-10-30T08:00:00.000+01:00",
+                "receivedAtUtc": "2026-10-30T07:00:00.000Z",
+                "source": "file",
+                "fileSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "nonce": "fedcba9876543210fedcba9876543210"
+          },
+          "contentHash": "9323966f61a50bf9a5049db272a2b05353eaf21335fb0d46de58a2410f11cf80"
+        }
+      }
+    ]
+  },
+  "receipts": [
+    {
+      "station": "Kanzlei",
+      "receivedAtLocal": "2026-11-02T09:00:00.000+01:00",
+      "receivedAtUtc": "2026-11-02T08:00:00.000Z",
+      "timeZone": "Europe/Berlin",
+      "source": "datev",
+      "fileName": "3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c.pdf",
+      "fileSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "parts": [
+        {
+          "role": "person",
+          "contentHash": "c816a2e4dd0c24d70aee342b6a70977198dd7d31b4982ebdf694d86c5fccaaf8"
+        },
+        {
+          "role": "arbeitgeber",
+          "contentHash": "9323966f61a50bf9a5049db272a2b05353eaf21335fb0d46de58a2410f11cf80"
+        }
+      ],
+      "appVersion": "0.1.0"
+    }
+  ]
+}
