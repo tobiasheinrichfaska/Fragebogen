@@ -42,9 +42,9 @@
 <body>
 <main>
 <h1>Fragebogen – Datenmodell</h1>
-<p class="meta">Stand: 29.10.2026 (Schritt 4a) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>)</p>
-<p class="note"><strong>Stand Schritt 4a.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln
-und das Formularregister sind umgesetzt. Die Zusammenführung folgt in Schritt 4b.
+<p class="meta">Stand: 29.10.2026 (Schritt 4b) · App-Version 0.1.0 · Quelle: <code>src/logic/</code> (<code>model.ts</code>, <code>dates.ts</code>, <code>jcs.ts</code>, <code>hash.ts</code>, <code>normalize.ts</code>, <code>validators.ts</code>, <code>formDefinition.ts</code>, <code>formRegistry.ts</code>, <code>form.ts</code>, <code>seal.ts</code>, <code>strokes.ts</code>, <code>time.ts</code>, <code>questionnaireFile.ts</code>, <code>questionnaire.ts</code>, <code>verify.ts</code>, <code>requirements.ts</code>, <code>conditions.ts</code>)</p>
+<p class="note"><strong>Stand Schritt 4b.</strong> Die Typen sind festgelegt. Kanonisierung, Normalisierung, Prüfziffern, Siegel, Prüfung, Übermittlungsregeln,
+Feldlogik und das Formularregister sind umgesetzt. Die Zusammenführung folgt in Schritt 4c.
 <strong>Diese Seite wird neu erzeugt, sobald sich das Modell ändert</strong>, und zwar in derselben Sitzung wie die
 Code-Änderung.</p>
 
@@ -160,7 +160,7 @@ Code-Änderung.</p>
   <tr><td>SectionDefinition</td><td><code>fields</code></td><td>FieldDefinition</td><td>1 : n</td><td>enthält</td></tr>
   <tr><td>FieldDefinition</td><td><code>columns</code></td><td>FieldDefinition</td><td>1 : n (nur <code>repeatGroup</code>)</td><td>enthält</td></tr>
   <tr><td>FieldDefinition</td><td><code>role</code></td><td>RoleDefinition.<code>id</code></td><td>n : 1</td><td>ID</td></tr>
-  <tr><td>FieldDefinition</td><td><code>showIf.field</code>, <code>computed.args</code></td><td>FieldDefinition.<code>id</code> (gleiche Rolle)</td><td>n : m</td><td>ID</td></tr>
+  <tr><td>FieldDefinition</td><td><code>showIf</code> / <code>requiredIf</code> (je Blatt <code>field</code>), <code>computed.args</code></td><td>FieldDefinition.<code>id</code> (gleiche Rolle)</td><td>n : m</td><td>ID</td></tr>
   <tr><td>RoleDefinition</td><td><code>requiredIf.birthDateField</code></td><td>FieldDefinition.<code>id</code> (andere Rolle)</td><td>n : 1</td><td>ID</td></tr>
   <tr><td>RoleDefinition</td><td><code>signerNameField</code></td><td>FieldDefinition.<code>id</code> (gleiche Rolle)</td><td>1 : 0..1</td><td>ID</td></tr>
   <tr><td>InfoBlock</td><td><code>role</code></td><td>RoleDefinition.<code>id</code></td><td>n : 1</td><td>ID</td></tr>
@@ -236,14 +236,27 @@ Code-Änderung.</p>
   <tr><td><code>role</code></td><td>RoleId</td><td>ja</td><td>Wer das Feld ausfüllt (Zuständigkeit je Feld)</td></tr>
   <tr><td><code>type</code></td><td><code>text</code> · <code>date</code> · <code>choice</code> · <code>multiChoice</code> · <code>boolean</code> · <code>iban</code> · <code>taxId</code> · <code>svNumber</code> · <code>money</code> · <code>repeatGroup</code> · <code>file</code></td><td>ja</td><td>Feldtyp; bestimmt Normalisierung und Prüfung</td></tr>
   <tr><td><code>label</code></td><td>string</td><td>ja</td><td>Beschriftung</td></tr>
-  <tr><td><code>required</code></td><td>boolean</td><td>ja</td><td>Pflichtfeld (für Lückenanzeige)</td></tr>
+  <tr><td><code>required</code></td><td>boolean</td><td>ja</td><td>Immer Pflicht, solange das Feld verfügbar ist. Schließt <code>requiredIf</code> aus.</td></tr>
+  <tr><td><code>requiredIf</code></td><td>Condition</td><td>nein</td><td>Pflicht nur, solange die Bedingung gilt, z. B. „Pflicht, wenn ‚Telefon‘ leer ist“</td></tr>
   <tr><td><code>purpose</code></td><td>string</td><td>ja</td><td>Zweck der Erhebung; speist die Information nach Art. 13 DSGVO</td></tr>
   <tr><td><code>voluntary</code></td><td>boolean</td><td>nein</td><td>Freiwillige Angabe (z. B. Schwerbehinderung in den ersten 6 Monaten)</td></tr>
   <tr><td><code>multiline</code></td><td>boolean</td><td>nein</td><td>Nur <code>text</code>: Zeilenumbrüche bleiben erhalten (z. B. Bemerkungen); sonst wird aller Leerraum zu einem Leerzeichen</td></tr>
   <tr><td><code>options</code></td><td>ChoiceOption[] ({ id, label })</td><td>nein</td><td>Auswahlmöglichkeiten; gespeichert wird die ID</td></tr>
-  <tr><td><code>showIf</code></td><td>Condition</td><td>nein</td><td>Sichtbarkeit; nur Felder derselben Rolle (<code>{field, equals}</code>, <code>{all}</code>, <code>{any}</code>)</td></tr>
+  <tr><td><code>showIf</code></td><td>Condition</td><td>nein</td><td><strong>Eingabe erst möglich, wenn …</strong>; vorher ist das Feld ausgeblendet, Eingaben lehnt die App ab, und beim Abschluss fällt ein alter Wert weg</td></tr>
   <tr><td><code>columns</code></td><td>FieldDefinition[]</td><td>nein</td><td>Spalten einer Wiederholgruppe; Spalten anderer Rollen verweisen per Zeilen-ID</td></tr>
   <tr><td><code>computed</code></td><td>{ fn, args }</td><td>nein</td><td>Abgeleiteter Wert: Name einer reinen Funktion der Logikschicht, nie Code in Daten</td></tr>
+</table>
+
+<h3>Condition (Bedingung)</h3>
+<p>Bedingungen beziehen sich nur auf Felder <strong>derselben Rolle</strong> (keine Wiederhol-Spalten). Ein ausgeblendetes oder unbeantwortetes Feld hat den Wert <code>null</code>.
+Nur <code>showIf</code>-Abhängigkeiten müssen kreisfrei sein; gegenseitiges <code>requiredIf</code> („Telefon oder E-Mail“) ist erlaubt.</p>
+<table>
+  <tr><th>Form</th><th>Für Feldtypen</th><th>Gilt, wenn</th><th>Deutscher Text</th></tr>
+  <tr><td><code>{ field, equals }</code></td><td>boolean (Wert <code>true</code>/<code>false</code>), choice (Options-ID)</td><td>der Wert gleich ist</td><td>„Feld“ ist „Ja“</td></tr>
+  <tr><td><code>{ field, in: [...] }</code></td><td>choice</td><td>der Wert eine der Options-IDs ist (Liste nicht leer, ohne Doppelungen)</td><td>„Feld“ ist „A“ oder „B“</td></tr>
+  <tr><td><code>{ field, contains }</code></td><td>multiChoice</td><td>die Auswahl die Option enthält</td><td>„Feld“ enthält „A“</td></tr>
+  <tr><td><code>{ field, answered }</code></td><td>alle</td><td>das Feld beantwortet (<code>true</code>) bzw. leer (<code>false</code>) ist; „Nein“ zählt als Antwort</td><td>„Feld“ ist ausgefüllt / leer</td></tr>
+  <tr><td><code>{ not }</code> · <code>{ all: [...] }</code> · <code>{ any: [...] }</code></td><td>–</td><td>Verneinung, alle, mindestens eine (höchstens 8 Ebenen)</td><td>nicht (…) · … und … · … oder …</td></tr>
 </table>
 
 <h3>InfoBlock</h3>
@@ -372,16 +385,17 @@ Werte unverändert. Eine spätere Änderung dieser Regeln kann alte Urteile desh
 Abgelehnt werden <code>undefined</code>, <code>NaN</code>/<code>Infinity</code>, Lücken in Arrays, Klasseninstanzen und unpaarige Surrogates, außerdem Verschachtelung tiefer als 64.</p>
 
 <h2 id="methoden">Methoden der Datenmanipulation</h2>
-<p>Stand Schritt 4a. Alle Funktionen sind rein und laufen ohne UI. Zustandsübergänge geben einen <strong>neuen</strong> Fragebogen
+<p>Stand Schritt 4b. Alle Funktionen sind rein und laufen ohne UI. Zustandsübergänge geben einen <strong>neuen</strong> Fragebogen
 zurück oder eine Ablehnung mit Code (<code>TRANSITION_MESSAGES</code>, deutsch) und Einzelheiten; die Eingabe bleibt unverändert.
-Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. Die Zusammenführung folgt in Schritt 4b.</p>
+Zeit, Nonce und Gerätedaten kommen als Argumente aus der Ein-/Ausgabeschicht. Die Zusammenführung folgt in Schritt 4c.</p>
 
 <h3>Zustandsübergänge (<code>src/logic/questionnaire.ts</code>)</h3>
 <table>
   <tr><th>Übergang</th><th>Signatur</th><th>Wirkung und Ablehnungsgründe</th></tr>
   <tr><td><code>createQuestionnaire</code></td><td><code>(questionnaireId, form: RegisteredForm) =&gt; Questionnaire</code></td><td>Leerer Fragebogen, gebunden an Formular und <code>definitionHash</code>; die ID muss eine kleingeschriebene UUID v4 sein</td></tr>
+  <tr><td><code>reopenPart</code></td><td><code>(q, form, role) =&gt; Transition</code></td><td><strong>Unterschrift zurücknehmen vor dem Versenden:</strong> Die letzte gesiegelte Fassung wird wieder Entwurf mit ihren Daten; die alte Unterschrift entfällt, es entsteht keine Kette. Abgelehnt: <code>versionInUse</code> (ein anderer Teil oder ein Eingangsvermerk nennt die Fassung, sie ist also schon weitergegeben), <code>noSealedPart</code>, <code>draftExists</code></td></tr>
   <tr><td><code>startPart</code></td><td><code>(q, form, role) =&gt; Transition</code></td><td>Neuer Entwurf der Rolle. Nach einem früheren Abschluss übernimmt er dessen Daten, das ergibt die nächste Fassung. Abgelehnt: <code>wrongForm</code>, <code>unknownRole</code>, <code>draftExists</code></td></tr>
-  <tr><td><code>setValue</code></td><td><code>(q, form, role, fieldId, raw) =&gt; Transition</code></td><td>Normalisiert (<code>normalizeFieldValue</code>) und speichert einen Wert im Entwurf; Warnungen werden durchgereicht. Abgelehnt: <code>noDraft</code>, <code>unknownField</code>, <code>notOwnField</code>, <code>invalidValue</code></td></tr>
+  <tr><td><code>setValue</code></td><td><code>(q, form, role, fieldId, raw) =&gt; Transition</code></td><td>Normalisiert (<code>normalizeFieldValue</code>) und speichert einen Wert im Entwurf; Warnungen werden durchgereicht. Abgelehnt: <code>noDraft</code>, <code>unknownField</code>, <code>notOwnField</code>, <code>invalidValue</code>, <code>fieldNotAvailable</code> (Wert für ein Feld, dessen <code>showIf</code> nicht gilt; Einzelheit: „erst wenn …“). Leeren ist immer erlaubt.</td></tr>
   <tr><td><code>discardDraft</code></td><td><code>(q, role) =&gt; Transition</code></td><td>Verwirft den Entwurf; gesiegelte Fassungen bleiben</td></tr>
   <tr><td><code>sealPart</code></td><td><code>(q, form, role, input: SealInput) =&gt; Transition</code></td><td>Schließt den Entwurf ab. Versteckte Felder fallen weg. Alle Werte werden erneut geprüft, Pflichtfelder und alle Hinweise der Rolle müssen erledigt sein, die Unterschrift muss zur Rolle passen. Dann entstehen Feld-Hashes, Kenntnisnahmen, Systemvermerk, Eingangsvermerke und <code>contentHash</code>. Status <code>signed</code> mit, <code>sealed</code> ohne Unterschrift; eine neue Fassung bekommt <code>version</code> + 1 und <code>supersedes</code>. Abgelehnt: <code>noDraft</code>, <code>invalidNonce</code>, <code>invalidSystemNote</code> (auch wenn Orts- und UTC-Zeit verschiedene Zeitpunkte sind), <code>signatureRequired</code>, <code>signatureNotAllowed</code>, <code>invalidSignature</code>, <code>unknownNotice</code>, <code>noticeNotAcknowledged</code>, <code>invalidValue</code>, <code>missingRequired</code>, <code>invalidReceivedPart</code> (eigene Rolle, unbekannte Rolle, doppelt, widersprüchliche Zeiten). Unterschrift: gezeichnet mindestens 5 Punkte und 40 Einheiten breit, getippt mindestens 2 Buchstaben, sonst <code>invalidSignature</code> mit deutscher Begründung. Bedingte Rolle (gesetzliche Vertretung): Unterschrift Pflicht, Name Pflicht (<code>signerNameMissing</code>), und <code>receivedParts</code> muss die aktuelle gesiegelte Fassung der auslösenden Rolle nennen (<code>mustBindPart</code>). Weicht ein getippter Name vom Namensfeld ab (Groß-/Kleinschreibung zählt nicht), gibt es die Warnung <code>signature.nameMismatch</code>.</td></tr>
   <tr><td><code>addReceipt</code></td><td><code>(q, receipt: Receipt) =&gt; Transition</code></td><td>Hängt einen Eingangsvermerk an, etwa „Kanzlei“ mit Quelle <code>app</code> oder <code>datev</code>. Abgelehnt: <code>invalidReceipt</code>, <code>unknownPart</code> (verweist auf eine Fassung, die nicht vorliegt)</td></tr>
@@ -430,6 +444,7 @@ Einen Zwischenstand speichern geht jederzeit. <code>completenessGaps(q, form)</c
   <tr><td><code>nothingSealed</code></td><td>Es gibt noch keinen gesiegelten Teil</td></tr>
   <tr><td><code>draftOpen</code></td><td>Ein Teil ist ein Entwurf, auch eine neu geöffnete Fassung. Entwürfe werden nie übermittelt.</td></tr>
   <tr><td><code>signatureMissing</code></td><td>Eine Rolle mit <code>signature: required</code> ist nur gesiegelt, nicht unterschrieben</td></tr>
+  <tr><td><code>requiredFieldMissing</code></td><td>In einem gesiegelten Teil fehlt eine Pflichtangabe (immer oder per <code>requiredIf</code>); nur bei manipulierten Dateien oder geänderten Regeln möglich</td></tr>
   <tr><td><code>partInvalid</code></td><td>Die Prüfung stuft eine Fassung als „verändert oder fehlerhaft“ ein</td></tr>
   <tr><td><code>guardianMissing</code></td><td>Die Person ist am Ortsdatum ihrer Unterschrift unter 18, die gesetzliche Vertretung hat noch nicht unterschrieben (Einzelheit z. B. „16 Jahre am 29.10.2026“)</td></tr>
   <tr><td><code>guardianNotBound</code></td><td>Die Vertretung hat eine ältere Fassung der Person bestätigt; die Person hat danach neu unterschrieben</td></tr>
@@ -448,9 +463,12 @@ Einen Zwischenstand speichern geht jederzeit. <code>completenessGaps(q, form)</c
 <table>
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
   <tr><td colspan="3"><code>src/logic/form.ts</code></td></tr>
+  <tr><td><code>fieldStates</code></td><td><code>(definition, role, data) =&gt; Map&lt;FieldId, { visible, required, missing }&gt;</code></td><td>Je Feld: verfügbar, Pflicht (immer oder per <code>requiredIf</code>), Pflicht und leer</td></tr>
+  <tr><td><code>describeFieldRules</code></td><td><code>(definition, field) =&gt; { input, requirement }</code></td><td>Regeln als Text, z. B. <code>input</code> „erst wenn „Weitere Beschäftigung“ ist „Ja““, <code>requirement</code> „Pflicht, wenn „Telefon“ ist leer“</td></tr>
+  <tr><td><code>evaluateCondition</code> · <code>leafProblem</code> · <code>describeCondition</code></td><td><code>src/logic/conditions.ts</code></td><td>Auswerten, Prüfen gegen das Zielfeld, deutscher Text; die Operatoren sind eine Datentabelle</td></tr>
   <tr><td><code>visibility</code> · <code>visibleFields</code></td><td><code>(definition, role, data)</code></td><td>Sichtbarkeit nach <code>showIf</code>; ein verstecktes Feld zählt als unbeantwortet, auch für Bedingungen, die von ihm abhängen</td></tr>
   <tr><td><code>sealableData</code></td><td><code>(definition, role, data) =&gt; Record&lt;FieldId, FieldValue&gt;</code></td><td>Nur sichtbare Felder der Rolle, unbeantwortete als <code>null</code></td></tr>
-  <tr><td><code>missingRequired</code></td><td><code>(definition, role, data) =&gt; FieldId[]</code></td><td>Sichtbare Pflichtfelder ohne Antwort</td></tr>
+  <tr><td><code>missingRequired</code></td><td><code>(definition, role, data) =&gt; FieldId[]</code></td><td>Verfügbare Pflichtfelder (immer oder per <code>requiredIf</code>) ohne Antwort</td></tr>
   <tr><td><code>noticeHash</code></td><td><code>(block: InfoBlock) =&gt; Sha256Hex</code></td><td>Hash von Titel, Text und Stand eines Hinweises</td></tr>
   <tr><td><code>roleOf</code> · <code>fieldsOfRole</code> · <code>infoBlocksOfRole</code></td><td>–</td><td>Nachschlagen in der Definition</td></tr>
   <tr><td><code>ownerOfField</code></td><td><code>(definition, fieldId) =&gt; RoleId | undefined</code></td><td>Welche Rolle ein Feld ausfüllt (z. B. wem das Geburtsdatum gehört)</td></tr>

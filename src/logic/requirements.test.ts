@@ -5,6 +5,7 @@ import {
   beispielForm,
   fill,
   guardianForm,
+  logicForm,
   minorSigned,
   minorWithGuardian,
   note,
@@ -223,6 +224,7 @@ describe('transmissionBlockers', () => {
     guardian.data.vertretungName = null;
     forgeReseal(guardian);
     expect(codes(transmissionBlockers(q, guardianForm()))).toEqual([
+      'requiredFieldMissing@vertretung',
       'guardianNameMissing@vertretung',
     ]);
   });
@@ -300,5 +302,36 @@ describe('BLOCKER_MESSAGES', () => {
   it('has a German sentence for every blocker', () => {
     for (const message of Object.values(BLOCKER_MESSAGES))
       expect(message).toMatch(/^[A-ZÄÖÜ].*\.$/);
+  });
+});
+
+describe('transmissionBlockers — required fields', () => {
+  it('blocks a sealed part that lacks a conditionally required answer (crafted file)', () => {
+    const form = logicForm();
+    let q = createQuestionnaire(QUESTIONNAIRE_ID, form);
+    q = ok(startPart(q, form, 'person'));
+    q = fill(q, 'person', { ...PERSON_VALUES, telefon: '0721 1234' }, form);
+    q = ok(sealPart(q, form, 'person', personSealInput()));
+    expect(transmissionBlockers(q, form)).toEqual([]);
+    const crafted = structuredClone(q);
+    const person = crafted.parts.person?.[0];
+    if (!person) throw new Error('no person');
+    person.data.telefon = null;
+    forgeReseal(person);
+    expect(transmissionBlockers(crafted, form)).toEqual([
+      {
+        code: 'requiredFieldMissing',
+        role: 'person',
+        detail: ['Beschäftigte Person', 'Telefon', 'E-Mail'],
+      },
+    ]);
+  });
+
+  it('refuses to seal while a conditionally required answer is missing', () => {
+    const form = logicForm();
+    let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
+    q = fill(q, 'person', { ...PERSON_VALUES, kvArt: 'gesetzlich', email: 'a@b.de' }, form);
+    const result = sealPart(q, form, 'person', personSealInput());
+    expect(result.ok ? [] : [result.code, ...result.detail]).toEqual(['missingRequired', 'kvName']);
   });
 });

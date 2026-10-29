@@ -1,9 +1,9 @@
-// Evaluating a form definition against a role's data: visibility (showIf), completeness and the
-// notices a role must acknowledge. A field hidden by its condition counts as unanswered, so
-// conditions that depend on it are false as well.
+// Evaluating a form definition against a role's data: availability (showIf), requiredness
+// (required / requiredIf), completeness and the notices a role must acknowledge. A field hidden by
+// its condition counts as unanswered, so conditions that depend on it are false as well.
+import { describeCondition, evaluateCondition } from './conditions';
 import { canonicalHash } from './hash';
 import type {
-  Condition,
   FieldDefinition,
   FieldId,
   FieldValue,
@@ -61,7 +61,10 @@ export function noticeHash(block: InfoBlock): Sha256Hex {
   return canonicalHash({ asOf: block.asOf, text: block.text, title: block.title });
 }
 
-/** Visibility of every field of the role; conditions only reference fields of the same role. */
+/**
+ * Visibility of every field of the role (`showIf`: available for input). A hidden field counts as
+ * unanswered for every condition that depends on it.
+ */
 export function visibility(
   definition: FormDefinition,
   role: RoleId,
@@ -74,17 +77,46 @@ export function visibility(
     if (known !== undefined) return known;
     const field = fields.get(id);
     // Definitions are checked to be acyclic, so this recursion terminates.
-    const result = field !== undefined && (!field.showIf || holds(field.showIf));
+    const result =
+      field !== undefined && (!field.showIf || evaluateCondition(field.showIf, valueOf));
     visible.set(id, result);
     return result;
   };
-  const holds = (condition: Condition): boolean => {
-    if ('all' in condition) return condition.all.every(holds);
-    if ('any' in condition) return condition.any.some(holds);
-    return isVisible(condition.field) && data[condition.field] === condition.equals;
-  };
+  const valueOf = (id: FieldId): FieldValue => (isVisible(id) ? (data[id] ?? null) : null);
   for (const id of fields.keys()) isVisible(id);
   return visible;
+}
+
+export interface FieldState {
+  /** Available for input (its `showIf` holds). */
+  visible: boolean;
+  /** Visible and either always required or its `requiredIf` holds. */
+  required: boolean;
+  /** Required but without an answer. */
+  missing: boolean;
+}
+
+export function fieldStates(
+  definition: FormDefinition,
+  role: RoleId,
+  data: PartData,
+): ReadonlyMap<FieldId, FieldState> {
+  const visible = visibility(definition, role, data);
+  const valueOf = (id: FieldId): FieldValue =>
+    visible.get(id) === true ? (data[id] ?? null) : null;
+  return new Map(
+    fieldsOfRole(definition, role).map((field) => {
+      const isVisible = visible.get(field.id) === true;
+      const required =
+        isVisible &&
+        (field.required ||
+          (field.requiredIf !== undefined && evaluateCondition(field.requiredIf, valueOf)));
+      return [
+        field.id,
+        { visible: isVisible, required, missing: required && valueOf(field.id) === null },
+      ];
+    }),
+  );
 }
 
 export function visibleFields(
@@ -107,12 +139,33 @@ export function sealableData(
   );
 }
 
+/** Required fields (always or by `requiredIf`) that are available but unanswered. */
 export function missingRequired(
   definition: FormDefinition,
   role: RoleId,
   data: PartData,
 ): FieldId[] {
-  return visibleFields(definition, role, data)
-    .filter((field) => field.required && (data[field.id] ?? null) === null)
-    .map((field) => field.id);
+  return [...fieldStates(definition, role, data)]
+    .filter(([, state]) => state.missing)
+    .map(([id]) => id);
+}
+
+export function fieldsById(definition: FormDefinition): ReadonlyMap<FieldId, FieldDefinition> {
+  return new Map(
+    definition.sections.flatMap((section) => section.fields).map((field) => [field.id, field]),
+  );
+}
+
+/** The field's rules in German, for hints on screen and the catalogue overview. */
+export function describeFieldRules(
+  definition: FormDefinition,
+  field: FieldDefinition,
+): { input: string; requirement: string } {
+  const fields = fieldsById(definition);
+  const input = field.showIf ? `erst wenn ${describeCondition(field.showIf, fields)}` : 'immer';
+  let requirement = field.voluntary ? 'freiwillige Angabe' : 'optional';
+  if (field.required) requirement = 'Pflicht';
+  else if (field.requiredIf)
+    requirement = `Pflicht, wenn ${describeCondition(field.requiredIf, fields)}`;
+  return { input, requirement };
 }

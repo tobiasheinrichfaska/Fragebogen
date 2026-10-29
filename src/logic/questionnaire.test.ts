@@ -24,6 +24,7 @@ import {
   discardDraft,
   latestSealed,
   receivedPartFor,
+  reopenPart,
   sealPart,
   setValue,
   startPart,
@@ -187,7 +188,9 @@ describe('sealPart', () => {
   });
 
   it('drops hidden values and seals unanswered visible fields as null', () => {
-    const q = personDraft({ ...PERSON_VALUES, weitereBeschaeftigung: false, bemerkungen: '' });
+    // weitereArt is answered first, then hidden again by switching weitereBeschaeftigung off.
+    const q = fill(personDraft(), 'person', { weitereBeschaeftigung: false, bemerkungen: '' });
+    expect(currentPart(q, 'person')?.data.weitereArt).toBe('minijob');
     const part = latestSealed(ok(sealPart(q, form, 'person', personSealInput())), 'person');
     expect(part?.data).not.toHaveProperty('weitereArt');
     expect(part?.data.bemerkungen).toBeNull();
@@ -430,5 +433,83 @@ describe('receipts', () => {
         'file',
       ),
     ).toThrow(RangeError);
+  });
+});
+
+describe('input only where the field is available', () => {
+  it('refuses a value for a field whose precondition does not hold, and says why', () => {
+    const q = fill(personDraft({ nachname: 'Musterfrau' }), 'person', {
+      weitereBeschaeftigung: false,
+    });
+    expect(refused(setValue(q, form, 'person', 'weitereArt', 'minijob'))).toEqual({
+      code: 'fieldNotAvailable',
+      detail: ['weitereArt', 'erst wenn „Üben Sie eine weitere Beschäftigung aus?“ ist „Ja“'],
+    });
+  });
+
+  it('accepts it once the precondition holds, and always allows clearing', () => {
+    let q = fill(personDraft({ nachname: 'Musterfrau' }), 'person', {
+      weitereBeschaeftigung: true,
+      weitereArt: 'sv',
+    });
+    q = fill(q, 'person', { weitereBeschaeftigung: false });
+    expect(
+      ok(setValue(q, form, 'person', 'weitereArt', null)).parts.person?.[0]?.data.weitereArt,
+    ).toBeNull();
+  });
+});
+
+describe('reopenPart — withdrawing a signature before passing on', () => {
+  it('turns the sealed version back into a draft with its data, without a version chain', () => {
+    const signed = personSigned();
+    const q = ok(reopenPart(signed, form, 'person'));
+    expect(q.parts.person).toEqual([
+      { role: 'person', status: 'draft', data: latestSealed(signed, 'person')?.data },
+    ]);
+    const resealed = ok(sealPart(q, form, 'person', personSealInput({ nonce: 'b'.repeat(32) })));
+    const payload = latestSealed(resealed, 'person')?.seal?.payload;
+    expect(resealed.parts.person).toHaveLength(1);
+    expect(payload?.version).toBe(1);
+    expect(payload).not.toHaveProperty('supersedes');
+  });
+
+  it('keeps earlier versions and supersedes the one before the withdrawn one', () => {
+    let q = ok(startPart(personSigned(), form, 'person'));
+    q = ok(sealPart(q, form, 'person', personSealInput({ nonce: 'b'.repeat(32) })));
+    const v1 = q.parts.person?.[0]?.seal?.contentHash;
+    q = ok(reopenPart(q, form, 'person'));
+    q = ok(sealPart(q, form, 'person', personSealInput({ nonce: 'c'.repeat(32) })));
+    expect(q.parts.person).toHaveLength(2);
+    expect(latestSealed(q, 'person')?.seal?.payload).toMatchObject({ version: 2, supersedes: v1 });
+  });
+
+  it.each<[string, () => Transition, string, readonly string[]]>([
+    [
+      'a part the employer received',
+      () => reopenPart(withEmployer(personSigned()), form, 'person'),
+      'versionInUse',
+      ['arbeitgeber'],
+    ],
+    [
+      'a part with a Kanzlei receipt',
+      () => reopenPart(twoRoles(), form, 'arbeitgeber'),
+      'versionInUse',
+      ['Kanzlei'],
+    ],
+    ['a draft', () => reopenPart(personDraft(), form, 'person'), 'draftExists', ['person']],
+    [
+      'a role without part',
+      () => reopenPart(personSigned(), form, 'arbeitgeber'),
+      'noSealedPart',
+      ['arbeitgeber'],
+    ],
+    [
+      'an unknown role',
+      () => reopenPart(personSigned(), form, 'kanzlei'),
+      'unknownRole',
+      ['kanzlei'],
+    ],
+  ])('refuses %s', (_label, transition, code, detail) => {
+    expect(refused(transition())).toEqual({ code, detail });
   });
 });

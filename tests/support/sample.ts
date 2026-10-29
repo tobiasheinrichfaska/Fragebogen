@@ -259,3 +259,60 @@ export function withGuardian(questionnaire: Questionnaire, form = guardianForm()
 export function minorWithGuardian(): Questionnaire {
   return withGuardian(minorSigned());
 }
+
+/**
+ * In-memory variant of the fixture (never published) that exercises every condition operator:
+ * phone or e-mail (at least one), insurer required once an insurance type is chosen, a language
+ * certificate only when Polish is selected, and a remark field unavailable for "keine Angabe".
+ */
+export function logicForm(): RegisteredForm {
+  const raw = structuredClone(beispiel) as unknown as {
+    version: string;
+    sections: { id: string; title: string; fields: Record<string, unknown>[] }[];
+  };
+  raw.version = '1.9.0';
+  const field = (id: string, extra: Record<string, unknown>) => ({
+    id,
+    role: 'person',
+    type: 'text',
+    label: id,
+    required: false,
+    purpose: 'Test der Feldlogik',
+    ...extra,
+  });
+  raw.sections.push({
+    id: 'kontakt',
+    title: 'Kontakt und Versicherung',
+    fields: [
+      field('telefon', { label: 'Telefon', requiredIf: { field: 'email', answered: false } }),
+      field('email', { label: 'E-Mail', requiredIf: { field: 'telefon', answered: false } }),
+      field('kvArt', {
+        label: 'Krankenversicherung',
+        type: 'choice',
+        options: [
+          { id: 'gesetzlich', label: 'gesetzlich' },
+          { id: 'privat', label: 'privat' },
+          { id: 'keine', label: 'keine Angabe' },
+        ],
+      }),
+      field('kvName', {
+        label: 'Name der Krankenkasse',
+        showIf: { not: { field: 'kvArt', equals: 'keine' } },
+        requiredIf: { field: 'kvArt', in: ['gesetzlich', 'privat'] },
+      }),
+      field('sprachen', {
+        label: 'Sprachen',
+        type: 'multiChoice',
+        options: [
+          { id: 'de', label: 'Deutsch' },
+          { id: 'pl', label: 'Polnisch' },
+        ],
+      }),
+      field('sprachNachweis', {
+        label: 'Nachweis Polnisch',
+        showIf: { field: 'sprachen', contains: 'pl' },
+      }),
+    ],
+  });
+  return registered(raw);
+}

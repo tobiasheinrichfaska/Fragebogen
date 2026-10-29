@@ -13,10 +13,12 @@ Status 2026-10-29: logic layer up to the transmission rules exists, no UI yet �
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
 
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
+- [ ] **Field logic** — a field accepts input only once its precondition holds (`showIf`); required always or by condition (`requiredIf`, e.g. phone or e-mail); the reason is shown in German
 - [ ] **Acknowledge notices** — `read` notices confirmed in-app; `paperHandout` notices confirmed as handed out on paper
 - [ ] **Sign (draw or typed name) after explicit confirmation** — part locks; system note shown under the signature; an accidental tap or a single letter is refused
 - [ ] **No transmission without the person's signature** — the PDF for passing on is refused while a draft is open, a required signature is missing or a part is altered (`transmissionBlockers`); the reason is shown in German. Saving the interim state stays possible.
 - [ ] **Minor on the signing day (device date)** — the legal guardian must sign with name (name field or typed name) and confirm exactly the current version of the person's part; re-signing by the person requires the guardian again; otherwise no transmission
+- [ ] **Re-sign before sending** — "Unterschrift zurücknehmen" turns the not-yet-sent version back into a draft; the old signature disappears (no version chain); refused once the version was received or confirmed
 - [ ] **Download the PDF** — readable sections, signature with system note, Prüfblatt, data pages, footer "Seite x von y"
 - [ ] **Save/load interim state as a file** — round-trips without loss
 
@@ -30,7 +32,9 @@ Status 2026-10-29: logic layer up to the transmission rules exists, no UI yet �
 
 ## Station 3 — Kanzlei (merge)
 
-- [ ] **Batch import many PDFs** — grouped by questionnaire id; duplicates collapsed
+- [ ] **Batch import many PDFs** — grouped by questionnaire id; identical parts (same hash) collapsed with a note
+- [ ] **Different versions of a role** — accepted only as a chain (person re-signed at the employer): the newer wins with a note listing the changed fields; anything else is a conflict the Kanzlei resolves, the app never picks
+- [ ] **Different signing dates visible** — fields covered by a later signature carry a footnote; one signature line per version that covers values
 - [ ] **Parts arriving separately** — match proposals via matchKeys, human confirms
 - [ ] **Contradictions and gaps shown** — consistency rules, missing required fields/signatures/parts
 - [ ] **Merged output** — one PDF per form (no attachment, PDF/A-2u target) plus JSON; originals stay verifiable

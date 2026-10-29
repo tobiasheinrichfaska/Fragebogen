@@ -2,6 +2,7 @@ import beispiel from '../../tests/fixtures/forms/beispiel/1.0.0.json';
 import beispiel110 from '../../tests/fixtures/forms/beispiel/1.1.0.json';
 import { checkFormDefinition, findCycle, parseFormDefinition } from './formDefinition';
 import { canonicalHash } from './hash';
+import { logicForm } from '../../tests/support/sample';
 import type { FieldDefinition, FormDefinition, RoleDefinition } from './model';
 
 const REMOVE = Symbol('remove');
@@ -624,5 +625,137 @@ describe('checkFormDefinition — signer name and conditional roles', () => {
       path,
       message: expect.stringContaining(message),
     });
+  });
+});
+
+describe('conditions — operators and requiredIf', () => {
+  it('accepts every operator (in-memory logic form)', () => {
+    expect(logicForm().definition.sections.at(-1)?.fields).toHaveLength(6);
+  });
+
+  it('decodes in, contains, answered and not, and checks them', () => {
+    const condition = {
+      any: [
+        { field: 'weitereArt', in: ['minijob', 'sv'] },
+        { not: { field: 'bemerkungen', answered: true } },
+      ],
+    };
+    const result = parseFormDefinition(
+      rawWith(['sections', 0, 'fields', 0, 'requiredIf'], condition),
+    );
+    expect(result.ok ? [] : result.issues).toEqual([
+      {
+        path: '$.sections[0].fields[0].requiredIf',
+        message: 'use either "required": true or "requiredIf", not both',
+      },
+    ]);
+  });
+
+  it.each<[string, readonly (string | number)[], unknown, string, string]>([
+    [
+      'two operators in one leaf',
+      ['sections', 0, 'fields', 4, 'showIf'],
+      { field: 'weitereBeschaeftigung', equals: true, answered: true },
+      '$.sections[0].fields[4].showIf',
+      'needs exactly one of',
+    ],
+    [
+      'a leaf without operator',
+      ['sections', 0, 'fields', 4, 'showIf'],
+      { field: 'weitereBeschaeftigung' },
+      '$.sections[0].fields[4].showIf',
+      'needs exactly one of',
+    ],
+    [
+      'an empty "in" list',
+      ['sections', 0, 'fields', 5, 'showIf'],
+      { field: 'weitereArt', in: [] },
+      '$.sections[0].fields[5].showIf.in',
+      'needs at least 1',
+    ],
+    [
+      '"answered" as text',
+      ['sections', 0, 'fields', 5, 'showIf'],
+      { field: 'weitereArt', answered: 'ja' },
+      '$.sections[0].fields[5].showIf.answered',
+      'expected a boolean',
+    ],
+    [
+      '"not" with a list',
+      ['sections', 0, 'fields', 5, 'showIf'],
+      { not: [{ field: 'weitereArt', answered: true }] },
+      '$.sections[0].fields[5].showIf.not',
+      'expected an object',
+    ],
+  ])('rejects %s', (_label, path, change, issuePath, message) => {
+    const result = parseFormDefinition(rawWith(path, change));
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.issues).toContainEqual({
+      path: issuePath,
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it.each<[string, (d: FormDefinition) => void, string, string]>([
+    [
+      'required together with requiredIf',
+      (d) => {
+        fieldAt(d, 0, 0).requiredIf = { field: 'bemerkungen', answered: true };
+      },
+      '$.sections[0].fields[0].requiredIf',
+      'not both',
+    ],
+    [
+      'requiredIf on its own field',
+      (d) => {
+        fieldAt(d, 0, 5).requiredIf = { field: 'bemerkungen', answered: true };
+      },
+      '$.sections[0].fields[5].requiredIf.field',
+      'cannot make itself required',
+    ],
+    [
+      'requiredIf across roles',
+      (d) => {
+        fieldAt(d, 0, 5).requiredIf = { field: 'eintritt', answered: true };
+      },
+      '$.sections[0].fields[5].requiredIf.field',
+      'same role',
+    ],
+    [
+      'requiredIf on an unknown option',
+      (d) => {
+        fieldAt(d, 0, 5).requiredIf = { field: 'weitereArt', in: ['teilzeit'] };
+      },
+      '$.sections[0].fields[5].requiredIf.in',
+      'not an option id',
+    ],
+    [
+      'contains on a single choice',
+      (d) => {
+        fieldAt(d, 0, 5).showIf = { field: 'weitereArt', contains: 'sv' };
+      },
+      '$.sections[0].fields[5].showIf.field',
+      'only applies to multiChoice',
+    ],
+    [
+      'a cycle through "not"',
+      (d) => {
+        fieldAt(d, 0, 3).showIf = { not: { field: 'weitereArt', answered: true } };
+      },
+      '$',
+      'cycle',
+    ],
+  ])('reports %s', (_label, mutate, path, message) => {
+    const d = definition();
+    mutate(d);
+    expect(checkFormDefinition(d)).toContainEqual({
+      path,
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it('allows requiredIf dependencies in both directions (phone or e-mail)', () => {
+    expect(checkFormDefinition(logicForm().definition)).toEqual([]);
   });
 });

@@ -1,6 +1,7 @@
 // Form definitions are data (forms/<id>/<version>.json). parseFormDefinition decodes untrusted JSON
 // strictly into a typed FormDefinition (see decode.ts) and then checks every id reference inside it.
 import { COMPUTE_FUNCTIONS } from './compute';
+import { CONDITION_OPERATORS, forEachLeaf, leafProblem } from './conditions';
 import { isIsoDate } from './dates';
 import { Decoder, type DecodeIssue } from './decode';
 import { isPlainObject } from './jcs';
@@ -181,6 +182,7 @@ const FIELD_KEYS = [
   'type',
   'label',
   'required',
+  'requiredIf',
   'purpose',
   'voluntary',
   'multiline',
@@ -198,6 +200,10 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const type = d.literal(o.type, `${path}.type`, FIELD_TYPES);
   const label = d.string(o.label, `${path}.label`);
   const required = d.boolean(o.required, `${path}.required`);
+  const requiredIf =
+    o.requiredIf === undefined
+      ? undefined
+      : decodeCondition(d, o.requiredIf, `${path}.requiredIf`, 0);
   const purpose = d.string(o.purpose, `${path}.purpose`);
   const voluntary =
     o.voluntary === undefined ? undefined : d.boolean(o.voluntary, `${path}.voluntary`);
@@ -231,6 +237,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     type,
     label,
     required,
+    ...(requiredIf === undefined ? {} : { requiredIf }),
     purpose,
     ...(voluntary === undefined ? {} : { voluntary }),
     ...(multiline === undefined ? {} : { multiline }),
@@ -265,13 +272,37 @@ function decodeCondition(
     if (!items) return undefined;
     return key === 'all' ? { all: items } : { any: items };
   }
-  const o = d.object(raw, path, ['field', 'equals']);
+  if (isPlainObject(raw) && 'not' in raw) {
+    const o = d.object(raw, path, ['not']);
+    const inner = o && decodeCondition(d, o.not, `${path}.not`, depth + 1);
+    return inner === undefined ? undefined : { not: inner };
+  }
+  const o = d.object(raw, path, ['field', ...CONDITION_OPERATORS]);
   if (!o) return undefined;
   const field = d.string(o.field, `${path}.field`, ID);
-  const equals =
-    typeof o.equals === 'boolean' ? o.equals : d.string(o.equals, `${path}.equals`, OPTION_ID);
-  if (field === undefined || equals === undefined) return undefined;
-  return { field, equals };
+  const operators = CONDITION_OPERATORS.filter((operator) => operator in o);
+  if (operators.length !== 1) {
+    return d.report(path, `needs exactly one of: ${CONDITION_OPERATORS.join(', ')}`);
+  }
+  switch (operators[0]) {
+    case 'equals': {
+      const equals =
+        typeof o.equals === 'boolean' ? o.equals : d.string(o.equals, `${path}.equals`, OPTION_ID);
+      return field === undefined || equals === undefined ? undefined : { field, equals };
+    }
+    case 'in': {
+      const values = d.array(o.in, `${path}.in`, (v, p) => d.string(v, p, OPTION_ID), 1);
+      return field === undefined || values === undefined ? undefined : { field, in: values };
+    }
+    case 'contains': {
+      const contains = d.string(o.contains, `${path}.contains`, OPTION_ID);
+      return field === undefined || contains === undefined ? undefined : { field, contains };
+    }
+    default: {
+      const answered = d.boolean(o.answered, `${path}.answered`);
+      return field === undefined || answered === undefined ? undefined : { field, answered };
+    }
+  }
 }
 
 function decodeComputed(
@@ -438,49 +469,41 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
   }
 }
 
+/**
+ * showIf (available for input) and requiredIf (conditionally required) reference fields of the
+ * same role only; every leaf must fit its target field. Only showIf affects visibility, so only
+ * showIf dependencies must be acyclic.
+ */
 function conditions({ fields, report }: CheckContext): void {
   const dependsOn = new Map<string, string[]>();
   for (const { field, path } of fields.values()) {
-    if (!field.showIf) continue;
-    const targets: string[] = [];
-    forEachLeaf(field.showIf, `${path}.showIf`, (leaf, leafPath) => {
-      targets.push(leaf.field);
-      const target = fields.get(leaf.field);
-      if (!target) return report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
-      if (target.field.role !== field.role) {
-        report(`${leafPath}.field`, `showIf may only reference fields of the same role`);
-      }
-      if (target.field.type === 'boolean') {
-        if (typeof leaf.equals !== 'boolean') report(`${leafPath}.equals`, 'expected a boolean');
-      } else if (target.field.type === 'choice') {
-        const known = target.field.options?.some((option) => option.id === leaf.equals) ?? false;
-        if (!known) report(`${leafPath}.equals`, `"${String(leaf.equals)}" is not an option id`);
-      } else {
-        report(`${leafPath}.field`, 'showIf may only reference boolean or choice fields');
-      }
-    });
-    dependsOn.set(field.id, targets);
+    if (field.required && field.requiredIf) {
+      report(`${path}.requiredIf`, 'use either "required": true or "requiredIf", not both');
+    }
+    for (const kind of ['showIf', 'requiredIf'] as const) {
+      const condition = field[kind];
+      if (!condition) continue;
+      const targets: string[] = [];
+      forEachLeaf(condition, `${path}.${kind}`, (leaf, leafPath) => {
+        targets.push(leaf.field);
+        const target = fields.get(leaf.field);
+        if (!target) return report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
+        if (target.field.role !== field.role) {
+          report(`${leafPath}.field`, `${kind} may only reference fields of the same role`);
+        }
+        if (target.isColumn)
+          report(`${leafPath}.field`, `${kind} cannot reference a repeat-group column`);
+        if (kind === 'requiredIf' && leaf.field === field.id) {
+          report(`${leafPath}.field`, 'a field cannot make itself required');
+        }
+        const problem = leafProblem(leaf, target.field);
+        if (problem) report(`${leafPath}.${problem.at}`, problem.message);
+      });
+      if (kind === 'showIf') dependsOn.set(field.id, targets);
+    }
   }
   const cycle = findCycle(dependsOn);
   if (cycle) report('$', `showIf conditions form a cycle: ${cycle.join(' → ')}`);
-}
-
-function forEachLeaf(
-  condition: Condition,
-  path: string,
-  visit: (leaf: { field: string; equals: string | boolean }, path: string) => void,
-): void {
-  if ('all' in condition) {
-    condition.all.forEach((child, i) => {
-      forEachLeaf(child, `${path}.all[${i}]`, visit);
-    });
-  } else if ('any' in condition) {
-    condition.any.forEach((child, i) => {
-      forEachLeaf(child, `${path}.any[${i}]`, visit);
-    });
-  } else {
-    visit(condition, path);
-  }
 }
 
 /** Returns one cycle (start … start) in the dependency graph, if any. */

@@ -1,5 +1,8 @@
-import { beispielForm } from '../../tests/support/sample';
+import { beispielForm, logicForm } from '../../tests/support/sample';
 import {
+  describeFieldRules,
+  fieldStates,
+  fieldsById,
   fieldsOfRole,
   infoBlocksOfRole,
   missingRequired,
@@ -140,5 +143,88 @@ describe('noticeHash', () => {
     expect(noticeHash({ ...block, title: 'Anderer Titel' })).not.toBe(hash);
     expect(noticeHash({ ...block, asOf: '2027-01-01' })).not.toBe(hash);
     expect(noticeHash({ ...block, acknowledgement: 'paperHandout' })).toBe(hash);
+  });
+});
+
+describe('fieldStates — conditional requirements', () => {
+  const { definition } = logicForm();
+  const state = (data: Record<string, string | boolean | string[]>, id: string) =>
+    fieldStates(definition, 'person', data).get(id);
+
+  it('requires phone or e-mail, at least one of them', () => {
+    expect(state({}, 'telefon')).toEqual({ visible: true, required: true, missing: true });
+    expect(state({}, 'email')).toEqual({ visible: true, required: true, missing: true });
+    expect(state({ telefon: '0721 1234' }, 'email')).toEqual({
+      visible: true,
+      required: false,
+      missing: false,
+    });
+    expect(state({ telefon: '0721 1234' }, 'telefon')).toEqual({
+      visible: true,
+      required: true,
+      missing: false,
+    });
+  });
+
+  it('requires the insurer once an insurance type is chosen, and hides it for "keine Angabe"', () => {
+    expect(state({}, 'kvName')).toEqual({ visible: true, required: false, missing: false });
+    expect(state({ kvArt: 'gesetzlich' }, 'kvName')).toEqual({
+      visible: true,
+      required: true,
+      missing: true,
+    });
+    expect(state({ kvArt: 'keine' }, 'kvName')).toEqual({
+      visible: false,
+      required: false,
+      missing: false,
+    });
+  });
+
+  it('offers the certificate only when Polish is selected', () => {
+    expect(state({ sprachen: ['de'] }, 'sprachNachweis')?.visible).toBe(false);
+    expect(state({ sprachen: ['de', 'pl'] }, 'sprachNachweis')?.visible).toBe(true);
+  });
+
+  it('feeds missingRequired', () => {
+    const missing = missingRequired(definition, 'person', { ...MISSING_BASE, kvArt: 'privat' });
+    expect(missing).toEqual(['telefon', 'email', 'kvName']);
+  });
+});
+
+const MISSING_BASE = {
+  nachname: 'Musterfrau',
+  geburtsdatum: '1990-05-17',
+  steuerId: '86095742719',
+  weitereBeschaeftigung: false,
+};
+
+describe('describeFieldRules', () => {
+  const { definition } = logicForm();
+  const rules = (id: string) => {
+    const field = fieldsById(definition).get(id);
+    if (!field) throw new Error(`no field ${id}`);
+    return describeFieldRules(definition, field);
+  };
+
+  it.each([
+    ['nachname', { input: 'immer', requirement: 'Pflicht' }],
+    ['bemerkungen', { input: 'immer', requirement: 'optional' }],
+    [
+      'weitereArt',
+      {
+        input: 'erst wenn „Üben Sie eine weitere Beschäftigung aus?“ ist „Ja“',
+        requirement: 'Pflicht',
+      },
+    ],
+    ['email', { input: 'immer', requirement: 'Pflicht, wenn „Telefon“ ist leer' }],
+    [
+      'kvName',
+      {
+        input: 'erst wenn nicht („Krankenversicherung“ ist „keine Angabe“)',
+        requirement: 'Pflicht, wenn „Krankenversicherung“ ist „gesetzlich“ oder „privat“',
+      },
+    ],
+  ])('%s', (id, expected) => {
+    expect(rules(id)).toEqual(expected);
   });
 });

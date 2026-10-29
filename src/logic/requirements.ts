@@ -4,7 +4,7 @@
 // the legal guardian must sign with their name and confirm exactly the current version of the
 // person's part. The io layer must refuse to write a transmission PDF while blockers exist.
 import { AGE_OF_MAJORITY, ageOn, compareIsoDates, formatGermanDate, isIsoDate } from './dates';
-import { ownerOfField, signerName } from './form';
+import { missingRequired, ownerOfField, signerName } from './form';
 import { registryOf, type RegisteredForm } from './formRegistry';
 import type { FormDefinition, IsoDate, Questionnaire, RoleDefinition, RoleId } from './model';
 import { currentPart, latestSealed } from './questionnaire';
@@ -64,6 +64,7 @@ export type BlockerCode =
   | 'nothingSealed'
   | 'draftOpen'
   | 'signatureMissing'
+  | 'requiredFieldMissing'
   | 'partInvalid'
   | 'guardianMissing'
   | 'guardianNotBound'
@@ -75,6 +76,7 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   nothingSealed: 'Es gibt noch keinen abgeschlossenen Teil, der übermittelt werden kann.',
   draftOpen: 'Ein Teil ist noch nicht abgeschlossen. Entwürfe werden nicht übermittelt.',
   signatureMissing: 'Die Unterschrift fehlt. Ohne Unterschrift kann nicht übermittelt werden.',
+  requiredFieldMissing: 'In einem abgeschlossenen Teil fehlen Pflichtangaben.',
   partInvalid: 'Ein Teil ist verändert oder fehlerhaft und kann nicht übermittelt werden.',
   guardianMissing:
     'Die Person ist am Tag ihrer Unterschrift minderjährig. Die gesetzliche Vertretung muss mit Namen unterschreiben.',
@@ -117,6 +119,11 @@ export function transmissionBlockers(
     if (part && role.signature === 'required' && part.status !== 'signed') {
       add('signatureMissing', role.id, [role.label]);
     }
+    const missing = part ? missingRequired(definition, role.id, part.data) : [];
+    if (missing.length > 0) {
+      const labels = missing.map((id) => fieldLabel(definition, id));
+      add('requiredFieldMissing', role.id, [role.label, ...labels]);
+    }
   }
   const verdict = verifyQuestionnaire(questionnaire, { registry: registryOf([form]) });
   for (const part of verdict.parts) {
@@ -128,6 +135,13 @@ export function transmissionBlockers(
     if (role.requiredIf) guardianBlockers(definition, questionnaire, role, add);
   }
   return blockers;
+}
+
+function fieldLabel(definition: FormDefinition, fieldId: string): string {
+  return (
+    definition.sections.flatMap((section) => section.fields).find((field) => field.id === fieldId)
+      ?.label ?? fieldId
+  );
 }
 
 function guardianBlockers(

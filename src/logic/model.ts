@@ -62,9 +62,19 @@ export interface ChoiceOption {
   label: string;
 }
 
-/** Visibility condition; evaluated only against fields of the same role. */
+/**
+ * Condition over fields of the same role (see conditions.ts). Leaves: `equals` (yes/no or choice),
+ * `in` (choice is one of), `contains` (multiple choice includes), `answered` (has a value / is
+ * empty). A hidden field counts as unanswered.
+ */
 export type Condition =
-  { field: FieldId; equals: string | boolean } | { all: Condition[] } | { any: Condition[] };
+  | { field: FieldId; equals: string | boolean }
+  | { field: FieldId; in: string[] }
+  | { field: FieldId; contains: string }
+  | { field: FieldId; answered: boolean }
+  | { not: Condition }
+  | { all: Condition[] }
+  | { any: Condition[] };
 
 export interface FieldDefinition {
   id: FieldId;
@@ -72,7 +82,10 @@ export interface FieldDefinition {
   role: RoleId;
   type: FieldType;
   label: string;
+  /** Always required while available. Mutually exclusive with `requiredIf`. */
   required: boolean;
+  /** Required only while this condition holds (and the field is available). */
+  requiredIf?: Condition;
   /** Why the field is collected; feeds the Art. 13 GDPR notice. */
   purpose: string;
   /** Answer is voluntary (e.g. severe disability during the first six months). */
@@ -80,6 +93,7 @@ export interface FieldDefinition {
   /** `text` only: keep line breaks (e.g. remarks); otherwise all whitespace collapses. */
   multiline?: boolean;
   options?: ChoiceOption[];
+  /** The field is available for input only while this condition holds; otherwise it is hidden. */
   showIf?: Condition;
   /** Columns of a repeat group; a column may belong to another role (referenced by row id). */
   columns?: FieldDefinition[];

@@ -1,9 +1,11 @@
 // State transitions of a questionnaire. Every function is pure: it returns a new questionnaire or a
 // refusal with a reason and never mutates its input. Time, nonce and device data are arguments
 // (gathered by the io layer), so sealing is deterministic and testable.
+import { describeCondition } from './conditions';
 import { canonicalize } from './jcs';
 import { Decoder } from './decode';
 import {
+  fieldsById,
   fieldsOfRole,
   infoBlocksOfRole,
   missingRequired,
@@ -11,6 +13,7 @@ import {
   ownerOfField,
   roleOf,
   sealableData,
+  visibility,
   signerName,
   typedNameIsPlausible,
 } from './form';
@@ -61,7 +64,10 @@ export type TransitionCode =
   | 'invalidReceipt'
   | 'unknownPart'
   | 'mustBindPart'
-  | 'signerNameMissing';
+  | 'signerNameMissing'
+  | 'fieldNotAvailable'
+  | 'noSealedPart'
+  | 'versionInUse';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -85,6 +91,11 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   mustBindPart:
     'Die gesetzliche Vertretung bestätigt den abgeschlossenen Teil der Person. Dieser Teil fehlt oder ist nicht verknüpft.',
   signerNameMissing: 'Der Name der unterschreibenden Person fehlt.',
+  fieldNotAvailable:
+    'Dieses Feld kann erst ausgefüllt werden, wenn seine Voraussetzung erfüllt ist.',
+  noSealedPart: 'Für diese Rolle gibt es keine abgeschlossene Fassung.',
+  versionInUse:
+    'Diese Fassung wurde bereits weitergegeben oder bestätigt. Eine Änderung wird als neue Fassung unterschrieben.',
 };
 
 export type Transition =
@@ -186,9 +197,54 @@ export function setValue(
   if (field.role !== role) return refuse('notOwnField', [fieldId]);
   const value = normalizeFieldValue(field, raw);
   if (!value.ok) return refuse('invalidValue', [fieldId, value.issue]);
+  // Input is only possible once the field's precondition holds; clearing is always allowed.
+  if (value.value !== null && visibility(form.definition, role, draft.data).get(fieldId) !== true) {
+    const condition = field.showIf;
+    const reason = condition
+      ? `erst wenn ${describeCondition(condition, fieldsById(form.definition))}`
+      : '';
+    return refuse('fieldNotAvailable', [fieldId, reason]);
+  }
   const versions = [...versionsOf(questionnaire, role)];
   versions[versions.length - 1] = { ...draft, data: { ...draft.data, [fieldId]: value.value } };
   return done(withVersions(questionnaire, role, versions), value.warnings);
+}
+
+/**
+ * Withdraws the role's latest seal before it was passed on ("Unterschrift zurücknehmen"): the sealed
+ * version becomes a draft again with its data, the old signature is dropped and no version chain is
+ * created. Refused once anything relies on that version — another part's receipt note or a station's
+ * receipt; a change must then be signed as a new version (startPart).
+ */
+export function reopenPart(
+  questionnaire: Questionnaire,
+  form: RegisteredForm,
+  role: RoleId,
+): Transition {
+  if (!matchesForm(questionnaire, form)) return refuse('wrongForm');
+  if (!roleOf(form.definition, role)) return refuse('unknownRole', [role]);
+  const versions = versionsOf(questionnaire, role);
+  const last = versions.at(-1);
+  if (!last) return refuse('noSealedPart', [role]);
+  if (!last.seal) return refuse('draftExists', [role]);
+  const hash = last.seal.contentHash;
+  const users = [
+    ...Object.entries(questionnaire.parts)
+      .filter(
+        ([other, parts]) =>
+          other !== role &&
+          parts.some((part) =>
+            part.seal?.payload.receivedParts.some((received) => received.contentHash === hash),
+          ),
+      )
+      .map(([other]) => other),
+    ...questionnaire.receipts
+      .filter((receipt) => receipt.parts.some((ref) => ref.contentHash === hash))
+      .map((receipt) => receipt.station),
+  ];
+  if (users.length > 0) return refuse('versionInUse', users);
+  const draft: Part = { role, status: 'draft', data: { ...last.data } };
+  return done(withVersions(questionnaire, role, [...versions.slice(0, -1), draft]));
 }
 
 export function discardDraft(questionnaire: Questionnaire, role: RoleId): Transition {
