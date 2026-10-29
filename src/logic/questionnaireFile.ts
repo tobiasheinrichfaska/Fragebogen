@@ -108,7 +108,7 @@ function decodeFormReference(d: Decoder, raw: unknown, path: string): FormRefere
 }
 
 function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
-  const o = d.object(raw, path, ['role', 'status', 'data', 'signatureStrokes', 'seal']);
+  const o = d.object(raw, path, ['role', 'status', 'data', 'signatureStrokes', 'seal', 'deferred']);
   if (!o) return undefined;
   const role = d.string(o.role, `${path}.role`, ID);
   const status = d.literal(o.status, `${path}.status`, PART_STATUSES);
@@ -118,13 +118,24 @@ function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
       ? undefined
       : d.string(o.signatureStrokes, `${path}.signatureStrokes`);
   const seal = o.seal === undefined ? undefined : decodeSeal(d, o.seal, `${path}.seal`);
+  const deferred =
+    o.deferred === undefined
+      ? undefined
+      : d.array(o.deferred, `${path}.deferred`, (v, p) => d.string(v, p, ID), 1);
   if (role === undefined || status === undefined || data === undefined) return undefined;
+  if (deferred !== undefined && status !== 'draft') {
+    return d.report(`${path}.deferred`, 'only drafts hold deferred questions');
+  }
+  if (deferred !== undefined && new Set(deferred).size !== deferred.length) {
+    return d.report(`${path}.deferred`, 'lists a question twice');
+  }
   return {
     role,
     status,
     data,
     ...(signatureStrokes === undefined ? {} : { signatureStrokes }),
     ...(seal === undefined ? {} : { seal }),
+    ...(deferred === undefined ? {} : { deferred }),
   };
 }
 

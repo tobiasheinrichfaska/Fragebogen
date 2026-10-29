@@ -4,12 +4,14 @@
 import { join } from 'node:path';
 import { contradictions } from '../../src/logic/consistency';
 import { missingRequired, visibleFields } from '../../src/logic/form';
+import { interviewSteps, interviewSummary, stepAfter } from '../../src/logic/interview';
 import { applyMasterData, masterDataOf } from '../../src/logic/masterData';
 import { masterDataFragment, parseMasterDataFragment } from '../../src/logic/masterDataLink';
 import type { Questionnaire, ReceivedPart } from '../../src/logic/model';
 import {
   createQuestionnaire,
   currentPart,
+  deferQuestion,
   latestSealed,
   receivedPartFor,
   sealPart,
@@ -315,3 +317,64 @@ describe('Sofortmeldung draft — employer master data', () => {
     ]);
   });
 });
+
+describe('Sofortmeldung draft — interview', () => {
+  it('starts with both notices for the person and asks the birth name right after its question', () => {
+    let q = ok(startPart(empty(), form, 'person'));
+    q = ok(setValue(q, form, 'person', 'geburtsnameWieFamilienname', false));
+    const steps = interviewSteps(definition, 'person', dataOfPart(q, 'person'));
+    expect(steps.slice(0, 2).map((step) => step.key)).toEqual([
+      'notice:datenschutz',
+      'notice:mitfuehrungspflicht',
+    ]);
+    expect(stepAfter(steps, 'question:geburtsnameWieFamilienname')).toMatchObject({
+      key: 'question:geburtsname',
+      level: 1,
+    });
+  });
+
+  it('asks the employer its own questions only, without notices', () => {
+    const steps = interviewSteps(
+      definition,
+      'arbeitgeber',
+      dataOfPart(ok(startPart(empty(), form, 'arbeitgeber')), 'arbeitgeber'),
+    );
+    expect(steps.map((step) => step.key)).toEqual([
+      'question:agFirma',
+      'question:agBetriebsnummer',
+      'question:agFamilienname',
+      'question:agVorname',
+      'question:agPersonalnummer',
+      'question:agBeschaeftigungsbeginn',
+      'summary',
+    ]);
+  });
+
+  it('keeps a birth name typed before switching back to "gleich", and does not sign it', () => {
+    let q = draft(empty(), 'person', { ...PERSON, geburtsnameWieFamilienname: false });
+    q = ok(setValue(q, form, 'person', 'geburtsname', 'Mustermann'));
+    q = ok(setValue(q, form, 'person', 'geburtsnameWieFamilienname', true));
+    const summary = interviewSummary(definition, 'person', dataOfPart(q, 'person'), BOTH_NOTICES);
+    expect(summary.inactive.map((entry) => entry.fieldId)).toEqual(['geburtsname']);
+    expect(summary.readyToSign).toBe(true);
+    const signed = ok(sealPart(q, form, 'person', personSealInput({ acknowledged: BOTH_NOTICES })));
+    expect(latestSealed(signed, 'person')?.data).not.toHaveProperty('geburtsname');
+  });
+
+  it('lets the person skip the Versicherungsnummer with "Weiß ich gerade nicht" and still sign', () => {
+    const withoutNumber = Object.fromEntries(
+      Object.entries(PERSON).filter(([id]) => id !== 'versicherungsnummer'),
+    );
+    let q = draft(empty(), 'person', withoutNumber);
+    q = ok(deferQuestion(q, form, 'person', 'versicherungsnummer'));
+    expect(
+      interviewSummary(definition, 'person', dataOfPart(q, 'person'), BOTH_NOTICES),
+    ).toMatchObject({ deferred: ['versicherungsnummer'], readyToSign: true });
+  });
+});
+
+function dataOfPart(q: Questionnaire, role: string) {
+  const part = currentPart(q, role);
+  if (!part) throw new Error(`${role} part missing`);
+  return part;
+}

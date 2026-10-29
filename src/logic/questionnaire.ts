@@ -68,7 +68,8 @@ export type TransitionCode =
   | 'signerNameMissing'
   | 'fieldNotAvailable'
   | 'noSealedPart'
-  | 'versionInUse';
+  | 'versionInUse'
+  | 'alreadyAnswered';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -97,6 +98,8 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   noSealedPart: 'Für diese Rolle gibt es keine abgeschlossene Fassung.',
   versionInUse:
     'Diese Fassung wurde bereits weitergegeben oder bestätigt. Eine Änderung wird als neue Fassung unterschrieben.',
+  alreadyAnswered:
+    'Diese Frage ist schon beantwortet. Zum Zurückstellen bitte zuerst die Antwort löschen.',
 };
 
 export type Transition =
@@ -210,9 +213,58 @@ export function setValue(
       : '';
     return refuse('fieldNotAvailable', [fieldId, reason]);
   }
+  const updated: Part = { ...draft, data: { ...draft.data, [fieldId]: value.value } };
   const versions = [...versionsOf(questionnaire, role)];
-  versions[versions.length - 1] = { ...draft, data: { ...draft.data, [fieldId]: value.value } };
+  // An answer ends "Weiß ich gerade nicht"; clearing a field keeps the mark.
+  versions[versions.length - 1] =
+    value.value === null
+      ? updated
+      : withDeferred(
+          updated,
+          (draft.deferred ?? []).filter((id) => id !== fieldId),
+        );
   return done(withVersions(questionnaire, role, versions), value.warnings);
+}
+
+function withDeferred(part: Part, deferred: readonly FieldId[]): Part {
+  const copy: Part = { ...part };
+  Reflect.deleteProperty(copy, 'deferred');
+  return deferred.length === 0 ? copy : { ...copy, deferred: [...deferred] };
+}
+
+/**
+ * "Weiß ich gerade nicht": puts an available, unanswered question of the role's draft back. The
+ * interview moves on and lists it again before signing; a required question must still be
+ * answered then. The mark lives in the draft only (it survives saving the interim state) and is
+ * never sealed.
+ */
+export function deferQuestion(
+  questionnaire: Questionnaire,
+  form: RegisteredForm,
+  role: RoleId,
+  fieldId: FieldId,
+): Transition {
+  if (!matchesForm(questionnaire, form)) return refuse('wrongForm');
+  const draft = currentPart(questionnaire, role);
+  if (draft?.status !== 'draft') return refuse('noDraft', [role]);
+  const own = fieldsOfRole(form.definition, role);
+  const field = own.find((candidate) => candidate.id === fieldId);
+  if (!field) {
+    return refuse(ownerOfField(form.definition, fieldId) ? 'notOwnField' : 'unknownField', [
+      fieldId,
+    ]);
+  }
+  if (visibility(form.definition, role, draft.data).get(fieldId) !== true) {
+    return refuse('fieldNotAvailable', [fieldId]);
+  }
+  if ((draft.data[fieldId] ?? null) !== null) return refuse('alreadyAnswered', [fieldId]);
+  const marked = new Set([...(draft.deferred ?? []), fieldId]);
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = withDeferred(
+    draft,
+    own.map((candidate) => candidate.id).filter((id) => marked.has(id)),
+  );
+  return done(withVersions(questionnaire, role, versions));
 }
 
 /**

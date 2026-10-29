@@ -2,6 +2,7 @@
 // form is published. It is generated from the definition alone, so what gets approved is exactly
 // what gets frozen; tests/forms/catalogue.test.ts keeps docs/formulare/ in sync with the JSON.
 import { formatGermanDate } from './dates';
+import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
 import type { RegisteredForm } from './formRegistry';
 import type {
@@ -101,8 +102,13 @@ function fieldKind(field: FieldDefinition): string {
 
 function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = ''): string[][] {
   const { input, requirement } = describeFieldRules(definition, field);
-  const own = [
+  const name = [
     `${prefix}${field.label} (${field.id})`,
+    ...(field.question === undefined ? [] : [`Frage: ${field.question}`]),
+    ...(field.help === undefined ? [] : [`Hilfe: ${field.help}`]),
+  ].join('\n');
+  const own = [
+    name,
     roleLabel(definition, field.role),
     fieldKind(field),
     input,
@@ -110,6 +116,49 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
     field.purpose,
   ];
   return [own, ...(field.columns ?? []).flatMap((column) => fieldRows(definition, column, '– '))];
+}
+
+/**
+ * Answers that rest on others, as an indented list: a child sits under the parent of the deepest
+ * level it depends on and is asked right after it.
+ */
+function dependencyTree(definition: FormDefinition): string[] {
+  const dependencies = fieldDependencies(definition);
+  const fields = fieldsById(definition);
+  const primaryParent = (id: string): string | undefined => {
+    const parents = dependencies.get(id)?.availableThrough ?? [];
+    return parents.reduce<string | undefined>((best, parent) => {
+      const level = dependencies.get(parent)?.level ?? 0;
+      return best === undefined || level > (dependencies.get(best)?.level ?? 0) ? parent : best;
+    }, undefined);
+  };
+  const lines: string[] = [];
+  const visit = (id: string, depth: number) => {
+    const field = fields.get(id);
+    if (!field) return;
+    const rule = depth === 0 ? '' : ` – ${describeFieldRules(definition, field).input}`;
+    const level = depth === 0 ? 'unabhängig' : `Ebene ${dependencies.get(id)?.level ?? depth}`;
+    lines.push(
+      `${'  '.repeat(depth)}- ${field.label} (${roleLabel(definition, field.role)}; ${level})${rule}`,
+    );
+    for (const child of dependencies.get(id)?.enables ?? []) {
+      if (primaryParent(child) === id) visit(child, depth + 1);
+    }
+  };
+  const roots = [...dependencies.values()].filter(
+    (dependency) => dependency.level === 0 && dependency.enables.length > 0,
+  );
+  if (roots.length === 0) return ['Alle Angaben sind unabhängig voneinander.'];
+  for (const root of roots) visit(root.fieldId, 0);
+  return [
+    'Eingerückte Angaben beruhen auf der Angabe darüber und werden direkt nach ihr abgefragt. Fällt ' +
+      'die Voraussetzung später weg, bleibt die Antwort bis zur Unterschrift erhalten (sie kommt ' +
+      'zurück, wenn die Voraussetzung wieder gilt), wird aber nicht mit unterschrieben.',
+    '',
+    ...lines,
+    '',
+    'Alle übrigen Angaben sind unabhängig.',
+  ];
 }
 
 function roleRequired(definition: FormDefinition, role: RoleDefinition): string {
@@ -181,6 +230,8 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       ),
     );
   });
+
+  lines.push('', '## Abhängigkeiten', '', ...dependencyTree(definition));
 
   lines.push('', '## Hinweise zur Kenntnisnahme');
   if (definition.infoBlocks.length === 0) lines.push('', 'Keine.');

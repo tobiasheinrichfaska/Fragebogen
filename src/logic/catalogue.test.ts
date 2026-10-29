@@ -1,4 +1,10 @@
-import { beispielForm, guardianForm, linkedForm, logicForm } from '../../tests/support/sample';
+import {
+  beispielForm,
+  chainForm,
+  guardianForm,
+  linkedForm,
+  logicForm,
+} from '../../tests/support/sample';
 import { formCatalogue, tableCell } from './catalogue';
 import type { RegisteredForm } from './formRegistry';
 
@@ -100,6 +106,37 @@ describe('formCatalogue', () => {
         'bestätigt die aktuelle Fassung des anderen Teils.',
     );
     expect(formCatalogue(beispielForm(), 'draft')).toContain('## Verknüpfung der Teile\n\nKeine.');
+  });
+
+  it('shows question and help texts in the field cell', () => {
+    expect(lineWith(formCatalogue(chainForm(), 'draft'), '(nachname)')).toContain(
+      '| Nachname (nachname)<br>Frage: Wie lautet Ihr Nachname?<br>Hilfe: Wie im Ausweis. |',
+    );
+  });
+
+  it('draws the dependencies as a tree with levels', () => {
+    const markdown = formCatalogue(chainForm(), 'draft');
+    const tree = markdown.slice(
+      markdown.indexOf('## Abhängigkeiten'),
+      markdown.indexOf('## Hinweise zur Kenntnisnahme'),
+    );
+    expect(tree.split('\n').filter((line) => line.trimStart().startsWith('- '))).toEqual([
+      '- Üben Sie eine weitere Beschäftigung aus? (Beschäftigte Person; unabhängig)',
+      '  - Art der weiteren Beschäftigung (Beschäftigte Person; Ebene 1) – erst wenn „Üben Sie eine weitere Beschäftigung aus?“ mit „Ja“ beantwortet ist',
+      '    - Firma der weiteren Beschäftigung (Beschäftigte Person; Ebene 2) – erst wenn bei „Art der weiteren Beschäftigung“ „Sozialversicherungspflichtig“ gewählt ist',
+      '      - Wochenstunden dort (Beschäftigte Person; Ebene 3) – erst wenn „Üben Sie eine weitere Beschäftigung aus?“ mit „Ja“ beantwortet ist und „Firma der weiteren Beschäftigung“ ausgefüllt ist',
+    ]);
+    expect(tree).toContain('Alle übrigen Angaben sind unabhängig.');
+  });
+
+  it('says so when no answer rests on another', () => {
+    const form: RegisteredForm = structuredClone(beispielForm());
+    for (const section of form.definition.sections) {
+      for (const field of section.fields) delete field.showIf;
+    }
+    expect(formCatalogue(form, 'draft')).toContain(
+      '## Abhängigkeiten\n\nAlle Angaben sind unabhängig voneinander.',
+    );
   });
 
   it('keeps table cells intact', () => {

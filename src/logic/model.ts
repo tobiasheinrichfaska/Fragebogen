@@ -83,6 +83,10 @@ export interface FieldDefinition {
   role: RoleId;
   type: FieldType;
   label: string;
+  /** Wording in the interview, e.g. "Wie lautet Ihr Familienname?"; the label otherwise. */
+  question?: string;
+  /** Short help shown with the question, e.g. where to find a number. */
+  help?: string;
   /** Always required while available. Mutually exclusive with `requiredIf`. */
   required: boolean;
   /** Required only while this condition holds (and the field is available). */
@@ -267,6 +271,11 @@ export interface Part {
   /** Drawn signature, encoded by strokes.ts (shape only, no timing or pressure). */
   signatureStrokes?: string;
   seal?: Seal;
+  /**
+   * Drafts only: questions put back with "Weiß ich gerade nicht", in form order. Never sealed; a
+   * required one still has to be answered before signing.
+   */
+  deferred?: FieldId[];
 }
 
 /** Where a receipt time comes from: this app's clock or the DATEV filing date. */

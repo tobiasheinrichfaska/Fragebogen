@@ -13,6 +13,9 @@ Status 2026-10-29: logic layer up to the merge exists, no UI yet — every path 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
 
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
+- [ ] **Interview** (default for person and employer) — one question per screen in form order; a follow-up appears right after the answer that opens it; back and forward; progress; the summary lists missing, deferred and no longer applicable answers before signing
+- [ ] **"Weiß ich gerade nicht"** — a question can be put back; it is asked again at the end and survives saving the interim state; a required one must be answered before signing
+- [ ] **Answers kept while their condition is off** — switching a precondition off and on again brings the answer back; only signing drops it (shown in the summary)
 - [ ] **Field logic** — a field accepts input only once its precondition holds (`showIf`); required always or by condition (`requiredIf`, e.g. phone or e-mail); the reason is shown in German
 - [ ] **Acknowledge notices** — `read` notices confirmed in-app; `paperHandout` notices confirmed as handed out on paper
 - [ ] **Sign (draw or typed name) after explicit confirmation** — part locks; system note shown under the signature; an accidental tap or a single letter is refused

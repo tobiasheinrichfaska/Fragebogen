@@ -345,3 +345,50 @@ export function linkedForm(): RegisteredForm {
   raw.partLinks = [['person', 'arbeitgeber']];
   return registered(raw);
 }
+
+/**
+ * In-memory variant of the fixture (never published) with dependencies on several levels:
+ * "weitere Beschäftigung" (independent) → "Art" (level 1) → "Firma" (level 2, only for "sv") →
+ * "Wochenstunden" (level 3, needs a yes and the company). Question and help texts for the interview.
+ */
+export function chainForm(): RegisteredForm {
+  const raw = structuredClone(beispiel) as unknown as {
+    version: string;
+    sections: { id: string; title: string; fields: Record<string, unknown>[] }[];
+  };
+  raw.version = '1.7.0';
+  const personal = raw.sections[0];
+  if (!personal) throw new Error('fixture changed');
+  const field = (id: string, extra: Record<string, unknown>) => ({
+    id,
+    role: 'person',
+    type: 'text',
+    label: id,
+    required: false,
+    purpose: 'Test der Abhängigkeiten',
+    ...extra,
+  });
+  const nachname = personal.fields.find((f) => f.id === 'nachname');
+  if (!nachname) throw new Error('fixture changed');
+  nachname.question = 'Wie lautet Ihr Nachname?';
+  nachname.help = 'Wie im Ausweis.';
+  personal.fields.splice(
+    5,
+    0,
+    field('weitereFirma', {
+      label: 'Firma der weiteren Beschäftigung',
+      required: true,
+      showIf: { field: 'weitereArt', equals: 'sv' },
+    }),
+    field('weitereStunden', {
+      label: 'Wochenstunden dort',
+      showIf: {
+        all: [
+          { field: 'weitereBeschaeftigung', equals: true },
+          { field: 'weitereFirma', answered: true },
+        ],
+      },
+    }),
+  );
+  return registered(raw);
+}

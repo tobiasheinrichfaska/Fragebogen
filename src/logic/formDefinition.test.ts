@@ -2,7 +2,7 @@ import beispiel from '../../tests/fixtures/forms/beispiel/1.0.0.json';
 import beispiel110 from '../../tests/fixtures/forms/beispiel/1.1.0.json';
 import { checkFormDefinition, findCycle, parseFormDefinition } from './formDefinition';
 import { canonicalHash } from './hash';
-import { linkedForm, logicForm } from '../../tests/support/sample';
+import { chainForm, linkedForm, logicForm } from '../../tests/support/sample';
 import type { FieldDefinition, FormDefinition, RoleDefinition } from './model';
 
 const REMOVE = Symbol('remove');
@@ -908,3 +908,49 @@ function linkedFormRaw(raw: Record<string, unknown>): Record<string, unknown> {
   raw.partLinks = [['person', 'arbeitgeber']];
   return raw;
 }
+
+describe('interview texts and order', () => {
+  it('accepts question and help texts and decodes them unchanged', () => {
+    expect(checkFormDefinition(chainForm().definition)).toEqual([]);
+  });
+
+  it.each<[string, readonly (string | number)[], unknown, string, string]>([
+    [
+      'an empty question',
+      ['sections', 0, 'fields', 0, 'question'],
+      '',
+      '$.sections[0].fields[0].question',
+      'must not be empty',
+    ],
+    [
+      'a help text that is no string',
+      ['sections', 0, 'fields', 0, 'help'],
+      3,
+      '$.sections[0].fields[0].help',
+      'expected a string',
+    ],
+  ])('rejects %s', (_label, path, change, issuePath, message) => {
+    const result = parseFormDefinition(rawWith(path, change));
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.issues).toContainEqual({
+      path: issuePath,
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it('reports a condition that looks ahead (its question would appear behind the person)', () => {
+    const d = definition();
+    fieldAt(d, 0, 2).showIf = { field: 'weitereBeschaeftigung', equals: true };
+    expect(checkFormDefinition(d)).toEqual([
+      {
+        path: '$.sections[0].fields[2].showIf.field',
+        message: '"weitereBeschaeftigung" must come before "steuerId" (interview order)',
+      },
+    ]);
+  });
+
+  it('lets requiredIf look ahead (phone or e-mail)', () => {
+    expect(checkFormDefinition(logicForm().definition)).toEqual([]);
+  });
+});

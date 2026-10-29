@@ -198,6 +198,8 @@ const FIELD_KEYS = [
   'role',
   'type',
   'label',
+  'question',
+  'help',
   'required',
   'requiredIf',
   'purpose',
@@ -218,6 +220,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const role = d.string(o.role, `${path}.role`, ID);
   const type = d.literal(o.type, `${path}.type`, FIELD_TYPES);
   const label = d.string(o.label, `${path}.label`);
+  const question = o.question === undefined ? undefined : d.string(o.question, `${path}.question`);
+  const help = o.help === undefined ? undefined : d.string(o.help, `${path}.help`);
   const required = d.boolean(o.required, `${path}.required`);
   const requiredIf =
     o.requiredIf === undefined
@@ -261,6 +265,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     role,
     type,
     label,
+    ...(question === undefined ? {} : { question }),
+    ...(help === undefined ? {} : { help }),
     required,
     ...(requiredIf === undefined ? {} : { requiredIf }),
     purpose,
@@ -677,6 +683,32 @@ const MASTER_DATA_TYPES: readonly FieldType[] = [
   'money',
 ];
 
+/**
+ * The interview asks in form order, so a field can only become available through an earlier
+ * answer; otherwise its question would appear behind the person. requiredIf may look ahead (phone
+ * or e-mail) — the summary before signing catches that.
+ */
+function interviewOrder({ definition, report }: CheckContext): void {
+  const position = new Map(
+    definition.sections.flatMap((section) => section.fields).map((field, i) => [field.id, i]),
+  );
+  definition.sections.forEach((section, s) => {
+    section.fields.forEach((field, f) => {
+      if (!field.showIf) return;
+      const own = position.get(field.id) ?? 0;
+      forEachLeaf(field.showIf, `$.sections[${s}].fields[${f}].showIf`, (leaf, leafPath) => {
+        const target = position.get(leaf.field);
+        if (target !== undefined && target >= own) {
+          report(
+            `${leafPath}.field`,
+            `"${leaf.field}" must come before "${field.id}" (interview order)`,
+          );
+        }
+      });
+    });
+  });
+}
+
 /** A master-data key names one top-level text-like field per form. */
 function masterDataKeys({ fields, report }: CheckContext): void {
   const seen = new Map<string, string>();
@@ -722,4 +754,5 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   initialValues,
   masterDataKeys,
   partLinks,
+  interviewOrder,
 ];

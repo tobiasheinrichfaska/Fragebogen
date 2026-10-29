@@ -44,6 +44,8 @@
           "role": "person",
           "type": "text",
           "label": "Familienname",
+          "question": "Wie lautet Ihr Familienname?",
+          "help": "So, wie er in Ihrem Ausweis steht.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
         },
@@ -52,6 +54,8 @@
           "role": "person",
           "type": "text",
           "label": "Vornamen",
+          "question": "Wie lauten Ihre Vornamen?",
+          "help": "Alle Vornamen, wie in Ihrem Ausweis.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
         },
@@ -60,6 +64,7 @@
           "role": "person",
           "type": "boolean",
           "label": "Ist Ihr Geburtsname gleich Ihrem Familiennamen?",
+          "help": "Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
           "initial": true
@@ -69,6 +74,7 @@
           "role": "person",
           "type": "text",
           "label": "Geburtsname",
+          "question": "Wie lautet Ihr Geburtsname?",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
           "showIf": {
@@ -81,6 +87,8 @@
           "role": "person",
           "type": "date",
           "label": "Geburtsdatum",
+          "question": "Wann sind Sie geboren?",
+          "help": "Zum Beispiel 17.05.1990.",
           "required": true,
           "purpose": "Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV)"
         },
@@ -89,6 +97,8 @@
           "role": "person",
           "type": "text",
           "label": "Geburtsort",
+          "question": "Wo sind Sie geboren?",
+          "help": "Der Ort, wie er in Ihrem Ausweis steht.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
@@ -97,6 +107,7 @@
           "role": "person",
           "type": "text",
           "label": "Geburtsland",
+          "question": "In welchem Land sind Sie geboren?",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung"
         },
@@ -105,6 +116,8 @@
           "role": "person",
           "type": "choice",
           "label": "Geschlecht",
+          "question": "Welches Geschlecht ist bei Ihnen eingetragen?",
+          "help": "So, wie es in Ihren amtlichen Papieren steht.",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
           "options": [
@@ -131,6 +144,8 @@
           "role": "person",
           "type": "text",
           "label": "Staatsangehörigkeit",
+          "question": "Welche Staatsangehörigkeit haben Sie?",
+          "help": "Zum Beispiel „deutsch“.",
           "required": true,
           "purpose": "Meldungen zur Sozialversicherung"
         },
@@ -139,6 +154,8 @@
           "role": "person",
           "type": "svNumber",
           "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
+          "question": "Wie lautet Ihre Versicherungsnummer der Rentenversicherung?",
+          "help": "Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.",
           "required": false,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
         }
@@ -153,6 +170,7 @@
           "role": "person",
           "type": "text",
           "label": "Straße und Hausnummer",
+          "question": "Wie lauten Straße und Hausnummer Ihrer Anschrift?",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
@@ -161,6 +179,8 @@
           "role": "person",
           "type": "text",
           "label": "Anschriftenzusatz",
+          "question": "Gibt es einen Zusatz zur Anschrift?",
+          "help": "Zum Beispiel „bei Müller“ oder „Hinterhaus“. Sonst leer lassen.",
           "required": false,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
@@ -169,6 +189,7 @@
           "role": "person",
           "type": "text",
           "label": "Postleitzahl",
+          "question": "Wie lautet Ihre Postleitzahl?",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
@@ -177,6 +198,7 @@
           "role": "person",
           "type": "text",
           "label": "Wohnort",
+          "question": "In welchem Ort wohnen Sie?",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
@@ -194,6 +216,7 @@
           "role": "person",
           "type": "text",
           "label": "Staat",
+          "question": "In welchem Staat liegt Ihre Anschrift?",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung",
           "showIf": {
@@ -212,6 +235,8 @@
           "role": "vertretung",
           "type": "text",
           "label": "Vor- und Familienname der gesetzlichen Vertretung",
+          "question": "Wie lautet Ihr Vor- und Familienname?",
+          "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil.",
           "required": true,
           "purpose": "Nachweis, wer für die minderjährige Person unterschreibt"
         }
@@ -226,6 +251,8 @@
           "role": "arbeitgeber",
           "type": "text",
           "label": "Firma des Arbeitgebers",
+          "question": "Wie lautet die Firma des Arbeitgebers?",
+          "help": "So, wie sie auf dem Briefkopf oder im Handelsregister steht.",
           "required": true,
           "purpose": "Kopfzeile des Fragebogens, Zuordnung",
           "masterData": "firma"
@@ -235,6 +262,8 @@
           "role": "arbeitgeber",
           "type": "betriebsnummer",
           "label": "Betriebsnummer des Arbeitgebers",
+          "question": "Wie lautet die Betriebsnummer?",
+          "help": "8 Ziffern, vergeben von der Bundesagentur für Arbeit. Sie steht auf den Meldungen zur Sozialversicherung; Ihre Lohnabrechnung kennt sie.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)",
           "masterData": "betriebsnummer"
@@ -244,6 +273,7 @@
           "role": "arbeitgeber",
           "type": "text",
           "label": "Familienname der beschäftigten Person",
+          "question": "Wie lautet der Familienname der beschäftigten Person?",
           "required": true,
           "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
         },
@@ -252,6 +282,7 @@
           "role": "arbeitgeber",
           "type": "text",
           "label": "Vornamen der beschäftigten Person",
+          "question": "Wie lauten die Vornamen der beschäftigten Person?",
           "required": true,
           "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
         },
@@ -260,6 +291,8 @@
           "role": "arbeitgeber",
           "type": "text",
           "label": "Personalnummer",
+          "question": "Welche Personalnummer hat die Person?",
+          "help": "Nur, wenn schon eine vergeben ist.",
           "required": false,
           "purpose": "Zuordnung in der Lohnabrechnung"
         },
@@ -268,6 +301,8 @@
           "role": "arbeitgeber",
           "type": "date",
           "label": "Tag der Beschäftigungsaufnahme",
+          "question": "An welchem Tag beginnt die Beschäftigung?",
+          "help": "Der erste Arbeitstag. Die Sofortmeldung muss spätestens bei Arbeitsaufnahme erstattet sein.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
         }
