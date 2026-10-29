@@ -1,0 +1,981 @@
+{
+  "id": "personalfragebogen",
+  "version": "0.1.0",
+  "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
+  "signaturePolicy": "electronic",
+  "roles": [
+    {
+      "id": "person",
+      "label": "Beschäftigte Person",
+      "stationHeading": "Angaben der beschäftigten Person",
+      "confirmationText": "Ich versichere, dass meine Angaben richtig und vollständig sind. Ändert sich etwas, vor allem bei weiteren Beschäftigungen, teile ich das meinem Arbeitgeber unverzüglich mit.",
+      "signature": "required"
+    },
+    {
+      "id": "vertretung",
+      "label": "Gesetzliche Vertretung",
+      "stationHeading": "Unterschrift der gesetzlichen Vertretung",
+      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "signature": "required",
+      "requiredIf": {
+        "kind": "minorOnSigning",
+        "birthDateField": "geburtsdatum"
+      },
+      "signerNameField": "vertretungName"
+    },
+    {
+      "id": "arbeitgeber",
+      "label": "Arbeitgeber",
+      "stationHeading": "Angaben des Arbeitgebers",
+      "confirmationText": "Ich bestätige die Angaben des Arbeitgebers.",
+      "signature": "optional"
+    }
+  ],
+  "recipient": {
+    "label": "Lohnabrechnende Stelle"
+  },
+  "sections": [
+    {
+      "id": "person",
+      "title": "Persönliche Angaben",
+      "fields": [
+        {
+          "id": "familienname",
+          "role": "person",
+          "type": "text",
+          "label": "Familienname",
+          "question": "Wie lautet Ihr Familienname?",
+          "help": "So, wie er in Ihrem Ausweis steht.",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung"
+        },
+        {
+          "id": "vorname",
+          "role": "person",
+          "type": "text",
+          "label": "Vornamen",
+          "question": "Wie lauten Ihre Vornamen?",
+          "help": "Alle Vornamen, wie in Ihrem Ausweis.",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung"
+        },
+        {
+          "id": "geburtsnameWieFamilienname",
+          "role": "person",
+          "type": "boolean",
+          "label": "Ist Ihr Geburtsname gleich Ihrem Familiennamen?",
+          "help": "Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "initial": true
+        },
+        {
+          "id": "geburtsname",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsname",
+          "question": "Wie lautet Ihr Geburtsname?",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "showIf": {
+            "field": "geburtsnameWieFamilienname",
+            "equals": false
+          }
+        },
+        {
+          "id": "geburtsdatum",
+          "role": "person",
+          "type": "date",
+          "label": "Geburtsdatum",
+          "question": "Wann sind Sie geboren?",
+          "help": "Zum Beispiel 17.05.1990.",
+          "required": true,
+          "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG); Meldungen zur Sozialversicherung; Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss"
+        },
+        {
+          "id": "geburtsort",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsort",
+          "question": "Wo sind Sie geboren?",
+          "help": "Der Ort, wie er in Ihrem Ausweis steht.",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer, wenn sie fehlt; Stammdaten für die Lohnabrechnung"
+        },
+        {
+          "id": "geburtsland",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsland",
+          "question": "In welchem Land sind Sie geboren?",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung"
+        },
+        {
+          "id": "geschlecht",
+          "role": "person",
+          "type": "choice",
+          "label": "Geschlecht",
+          "question": "Welches Geschlecht ist bei Ihnen eingetragen?",
+          "help": "So, wie es in Ihren amtlichen Papieren steht.",
+          "required": true,
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "options": [
+            {
+              "id": "maennlich",
+              "label": "männlich"
+            },
+            {
+              "id": "weiblich",
+              "label": "weiblich"
+            },
+            {
+              "id": "divers",
+              "label": "divers"
+            },
+            {
+              "id": "unbestimmt",
+              "label": "unbestimmt"
+            }
+          ]
+        },
+        {
+          "id": "staatsangehoerigkeit",
+          "role": "person",
+          "type": "text",
+          "label": "Staatsangehörigkeit",
+          "question": "Welche Staatsangehörigkeit haben Sie?",
+          "help": "Zum Beispiel „deutsch“.",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung"
+        },
+        {
+          "id": "versicherungsnummer",
+          "role": "person",
+          "type": "svNumber",
+          "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
+          "question": "Wie lautet Ihre Versicherungsnummer der Rentenversicherung?",
+          "help": "Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.",
+          "required": false,
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV)"
+        }
+      ]
+    },
+    {
+      "id": "anschrift",
+      "title": "Anschrift",
+      "fields": [
+        {
+          "id": "strasse",
+          "role": "person",
+          "type": "text",
+          "label": "Straße und Hausnummer",
+          "question": "Wie lauten Straße und Hausnummer Ihrer Anschrift?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
+        },
+        {
+          "id": "anschriftZusatz",
+          "role": "person",
+          "type": "text",
+          "label": "Anschriftenzusatz",
+          "question": "Gibt es einen Zusatz zur Anschrift?",
+          "help": "Zum Beispiel „bei Müller“ oder „Hinterhaus“. Sonst leer lassen.",
+          "required": false,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
+        },
+        {
+          "id": "postleitzahl",
+          "role": "person",
+          "type": "text",
+          "label": "Postleitzahl",
+          "question": "Wie lautet Ihre Postleitzahl?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
+        },
+        {
+          "id": "wohnort",
+          "role": "person",
+          "type": "text",
+          "label": "Wohnort",
+          "question": "In welchem Ort wohnen Sie?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
+        },
+        {
+          "id": "anschriftAusland",
+          "role": "person",
+          "type": "boolean",
+          "label": "Liegt die Anschrift im Ausland?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "initial": false
+        },
+        {
+          "id": "wohnstaat",
+          "role": "person",
+          "type": "text",
+          "label": "Staat",
+          "question": "In welchem Staat liegt Ihre Anschrift?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "kontakt",
+      "title": "Kontakt",
+      "fields": [
+        {
+          "id": "telefon",
+          "role": "person",
+          "type": "text",
+          "label": "Telefonnummer",
+          "question": "Unter welcher Telefonnummer sind Sie erreichbar?",
+          "help": "Für Rückfragen zu Ihren Angaben. Eine Telefonnummer oder eine E-Mail-Adresse genügt.",
+          "required": false,
+          "requiredIf": {
+            "field": "email",
+            "answered": false
+          },
+          "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung"
+        },
+        {
+          "id": "email",
+          "role": "person",
+          "type": "text",
+          "label": "E-Mail-Adresse",
+          "question": "Wie lautet Ihre E-Mail-Adresse?",
+          "help": "Für Rückfragen zu Ihren Angaben. Haben Sie eine Telefonnummer angegeben, können Sie dieses Feld leer lassen.",
+          "required": false,
+          "requiredIf": {
+            "field": "telefon",
+            "answered": false
+          },
+          "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung"
+        }
+      ]
+    },
+    {
+      "id": "bankverbindung",
+      "title": "Bankverbindung",
+      "fields": [
+        {
+          "id": "iban",
+          "role": "person",
+          "type": "iban",
+          "label": "IBAN",
+          "question": "Auf welches Konto soll Ihr Lohn oder Gehalt überwiesen werden?",
+          "help": "Ihre IBAN steht zum Beispiel auf Ihrer Bankkarte, im Online-Banking oder auf einem Kontoauszug.",
+          "required": true,
+          "purpose": "Überweisung des Arbeitsentgelts"
+        },
+        {
+          "id": "kontoinhaberSelbst",
+          "role": "person",
+          "type": "boolean",
+          "label": "Lautet das Konto auf Ihren Namen?",
+          "required": true,
+          "purpose": "Überweisung des Arbeitsentgelts",
+          "initial": true
+        },
+        {
+          "id": "kontoinhaber",
+          "role": "person",
+          "type": "text",
+          "label": "Name der Kontoinhaberin oder des Kontoinhabers",
+          "question": "Auf wessen Namen lautet das Konto?",
+          "help": "Vor- und Familienname, wie bei der Bank hinterlegt.",
+          "required": true,
+          "purpose": "Überweisung des Arbeitsentgelts",
+          "showIf": {
+            "field": "kontoinhaberSelbst",
+            "equals": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "weitereBeschaeftigungen",
+      "title": "Weitere Beschäftigungen",
+      "fields": [
+        {
+          "id": "weitereBeschaeftigung",
+          "role": "person",
+          "type": "boolean",
+          "label": "Haben Sie zurzeit noch eine andere Beschäftigung?",
+          "help": "Auch Minijobs und kurzfristige Beschäftigungen bei anderen Arbeitgebern zählen. Kommt später eine Beschäftigung hinzu, sagen Sie es Ihrem Arbeitgeber bitte unverzüglich.",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung bei mehreren Beschäftigungen, zum Beispiel Zusammenrechnung (§ 8 Abs. 2 SGB IV) und Beitragsbemessungsgrenzen (§ 22 Abs. 2 SGB IV)"
+        },
+        {
+          "id": "weitereArten",
+          "role": "person",
+          "type": "multiChoice",
+          "label": "Art der anderen Beschäftigungen",
+          "question": "Welcher Art sind Ihre anderen Beschäftigungen?",
+          "help": "Kreuzen Sie alles an, was zutrifft.",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung bei mehreren Beschäftigungen",
+          "options": [
+            {
+              "id": "versicherungspflichtig",
+              "label": "versicherungspflichtige Beschäftigung (kein Minijob)"
+            },
+            {
+              "id": "minijob",
+              "label": "Minijob (geringfügig entlohnt)"
+            },
+            {
+              "id": "kurzfristig",
+              "label": "kurzfristige Beschäftigung"
+            }
+          ],
+          "showIf": {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          }
+        },
+        {
+          "id": "weitereAngaben",
+          "role": "person",
+          "type": "text",
+          "label": "Angaben zu den anderen Beschäftigungen",
+          "question": "Bei welchen Arbeitgebern, seit wann und in welchem Umfang arbeiten Sie außerdem?",
+          "help": "Bitte eine Zeile je Beschäftigung: Arbeitgeber, Beginn, Stunden pro Woche und Entgelt im Monat, zum Beispiel „Name des Arbeitgebers, seit 01.03.2026, 8 Stunden, 300 Euro“.",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung bei mehreren Beschäftigungen",
+          "multiline": true,
+          "showIf": {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "steuer",
+      "title": "Steuer",
+      "fields": [
+        {
+          "id": "steuerId",
+          "role": "person",
+          "type": "taxId",
+          "label": "Steuerliche Identifikationsnummer",
+          "question": "Wie lautet Ihre Steuer-Identifikationsnummer?",
+          "help": "Sie hat 11 Ziffern und steht zum Beispiel auf Ihrer letzten Lohnsteuerbescheinigung, Ihrem Einkommensteuerbescheid oder dem Schreiben des Bundeszentralamts für Steuern, mit dem Sie die Nummer erhalten haben.",
+          "required": true,
+          "purpose": "Abruf der elektronischen Lohnsteuerabzugsmerkmale (ELStAM) beim Bundeszentralamt für Steuern (§ 39e Abs. 4 EStG)"
+        },
+        {
+          "id": "dienstverhaeltnis",
+          "role": "person",
+          "type": "choice",
+          "label": "Erstes oder weiteres Dienstverhältnis",
+          "question": "Welches Dienstverhältnis ist diese Beschäftigung für die Lohnsteuer?",
+          "help": "Haben Sie nur diesen Arbeitgeber, ist es das erste. Arbeiten Sie gleichzeitig für mehrere Arbeitgeber, legen Sie fest, welches Arbeitsverhältnis das erste ist; für jedes weitere gilt Steuerklasse VI.",
+          "required": true,
+          "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG); Steuerklasse VI für ein weiteres Dienstverhältnis",
+          "options": [
+            {
+              "id": "erstes",
+              "label": "das erste (Hauptarbeitsverhältnis)"
+            },
+            {
+              "id": "weiteres",
+              "label": "ein weiteres (Steuerklasse VI)"
+            }
+          ]
+        },
+        {
+          "id": "freibetragAbrufen",
+          "role": "person",
+          "type": "boolean",
+          "label": "Soll für dieses Dienstverhältnis ein Freibetrag abgerufen werden?",
+          "help": "Das geht nur, wenn das Finanzamt auf Ihren Antrag einen Freibetrag für ein weiteres Dienstverhältnis festgestellt hat. Sonst „Nein“.",
+          "required": true,
+          "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG)",
+          "showIf": {
+            "field": "dienstverhaeltnis",
+            "equals": "weiteres"
+          }
+        },
+        {
+          "id": "freibetragBetrag",
+          "role": "person",
+          "type": "money",
+          "label": "Abzurufender Freibetrag (Jahresbetrag)",
+          "question": "In welcher Höhe soll der Freibetrag abgerufen werden?",
+          "help": "Jahresbetrag in Euro, höchstens der vom Finanzamt festgestellte Betrag.",
+          "required": true,
+          "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG)",
+          "showIf": {
+            "field": "freibetragAbrufen",
+            "equals": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "sozialversicherung",
+      "title": "Sozialversicherung",
+      "fields": [
+        {
+          "id": "krankenversicherung",
+          "role": "person",
+          "type": "choice",
+          "label": "Krankenversicherung",
+          "question": "Wie sind Sie krankenversichert?",
+          "help": "Sind Sie privat versichert, braucht Ihr Arbeitgeber zusätzlich eine Bescheinigung Ihrer Versicherung über die Beiträge, damit er den Beitragszuschuss zahlen kann.",
+          "required": true,
+          "purpose": "Anmeldung zur Sozialversicherung; Beitragszuschuss des Arbeitgebers bei privater Versicherung",
+          "options": [
+            {
+              "id": "gesetzlich",
+              "label": "gesetzlich (auch familienversichert)"
+            },
+            {
+              "id": "privat",
+              "label": "privat"
+            }
+          ]
+        },
+        {
+          "id": "krankenkasse",
+          "role": "person",
+          "type": "text",
+          "label": "Krankenkasse oder Versicherungsunternehmen",
+          "question": "Bei welcher Krankenkasse oder Versicherung sind Sie versichert?",
+          "help": "Gesetzlich versichert: die Krankenkasse, bei der Sie versichert sind oder Mitglied werden. Privat versichert: der Name des Versicherungsunternehmens.",
+          "required": true,
+          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV); Beitragszuschuss bei privater Versicherung"
+        },
+        {
+          "id": "pkvLetzteKrankenkasse",
+          "role": "person",
+          "type": "text",
+          "label": "Letzte gesetzliche Krankenkasse",
+          "question": "Bei welcher gesetzlichen Krankenkasse waren Sie zuletzt versichert?",
+          "help": "Auch wenn Sie dort familienversichert waren. Waren Sie nie gesetzlich versichert, lassen Sie das Feld leer.",
+          "required": false,
+          "purpose": "Bestimmung der Einzugsstelle für die Beiträge zur Renten- und Arbeitslosenversicherung (§ 28i SGB IV)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          }
+        },
+        {
+          "id": "statusBeginn",
+          "role": "person",
+          "type": "choice",
+          "label": "Status vor Beginn der Beschäftigung",
+          "question": "Was trifft unmittelbar vor Beginn dieser Beschäftigung auf Sie zu?",
+          "help": "Trifft mehreres zu, wählen Sie, was überwiegt. Schülerinnen, Schüler und Studierende legen ihrem Arbeitgeber bitte zusätzlich eine Schul- oder Immatrikulationsbescheinigung vor.",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung der Beschäftigung, zum Beispiel bei Schülern, Studierenden oder Arbeitslosen",
+          "options": [
+            {
+              "id": "schulabgang",
+              "label": "Schule gerade beendet"
+            },
+            {
+              "id": "schueler",
+              "label": "Schülerin oder Schüler"
+            },
+            {
+              "id": "studienbewerber",
+              "label": "Studienbewerberin oder Studienbewerber"
+            },
+            {
+              "id": "student",
+              "label": "Studentin oder Student"
+            },
+            {
+              "id": "arbeitnehmer",
+              "label": "Arbeitnehmerin oder Arbeitnehmer"
+            },
+            {
+              "id": "beamter",
+              "label": "Beamtin oder Beamter"
+            },
+            {
+              "id": "selbstaendig",
+              "label": "selbständig"
+            },
+            {
+              "id": "arbeitslos",
+              "label": "arbeitslos oder arbeitsuchend gemeldet"
+            },
+            {
+              "id": "freiwilligendienst",
+              "label": "Freiwilligendienst oder Wehrdienst"
+            },
+            {
+              "id": "haushalt",
+              "label": "Haushaltsführung oder Familienarbeit"
+            },
+            {
+              "id": "rentner",
+              "label": "Rentnerin oder Rentner"
+            },
+            {
+              "id": "sonstiges",
+              "label": "Sonstiges"
+            }
+          ]
+        },
+        {
+          "id": "statusSonstiges",
+          "role": "person",
+          "type": "text",
+          "label": "Status: Sonstiges",
+          "question": "Was haben Sie vor dieser Beschäftigung gemacht?",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung der Beschäftigung",
+          "showIf": {
+            "field": "statusBeginn",
+            "equals": "sonstiges"
+          }
+        },
+        {
+          "id": "rente",
+          "role": "person",
+          "type": "choice",
+          "label": "Rentenbezug",
+          "question": "Beziehen Sie eine Rente oder Pension?",
+          "help": "Beziehen Sie mehrere, wählen Sie die zuerst genannte, die zutrifft. Legen Sie Ihrem Arbeitgeber dann bitte eine Kopie des Bescheids vor.",
+          "required": true,
+          "purpose": "Versicherungsrechtliche Beurteilung in der Renten- und Arbeitslosenversicherung",
+          "options": [
+            {
+              "id": "keine",
+              "label": "nein"
+            },
+            {
+              "id": "altersvollrente",
+              "label": "Altersvollrente"
+            },
+            {
+              "id": "pension",
+              "label": "Pension wegen Alters (Beamtenversorgung)"
+            },
+            {
+              "id": "altersteilrente",
+              "label": "Altersteilrente"
+            },
+            {
+              "id": "emVoll",
+              "label": "Rente wegen voller Erwerbsminderung"
+            },
+            {
+              "id": "emTeil",
+              "label": "Rente wegen teilweiser Erwerbsminderung"
+            },
+            {
+              "id": "andere",
+              "label": "andere Rente (zum Beispiel Hinterbliebenenrente)"
+            }
+          ]
+        },
+        {
+          "id": "kinderOhneAbruf",
+          "role": "person",
+          "type": "boolean",
+          "label": "Haben Sie Kinder, die Ihr Arbeitgeber nicht digital abrufen kann?",
+          "help": "Für den Beitrag zur Pflegeversicherung ruft Ihr Arbeitgeber Ihre Kinder digital beim Bundeszentralamt für Steuern ab. Das geht nur für Kinder, die dort steuerlich erfasst sind, in der Regel mit einer deutschen Steuer-Identifikationsnummer. Andere Kinder weisen Sie getrennt von diesem Fragebogen mit einer Urkunde nach, zum Beispiel mit einer Kopie der Geburtsurkunde. Haben Sie keine Kinder, wählen Sie „Nein“.",
+          "required": true,
+          "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft (§ 55a SGB XI): Hinweis, dass ein zusätzlicher Nachweis nötig ist"
+        }
+      ]
+    },
+    {
+      "id": "abschluesse",
+      "title": "Schul- und Berufsabschluss",
+      "fields": [
+        {
+          "id": "schulabschluss",
+          "role": "person",
+          "type": "choice",
+          "label": "Höchster Schulabschluss",
+          "question": "Welches ist Ihr höchster Schulabschluss?",
+          "help": "Auch ein Abschluss aus dem Ausland zählt. Wählen Sie den Abschluss, der ihm am nächsten kommt.",
+          "required": true,
+          "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Schulbildung)",
+          "options": [
+            {
+              "id": "ohne",
+              "label": "ohne Schulabschluss"
+            },
+            {
+              "id": "hauptschule",
+              "label": "Haupt- oder Volksschulabschluss"
+            },
+            {
+              "id": "mittlereReife",
+              "label": "Mittlere Reife oder gleichwertiger Abschluss"
+            },
+            {
+              "id": "abitur",
+              "label": "Abitur oder Fachabitur"
+            },
+            {
+              "id": "unbekannt",
+              "label": "kann ich nicht zuordnen"
+            }
+          ]
+        },
+        {
+          "id": "berufsabschluss",
+          "role": "person",
+          "type": "choice",
+          "label": "Höchster beruflicher Abschluss",
+          "question": "Welches ist Ihr höchster beruflicher Abschluss?",
+          "help": "Auch ein Abschluss aus dem Ausland zählt. Wählen Sie den Abschluss, der ihm am nächsten kommt.",
+          "required": true,
+          "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Berufsausbildung)",
+          "options": [
+            {
+              "id": "ohne",
+              "label": "ohne beruflichen Abschluss"
+            },
+            {
+              "id": "berufsausbildung",
+              "label": "anerkannte Berufsausbildung"
+            },
+            {
+              "id": "meister",
+              "label": "Meister-, Techniker- oder gleichwertiger Fachschulabschluss"
+            },
+            {
+              "id": "bachelor",
+              "label": "Bachelor"
+            },
+            {
+              "id": "master",
+              "label": "Diplom/Magister/Master/Staatsexamen"
+            },
+            {
+              "id": "promotion",
+              "label": "Promotion"
+            },
+            {
+              "id": "unbekannt",
+              "label": "kann ich nicht zuordnen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "freiwillig",
+      "title": "Freiwillige Angabe",
+      "fields": [
+        {
+          "id": "schwerbehinderung",
+          "role": "person",
+          "type": "choice",
+          "label": "Schwerbehinderung oder Gleichstellung",
+          "question": "Sind Sie schwerbehindert oder einem schwerbehinderten Menschen gleichgestellt?",
+          "help": "Diese Angabe ist freiwillig; Sie können die Frage leer lassen. In den ersten sechs Monaten der Beschäftigung darf Ihr Arbeitgeber sie nur als freiwillige Angabe stellen. Trifft eines davon zu, legen Sie bitte eine Kopie des Ausweises oder des Gleichstellungsbescheids vor.",
+          "required": false,
+          "purpose": "Rechte schwerbehinderter Menschen, etwa Zusatzurlaub, und Pflichten des Arbeitgebers nach dem SGB IX",
+          "voluntary": true,
+          "options": [
+            {
+              "id": "nein",
+              "label": "nein"
+            },
+            {
+              "id": "schwerbehindert",
+              "label": "schwerbehindert (Grad der Behinderung mindestens 50)"
+            },
+            {
+              "id": "gleichgestellt",
+              "label": "einem schwerbehinderten Menschen gleichgestellt"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vertretung",
+      "title": "Gesetzliche Vertretung (nur bei Minderjährigen)",
+      "fields": [
+        {
+          "id": "vertretungName",
+          "role": "vertretung",
+          "type": "text",
+          "label": "Vor- und Familienname der gesetzlichen Vertretung",
+          "question": "Wie lautet Ihr Vor- und Familienname?",
+          "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil.",
+          "required": true,
+          "purpose": "Nachweis, wer für die minderjährige Person unterschreibt"
+        }
+      ]
+    },
+    {
+      "id": "arbeitgeber",
+      "title": "Angaben des Arbeitgebers",
+      "fields": [
+        {
+          "id": "agFirma",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Firma des Arbeitgebers",
+          "question": "Wie lautet die Firma des Arbeitgebers?",
+          "help": "So, wie sie auf dem Briefkopf oder im Handelsregister steht.",
+          "required": true,
+          "purpose": "Kopfzeile des Fragebogens, Zuordnung",
+          "masterData": "firma"
+        },
+        {
+          "id": "agBetriebsnummer",
+          "role": "arbeitgeber",
+          "type": "betriebsnummer",
+          "label": "Betriebsnummer des Arbeitgebers",
+          "question": "Wie lautet die Betriebsnummer?",
+          "help": "8 Ziffern, vergeben von der Bundesagentur für Arbeit. Sie steht auf den Meldungen zur Sozialversicherung; Ihre Lohnabrechnung kennt sie.",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV)",
+          "masterData": "betriebsnummer"
+        },
+        {
+          "id": "agFamilienname",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Familienname der beschäftigten Person",
+          "question": "Wie lautet der Familienname der beschäftigten Person?",
+          "required": true,
+          "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
+        },
+        {
+          "id": "agVorname",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Vornamen der beschäftigten Person",
+          "question": "Wie lauten die Vornamen der beschäftigten Person?",
+          "required": true,
+          "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
+        },
+        {
+          "id": "agPersonalnummer",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Personalnummer",
+          "question": "Welche Personalnummer hat die Person?",
+          "help": "Nur, wenn schon eine vergeben ist.",
+          "required": false,
+          "purpose": "Zuordnung in der Lohnabrechnung"
+        },
+        {
+          "id": "agBeschaeftigungsbeginn",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Tag der Beschäftigungsaufnahme",
+          "question": "An welchem Tag beginnt die Beschäftigung?",
+          "help": "Der erste Arbeitstag.",
+          "required": true,
+          "purpose": "Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung"
+        }
+      ]
+    },
+    {
+      "id": "beschaeftigung",
+      "title": "Beschäftigung",
+      "fields": [
+        {
+          "id": "agTaetigkeit",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Ausgeübte Tätigkeit",
+          "question": "Welche Tätigkeit übt die Person aus?",
+          "help": "Möglichst genau, zum Beispiel „Kreditorenbuchhaltung“ statt „Büro“. Daraus wird der Tätigkeitsschlüssel für die Meldungen gebildet.",
+          "required": true,
+          "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung; Zuordnung zur Gefahrtarifstelle der Unfallversicherung"
+        },
+        {
+          "id": "agBefristet",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Ist das Arbeitsverhältnis befristet?",
+          "help": "Auch eine Befristung bis zum Erreichen eines Zwecks zählt, etwa eine Vertretung.",
+          "required": true,
+          "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Vertragsform); Ende der Beschäftigung in der Lohnabrechnung"
+        },
+        {
+          "id": "agBefristetBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Befristet bis",
+          "question": "Bis wann ist das Arbeitsverhältnis befristet?",
+          "help": "Bei einer Zweckbefristung das voraussichtliche Ende. Diese Angabe ersetzt nicht die schriftliche Befristungsabrede (§ 14 Abs. 4 TzBfG).",
+          "required": true,
+          "purpose": "Ende der Beschäftigung in der Lohnabrechnung",
+          "showIf": {
+            "field": "agBefristet",
+            "equals": true
+          }
+        },
+        {
+          "id": "agArbeitszeitform",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Vollzeit oder Teilzeit",
+          "question": "Arbeitet die Person in Vollzeit oder in Teilzeit?",
+          "help": "Vollzeit ist die übliche volle Arbeitszeit in Ihrem Betrieb.",
+          "required": true,
+          "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Vertragsform)",
+          "options": [
+            {
+              "id": "vollzeit",
+              "label": "Vollzeit"
+            },
+            {
+              "id": "teilzeit",
+              "label": "Teilzeit"
+            }
+          ]
+        },
+        {
+          "id": "agWochenstunden",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Wöchentliche Arbeitszeit in Stunden",
+          "question": "Wie viele Stunden pro Woche arbeitet die Person laut Vertrag?",
+          "help": "Zum Beispiel 40 oder 19,5. Schwankt die Arbeitszeit, die vereinbarte durchschnittliche Stundenzahl.",
+          "required": true,
+          "purpose": "Lohnabrechnung, zum Beispiel Umrechnung zwischen Stunden- und Monatsentgelt"
+        },
+        {
+          "id": "agArbeitstage",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Arbeitstage pro Woche",
+          "question": "An wie vielen Tagen pro Woche arbeitet die Person?",
+          "help": "Zum Beispiel 5.",
+          "required": true,
+          "purpose": "Lohnabrechnung, zum Beispiel Urlaubsentgelt und Entgeltfortzahlung"
+        },
+        {
+          "id": "agUrlaubstage",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Urlaubsanspruch (Arbeitstage im Kalenderjahr)",
+          "question": "Wie viele Urlaubstage stehen der Person im Kalenderjahr zu?",
+          "help": "Laut Arbeitsvertrag, zum Beispiel 30. Beginnt die Beschäftigung im Lauf des Jahres, geben Sie den vollen Jahresanspruch an.",
+          "required": false,
+          "purpose": "Urlaubsverwaltung und Urlaubsentgelt in der Lohnabrechnung"
+        },
+        {
+          "id": "agKostenstelle",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Kostenstelle",
+          "question": "Welcher Kostenstelle wird die Person zugeordnet?",
+          "help": "Nur, wenn Sie mit Kostenstellen arbeiten.",
+          "required": false,
+          "purpose": "Zuordnung der Lohnkosten in der Buchhaltung"
+        }
+      ]
+    },
+    {
+      "id": "verguetung",
+      "title": "Vergütung",
+      "fields": [
+        {
+          "id": "agEntgeltArt",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Art der Vergütung",
+          "question": "Wie wird die Person bezahlt?",
+          "help": "Eine Ausbildungsvergütung zählt als festes Monatsentgelt.",
+          "required": true,
+          "purpose": "Lohnabrechnung",
+          "options": [
+            {
+              "id": "stundenlohn",
+              "label": "Stundenlohn"
+            },
+            {
+              "id": "monatsentgelt",
+              "label": "festes Monatsentgelt"
+            }
+          ]
+        },
+        {
+          "id": "agEntgelt",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Vergütung brutto",
+          "question": "Wie hoch ist die vereinbarte Vergütung brutto?",
+          "help": "Je nach Art der Vergütung pro Stunde oder pro Monat, zum Beispiel 15,50 oder 3.200,00.",
+          "required": true,
+          "purpose": "Lohnabrechnung"
+        },
+        {
+          "id": "agWeitereBezuege",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Weitere vereinbarte Bezüge",
+          "question": "Sind weitere Bezüge vereinbart?",
+          "help": "Zum Beispiel Zulagen, Sachbezüge, Dienstwagen, Einmalzahlungen, vermögenswirksame Leistungen oder betriebliche Altersversorgung, jeweils mit Betrag. Sonst leer lassen.",
+          "required": false,
+          "purpose": "Lohnabrechnung",
+          "multiline": true
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "datenschutz",
+      "role": "person",
+      "title": "Datenschutzhinweis",
+      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um Ihr Arbeitsverhältnis durchzuführen und abzurechnen: für die Lohnabrechnung, für den Abruf Ihrer elektronischen Lohnsteuerabzugsmerkmale beim Bundeszentralamt für Steuern (§ 39e EStG) und für die Meldungen zur Sozialversicherung (§ 28a SGB IV). Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO.\n\nDie meisten Angaben müssen Sie machen (§ 28o Abs. 1 SGB IV, § 39e Abs. 4 EStG); fehlen sie, kann Ihr Arbeitgeber Sie nicht richtig anmelden und abrechnen. Ihre Bankverbindung und eine Telefonnummer oder E-Mail-Adresse braucht er für das Arbeitsverhältnis, um Ihnen das Entgelt zu überweisen und Sie bei Rückfragen zu erreichen. Die Angabe zu einer Schwerbehinderung oder Gleichstellung ist freiwillig. Machen Sie sie, verarbeitet Ihr Arbeitgeber sie, um Ihre Rechte als schwerbehinderter Mensch zu wahren und seine Pflichten nach dem SGB IX zu erfüllen (Art. 9 Abs. 2 Buchst. b DSGVO).\n\nAngaben zu Tätigkeit, Arbeitszeit und Vergütung trägt Ihr Arbeitgeber im selben Fragebogen ein.\n\nVerantwortlich ist Ihr Arbeitgeber. Seine Kontaktdaten und gegebenenfalls die seines Datenschutzbeauftragten stehen in der Datenschutzinformation für Beschäftigte, die Sie von Ihrem Arbeitgeber erhalten. Empfänger sind die vom Arbeitgeber beauftragte lohnabrechnende Stelle, die Finanzverwaltung, die zuständige Krankenkasse als Einzugsstelle und die übrigen Träger der Sozialversicherung sowie die Banken, über die Ihr Entgelt überwiesen wird.\n\nDie Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen: Entgeltunterlagen bis zum Ablauf des Kalenderjahres nach der letzten Betriebsprüfung (§ 28f Abs. 1 SGB IV), das Lohnkonto bis zum Ablauf des sechsten Kalenderjahres nach der letzten Lohnzahlung (§ 41 Abs. 1 Satz 9 EStG).\n\nSie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.\n\nDiese App speichert und versendet nichts. Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben.",
+      "asOf": "2026-10-30",
+      "acknowledgement": "read"
+    }
+  ],
+  "consistencyRules": [
+    {
+      "kind": "equal",
+      "fields": ["familienname", "agFamilienname"],
+      "message": "Der Familienname weicht zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["vorname", "agVorname"],
+      "message": "Die Vornamen weichen zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
+    }
+  ],
+  "matchKeys": [
+    {
+      "label": "Familienname",
+      "fields": {
+        "person": "familienname",
+        "arbeitgeber": "agFamilienname"
+      }
+    },
+    {
+      "label": "Vornamen",
+      "fields": {
+        "person": "vorname",
+        "arbeitgeber": "agVorname"
+      }
+    }
+  ],
+  "legalNotes": [
+    "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor; die beschäftigte Person muss sie ihrem Arbeitgeber nur mitteilen (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV).",
+    "Hat der Betrieb einen Betriebsrat, bedarf der Personalfragebogen seiner Zustimmung (§ 94 Abs. 1 BetrVG).",
+    "Die Angabe „Befristet bis“ ist nicht die Befristungsabrede. Eine Befristung bedarf der Schriftform (§ 14 Abs. 4 TzBfG) und wird gesondert vereinbart.",
+    "Der Fragebogen ist nicht der Nachweis der wesentlichen Vertragsbedingungen nach dem Nachweisgesetz.",
+    "Nach einer Schwerbehinderung oder Gleichstellung fragt der Fragebogen nur als freiwillige Angabe: In den ersten sechs Monaten des Arbeitsverhältnisses ist die Frage nur so zulässig (BAG, 6 AZR 553/10).",
+    "Nach der Konfession fragt der Fragebogen nicht: Das Kirchensteuermerkmal erhält der Arbeitgeber mit den elektronischen Lohnsteuerabzugsmerkmalen (ELStAM).",
+    "Die Elterneigenschaft für den Beitrag zur Pflegeversicherung ruft der Arbeitgeber seit 01.07.2025 digital beim Bundeszentralamt für Steuern ab (§ 55a SGB XI). Kinder, die dort nicht erfasst sind, weist die beschäftigte Person mit einer Urkundenkopie nach; ein Vermerk „hat vorgelegen“ genügt nicht. Der Fragebogen fragt deshalb nur, ob es solche Kinder gibt."
+  ],
+  "partLinks": [["person", "arbeitgeber"]]
+}
