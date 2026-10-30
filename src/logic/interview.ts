@@ -103,6 +103,18 @@ export function stepBefore(
 }
 
 /**
+ * "Zur nächsten fehlenden Angabe" while revising: the next required question after `key` that has
+ * no answer yet ("Weiß ich gerade nicht" included — it still blocks signing), else the summary.
+ */
+export function nextMissingStep(steps: readonly InterviewStep[], key: string): InterviewStep {
+  const from = steps.findIndex((step) => step.key === key);
+  const missing = steps
+    .slice(from + 1)
+    .find((step) => step.kind === 'question' && step.required && step.state !== 'answered');
+  return missing ?? steps[steps.length - 1] ?? { kind: 'summary', key: 'summary' };
+}
+
+/**
  * The step after `key` while changing an answer from the summary: the open follow-ups that the
  * changed answer (`edited`) opened, directly or through other follow-ups — then back to the
  * summary instead of walking through every later question again.

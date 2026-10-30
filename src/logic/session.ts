@@ -10,6 +10,7 @@ import {
   interviewSteps,
   interviewSummary,
   resumeStep,
+  nextMissingStep,
   stepAfter,
   stepAfterEdit,
   stepBefore,
@@ -352,15 +353,49 @@ export function editFromSummary(session: Session, fieldId: FieldId): Session {
   return { ...session, stepKey: `question:${fieldId}`, editing: fieldId };
 }
 
-export function nextStep(session: Session): Session {
+/** Where "Weiter" leads from the current step (after a summary edit: its follow-ups, then back). */
+function nextTarget(session: Session): InterviewStep | undefined {
   const steps = stepsFor(session);
   const key = session.stepKey ?? '';
   if (session.editing !== undefined && steps.some((step) => step.key === key)) {
-    const next = stepAfterEdit(session.form.definition, steps, key, session.editing);
-    return next.kind === 'summary' ? goTo(session, next.key) : { ...session, stepKey: next.key };
+    return stepAfterEdit(session.form.definition, steps, key, session.editing);
   }
-  const next = stepAfter(steps, key);
-  return next ? goTo(session, next.key) : session;
+  return stepAfter(steps, key);
+}
+
+export function nextStep(session: Session): Session {
+  const next = nextTarget(session);
+  if (!next) return session;
+  if (session.editing !== undefined && next.kind !== 'summary') {
+    return { ...session, stepKey: next.key };
+  }
+  return goTo(session, next.key);
+}
+
+export interface NextChoice {
+  /** Where "Weiter" leads. */
+  next?: InterviewStep;
+  /** "Weiter" ends a change from the summary there ("Zurück zur Zusammenfassung"). */
+  backToSummary: boolean;
+  /**
+   * Only while revising, i.e. when "Weiter" would show an already answered question: the next
+   * required answer still missing, else the summary ("Zur nächsten fehlenden Angabe").
+   */
+  skip?: InterviewStep;
+}
+
+export function nextChoice(session: Session): NextChoice {
+  const next = nextTarget(session);
+  const backToSummary = session.editing !== undefined && next?.kind === 'summary';
+  if (next?.kind !== 'question' || next.state !== 'answered') {
+    return { ...(next ? { next } : {}), backToSummary };
+  }
+  return { next, backToSummary, skip: nextMissingStep(stepsFor(session), session.stepKey ?? '') };
+}
+
+/** "Zur nächsten fehlenden Angabe": past every answered question. */
+export function skipToMissing(session: Session): Session {
+  return goTo(session, nextMissingStep(stepsFor(session), session.stepKey ?? '').key);
 }
 
 export function previousStep(session: Session): Session {

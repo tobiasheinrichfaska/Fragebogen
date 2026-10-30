@@ -25,15 +25,40 @@ bestätigt, Familienname und Vornamen eingegeben.
 **Erwartet:**
 
 - Schritt 1: Die Zusammenfassung erscheint sofort; noch fehlende Pflichtangaben stehen oben.
-- Schritt 2: Nach „Weiter“ steht wieder die **Zusammenfassung** da – nicht die nächste Frage.
+- Schritt 2: Der Knopf heißt hier **„Zurück zur Zusammenfassung“** (statt „Weiter“) und führt
+  dorthin – nicht zur nächsten Frage.
 - Schritt 3–4: Erst kommen genau die Fragen, die die Änderung neu geöffnet hat (Art der Rente,
-  Rente seit), danach wieder die Zusammenfassung. _Nicht offensichtlich:_ Folgefragen, die schon
+  Rente seit) – dort heißt der Knopf „Weiter“ –, bei der letzten heißt er wieder „Zurück zur
+  Zusammenfassung“. _Nicht offensichtlich:_ Folgefragen, die schon
   beantwortet sind, werden übersprungen.
 - Schritt 5–6: „Ja“ ist markiert; nach „Auswahl aufheben“ ist nichts mehr markiert, die Frage bleibt
   stehen, und der Link verschwindet. Den Link gibt es nur bei **freiwilligen** Ja/Nein- und
   Auswahlfragen; eine Pflichtantwort lässt sich nur durch eine andere ersetzen.
 - **Nach der Unterschrift** ändert man über „Wer füllt jetzt aus?“: „Unterschrift zurücknehmen“
   (solange nichts weitergegeben wurde) oder „Neue Fassung beginnen“ (siehe MT-24).
+
+---
+
+## MT-53: Überarbeiten – „Weiter“ oder „Zur nächsten fehlenden Angabe“
+
+**Voraussetzungen:** wie MT-50; einige Fragen beantwortet, das Geburtsdatum noch nicht.
+
+**Schritte:**
+
+1. Mit **„Zurück“** bis zur ersten Frage (Familienname) gehen.
+2. **„Weiter“** tippen.
+3. **„Zur nächsten fehlenden Angabe“** tippen.
+
+**Erwartet:**
+
+- Steht hinter der aktuellen Frage eine schon beantwortete, gibt es zwei Knöpfe: **„Weiter“** (die
+  nächste Frage, auch wenn sie beantwortet ist) und **„Zur nächsten fehlenden Angabe“**.
+- Schritt 2 zeigt die Vornamen, Schritt 3 springt über alles Beantwortete zur nächsten
+  **Pflichtfrage ohne Antwort** – hier „Wann sind Sie geboren?“. _Nicht offensichtlich:_ Mit
+  „Weiß ich gerade nicht“ zurückgestellte Pflichtfragen zählen als fehlend; freiwillige leere Fragen
+  werden übersprungen (sie stehen in der Zusammenfassung).
+- Fehlt nichts mehr, heißt der zweite Knopf **„Zur Zusammenfassung“**.
+- Auf einer noch offenen Frage gibt es nur „Weiter“.
 
 ---
 

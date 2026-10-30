@@ -17,8 +17,10 @@ import {
   editFromSummary,
   fixedFields,
   goTo,
+  nextChoice,
   nextStep,
   previousStep,
+  skipToMissing,
   stepsFor,
   summaryOf,
   type Session,
@@ -129,14 +131,18 @@ function Nav({
   session,
   onSession,
   onNext,
+  onSkip,
   nextDisabled,
 }: {
   session: Session;
   onSession: (s: Session) => void;
   onNext?: () => void;
+  /** Like onNext, but ends at the next missing answer (the step commits its input first). */
+  onSkip?: () => void;
   nextDisabled?: boolean;
 }) {
   const first = stepsFor(session)[0]?.key === session.stepKey;
+  const choice = nextChoice(session);
   return (
     <div className="nav">
       <button type="button" disabled={first} onClick={() => onSession(previousStep(session))}>
@@ -148,8 +154,17 @@ function Nav({
         disabled={nextDisabled}
         onClick={onNext ?? (() => onSession(nextStep(session)))}
       >
-        Weiter
+        {choice.backToSummary ? 'Zurück zur Zusammenfassung' : 'Weiter'}
       </button>
+      {choice.skip && (
+        <button
+          type="button"
+          disabled={nextDisabled}
+          onClick={onSkip ?? (() => onSession(skipToMissing(session)))}
+        >
+          {choice.skip.kind === 'summary' ? 'Zur Zusammenfassung' : 'Zur nächsten fehlenden Angabe'}
+        </button>
+      )}
     </div>
   );
 }
@@ -184,15 +199,16 @@ function QuestionStep({
     return result.session;
   };
 
-  const next = () => {
+  const leave = (move: (s: Session) => Session) => {
     let current = session;
     if (textLike) {
       const committed = commit(text.trim() === '' ? null : text);
       if (!committed) return;
       current = committed;
     }
-    onSession(nextStep(current));
+    onSession(move(current));
   };
+  const next = () => leave(nextStep);
 
   // A yes/no or single choice is the whole answer: it moves on at once (back is one click away).
   // Several options stay on the step until "Weiter".
@@ -285,6 +301,7 @@ function QuestionStep({
         session={session}
         onSession={onSession}
         onNext={next}
+        onSkip={() => leave(skipToMissing)}
         nextDisabled={step.required && empty && step.state !== 'deferred'}
       />
       {empty && (

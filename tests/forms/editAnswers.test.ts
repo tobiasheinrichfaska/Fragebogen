@@ -3,17 +3,21 @@
 // voluntary yes/no answer can be taken back; the definition rules for `fromRole` and `because`.
 import { join } from 'node:path';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
+import { nextMissingStep, type InterviewStep } from '../../src/logic/interview';
 import type { FieldDefinition, FormDefinition } from '../../src/logic/model';
 import { createQuestionnaire } from '../../src/logic/questionnaire';
 import {
   answer,
+  defer,
   editFromSummary,
   enterRole,
   goTo,
   leaveRole,
+  nextChoice,
   nextStep,
   previousStep,
   sessionFromFile,
+  skipToMissing,
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
@@ -92,6 +96,50 @@ describe('changing an answer from the summary', () => {
   it('walks on through every later question without the summary edit', () => {
     const session = nextStep(goTo(person(BASE), 'question:vorname'));
     expect(session.stepKey).not.toBe('summary');
+  });
+});
+
+describe('revising: "Weiter" or straight to the next missing answer', () => {
+  it('offers the shortcut when "Weiter" would show an answered question', () => {
+    const choice = nextChoice(goTo(person(BASE), 'question:familienname'));
+    expect(choice.next?.key).toBe('question:vorname');
+    expect(choice.skip?.key).toBe('question:geburtsdatum');
+    expect(skipToMissing(goTo(person(BASE), 'question:familienname')).stepKey).toBe(
+      'question:geburtsdatum',
+    );
+  });
+
+  it('stops at a required question put back with "Weiß ich gerade nicht"', () => {
+    const deferred = goTo(
+      must(defer(goTo(person(BASE), 'question:geburtsdatum'), 'geburtsdatum')),
+      'question:familienname',
+    );
+    expect(nextChoice(deferred).skip?.key).toBe('question:geburtsdatum');
+  });
+
+  it('offers no shortcut while the next question is still open', () => {
+    expect(nextChoice(goTo(person(BASE), 'question:geburtsdatum')).skip).toBeUndefined();
+  });
+
+  it('leads to the summary once nothing required is missing', () => {
+    const question = (key: string, state: 'answered' | 'open', required: boolean) =>
+      ({ kind: 'question', key, fieldId: key, sectionId: 's', level: 0, required, state }) as const;
+    const steps: InterviewStep[] = [
+      question('a', 'answered', true),
+      question('b', 'answered', true),
+      question('c', 'open', false),
+      { kind: 'summary', key: 'summary' },
+    ];
+    expect(nextMissingStep(steps, 'a').key).toBe('summary');
+  });
+
+  it('says "Zurück zur Zusammenfassung" when a change from the summary opens nothing', () => {
+    const editing = editFromSummary(person(BASE), 'vorname');
+    expect(nextChoice(editing)).toMatchObject({ backToSummary: true });
+    expect(nextChoice(editing).skip).toBeUndefined();
+    const opened = must(answer(editFromSummary(person(BASE), 'situation'), 'situation', ['rente']));
+    expect(nextChoice(opened)).toMatchObject({ backToSummary: false });
+    expect(nextChoice(opened).next?.key).toBe('question:rentenart');
   });
 });
 

@@ -8,7 +8,16 @@ import { ISSUE_MESSAGES } from '../logic/issues';
 import type { FieldDefinition, FieldValue } from '../logic/model';
 import { missingCells, nextRowId, normalizeRows, ROW_ID_KEY } from '../logic/normalize';
 import { currentPart } from '../logic/questionnaire';
-import { answer, defer, nextStep, previousStep, stepsFor, type Session } from '../logic/session';
+import {
+  answer,
+  defer,
+  nextChoice,
+  nextStep,
+  previousStep,
+  skipToMissing,
+  stepsFor,
+  type Session,
+} from '../logic/session';
 import { Card, Explainer } from './common';
 import { isTextLike } from './fieldKinds';
 import { FieldInput } from './FieldInput';
@@ -70,7 +79,7 @@ export function TableStep({ session, field, step, onSession }: Props) {
     setError(undefined);
   };
 
-  const next = () => {
+  const leave = (move: (s: Session) => Session) => {
     const check = normalizeRows(field, raw());
     if (!check.ok) {
       setError({
@@ -96,8 +105,10 @@ export function TableStep({ session, field, step, onSession }: Props) {
       setError({ text: result.message });
       return;
     }
-    onSession(nextStep(result.session));
+    onSession(move(result.session));
   };
+  const next = () => leave(nextStep);
+  const choice = nextChoice(session);
 
   const first = stepsFor(session)[0]?.key === session.stepKey;
   return (
@@ -179,8 +190,19 @@ export function TableStep({ session, field, step, onSession }: Props) {
           disabled={step.required && rows.length === 0 && step.state !== 'deferred'}
           onClick={next}
         >
-          Weiter
+          {choice.backToSummary ? 'Zurück zur Zusammenfassung' : 'Weiter'}
         </button>
+        {choice.skip && (
+          <button
+            type="button"
+            disabled={step.required && rows.length === 0 && step.state !== 'deferred'}
+            onClick={() => leave(skipToMissing)}
+          >
+            {choice.skip.kind === 'summary'
+              ? 'Zur Zusammenfassung'
+              : 'Zur nächsten fehlenden Angabe'}
+          </button>
+        )}
       </div>
       {rows.length === 0 && (
         <p className="defer">

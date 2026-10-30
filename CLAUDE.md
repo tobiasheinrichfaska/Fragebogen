@@ -298,7 +298,10 @@ Key design decisions (details in `docs/plan.md`):
 - **Changing answers afterwards** (check 2026-10-30): before signing via "Zur Zusammenfassung" and
   "ändern" — "Weiter" then returns to the summary after the follow-ups the change opened
   (`editFromSummary`, `stepAfterEdit`), instead of walking through every later question; a
-  voluntary yes/no or choice can be taken back ("Auswahl aufheben"). After signing: "Unterschrift
+  voluntary yes/no or choice can be taken back ("Auswahl aufheben"). While revising (the next step
+  is an answered question) "Weiter" is joined by "Zur nächsten fehlenden Angabe" (next required
+  answer still missing, deferred included; else "Zur Zusammenfassung"); after a summary edit the
+  button says "Zurück zur Zusammenfassung" (`nextChoice`; requested by Tobias 2026-10-30, wording my proposal, awaiting his OK). After signing: "Unterschrift
   zurücknehmen" (not yet passed on) or a new version. Other stations and the Kanzlei can never change
   another role's answers.
 
