@@ -1,0 +1,1063 @@
+{
+  "id": "lohnmeldung",
+  "version": "0.1.0",
+  "title": "Monatsmeldung: Lohn- und Gehaltsdaten",
+  "signaturePolicy": "electronic",
+  "recipient": {
+    "label": "Lohnabrechnende Stelle"
+  },
+  "roles": [
+    {
+      "id": "arbeitgeber",
+      "label": "Arbeitgeber",
+      "stationHeading": "Monatsmeldung des Arbeitgebers",
+      "confirmationText": "Ich bestätige, dass diese Meldung für den Abrechnungsmonat vollständig und richtig ist.",
+      "signature": "required",
+      "signerNameField": "unterzeichnerName"
+    }
+  ],
+  "sections": [
+    {
+      "id": "meldung",
+      "title": "Meldung",
+      "fields": [
+        {
+          "id": "abrechnungsmonat",
+          "role": "arbeitgeber",
+          "type": "month",
+          "label": "Abrechnungsmonat",
+          "help": "Der Monat, für den abgerechnet werden soll, zum Beispiel 11.2026.",
+          "required": true,
+          "purpose": "Lohnzahlungszeitraum (§ 4 Abs. 2 Nr. 1 LStDV)",
+          "carryOver": "nextMonth"
+        },
+        {
+          "id": "leistungszeitraum",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Stunden und Zuschläge gelten für",
+          "help": "Viele Betriebe rechnen Stunden erst im Folgemonat ab. Bleiben Sie bei einer Variante und wechseln Sie nur nach Absprache.",
+          "required": true,
+          "purpose": "Zuordnung variabler Bezüge zum Abrechnungszeitraum",
+          "options": [
+            {
+              "id": "abrechnungsmonat",
+              "label": "den Abrechnungsmonat"
+            },
+            {
+              "id": "vormonat",
+              "label": "den Vormonat (Abrechnung einen Monat später)"
+            }
+          ]
+        },
+        {
+          "id": "agFirma",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Firma des Arbeitgebers",
+          "required": true,
+          "purpose": "Zuordnung",
+          "masterData": "firma"
+        },
+        {
+          "id": "agBetriebsnummer",
+          "role": "arbeitgeber",
+          "type": "betriebsnummer",
+          "label": "Betriebsnummer des Arbeitgebers",
+          "required": true,
+          "purpose": "Zuordnung",
+          "masterData": "betriebsnummer"
+        },
+        {
+          "id": "mandantennummer",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Mandantennummer",
+          "help": "Steht auf Schreiben und Abrechnungen. Nicht zur Hand? Leer lassen.",
+          "required": false,
+          "purpose": "Zuordnung bei der lohnabrechnenden Stelle",
+          "masterData": "mandantennummer"
+        },
+        {
+          "id": "ansprechpartner",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Ansprechperson für Rückfragen",
+          "required": true,
+          "purpose": "Rückfragen",
+          "masterData": "ansprechpartner"
+        },
+        {
+          "id": "ansprechpartnerTelefon",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Telefon",
+          "required": false,
+          "purpose": "Rückfragen",
+          "requiredIf": {
+            "field": "ansprechpartnerEmail",
+            "answered": false
+          }
+        },
+        {
+          "id": "ansprechpartnerEmail",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "E-Mail",
+          "required": false,
+          "purpose": "Rückfragen",
+          "requiredIf": {
+            "field": "ansprechpartnerTelefon",
+            "answered": false
+          }
+        },
+        {
+          "id": "unterzeichnerName",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Name der Person, die die Meldung abgibt",
+          "help": "Ihr Vor- und Familienname.",
+          "required": true,
+          "purpose": "Unterschrift mit Namen"
+        }
+      ]
+    },
+    {
+      "id": "mitarbeitende",
+      "title": "Mitarbeitende",
+      "fields": [
+        {
+          "id": "mitarbeitende",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Mitarbeitende",
+          "question": "Wer war im Abrechnungsmonat beschäftigt?",
+          "help": "Eine Zeile für jede Person, auch Neue und Ausscheidende. Die Zeilen werden in die nächste Meldung übernommen; Monatswerte bleiben dann leer. Ausgeschiedene entfernen Sie im nächsten Monat.",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "rowLabel": "Person",
+          "columns": [
+            {
+              "id": "maPersonalnummer",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Personalnummer",
+              "help": "Wie auf der letzten Abrechnung; bei neuen Beschäftigten leer.",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "maName",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Familienname, Vorname",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "maVerguetungsart",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Vergütung",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "stundenlohn",
+                  "label": "Stundenlohn"
+                },
+                {
+                  "id": "monatsentgelt",
+                  "label": "festes Monatsentgelt"
+                }
+              ]
+            },
+            {
+              "id": "maVerguetung",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Stundenlohn bzw. Monatsentgelt brutto",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "maWochenstunden",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Vereinbarte Wochenstunden",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "maAenderungAb",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "Änderung bei Lohn oder Stunden gilt ab",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false
+            },
+            {
+              "id": "maArbeitsstunden",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Gearbeitete Stunden",
+              "help": "Nur bei Stundenlohn: tatsächlich gearbeitete Stunden ohne Urlaub, Krankheit und Feiertage; 15 Minuten = 0,25.",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false,
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "maFeiertagsstunden",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Wegen Feiertag ausgefallene Stunden",
+              "required": false,
+              "purpose": "Feiertagsvergütung (§ 2 EFZG)",
+              "carryOver": false,
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "maUeberstunden",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Auszuzahlende Überstunden",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false,
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "maZeitkonto",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Stand Arbeitszeitkonto am Monatsende",
+              "required": false,
+              "purpose": "Arbeitszeitkonto (§ 2 Abs. 2 MiLoG)",
+              "carryOver": false,
+              "signed": true,
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "maScheidetAus",
+              "role": "arbeitgeber",
+              "type": "boolean",
+              "label": "scheidet in diesem Monat aus",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false
+            },
+            {
+              "id": "maBemerkung",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Bemerkung",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "monat",
+      "title": "Was in diesem Monat war",
+      "fields": [
+        {
+          "id": "fragZuschlaege",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Zuschläge in diesem Monat",
+          "question": "Zahlen Sie in diesem Monat Zuschläge für Nacht-, Sonntags- oder Feiertagsarbeit oder für Überstunden?",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "carryOver": false
+        },
+        {
+          "id": "zuschlaege",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Zuschläge",
+          "help": "Eine Zeile je Person und Art. Stunden, die zugleich Nacht- und Sonntagsstunden sind, in beiden Zeilen angeben.",
+          "required": true,
+          "purpose": "Steuerfreie Zuschläge (§ 3b EStG)",
+          "showIf": {
+            "field": "fragZuschlaege",
+            "equals": true
+          },
+          "carryOver": false,
+          "rowLabel": "Zuschlag",
+          "columns": [
+            {
+              "id": "zuPerson",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Person (Personalnummer oder Name)",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "zuschlagArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "nacht",
+                  "label": "Nachtarbeit 20 bis 6 Uhr"
+                },
+                {
+                  "id": "nacht0bis4",
+                  "label": "davon 0 bis 4 Uhr bei Beginn vor 0 Uhr"
+                },
+                {
+                  "id": "sonntag",
+                  "label": "Sonntagsarbeit"
+                },
+                {
+                  "id": "feiertag",
+                  "label": "Feiertagsarbeit (auch 31.12. ab 14 Uhr)"
+                },
+                {
+                  "id": "hochfeiertag",
+                  "label": "24.12. ab 14 Uhr, 25./26.12. und 1. Mai"
+                },
+                {
+                  "id": "ueberstunden",
+                  "label": "Überstundenzuschlag"
+                },
+                {
+                  "id": "sonstiger",
+                  "label": "sonstiger Zuschlag"
+                }
+              ]
+            },
+            {
+              "id": "zuStunden",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Stunden",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "zuBemerkung",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Bemerkung",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            }
+          ]
+        },
+        {
+          "id": "fragFehlzeiten",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Fehlzeiten in diesem Monat",
+          "question": "Gab es in diesem Monat Urlaub, Krankheit oder andere Fehlzeiten?",
+          "help": "Auch halbe Tage und Fehlzeiten, die schon im Vormonat begonnen haben.",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "carryOver": false
+        },
+        {
+          "id": "fehlzeiten",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Fehlzeiten",
+          "help": "Bitte keine Diagnose und keinen Grund angeben, nur die Art.",
+          "required": true,
+          "purpose": "Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV)",
+          "showIf": {
+            "field": "fragFehlzeiten",
+            "equals": true
+          },
+          "carryOver": false,
+          "rowLabel": "Fehlzeit",
+          "columns": [
+            {
+              "id": "fzPerson",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Person (Personalnummer oder Name)",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "fzArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "urlaub",
+                  "label": "Urlaub"
+                },
+                {
+                  "id": "krank",
+                  "label": "arbeitsunfähig (Krankheit)"
+                },
+                {
+                  "id": "unfall",
+                  "label": "arbeitsunfähig nach Arbeits- oder Wegeunfall"
+                },
+                {
+                  "id": "reha",
+                  "label": "stationäre Reha oder Kur"
+                },
+                {
+                  "id": "kindKrank",
+                  "label": "Kind krank"
+                },
+                {
+                  "id": "unbezahlt",
+                  "label": "unbezahlter Urlaub oder unbezahlte Freistellung"
+                },
+                {
+                  "id": "mutterschutz",
+                  "label": "Mutterschutz"
+                },
+                {
+                  "id": "beschaeftigungsverbot",
+                  "label": "Beschäftigungsverbot"
+                },
+                {
+                  "id": "elternzeit",
+                  "label": "Elternzeit"
+                },
+                {
+                  "id": "pflege",
+                  "label": "Pflegezeit"
+                },
+                {
+                  "id": "kurzarbeit",
+                  "label": "Kurzarbeit"
+                },
+                {
+                  "id": "bezahltFrei",
+                  "label": "bezahlte Freistellung"
+                },
+                {
+                  "id": "unentschuldigt",
+                  "label": "unentschuldigtes Fehlen"
+                },
+                {
+                  "id": "sonstiges",
+                  "label": "Sonstiges"
+                }
+              ]
+            },
+            {
+              "id": "fzVon",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "von",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "fzBis",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "bis",
+              "help": "Leer lassen, wenn das Ende offen ist.",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "fzDauertAn",
+              "role": "arbeitgeber",
+              "type": "boolean",
+              "label": "dauert über das Monatsende an",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "fzArbeitstage",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "ausgefallene Arbeitstage in diesem Monat",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "decimals": 1,
+              "unit": "Tage"
+            },
+            {
+              "id": "fzStunden",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "ausgefallene Stunden",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "fzNachweis",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Nachweis",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "eau",
+                  "label": "elektronische AU, wird bei der Krankenkasse abgerufen"
+                },
+                {
+                  "id": "papier",
+                  "label": "Bescheinigung auf Papier liegt vor"
+                },
+                {
+                  "id": "fehlt",
+                  "label": "Nachweis fehlt noch"
+                },
+                {
+                  "id": "unnoetig",
+                  "label": "nicht nötig"
+                }
+              ]
+            },
+            {
+              "id": "fzBemerkung",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Bemerkung",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            }
+          ]
+        },
+        {
+          "id": "fragZahlungen",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Einmalige Zahlungen in diesem Monat",
+          "question": "Gibt es einmalige Zahlungen, Vorschüsse, Sachzuwendungen oder Erstattungen?",
+          "help": "Bitte früh melden: Für Einmalzahlungen darf nicht mit den Werten des Vormonats gerechnet werden (§ 23 Abs. 1 SGB IV).",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "carryOver": false
+        },
+        {
+          "id": "zahlungen",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Einmalige Zahlungen, Vorschüsse und Sachzuwendungen",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "showIf": {
+            "field": "fragZahlungen",
+            "equals": true
+          },
+          "carryOver": false,
+          "rowLabel": "Zahlung",
+          "columns": [
+            {
+              "id": "zaPerson",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Person (Personalnummer oder Name)",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "zaArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "praemie",
+                  "label": "Prämie, Bonus oder Provision"
+                },
+                {
+                  "id": "urlaubsgeld",
+                  "label": "Urlaubsgeld"
+                },
+                {
+                  "id": "weihnachtsgeld",
+                  "label": "Weihnachtsgeld oder 13. Monatsgehalt"
+                },
+                {
+                  "id": "abfindung",
+                  "label": "Abfindung"
+                },
+                {
+                  "id": "vorschuss",
+                  "label": "Vorschuss oder Abschlag (schon ausgezahlt)"
+                },
+                {
+                  "id": "sachzuwendung",
+                  "label": "einmalige Sachzuwendung"
+                },
+                {
+                  "id": "mahlzeiten",
+                  "label": "Mahlzeiten"
+                },
+                {
+                  "id": "reisekosten",
+                  "label": "Reisekostenerstattung"
+                },
+                {
+                  "id": "auslagen",
+                  "label": "Auslagenersatz"
+                },
+                {
+                  "id": "sonstiges",
+                  "label": "Sonstiges"
+                }
+              ]
+            },
+            {
+              "id": "zaBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Betrag (brutto)",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "zaAnzahl",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Anzahl (nur Mahlzeiten)",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "decimals": 0
+            },
+            {
+              "id": "zaDatum",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "ausgezahlt am",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "zaBemerkung",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Bemerkung",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            }
+          ]
+        },
+        {
+          "id": "laufendeLeistungen",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Laufende Zusatzleistungen",
+          "question": "Welche laufenden Zusatzleistungen gibt es?",
+          "help": "Wird in die nächste Meldung übernommen. Leer lassen, wenn es keine gibt.",
+          "required": false,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "rowLabel": "Leistung",
+          "columns": [
+            {
+              "id": "llPerson",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Person (Personalnummer oder Name)",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "llArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "ticket",
+                  "label": "Jobticket oder Deutschlandticket"
+                },
+                {
+                  "id": "gutschein",
+                  "label": "monatlicher Gutschein oder Guthabenkarte"
+                },
+                {
+                  "id": "dienstwagen",
+                  "label": "Dienstwagen, auch privat nutzbar"
+                },
+                {
+                  "id": "fahrtkosten",
+                  "label": "Fahrtkostenzuschuss"
+                },
+                {
+                  "id": "vwl",
+                  "label": "vermögenswirksame Leistungen"
+                },
+                {
+                  "id": "bav",
+                  "label": "betriebliche Altersversorgung oder Entgeltumwandlung"
+                },
+                {
+                  "id": "kita",
+                  "label": "Zuschuss Kinderbetreuung"
+                },
+                {
+                  "id": "sonstiges",
+                  "label": "Sonstiges"
+                }
+              ]
+            },
+            {
+              "id": "llBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Betrag im Monat",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "llSeit",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "seit",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "llBis",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "endet am",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "llBemerkung",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Bemerkung",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            }
+          ]
+        },
+        {
+          "id": "fragEinAustritte",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Ein- und Austritte",
+          "question": "Hat jemand angefangen oder aufgehört, oder steht ein Austritt fest?",
+          "help": "Neue Beschäftigte brauchen zusätzlich den Personalfragebogen; in bestimmten Branchen muss die Sofortmeldung vor dem ersten Arbeitstag erstattet sein.",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "carryOver": false
+        },
+        {
+          "id": "einAustritte",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Ein- und Austritte",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "showIf": {
+            "field": "fragEinAustritte",
+            "equals": true
+          },
+          "carryOver": false,
+          "rowLabel": "Ein- oder Austritt",
+          "columns": [
+            {
+              "id": "eaPerson",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Person (Personalnummer oder Name)",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "eaArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Eintritt oder Austritt",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "eintritt",
+                  "label": "Eintritt"
+                },
+                {
+                  "id": "austritt",
+                  "label": "Austritt"
+                }
+              ]
+            },
+            {
+              "id": "eaDatum",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "Datum",
+              "help": "Eintritt: erster Arbeitstag. Austritt: letzter Tag des Arbeitsverhältnisses.",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "eaGrund",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Grund des Austritts",
+              "required": false,
+              "purpose": "Arbeitsbescheinigung (§ 312 SGB III)",
+              "options": [
+                {
+                  "id": "kuendigungAg",
+                  "label": "Kündigung durch den Arbeitgeber"
+                },
+                {
+                  "id": "kuendigungAn",
+                  "label": "Kündigung durch die beschäftigte Person"
+                },
+                {
+                  "id": "aufhebung",
+                  "label": "Aufhebungsvertrag"
+                },
+                {
+                  "id": "befristung",
+                  "label": "Befristung endet"
+                },
+                {
+                  "id": "rente",
+                  "label": "Rente"
+                },
+                {
+                  "id": "tod",
+                  "label": "Tod"
+                },
+                {
+                  "id": "sonstiges",
+                  "label": "Sonstiges"
+                }
+              ]
+            },
+            {
+              "id": "eaResturlaub",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Resturlaub zum Auszahlen",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "decimals": 1,
+              "unit": "Tage"
+            },
+            {
+              "id": "eaUnterlagen",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Unterlagen bei Eintritt",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "liegtVor",
+                  "label": "Personalfragebogen liegt vor"
+                },
+                {
+                  "id": "folgt",
+                  "label": "Personalfragebogen folgt"
+                }
+              ]
+            },
+            {
+              "id": "eaBemerkung",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Bemerkung",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            }
+          ]
+        },
+        {
+          "id": "fragAenderungen",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Änderungen bei einer Person",
+          "question": "Hat sich bei einer Person etwas geändert (Anschrift, Krankenkasse, Name …)?",
+          "help": "Lohn und Wochenstunden ändern Sie direkt bei den Mitarbeitenden.",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "carryOver": false
+        },
+        {
+          "id": "aenderungen",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Änderungen",
+          "help": "Steuerklasse, Kinder und Konfession bitte nicht melden – sie kommen elektronisch. Eine neue Bankverbindung nur nach schriftlicher Mitteilung der Person selbst: Anrufe oder E-Mails mit neuer Bankverbindung sind ein häufiger Betrugsversuch.",
+          "required": true,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "showIf": {
+            "field": "fragAenderungen",
+            "equals": true
+          },
+          "carryOver": false,
+          "rowLabel": "Änderung",
+          "columns": [
+            {
+              "id": "aePerson",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Person (Personalnummer oder Name)",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "aeArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Was hat sich geändert?",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "options": [
+                {
+                  "id": "anschrift",
+                  "label": "Anschrift"
+                },
+                {
+                  "id": "bank",
+                  "label": "Bankverbindung"
+                },
+                {
+                  "id": "krankenkasse",
+                  "label": "Krankenkasse"
+                },
+                {
+                  "id": "name",
+                  "label": "Name"
+                },
+                {
+                  "id": "taetigkeit",
+                  "label": "Tätigkeit"
+                },
+                {
+                  "id": "befristung",
+                  "label": "Befristung oder Vertragsende"
+                },
+                {
+                  "id": "leistung",
+                  "label": "neue Zusatzleistung"
+                },
+                {
+                  "id": "sonstiges",
+                  "label": "Sonstiges"
+                }
+              ]
+            },
+            {
+              "id": "aeNeu",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Neue Angabe",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "aeGiltAb",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "gilt ab",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            },
+            {
+              "id": "aeSchriftlich",
+              "role": "arbeitgeber",
+              "type": "boolean",
+              "label": "schriftliche Mitteilung der Person liegt vor",
+              "required": false,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+            }
+          ]
+        },
+        {
+          "id": "fragPfaendung",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Pfändung oder Abtretung eingegangen",
+          "question": "Ist eine Pfändung, eine Vorpfändung oder eine Abtretung eingegangen?",
+          "help": "Bitte schicken Sie das Schreiben sofort, nicht erst mit der Monatsmeldung: Die Erklärung als Drittschuldner ist binnen zwei Wochen fällig.",
+          "required": true,
+          "purpose": "Drittschuldnererklärung binnen zwei Wochen (§ 840 ZPO)",
+          "carryOver": false
+        },
+        {
+          "id": "pfaendungAngaben",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Angaben zur Pfändung",
+          "help": "Wer ist betroffen, welche Art von Schreiben, an welchem Tag zugestellt?",
+          "required": true,
+          "purpose": "§ 840 ZPO",
+          "showIf": {
+            "field": "fragPfaendung",
+            "equals": true
+          },
+          "carryOver": false,
+          "multiline": true
+        },
+        {
+          "id": "bemerkungen",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Weitere Hinweise",
+          "required": false,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "carryOver": false,
+          "multiline": true
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "abgabe",
+      "role": "arbeitgeber",
+      "title": "Bis wann die Meldung gebraucht wird",
+      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt. Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.",
+      "asOf": "2026-10-30",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "arbeitszeit",
+      "role": "arbeitgeber",
+      "title": "Arbeitszeit aufzeichnen",
+      "text": "Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über die werktägliche Höchstarbeitszeit hinaus ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.",
+      "asOf": "2026-10-30",
+      "acknowledgement": "read"
+    }
+  ],
+  "consistencyRules": [],
+  "matchKeys": [],
+  "legalNotes": [
+    "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung).",
+    "Die Monatsmeldung ist keine Arbeitszeitaufzeichnung nach § 17 MiLoG oder § 16 ArbZG; die Aufzeichnungen bleiben beim Arbeitgeber.",
+    "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).",
+    "Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).",
+    "Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden und laufenden Leistungen bleiben, alle Monatswerte sind leer."
+  ]
+}
