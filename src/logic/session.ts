@@ -379,7 +379,8 @@ export interface NextChoice {
   backToSummary: boolean;
   /**
    * Only while revising, i.e. when "Weiter" would show an already answered question: the next
-   * required answer still missing, else the summary ("Zur nächsten fehlenden Angabe").
+   * question without an answer (voluntary and deferred ones included), else the summary
+   * ("Zur nächsten fehlenden Angabe").
    */
   skip?: InterviewStep;
 }

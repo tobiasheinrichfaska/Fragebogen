@@ -103,14 +103,15 @@ export function stepBefore(
 }
 
 /**
- * "Zur nächsten fehlenden Angabe" while revising: the next required question after `key` that has
- * no answer yet ("Weiß ich gerade nicht" included — it still blocks signing), else the summary.
+ * "Zur nächsten fehlenden Angabe" while revising: the next question after `key` without an answer
+ * — voluntary ones and those put back with "Weiß ich gerade nicht" included (Tobias 2026-10-30) —
+ * else the summary.
  */
 export function nextMissingStep(steps: readonly InterviewStep[], key: string): InterviewStep {
   const from = steps.findIndex((step) => step.key === key);
   const missing = steps
     .slice(from + 1)
-    .find((step) => step.kind === 'question' && step.required && step.state !== 'answered');
+    .find((step) => step.kind === 'question' && step.state !== 'answered');
   return missing ?? steps[steps.length - 1] ?? { kind: 'summary', key: 'summary' };
 }
 

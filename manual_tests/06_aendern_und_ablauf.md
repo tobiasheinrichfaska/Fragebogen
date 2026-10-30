@@ -53,10 +53,10 @@ bestätigt, Familienname und Vornamen eingegeben.
 
 - Steht hinter der aktuellen Frage eine schon beantwortete, gibt es zwei Knöpfe: **„Weiter“** (die
   nächste Frage, auch wenn sie beantwortet ist) und **„Zur nächsten fehlenden Angabe“**.
-- Schritt 2 zeigt die Vornamen, Schritt 3 springt über alles Beantwortete zur nächsten
-  **Pflichtfrage ohne Antwort** – hier „Wann sind Sie geboren?“. _Nicht offensichtlich:_ Mit
-  „Weiß ich gerade nicht“ zurückgestellte Pflichtfragen zählen als fehlend; freiwillige leere Fragen
-  werden übersprungen (sie stehen in der Zusammenfassung).
+- Schritt 2 zeigt die Vornamen, Schritt 3 springt über alles Beantwortete zur nächsten **Frage
+  ohne Antwort** – hier „Wann sind Sie geboren?“. _Nicht offensichtlich:_ Auch **freiwillige**
+  leere Fragen (z. B. die Versicherungsnummer „falls bekannt“) und mit „Weiß ich gerade nicht“
+  zurückgestellte Fragen zählen als fehlend.
 - Fehlt nichts mehr, heißt der zweite Knopf **„Zur Zusammenfassung“**.
 - Auf einer noch offenen Frage gibt es nur „Weiter“.
 

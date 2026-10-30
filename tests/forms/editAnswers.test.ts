@@ -121,16 +121,36 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
     expect(nextChoice(goTo(person(BASE), 'question:geburtsdatum')).skip).toBeUndefined();
   });
 
-  it('leads to the summary once nothing required is missing', () => {
+  it('stops at a voluntary question left empty as well', () => {
+    const filled = person({
+      ...BASE,
+      geburtsdatum: '17.05.1990',
+      geburtsort: 'Musterstadt',
+      geburtsland: 'Deutschland',
+      geschlecht: 'weiblich',
+      staatsangehoerigkeit: 'deutsch',
+    });
+    expect(nextChoice(goTo(filled, 'question:familienname')).skip?.key).toBe(
+      'question:versicherungsnummer',
+    );
+  });
+
+  it('leads to the summary once every question is answered', () => {
     const question = (key: string, state: 'answered' | 'open', required: boolean) =>
       ({ kind: 'question', key, fieldId: key, sectionId: 's', level: 0, required, state }) as const;
-    const steps: InterviewStep[] = [
+    const optionalOpen: InterviewStep[] = [
       question('a', 'answered', true),
       question('b', 'answered', true),
       question('c', 'open', false),
       { kind: 'summary', key: 'summary' },
     ];
-    expect(nextMissingStep(steps, 'a').key).toBe('summary');
+    expect(nextMissingStep(optionalOpen, 'a').key).toBe('c');
+    const allAnswered: InterviewStep[] = [
+      question('a', 'answered', true),
+      question('b', 'answered', false),
+      { kind: 'summary', key: 'summary' },
+    ];
+    expect(nextMissingStep(allAnswered, 'a').key).toBe('summary');
   });
 
   it('says "Zurück zur Zusammenfassung" when a change from the summary opens nothing', () => {
