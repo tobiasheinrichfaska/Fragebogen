@@ -12,7 +12,7 @@ import {
 } from './model';
 
 export type LeafCondition = Extract<Condition, { field: FieldId }>;
-export const CONDITION_OPERATORS = ['equals', 'in', 'contains', 'answered'] as const;
+export const CONDITION_OPERATORS = ['equals', 'in', 'contains', 'answered', 'startsWith'] as const;
 export type ConditionOperator = (typeof CONDITION_OPERATORS)[number];
 type Operand = string | boolean | readonly string[];
 
@@ -70,6 +70,20 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
     describe: (label, operand, target) =>
       `bei „${label}“ „${shown(target, operand)}“ angekreuzt ist`,
   },
+  // e.g. a BIC only for an IBAN outside Germany: { "not": { "field": "iban", "startsWith": "DE" } }
+  startsWith: {
+    targets: ['text', 'iban', 'taxId', 'svNumber', 'betriebsnummer'],
+    checkOperand: (operand, target) => {
+      if (typeof operand !== 'string' || operand === '') return 'expected a non-empty text';
+      if (target.type === 'iban' && !/^[A-Z0-9]+$/.test(operand)) {
+        return 'IBANs are stored in capitals without spaces';
+      }
+      return undefined;
+    },
+    evaluate: (value, operand) =>
+      typeof value === 'string' && typeof operand === 'string' && value.startsWith(operand),
+    describe: (label, operand) => `„${label}“ mit „${String(operand)}“ beginnt`,
+  },
   answered: {
     targets: FIELD_TYPES,
     checkOperand: (operand) => (typeof operand === 'boolean' ? undefined : 'expected a boolean'),
@@ -85,6 +99,7 @@ export function leafOperator(leaf: LeafCondition): {
   if ('equals' in leaf) return { operator: 'equals', operand: leaf.equals };
   if ('in' in leaf) return { operator: 'in', operand: leaf.in };
   if ('contains' in leaf) return { operator: 'contains', operand: leaf.contains };
+  if ('startsWith' in leaf) return { operator: 'startsWith', operand: leaf.startsWith };
   return { operator: 'answered', operand: leaf.answered };
 }
 

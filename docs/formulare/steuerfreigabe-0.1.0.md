@@ -7,7 +7,8 @@
 | --- | --- |
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | d80abc593068acadaab0398abc630703bfe4398086b697678096a16fb8c424ad |
+| Gültigkeit | gilt für „Datum der Vorlage“ ab 01.01.2026 |
+| Definition (SHA-256) | ec2cb19b3e9fef9e4bd272c28294eee448ef5e6f21ac144870a662e06d0c4f01 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung. |
 | Empfänger | Kanzlei |
@@ -122,6 +123,12 @@ Alle übrigen Angaben sind unabhängig.
 - Name: „Vor- und Familienname der Mandantin oder des Mandanten“ (Kanzlei) = „Ihr Vor- und Familienname“ (Mandantin oder Mandant)
 
 Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen. Verknüpft wird nur auf menschliche Entscheidung.
+
+## Was dieser Fragebogen nicht abdeckt
+
+- Der Fragebogen übermittelt keine Steuererklärung. Er dokumentiert die Zustimmung zu genau der vorgelegten Fassung (§ 87d AO).
+- Eine Erklärung, die das Gesetz eigenhändig unterschrieben verlangt, ersetzt er nicht; dafür bleibt das Papier.
+- Er prüft den Inhalt der Steuerberechnung nicht; das bleibt Sache der Kanzlei und der Mandanten.
 
 ## Rechtliche Hinweise
 

@@ -89,6 +89,7 @@ export type Condition =
   | { field: FieldId; in: string[] }
   | { field: FieldId; contains: string }
   | { field: FieldId; answered: boolean }
+  | { field: FieldId; startsWith: string }
   | { not: Condition }
   | { all: Condition[] }
   | { any: Condition[] };
@@ -231,6 +232,15 @@ export interface MatchKey {
   fields: Record<RoleId, FieldId>;
 }
 
+/** Period a form version applies to, judged by one reference date of the questionnaire. */
+export interface FormValidity {
+  /** Required, always available date or month field, e.g. the first working day. */
+  field: FieldId;
+  from: IsoDate;
+  /** Open-ended without. */
+  until?: IsoDate;
+}
+
 export interface FormDefinition {
   id: string;
   version: string;
@@ -255,6 +265,13 @@ export interface FormDefinition {
    * screen ("Warum genügt das?").
    */
   signatureBasis?: string;
+  /**
+   * The period this version applies to (Tobias 2026-10-30): an entry in October 2026 needs a version
+   * valid on that day. Mandatory in drafts (test); the frozen 0.1.0 test version has none.
+   */
+  validity?: FormValidity;
+  /** What this questionnaire does not cover — shown to every station, in the PDF and the docs. */
+  limits?: string[];
 }
 
 // ---------------------------------------------------------------------------

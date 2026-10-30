@@ -194,7 +194,7 @@
           "required": true,
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung",
           "initial": false,
-          "help": "Davon hängt ab, wie die Postleitzahl geprüft wird."
+          "help": "Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht."
         },
         {
           "id": "wohnstaat",
@@ -412,5 +412,14 @@
     "Den Hinweis auf die Pflicht, Ausweispapiere mitzuführen, gibt der Arbeitgeber nachweislich und schriftlich (§ 2a Abs. 2 SchwarzArbG). Er wird deshalb auf Papier ausgehändigt; im Fragebogen wird nur die Aushändigung bestätigt."
   ],
   "partLinks": [["person", "arbeitgeber"]],
-  "signatureBasis": "Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber."
+  "signatureBasis": "Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber.",
+  "validity": {
+    "field": "agBeschaeftigungsbeginn",
+    "from": "2026-01-01"
+  },
+  "limits": [
+    "Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.",
+    "Der Hinweis auf die Mitführungspflicht wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die Aushändigung.",
+    "Er fragt nur, was die Sofortmeldung braucht; die übrigen Angaben für die Lohnabrechnung folgen im Personalfragebogen."
+  ]
 }

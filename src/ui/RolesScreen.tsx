@@ -8,7 +8,7 @@ import {
   transmissionBlockers,
 } from '../logic/requirements';
 import { roleStates, type RoleState, type Session } from '../logic/session';
-import { Banner, Card } from './common';
+import { Banner, Card, FormScope } from './common';
 
 interface Props {
   session: Session;
@@ -111,6 +111,9 @@ export function RolesScreen(props: Props) {
             </button>
           </div>
         )}
+      </Card>
+      <Card title="Gültigkeit und Grenzen">
+        <FormScope definition={session.form.definition} />
       </Card>
       <Card title="Stand">
         {blockers.length > 0 && (

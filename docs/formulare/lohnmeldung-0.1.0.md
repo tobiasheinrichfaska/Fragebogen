@@ -7,7 +7,8 @@
 | --- | --- |
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | d540dfde3762baa61db49467a914760fe55000078f2f6514f8ed00b3f6bcbab3 |
+| Gültigkeit | gilt für „Abrechnungsmonat“ ab 01.01.2026 |
+| Definition (SHA-256) | 5d8b1b4e9a8bd993188908a935fd65d59939e0b70f68d709a2717b690063abe0 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -157,6 +158,12 @@ Keine.
 ## Zuordnung getrennt eingegangener Teile
 
 Keine.
+
+## Was dieser Fragebogen nicht abdeckt
+
+- Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.
+- Ein- und Austritte meldet sie an; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.
+- Pfändungen werden nur angezeigt; die Berechnung des pfändbaren Betrags übernimmt die Lohnabrechnung.
 
 ## Rechtliche Hinweise
 

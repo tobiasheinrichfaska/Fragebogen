@@ -50,12 +50,16 @@ const EMPLOYER = {
   agErwartetMonat: '520,00',
   agBav: 'keine',
   agSchwerbehinderung: 'nein',
+  agBeziehung: 'keine',
 };
 
 function employerSealed(besteuerung: string, base?: Questionnaire): Questionnaire {
   let q = ok(startPart(base ?? createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber'));
   for (const [id, raw] of Object.entries({ ...EMPLOYER, agBesteuerung: besteuerung })) {
     q = ok(setValue(q, form, 'arbeitgeber', id, raw));
+  }
+  if (besteuerung.startsWith('pauschal')) {
+    q = ok(setValue(q, form, 'arbeitgeber', 'agPauschalsteuerAbgewaelzt', false));
   }
   return ok(
     sealPart(q, form, 'arbeitgeber', {
@@ -112,6 +116,7 @@ describe('employer first: the person is not asked what the employer decided', ()
     expect(setValue(q, form, 'person', 'steuerart', 'pauschal2').ok).toBe(true);
     expect([...fixedByOtherRoles(q, form.definition, 'person')]).toEqual([
       ['steuerart', { value: 'pauschal2', from: 'arbeitgeber' }],
+      ['sozialkasseBetrieb', { value: 'nein', from: 'arbeitgeber' }],
     ]);
   });
 

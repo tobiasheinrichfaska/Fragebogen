@@ -2,6 +2,7 @@
 import { useRef } from 'react';
 import { isTestVersion, type FormRegistry, type RegisteredForm } from '../logic/formRegistry';
 import { DRAFT_HASHES } from '../io/bundledForms';
+import { describeValidity } from '../logic/validity';
 import { Card } from './common';
 
 interface Props {
@@ -36,6 +37,9 @@ export function StartScreen({ registry, onNew, onOpen, onKanzlei, onClearAll }: 
                   : isTestVersion(form.definition.version)
                     ? ' · Testfassung'
                     : ''}
+                {describeValidity(form.definition) === undefined
+                  ? ''
+                  : ` · ${describeValidity(form.definition) ?? ''}`}
               </span>
             </li>
           ))}

@@ -1094,5 +1094,14 @@
     "Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).",
     "Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden (außer Ausscheidenden) und laufenden Leistungen bleiben, Fehlzeiten über das Monatsende werden mit Beginn übernommen, alle Monatswerte sind leer."
   ],
-  "signatureBasis": "Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat."
+  "signatureBasis": "Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat.",
+  "validity": {
+    "field": "abrechnungsmonat",
+    "from": "2026-01-01"
+  },
+  "limits": [
+    "Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.",
+    "Ein- und Austritte meldet sie an; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.",
+    "Pfändungen werden nur angezeigt; die Berechnung des pfändbaren Betrags übernimmt die Lohnabrechnung."
+  ]
 }

@@ -7,6 +7,8 @@ export interface FlowPlanEntry {
   plan: FlowPlan;
   /** e.g. "Entwurf zur fachlichen Freigabe". */
   status: string;
+  /** Older versions of the same form that this plan replaces, e.g. "0.1.0 (eingefroren)". */
+  older?: string[];
 }
 
 const DARK = `--bg:#16181b; --fg:#e7e5e0; --muted:#a3a8ae; --line:#3a3e44; --card:#1f2226;
@@ -33,6 +35,7 @@ p, li { overflow-wrap: anywhere; }
 .legend { display:flex; flex-wrap:wrap; gap:.5rem 1rem; padding:0; list-style:none; }
 .legend li { display:flex; align-items:center; gap:.4rem; }
 .swatch { width:1rem; height:1rem; border-radius:3px; border-left:4px solid; display:inline-block; }
+.limits { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: .25rem 1rem; margin-bottom: 1rem; }
 .order { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: .5rem 1rem; }
 .station { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
   padding: .25rem 1rem 1rem; margin-top: 1rem; }
@@ -87,6 +90,7 @@ function stepHtml(step: FlowStep): string {
   if (step.because) lines.push(`<div class="why">Warum: ${esc(step.because)}</div>`);
   if (decision)
     lines.push(`<div class="opens">Weiche: davon hängen ${numbers(step.opens)} ab.</div>`);
+  if (step.help) lines.push(`<div class="meta">${esc(step.help)}</div>`);
   lines.push('</li>');
   return lines.join('');
 }
@@ -120,11 +124,24 @@ function stationHtml(station: FlowStation, anchor: string): string {
   return parts.join('\n');
 }
 
-function planHtml({ plan, status }: FlowPlanEntry): string {
+function planHtml({ plan, status, older }: FlowPlanEntry): string {
   const anchor = `${plan.id}-${plan.version}`;
   return [
     `<h2 id="${anchor}">${esc(plan.title)} <span class="muted">${esc(plan.version)}</span></h2>`,
     `<p class="meta">${esc(status)} · Definition <code>${plan.definitionHash}</code></p>`,
+    ...(older && older.length > 0
+      ? [
+          `<p class="meta">Ersetzt die ältere Fassung ${older.map(esc).join(', ')}; deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>`,
+        ]
+      : []),
+    `<p><strong>${plan.validity === undefined ? 'Gültigkeit nicht angegeben.' : `Diese Fassung ${esc(plan.validity)}.`}</strong></p>`,
+    ...(plan.limits.length > 0
+      ? [
+          '<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>',
+          ...plan.limits.map((limit) => `<li>${esc(limit)}</li>`),
+          '</ul></div>',
+        ]
+      : []),
     '<div class="order"><h3>Reihenfolge der Stationen</h3><ul>',
     ...plan.order.map((note) => `<li>${esc(note)}</li>`),
     '</ul></div>',

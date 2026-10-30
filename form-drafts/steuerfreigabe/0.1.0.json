@@ -473,5 +473,14 @@
     "Die Kanzlei bewahrt die Freigabe in der Handakte auf (§ 66 StBerG)."
   ],
   "partLinks": [["kanzlei", "mandant"]],
-  "signatureBasis": "Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung."
+  "signatureBasis": "Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung.",
+  "validity": {
+    "field": "vorlageDatum",
+    "from": "2026-01-01"
+  },
+  "limits": [
+    "Der Fragebogen übermittelt keine Steuererklärung. Er dokumentiert die Zustimmung zu genau der vorgelegten Fassung (§ 87d AO).",
+    "Eine Erklärung, die das Gesetz eigenhändig unterschrieben verlangt, ersetzt er nicht; dafür bleibt das Papier.",
+    "Er prüft den Inhalt der Steuerberechnung nicht; das bleibt Sache der Kanzlei und der Mandanten."
+  ]
 }

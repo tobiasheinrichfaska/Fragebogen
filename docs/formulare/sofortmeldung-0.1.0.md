@@ -7,6 +7,7 @@
 | --- | --- |
 | Formular | sofortmeldung, Version 0.1.0 |
 | Status | Eingefrorene Testfassung (0.x): darf vor dem ersten Release gelöscht werden, solange kein echter Fragebogen damit ausgefüllt wurde |
+| Gültigkeit | nicht angegeben |
 | Definition (SHA-256) | e9cd772846b6bd751b7e560545ae406eb8d5cabaafcfc9b881320cbcb8d3964d |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Empfänger | Lohnabrechnende Stelle |
@@ -128,6 +129,10 @@ Alle übrigen Angaben sind unabhängig.
 - Vornamen: „Vornamen“ (Beschäftigte Person) = „Vornamen der beschäftigten Person“ (Arbeitgeber)
 
 Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen. Verknüpft wird nur auf menschliche Entscheidung.
+
+## Was dieser Fragebogen nicht abdeckt
+
+Keine.
 
 ## Rechtliche Hinweise
 

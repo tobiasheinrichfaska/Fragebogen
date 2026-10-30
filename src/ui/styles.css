@@ -543,3 +543,12 @@ textarea {
 .signature-basis p {
   margin: 0.5rem 0 0;
 }
+
+.form-scope details {
+  margin-top: 0.5rem;
+}
+
+.form-scope ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}

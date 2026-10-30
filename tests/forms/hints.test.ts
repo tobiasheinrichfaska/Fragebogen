@@ -168,6 +168,9 @@ describe('check hints — definition rules', () => {
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',
       'regelaltersgrenzeNichtErreicht',
+      'spaeterAls',
+      'ueberBeitragsbemessungsgrenze',
+      'ueberJahresarbeitsentgeltgrenze',
     ]);
   });
 });

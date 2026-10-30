@@ -42,6 +42,10 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Employer master data via bookmark link** — "Link mit meinen Stammdaten" puts company name and Betriebsnummer into the link; opening the bookmark fills them in; a broken link or a value in the wrong format is shown with its reason
 - [ ] **Preselected answers** — e.g. "Geburtsname gleich Familienname?" starts with Ja and can be changed
 
+- [ ] **Validity of a form version** — every draft states the period of its reference date (e.g. first working day); a date outside warns at input, blocks signing and passing on; start screen, role choice, PDF and docs show it
+- [ ] **What a form does not cover** — `limits` shown on the role choice, in the Kanzlei form view, the PDF, the catalogue and the flow plan
+- [ ] **Multiple jobs, also above the BBG** — other jobs with monthly pay; check hints sum them against the BBG (KV/PV) and the JAEG of the start year; a missing year is reported, never guessed
+
 ## Documentation
 
 - [ ] **Flow plan of every form** (`docs/ablaufplan.html`, `npm run catalogue`) — stations and their order, questions in interview order, decision points, and why each condition applies; every condition in a draft is explained

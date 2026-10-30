@@ -99,9 +99,13 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
   Zusammenspiel mit einer konkreten Pflicht nutzbar (Handreichung der hessischen
   Datenschutzaufsicht vom 25.04.2023; Urteilstext am Original _nicht verifiziert_).
 - **Information:** Die Pflichtangaben nach Art. 13 DSGVO stehen im Formular.
-- **Konfession:** Die Frage entfällt, weil das Kirchensteuermerkmal aus ELStAM kommt. Ausnahme:
-  Bei Pauschalierung (§ 40a EStG) gibt es die Erklärung über die Nichtzugehörigkeit nach den gleich
-  lautenden Ländererlassen vom 08.08.2016.
+- **Konfession, Steuerklasse, Kinderfreibeträge (geändert 30.10.2026, Tobias):** Maßgeblich sind
+  die ELStAM. Für die erste Abrechnung, solange der Abruf nicht klappt, legt der Arbeitgeber die
+  voraussichtlichen Merkmale zugrunde, längstens drei Kalendermonate (§ 39c Abs. 1 S. 2 EStG, am
+  Gesetzestext geprüft). Deshalb fragt der Fragebogen sie als **vorläufige** Angaben ab – das
+  Kirchensteuermerkmal ist ein besonderes Datum (Art. 9 DSGVO) und dient nur diesem Zweck.
+  Bei Pauschalierung (§ 40a EStG) gilt weiter die Erklärung über die Nichtzugehörigkeit nach den
+  gleich lautenden Ländererlassen vom 08.08.2016 (Papier).
 - **Schwerbehinderung:** Laut BAG ist die Frage im bestehenden Arbeitsverhältnis „jedenfalls nach
   sechs Monaten“ zulässig (Urteil vom 16.02.2012 – 6 AZR 553/10, am Urteilstext geprüft). Für die
   Zeit davor hat das BAG nichts entschieden; dass die Angabe dann **freiwillig** ist, entscheidet
@@ -166,7 +170,22 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
   Arbeitslosenversicherungsbeiträge (§ 28i S. 2 SGB IV i. V. m. § 175 Abs. 3 S. 2 SGB V).
 - **Weitere Beschäftigungen:** Mehrere Minijobs werden zusammengerechnet, ein Minijob neben einer
   Hauptbeschäftigung bleibt frei (§ 8 Abs. 2 SGB IV); über der Beitragsbemessungsgrenze werden
-  mehrere Entgelte verhältnismäßig gekürzt (§ 22 Abs. 2 SGB IV).
+  mehrere Entgelte verhältnismäßig gekürzt (§ 22 Abs. 2 SGB IV). Die Einzugsstelle ermittelt nach
+  den Entgeltmeldungen von Amts wegen das Gesamtentgelt und übermittelt es den Arbeitgebern
+  (§ 26 Abs. 4 SGB IV; Grundsätze Mehrfachbeschäftigung vom 12.11.2014, am Original geprüft). Der
+  Fragebogen erfasst die Entgelte aller Beschäftigungen und weist auf die Grenzen hin (Rechengrößen
+  2026 aus der SVBezGrV 2026: JAEG 77.400 €, BBG KV/PV 5.812,50 €, BBG RV 8.450 € im Monat).
+- **Statuskennzeichen:** Die Anmeldung enthält die Angabe, ob der Beschäftigte Ehegatte,
+  Lebenspartner oder Abkömmling des Arbeitgebers oder geschäftsführender GmbH-Gesellschafter ist
+  (§ 28a Abs. 3 S. 2 Nr. 1 Buchst. d, e SGB IV); dann beantragt die Einzugsstelle die
+  Statusfeststellung (§ 7a Abs. 1 S. 2 SGB IV). Beides am Gesetzestext geprüft.
+- **Versorgungswerk:** Befreiung nach § 6 Abs. 1 S. 1 Nr. 1 SGB VI nur für die jeweilige
+  Beschäftigung; Antrag binnen drei Monaten wirkt ab Beginn (§ 6 Abs. 4 SGB VI).
+- **Vorbeschäftigungen im Kalenderjahr (Prüfung 30.10.2026):** Zwingend nur für die kurzfristige
+  Beschäftigung (Zeitgrenzen, § 8 Abs. 1 Nr. 2 SGB IV; Erklärung nach § 8 Abs. 2 Nr. 7 BVV) – nur
+  dort fragt der Fragebogen. Lohnsteuerbescheinigungen früherer Arbeitgeber helfen bei sonstigen
+  Bezügen (§ 39b Abs. 3 S. 2 EStG: ohne sie wird hochgerechnet); sie stehen deshalb nur in der
+  Liste der Arbeitspapiere.
 - **Kinder (Pflegeversicherung):** Das BZSt liefert nur „Elterneigenschaft ab …“ und „Anzahl Kinder
   unter 25 ab …“ — keine Namen, keine Geburtsdaten (§ 55a SGB XI). Daraus folgt Datensparsamkeit:
   Einzeldaten nur für **nicht abrufbare** Kinder. Nicht abrufbar sind laut den Gemeinsamen

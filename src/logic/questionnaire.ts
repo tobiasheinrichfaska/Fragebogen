@@ -47,6 +47,7 @@ import {
 import { NONCE_PATTERN, SEAL_SCHEMA, contentHashOf, fieldHashesOf, strokesHashOf } from './seal';
 import { decodeStrokes, signatureShapeProblem } from './strokes';
 import { sameInstant } from './time';
+import { describeValidity, outsideValidity } from './validity';
 
 export type TransitionCode =
   | 'wrongForm'
@@ -73,7 +74,8 @@ export type TransitionCode =
   | 'noSealedPart'
   | 'versionInUse'
   | 'alreadyAnswered'
-  | 'fixedByOtherRole';
+  | 'fixedByOtherRole'
+  | 'outsideValidity';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -106,6 +108,8 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
     'Diese Frage ist schon beantwortet. Zum Zurückstellen bitte zuerst die Antwort löschen.',
   fixedByOtherRole:
     'Diese Angabe hat eine andere Rolle in ihrem abgeschlossenen Teil festgelegt; sie wird von dort übernommen.',
+  outsideValidity:
+    'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
 };
 
 export type Transition =
@@ -233,7 +237,13 @@ export function setValue(
           updated,
           (draft.deferred ?? []).filter((id) => id !== fieldId),
         );
-  return done(withVersions(questionnaire, role, versions), value.warnings);
+  const outside =
+    fieldId === form.definition.validity?.field &&
+    outsideValidity(form.definition, role, updated.data) !== undefined;
+  return done(
+    withVersions(questionnaire, role, versions),
+    outside ? [...value.warnings, 'validity.outside'] : value.warnings,
+  );
 }
 
 function sameValue(a: FieldValue, b: FieldValue): boolean {
@@ -415,6 +425,10 @@ export function sealPart(
   const unacknowledged = notices.filter((b) => !input.acknowledged.includes(b.id)).map((b) => b.id);
   if (unacknowledged.length > 0) return refuse('noticeNotAcknowledged', unacknowledged);
 
+  const outside = outsideValidity(definition, role, draft.data);
+  if (outside !== undefined) {
+    return refuse('outsideValidity', [outside, describeValidity(definition) ?? '']);
+  }
   const data = sealableData(definition, role, draft.data);
   const invalid = fieldsOfRole(definition, role)
     .filter((field) => Object.hasOwn(data, field.id))

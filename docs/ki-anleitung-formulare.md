@@ -59,28 +59,33 @@ Gib zurück:
     Fragebogen fragt nur den Wunsch ab, der Arbeitgeber dokumentiert das Eingangsdatum. Hinweise,
     die nachweislich auf Papier ausgehändigt werden müssen, sind `paperHandout`.
 11. **Keine Namen oder Logos von Kanzleien oder Firmen** in der Definition; das ist Konfiguration.
-12. **Nur erfundene Beispieldaten.**
+12. **Grenzen und Gültigkeit offen sagen.** Jede Fassung nennt in `limits`, was sie nicht kann, und
+    in `validity`, für welchen Stichtag sie gilt. Lieber eine Grenze benennen als eine Lücke
+    verschweigen.
+13. **Nur erfundene Beispieldaten.**
 
 ## Aufbau der Datei
 
 ### Formular (oberste Ebene)
 
-| Schlüssel          | Pflicht | Bedeutung                                                                                          |
-| ------------------ | ------- | -------------------------------------------------------------------------------------------------- |
-| `id`               | ja      | Kennung des Formulars, klein mit Bindestrichen (`personalfragebogen`, `lohn-meldung`)              |
-| `version`          | ja      | `MAJOR.MINOR.PATCH`, z. B. `0.1.0`                                                                 |
-| `title`            | ja      | Titel, z. B. „Personalfragebogen: Angaben für die Lohnabrechnung“                                  |
-| `signaturePolicy`  | ja      | `electronic` (einfache elektronische Unterschrift genügt), `paperRecommended`, `paperRequired`     |
-| `signatureBasis`   | nein    | Warum die Unterschrift in der App genügt, mit Fundstellen; die Unterschriftsseite zeigt es         |
-| `roles`            | ja      | Stationen (mindestens eine), siehe unten                                                           |
-| `recipient`        | ja      | `{ "label": "Lohnabrechnende Stelle" }`                                                            |
-| `sections`         | ja      | Abschnitte mit Feldern (mindestens einer)                                                          |
-| `infoBlocks`       | ja      | Hinweise zur Kenntnisnahme (darf leer sein)                                                        |
-| `consistencyRules` | ja      | Gleichheitsregeln zwischen zwei Feldern (darf leer sein)                                           |
-| `matchKeys`        | ja      | Merkmale, über die getrennt eingegangene Teile derselben Person zugeordnet werden (darf leer sein) |
-| `legalNotes`       | ja      | Rechtliche Hinweise als Texte (darf leer sein)                                                     |
-| `partLinks`        | nein    | Rollenpaare, deren Teile sich gegenseitig bestätigen müssen, z. B. `[["person", "arbeitgeber"]]`   |
-| `checkHints`       | nein    | Prüfhinweise für die lohnabrechnende Stelle, siehe unten                                           |
+| Schlüssel          | Pflicht | Bedeutung                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`               | ja      | Kennung des Formulars, klein mit Bindestrichen (`personalfragebogen`, `lohn-meldung`)                                                                                                                                                                                                                                                                                                                                                                       |
+| `version`          | ja      | `MAJOR.MINOR.PATCH`, z. B. `0.1.0`                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `title`            | ja      | Titel, z. B. „Personalfragebogen: Angaben für die Lohnabrechnung“                                                                                                                                                                                                                                                                                                                                                                                           |
+| `signaturePolicy`  | ja      | `electronic` (einfache elektronische Unterschrift genügt), `paperRecommended`, `paperRequired`                                                                                                                                                                                                                                                                                                                                                              |
+| `signatureBasis`   | nein    | Warum die Unterschrift in der App genügt, mit Fundstellen; die Unterschriftsseite zeigt es                                                                                                                                                                                                                                                                                                                                                                  |
+| `roles`            | ja      | Stationen (mindestens eine), siehe unten                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `recipient`        | ja      | `{ "label": "Lohnabrechnende Stelle" }`                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `sections`         | ja      | Abschnitte mit Feldern (mindestens einer)                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `infoBlocks`       | ja      | Hinweise zur Kenntnisnahme (darf leer sein)                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `consistencyRules` | ja      | Gleichheitsregeln zwischen zwei Feldern (darf leer sein)                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `matchKeys`        | ja      | Merkmale, über die getrennt eingegangene Teile derselben Person zugeordnet werden (darf leer sein)                                                                                                                                                                                                                                                                                                                                                          |
+| `legalNotes`       | ja      | Rechtliche Hinweise als Texte (darf leer sein)                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `partLinks`        | nein    | Rollenpaare, deren Teile sich gegenseitig bestätigen müssen, z. B. `[["person", "arbeitgeber"]]`                                                                                                                                                                                                                                                                                                                                                            |
+| `validity`         | nein    | **In Entwürfen Pflicht.** Gültigkeit der Fassung: `{ "field": "agBeschaeftigungsbeginn", "from": "2026-01-01", "until": "2026-12-31" }`. `field` ist ein Pflicht-Datums- oder -Monatsfeld ohne Bedingung (der Stichtag); liegt sein Wert außerhalb, lässt sich der Teil nicht unterschreiben und der Fragebogen nicht weitergeben. `until` fehlt bei offenem Ende. Werte, die sich jährlich ändern (Minijob-Grenze, Rechengrößen), begrenzen die Gültigkeit |
+| `limits`           | nein    | **In Entwürfen Pflicht.** Was der Fragebogen nicht abdeckt, als Liste kurzer Sätze; jede Station sieht es, die PDF und die Doku zeigen es                                                                                                                                                                                                                                                                                                                   |
+| `checkHints`       | nein    | Prüfhinweise für die lohnabrechnende Stelle, siehe unten                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ### Rolle (`roles[]`)
 
@@ -158,13 +163,14 @@ nennt seine Rolle.
 
 ### Bedingungen (`showIf`, `requiredIf`, `requiredIf.when`, `carryRowsIf`, `checkHints[].when`)
 
-| Form                                                                    | Gilt, wenn …                                                       |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)              |
-| `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                 |
-| `{ "field": "situation", "contains": "student" }`                       | die Mehrfachauswahl diese Option enthält (`contains`)              |
-| `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`) |
-| `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                  |
+| Form                                                                    | Gilt, wenn …                                                                              |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)                                     |
+| `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                                        |
+| `{ "field": "situation", "contains": "student" }`                       | die Mehrfachauswahl diese Option enthält (`contains`)                                     |
+| `{ "field": "iban", "startsWith": "DE" }`                               | der Text mit diesem Anfang beginnt (`startsWith`, nur Textfelder, IBAN in Großbuchstaben) |
+| `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`)                        |
+| `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                                         |
 
 Ein ausgeblendetes Feld zählt als unbeantwortet. Bedingungen in Feldern sehen nur Felder derselben
 Rolle; über Rollen hinweg gibt es `fromRole` (Antwort übernehmen), Rollen mit
@@ -183,8 +189,12 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
 - `matchKeys[]`: `{ "label": "Name", "fields": { "person": "familienname", "arbeitgeber": "agFamilienname" } }`.
 - `checkHints[]`: `{ "id", "when"?, "test"?, "message", "source"? }` – Hinweis für die lohnabrechnende
   Stelle, darf Felder verschiedener Rollen verbinden, blockiert nie. `test` ist eine benannte Prüfung
-  mit zwei Datumsfeldern: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
-  `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag).
+  mit festen Feldtypen: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
+  `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
+  erste liegt nach dem zweiten); `ueberBeitragsbemessungsgrenze` und
+  `ueberJahresarbeitsentgeltgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
+  weiterer Beschäftigungen – darf eine Tabellenspalte sein, sie wird summiert – und der Stichtag,
+  dessen Jahr die Rechengrößen bestimmt).
 
 ## Regeln, die die App zusätzlich prüft
 
@@ -306,7 +316,11 @@ Eine kleine, gültige Definition (Adressänderung), die die wichtigsten Baustein
   "consistencyRules": [],
   "matchKeys": [],
   "legalNotes": ["Die Angaben werden für die Lohnabrechnung verwendet."],
-  "partLinks": [["person", "arbeitgeber"]]
+  "partLinks": [["person", "arbeitgeber"]],
+  "validity": { "field": "gueltigAb", "from": "2026-01-01" },
+  "limits": [
+    "Der Fragebogen meldet die neue Anschrift nicht selbst an Behörden oder Versicherungen."
+  ]
 }
 ```
 
@@ -327,3 +341,4 @@ Eine kleine, gültige Definition (Adressänderung), die die wichtigsten Baustein
 - [ ] Bestehende Feldkennungen unverändert in Typ, Rolle und Bedeutung; neue Version gesetzt.
 - [ ] Schriftform-Erklärungen auf Papier; Hinweise mit Stand (`asOf`).
 - [ ] Unsichere Fundstellen als „nicht verifiziert“ gemeldet.
+- [ ] `validity` und `limits` gesetzt und ehrlich.

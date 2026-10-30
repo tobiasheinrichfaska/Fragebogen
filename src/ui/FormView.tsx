@@ -4,6 +4,7 @@ import { displayValue } from '../logic/display';
 import type { FormDefinition, Questionnaire } from '../logic/model';
 import { signatureLayout } from '../logic/provenance';
 import { formatLocalDateTime } from '../logic/time';
+import { FormScope } from './common';
 
 const STATUS_TEXT = {
   signed: 'unterschrieben',
@@ -23,6 +24,7 @@ export function FormView({
   const roleLabel = (id: string) => definition.roles.find((role) => role.id === id)?.label ?? id;
   return (
     <div className="form-view">
+      <FormScope definition={definition} />
       {definition.sections.map((section) => {
         const answered = section.fields.filter((field) => provenance.has(field.id));
         if (answered.length === 0) return null;

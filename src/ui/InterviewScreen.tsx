@@ -346,6 +346,14 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
           }}
         />
       )}
+      {summary.outsideValidity && (
+        <Banner
+          message={{
+            tone: 'warning',
+            text: `Der Stichtag ${summary.outsideValidity.value} liegt außerhalb der Gültigkeit dieser Formularfassung (sie ${summary.outsideValidity.validity}). So lässt sich nicht unterschreiben; bitte die Fassung verwenden, die für diesen Tag gilt.`,
+          }}
+        />
+      )}
       {summary.missingNotices.length > 0 && (
         <Banner
           message={{

@@ -2,6 +2,8 @@
 import type { ReactNode } from 'react';
 import { APP_CONFIG } from '../config';
 import { explainerUrl } from '../logic/appConfig';
+import type { FormDefinition } from '../logic/model';
+import { describeValidity } from '../logic/validity';
 
 export interface BannerMessage {
   tone: 'error' | 'warning' | 'info' | 'success';
@@ -76,5 +78,31 @@ export function Card({ title, children }: { title?: ReactNode; children: ReactNo
       {title !== undefined && <h2>{title}</h2>}
       {children}
     </section>
+  );
+}
+
+/** What this form version covers: its validity and, open by default, what it does not cover. */
+export function FormScope({ definition }: { definition: FormDefinition }) {
+  const validity = describeValidity(definition);
+  const limits = definition.limits ?? [];
+  if (validity === undefined && limits.length === 0) return null;
+  return (
+    <div className="form-scope">
+      {validity !== undefined && (
+        <p>
+          <strong>Diese Fassung {validity}.</strong>
+        </p>
+      )}
+      {limits.length > 0 && (
+        <details open>
+          <summary>Was dieser Fragebogen nicht abdeckt</summary>
+          <ul>
+            {limits.map((limit) => (
+              <li key={limit}>{limit}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
   );
 }

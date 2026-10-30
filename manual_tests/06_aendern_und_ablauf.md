@@ -109,3 +109,67 @@ bestätigt, Familienname und Vornamen eingegeben.
 - Gelb hinterlegt sind **Weichen**: Fragen, von deren Antwort andere abhängen („davon hängen
   Nr. … ab“). Violett: Angaben, die eine andere Station festlegt.
 - Die Seite lädt nichts aus dem Internet und funktioniert offline.
+- Je Formular steht nur die **neueste Fassung**; eine ältere (z. B. Sofortmeldung 0.1.0) ist oben
+  als „ersetzt“ genannt. Darunter stehen die **Gültigkeit** und „Was dieser Fragebogen nicht
+  abdeckt“.
+
+---
+
+## MT-54: Gültigkeit der Formularfassung
+
+**Voraussetzungen:** Personalfragebogen (Entwurf), Rolle „Arbeitgeber“.
+
+**Schritte:**
+
+1. Auf der Startseite die Zeile unter „Personalfragebogen“ lesen.
+2. Als Arbeitgeber beim „Tag der Beschäftigungsaufnahme“ **04.01.2027** eingeben, „Weiter“.
+3. Zur Zusammenfassung gehen.
+4. Den Tag auf **01.10.2026** ändern.
+
+**Erwartet:**
+
+- Schritt 1: „gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026“.
+- Schritt 2: Ein gelber Hinweis sagt, dass das Datum außerhalb der Gültigkeit liegt.
+- Schritt 3: Oben steht ein Warnhinweis mit Stichtag und Gültigkeit; „Weiter zum Abschluss“ ist
+  gesperrt. _Nicht offensichtlich:_ Die Eingabe selbst wird nicht abgelehnt, damit nichts verloren
+  geht – nur Unterschreiben und Weitergeben sind gesperrt.
+- Schritt 4: Der Hinweis verschwindet, abschließen ist wieder möglich.
+
+---
+
+## MT-55: Was der Fragebogen nicht abdeckt
+
+**Schritte:**
+
+1. Einen Personalfragebogen beginnen und auf „Wer füllt jetzt aus?“ die Karte „Gültigkeit und
+   Grenzen“ lesen.
+2. Später die PDF öffnen und die letzte Seite vor dem Prüfblatt ansehen.
+
+**Erwartet:**
+
+- Die Karte nennt die Gültigkeit und, aufgeklappt, „Was dieser Fragebogen nicht abdeckt“ (z. B.
+  keine Entscheidung über die Versicherungspflicht, Papier für Erklärungen mit eigenhändiger
+  Unterschrift).
+- Dieselben Punkte stehen in der PDF über den rechtlichen Hinweisen und in der Formularansicht der
+  Kanzlei.
+
+---
+
+## MT-56: Mehrere Beschäftigungen über der Beitragsbemessungsgrenze
+
+**Voraussetzungen:** Personalfragebogen (Entwurf).
+
+**Schritte:**
+
+1. Als Person „Haben Sie zurzeit noch eine andere Beschäftigung?“ mit „Ja“ beantworten und eine
+   Zeile mit **1.500,00 €** im Monat anlegen; abschließen.
+2. Als Arbeitgeber „festes Monatsentgelt“ **5.000,00 €**, Beginn im Jahr 2026; abschließen.
+3. In der Station Kanzlei die PDF einlesen.
+
+**Erwartet:**
+
+- Prüfhinweise: „Mehrere Beschäftigungen zusammen über der Beitragsbemessungsgrenze …“ mit
+  „Zusammen 6.500,00 € im Monat (davon diese Beschäftigung 5.000,00 €)“ und der Grenze 5.812,50 €,
+  dazu der Hinweis zur Jahresarbeitsentgeltgrenze.
+- _Nicht offensichtlich:_ Die anteilige Beitragsberechnung macht der Fragebogen nicht; das steht
+  auch unter „Was dieser Fragebogen nicht abdeckt“.

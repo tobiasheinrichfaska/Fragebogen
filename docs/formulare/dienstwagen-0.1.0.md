@@ -7,7 +7,8 @@
 | --- | --- |
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | e9eb7f317c10b5d6eb24c11adb57e1cd141287d06e5eb32bd557836fd58268c7 |
+| Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
+| Definition (SHA-256) | c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -120,6 +121,12 @@ Alle übrigen Angaben sind unabhängig.
 - Vornamen: „Vornamen“ (Beschäftigte Person) = „Vornamen der beschäftigten Person“ (Arbeitgeber)
 
 Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen. Verknüpft wird nur auf menschliche Entscheidung.
+
+## Was dieser Fragebogen nicht abdeckt
+
+- Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.
+- Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.
+- Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung.
 
 ## Rechtliche Hinweise
 

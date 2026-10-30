@@ -4,6 +4,7 @@
 // the legal guardian must sign with their name and confirm exactly the current version of the
 // person's part. The io layer must refuse to write a transmission PDF while blockers exist.
 import { AGE_OF_MAJORITY, ageOn, compareIsoDates, formatGermanDate, isIsoDate } from './dates';
+import { describeValidity, outsideValidity, validityRole } from './validity';
 import { describeCondition, evaluateCondition } from './conditions';
 import { fieldsById, missingRequired, signerName, triggerRoleOf, visibility } from './form';
 import { registryOf, type RegisteredForm } from './formRegistry';
@@ -125,7 +126,8 @@ export type BlockerCode =
   | 'conditionalRoleNameMissing'
   | 'ageUnknown'
   | 'roleMissing'
-  | 'partsNotLinked';
+  | 'partsNotLinked'
+  | 'outsideValidity';
 
 export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   nothingSealed: 'Es gibt noch keinen abgeschlossenen Teil, der übermittelt werden kann.',
@@ -146,6 +148,8 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   ageUnknown:
     'Das Alter am Tag der Unterschrift lässt sich nicht bestimmen. Bitte das Geburtsdatum prüfen.',
   roleMissing: 'Ein erforderlicher Teil fehlt noch.',
+  outsideValidity:
+    'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
   partsNotLinked:
     'Zwei Teile verweisen nicht aufeinander. Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; nach einer Änderung muss neu abgeschlossen werden.',
 };
@@ -195,6 +199,15 @@ export function transmissionBlockers(
   }
   for (const role of definition.roles) {
     if (role.requiredIf) conditionalRoleBlockers(definition, questionnaire, role, add);
+  }
+  const reference = validityRole(definition);
+  const stated = reference === undefined ? undefined : latestSealed(questionnaire, reference);
+  const outside =
+    reference === undefined || !stated
+      ? undefined
+      : outsideValidity(definition, reference, stated.data);
+  if (reference !== undefined && outside !== undefined) {
+    add('outsideValidity', reference, [outside, describeValidity(definition) ?? '']);
   }
   return blockers;
 }

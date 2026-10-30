@@ -194,7 +194,7 @@
           "required": true,
           "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
           "initial": false,
-          "help": "Davon hängt ab, wie die Postleitzahl geprüft wird."
+          "help": "Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht."
         },
         {
           "id": "wohnstaat",
@@ -310,6 +310,27 @@
       "title": "Bankverbindung",
       "fields": [
         {
+          "id": "zahlungsweg",
+          "role": "person",
+          "type": "choice",
+          "label": "Auszahlung des Lohns",
+          "question": "Wie erhalten Sie Ihren Lohn?",
+          "help": "Barzahlung nur, wenn Sie das mit Ihrem Arbeitgeber so vereinbart haben.",
+          "required": true,
+          "initial": "ueberweisung",
+          "purpose": "Auszahlung des Arbeitsentgelts",
+          "options": [
+            {
+              "id": "ueberweisung",
+              "label": "Überweisung auf ein Konto"
+            },
+            {
+              "id": "bar",
+              "label": "bar (so vereinbart)"
+            }
+          ]
+        },
+        {
           "id": "iban",
           "role": "person",
           "type": "iban",
@@ -317,7 +338,43 @@
           "question": "Auf welches Konto soll Ihr Lohn oder Gehalt überwiesen werden?",
           "help": "Ihre IBAN steht zum Beispiel auf Ihrer Bankkarte, im Online-Banking oder auf einem Kontoauszug.",
           "required": true,
+          "showIf": {
+            "field": "zahlungsweg",
+            "equals": "ueberweisung"
+          },
+          "because": "Nur bei einer Überweisung braucht es ein Konto.",
           "purpose": "Überweisung des Arbeitsentgelts"
+        },
+        {
+          "id": "bic",
+          "role": "person",
+          "type": "text",
+          "label": "BIC",
+          "question": "Wie lautet die BIC Ihrer Bank?",
+          "help": "Nur für ein Konto außerhalb Deutschlands. Im SEPA-Raum genügt meist die IBAN; nennen Sie die BIC, wenn Ihre Bank sie angibt.",
+          "required": false,
+          "showIf": {
+            "all": [
+              {
+                "field": "iban",
+                "answered": true
+              },
+              {
+                "not": {
+                  "field": "iban",
+                  "startsWith": "DE"
+                }
+              }
+            ]
+          },
+          "because": "Für ein deutsches Konto genügt die IBAN. Für ein Konto im Ausland, vor allem außerhalb des SEPA-Raums, kann die Überweisung die BIC brauchen.",
+          "purpose": "Überweisung des Arbeitsentgelts auf ein Konto im Ausland",
+          "quickAnswers": [
+            {
+              "label": "Nicht nötig",
+              "value": null
+            }
+          ]
         },
         {
           "id": "kontoinhaberSelbst",
@@ -325,8 +382,12 @@
           "type": "boolean",
           "label": "Lautet das Konto auf Ihren Namen?",
           "required": true,
-          "purpose": "Überweisung des Arbeitsentgelts",
-          "initial": true
+          "showIf": {
+            "field": "zahlungsweg",
+            "equals": "ueberweisung"
+          },
+          "because": "Nur bei einer Überweisung gibt es einen Kontoinhaber.",
+          "purpose": "Überweisung des Arbeitsentgelts"
         },
         {
           "id": "kontoinhaber",
@@ -996,6 +1057,45 @@
             "contains": "sonstiges"
           },
           "because": "„Etwas anderes“ braucht eine Beschreibung, damit die lohnabrechnende Stelle die Versicherungspflicht beurteilen kann."
+        },
+        {
+          "id": "svAusland",
+          "role": "person",
+          "type": "boolean",
+          "label": "Sozialversicherung in einem anderen Staat",
+          "question": "Sind Sie für diese Beschäftigung in einem anderen Staat sozialversichert, zum Beispiel mit einer A1-Bescheinigung?",
+          "help": "Das betrifft vor allem Saisonkräfte und Beschäftigte, die in einem anderen Staat der EU, des EWR oder in der Schweiz wohnen oder dort zugleich arbeiten. Die A1-Bescheinigung stellt der Träger dieses Staats aus.",
+          "required": true,
+          "initial": false,
+          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004); A1-Bescheinigung als Nachweis (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
+        },
+        {
+          "id": "svAuslandStaat",
+          "role": "person",
+          "type": "text",
+          "label": "Staat der Sozialversicherung",
+          "question": "In welchem Staat sind Sie sozialversichert?",
+          "required": true,
+          "showIf": {
+            "field": "svAusland",
+            "equals": true
+          },
+          "because": "Nur wer in einem anderen Staat versichert ist, nennt ihn; dann gelten unter Umständen dessen Rechtsvorschriften statt der deutschen (Art. 11 ff. VO (EG) Nr. 883/2004).",
+          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004)"
+        },
+        {
+          "id": "svAuslandA1",
+          "role": "person",
+          "type": "boolean",
+          "label": "A1-Bescheinigung liegt vor",
+          "question": "Haben Sie für diese Beschäftigung eine A1-Bescheinigung?",
+          "required": true,
+          "showIf": {
+            "field": "svAusland",
+            "equals": true
+          },
+          "because": "Die A1-Bescheinigung belegt, welche Rechtsvorschriften gelten; ohne sie prüft die lohnabrechnende Stelle die Zuständigkeit selbst.",
+          "purpose": "Nachweis der anzuwendenden Rechtsvorschriften (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
         }
       ]
     },
@@ -1189,7 +1289,7 @@
               "role": "person",
               "type": "money",
               "label": "Verdienst im Monat (brutto)",
-              "required": false,
+              "required": true,
               "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung"
             },
             {
@@ -1501,6 +1601,65 @@
       ]
     },
     {
+      "id": "rentenversicherung",
+      "title": "Rentenversicherung und Versorgungswerk",
+      "fields": [
+        {
+          "id": "versorgungswerk",
+          "role": "person",
+          "type": "choice",
+          "label": "Berufsständisches Versorgungswerk",
+          "question": "Sind Sie Pflichtmitglied eines berufsständischen Versorgungswerks, zum Beispiel für Ärzte, Apotheker, Rechtsanwälte, Steuerberater oder Architekten?",
+          "help": "Mitglieder können sich für eine Beschäftigung in ihrem Beruf von der gesetzlichen Rentenversicherung befreien lassen. Die Befreiung gilt nur für die jeweilige Beschäftigung; für eine neue Beschäftigung wird sie neu beantragt.",
+          "required": true,
+          "initial": "nein",
+          "purpose": "Befreiung von der Rentenversicherungspflicht für Mitglieder berufsständischer Versorgungseinrichtungen (§ 6 Abs. 1 S. 1 Nr. 1, Abs. 4, Abs. 5 SGB VI); Beiträge an das Versorgungswerk",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "befreit",
+              "label": "Ja, die Befreiung für diese Beschäftigung ist beantragt oder erteilt"
+            },
+            {
+              "id": "offen",
+              "label": "Ja, eine Befreiung für diese Beschäftigung ist noch nicht beantragt"
+            }
+          ]
+        },
+        {
+          "id": "versorgungswerkName",
+          "role": "person",
+          "type": "text",
+          "label": "Versorgungswerk",
+          "question": "Welchem Versorgungswerk gehören Sie an?",
+          "required": true,
+          "showIf": {
+            "field": "versorgungswerk",
+            "in": ["befreit", "offen"]
+          },
+          "because": "Nur Mitglieder nennen ihr Versorgungswerk; an dieses gehen die Beiträge, wenn die Befreiung gilt (§ 6 Abs. 1 S. 1 Nr. 1 SGB VI).",
+          "purpose": "Beiträge an das Versorgungswerk statt an die Rentenversicherung"
+        },
+        {
+          "id": "versorgungswerkNummer",
+          "role": "person",
+          "type": "text",
+          "label": "Mitgliedsnummer beim Versorgungswerk",
+          "question": "Wie lautet Ihre Mitgliedsnummer beim Versorgungswerk?",
+          "required": false,
+          "showIf": {
+            "field": "versorgungswerk",
+            "in": ["befreit", "offen"]
+          },
+          "because": "Nur Mitglieder haben eine Mitgliedsnummer; sie ordnet die Beiträge zu.",
+          "purpose": "Zuordnung der Beiträge beim Versorgungswerk"
+        }
+      ]
+    },
+    {
       "id": "minijobRv",
       "title": "Rentenversicherung im Minijob",
       "fields": [
@@ -1624,6 +1783,158 @@
               "label": "ein weiteres (Steuerklasse VI)"
             }
           ]
+        },
+        {
+          "id": "steuerklasse",
+          "role": "person",
+          "type": "choice",
+          "label": "Steuerklasse (vorläufig)",
+          "question": "Welche Steuerklasse haben Sie zurzeit?",
+          "help": "Ihr Arbeitgeber ruft Ihre Lohnsteuermerkmale beim Bundeszentralamt für Steuern ab. Klappt das zur ersten Abrechnung noch nicht, rechnet er höchstens drei Monate mit Ihren Angaben hier; danach gelten die abgerufenen Merkmale.",
+          "required": true,
+          "showIf": {
+            "field": "dienstverhaeltnis",
+            "equals": "erstes"
+          },
+          "because": "Für ein weiteres Dienstverhältnis gilt immer Steuerklasse VI; nur für das erste braucht die erste Abrechnung die voraussichtliche Steuerklasse (§ 39c Abs. 1 S. 2 EStG).",
+          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)",
+          "options": [
+            {
+              "id": "1",
+              "label": "I"
+            },
+            {
+              "id": "2",
+              "label": "II"
+            },
+            {
+              "id": "3",
+              "label": "III"
+            },
+            {
+              "id": "4",
+              "label": "IV"
+            },
+            {
+              "id": "4f",
+              "label": "IV mit Faktor"
+            },
+            {
+              "id": "5",
+              "label": "V"
+            }
+          ]
+        },
+        {
+          "id": "faktor",
+          "role": "person",
+          "type": "text",
+          "label": "Faktor",
+          "question": "Wie lautet Ihr Faktor?",
+          "help": "Er steht in der Mitteilung Ihres Finanzamts, zum Beispiel 0,912.",
+          "required": true,
+          "showIf": {
+            "field": "steuerklasse",
+            "equals": "4f"
+          },
+          "because": "Nur bei Steuerklasse IV mit Faktor gibt es einen Faktor (§ 39f EStG).",
+          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)"
+        },
+        {
+          "id": "kinderfreibetraege",
+          "role": "person",
+          "type": "choice",
+          "label": "Kinderfreibeträge (vorläufig)",
+          "question": "Wie viele Kinderfreibeträge sind für Sie eingetragen?",
+          "help": "Steht auf einer Lohnabrechnung Ihres bisherigen Arbeitgebers, oft als „Kfb“. Sie wirken auf Solidaritätszuschlag und Kirchensteuer.",
+          "required": true,
+          "showIf": {
+            "field": "steuerklasse",
+            "in": ["1", "2", "3", "4", "4f"]
+          },
+          "because": "Kinderfreibeträge werden nur in den Steuerklassen I bis IV berücksichtigt (§ 38b Abs. 2 EStG).",
+          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)",
+          "options": [
+            {
+              "id": "0",
+              "label": "keine"
+            },
+            {
+              "id": "0_5",
+              "label": "0,5"
+            },
+            {
+              "id": "1",
+              "label": "1"
+            },
+            {
+              "id": "1_5",
+              "label": "1,5"
+            },
+            {
+              "id": "2",
+              "label": "2"
+            },
+            {
+              "id": "2_5",
+              "label": "2,5"
+            },
+            {
+              "id": "3",
+              "label": "3"
+            },
+            {
+              "id": "mehr",
+              "label": "mehr als 3"
+            }
+          ]
+        },
+        {
+          "id": "kirchensteuer",
+          "role": "person",
+          "type": "choice",
+          "label": "Kirchensteuer (vorläufig)",
+          "question": "Sind Sie Mitglied einer Kirche oder Religionsgemeinschaft, die Kirchensteuer erhebt?",
+          "help": "Die Angabe gilt nur, bis Ihr Arbeitgeber Ihre Lohnsteuermerkmale abrufen kann; danach zählt das dort gespeicherte Merkmal.",
+          "required": true,
+          "showIf": {
+            "field": "dienstverhaeltnis",
+            "answered": true
+          },
+          "because": "Bei einer Pauschalsteuer gibt es keine Kirchensteuer nach Merkmalen; sonst braucht die erste Abrechnung das voraussichtliche Kirchensteuermerkmal (§ 39c Abs. 1 S. 2 EStG).",
+          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG); besondere Kategorie personenbezogener Daten (Art. 9 DSGVO), nur für diesen Zweck",
+          "options": [
+            {
+              "id": "keine",
+              "label": "Nein, keine Kirchensteuer"
+            },
+            {
+              "id": "ev",
+              "label": "Ja, evangelisch"
+            },
+            {
+              "id": "rk",
+              "label": "Ja, römisch-katholisch"
+            },
+            {
+              "id": "andere",
+              "label": "Ja, eine andere Religionsgemeinschaft"
+            }
+          ]
+        },
+        {
+          "id": "kirchensteuerAndere",
+          "role": "person",
+          "type": "text",
+          "label": "Religionsgemeinschaft",
+          "question": "Welche Religionsgemeinschaft ist es?",
+          "required": true,
+          "showIf": {
+            "field": "kirchensteuer",
+            "equals": "andere"
+          },
+          "because": "Nur bei einer anderen Religionsgemeinschaft braucht das Kirchensteuermerkmal ihren Namen.",
+          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)"
         },
         {
           "id": "freibetragAbrufen",
@@ -2031,6 +2342,81 @@
       ]
     },
     {
+      "id": "sozialkasse",
+      "title": "Sozialkasse der Branche",
+      "fields": [
+        {
+          "id": "sozialkasseBetrieb",
+          "role": "person",
+          "type": "choice",
+          "label": "Sozialkassenverfahren",
+          "question": "Gehört Ihr Arbeitgeber zu einem Sozialkassenverfahren, etwa im Baugewerbe (SOKA-BAU)?",
+          "help": "Das legt Ihr Arbeitgeber fest. Hat er seinen Teil schon abgeschlossen, übernimmt der Fragebogen seine Angabe und fragt Sie nicht.",
+          "required": true,
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agSozialkasse"
+          },
+          "because": "Ob ein Sozialkassenverfahren gilt, hängt vom Betrieb ab; der Arbeitgeber legt es fest. Liegt sein abgeschlossener Teil vor, wird seine Angabe übernommen.",
+          "purpose": "Meldungen und Beiträge im Sozialkassenverfahren der Branche (z. B. SOKA-BAU); Ansprüche hängen von der Beschäftigungszeit in der Branche ab",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "sozialkasseNummer",
+          "role": "person",
+          "type": "text",
+          "label": "Arbeitnehmernummer bei der Sozialkasse",
+          "question": "Wie lautet Ihre Arbeitnehmernummer bei der Sozialkasse?",
+          "required": false,
+          "showIf": {
+            "field": "sozialkasseBetrieb",
+            "in": ["ja", "unbekannt"]
+          },
+          "because": "Nur Beschäftigte in einem Sozialkassenverfahren haben dort eine Arbeitnehmernummer; bei „Weiß ich nicht.“ wird vorsorglich gefragt.",
+          "purpose": "Meldungen und Beiträge im Sozialkassenverfahren der Branche (z. B. SOKA-BAU); Ansprüche hängen von der Beschäftigungszeit in der Branche ab",
+          "quickAnswers": [
+            {
+              "label": "Habe ich nicht",
+              "value": null
+            }
+          ]
+        },
+        {
+          "id": "brancheSeit",
+          "role": "person",
+          "type": "month",
+          "label": "In der Branche beschäftigt seit",
+          "question": "Seit wann arbeiten Sie in dieser Branche, zum Beispiel im Baugewerbe?",
+          "required": false,
+          "showIf": {
+            "field": "sozialkasseBetrieb",
+            "in": ["ja", "unbekannt"]
+          },
+          "because": "Ansprüche aus dem Sozialkassenverfahren, etwa Urlaub, hängen von der Beschäftigungszeit in der Branche ab.",
+          "purpose": "Meldungen und Beiträge im Sozialkassenverfahren der Branche (z. B. SOKA-BAU); Ansprüche hängen von der Beschäftigungszeit in der Branche ab",
+          "quickAnswers": [
+            {
+              "label": "Erste Beschäftigung in der Branche",
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "vertretung",
       "title": "Gesetzliche Vertretung (nur bei Minderjährigen)",
       "fields": [
@@ -2147,6 +2533,30 @@
           "because": "Nur wenn der Arbeitsvertrag an einem anderen Tag beginnt als die Beschäftigung, ist sein Beginn eine eigene Angabe."
         },
         {
+          "id": "agFrueherBeschaeftigt",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Früher schon beschäftigt",
+          "question": "War die Person schon früher bei Ihnen beschäftigt?",
+          "required": true,
+          "initial": false,
+          "purpose": "Ersteintrittsdatum: Betriebszugehörigkeit (z. B. Kündigungsfristen, § 622 BGB); Vorbeschäftigung bei sachgrundloser Befristung (§ 14 Abs. 2 S. 2 TzBfG)"
+        },
+        {
+          "id": "agErsteintritt",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Ersteintrittsdatum",
+          "question": "Wann war die Person zum ersten Mal bei Ihnen beschäftigt?",
+          "required": true,
+          "showIf": {
+            "field": "agFrueherBeschaeftigt",
+            "equals": true
+          },
+          "because": "Nur bei einer früheren Beschäftigung weicht der erste Eintritt vom jetzigen Beginn ab; er zählt für die Betriebszugehörigkeit und schließt eine sachgrundlose Befristung grundsätzlich aus (§ 14 Abs. 2 S. 2 TzBfG).",
+          "purpose": "Betriebszugehörigkeit; Vorbeschäftigung bei Befristungen (§ 14 Abs. 2 S. 2 TzBfG)"
+        },
+        {
           "id": "agArbeitsortBundesland",
           "role": "arbeitgeber",
           "type": "choice",
@@ -2244,6 +2654,26 @@
           "required": true,
           "purpose": "Längere Zeitgrenzen für kurzfristige Beschäftigung in der Landwirtschaft; Pauschalsteuer nach § 40a Abs. 3 EStG",
           "initial": false
+        },
+        {
+          "id": "agSozialkasse",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Sozialkassenverfahren",
+          "question": "Nimmt Ihr Betrieb an einem Sozialkassenverfahren teil, zum Beispiel SOKA-BAU, Maler und Lackierer oder Gerüstbau?",
+          "required": true,
+          "initial": "nein",
+          "purpose": "Meldungen und Beiträge im Sozialkassenverfahren der Branche (z. B. SOKA-BAU); Ansprüche hängen von der Beschäftigungszeit in der Branche ab",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja"
+            }
+          ]
         }
       ]
     },
@@ -2453,6 +2883,71 @@
           "purpose": "Stellen 1 bis 5 des Tätigkeitsschlüssels in den Meldungen"
         },
         {
+          "id": "agBerufsbezeichnung",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Berufsbezeichnung",
+          "question": "Unter welcher Berufsbezeichnung wird die Person beschäftigt?",
+          "required": false,
+          "purpose": "Stammdaten der Lohnabrechnung; Grundlage für den Tätigkeitsschlüssel"
+        },
+        {
+          "id": "agBetriebsstaette",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Beschäftigungsbetrieb",
+          "question": "In welchem Betrieb oder welcher Betriebsstätte arbeitet die Person?",
+          "help": "Nur, wenn Sie mehrere Betriebe oder Betriebsstätten haben.",
+          "required": false,
+          "purpose": "Zuordnung zu Betrieb und Betriebsnummer; Lohnsteuer-Betriebsstätte"
+        },
+        {
+          "id": "agAbteilung",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Abteilung",
+          "required": false,
+          "purpose": "Zuordnung im Betrieb"
+        },
+        {
+          "id": "agGefahrtarif",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Gefahrtarifstelle der Unfallversicherung",
+          "question": "Zu welcher Gefahrtarifstelle Ihrer Berufsgenossenschaft gehört die Tätigkeit?",
+          "help": "Steht im Veranlagungsbescheid der Berufsgenossenschaft; nur nötig, wenn Sie mehrere Gefahrtarifstellen haben.",
+          "required": false,
+          "purpose": "Lohnnachweis an die Unfallversicherung (§ 99 SGB VII)"
+        },
+        {
+          "id": "agBeziehung",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Beziehung zum Arbeitgeber (Statuskennzeichen)",
+          "question": "Ist die Person mit dem Arbeitgeber verheiratet oder verwandt, oder ist sie geschäftsführende Gesellschafterin oder geschäftsführender Gesellschafter einer GmbH?",
+          "help": "Die Angabe gehört in die Anmeldung zur Sozialversicherung. Ist sie nicht „Nein“, prüft die Deutsche Rentenversicherung von sich aus, ob eine Beschäftigung vorliegt.",
+          "required": true,
+          "purpose": "Statuskennzeichen in der Anmeldung (§ 28a Abs. 3 S. 2 Nr. 1 Buchst. d, e SGB IV); Statusfeststellung durch die Deutsche Rentenversicherung (§ 7a Abs. 1 S. 2 SGB IV)",
+          "options": [
+            {
+              "id": "keine",
+              "label": "Nein"
+            },
+            {
+              "id": "ehegatte",
+              "label": "Ehegatte oder eingetragene Lebenspartnerin bzw. eingetragener Lebenspartner des Arbeitgebers"
+            },
+            {
+              "id": "abkoemmling",
+              "label": "Kind, Enkelkind oder anderer Abkömmling des Arbeitgebers"
+            },
+            {
+              "id": "ggf",
+              "label": "geschäftsführende Gesellschafterin oder geschäftsführender Gesellschafter einer GmbH"
+            }
+          ]
+        },
+        {
           "id": "agArbeitnehmerueberlassung",
           "role": "arbeitgeber",
           "type": "boolean",
@@ -2472,12 +2967,36 @@
           "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Vertragsform); Ende der Beschäftigung in der Lohnabrechnung"
         },
         {
+          "id": "agBefristungsart",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Art der Befristung",
+          "question": "Wie ist das Arbeitsverhältnis befristet?",
+          "required": true,
+          "showIf": {
+            "field": "agBefristet",
+            "equals": true
+          },
+          "because": "Nur bei einer Befristung kommt es darauf an, ob sie an ein Datum oder an einen Zweck geknüpft ist (§ 3 Abs. 1, § 15 TzBfG).",
+          "purpose": "Ende des Arbeitsverhältnisses (§ 15 Abs. 1, 2 TzBfG)",
+          "options": [
+            {
+              "id": "kalender",
+              "label": "bis zu einem festen Datum"
+            },
+            {
+              "id": "zweck",
+              "label": "bis ein Zweck erreicht ist (zweckbefristet)"
+            }
+          ]
+        },
+        {
           "id": "agBefristetBis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Befristet bis",
           "question": "Bis wann ist das Arbeitsverhältnis befristet?",
-          "help": "Bei einer Zweckbefristung das voraussichtliche Ende. Diese Angabe ersetzt nicht die schriftliche Befristungsabrede (§ 14 Abs. 4 TzBfG).",
+          "help": "Bei einer Zweckbefristung das voraussichtliche Ende.",
           "required": true,
           "purpose": "Ende der Beschäftigung in der Lohnabrechnung",
           "showIf": {
@@ -2485,6 +3004,116 @@
             "equals": true
           },
           "because": "Nur ein befristetes Arbeitsverhältnis hat ein vorgesehenes Ende."
+        },
+        {
+          "id": "agBefristungsgrund",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Grund der Befristung",
+          "question": "Aus welchem Grund ist das Arbeitsverhältnis befristet?",
+          "required": true,
+          "showIf": {
+            "field": "agBefristet",
+            "equals": true
+          },
+          "because": "Nur eine Befristung braucht einen Sachgrund oder die Voraussetzungen einer Befristung ohne Sachgrund (§ 14 Abs. 1, 2 TzBfG).",
+          "purpose": "Wirksamkeit der Befristung (§ 14 Abs. 1, 2 TzBfG)",
+          "options": [
+            {
+              "id": "ohneSachgrund",
+              "label": "ohne Sachgrund (höchstens zwei Jahre)"
+            },
+            {
+              "id": "krankheit",
+              "label": "Krankheitsvertretung"
+            },
+            {
+              "id": "urlaub",
+              "label": "Urlaubsvertretung"
+            },
+            {
+              "id": "mutterschutzElternzeit",
+              "label": "Vertretung während Mutterschutz oder Elternzeit"
+            },
+            {
+              "id": "erprobung",
+              "label": "zur Erprobung"
+            },
+            {
+              "id": "projekt",
+              "label": "für ein Projekt mit begrenzter Dauer, zum Beispiel ein Forschungsprojekt"
+            },
+            {
+              "id": "sonstiges",
+              "label": "anderer Sachgrund"
+            }
+          ]
+        },
+        {
+          "id": "agBefristungsgrundText",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Anderer Sachgrund",
+          "question": "Welcher Sachgrund liegt vor?",
+          "required": true,
+          "showIf": {
+            "field": "agBefristungsgrund",
+            "equals": "sonstiges"
+          },
+          "because": "Ein anderer Sachgrund muss benannt werden, damit die Befristung geprüft werden kann (§ 14 Abs. 1 TzBfG).",
+          "purpose": "Wirksamkeit der Befristung (§ 14 Abs. 1 TzBfG)"
+        },
+        {
+          "id": "agBefristungSchriftlich",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Befristung schriftlich vereinbart",
+          "question": "Ist die Befristung schriftlich vereinbart?",
+          "required": true,
+          "showIf": {
+            "field": "agBefristet",
+            "equals": true
+          },
+          "because": "Eine Befristung ist nur mit schriftlicher Vereinbarung wirksam; sonst gilt das Arbeitsverhältnis als unbefristet (§ 14 Abs. 4, § 16 TzBfG).",
+          "purpose": "Wirksamkeit der Befristung (§ 14 Abs. 4, § 16 TzBfG)",
+          "options": [
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "nein",
+              "label": "Noch nicht"
+            }
+          ]
+        },
+        {
+          "id": "agBefristungSchriftlichAm",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Befristung schriftlich vereinbart am",
+          "question": "An welchem Tag wurde die Befristung schriftlich vereinbart?",
+          "required": true,
+          "showIf": {
+            "field": "agBefristungSchriftlich",
+            "equals": "ja"
+          },
+          "because": "Die Schriftform muss vor dem ersten Arbeitstag erfüllt sein; das Datum zeigt, ob das so war (§ 14 Abs. 4 TzBfG).",
+          "purpose": "Wirksamkeit der Befristung (§ 14 Abs. 4 TzBfG)"
+        },
+        {
+          "id": "agBefristungAussicht",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Mindestens zwei Monate mit Aussicht auf Weiterbeschäftigung",
+          "question": "Ist die befristete Beschäftigung auf mindestens zwei Monate angelegt, und besteht Aussicht auf Weiterbeschäftigung?",
+          "required": true,
+          "showIf": {
+            "field": "agBefristet",
+            "equals": true
+          },
+          "because": "Nur bei einer befristeten Beschäftigung fragen die Bescheinigungen beim Austritt danach (Fundstelle noch zu prüfen).",
+          "purpose": "Angaben für die Entgelt- und Arbeitsbescheinigung beim Austritt"
         },
         {
           "id": "agArbeitszeitform",
@@ -2546,6 +3175,21 @@
               "label": "Bitte die lohnabrechnende Stelle prüfen lassen"
             }
           ]
+        },
+        {
+          "id": "agPauschalsteuerAbgewaelzt",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Abwälzung der Pauschalsteuer",
+          "question": "Trägt die Person die Pauschalsteuer selbst (Abwälzung)?",
+          "help": "Nur, wenn das arbeitsvertraglich vereinbart ist.",
+          "required": true,
+          "showIf": {
+            "field": "agBesteuerung",
+            "in": ["pauschal2", "pauschal20", "pauschal25", "pauschal5"]
+          },
+          "because": "Nur eine Pauschalsteuer kann auf die Person abgewälzt werden; sie mindert dann nicht die Bemessungsgrundlage (§ 40 Abs. 3 S. 2, § 40a Abs. 5 EStG).",
+          "purpose": "Lohnabrechnung bei Pauschalsteuer (§ 40 Abs. 3, § 40a Abs. 5 EStG)"
         },
         {
           "id": "agKostenstelle",
@@ -3202,6 +3846,14 @@
               "label": "Vergütung im Monat (brutto)",
               "required": true,
               "purpose": "Ausbildungsvergütung"
+            },
+            {
+              "id": "avGueltigAb",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "gültig ab",
+              "required": true,
+              "purpose": "Ausbildungsvergütung je Ausbildungsjahr (§ 17 BBiG)"
             }
           ]
         },
@@ -3241,12 +3893,12 @@
           "label": "Erwarteter Monatsverdienst",
           "question": "Mit welchem Verdienst im Monat rechnen Sie im Durchschnitt?",
           "required": true,
-          "purpose": "Prognose des regelmäßigen Monatsverdiensts für Minijob-Grenze und Übergangsbereich (§ 8 Abs. 1 Nr. 1 SGB IV, § 20 Abs. 2 SGB IV; Geringfügigkeits-Richtlinien B 2.2)",
+          "purpose": "Prognose des regelmäßigen Monatsverdiensts für Minijob-Grenze, Übergangsbereich und Jahresarbeitsentgeltgrenze der Krankenversicherung (§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV; § 6 Abs. 1 Nr. 1 SGB V; Geringfügigkeits-Richtlinien B 2.2)",
           "showIf": {
             "field": "agEntgeltArt",
             "in": ["stundenlohn", "leistungslohn", "pauschale"]
           },
-          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), steht er nicht von vornherein fest. Minijob-Grenze und Übergangsbereich verlangen eine vorausschauende Schätzung des Monatsverdiensts (Geringfügigkeits-Richtlinien B 2.2); deshalb ist sie Pflicht.",
+          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), steht er nicht von vornherein fest. Minijob-Grenze, Übergangsbereich und die Frage, ob die Person wegen Überschreitens der Jahresarbeitsentgeltgrenze freiwillig oder privat krankenversichert ist, verlangen eine vorausschauende Schätzung; deshalb ist sie Pflicht.",
           "help": "Den durchschnittlichen Bruttoverdienst im Monat, mit dem Sie rechnen – geschätzt genügt. Daran prüft die lohnabrechnende Stelle die Minijob-Grenze und den Übergangsbereich."
         },
         {
@@ -3500,6 +4152,20 @@
             "equals": true
           },
           "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es Betrag, Sparrate und das Anlageinstitut für die Überweisung."
+        },
+        {
+          "id": "agVwlSeit",
+          "role": "arbeitgeber",
+          "type": "month",
+          "label": "Vertrag seit",
+          "question": "Seit wann besteht der Vertrag?",
+          "required": true,
+          "showIf": {
+            "field": "agVwl",
+            "equals": true
+          },
+          "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es den Beginn des Vertrags für die Zahlungen.",
+          "purpose": "Vermögenswirksame Leistungen: Beginn der Zahlungen"
         },
         {
           "id": "agVwlIban",
@@ -3774,6 +4440,10 @@
               "label": "Arbeitsvertrag oder Nachweis der Vertragsbedingungen"
             },
             {
+              "id": "lstbVorarbeitgeber",
+              "label": "Lohnsteuerbescheinigungen früherer Arbeitgeber in diesem Jahr"
+            },
+            {
               "id": "steuerId",
               "label": "Mitteilung der Steuer-Identifikationsnummer"
             },
@@ -3852,6 +4522,14 @@
             {
               "id": "kirchensteuer",
               "label": "Erklärung zur Kirchensteuer bei Pauschalierung"
+            },
+            {
+              "id": "versorgungswerkBefreiung",
+              "label": "Befreiungsbescheid der Rentenversicherung (Versorgungswerk)"
+            },
+            {
+              "id": "sozialkasse",
+              "label": "Unterlagen der Sozialkasse (z. B. SOKA-BAU, Maler)"
             }
           ]
         }
@@ -3937,7 +4615,7 @@
     "Hat der Betrieb einen Betriebsrat, bedarf der Personalfragebogen seiner Zustimmung (§ 94 Abs. 1 BetrVG).",
     "Die Angabe „Befristet bis“ ist nicht die Befristungsabrede. Eine Befristung bedarf der Schriftform (§ 14 Abs. 4 TzBfG) und wird gesondert vereinbart.",
     "Der Fragebogen ist nicht der Nachweis der wesentlichen Vertragsbedingungen nach dem Nachweisgesetz.",
-    "Nach der Konfession fragt der Fragebogen nicht: Das Kirchensteuermerkmal erhält der Arbeitgeber mit den elektronischen Lohnsteuerabzugsmerkmalen (ELStAM).",
+    "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal fragt der Fragebogen nur als vorläufige Angaben für die erste Abrechnung (§ 39c Abs. 1 S. 2 EStG); danach gelten die elektronischen Lohnsteuerabzugsmerkmale (ELStAM), die der Arbeitgeber abruft.",
     "Eine Schwerbehinderung oder Gleichstellung trägt der Arbeitgeber nur ein, wenn die Person sie freiwillig mitgeteilt und nachgewiesen hat. Laut BAG ist die Frage „jedenfalls nach sechs Monaten“ zulässig (Urteil vom 16.02.2012 – 6 AZR 553/10); vorher gilt sie im Fragebogen als freiwillig. Gleichgestellte erhalten keinen Zusatzurlaub (§ 151 Abs. 3 SGB IX).",
     "Die Elterneigenschaft und die Zahl der Kinder unter 25 ruft der Arbeitgeber digital beim Bundeszentralamt für Steuern ab (§ 55a SGB XI); er erfährt dabei keine Namen oder Geburtsdaten. Einzelangaben fragt der Fragebogen nur für Kinder, die dort voraussichtlich fehlen; sie werden mit einer Urkundenkopie nachgewiesen, die als eigene Unterlage aufbewahrt wird.",
     "Die Beiträge zur privaten Kranken- und Pflegeversicherung erhält der Arbeitgeber seit 2026 als elektronische Lohnsteuerabzugsmerkmale (§ 39 Abs. 4 Nr. 4 EStG); der Fragebogen fragt deshalb keinen Betrag ab. Die Bescheinigung des Versicherers über die Zuschussfähigkeit (§ 257 Abs. 2a SGB V) bleibt nötig.",
@@ -4424,6 +5102,137 @@
       },
       "message": "Kinder, die voraussichtlich nicht digital abrufbar sind: nach dem Abruf beim Bundeszentralamt für Steuern die Nachweise prüfen.",
       "source": "§ 55a SGB XI"
+    },
+    {
+      "id": "versorgungswerkOhneBefreiung",
+      "when": {
+        "field": "versorgungswerk",
+        "equals": "offen"
+      },
+      "message": "Mitglied eines Versorgungswerks ohne Befreiung für diese Beschäftigung: Den Antrag innerhalb von drei Monaten nach Beginn stellen, sonst wirkt die Befreiung erst ab Antrag.",
+      "source": "§ 6 Abs. 1 S. 1 Nr. 1, Abs. 4 SGB VI"
+    },
+    {
+      "id": "svAuslandOhneA1",
+      "when": {
+        "all": [
+          {
+            "field": "svAusland",
+            "equals": true
+          },
+          {
+            "field": "svAuslandA1",
+            "equals": false
+          }
+        ]
+      },
+      "message": "In einem anderen Staat sozialversichert, aber ohne A1-Bescheinigung: Zuständigkeit klären und die Bescheinigung anfordern lassen.",
+      "source": "Art. 11 ff. VO (EG) Nr. 883/2004; Art. 19 Abs. 2 VO (EG) Nr. 987/2009"
+    },
+    {
+      "id": "statusfeststellung",
+      "when": {
+        "not": {
+          "field": "agBeziehung",
+          "equals": "keine"
+        }
+      },
+      "message": "Statuskennzeichen gesetzt (Ehegatte, Lebenspartner, Abkömmling oder geschäftsführender GmbH-Gesellschafter): Die Einzugsstelle beantragt die Statusfeststellung bei der Deutschen Rentenversicherung; die Unterlagen dafür bereithalten.",
+      "source": "§ 7a Abs. 1 S. 2, § 28a Abs. 3 S. 2 Nr. 1 Buchst. d, e SGB IV"
+    },
+    {
+      "id": "befristungNichtSchriftlich",
+      "when": {
+        "field": "agBefristungSchriftlich",
+        "equals": "nein"
+      },
+      "message": "Die Befristung ist noch nicht schriftlich vereinbart: vor dem ersten Arbeitstag nachholen, sonst gilt das Arbeitsverhältnis als unbefristet.",
+      "source": "§ 14 Abs. 4, § 16 TzBfG"
+    },
+    {
+      "id": "befristungNachBeginn",
+      "test": {
+        "fn": "spaeterAls",
+        "args": ["agBefristungSchriftlichAm", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Die Befristung wurde erst nach dem ersten Arbeitstag schriftlich vereinbart; sie ist dann in der Regel unwirksam, und das Arbeitsverhältnis gilt als unbefristet.",
+      "source": "§ 14 Abs. 4, § 16 TzBfG"
+    },
+    {
+      "id": "sachgrundlosVorbeschaeftigung",
+      "when": {
+        "all": [
+          {
+            "field": "agBefristungsgrund",
+            "equals": "ohneSachgrund"
+          },
+          {
+            "field": "agFrueherBeschaeftigt",
+            "equals": true
+          }
+        ]
+      },
+      "message": "Sachgrundlose Befristung trotz früherer Beschäftigung beim selben Arbeitgeber: grundsätzlich unzulässig, Ausnahmen nur bei sehr lange zurückliegender oder ganz anders gearteter Vorbeschäftigung.",
+      "source": "§ 14 Abs. 2 S. 2 TzBfG; BVerfG, Beschluss vom 06.06.2018 – 1 BvL 7/14"
+    },
+    {
+      "id": "mehrfachUeberBbgMonatsentgelt",
+      "when": {
+        "field": "weitereBeschaeftigung",
+        "equals": true
+      },
+      "test": {
+        "fn": "ueberBeitragsbemessungsgrenze",
+        "args": ["agMonatsentgelt", "jobEntgeltMonat", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Mehrere Beschäftigungen zusammen über der Beitragsbemessungsgrenze: Die Beiträge werden im Verhältnis der Entgelte verteilt; die Krankenkasse ermittelt nach den Entgeltmeldungen das Gesamtentgelt und übermittelt es den Arbeitgebern. Minijobs zählen dabei grundsätzlich nicht mit – bitte prüfen.",
+      "source": "§ 22 Abs. 2, § 26 Abs. 4 SGB IV"
+    },
+    {
+      "id": "mehrfachUeberBbgErwartet",
+      "when": {
+        "field": "weitereBeschaeftigung",
+        "equals": true
+      },
+      "test": {
+        "fn": "ueberBeitragsbemessungsgrenze",
+        "args": ["agErwartetMonat", "jobEntgeltMonat", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Mehrere Beschäftigungen zusammen voraussichtlich über der Beitragsbemessungsgrenze: Die Beiträge werden im Verhältnis der Entgelte verteilt; die Krankenkasse ermittelt nach den Entgeltmeldungen das Gesamtentgelt und übermittelt es den Arbeitgebern. Minijobs zählen dabei grundsätzlich nicht mit – bitte prüfen.",
+      "source": "§ 22 Abs. 2, § 26 Abs. 4 SGB IV"
+    },
+    {
+      "id": "jaegMonatsentgelt",
+      "test": {
+        "fn": "ueberJahresarbeitsentgeltgrenze",
+        "args": ["agMonatsentgelt", "jobEntgeltMonat", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Das Entgelt – mit weiteren Beschäftigungen – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Einmalzahlungen mit Anspruch zählen mit, Minijobs nicht.",
+      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V"
+    },
+    {
+      "id": "jaegErwartet",
+      "test": {
+        "fn": "ueberJahresarbeitsentgeltgrenze",
+        "args": ["agErwartetMonat", "jobEntgeltMonat", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Das erwartete Entgelt – mit weiteren Beschäftigungen – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Einmalzahlungen mit Anspruch zählen mit, Minijobs nicht.",
+      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V"
     }
+  ],
+  "validity": {
+    "field": "agBeschaeftigungsbeginn",
+    "from": "2026-01-01",
+    "until": "2026-12-31"
+  },
+  "limits": [
+    "Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.",
+    "Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn im Jahr 2026.",
+    "Bei mehreren Beschäftigungen erfasst er die Entgelte und weist auf die Beitragsbemessungs- und die Jahresarbeitsentgeltgrenze hin. Die anteilige Beitragsberechnung und das Verfahren mit der Krankenkasse übernimmt die Lohnabrechnung.",
+    "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal sind nur vorläufige Angaben für die erste Abrechnung; maßgeblich sind die abgerufenen ELStAM.",
+    "Erklärungen, die eigenhändig unterschrieben werden (Befreiung von der Rentenversicherung im Minijob, ihre Aufhebung, der Verzicht auf die Versicherungsfreiheit, die Kirchensteuererklärung bei Pauschalsteuer), bleiben auf Papier; der Fragebogen fragt den Wunsch ab und dokumentiert den Eingang.",
+    "Er ersetzt weder den Arbeitsvertrag noch die schriftliche Befristungsabrede (§ 14 Abs. 4 TzBfG) noch den Nachweis der Vertragsbedingungen nach dem Nachweisgesetz.",
+    "Nachweise wie Urkunden für Kinder, Bescheinigungen und Bescheide werden nicht in der App erfasst; der Arbeitgeber vermerkt nur, was vorliegt.",
+    "Beschäftigung mit Bezug zum Ausland (A1, Entsendung, Doppelbesteuerung) und Branchenregeln (Sozialkassen, Tarifverträge) erfasst er nur als Hinweis für die Prüfung."
   ]
 }

@@ -6,6 +6,7 @@ import { fieldDependencies } from './dependencies';
 import { placeholderIds } from './display';
 import { describeFieldRules, fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
+import { describeValidity } from './validity';
 import type { Condition, FieldDefinition, FieldId, FormDefinition, RoleDefinition } from './model';
 
 export interface FlowStep {
@@ -28,6 +29,8 @@ export interface FlowStep {
   fromRole?: string;
   /** Numbers of the questions this answer opens or makes required. */
   opens: number[];
+  /** Help text of a decision point: it often says why the question comes first. */
+  help?: string;
 }
 
 export interface FlowSection {
@@ -50,6 +53,10 @@ export interface FlowPlan {
   version: string;
   title: string;
   definitionHash: string;
+  /** "gilt für „…“ vom … bis …", when the version states its validity. */
+  validity?: string;
+  /** What the questionnaire does not cover. */
+  limits: string[];
   /** Notes on the order of the stations. */
   order: string[];
   stations: FlowStation[];
@@ -180,6 +187,10 @@ function stationOf(definition: FormDefinition, role: RoleDefinition): FlowStatio
         ? { fromRole: `${roleLabel(definition, field.fromRole.role)}: „${source.label}“` }
         : {}),
       opens: numbered([...(dependencies.get(field.id)?.enables ?? []), ...requiredBy(field.id)]),
+      ...(field.help !== undefined &&
+      ((dependencies.get(field.id)?.enables.length ?? 0) > 0 || requiredBy(field.id).length > 0)
+        ? { help: shown(definition, field.help) }
+        : {}),
     };
   };
   return {
@@ -206,6 +217,10 @@ export function flowPlan(form: RegisteredForm): FlowPlan {
     version: definition.version,
     title: definition.title,
     definitionHash: form.definitionHash,
+    ...(describeValidity(definition) === undefined
+      ? {}
+      : { validity: describeValidity(definition) ?? '' }),
+    limits: definition.limits ?? [],
     order: orderNotes(definition),
     stations: definition.roles.map((role) => stationOf(definition, role)),
   };

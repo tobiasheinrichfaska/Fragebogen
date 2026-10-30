@@ -31,7 +31,7 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 | [`03_abschluss.md`](03_abschluss.md)                   | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung        |
 | [`04_pdf.md`](04_pdf.md)                               | PDF erstellen und wieder öffnen, neu gespeicherte PDF, Scan und Fotos der QR-Codes, Link         |
 | [`05_kanzlei.md`](05_kanzlei.md)                       | Kanzlei: viele Dateien einlesen, zusammenführen, Konflikte entscheiden, PDF für die Personalakte |
-| [`06_aendern_und_ablauf.md`](06_aendern_und_ablauf.md) | Angaben nachträglich ändern, Minijob-Steuer vom Arbeitgeber, Ablaufplan lesen                    |
+| [`06_aendern_und_ablauf.md`](06_aendern_und_ablauf.md) | Angaben ändern, Minijob-Steuer, Ablaufplan, Gültigkeit, Grenzen, Mehrfachbeschäftigung           |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md)       | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts         |
 
 ## Bitte nicht als Fehler melden

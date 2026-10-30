@@ -7,6 +7,7 @@
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldStates, infoBlocksOfRole, type PartData } from './form';
 import type { FieldId, FormDefinition, Part, RoleId } from './model';
+import { describeValidity, outsideValidity } from './validity';
 
 export type QuestionState = 'answered' | 'deferred' | 'open';
 
@@ -176,6 +177,11 @@ export interface InterviewSummary {
   inactive: { fieldId: FieldId; reason: string }[];
   /** Notices of the role not yet confirmed. */
   missingNotices: string[];
+  /**
+   * The reference date this role states lies outside the form version's validity, as people read
+   * it, with the validity — signing is refused until it fits.
+   */
+  outsideValidity?: { value: string; validity: string };
   readyToSign: boolean;
 }
 
@@ -199,6 +205,7 @@ export function interviewSummary(
         (draft.data[field.id] ?? null) !== null,
     )
     .map((field) => ({ fieldId: field.id, reason: describeFieldRules(definition, field).input }));
+  const outside = outsideValidity(definition, role, draft.data);
   const missingNotices = infoBlocksOfRole(definition, role)
     .map((block) => block.id)
     .filter((id) => !acknowledged.includes(id));
@@ -207,6 +214,10 @@ export function interviewSummary(
     deferred,
     inactive,
     missingNotices,
-    readyToSign: missingRequired.length === 0 && missingNotices.length === 0,
+    ...(outside === undefined
+      ? {}
+      : { outsideValidity: { value: outside, validity: describeValidity(definition) ?? '' } }),
+    readyToSign:
+      missingRequired.length === 0 && missingNotices.length === 0 && outside === undefined,
   };
 }

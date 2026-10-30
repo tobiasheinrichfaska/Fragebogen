@@ -465,5 +465,14 @@
     "Den geldwerten Vorteil berechnet die Lohnabrechnung, nicht die App. Bei einem Fahrzeugwechsel ist ein neuer Fragebogen nötig, bei geänderten Bedingungen eine neue Fassung."
   ],
   "partLinks": [["arbeitgeber", "person"]],
-  "signatureBasis": "Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier."
+  "signatureBasis": "Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier.",
+  "validity": {
+    "field": "agUeberlassenAb",
+    "from": "2026-01-01"
+  },
+  "limits": [
+    "Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.",
+    "Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.",
+    "Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung."
+  ]
 }

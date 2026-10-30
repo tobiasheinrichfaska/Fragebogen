@@ -17,6 +17,7 @@ export type IssueCode =
   | 'month.format'
   | 'month.invalid'
   | 'plz.format'
+  | 'validity.outside'
   | 'iban.format'
   | 'iban.length'
   | 'iban.checksum'
@@ -50,6 +51,8 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'month.format': 'Bitte einen Monat wie 03.2026 eingeben.',
   'month.invalid': 'Diesen Monat gibt es nicht.',
   'plz.format': 'Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.',
+  'validity.outside':
+    'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung. Unterschreiben und weitergeben lässt sich der Fragebogen so nicht; bitte die Fassung verwenden, die für dieses Datum gilt.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
   'iban.length': 'Die IBAN hat für dieses Land nicht die richtige Länge.',
   'iban.checksum': 'Die IBAN stimmt nicht (Prüfziffer). Bitte noch einmal vergleichen.',

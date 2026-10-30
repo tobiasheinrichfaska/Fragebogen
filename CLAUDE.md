@@ -69,6 +69,9 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/mergeRecord.ts`                            | `mergeHashOf` (record + receipts + all part hashes), `linkedQuestionnaireIds`                                                                                                                                                                                                                                                                                  |
 | `src/logic/kanzlei.ts`                                | Kanzlei station: inbox of decoded files (duplicates by SHA-256), human decisions (`decide`/`withdraw`, a new version choice replaces the old), `mergeInbox` with the forms the files describe, `withKanzleiReceipts` (one receipt per file with its parts, arrival time, never twice for a part; renews the merge hash; refused receipts returned with reason) |
 | `src/logic/hints.ts`                                  | Check hints (Prüfhinweise): `checkHints` over the current parts of all roles (hidden fields count as unanswered; only once every named role has a part), named tests `HINT_TESTS` (Regelaltersgrenze from birth date and start of employment), `describeHint` for the catalogue; informational only, never sealed                                              |
+| `src/logic/validity.ts`                               | Validity of a form version: `withinValidity` (date or month, inclusive), `describeValidity` (German), `validityRole`, `outsideValidity` (reference date of a role's data outside the period)                                                                                                                                                                   |
+| `src/logic/data/rechengroessen.ts`                    | `RECHENGROESSEN` per year (SVBezGrV): JAEG, BBG KV/PV and RV — fixed reference data for the check hints                                                                                                                                                                                                                                                        |
+| `tests/forms/review1030b.test.ts`                     | Review of 2026-10-30: payment way and BIC (`startsWith`), preliminary tax data, hints (multiple jobs over BBG/JAEG, fixed term, status marker, Versorgungswerk, A1, missing year), Sozialkasse, validity (warning, refused seal, blocker, rules)                                                                                                               |
 | `src/logic/regelaltersgrenze.ts`                      | Regelaltersgrenze by birth year (§ 235 Abs. 2 SGB VI), day it is reached (§§ 187, 188 BGB), `monthAfter`                                                                                                                                                                                                                                                       |
 | `src/logic/consistency.ts`                            | `contradictions` from the form's `consistencyRules` (text compared case-insensitively)                                                                                                                                                                                                                                                                         |
 | `src/logic/provenance.ts`                             | `signatureLayout`: one numbered signature line per sealed version, per field the covering lines and a footnote when changed in a later version                                                                                                                                                                                                                 |
@@ -293,6 +296,20 @@ Key design decisions (details in `docs/plan.md`):
   without that part it is asked normally (own extra option "Weiß ich nicht."). Conditions stay
   single-role and a seal still covers only its own data; a later contradiction becomes an automatic
   check hint (`fromRole:<field>`). The flow plan recommends that station first.
+- **Validity and limits of every form version** (Tobias 2026-10-30): `validity` names a required,
+  always available date or month field (reference date, e.g. the first working day) and the period
+  it must lie in; outside → warning at input (`validity.outside`), seal refused (`outsideValidity`),
+  summary not ready, transmission blocked. `limits` says what the questionnaire does not cover. Both
+  mandatory in drafts (test), shown on the start screen (validity), role choice, Kanzlei form view,
+  PDF, catalogue and flow plan. The flow plan shows only the newest version of each form.
+- **Preliminary tax data** (Tobias 2026-10-30, replaces "no Konfession"): tax class, factor, child
+  allowances and church tax for the first payroll while the ELStAM cannot be retrieved
+  (§ 39c Abs. 1 S. 2 EStG); only without a flat-rate tax and, for class/allowances, only for the first
+  employment.
+- **Multiple jobs above the BBG** (Tobias 2026-10-30): the person states every other job with its
+  monthly pay; named hint tests sum a table column with the employer's pay against the BBG KV/PV and
+  the JAEG of the start year (`RECHENGROESSEN`); a missing year is reported, never guessed. The
+  apportionment (§ 22 Abs. 2 SGB IV) stays with the payroll and is listed as a limit.
 - **Every condition is explained** (Tobias 2026-10-30: "klarer Ablaufplan, weshalb welches Feld
   Bedingung für welches andere ist"): `because` on fields with `showIf`/`requiredIf`/`fromRole`
   and on conditional roles; mandatory in drafts (test), shown in the catalogue and in
@@ -355,6 +372,12 @@ Key design decisions (details in `docs/plan.md`):
   missing answers instead.
 - **Church tax with flat-rate 20 %, 25 % or 5 %**: the declaration of non-membership (official
   form) is not part of the questionnaire; it stays on paper.
+- **Personengruppe and Beitragsgruppen are not derived** yet — the questionnaire collects the facts
+  and gives hints; a derivation as a proposal for the Kanzlei is an open idea.
+- **Rechengrößen only for 2026** (`RECHENGROESSEN`); later years must be added each year — until
+  then the hints say the values are missing.
+- **One version per form at a time:** the start screen offers the newest version; picking the
+  version by reference date (several valid versions side by side) is not built yet.
 - **Notice confirmations are not saved in the interim file** — they must be given again in the
   session that signs (deliberate: they belong to the signing).
 - **No CSP yet:** the strict Content-Security-Policy and the built-file no-network test arrive in

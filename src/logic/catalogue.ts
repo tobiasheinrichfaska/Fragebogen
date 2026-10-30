@@ -9,6 +9,7 @@ import { describeHint } from './hints';
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
 import { isTestVersion, type RegisteredForm } from './formRegistry';
+import { describeValidity } from './validity';
 import type {
   AcknowledgementKind,
   FieldDefinition,
@@ -255,6 +256,7 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       [
         ['Formular', `${definition.id}, Version ${definition.version}`],
         ['Status', statusLabel(status, definition.version)],
+        ['Gültigkeit', describeValidity(definition) ?? 'nicht angegeben'],
         ['Definition (SHA-256)', form.definitionHash],
         ['Unterschrift', SIGNATURE_POLICY_LABELS[definition.signaturePolicy]],
         ...(definition.signatureBasis === undefined
@@ -377,6 +379,7 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       ),
     );
   }
+  lines.push('', '## Was dieser Fragebogen nicht abdeckt', '', ...list(definition.limits ?? []));
   lines.push('', '## Rechtliche Hinweise', '', ...list(definition.legalNotes), '');
   return lines.join('\n');
 }

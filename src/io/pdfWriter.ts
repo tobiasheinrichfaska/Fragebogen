@@ -4,6 +4,7 @@
 // and the data pages — the package as text lines and as QR codes for the paper path. Target
 // PDF/A-2u. Every page carries "Fragebogen-ID · Daten · Formular · Seite x von y".
 import { PDFDocument, PDFString, rgb, type PDFFont, type PDFPage, type RGB } from '@cantoo/pdf-lib';
+import { describeValidity } from '../logic/validity';
 import fontkit from '@cantoo/fontkit';
 import { APP_VERSION } from '../appInfo';
 import type { AppConfig } from '../logic/appConfig';
@@ -438,6 +439,15 @@ export async function writeQuestionnairePdf(
     layout.text(`SHA-256 ${line.contentHash}`, { font: fonts.mono, size: 7, color: MUTED, gap: 8 });
   }
   layout.rule();
+  const validity = describeValidity(definition);
+  if (validity !== undefined) {
+    layout.text(`Diese Formularfassung ${validity}.`, { size: 7.5, color: MUTED, gap: 2 });
+  }
+  if ((definition.limits ?? []).length > 0) {
+    layout.text('Was dieser Fragebogen nicht abdeckt:', { size: 7.5, color: MUTED, gap: 1 });
+    for (const limit of definition.limits ?? [])
+      layout.text(`– ${limit}`, { size: 7.5, color: MUTED, gap: 1 });
+  }
   for (const legal of definition.legalNotes)
     layout.text(legal, { size: 7.5, color: MUTED, gap: 2 });
 

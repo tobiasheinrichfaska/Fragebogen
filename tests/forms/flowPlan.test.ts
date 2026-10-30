@@ -4,6 +4,7 @@
 import { join } from 'node:path';
 import { flowPlanPage } from '../../src/build/flowPlanPage';
 import { flowPlan, unexplainedConditions, type FlowStep } from '../../src/logic/flowPlan';
+import { compareVersions } from '../../src/logic/formRegistry';
 import {
   DRAFTS_DIR,
   FORMS_DIR,
@@ -12,7 +13,8 @@ import {
   registeredFrom,
 } from '../support/formFiles';
 
-const entries = [
+// One plan per form: the newest version (a draft before the published one); older versions are named.
+const allVersions = [
   ...definitionFiles(FORMS_DIR).map((file) => ({ file, status: 'Veröffentlicht (Testfassung)' })),
   ...definitionFiles(DRAFTS_DIR).map((file) => ({
     file,
@@ -21,6 +23,25 @@ const entries = [
 ]
   .filter(({ file }) => file.file.endsWith('.json') && file.file !== 'published.json')
   .map(({ file, status }) => ({ form: registeredFrom(readJson(file.path)), status }));
+const entries = allVersions
+  .filter(
+    ({ form }) =>
+      !allVersions.some(
+        (other) =>
+          other.form.definition.id === form.definition.id &&
+          compareVersions(other.form.definition.version, form.definition.version) > 0,
+      ),
+  )
+  .map((entry) => ({
+    ...entry,
+    older: allVersions
+      .filter(
+        (other) =>
+          other.form.definition.id === entry.form.definition.id &&
+          other.form.definition.version !== entry.form.definition.version,
+      )
+      .map((other) => `${other.form.definition.version} (eingefroren)`),
+  }));
 
 const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 
@@ -32,14 +53,14 @@ function stepsOf(role: string): FlowStep[] {
 describe('docs/ablaufplan.html', () => {
   it('matches the definitions', async () => {
     const page = flowPlanPage(
-      entries.map(({ form, status }) => ({ plan: flowPlan(form), status })),
+      entries.map(({ form, status, older }) => ({ plan: flowPlan(form), status, older })),
     );
     await expect(page).toMatchFileSnapshot('../../docs/ablaufplan.html');
   });
 
   it('loads nothing from outside and runs no script', () => {
     const page = flowPlanPage(
-      entries.map(({ form, status }) => ({ plan: flowPlan(form), status })),
+      entries.map(({ form, status, older }) => ({ plan: flowPlan(form), status, older })),
     );
     expect(page).not.toMatch(/<script|<link|src=|https?:\/\//);
   });
@@ -47,7 +68,7 @@ describe('docs/ablaufplan.html', () => {
 
 describe('every draft explains its conditions', () => {
   it.each(
-    entries
+    allVersions
       .filter((entry) => entry.status.startsWith('Entwurf'))
       .map((entry) => [`${entry.form.definition.id} ${entry.form.definition.version}`, entry.form]),
   )('%s', (_name, form) => {
@@ -82,6 +103,20 @@ describe('flow plan of the Personalfragebogen', () => {
     const guardian = flowPlan(personal).stations.find((s) => s.role.id === 'vertretung');
     expect(guardian?.needed).toContain('unter 18');
     expect(guardian?.because).toContain('§ 106 BGB');
+  });
+
+  it('shows only the newest version of each form and names the older one', () => {
+    const sofort = entries.filter((entry) => entry.form.definition.id === 'sofortmeldung');
+    expect(sofort.map((entry) => entry.form.definition.version)).toEqual(['0.2.0']);
+    expect(sofort[0]?.older).toEqual(['0.1.0 (eingefroren)']);
+  });
+
+  it('every draft states its validity and what it does not cover', () => {
+    for (const { form, status } of allVersions) {
+      if (!status.startsWith('Entwurf')) continue;
+      expect(form.definition.validity, form.definition.id).toBeDefined();
+      expect(form.definition.limits?.length ?? 0, form.definition.id).toBeGreaterThan(0);
+    }
   });
 
   it('names a field without an explanation', () => {

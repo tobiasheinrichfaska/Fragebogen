@@ -19,6 +19,7 @@ import {
   type FieldDefinition,
   type FieldType,
   type FormDefinition,
+  type FormValidity,
   type InfoBlock,
   type MatchKey,
   type RoleCondition,
@@ -72,6 +73,8 @@ export const FORM_KEYS = [
   'partLinks',
   'checkHints',
   'signatureBasis',
+  'validity',
+  'limits',
 ] as const;
 
 export const ROLE_KEYS = [
@@ -121,6 +124,12 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     o.checkHints === undefined
       ? undefined
       : d.array(o.checkHints, `${path}.checkHints`, (v, p) => decodeCheckHint(d, v, p), 1);
+  const validity =
+    o.validity === undefined ? undefined : decodeValidity(d, o.validity, `${path}.validity`);
+  const limits =
+    o.limits === undefined
+      ? undefined
+      : d.array(o.limits, `${path}.limits`, (v, p) => d.string(v, p), 1);
   if (
     id === undefined ||
     version === undefined ||
@@ -151,6 +160,8 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     ...(partLinks === undefined ? {} : { partLinks }),
     ...(checkHints === undefined ? {} : { checkHints }),
     ...(signatureBasis === undefined ? {} : { signatureBasis }),
+    ...(validity === undefined ? {} : { validity }),
+    ...(limits === undefined ? {} : { limits }),
   };
 }
 
@@ -176,6 +187,17 @@ function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | un
     message,
     ...(source === undefined ? {} : { source }),
   };
+}
+
+function decodeValidity(d: Decoder, raw: unknown, path: string): FormValidity | undefined {
+  const o = d.object(raw, path, ['field', 'from', 'until']);
+  if (!o) return undefined;
+  const field = d.string(o.field, `${path}.field`, ID);
+  const from = d.string(o.from, `${path}.from`, ISO_DATE_SHAPE);
+  const until =
+    o.until === undefined ? undefined : d.string(o.until, `${path}.until`, ISO_DATE_SHAPE);
+  if (field === undefined || from === undefined) return undefined;
+  return { field, from, ...(until === undefined ? {} : { until }) };
 }
 
 function decodeRolePair(d: Decoder, raw: unknown, path: string): [string, string] | undefined {
@@ -462,6 +484,10 @@ function decodeCondition(
     case 'contains': {
       const contains = d.string(o.contains, `${path}.contains`, OPTION_ID);
       return field === undefined || contains === undefined ? undefined : { field, contains };
+    }
+    case 'startsWith': {
+      const startsWith = d.string(o.startsWith, `${path}.startsWith`);
+      return field === undefined || startsWith === undefined ? undefined : { field, startsWith };
     }
     default: {
       const answered = d.boolean(o.answered, `${path}.answered`);
@@ -1043,9 +1069,12 @@ function checkHintRules({ definition, fields, report }: CheckContext): void {
       });
     }
     if (hint.test) {
+      // A money test may name a table column: it stands for the sum of that column.
       const problem = hintTestProblem(hint.test, (id) => {
         const target = fields.get(id);
-        return target && !target.isColumn ? target.field : undefined;
+        return target && (!target.isColumn || target.field.type === 'money')
+          ? target.field
+          : undefined;
       });
       if (problem) report(`${path}.test`, problem);
     }
@@ -1088,6 +1117,33 @@ function fromRoleFields({ fields, report }: CheckContext): void {
   }
 }
 
+/**
+ * validity: a required, always available date or month field of the form decides which version
+ * applies; the period is a real date range.
+ */
+function validityRule({ definition, fields, report }: CheckContext): void {
+  const validity = definition.validity;
+  if (!validity) return;
+  const path = '$.validity';
+  const target = fields.get(validity.field);
+  if (!target || target.isColumn) {
+    report(`${path}.field`, `unknown field "${validity.field}"`);
+  } else {
+    const field = target.field;
+    if (field.type !== 'date' && field.type !== 'month') {
+      report(`${path}.field`, 'must be a date or month field');
+    }
+    if (!field.required || field.showIf || field.fromRole) {
+      report(`${path}.field`, 'must be required and always available');
+    }
+  }
+  if (!isIsoDate(validity.from)) report(`${path}.from`, 'not a calendar date');
+  if (validity.until !== undefined) {
+    if (!isIsoDate(validity.until)) report(`${path}.until`, 'not a calendar date');
+    else if (validity.until < validity.from) report(`${path}.until`, 'lies before "from"');
+  }
+}
+
 /** `because` explains a condition, so only fields with one carry it. */
 function becauseTexts({ definition, fields, report }: CheckContext): void {
   for (const { field, path } of fields.values()) {
@@ -1120,4 +1176,5 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   placeholders,
   fromRoleFields,
   becauseTexts,
+  validityRule,
 ];

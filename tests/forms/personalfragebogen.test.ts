@@ -31,11 +31,15 @@ const BASE_PERSON: Record<string, FieldValue> = {
   weitereBeschaeftigung: false,
   steuerId: '86095742719',
   dienstverhaeltnis: 'erstes',
+  steuerklasse: '1',
+  kinderfreibetraege: '0',
+  kirchensteuer: 'keine',
   krankenversicherung: 'gesetzlich',
   krankenkasse: 'Beispiel-Krankenkasse',
   kinder: false,
   schulabschluss: 'abitur',
   berufsabschluss: 'ohne',
+  sozialkasseBetrieb: 'nein',
 };
 
 describe('Personalfragebogen draft — questions per variant', () => {
@@ -257,6 +261,8 @@ describe('Personalfragebogen draft — complete parts can be sealed', () => {
       agErwartetMonat: '520,00',
       agBav: 'keine',
       agSchwerbehinderung: 'nein',
+      agBeziehung: 'keine',
+      agPauschalsteuerAbgewaelzt: false,
     };
     for (const [id, raw] of Object.entries(values)) {
       q = ok(setValue(q, form, 'arbeitgeber', id, raw));

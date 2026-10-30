@@ -19,6 +19,7 @@ import type {
   RoleId,
 } from './model';
 import { currentPart } from './questionnaire';
+import { RECHENGROESSEN } from './data/rechengroessen';
 import { monthAfter, regelaltersgrenze } from './regelaltersgrenze';
 
 export interface HintResult {
@@ -69,7 +70,104 @@ const oneYearLater = (date: IsoDate): IsoDate => {
   return `${String(year + 1).padStart(4, '0')}${rest === '-02-29' ? '-02-28' : rest}` as IsoDate;
 };
 
+/** A stored money value ("1234.56") or a column of them (summed) in cents; null = nothing. */
+function cents(value: FieldValue): number | undefined {
+  if (value === null) return undefined;
+  if (Array.isArray(value)) {
+    const parts = value.map(cents).filter((part): part is number => part !== undefined);
+    return parts.length === 0 ? undefined : parts.reduce((a, b) => a + b, 0);
+  }
+  if (typeof value !== 'string' || !/^\d+(?:\.\d{2})?$/.test(value)) return undefined;
+  const [euros = '0', rest = '00'] = value.split('.');
+  return Number(euros) * 100 + Number(rest);
+}
+
+function euro(amount: number): string {
+  const [euros = '0', rest = '00'] = (amount / 100).toFixed(2).split('.');
+  return `${euros.replace(/\B(?=(\d{3})+(?!\d))/g, '.')},${rest} €`;
+}
+
+/**
+ * Own monthly pay plus the monthly pay of other jobs (a table column, summed; may be empty) against
+ * a Rechengröße of the year of the start date. A year without data is a hint of its own kind: it
+ * holds and says so, never guesses.
+ */
+function overLimit(
+  limit: (year: string) => { monthly: number; label: string } | undefined,
+  describe: (labels: readonly string[]) => string,
+): HintTest {
+  return {
+    args: ['money', 'money', 'date'],
+    describe,
+    run: ([own, others, on]) => {
+      const mine = cents(own ?? null);
+      if (mine === undefined || typeof on !== 'string' || !isIsoDate(on)) return undefined;
+      const together = mine + (cents(others ?? null) ?? 0);
+      const year = on.slice(0, 4);
+      const found = limit(year);
+      if (!found) {
+        return {
+          holds: true,
+          detail: [
+            `Für ${year} sind die Rechengrößen in der App nicht hinterlegt – bitte selbst prüfen (zusammen ${euro(together)} im Monat).`,
+          ],
+        };
+      }
+      return {
+        holds: together > found.monthly,
+        detail: [
+          `Zusammen ${euro(together)} im Monat (davon diese Beschäftigung ${euro(mine)}); ${found.label} ${year}: ${euro(found.monthly)} im Monat.`,
+        ],
+      };
+    },
+  };
+}
+
+const rechengroesse = (year: string, key: 'bbgKvMonat' | 'bbgRvMonat') => {
+  const value = RECHENGROESSEN[year]?.[key];
+  return value === undefined ? undefined : cents(value);
+};
+
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
+  spaeterAls: {
+    args: ['date', 'date'],
+    describe: ([later = '', earlier = '']) => `„${later}“ nach „${earlier}“ liegt`,
+    run: ([later, earlier]) =>
+      typeof later === 'string' &&
+      typeof earlier === 'string' &&
+      isIsoDate(later) &&
+      isIsoDate(earlier)
+        ? { holds: later > earlier, detail: [] }
+        : undefined,
+  },
+  ueberJahresarbeitsentgeltgrenze: overLimit(
+    (year) => {
+      const yearly = RECHENGROESSEN[year]?.jaegJahr;
+      const amount = yearly === undefined ? undefined : cents(yearly);
+      return amount === undefined
+        ? undefined
+        : {
+            monthly: Math.round(amount / 12),
+            label: 'Jahresarbeitsentgeltgrenze (auf den Monat gerechnet)',
+          };
+    },
+    ([own = '', others = '', on = '']) =>
+      `„${own}“ und „${others}“ zusammen die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen`,
+  ),
+  ueberBeitragsbemessungsgrenze: overLimit(
+    (year) => {
+      const kv = rechengroesse(year, 'bbgKvMonat');
+      const rv = rechengroesse(year, 'bbgRvMonat');
+      return kv === undefined || rv === undefined
+        ? undefined
+        : {
+            monthly: kv,
+            label: `Beitragsbemessungsgrenze Kranken- und Pflegeversicherung (Renten- und Arbeitslosenversicherung: ${euro(rv)})`,
+          };
+    },
+    ([own = '', others = '', on = '']) =>
+      `„${own}“ und „${others}“ zusammen die Beitragsbemessungsgrenze der Krankenversicherung des Jahres von „${on}“ übersteigen`,
+  ),
   regelaltersgrenzeErreicht: ragTest(
     (reached, on) => reached <= on,
     (birth, on) => `laut „${birth}“ die Regelaltersgrenze am „${on}“ erreicht ist`,
@@ -104,7 +202,11 @@ export function hintTestProblem(
 function rolesOf(hint: CheckHint, definition: FormDefinition): Set<RoleId> {
   const roles = new Set<RoleId>();
   const add = (id: FieldId) => {
-    const role = ownerOfField(definition, id);
+    const role =
+      ownerOfField(definition, id) ??
+      definition.sections
+        .flatMap((section) => section.fields)
+        .find((field) => field.columns?.some((column) => column.id === id))?.role;
     if (role !== undefined) roles.add(role);
   };
   if (hint.when) forEachLeaf(hint.when, '$', (leaf) => add(leaf.field));
@@ -129,6 +231,22 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
     }
     return map.get(id) === true ? (part.data[id] ?? null) : null;
   };
+  // A table column in a test stands for the list of its values in the table's rows.
+  const tables = new Map<FieldId, FieldDefinition>();
+  for (const section of definition.sections) {
+    for (const field of section.fields) {
+      for (const column of field.columns ?? []) tables.set(column.id, field);
+    }
+  }
+  const argumentOf = (id: FieldId): FieldValue => {
+    const table = tables.get(id);
+    if (!table) return valueOf(id);
+    const rows = valueOf(table.id);
+    if (!Array.isArray(rows)) return null;
+    return rows.map((row) =>
+      row !== null && typeof row === 'object' && !Array.isArray(row) ? (row[id] ?? null) : null,
+    );
+  };
   const results: HintResult[] = [];
   for (const hint of definition.checkHints ?? []) {
     const roles = rolesOf(hint, definition);
@@ -136,7 +254,7 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
     if (hint.when && !evaluateCondition(hint.when, valueOf)) continue;
     let detail: string[] = [];
     if (hint.test) {
-      const outcome = HINT_TESTS[hint.test.fn]?.run(hint.test.args.map(valueOf));
+      const outcome = HINT_TESTS[hint.test.fn]?.run(hint.test.args.map(argumentOf));
       if (!outcome?.holds) continue;
       detail = outcome.detail;
     }
