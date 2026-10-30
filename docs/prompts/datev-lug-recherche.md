@@ -13,13 +13,17 @@ Claude Code danach prüft und auswertet (Erfassungsblatt in LuG-Reihenfolge, Imp
    Der Ordner `.tmp` wird nicht ins Repository übernommen, DATEV-Unterlagen bleiben also lokal.
 4. Claude Code Bescheid geben.
 
+**Läuft die Recherche schon?** Dann den Abschnitt „Zusatzfrage A6 – LODAS“ als Folgenachricht
+schicken. Die Kanzlei arbeitet mit Lohn und Gehalt; LODAS wird nur mit vorgesehen.
+
 ---
 
 ## Prompt
 
 Du recherchierst im DATEV Hilfe-Center (Wissensplattform), im DATEV Developer-Portal und auf
 datev.de. Ich bin dort angemeldet. Ziel: belegte Fakten zu zwei Fragen über **DATEV Lohn und
-Gehalt (LuG)**, als JSON nach dem Schema unten.
+Gehalt (LuG)**, als JSON nach dem Schema unten. Wir arbeiten mit LuG; LODAS ist nur Zusatz
+(Frage A6).
 
 ### Regeln (bitte strikt einhalten)
 
@@ -68,6 +72,21 @@ Gehalt (LuG)**, als JSON nach dem Schema unten.
 5. **Developer-Portal** (developer.datev.de), Bereich Lohn/Personal: Gibt es eine öffentlich
    dokumentierte Feldliste für Mitarbeiter-Stammdaten (z. B. hr:exchange, Lohnimportdatenservice)?
    Nenne den Link und die Felder.
+
+### Zusatzfrage A6 – LODAS
+
+Die Kanzlei arbeitet mit Lohn und Gehalt; LODAS soll nur mit vorgesehen werden. Suche das
+**LODAS-Schnittstellenhandbuch** für den ASCII-Import (laut Forum `LODAS_SSH.pdf` und die
+Musterdatei `LS_Muster_BWG.txt`, Dok. 1080789 Punkt 6.1):
+
+- Nenne Fundort, Titel und Stand.
+- Nenne die Satzbeschreibung für **Mitarbeiter-Stammdaten** (laut Forum `[Satzbeschreibung]`,
+  `[Stammdaten]`, Tabelle `u_lod_psd_mitarbeiter`): Tabellen- und Feldnamen, Pflicht, Format.
+- Ist das zu aufwendig, genügen Fundort und Inhaltsverzeichnis.
+
+Trage die Ergebnisse im JSON unter `importformat.lodas` ein:
+`{ "handbuch": { "titel", "stand", "fundort" }, "tabellen": [ { "name", "felder": [ { "feldname",
+"bedeutung", "pflicht", "format", "quelle", "beleg" } ] } ], "offen": [] }`.
 
 ### Frage B – Reihenfolge der Stammdatenfelder in LuG
 
