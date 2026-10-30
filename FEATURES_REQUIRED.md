@@ -47,6 +47,9 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Different signing dates visible** — fields covered by a later signature carry a footnote; one signature line per version that covers values
 - [ ] **Parts arriving separately** — match proposals via matchKeys, human confirms
 - [ ] **Contradictions and gaps shown** — consistency rules, missing required fields/signatures/parts
+- [ ] **Form view** — the Kanzlei reads every answer by section with its owner, the signature lines and the receipts, read only
+- [ ] **Receipt per file** — the merged output records for every file when it was read and which parts it brought; reading the merged file again adds none; every part is then confirmed (level 2)
+- [ ] **Decisions can be withdrawn** — a version choice or a link is listed and can be taken back; the conflict returns
 - [ ] **Merged output** — one PDF per form (no attachment, PDF/A-2u target) plus JSON; originals stay verifiable
 
 | Path              | Impact                                                                    | Audit Check                                                                                            |

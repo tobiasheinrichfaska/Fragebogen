@@ -6,8 +6,8 @@ import boldUrl from '../../assets/fonts/NotoSans-SemiBold.subset.ttf?inline';
 import sansUrl from '../../assets/fonts/NotoSans-Regular.subset.ttf?inline';
 import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
 import { APP_CONFIG } from '../config';
-import { deviceNow } from '../io/environment';
-import { downloadFile } from '../io/files';
+import { deviceNow, type DeviceNow } from '../io/environment';
+import { downloadFile, readFileBytes } from '../io/files';
 import {
   editClues,
   EDIT_CLUE_MESSAGES,
@@ -21,6 +21,7 @@ import { readQrCodes } from '../io/qr';
 import { decodePackage, ORIGIN_MESSAGES } from '../logic/dataPackage';
 import { DATA_LINES_MESSAGES, decodeDataLines } from '../logic/dataPages';
 import { registryOf, type FormRegistry } from '../logic/formRegistry';
+import { sha256Hex } from '../logic/hash';
 import { assembleQrPayloads, QR_MESSAGES } from '../logic/qrParts';
 import { BLOCKER_MESSAGES, transmissionBlockers } from '../logic/requirements';
 import { markSaved, sessionFromFile, type Arrival, type Session } from '../logic/session';
@@ -196,6 +197,31 @@ export function fromQr(
       detail: assembled.detail,
     },
   };
+}
+
+/**
+ * Reads any file this app writes — interim JSON, PDF (data pages, else the QR codes of a scan) or a
+ * photo of QR codes, together with codes collected from earlier photos.
+ */
+export async function openAnyFile(
+  file: File,
+  registry: FormRegistry,
+  collected: readonly Uint8Array[],
+): Promise<{ result: OpenResult; fileSha256?: string; received: DeviceNow }> {
+  const received = deviceNow();
+  const read = await readFileBytes(file);
+  if (!read.ok) {
+    return { result: { kind: 'error', message: { tone: 'error', text: read.message } }, received };
+  }
+  const fileSha256 = sha256Hex(read.bytes);
+  const arrival = { local: received.local, utc: received.utc, source: 'file' as const, fileSha256 };
+  const isJson = file.name.toLowerCase().endsWith('.json') || file.type === 'application/json';
+  const result = isJson
+    ? fromPackageText(new TextDecoder().decode(read.bytes), registry, arrival, [
+        'Zwischenstand geöffnet.',
+      ])
+    : await openPdfOrImage(file, read.bytes, registry, arrival, collected);
+  return { result, fileSha256, received };
 }
 
 /** A PDF (data pages, else the QR codes of a scan) or an image (QR codes), with earlier photos. */

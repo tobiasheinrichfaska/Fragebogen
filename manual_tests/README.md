@@ -24,15 +24,14 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Testfälle
 
-| Datei                                            | Bereich                                                                                   |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                          |
-| [`02_ausfuellen.md`](02_ausfuellen.md)           | Rollenwahl, Interview, „Weiß ich gerade nicht“, Zusammenfassung, Zwischenstand, Übernahme |
-| [`03_abschluss.md`](03_abschluss.md)             | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung |
-| [`04_pdf.md`](04_pdf.md)                         | PDF erstellen und wieder öffnen, neu gespeicherte PDF, Scan und Fotos der QR-Codes, Link  |
-| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts  |
-
-Weitere Bereiche kommen mit den nächsten Schritten hinzu: Station Kanzlei (Zusammenführung).
+| Datei                                            | Bereich                                                                                          |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                                 |
+| [`02_ausfuellen.md`](02_ausfuellen.md)           | Rollenwahl, Interview, „Weiß ich gerade nicht“, Zusammenfassung, Zwischenstand, Übernahme        |
+| [`03_abschluss.md`](03_abschluss.md)             | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung        |
+| [`04_pdf.md`](04_pdf.md)                         | PDF erstellen und wieder öffnen, neu gespeicherte PDF, Scan und Fotos der QR-Codes, Link         |
+| [`05_kanzlei.md`](05_kanzlei.md)                 | Kanzlei: viele Dateien einlesen, zusammenführen, Konflikte entscheiden, PDF für die Personalakte |
+| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts         |
 
 ## Bitte nicht als Fehler melden
 

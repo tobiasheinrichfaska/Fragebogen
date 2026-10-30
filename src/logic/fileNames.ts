@@ -29,18 +29,20 @@ export function safeFileName(parts: readonly string[]): string {
   return cleaned.join('_').slice(0, MAX_FILE_NAME).replace(/_+$/, '') || 'Fragebogen';
 }
 
-export type FileKind = 'interim' | 'handover' | 'complete';
+export type FileKind = 'interim' | 'handover' | 'complete' | 'merged';
 
 const SUFFIX: Readonly<Record<FileKind, string>> = {
   interim: 'Zwischenstand',
   handover: 'Weitergabe',
   complete: 'vollstaendig',
+  merged: 'Kanzlei',
 };
 
 const EXTENSION: Readonly<Record<FileKind, string>> = {
   interim: '.json',
   handover: '.pdf',
   complete: '.pdf',
+  merged: '.json',
 };
 
 function formName(formId: string): string {

@@ -7,10 +7,11 @@ interface Props {
   registry: FormRegistry;
   onNew: (form: RegisteredForm) => void;
   onOpen: (file: File) => void;
+  onKanzlei: () => void;
   onClearAll: () => void;
 }
 
-export function StartScreen({ registry, onNew, onOpen, onClearAll }: Props) {
+export function StartScreen({ registry, onNew, onOpen, onKanzlei, onClearAll }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const latest = [...new Set(registry.forms.map((form) => form.definition.id))]
     .map((id) => registry.latest(id))
@@ -53,6 +54,15 @@ export function StartScreen({ registry, onNew, onOpen, onClearAll }: Props) {
         />
         <button type="button" onClick={() => input.current?.click()}>
           Datei öffnen …
+        </button>
+      </Card>
+      <Card title="Kanzlei">
+        <p>
+          Viele eingegangene Dateien auf einmal prüfen, nach Fragebogen ordnen, zusammenführen und
+          als PDF für die Personalakte ausgeben.
+        </p>
+        <button type="button" onClick={onKanzlei}>
+          Eingänge zusammenführen …
         </button>
       </Card>
       <Card title="Ihre Daten bleiben auf diesem Gerät">

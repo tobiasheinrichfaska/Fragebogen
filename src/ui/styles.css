@@ -433,3 +433,64 @@ textarea {
   padding-top: 1rem;
   border-top: 1px solid var(--border);
 }
+
+.inbox {
+  display: grid;
+  gap: 0.25rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inbox li {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.file-reports {
+  margin-top: 1rem;
+}
+
+.compare {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0.5rem 0 1rem;
+}
+
+.compare th,
+.compare td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.compare thead th {
+  font-weight: 600;
+}
+
+.compare .muted {
+  display: block;
+  font-weight: normal;
+  font-size: 0.85rem;
+}
+
+.form-view dl {
+  margin: 0;
+}
+
+.signature-lines {
+  padding-left: 1.5rem;
+}
+
+.inbox li button {
+  flex: none;
+  white-space: nowrap;
+}

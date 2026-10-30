@@ -4,12 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { APP_NAME, APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS } from '../io/bundledForms';
-import { deviceNow, InputTracker, newQuestionnaireId } from '../io/environment';
-import { downloadFile, readFileBytes } from '../io/files';
+import { InputTracker, newQuestionnaireId } from '../io/environment';
+import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import { fileNameFor } from '../logic/fileNames';
 import type { FormRegistry, RegisteredForm } from '../logic/formRegistry';
-import { sha256Hex } from '../logic/hash';
 import { MASTER_DATA_LINK_MESSAGES, parseMasterDataFragment } from '../logic/masterDataLink';
 import {
   enterRole,
@@ -26,17 +25,19 @@ import {
 import { Banner, type BannerMessage } from './common';
 import { DoneScreen } from './DoneScreen';
 import { InterviewScreen } from './InterviewScreen';
+import { KanzleiScreen } from './KanzleiScreen';
 import { RolesScreen } from './RolesScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
-import { createPdf, fromPackageText, openPdfOrImage, type OpenResult } from './pdfActions';
+import { createPdf, openAnyFile, type OpenResult } from './pdfActions';
 
 type Screen =
   | { kind: 'start' }
   | { kind: 'roles' }
   | { kind: 'interview' }
   | { kind: 'sign' }
-  | { kind: 'done'; role: string };
+  | { kind: 'done'; role: string }
+  | { kind: 'kanzlei' };
 
 const tracker = new InputTracker();
 
@@ -149,24 +150,7 @@ function Workspace({ registry }: { registry: FormRegistry }) {
 
   /** Reads a PDF, interim file or photo; photos of a print-out are collected until complete. */
   const readOpened = async (file: File): Promise<OpenResult | undefined> => {
-    const read = await readFileBytes(file);
-    if (!read.ok) {
-      setBanner({ tone: 'error', text: read.message });
-      return undefined;
-    }
-    const now = deviceNow();
-    const arrival = {
-      local: now.local,
-      utc: now.utc,
-      source: 'file' as const,
-      fileSha256: sha256Hex(read.bytes),
-    };
-    const isJson = file.name.toLowerCase().endsWith('.json') || file.type === 'application/json';
-    const opened = isJson
-      ? fromPackageText(new TextDecoder().decode(read.bytes), registry, arrival, [
-          'Zwischenstand geöffnet.',
-        ])
-      : await openPdfOrImage(file, read.bytes, registry, arrival, collected);
+    const { result: opened } = await openAnyFile(file, registry, collected);
     if (opened.kind === 'partial') {
       setCollected(opened.collected);
       setBanner(opened.message);
@@ -261,8 +245,15 @@ function Workspace({ registry }: { registry: FormRegistry }) {
           registry={registry}
           onNew={startNew}
           onOpen={(f) => void open(f)}
+          onKanzlei={() => {
+            setBanner(undefined);
+            setScreen({ kind: 'kanzlei' });
+          }}
           onClearAll={clearAll}
         />
+      )}
+      {screen.kind === 'kanzlei' && (
+        <KanzleiScreen registry={registry} onBack={() => setScreen({ kind: 'start' })} />
       )}
       {session && screen.kind === 'roles' && (
         <RolesScreen
