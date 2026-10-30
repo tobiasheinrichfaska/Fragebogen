@@ -26,8 +26,9 @@
   line-height: 1.5;
 }
 
+/* Dark palette: system setting unless a host forces light; a host's explicit dark choice too. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #111419;
     --surface: #191d24;
     --fg: #e6e9ef;
@@ -45,7 +46,29 @@
     --success-bg: #17291d;
     --success-border: #2d5a3a;
     --danger: #f08a8a;
+    color-scheme: dark;
   }
+}
+
+:root[data-theme='dark'] {
+  --bg: #111419;
+  --surface: #191d24;
+  --fg: #e6e9ef;
+  --muted: #a3abb9;
+  --border: #313844;
+  --accent: #7fb0ea;
+  --accent-fg: #0d1320;
+  --chosen-bg: #1f3048;
+  --info-bg: #1c2633;
+  --info-border: #2f4560;
+  --warning-bg: #2e2614;
+  --warning-border: #5e4a1c;
+  --error-bg: #331a1a;
+  --error-border: #6b2d2d;
+  --success-bg: #17291d;
+  --success-border: #2d5a3a;
+  --danger: #f08a8a;
+  color-scheme: dark;
 }
 
 * {

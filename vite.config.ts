@@ -2,11 +2,41 @@ import { existsSync, readFileSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
+import type { Plugin } from 'vite';
+import { escapeReplacementChar } from './src/build/replacementChar';
 import { parseAppConfig } from './src/logic/appConfig';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
   version: string;
 };
+
+/** Escapes U+FFFD in every chunk before the single-file step inlines it (see replacementChar.ts). */
+function asciiReplacementChar(): Plugin {
+  return {
+    name: 'ascii-replacement-char',
+    enforce: 'pre',
+    generateBundle: (_options, bundle) => {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type === 'chunk') chunk.code = escapeReplacementChar(chunk.code);
+      }
+    },
+  };
+}
+
+/** The review preview (--mode drafts) carries its own name, so it is never mistaken for the app. */
+function previewTitle(): Plugin {
+  let preview = false;
+  return {
+    name: 'preview-title',
+    configResolved: (config) => {
+      preview = config.mode === 'drafts';
+    },
+    transformIndexHtml: (html) =>
+      preview
+        ? html.replace('<title>Fragebogen</title>', '<title>Fragebogen-Vorschau</title>')
+        : html,
+  };
+}
 
 // Kanzlei branding stays out of the public repo: config/kanzlei.local.json (gitignored) wins over
 // the neutral example. An invalid file stops the build instead of shipping a broken link.
@@ -22,7 +52,7 @@ if (!kanzleiConfig.ok) {
 export default defineConfig({
   // Relative asset paths so the single file also runs from file://
   base: './',
-  plugins: [react(), viteSingleFile()],
+  plugins: [asciiReplacementChar(), react(), viteSingleFile(), previewTitle()],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),

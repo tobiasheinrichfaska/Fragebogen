@@ -1,6 +1,7 @@
 // Start: new questionnaire (latest published version of each form), open a file, delete all data.
 import { useRef } from 'react';
 import { isTestVersion, type FormRegistry, type RegisteredForm } from '../logic/formRegistry';
+import { DRAFT_HASHES } from '../io/bundledForms';
 import { Card } from './common';
 
 interface Props {
@@ -30,7 +31,11 @@ export function StartScreen({ registry, onNew, onOpen, onKanzlei, onClearAll }: 
               </button>
               <span className="muted">
                 Version {form.definition.version}
-                {isTestVersion(form.definition.version) ? ' · Testfassung' : ''}
+                {DRAFT_HASHES.has(form.definitionHash)
+                  ? ' · Entwurf (nur Vorschau)'
+                  : isTestVersion(form.definition.version)
+                    ? ' · Testfassung'
+                    : ''}
               </span>
             </li>
           ))}

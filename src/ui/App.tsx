@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { APP_NAME, APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
-import { BUNDLED_FORMS } from '../io/bundledForms';
+import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
 import { InputTracker, newQuestionnaireId } from '../io/environment';
 import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
@@ -225,6 +225,14 @@ function Workspace({ registry }: { registry: FormRegistry }) {
 
   return (
     <main className="shell">
+      {DRAFT_PREVIEW && (
+        <Banner
+          message={{
+            tone: 'warning',
+            text: 'Vorschau mit Formular-Entwürfen zur Prüfung – bitte keine echten Daten eingeben.',
+          }}
+        />
+      )}
       <header className="app-header">
         <div>
           <h1>{session ? session.form.definition.title : APP_NAME}</h1>

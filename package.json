@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "vite --port 5178 --strictPort",
     "build": "tsc --noEmit && vite build",
+    "build:preview": "tsc --noEmit && vite build --mode drafts --outDir dist-preview",
     "preview": "vite preview --port 5178 --strictPort",
     "test": "vitest run",
     "test:watch": "vitest",
