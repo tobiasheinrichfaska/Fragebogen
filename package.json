@@ -16,6 +16,7 @@
     "preview": "vite preview --port 5178 --strictPort",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "npm run build && playwright test",
     "catalogue": "vitest run tests/forms/catalogue.test.ts tests/forms/flowPlan.test.ts --update",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.61.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

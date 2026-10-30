@@ -23,6 +23,10 @@
 
 ## MT-02: Keine Verbindung ins Internet
 
+_Automatisch geprüft mit `npm run test:e2e` (Chromium, Firefox, WebKit): Die Datei verbietet per
+Sicherheitsrichtlinie (CSP) jede Verbindung; der Test meldet jede Anfrage, die das Gerät verlässt.
+Dieser Handtest bleibt für echte Geräte und Browser._
+
 **Voraussetzungen:** MT-01 ist bestanden. Sie verwenden Edge oder Chrome.
 
 **Schritte:**

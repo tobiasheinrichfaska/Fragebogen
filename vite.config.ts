@@ -1,8 +1,10 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import type { Plugin } from 'vite';
+import { withCsp } from './src/build/csp';
 import { escapeReplacementChar } from './src/build/replacementChar';
 import { parseAppConfig } from './src/logic/appConfig';
 
@@ -38,6 +40,24 @@ function previewTitle(): Plugin {
   };
 }
 
+/**
+ * The Content-Security-Policy with the hashes of what the single-file step inlined — applied to the
+ * written file, because that step inlines during generateBundle after the other plugins.
+ */
+function contentSecurityPolicy(): Plugin {
+  return {
+    name: 'content-security-policy',
+    apply: 'build',
+    writeBundle: (options, bundle) => {
+      for (const file of Object.values(bundle)) {
+        if (file.type !== 'asset' || !file.fileName.endsWith('.html') || !options.dir) continue;
+        const path = join(options.dir, file.fileName);
+        writeFileSync(path, withCsp(readFileSync(path, 'utf8')));
+      }
+    },
+  };
+}
+
 // Kanzlei branding stays out of the public repo: config/kanzlei.local.json (gitignored) wins over
 // the neutral example. An invalid file stops the build instead of shipping a broken link.
 const localConfig = new URL('./config/kanzlei.local.json', import.meta.url);
@@ -52,7 +72,13 @@ if (!kanzleiConfig.ok) {
 export default defineConfig({
   // Relative asset paths so the single file also runs from file://
   base: './',
-  plugins: [asciiReplacementChar(), react(), viteSingleFile(), previewTitle()],
+  plugins: [
+    asciiReplacementChar(),
+    react(),
+    viteSingleFile(),
+    previewTitle(),
+    contentSecurityPolicy(),
+  ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),

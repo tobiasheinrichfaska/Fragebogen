@@ -6,8 +6,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 ## Offline & privacy (applies to every path)
 
 - [ ] **Open the single HTML file by double-click (file://)** — app renders, no console errors
-- [ ] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest
-- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow
+- [ ] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest (E2E guard in three engines, `npm run test:e2e`)
+- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow (E2E guard)
 - [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean
 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)

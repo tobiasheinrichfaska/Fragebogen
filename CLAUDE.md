@@ -136,6 +136,10 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/io/environment.ts`                               | UUID v4 + nonce via crypto.getRandomValues, device time (local with offset + UTC + IANA zone), system note (UA-CH or UA string), `InputTracker`                                                                                                                                                                                                                |
 | `src/io/files.ts`                                     | Download via short-lived blob URL, size-limited file reading (25 MB)                                                                                                                                                                                                                                                                                           |
 | `src/io/bundledForms.ts`                              | Published forms compiled in (import.meta.glob of forms/_/_.json + published.json), checked at start                                                                                                                                                                                                                                                            |
+| `src/build/csp.ts`                                    | Build step: Content-Security-Policy meta with the SHA-256 of exactly the inlined script and style (`withCsp`, applied to the written `index.html`); refuses external scripts/stylesheets                                                                                                                                                                       |
+| `playwright.config.ts`                                | Playwright 1.61.0: projects chromium, firefox, webkit; tests in `tests/e2e/`                                                                                                                                                                                                                                                                                   |
+| `tests/e2e/flow.spec.ts`                              | E2E from `file://`: Sofortmeldung employer → person signs → PDF → reopen → Kanzlei → PDF for the personnel file; CSP refuses a fetch; the built file carries the policy                                                                                                                                                                                        |
+| `tests/e2e/guards.ts`                                 | Guards for every E2E run: only file:/data:/blob: requests, no CSP violation, no console error, nothing in browser storage                                                                                                                                                                                                                                      |
 | `src/build/replacementChar.ts`                        | Build step: writes U+FFFD in the bundle as its escape (tools refuse the literal character)                                                                                                                                                                                                                                                                     |
 | `src/config.ts`                                       | Kanzlei configuration of this build (`__KANZLEI_CONFIG__`)                                                                                                                                                                                                                                                                                                     |
 | `config/`                                             | `kanzlei.example.json` (neutral, committed), `kanzlei.local.json` (gitignored, real name/addresses), `README.md`                                                                                                                                                                                                                                               |
@@ -331,7 +335,7 @@ Key design decisions (details in `docs/plan.md`):
 
 | Decision                                                           | Why                                                                                                                                                                                                                                          |
 | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Runs from `file://` (workspace rule says avoid)                    | Core requirement: send/open one file offline. Mitigated: `modulePreload.polyfill = false`; E2E will run against `file://` (step 10).                                                                                                         |
+| Runs from `file://` (workspace rule says avoid)                    | Core requirement: send/open one file offline. Mitigated: `modulePreload.polyfill = false`; E2E runs against `file://` in three engines (step 10).                                                                                            |
 | `react`/`react-dom` `^19.2.6` (not the Expo pin 19.1.0)            | Browser SPA: react-dom is the renderer and must match react.                                                                                                                                                                                 |
 | TypeScript `^5.9.3` (7.x exists)                                   | `typescript-eslint` 8.72 supports TS `<6.1`.                                                                                                                                                                                                 |
 | No autosave of drafts (original brief asked for it)                | User decision 2026-10-29: Chromium shares storage across all `file://` pages and GitHub Pages origins are shared — drafts with Steuer-ID/IBAN would be readable. Interim state = explicit file download.                                     |
@@ -352,12 +356,14 @@ Key design decisions (details in `docs/plan.md`):
 
 ## Known Limitations
 
-- **UI checked by a throw-away headless smoke run only** (Edge via CDP on `file://`, screenshots,
-  2026-10-30: employer first → person signs with the mouse → "Vollständig"); automated E2E in three
-  engines comes with step 10. Touch/pen on real devices: manual tests MT-21.
-- **Kanzlei station checked by headless smoke runs only** (2026-10-30: three files with a duplicate
-  and a QR scan; two competing versions, choice and withdrawal; merged PDF read back without double
-  receipts). Manual tests: `manual_tests/05_kanzlei.md`.
+- **E2E covers the release build only** (`npm run test:e2e`, Chromium, Firefox and WebKit under
+  `file://`): Sofortmeldung employer → person signs with the mouse → PDF → reopened → Kanzlei →
+  PDF for the personnel file, with the no-network / CSP / console / storage guards. The drafts
+  (preview build), conflicts, QR scans and the interview helpers are checked by unit tests and
+  throw-away headless smoke runs only. WebKit on Windows is not Safari on an iPhone; touch/pen on
+  real devices: manual tests MT-21.
+- **Kanzlei conflicts, QR scans and link proposals** are not in the E2E yet (unit tests + smoke
+  runs 2026-10-30). Manual tests: `manual_tests/05_kanzlei.md`.
 - **The Kanzlei cannot correct values** — it sees, decides between versions and files; a correction
   note with reason ("Korrekturvermerk") is planned later. A wrong value goes back to the station.
 - **No DATEV filing date as receipt yet** (`source: 'datev'`, plan step 13): receipts record when a
@@ -380,8 +386,10 @@ Key design decisions (details in `docs/plan.md`):
   version by reference date (several valid versions side by side) is not built yet.
 - **Notice confirmations are not saved in the interim file** — they must be given again in the
   session that signs (deliberate: they belong to the signing).
-- **No CSP yet:** the strict Content-Security-Policy and the built-file no-network test arrive in
-  step 10. The source `index.html` is already guarded against external URLs.
+- **CSP only as a meta tag** (step 10): `frame-ancestors` and other header-only directives need
+  the hosting headers (step 12). The policy allows exactly the hashes of the inlined script and
+  style; any change to the build that adds another inline script or style needs no manual hash
+  but a rebuild.
 - **Simple electronic signature only** (eIDAS Art. 3 Nr. 10) — not qualified; device time is not
   verifiable; hashes detect accidental/naive changes, not full regeneration. Never promised as
   "rechtsgültig".
@@ -473,11 +481,12 @@ npm run lint        # ESLint
 npm run format:check
 npm run build       # dist/index.html (single file)
 npm run build:preview  # dist-preview/index.html with the form drafts, for review only
+npm run test:e2e    # build + Playwright 1.61.0 in Chromium, Firefox, WebKit under file://
 ```
 
 Report only results observed in the same session (workspace test-integrity rule). Manual tests:
-[`manual_tests/`](manual_tests/). Playwright E2E (Chromium/Firefox/WebKit under `file://`) arrives
-in step 10.
+[`manual_tests/`](manual_tests/). E2E browsers: `npx playwright install chromium firefox webkit`
+(shared cache in `%LOCALAPPDATA%\ms-playwright`).
 
 ---
 
@@ -511,7 +520,10 @@ counter-checks are no longer blocking (see `manual_tests/90_pdf_gegenproben.md`)
 **Step 8 (PDF) done:** one PDF with readable part, signature lines, Prüfblatt, data pages and QR
 codes; reading back from the original, from a scan (QR) and from photos (collected); headless smoke
 run through the whole cycle under file://. **Step 9 (Kanzlei station) done** 2026-10-30: batch import, merge UI with decisions, form view,
-receipts per file, PDF/JSON output. **Next: step 10** (CSP, E2E in three engines).
+receipts per file, PDF/JSON output. **Step 10 done** (2026-10-30): CSP meta with the hashes of
+the inlined script and style (`src/build/csp.ts`, applied to the written file), Playwright E2E in
+three engines with no-network / CSP / console / storage guards. **Next:** Personengruppe and
+Beitragsgruppen as a proposal with pre-questions that exclude uncovered special cases.
 **Step 5 in progress — forms:** 5a (draft, catalogue generator, `betriebsnummer`, German condition
 word order) and 5b (review applied: all birth/address data, preselected yes/no questions, `initial`,
 `masterData`, `partLinks` + `partsNotLinked`), master data as bookmark link (decision C) and 5c
