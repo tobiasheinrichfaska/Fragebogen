@@ -326,10 +326,11 @@ Key design decisions (details in `docs/plan.md`):
 - **Simple electronic signature only** (eIDAS Art. 3 Nr. 10) — not qualified; device time is not
   verifiable; hashes detect accidental/naive changes, not full regeneration. Never promised as
   "rechtsgültig".
-- **RV exemption, its cancellation and the waiver** (§ 6 Abs. 1b/6, § 5 Abs. 4 SGB VI) are not in the app
-  yet. The law says "schriftlich oder elektronisch" (no QES needed, research 2026-10-30), but the
-  Gemeinsame Grundsätze of 2022 still assume written form; until clarified with the Minijob-Zentrale,
-  forms that need written form may still need paper
+- **RV exemption, its cancellation and the waiver** (§ 6 Abs. 1b/6, § 5 Abs. 4 SGB VI) stay on
+  paper (Tobias 2026-10-30), although the law says "schriftlich oder elektronisch" (research
+  2026-10-30) — the Gemeinsame Grundsätze of 2022 still assume written form. The Personalfragebogen
+  only records the wish and the employer's day of receipt of the paper original. Other forms that
+  need written form still need paper
   (or QES / scan + advanced employer signature); paper notices are handed out on paper.
 - **iPhone/iPad cannot run the HTML file locally** — they need the hosted copy (step 12). Android:
   Chrome only, via the Files app.

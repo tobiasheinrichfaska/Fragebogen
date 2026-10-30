@@ -80,6 +80,12 @@ gefunden. Restrisiko: Eine Betriebsprüfung könnte die alten Grundsätze anwend
 Version 1.0.0 dieser Formulare die Minijob-Zentrale und den Prüfdienst der DRV schriftlich fragen,
 ob eine PDF der App genügt. Bericht: `.tmp/research/rv-befreiung-form.md` (lokal).
 
+**Entscheidung (Tobias, 30.10.2026):** Befreiungsantrag, Aufhebung und Verzicht laufen **auf
+Papier** mit eigenhändiger Unterschrift; eigene App-Formulare entfallen. Der Personalfragebogen
+fragt nur den Wunsch der Person ab und dokumentiert beim Arbeitgeber das Papieroriginal mit
+Eingangsdatum (Checkliste „Arbeitspapiere“, Felder „eingegangen am“); Prüfhinweise melden, wenn
+Wunsch und Papier nicht zusammenpassen.
+
 ### 2.3 Elektronische Führung ab 2027
 
 Eine Befreiung von der elektronischen Führung war nur bis 31.12.2026 möglich (§ 8 Abs. 3 S. 2

@@ -1,6 +1,7 @@
 // Check hints (Prüfhinweise): definition rules on a fixture and the hints of the Personalfragebogen
 // draft for combined answers of person and employer. Fictitious data.
 import { join } from 'node:path';
+import { visibleFields } from '../../src/logic/form';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
 import { checkHints, describeHint, HINT_TESTS } from '../../src/logic/hints';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
@@ -168,5 +169,35 @@ describe('check hints — definition rules', () => {
       'regelaltersgrenzeInnerhalbEinesJahres',
       'regelaltersgrenzeNichtErreicht',
     ]);
+  });
+});
+
+describe('pension insurance declarations on paper (Tobias 2026-10-30)', () => {
+  it('asks the employer for the day of receipt once the paper original is ticked', () => {
+    const fields = (data: Record<string, unknown>) =>
+      visibleFields(form.definition, 'arbeitgeber', data as never).map((f) => f.id);
+    expect(fields({ agUnterlagen: ['rvBefreiung'] })).toContain('agRvBefreiungEingang');
+    expect(fields({ agUnterlagen: ['rvVerzicht'] })).toContain('agRvVerzichtEingang');
+    expect(fields({ agUnterlagen: ['arbeitsvertrag'] })).not.toContain('agRvBefreiungEingang');
+  });
+
+  it('flags a wish without the paper and paper without the wish', () => {
+    const wish = { artLautVereinbarung: 'minijob', rvBefreiungWunsch: 'ja' };
+    expect(ids(answers(wish, { agUnterlagen: ['arbeitsvertrag'] }))).toContain(
+      'befreiungsantragFehlt',
+    );
+    const received = answers(wish, {
+      agUnterlagen: ['rvBefreiung'],
+      agRvBefreiungEingang: '30.10.2026',
+    });
+    expect(ids(received)).not.toContain('befreiungsantragFehlt');
+    expect(
+      ids(
+        answers(
+          { artLautVereinbarung: 'minijob', rvBefreiungWunsch: 'nein' },
+          { agUnterlagen: ['rvBefreiung'] },
+        ),
+      ),
+    ).toContain('befreiungsantragOhneWunsch');
   });
 });

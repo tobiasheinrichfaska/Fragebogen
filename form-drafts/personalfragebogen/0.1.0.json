@@ -740,7 +740,7 @@
           "type": "choice",
           "label": "Rentenbeiträge trotz Vollrente oder Pension",
           "question": "Möchten Sie in dieser Beschäftigung trotzdem Rentenbeiträge zahlen, um Ihre Rente zu erhöhen?",
-          "help": "Nach Erreichen der Regelaltersgrenze sind Sie mit einer Altersvollrente oder einer Pension wegen Alters rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird gesondert erklärt.",
+          "help": "Nach Erreichen der Regelaltersgrenze sind Sie mit einer Altersvollrente oder einer Pension wegen Alters rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird auf Papier mit eigenhändiger Unterschrift erklärt.",
           "required": true,
           "purpose": "Verzicht auf die Versicherungsfreiheit in der Rentenversicherung (§ 5 Abs. 4 Satz 2 SGB VI)",
           "showIf": {
@@ -1421,7 +1421,7 @@
           "type": "choice",
           "label": "Befreiung von der Rentenversicherungspflicht im Minijob",
           "question": "Möchten Sie sich im Minijob von der Rentenversicherungspflicht befreien lassen?",
-          "help": "Im Minijob zahlen Sie einen kleinen Eigenanteil zur Rentenversicherung (2026: 3,6 % des Verdiensts). Die Befreiung beantragen Sie gesondert mit eigener Unterschrift; sie gilt für alle Ihre Minijobs. Seit Juli 2026 können Sie eine Befreiung einmal für die Zukunft wieder aufheben.",
+          "help": "Im Minijob zahlen Sie einen kleinen Eigenanteil zur Rentenversicherung (2026: 3,6 % des Verdiensts). Den Befreiungsantrag stellen Sie auf Papier mit eigenhändiger Unterschrift; Ihr Arbeitgeber gibt Ihnen das Formular. Die Befreiung gilt für alle Ihre Minijobs. Seit Juli 2026 können Sie eine Befreiung einmal für die Zukunft wieder aufheben, ebenfalls auf Papier.",
           "required": true,
           "purpose": "Befreiung von der Rentenversicherungspflicht (§ 6 Abs. 1b SGB VI); Eingangstag beim Arbeitgeber (§ 8 Abs. 2 Nr. 4a BVV)",
           "showIf": {
@@ -1435,7 +1435,7 @@
             },
             {
               "id": "ja",
-              "label": "Ja, ich gebe den Befreiungsantrag ab."
+              "label": "Ja, ich gebe den Befreiungsantrag auf Papier ab."
             },
             {
               "id": "schonBefreit",
@@ -3604,11 +3604,11 @@
             },
             {
               "id": "rvBefreiung",
-              "label": "Befreiungsantrag Rentenversicherung im Minijob (mit Eingangsdatum)"
+              "label": "Befreiungsantrag Rentenversicherung im Minijob (Papieroriginal)"
             },
             {
               "id": "rvVerzicht",
-              "label": "Verzicht auf die Rentenversicherungsfreiheit (mit Eingangsdatum)"
+              "label": "Verzicht auf die Rentenversicherungsfreiheit (Papieroriginal)"
             },
             {
               "id": "schwerbehindertenausweis",
@@ -3647,6 +3647,40 @@
               "label": "Erklärung zur Kirchensteuer bei Pauschalierung"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "papierErklaerungen",
+      "title": "Erklärungen auf Papier",
+      "fields": [
+        {
+          "id": "agRvBefreiungEingang",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Befreiungsantrag eingegangen am",
+          "question": "An welchem Tag ist der unterschriebene Befreiungsantrag bei Ihnen eingegangen?",
+          "help": "Das Papieroriginal gehört mit diesem Datum zu den Entgeltunterlagen. Die Befreiung wird mit der nächsten Entgeltabrechnung gemeldet, spätestens innerhalb von sechs Wochen nach Eingang.",
+          "required": true,
+          "purpose": "Eingangsdatum des Befreiungsantrags (§ 8 Abs. 2 Nr. 4a BVV); Beginn der Befreiung (§ 6 Abs. 4 SGB VI)",
+          "showIf": {
+            "field": "agUnterlagen",
+            "contains": "rvBefreiung"
+          }
+        },
+        {
+          "id": "agRvVerzichtEingang",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Verzichtserklärung eingegangen am",
+          "question": "An welchem Tag ist die unterschriebene Verzichtserklärung bei Ihnen eingegangen?",
+          "help": "Das Papieroriginal gehört mit diesem Datum zu den Entgeltunterlagen.",
+          "required": true,
+          "purpose": "Verzicht auf die Rentenversicherungsfreiheit wirkt für die Zukunft (§ 5 Abs. 4 Satz 2 SGB VI); Entgeltunterlagen (§ 8 Abs. 2 BVV)",
+          "showIf": {
+            "field": "agUnterlagen",
+            "contains": "rvVerzicht"
+          }
         }
       ]
     }
@@ -3699,7 +3733,7 @@
     "Die Elterneigenschaft und die Zahl der Kinder unter 25 ruft der Arbeitgeber digital beim Bundeszentralamt für Steuern ab (§ 55a SGB XI); er erfährt dabei keine Namen oder Geburtsdaten. Einzelangaben fragt der Fragebogen nur für Kinder, die dort voraussichtlich fehlen; sie werden mit einer Urkundenkopie nachgewiesen, die als eigene Unterlage aufbewahrt wird.",
     "Die Beiträge zur privaten Kranken- und Pflegeversicherung erhält der Arbeitgeber seit 2026 als elektronische Lohnsteuerabzugsmerkmale (§ 39 Abs. 4 Nr. 4 EStG); der Fragebogen fragt deshalb keinen Betrag ab. Die Bescheinigung des Versicherers über die Zuschussfähigkeit (§ 257 Abs. 2a SGB V) bleibt nötig.",
     "Der Fragebogen sammelt die Tatsachen für die versicherungsrechtliche Beurteilung; die Personengruppe und die Beitragsgruppen legt die lohnabrechnende Stelle fest.",
-    "Der Befreiungsantrag von der Rentenversicherungspflicht im Minijob und der Verzicht auf die Rentenversicherungsfreiheit werden gesondert erklärt; der Fragebogen fragt nur den Wunsch ab."
+    "Der Antrag auf Befreiung von der Rentenversicherungspflicht im Minijob, ihre Aufhebung und der Verzicht auf die Rentenversicherungsfreiheit werden auf Papier mit eigenhändiger Unterschrift erklärt; das Original gehört mit Eingangsdatum zu den Entgeltunterlagen. Der Fragebogen fragt nur den Wunsch ab und dokumentiert den Eingang."
   ],
   "partLinks": [["person", "arbeitgeber"]],
   "checkHints": [
@@ -4116,6 +4150,61 @@
       },
       "message": "Die Bescheinigung der privaten Krankenversicherung folgt: Zuschuss erst mit Vorlage.",
       "source": "§ 257 Abs. 2a SGB V"
+    },
+    {
+      "id": "befreiungsantragFehlt",
+      "when": {
+        "all": [
+          {
+            "field": "rvBefreiungWunsch",
+            "equals": "ja"
+          },
+          {
+            "not": {
+              "field": "agUnterlagen",
+              "contains": "rvBefreiung"
+            }
+          }
+        ]
+      },
+      "message": "Die Person möchte sich im Minijob von der Rentenversicherungspflicht befreien lassen; der unterschriebene Befreiungsantrag auf Papier liegt noch nicht vor.",
+      "source": "§ 6 Abs. 1b SGB VI, § 8 Abs. 2 Nr. 4a BVV"
+    },
+    {
+      "id": "befreiungsantragOhneWunsch",
+      "when": {
+        "all": [
+          {
+            "field": "agUnterlagen",
+            "contains": "rvBefreiung"
+          },
+          {
+            "field": "rvBefreiungWunsch",
+            "equals": "nein"
+          }
+        ]
+      },
+      "message": "Ein Befreiungsantrag liegt vor, die Person gibt im Fragebogen aber an, den Eigenanteil zu zahlen.",
+      "source": "§ 6 Abs. 1b SGB VI"
+    },
+    {
+      "id": "verzichtFehlt",
+      "when": {
+        "all": [
+          {
+            "field": "rvVerzicht",
+            "equals": "ja"
+          },
+          {
+            "not": {
+              "field": "agUnterlagen",
+              "contains": "rvVerzicht"
+            }
+          }
+        ]
+      },
+      "message": "Die Person möchte trotz Vollrente oder Pension Rentenbeiträge zahlen; die unterschriebene Verzichtserklärung auf Papier liegt noch nicht vor.",
+      "source": "§ 5 Abs. 4 Satz 2 SGB VI"
     },
     {
       "id": "kinderNachweise",
