@@ -73,6 +73,11 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/personengruppe.test.ts`                  | Personengruppe proposals per case (109 incl. other jobs and above the limit, 110, 102/121/122, 123, 190, 105, 106, 108, 103, 119/120, 101), year without Rechengrößen, special case, missing part, rule checks                                                                                                                                                 |
 | `src/logic/validity.ts`                               | Validity of a form version: `withinValidity` (date or month, inclusive), `describeValidity` (German), `validityRole`, `outsideValidity` (reference date of a role's data outside the period)                                                                                                                                                                   |
 | `src/logic/data/rechengroessen.ts`                    | `RECHENGROESSEN` per year (SVBezGrV): JAEG, BBG KV/PV and RV — fixed reference data for the check hints                                                                                                                                                                                                                                                        |
+| `src/logic/exportMapping.ts`                          | Mapping of a form to a payroll program's master-data import (data): records named like the program's masks, fields with one value source per sub-field (`field`, `derivation`, `const`; `slice`, `code`, `map`, `format`, `optional`); strict `parseExportMappings`, `checkExportMapping` against the form, `subFields`                                        |
+| `src/logic/lugImport.ts`                              | `buildLugImport`: import file for DATEV Lohn und Gehalt (sections Allgemein, Satzbeschreibung, Mandant, Mitarbeiter; own record descriptions with only the mapped fields) and the Erfassungsblatt in mask order; values that cannot be written are left out and named; blocking without Mandanten-/Mitarbeiternummer                                           |
+| `src/io/windows1252.ts`                               | Windows-1252 encoding for the import file; unsupported characters are reported                                                                                                                                                                                                                                                                                 |
+| `src/ui/LugExport.tsx`                                | Kanzlei: hand-over to the payroll program — numbers, problems, Erfassungsblatt table, import file download (only with a local mapping)                                                                                                                                                                                                                         |
+| `tests/forms/lugImport.test.ts`                       | Import file and Erfassungsblatt with a fictitious mapping (`tests/fixtures/export/beispiel.json`): header, client, employee, formats, codes, conditions, problems, blocking, Windows-1252                                                                                                                                                                      |
 | `src/logic/options.ts`                                | `optionsOf` (options written in the definition or taken from a reference list), `listOptionFor`, `REFERENCE_LISTS` (DEÜV lists with title, source, Stand in the id)                                                                                                                                                                                            |
 | `src/logic/data/deuevListen.ts`                       | DEÜV Anlage 6 (Vorsatzworte), 7 (Namenszusätze), 8 Teil A (Staatsangehörigkeit, Staaten with Destatis key and Länderkennzeichen) — generated, copied unchanged from the official PDFs                                                                                                                                                                          |
 | `src/logic/options.test.ts`                           | Reference lists: sizes, uniqueness, hash per list id (never changes silently), typed labels → key, idempotence, display, definition rules for `optionsFrom`                                                                                                                                                                                                    |
@@ -347,6 +352,14 @@ Key design decisions (details in `docs/plan.md`):
   monthly pay; named hint tests sum a table column with the employer's pay against the BBG KV/PV and
   the JAEG of the start year (`RECHENGROESSEN`); a missing year is reported, never guessed. The
   apportionment (§ 22 Abs. 2 SGB IV) stays with the payroll and is listed as a limit.
+- **Hand-over to DATEV Lohn und Gehalt** (Tobias 2026-10-30: "Ja Go"; the Kanzlei works with LuG, LODAS may
+  follow): the Kanzlei station shows, per questionnaire, the Erfassungsblatt in the order of the LuG masks and
+  offers the master-data import file (LuG: Kanzleiebene, Extras | Stammdatenimport; one client per file,
+  Windows-1252). The mapping is data (`exportMapping.ts`) and names DATEV's fields, so it stays local
+  (`config/export.local.json`, gitignored, Tobias agreed); the public build has no hand-over. The file uses
+  its own record descriptions with only the mapped fields (allowed by the LuG description, chapter 1.6.2),
+  "MitarbeiterSelOderNeu" then "MitarbeiterSel" like DATEV's sample file. Values that cannot be written
+  (no mapping for an answer, open proposal, incomplete combination field) are left out and listed.
 - **Official DEÜV lists** (Tobias 2026-10-30: "Vorsatzwort und Namenszusatz gegen die amtlichen Listen
   prüfen"; nationality and countries with DEÜV keys): a `choice` field may take its options from a
   compiled reference list (`optionsFrom`); it is asked as a search field (`<datalist>`), a typed
@@ -456,6 +469,9 @@ Key design decisions (details in `docs/plan.md`):
   (check); the AV proposal "2" after the Regelaltersgrenze is still "1" in the month it is reached
   (check). Übergangsbereich: the marker 2 (inside and outside in one report) is not proposed. The
   Tätigkeitsschlüssel needs the KldB code from the employer, else "?????" (check).
+- **LuG import file not yet tried in Lohn und Gehalt** — built after the V16.1 description and DATEV's sample
+  file; first import into a test client (manual test MT-68). Health insurers are connected by their number
+  in LuG and are not exported (the form asks the name only); wage types (Lohnarten) are client-specific.
 - **JAEG hint sums every other job** the person lists, Minijobs included, although a Minijob next to
   this employment does not count; the hint says so ("dann nachrechnen"). Regular allowances and
   benefits in kind are not part of the yearly pay in the tests.

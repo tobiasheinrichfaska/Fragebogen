@@ -509,7 +509,7 @@ function decodeOption(d: Decoder, raw: unknown, path: string): ChoiceOption | un
   return { id, label };
 }
 
-function decodeCondition(
+export function decodeCondition(
   d: Decoder,
   raw: unknown,
   path: string,

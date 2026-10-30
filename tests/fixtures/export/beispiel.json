@@ -1,0 +1,104 @@
+[
+  {
+    "format": "fragebogen.export",
+    "version": 1,
+    "target": "LuG",
+    "title": "Beispielprogramm",
+    "form": "personalfragebogen",
+    "importVersion": "1.0",
+    "special": {
+      "mandantSel": "12; MandantSel; Nummer",
+      "mitarbeiterSel": "14; MitarbeiterSel; Nummer",
+      "mitarbeiterSelOderNeu": "15; MitarbeiterSelOderNeu; Nummer;Name;Vorname;Beginn;Monat"
+    },
+    "employee": {
+      "number": { "field": "agPersonalnummer" },
+      "name": { "field": "familienname" },
+      "firstName": { "field": "vorname" },
+      "start": { "field": "agBeschaeftigungsbeginn", "format": "date" },
+      "firstMonth": { "field": "agBeschaeftigungsbeginn", "format": "month" }
+    },
+    "records": [
+      {
+        "mask": "Beispiel|Personal|Name",
+        "fields": [
+          { "name": "Nachname", "values": [{ "field": "familienname" }] },
+          { "name": "Vorname", "values": [{ "field": "vorname" }] },
+          {
+            "name": "Land(Kennzeichen;Name)",
+            "values": [
+              { "field": "anschriftStaat", "code": "laenderkennzeichen" },
+              { "field": "anschriftStaat" }
+            ]
+          },
+          { "name": "Ort", "values": [{ "field": "wohnort" }] }
+        ]
+      },
+      {
+        "mask": "Beispiel|Personal|Angaben",
+        "fields": [
+          { "name": "Geburtstag", "values": [{ "field": "geburtsdatum", "format": "date" }] },
+          {
+            "name": "Geschlecht",
+            "values": [
+              {
+                "field": "geschlecht",
+                "map": { "maennlich": "m", "weiblich": "w", "divers": "d", "unbestimmt": "x" }
+              }
+            ]
+          },
+          {
+            "name": "Nationalitaet(Schluessel;Zusatz)",
+            "values": [
+              { "field": "staatsangehoerigkeitSchluessel", "code": "schluessel" },
+              { "field": "titel", "optional": true }
+            ]
+          }
+        ]
+      },
+      {
+        "mask": "Beispiel|SV|Gruppen",
+        "fields": [
+          {
+            "name": "BGS(Gueltig_ab;KV;RV;AV;PV)",
+            "label": "Beitragsgruppen",
+            "values": [
+              { "field": "agBeschaeftigungsbeginn", "format": "month" },
+              { "derivation": "beitragsgruppen", "slice": [0, 1] },
+              { "derivation": "beitragsgruppen", "slice": [1, 2] },
+              { "derivation": "beitragsgruppen", "slice": [2, 3] },
+              { "derivation": "beitragsgruppen", "slice": [3, 4] }
+            ]
+          }
+        ]
+      },
+      {
+        "mask": "Beispiel|Bank",
+        "fields": [
+          { "name": "IBAN", "values": [{ "field": "iban" }] },
+          {
+            "name": "Zahlungsart",
+            "values": [{ "field": "zahlungsweg", "map": { "ueberweisung": "SEPA" } }]
+          }
+        ]
+      },
+      {
+        "mask": "Beispiel|Minijob",
+        "when": { "field": "agBeschaeftigungsart", "equals": "minijob" },
+        "fields": [
+          {
+            "name": "Pauschal",
+            "values": [{ "field": "agPauschalsteuerAbgewaelzt", "format": "jn" }]
+          }
+        ]
+      },
+      {
+        "mask": "Beispiel|Entgelt",
+        "fields": [
+          { "name": "Gehalt", "values": [{ "field": "agMonatsentgelt", "format": "decimal" }] },
+          { "name": "Taetigkeit", "values": [{ "field": "agTaetigkeit" }] }
+        ]
+      }
+    ]
+  }
+]

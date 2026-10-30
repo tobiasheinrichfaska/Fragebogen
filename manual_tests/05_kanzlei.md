@@ -141,3 +141,34 @@ Teile abgeschlossen, PDF erstellt.
 - _Nicht offensichtlich:_ Mit „weitere Beschäftigung: Ja“ steht zusätzlich „Bitte prüfen.“
   (Zusammenrechnung); bei einem Sonderfall gibt es keinen Vorschlag, sondern „Sonderfall – bitte
   selbst beurteilen“.
+
+---
+
+## MT-68: Übergabe an Lohn und Gehalt (nur Kanzlei-Build mit Zuordnung)
+
+**Voraussetzungen:**
+
+- Build mit `config/export.local.json` (Vorschau-Build: `npm run build:preview`).
+- Ein vollständiger Personalfragebogen (beide Teile).
+- **Ein Testmandant** in Lohn und Gehalt, nie ein echter Mandant.
+
+**Schritte:**
+
+1. Station „Kanzlei“: die PDFs einlesen.
+2. Unter „Übergabe an DATEV Lohn und Gehalt“ zunächst nichts eintragen.
+3. Mandantennummer des Testmandanten und eine freie Mitarbeiternummer eintragen;
+   „Erfassungsblatt ansehen“.
+4. „Importdatei herunterladen“; in Lohn und Gehalt auf Kanzleiebene Extras | Stammdatenimport
+   die Datei wählen.
+5. Auf Mandantenebene das Protokoll (Mandant | Ausgeben | Protokolle, „Stammdaten-Import-Prot.“)
+   ansehen.
+
+**Erwartet:**
+
+- Schritt 2: „Noch keine Importdatei: Mandantennummer … fehlt“; der Knopf ist gesperrt.
+- Schritt 3: Das Erfassungsblatt folgt den Masken von Lohn und Gehalt (Personaldaten, Beschäftigung,
+  Sozialversicherung, Steuer …). Nicht Übertragbares steht mit Grund in der Liste „Nicht übertragen“.
+- Schritt 4/5: Der Mitarbeiter ist angelegt; das Protokoll zeigt die übernommenen Felder.
+  _Nicht offensichtlich:_ Krankenkasse und Lohnarten werden nicht übertragen (in Lohn und Gehalt
+  selbst erfassen); fehlerhafte Felder nennt nur das Protokoll von Lohn und Gehalt.
+- Danach den Testmitarbeiter wieder löschen.

@@ -4,6 +4,7 @@
 // the next run. All rules are in logic/kanzlei.ts and logic/merge.ts.
 import { useMemo, useRef, useState } from 'react';
 import { APP_VERSION } from '../appInfo';
+import { EXPORT_MAPPINGS } from '../config';
 import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import { displayValue } from '../logic/display';
@@ -34,6 +35,7 @@ import { sessionFromFile } from '../logic/session';
 import { formatLocalDateTime } from '../logic/time';
 import { Banner, Card, type BannerMessage } from './common';
 import { FormView } from './FormView';
+import { LugExport } from './LugExport';
 import { createPdf, openAnyFile } from './pdfActions';
 
 interface Props {
@@ -382,6 +384,17 @@ export function KanzleiScreen({ registry, onBack }: Props) {
             {viewing === group.questionnaireId && group.questionnaire && definition && (
               <FormView questionnaire={group.questionnaire} definition={definition} />
             )}
+            {ready &&
+              group.questionnaire &&
+              definition &&
+              EXPORT_MAPPINGS.filter((mapping) => mapping.form === definition.id).map((mapping) => (
+                <LugExport
+                  key={mapping.title}
+                  questionnaire={group.questionnaire as NonNullable<typeof group.questionnaire>}
+                  definition={definition}
+                  mapping={mapping}
+                />
+              ))}
           </Card>
         );
       })}

@@ -28,3 +28,5 @@ desktop.ini
 
 # Kanzlei configuration with real names/addresses (see config/README.md)
 config/kanzlei.local.json
+# Mappings to payroll programs name the programs' fields (DATEV material) — local only
+config/export.local.json

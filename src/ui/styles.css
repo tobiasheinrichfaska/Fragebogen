@@ -552,3 +552,33 @@ textarea {
   margin: 0.5rem 0 0;
   padding-left: 1.25rem;
 }
+
+/* Kanzlei: hand-over to the payroll program */
+.export {
+  margin-top: 1rem;
+}
+.export-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.export-numbers label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+table.sheet {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+}
+table.sheet td,
+table.sheet th {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--border, #ccc);
+  vertical-align: top;
+}
+table.sheet tr.sheet-mask th {
+  padding-top: 0.75rem;
+}

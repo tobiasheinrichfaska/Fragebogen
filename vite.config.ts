@@ -7,6 +7,7 @@ import type { Plugin } from 'vite';
 import { withCsp } from './src/build/csp';
 import { escapeReplacementChar } from './src/build/replacementChar';
 import { parseAppConfig } from './src/logic/appConfig';
+import { parseExportMappings } from './src/logic/exportMapping';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
   version: string;
@@ -69,6 +70,16 @@ if (!kanzleiConfig.ok) {
   throw new Error(`Invalid Kanzlei configuration: ${JSON.stringify(kanzleiConfig.issues)}`);
 }
 
+// Mappings to payroll programs name the programs' fields and stay out of the public repo as well:
+// config/export.local.json (gitignored) or none. An invalid file stops the build.
+const localExport = new URL('./config/export.local.json', import.meta.url);
+const exportMappings = parseExportMappings(
+  existsSync(localExport) ? JSON.parse(readFileSync(localExport, 'utf8')) : [],
+);
+if (!exportMappings.ok) {
+  throw new Error(`Invalid export mapping: ${JSON.stringify(exportMappings.issues)}`);
+}
+
 export default defineConfig({
   // Relative asset paths so the single file also runs from file://
   base: './',
@@ -82,6 +93,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),
+    __EXPORT_MAPPINGS__: JSON.stringify(exportMappings.mappings),
   },
   build: {
     target: 'es2022',

@@ -46,6 +46,24 @@ export const REFERENCE_LISTS: Readonly<Record<string, ReferenceList>> = {
   },
 };
 
+// Codes of list entries for exports (e.g. the Länderkennzeichen of a state); the options stay
+// {id, label}, so the lists and their hashes are unchanged.
+const stateCodes = new Map(
+  STAATEN.map(([name, key, sign]) => [name, { schluessel: key, laenderkennzeichen: sign }]),
+);
+const nationalityCodes = new Map(STAATSANGEHOERIGKEITEN.map(([key]) => [key, { schluessel: key }]));
+const LIST_CODES: Readonly<Record<string, ReadonlyMap<string, Readonly<Record<string, string>>>>> =
+  {
+    deuevStaatsangehoerigkeit2025: nationalityCodes,
+    deuevStaaten2025: stateCodes,
+    deuevStaatenAusland2025: stateCodes,
+  };
+
+/** The codes of one entry of a reference list (empty when the list has none). */
+export function listCodesOf(listId: string, optionId: string): Readonly<Record<string, string>> {
+  return LIST_CODES[listId]?.get(optionId) ?? {};
+}
+
 export function optionsOf(
   field: Pick<FieldDefinition, 'options' | 'optionsFrom'>,
 ): readonly ChoiceOption[] {

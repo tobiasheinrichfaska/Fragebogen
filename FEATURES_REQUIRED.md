@@ -46,6 +46,7 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **What a form does not cover** — `limits` shown on the role choice, in the Kanzlei form view, the PDF, the catalogue and the flow plan
 - [ ] **Multiple jobs, also above the BBG** — other jobs with monthly pay; check hints sum them against the BBG (KV/PV) and the JAEG of the start year; a missing year is reported, never guessed
 - [ ] **Proposals for the Kanzlei** — Personengruppe, Beitragsgruppen (KV RV AV PV), Kennzeichen Übergangsbereich and Tätigkeitsschlüssel shown with reasons per part, "bitte prüfen" where uncertain; never decided by the app, never sealed; a special case excluded by a pre-question gives none
+- [ ] **Hand-over to DATEV Lohn und Gehalt** (Kanzlei build with a local mapping) — Erfassungsblatt in the order of the LuG masks; import file (Windows-1252) only with Mandanten- and Mitarbeiternummer; everything not transferable is listed with its reason
 - [ ] **Official lists** — nationality, state of birth, foreign state, name prefix and suffix chosen from the DEÜV tables via a search field; anything not listed is refused with a German message
 
 ## Documentation

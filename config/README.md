@@ -19,3 +19,16 @@ ausgeschlossen.
 - `appAddress` wird in jede PDF gedruckt und verlinkt.
 - `explainerBase` und der im Formular eingefrorene Pfad ergeben den Link zum Erklärvideo, zum
   Beispiel `…/erklaervideos/sofortmeldung/versicherungsnummer`.
+
+## Übergabe an das Lohnprogramm (`export.local.json`)
+
+Die Zuordnung „Antwort im Fragebogen → Maske und Feld im Lohnprogramm“ nennt die Felder des
+Programms (für DATEV Lohn und Gehalt aus den DATEV-Unterlagen zum Stammdatenimport) und bleibt
+deshalb **lokal**: `config/export.local.json` ist per `.gitignore` ausgeschlossen. Ohne diese Datei
+hat der Build keine Übergabe. Mit ihr zeigt die Station „Kanzlei“ je Fragebogen das Erfassungsblatt
+in der Reihenfolge der Programmmasken und bietet die Importdatei an (Lohn und Gehalt:
+Kanzleiebene, Extras | Stammdatenimport).
+
+Aufbau (eine Liste, je Formular eine Zuordnung): siehe `src/logic/exportMapping.ts` und das frei
+erfundene Beispiel `tests/fixtures/export/beispiel.json`. Eine ungültige Datei bricht den Build ab;
+ob sie zur Formularfassung passt, prüft die Kanzlei-Station und zeigt Abweichungen an.
