@@ -3,6 +3,7 @@
 // time, nonce and the system note come from the device.
 import { useState } from 'react';
 import { deviceNow, newNonce, systemNoteFor, type InputTracker } from '../io/environment';
+import { SIGNATURE_POLICY_LABELS } from '../logic/catalogue';
 import { roleOf } from '../logic/form';
 import { seal, type Session } from '../logic/session';
 import { encodeStrokes, type Point } from '../logic/strokes';
@@ -36,10 +37,15 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
   const [typed, setTyped] = useState('');
   const [message, setMessage] = useState<BannerMessage | undefined>();
   if (!role) return null;
+  const definition = session.form.definition;
 
   const methods: { id: Method; label: string }[] = [
     ...(role.signature === 'none' ? [] : [{ id: 'drawn' as const, label: 'Unterschreiben' }]),
-    ...(role.signature === 'none' ? [] : [{ id: 'typed' as const, label: 'Namen tippen' }]),
+    // A typed name is a simple electronic signature too — offered only where the form needs no
+    // particular form (signaturePolicy "electronic").
+    ...(role.signature === 'none' || definition.signaturePolicy !== 'electronic'
+      ? []
+      : [{ id: 'typed' as const, label: 'Namen tippen' }]),
     ...(role.signature === 'required'
       ? []
       : [{ id: 'none' as const, label: 'Ohne Unterschrift abschließen' }]),
@@ -126,6 +132,10 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
         gesiegelt; Datum, Uhrzeit und Gerät laut diesem Gerät werden vermerkt. Danach lassen sie
         sich nur noch als neue Fassung ändern.
       </p>
+      <details className="signature-basis">
+        <summary>Warum genügt das?</summary>
+        <p>{definition.signatureBasis ?? SIGNATURE_POLICY_LABELS[definition.signaturePolicy]}</p>
+      </details>
       <div className="nav">
         <button type="button" onClick={onBack}>
           Zurück zur Zusammenfassung

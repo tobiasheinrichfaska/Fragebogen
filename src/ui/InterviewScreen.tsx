@@ -2,6 +2,7 @@
 // All rules live in the logic layer (session.ts, interview.ts); this only renders and dispatches.
 import { useState } from 'react';
 import { displayValue, editValue } from '../logic/display';
+import { fillPlaceholders } from '../logic/display';
 import { fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { interviewProgress } from '../logic/interview';
 import type { InterviewStep } from '../logic/interview';
@@ -182,10 +183,26 @@ function QuestionStep({
     onSession(nextStep(current));
   };
 
+  // A yes/no or single choice is the whole answer: it moves on at once (back is one click away).
+  // Several options stay on the step until "Weiter".
   const choose = (raw: unknown) => {
     const committed = commit(raw);
-    if (committed) onSession(committed);
+    if (!committed) return;
+    onSession(field.type === 'multiChoice' ? committed : nextStep(committed));
   };
+
+  const quickAnswer = (raw: string | null) => {
+    const committed = commit(raw);
+    if (committed) onSession(nextStep(committed));
+  };
+
+  const fields = fieldsById(session.form.definition);
+  const said = (text: string) =>
+    fillPlaceholders(
+      text,
+      (id) => fields.get(id),
+      (id) => part?.data[id],
+    );
 
   const putBack = () => {
     const result = defer(session, field.id);
@@ -200,10 +217,10 @@ function QuestionStep({
     <Card>
       <div className={`question level-${Math.min(step.level, 3)}`}>
         <h2 id={`${inputId}-label`}>
-          {field.question ?? field.label}
+          {said(field.question ?? field.label)}
           {step.required ? '' : <span className="muted"> (freiwillig)</span>}
         </h2>
-        {field.help !== undefined && <p className="help">{field.help}</p>}
+        {field.help !== undefined && <p className="help">{said(field.help)}</p>}
         <Explainer path={field.explainer} />
         <FieldInput
           field={field}
@@ -217,6 +234,15 @@ function QuestionStep({
           onChoose={choose}
           onSubmit={next}
         />
+        {field.quickAnswers && (
+          <div className="quick-answers">
+            {field.quickAnswers.map((quick) => (
+              <button key={quick.label} type="button" onClick={() => quickAnswer(quick.value)}>
+                {quick.label}
+              </button>
+            ))}
+          </div>
+        )}
         {error !== undefined && (
           <p className="field-error" role="alert">
             {error}

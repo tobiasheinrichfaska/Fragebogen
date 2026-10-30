@@ -7,8 +7,9 @@
 | --- | --- |
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | fa1009b1ac8eca50e65daa6d301e08c27e061c72f6a8ad54a2291e38e609f0ce |
+| Definition (SHA-256) | 7753e8b6692d3adc3dd41db12486ccba0bb931d5d961daa1ae7d14d8d2fc4363 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
+| Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
 
 ## Rollen

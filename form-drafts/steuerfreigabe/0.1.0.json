@@ -466,5 +466,6 @@
     "Dieser Fragebogen ist weder die Steuererklärung noch eine Vollmacht (§ 80 AO).",
     "Die Kanzlei bewahrt die Freigabe in der Handakte auf (§ 66 StBerG)."
   ],
-  "partLinks": [["kanzlei", "mandant"]]
+  "partLinks": [["kanzlei", "mandant"]],
+  "signatureBasis": "Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung."
 }

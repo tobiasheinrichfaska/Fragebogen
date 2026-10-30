@@ -16,6 +16,7 @@ export type IssueCode =
   | 'number.tooLarge'
   | 'month.format'
   | 'month.invalid'
+  | 'plz.format'
   | 'iban.format'
   | 'iban.length'
   | 'iban.checksum'
@@ -48,6 +49,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'number.tooLarge': 'Die Zahl ist zu groß.',
   'month.format': 'Bitte einen Monat wie 03.2026 eingeben.',
   'month.invalid': 'Diesen Monat gibt es nicht.',
+  'plz.format': 'Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
   'iban.length': 'Die IBAN hat für dieses Land nicht die richtige Länge.',
   'iban.checksum': 'Die IBAN stimmt nicht (Prüfziffer). Bitte noch einmal vergleichen.',

@@ -7,8 +7,9 @@
 | --- | --- |
 | Formular | personalfragebogen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | a7ce30d5ddcde57337d47737d955d7e3a5d28fe2c1397cc20551e262184cd2e5 |
+| Definition (SHA-256) | a9b864576c2e6c53b147b8ac643a9b8d9f3a7934498a861c5f390c26cd0ce3d6 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
+| Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
 
 ## Rollen
@@ -27,25 +28,26 @@
 | --- | --- | --- | --- | --- | --- |
 | Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname?<br>Hilfe: So, wie er in Ihrem Ausweis steht. | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung |
 | Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen?<br>Hilfe: Alle Vornamen, wie in Ihrem Ausweis. | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung |
-| Ist Ihr Geburtsname gleich Ihrem Familiennamen? (geburtsnameWieFamilienname)<br>Hilfe: Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten. | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
+| Ist Ihr Geburtsname gleich Ihrem Familiennamen? (geburtsnameWieFamilienname)<br>Frage: Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?<br>Hilfe: Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten. | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Geburtsname (geburtsname)<br>Frage: Wie lautet Ihr Geburtsname? | Beschäftigte Person | Text | erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Geburtsdatum (geburtsdatum)<br>Frage: Wann sind Sie geboren?<br>Hilfe: Zum Beispiel 17.05.1990. | Beschäftigte Person | Datum | immer | Pflicht | Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG); Meldungen zur Sozialversicherung; Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss |
 | Geburtsort (geburtsort)<br>Frage: Wo sind Sie geboren?<br>Hilfe: Der Ort, wie er in Ihrem Ausweis steht. | Beschäftigte Person | Text | immer | Pflicht | Vergabe einer Versicherungsnummer, wenn sie fehlt; Stammdaten für die Lohnabrechnung |
-| Geburtsland (geburtsland)<br>Frage: In welchem Land sind Sie geboren? | Beschäftigte Person | Text | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
+| Geburtsland (geburtsland)<br>Frage: In welchem Land sind Sie geboren?<br>Knöpfe: „Deutschland“ | Beschäftigte Person | Text | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Geschlecht (geschlecht)<br>Frage: Welches Geschlecht ist bei Ihnen eingetragen?<br>Hilfe: So, wie es in Ihren amtlichen Papieren steht. | Beschäftigte Person | Auswahl: männlich, weiblich, divers, unbestimmt | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
-| Staatsangehörigkeit (staatsangehoerigkeit)<br>Frage: Welche Staatsangehörigkeit haben Sie?<br>Hilfe: Zum Beispiel „deutsch“. | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung |
-| Versicherungsnummer der Rentenversicherung (falls bekannt) (versicherungsnummer)<br>Frage: Wie lautet Ihre Versicherungsnummer der Rentenversicherung?<br>Hilfe: Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen. | Beschäftigte Person | Versicherungsnummer | immer | optional | Meldungen zur Sozialversicherung (§ 28a SGB IV) |
+| Staatsangehörigkeit (staatsangehoerigkeit)<br>Frage: Welche Staatsangehörigkeit haben Sie?<br>Hilfe: Zum Beispiel „deutsch“.<br>Knöpfe: „deutsch“ | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung |
+| Versicherungsnummer der Rentenversicherung (falls bekannt) (versicherungsnummer)<br>Frage: Wie lautet Ihre Versicherungsnummer der Rentenversicherung?<br>Hilfe: Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.<br>Knöpfe: „Kenne ich nicht“ (leer lassen) | Beschäftigte Person | Versicherungsnummer | immer | optional | Meldungen zur Sozialversicherung (§ 28a SGB IV) |
 
 ### 2. Anschrift
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Straße und Hausnummer (strasse)<br>Frage: Wie lauten Straße und Hausnummer Ihrer Anschrift? | Beschäftigte Person | Text | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
-| Anschriftenzusatz (anschriftZusatz)<br>Frage: Gibt es einen Zusatz zur Anschrift?<br>Hilfe: Zum Beispiel „bei Müller“ oder „Hinterhaus“. Sonst leer lassen. | Beschäftigte Person | Text | immer | optional | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
-| Postleitzahl (postleitzahl)<br>Frage: Wie lautet Ihre Postleitzahl? | Beschäftigte Person | Text | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
-| Wohnort (wohnort)<br>Frage: In welchem Ort wohnen Sie? | Beschäftigte Person | Text | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
-| Liegt die Anschrift im Ausland? (anschriftAusland) | Beschäftigte Person | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
+| Liegt die Anschrift im Ausland? (anschriftAusland)<br>Hilfe: Davon hängt ab, wie die Postleitzahl geprüft wird. | Beschäftigte Person | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
 | Staat (wohnstaat)<br>Frage: In welchem Staat liegt Ihre Anschrift? | Beschäftigte Person | Text | erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
+| Straße und Hausnummer (strasse)<br>Frage: Wie lauten Straße und Hausnummer Ihrer Anschrift? | Beschäftigte Person | Text | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
+| Anschriftenzusatz (anschriftZusatz)<br>Frage: Gibt es einen Zusatz zur Anschrift?<br>Hilfe: Zum Beispiel „bei Müller“ oder „Hinterhaus“. Sonst leer lassen.<br>Knöpfe: „Kein Zusatz“ (leer lassen) | Beschäftigte Person | Text | immer | optional | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
+| Postleitzahl (postleitzahl)<br>Frage: Wie lautet Ihre Postleitzahl?<br>Hilfe: 5 Ziffern. | Beschäftigte Person | Text, deutsche Postleitzahl (5 Ziffern) | erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
+| Postleitzahl (Ausland) (postleitzahlAusland)<br>Frage: Wie lautet die Postleitzahl?<br>Hilfe: So, wie sie in Ihrem Wohnstaat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer. | Beschäftigte Person | Text | erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist | optional | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
+| Wohnort (wohnort)<br>Frage: In welchem Ort wohnen Sie? | Beschäftigte Person | Text | immer | Pflicht | Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt |
 
 ### 3. Kontakt (freiwillig)
 
@@ -339,6 +341,8 @@ Eingerückte Angaben beruhen auf der Angabe darüber und werden direkt nach ihr 
   - Geburtsname (Beschäftigte Person; Ebene 1) – erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist
 - Liegt die Anschrift im Ausland? (Beschäftigte Person; unabhängig)
   - Staat (Beschäftigte Person; Ebene 1) – erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist
+  - Postleitzahl (Beschäftigte Person; Ebene 1) – erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist
+  - Postleitzahl (Ausland) (Beschäftigte Person; Ebene 1) – erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist
 - Lautet das Konto auf Ihren Namen? (Beschäftigte Person; unabhängig)
   - Name der Kontoinhaberin oder des Kontoinhabers (Beschäftigte Person; Ebene 1) – erst wenn „Lautet das Konto auf Ihren Namen?“ mit „Nein“ beantwortet ist
 - Situation zu Beginn der Beschäftigung (Beschäftigte Person; unabhängig)

@@ -67,7 +67,8 @@
           "help": "Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
-          "initial": true
+          "initial": true,
+          "question": "Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen {familienname}?"
         },
         {
           "id": "geburtsname",
@@ -109,7 +110,13 @@
           "label": "Geburtsland",
           "question": "In welchem Land sind Sie geboren?",
           "required": true,
-          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung"
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "quickAnswers": [
+            {
+              "label": "Deutschland",
+              "value": "Deutschland"
+            }
+          ]
         },
         {
           "id": "geschlecht",
@@ -147,7 +154,13 @@
           "question": "Welche Staatsangehörigkeit haben Sie?",
           "help": "Zum Beispiel „deutsch“.",
           "required": true,
-          "purpose": "Meldungen zur Sozialversicherung"
+          "purpose": "Meldungen zur Sozialversicherung",
+          "quickAnswers": [
+            {
+              "label": "deutsch",
+              "value": "deutsch"
+            }
+          ]
         },
         {
           "id": "versicherungsnummer",
@@ -157,7 +170,13 @@
           "question": "Wie lautet Ihre Versicherungsnummer der Rentenversicherung?",
           "help": "Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.",
           "required": false,
-          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV)"
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV)",
+          "quickAnswers": [
+            {
+              "label": "Kenne ich nicht",
+              "value": null
+            }
+          ]
         }
       ]
     },
@@ -165,6 +184,29 @@
       "id": "anschrift",
       "title": "Anschrift",
       "fields": [
+        {
+          "id": "anschriftAusland",
+          "role": "person",
+          "type": "boolean",
+          "label": "Liegt die Anschrift im Ausland?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "initial": false,
+          "help": "Davon hängt ab, wie die Postleitzahl geprüft wird."
+        },
+        {
+          "id": "wohnstaat",
+          "role": "person",
+          "type": "text",
+          "label": "Staat",
+          "question": "In welchem Staat liegt Ihre Anschrift?",
+          "required": true,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": true
+          }
+        },
         {
           "id": "strasse",
           "role": "person",
@@ -182,7 +224,13 @@
           "question": "Gibt es einen Zusatz zur Anschrift?",
           "help": "Zum Beispiel „bei Müller“ oder „Hinterhaus“. Sonst leer lassen.",
           "required": false,
-          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "quickAnswers": [
+            {
+              "label": "Kein Zusatz",
+              "value": null
+            }
+          ]
         },
         {
           "id": "postleitzahl",
@@ -191,7 +239,27 @@
           "label": "Postleitzahl",
           "question": "Wie lautet Ihre Postleitzahl?",
           "required": true,
-          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "textFormat": "postleitzahlDe",
+          "help": "5 Ziffern.",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": false
+          }
+        },
+        {
+          "id": "postleitzahlAusland",
+          "role": "person",
+          "type": "text",
+          "label": "Postleitzahl (Ausland)",
+          "question": "Wie lautet die Postleitzahl?",
+          "help": "So, wie sie in Ihrem Wohnstaat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
+          "required": false,
+          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": true
+          }
         },
         {
           "id": "wohnort",
@@ -201,28 +269,6 @@
           "question": "In welchem Ort wohnen Sie?",
           "required": true,
           "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt"
-        },
-        {
-          "id": "anschriftAusland",
-          "role": "person",
-          "type": "boolean",
-          "label": "Liegt die Anschrift im Ausland?",
-          "required": true,
-          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
-          "initial": false
-        },
-        {
-          "id": "wohnstaat",
-          "role": "person",
-          "type": "text",
-          "label": "Staat",
-          "question": "In welchem Staat liegt Ihre Anschrift?",
-          "required": true,
-          "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
-          "showIf": {
-            "field": "anschriftAusland",
-            "equals": true
-          }
         }
       ]
     },
@@ -3736,6 +3782,7 @@
     "Der Antrag auf Befreiung von der Rentenversicherungspflicht im Minijob, ihre Aufhebung und der Verzicht auf die Rentenversicherungsfreiheit werden auf Papier mit eigenhändiger Unterschrift erklärt; das Original gehört mit Eingangsdatum zu den Entgeltunterlagen. Der Fragebogen fragt nur den Wunsch ab und dokumentiert den Eingang."
   ],
   "partLinks": [["person", "arbeitgeber"]],
+  "signatureBasis": "Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab.",
   "checkHints": [
     {
       "id": "artWeichtAb",

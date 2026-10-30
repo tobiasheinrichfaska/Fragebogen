@@ -2,6 +2,7 @@
 // strictly into a typed FormDefinition (see decode.ts) and then checks every id reference inside it.
 import { COMPUTE_FUNCTIONS } from './compute';
 import { CONDITION_OPERATORS, forEachLeaf, leafProblem } from './conditions';
+import { placeholderIds } from './display';
 import { hintTestProblem } from './hints';
 import { isIsoDate } from './dates';
 import { Decoder, type DecodeIssue } from './decode';
@@ -24,6 +25,7 @@ import {
   type RoleDefinition,
   type RoleId,
   type SectionDefinition,
+  TEXT_FORMATS,
 } from './model';
 
 /** Form id, also the folder name under forms/. */
@@ -37,7 +39,7 @@ export const OPTION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 export const EXPLAINER_PATH = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,3}$/;
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_CONDITION_DEPTH = 8;
-import { MAX_NUMBER_DECIMALS } from './normalize';
+import { MAX_NUMBER_DECIMALS, normalizeFieldValue } from './normalize';
 
 export type DefinitionResult =
   { ok: true; definition: FormDefinition } | { ok: false; issues: DecodeIssue[] };
@@ -69,6 +71,7 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     'legalNotes',
     'partLinks',
     'checkHints',
+    'signatureBasis',
   ]);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, FORM_ID);
@@ -96,6 +99,10 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     o.partLinks === undefined
       ? undefined
       : d.array(o.partLinks, `${path}.partLinks`, (v, p) => decodeRolePair(d, v, p), 1);
+  const signatureBasis =
+    o.signatureBasis === undefined
+      ? undefined
+      : d.string(o.signatureBasis, `${path}.signatureBasis`);
   const checkHints =
     o.checkHints === undefined
       ? undefined
@@ -129,6 +136,7 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     legalNotes,
     ...(partLinks === undefined ? {} : { partLinks }),
     ...(checkHints === undefined ? {} : { checkHints }),
+    ...(signatureBasis === undefined ? {} : { signatureBasis }),
   };
 }
 
@@ -258,6 +266,8 @@ const FIELD_KEYS = [
   'rowLabel',
   'carryOver',
   'carryRowsIf',
+  'quickAnswers',
+  'textFormat',
   'unit',
   'decimals',
   'signed',
@@ -315,6 +325,24 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     o.carryRowsIf === undefined
       ? undefined
       : decodeCondition(d, o.carryRowsIf, `${path}.carryRowsIf`, 0);
+  const quickAnswers =
+    o.quickAnswers === undefined
+      ? undefined
+      : d.array(
+          o.quickAnswers,
+          `${path}.quickAnswers`,
+          (v, p) => {
+            const q = d.object(v, p, ['label', 'value']);
+            const label = q && d.string(q.label, `${p}.label`);
+            const value = q?.value === null ? null : q && d.string(q.value, `${p}.value`);
+            return label === undefined || value === undefined ? undefined : { label, value };
+          },
+          1,
+        );
+  const textFormat =
+    o.textFormat === undefined
+      ? undefined
+      : d.literal(o.textFormat, `${path}.textFormat`, TEXT_FORMATS);
   const unit = o.unit === undefined ? undefined : d.string(o.unit, `${path}.unit`);
   const decimals = o.decimals === undefined ? undefined : d.integer(o.decimals, `${path}.decimals`);
   const signed = o.signed === undefined ? undefined : d.boolean(o.signed, `${path}.signed`);
@@ -350,6 +378,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(rowLabel === undefined ? {} : { rowLabel }),
     ...(carryOver === undefined ? {} : { carryOver }),
     ...(carryRowsIf === undefined ? {} : { carryRowsIf }),
+    ...(quickAnswers === undefined ? {} : { quickAnswers }),
+    ...(textFormat === undefined ? {} : { textFormat }),
     ...(unit === undefined ? {} : { unit }),
     ...(decimals === undefined ? {} : { decimals }),
     ...(signed === undefined ? {} : { signed }),
@@ -624,6 +654,22 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     if (field.carryOver === 'nextMonth' && field.type !== 'month') {
       report(`${path}.carryOver`, '"nextMonth" only for month fields');
     }
+    if (field.textFormat !== undefined && field.type !== 'text') {
+      report(`${path}.textFormat`, 'only text fields have a text format');
+    }
+    field.quickAnswers?.forEach((quick, q) => {
+      const at = `${path}.quickAnswers[${q}].value`;
+      if (!QUICK_ANSWER_TYPES.includes(field.type)) {
+        report(`${path}.quickAnswers`, 'only typed fields have quick answers');
+        return;
+      }
+      if (quick.value === null) {
+        if (field.required || field.requiredIf) report(at, 'a required field cannot be left empty');
+        return;
+      }
+      const normalized = normalizeFieldValue(field, quick.value);
+      if (!normalized.ok) report(at, `not a valid answer (${normalized.issue})`);
+    });
     if (field.carryRowsIf) {
       if (field.type !== 'repeatGroup') {
         report(`${path}.carryRowsIf`, 'only tables have carryRowsIf');
@@ -842,6 +888,39 @@ function initialValues({ fields, report }: CheckContext): void {
   }
 }
 
+/** `{fieldId}` in question and help texts names an earlier field of the same role. */
+function placeholders({ definition, report }: CheckContext): void {
+  const seen = new Map<string, FieldDefinition>();
+  definition.sections.forEach((section, s) => {
+    section.fields.forEach((field, f) => {
+      for (const key of ['question', 'help'] as const) {
+        for (const id of placeholderIds(field[key] ?? '')) {
+          const target = seen.get(id);
+          if (!target) {
+            report(`$.sections[${s}].fields[${f}].${key}`, `"{${id}}" must name an earlier field`);
+          } else if (target.role !== field.role) {
+            report(`$.sections[${s}].fields[${f}].${key}`, `"{${id}}" belongs to another role`);
+          }
+        }
+      }
+      seen.set(field.id, field);
+    });
+  });
+}
+
+/** Typed fields (an input box), the only ones with quick-answer buttons. */
+const QUICK_ANSWER_TYPES: readonly FieldType[] = [
+  'text',
+  'date',
+  'iban',
+  'taxId',
+  'svNumber',
+  'betriebsnummer',
+  'money',
+  'number',
+  'month',
+];
+
 /** Field types whose stored value is one string — the only ones a bookmark link can carry. */
 const MASTER_DATA_TYPES: readonly FieldType[] = [
   'text',
@@ -960,4 +1039,5 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   partLinks,
   interviewOrder,
   checkHintRules,
+  placeholders,
 ];

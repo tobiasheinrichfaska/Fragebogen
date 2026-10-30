@@ -1085,5 +1085,6 @@
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).",
     "Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).",
     "Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden (außer Ausscheidenden) und laufenden Leistungen bleiben, Fehlzeiten über das Monatsende werden mit Beginn übernommen, alle Monatswerte sind leer."
-  ]
+  ],
+  "signatureBasis": "Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat."
 }

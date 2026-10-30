@@ -204,3 +204,31 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 - Schritt 5: Rote Meldung „Das ist derselbe Fragebogen …“ – derselbe Fragebogen wird geöffnet,
   nicht übernommen.
 - _Nicht offensichtlich:_ Die Schaltfläche fehlt, sobald alle Rollen abgeschlossen sind.
+
+---
+
+## MT-19: Schnellantworten, sofortiges Weiter und Postleitzahl
+
+**Voraussetzungen:** Vorschau-Fassung (`npm run build:preview`), Sofortmeldung 0.2.0 (Entwurf).
+
+**Schritte:**
+
+1. Als „Beschäftigte Person“ den Familiennamen „Musterfrau“ eingeben, „Weiter“.
+2. Die Frage nach dem Geburtsnamen lesen und **„Ja“** antippen.
+3. Bei „Geburtsland“ den Knopf **„Deutschland“**, bei der Staatsangehörigkeit **„deutsch“** und bei
+   der Versicherungsnummer **„Kenne ich nicht“** antippen.
+4. Bei „Liegt die Anschrift im Ausland?“ **„Nein“**, beim Anschriftenzusatz **„Kein Zusatz“**.
+5. Als Postleitzahl „1234“ eingeben, „Weiter“; dann „76131“.
+
+**Erwartet:**
+
+- Schritt 2: Die Frage lautet „… gleich dem gerade angegebenen Familiennamen „Musterfrau“?“. Ein
+  Tipp auf „Ja“ antwortet **und** blättert weiter – „Weiter“ ist nicht nötig. Mit „Zurück“ lässt
+  sich die Antwort ändern.
+- Schritt 3: Jeder Knopf trägt die Antwort ein und blättert weiter; „Kenne ich nicht“ lässt das
+  freiwillige Feld leer.
+- Schritt 5: „1234“ wird abgelehnt („Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.“),
+  „76131“ angenommen. _Nicht offensichtlich:_ Bei „Ausland: Ja“ fragt der Fragebogen stattdessen
+  eine Postleitzahl ohne Prüfung.
+- Auf der Unterschriftsseite erklärt „Warum genügt das?“ mit Fundstellen, weshalb auch ein
+  getippter Name als Unterschrift genügt.

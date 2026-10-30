@@ -7,8 +7,9 @@
 | --- | --- |
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | e4b1aedd89a33a8ba3155e24204263b6610efdd0f66551207a78cecb34462425 |
+| Definition (SHA-256) | 2fa76e7810d7ca38e49cee148ad7b2adb922545ed3c58a36828200354d5e585d |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
+| Warum die Unterschrift in der App genügt | Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat. |
 | Empfänger | Lohnabrechnende Stelle |
 
 ## Rollen

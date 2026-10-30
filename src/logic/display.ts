@@ -84,6 +84,29 @@ const FORMATTERS: Readonly<
   month: (value) => (typeof value === 'string' ? germanMonth(value) : String(value)),
 };
 
+// `{fieldId}` in a question or help text: an earlier answer of the same role, e.g. "Ist Ihr
+// Geburtsname gleich dem Familiennamen {familienname}?". Unanswered, the placeholder and the space
+// before it disappear, so the sentence still reads.
+const PLACEHOLDER = / ?\{([a-z][a-zA-Z0-9]{0,63})\}/g;
+
+/** Field ids named by placeholders in a text. */
+export function placeholderIds(text: string): string[] {
+  return [...text.matchAll(PLACEHOLDER)].map((match) => match[1] ?? '');
+}
+
+export function fillPlaceholders(
+  text: string,
+  fieldOf: (id: string) => FieldDefinition | undefined,
+  valueOf: (id: string) => FieldValue | undefined,
+): string {
+  return text.replace(PLACEHOLDER, (match, id: string) => {
+    const field = fieldOf(id);
+    const value = valueOf(id);
+    if (!field || value === undefined || value === null) return '';
+    return `${match.startsWith(' ') ? ' ' : ''}„${displayValue(field, value)}“`;
+  });
+}
+
 /** The value as people read it; unanswered → "–". */
 export function displayValue(field: FieldDefinition, value: FieldValue | undefined): string {
   if (value === undefined || value === null) return EMPTY_VALUE;

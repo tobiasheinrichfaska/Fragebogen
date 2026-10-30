@@ -457,5 +457,6 @@
     "Dieser Fragebogen ist weder die Dienstwagenvereinbarung noch ein Nutzungsverbot; beides regelt der Arbeitsvertrag. Einen Nutzungsverzicht erklärt die Person auf Papier.",
     "Den geldwerten Vorteil berechnet die Lohnabrechnung, nicht die App. Bei einem Fahrzeugwechsel ist ein neuer Fragebogen nötig, bei geänderten Bedingungen eine neue Fassung."
   ],
-  "partLinks": [["arbeitgeber", "person"]]
+  "partLinks": [["arbeitgeber", "person"]],
+  "signatureBasis": "Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier."
 }

@@ -3,6 +3,7 @@
 // what gets frozen; tests/forms/catalogue.test.ts keeps docs/formulare/ in sync with the JSON.
 import { describeCondition } from './conditions';
 import { formatGermanDate } from './dates';
+import { placeholderIds } from './display';
 import { describeHint } from './hints';
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
@@ -114,6 +115,7 @@ function initialLabel(field: FieldDefinition, initial: boolean | string): string
 function fieldKind(field: FieldDefinition): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
+  if (field.textFormat === 'postleitzahlDe') kind += ', deutsche Postleitzahl (5 Ziffern)';
   if (field.type === 'number') {
     const decimals = field.decimals ?? 0;
     kind += decimals === 0 ? ', ganzzahlig' : `, ${decimals} Nachkommastellen`;
@@ -133,12 +135,30 @@ function fieldKind(field: FieldDefinition): string {
   return kind;
 }
 
+/** Placeholders as the reviewer reads them: „‹Familienname›“. */
+function shownPlaceholders(definition: FormDefinition, text: string): string {
+  const fields = fieldsById(definition);
+  return placeholderIds(text).reduce(
+    (out, id) => out.replace(`{${id}}`, `„‹${fields.get(id)?.label ?? id}›“`),
+    text,
+  );
+}
+
 function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = ''): string[][] {
   const { input, requirement } = describeFieldRules(definition, field);
   const name = [
     `${prefix}${field.label} (${field.id})`,
-    ...(field.question === undefined ? [] : [`Frage: ${field.question}`]),
-    ...(field.help === undefined ? [] : [`Hilfe: ${field.help}`]),
+    ...(field.question === undefined
+      ? []
+      : [`Frage: ${shownPlaceholders(definition, field.question)}`]),
+    ...(field.help === undefined ? [] : [`Hilfe: ${shownPlaceholders(definition, field.help)}`]),
+    ...(field.quickAnswers === undefined
+      ? []
+      : [
+          `Knöpfe: ${field.quickAnswers
+            .map((q) => `„${q.label}“${q.value === null ? ' (leer lassen)' : ''}`)
+            .join(', ')}`,
+        ]),
     ...(field.explainer === undefined ? [] : [`Erklärvideo: ${field.explainer}`]),
   ].join('\n');
   const own = [
@@ -225,6 +245,9 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
         ['Status', statusLabel(status, definition.version)],
         ['Definition (SHA-256)', form.definitionHash],
         ['Unterschrift', SIGNATURE_POLICY_LABELS[definition.signaturePolicy]],
+        ...(definition.signatureBasis === undefined
+          ? []
+          : [['Warum die Unterschrift in der App genügt', definition.signatureBasis]]),
         ['Empfänger', definition.recipient.label],
       ],
     ),

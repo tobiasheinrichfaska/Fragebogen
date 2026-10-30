@@ -4,7 +4,14 @@
 import { isIsoMonth, parseIsoDate } from './dates';
 import { accept, reject, type Checked, type IssueCode } from './issues';
 import { isPlainObject, isWellFormed } from './jcs';
-import type { ChoiceOption, FieldDefinition, FieldType, FieldValue, IsoDate } from './model';
+import type {
+  ChoiceOption,
+  FieldDefinition,
+  FieldType,
+  FieldValue,
+  IsoDate,
+  TextFormat,
+} from './model';
 import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
 export const CANON_VERSION = 1;
@@ -129,6 +136,15 @@ export function normalizeMonth(raw: string): Checked<string> {
   return isIsoMonth(iso) ? accept(iso) : reject('month.invalid');
 }
 
+/** Named formats of text fields (`textFormat`). */
+const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<string>>> = {
+  // Five digits; no postcode starts with 00.
+  postleitzahlDe: (text) => {
+    const compact = text.replace(/\s/g, '');
+    return /^(?!00)\d{5}$/.test(compact) ? accept(compact) : reject('plz.format');
+  },
+};
+
 export function normalizeIban(raw: string): Checked<string> {
   return checkIban(raw.replace(/\s/g, '').toUpperCase());
 }
@@ -175,7 +191,9 @@ function fromText(
 }
 
 const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
-  text: fromText((text) => accept(text)),
+  text: fromText((text, field) =>
+    field.textFormat === undefined ? accept(text) : TEXT_FORMAT_CHECKS[field.textFormat](text),
+  ),
   date: fromText(normalizeDate),
   money: fromText(normalizeMoney),
   number: fromText(normalizeNumber),

@@ -217,6 +217,8 @@ Code-Änderung.</p>
   <tr><td><code>signerNameField</code></td><td>FieldId</td><td>nein</td><td>Pflicht-Textfeld derselben Rolle mit dem Namen der unterschreibenden Person (immer sichtbar). Ohne dieses Feld kann eine bedingte Rolle nur mit getipptem Namen unterschreiben; der Name ist in jedem Fall Pflicht.</td></tr>
 </table>
 
+<p><strong>Platzhalter in Frage- und Hilfetexten:</strong> <code>{feldId}</code> zeigt die Antwort eines früheren Feldes derselben Rolle in Anführungszeichen (<code>fillPlaceholders</code>, <code>display.ts</code>); ist sie leer, fällt der Platzhalter samt Leerzeichen davor weg. Regel: nur frühere Felder derselben Rolle. <strong><code>signatureBasis</code></strong> (Formular, optional): warum die Unterschrift in der App genügt, mit Fundstellen; die Unterschriftsseite zeigt es unter „Warum genügt das?“. Einen getippten Namen bietet sie nur bei <code>signaturePolicy: "electronic"</code> an.</p>
+
 <h3>CheckHint (Prüfhinweis)</h3>
 <table>
   <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
@@ -265,6 +267,8 @@ Code-Änderung.</p>
   <tr><td><code>columns</code></td><td>FieldDefinition[]</td><td>nein</td><td>Spalten einer Tabelle (<code>repeatGroup</code>). Spalten gehören derselben Rolle wie die Tabelle, haben keine Bedingungen, Vorbelegung, Stammdaten oder Berechnung und sind keine Datei. Die Spalten-ID <code>rowId</code> ist reserviert.</td></tr>
   <tr><td><code>rowLabel</code></td><td>string</td><td>nein</td><td>Nur <code>repeatGroup</code>: Bezeichnung einer Zeile im Interview und in der PDF („Kind 1“, „Kind 2“ …)</td></tr>
   <tr><td><code>carryOver</code></td><td>false | "nextMonth"</td><td>nein</td><td>Wie bei „Angaben aus einer anderen Datei übernehmen“ übernommen wird: ohne Angabe unverändert; <code>false</code> gar nicht (z. B. Monatswerte der Lohnmeldung); <code>"nextMonth"</code> (nur <code>month</code>) als der folgende Monat. Gilt auch für Tabellenspalten.</td></tr>
+  <tr><td><code>quickAnswers</code></td><td>{ label, value }[]</td><td>nein</td><td>Nur Eingabefelder: Knöpfe, die antworten und sofort weiterblättern, z. B. „Deutschland“; <code>value: null</code> lässt ein freiwilliges Feld leer („Kenne ich nicht“). Jeder Wert muss eine gültige Antwort sein.</td></tr>
+  <tr><td><code>textFormat</code></td><td><code>postleitzahlDe</code></td><td>nein</td><td>Nur <code>text</code>: benanntes Format; <code>postleitzahlDe</code> = 5 Ziffern, nicht mit 00 beginnend (Fehler <code>plz.format</code>)</td></tr>
   <tr><td><code>carryRowsIf</code></td><td>Condition</td><td>nein</td><td>Nur Tabellen: Bei der Übernahme werden nur Zeilen übernommen, für die die Bedingung gilt (Blätter nennen Spalten der Tabelle), z. B. Fehlzeiten, die über das Monatsende andauern. Werden Zeilen übernommen und öffnet eine Ja/Nein-Frage die Tabelle (<code>showIf: { field, equals: true }</code>), wird diese Frage mit „Ja“ beantwortet.</td></tr>
   <tr><td><code>unit</code></td><td>string</td><td>nein</td><td>Nur <code>number</code>: Einheit hinter dem Wert, z. B. „Std.“, „km“</td></tr>
   <tr><td><code>decimals</code></td><td>0 | 1 | 2</td><td>nein</td><td>Nur <code>number</code>: Nachkommastellen (Standard 0); gespeichert mit genau so vielen</td></tr>

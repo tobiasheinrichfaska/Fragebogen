@@ -64,6 +64,14 @@ export const FIELD_TYPES = [
 ] as const;
 export type FieldType = (typeof FIELD_TYPES)[number];
 
+export interface QuickAnswer {
+  label: string;
+  value: string | null;
+}
+
+export const TEXT_FORMATS = ['postleitzahlDe'] as const;
+export type TextFormat = (typeof TEXT_FORMATS)[number];
+
 export interface ChoiceOption {
   id: string;
   label: string;
@@ -126,6 +134,13 @@ export interface FieldDefinition {
    * (leaves name columns of this table), e.g. absences that continue past the month's end.
    */
   carryRowsIf?: Condition;
+  /**
+   * Buttons that answer and move on at once, e.g. "Deutschland", "Kenne ich nicht". `value` is the
+   * typed answer (normalised like any input); null leaves an optional field empty.
+   */
+  quickAnswers?: QuickAnswer[];
+  /** `text` only: a named format the answer must have, e.g. a German postcode. */
+  textFormat?: TextFormat;
   /** `number` only: unit shown after the value, e.g. "Std.", "km", "kWh". */
   unit?: string;
   /** `number` only: decimal places, 0 (default), 1 or 2; stored with exactly that many. */
@@ -221,6 +236,11 @@ export interface FormDefinition {
    */
   partLinks?: [RoleId, RoleId][];
   checkHints?: CheckHint[];
+  /**
+   * Why the signature in the app suffices for this form, with sources — shown on the signature
+   * screen ("Warum genügt das?").
+   */
+  signatureBasis?: string;
 }
 
 // ---------------------------------------------------------------------------
