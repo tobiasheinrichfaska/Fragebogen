@@ -3,7 +3,9 @@
 // Beitragsgruppen combination must be allowed for its Personengruppe (DEÜV Anlage 16). Fictitious data.
 import { join } from 'node:path';
 import { derive } from '../../src/logic/derivations';
+import { visibleFields } from '../../src/logic/form';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
+import { checkHints } from '../../src/logic/hints';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
@@ -369,5 +371,55 @@ describe('definition rules for joined proposals', () => {
         { id: 'feld', label: 'F', rules: [{ valueFrom: 'agBefristet', reason: 'kein Text' }] },
       ]),
     ).toContain('"agBefristet" must be a top-level text field');
+  });
+});
+
+describe('Firmenzahler asked at the employer (Tobias 2026-10-30)', () => {
+  const high = (more: Answers): Answers => ({ ...monatlich('7.000,00'), ...more });
+  const hints = (employer: Answers, person: Answers = GKV) => {
+    const q = filled(
+      'arbeitgeber',
+      { agBeschaeftigungsbeginn: '02.11.2026', ...employer },
+      filled(
+        'person',
+        { weitereBeschaeftigung: false, geburtsdatum: '17.05.1990', ...person },
+        createQuestionnaire(QUESTIONNAIRE_ID, form),
+      ),
+    );
+    return checkHints(q, definition).map((h) => h.id);
+  };
+
+  it('asks Firmen- or Selbstzahler only when the employer says the pay is above the JAEG', () => {
+    const shown = (data: Answers) =>
+      visibleFields(definition, 'arbeitgeber', data as never).map((f) => f.id);
+    expect(shown({ agUeberJaeg: false })).not.toContain('agFirmenzahler');
+    expect(shown({ agUeberJaeg: true })).toContain('agFirmenzahler');
+  });
+
+  it.each<[string, string, string, boolean]>([
+    ['Firmenzahler', 'firmenzahler', '9111', false],
+    ['Selbstzahler', 'selbstzahler', '0111', false],
+    ['not yet known', 'unbekannt', '9111', true],
+  ])('%s → %s', (_name, answer, value, check) => {
+    expect(
+      proposals(high({ agUeberJaeg: true, agFirmenzahler: answer })).get('beitragsgruppen'),
+    ).toMatchObject({ status: 'proposed', value, check });
+  });
+
+  it('names a pay above the JAEG that the employer did not tick', () => {
+    expect(hints(high({ agUeberJaeg: false }))).toContain('jaegNichtAngegeben');
+    expect(hints(high({ agUeberJaeg: true, agFirmenzahler: 'firmenzahler' }))).not.toContain(
+      'jaegNichtAngegeben',
+    );
+    expect(hints(monatlich('3.000,00'))).not.toContain('jaegNichtAngegeben');
+  });
+
+  it('names Firmen- or Selbstzahler for a person who is not statutory insured', () => {
+    expect(
+      hints(high({ agUeberJaeg: true, agFirmenzahler: 'selbstzahler' }), {
+        ...PKV,
+        pkvBestand2002: 'nein',
+      }),
+    ).toContain('firmenzahlerOhnePflicht');
   });
 });

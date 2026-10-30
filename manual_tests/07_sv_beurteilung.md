@@ -153,3 +153,26 @@ abgeschlossen; Station „Kanzlei“.
 - Schritt 4: Tätigkeitsschlüssel „?????4412“ mit „bitte prüfen“.
 - _Nicht offensichtlich:_ Die App entscheidet nichts. Die Vorschläge stehen auch auf dem Prüfblatt der PDF,
   werden aber nie mitunterschrieben.
+
+---
+
+## MT-67: Firmenzahler beim Arbeitgeber
+
+**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; die Person ist gesetzlich versichert.
+
+**Schritte:**
+
+1. Festes Monatsentgelt 7.000,00 € eingeben.
+2. Bei „Liegt der Verdienst voraussichtlich über der Jahresarbeitsentgeltgrenze?“ zunächst „Nein“
+   lassen und bis zur Kanzlei durchgehen.
+3. Die Antwort auf „Ja“ ändern und bei der folgenden Frage „Nein, die Person zahlt selbst
+   (Selbstzahler)“ wählen.
+
+**Erwartet:**
+
+- Schritt 2: Prüfhinweis, dass der Verdienst laut Angaben über der Grenze liegt;
+  Beitragsgruppen 9111 mit „bitte prüfen“.
+- Schritt 3: Die Frage nach Firmen- oder Selbstzahler erscheint erst nach dem „Ja“; danach
+  Beitragsgruppen 0111 ohne „bitte prüfen“.
+- _Nicht offensichtlich:_ Die Vorbelegung „Nein“ ist absichtlich. Ein vergessenes „Ja“ fällt
+  über den Prüfhinweis auf.

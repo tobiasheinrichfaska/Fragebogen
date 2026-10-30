@@ -3417,6 +3417,50 @@
               "purpose": "Einmalzahlungen"
             }
           ]
+        },
+        {
+          "id": "agUeberJaeg",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Verdienst über der Jahresarbeitsentgeltgrenze",
+          "question": "Liegt der Verdienst voraussichtlich über der Jahresarbeitsentgeltgrenze?",
+          "help": "2026: 77.400 € im Jahr (6.450 € im Monat), einschließlich zugesagter Einmalzahlungen. Für Personen, die am 31.12.2002 privat versichert waren, gilt eine niedrigere Grenze (69.750 €). Dann ist die Person in der Krankenversicherung versicherungsfrei.",
+          "required": true,
+          "initial": false,
+          "purpose": "Versicherungsfreiheit in der Krankenversicherung (§ 6 Abs. 1 Nr. 1, Abs. 6, 7 SGB V); Beitragsgruppe und Beitragszahlung bei freiwilliger Versicherung"
+        },
+        {
+          "id": "agFirmenzahler",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Beitragszahlung bei freiwilliger Krankenversicherung",
+          "question": "Ist die Person freiwillig gesetzlich krankenversichert – zahlen Sie dann die Beiträge zur Kranken- und Pflegeversicherung an die Krankenkasse?",
+          "help": "Firmenzahler: Sie überweisen den ganzen Beitrag und ziehen den Anteil der Person vom Lohn ab. Selbstzahler: Die Person zahlt selbst; Sie zahlen ihr den Beitragszuschuss aus.",
+          "required": true,
+          "purpose": "Beitragsgruppe Krankenversicherung (DEÜV Anlage 1: 9 = Firmenzahler, 0 = Selbstzahler); Beitragszuschuss (§ 257 SGB V, § 61 SGB XI)",
+          "showIf": {
+            "field": "agUeberJaeg",
+            "equals": true
+          },
+          "because": "Nur wer wegen seines Verdiensts krankenversicherungsfrei ist, kann freiwillig gesetzlich versichert sein; nur dann kommt es auf Firmen- oder Selbstzahler an.",
+          "options": [
+            {
+              "id": "firmenzahler",
+              "label": "Ja, wir zahlen die Beiträge (Firmenzahler)"
+            },
+            {
+              "id": "selbstzahler",
+              "label": "Nein, die Person zahlt selbst (Selbstzahler)"
+            },
+            {
+              "id": "nichtFreiwillig",
+              "label": "Die Person ist nicht freiwillig gesetzlich versichert (zum Beispiel privat)."
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich noch nicht."
+            }
+          ]
         }
       ]
     },
@@ -5993,6 +6037,45 @@
       },
       "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
       "source": "§ 6 Abs. 1 Nr. 1, Abs. 6, 7, § 257 SGB V"
+    },
+    {
+      "id": "jaegNichtAngegeben",
+      "when": {
+        "field": "agUeberJaeg",
+        "equals": false
+      },
+      "test": {
+        "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+        "args": [
+          "agMonatsentgelt",
+          "agErwartetMonat",
+          "jobEntgeltMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "pkvBestand2002",
+          "agBeschaeftigungsbeginn"
+        ]
+      },
+      "message": "Laut den Verdienstangaben – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – liegt das regelmäßige Jahresarbeitsentgelt über der maßgeblichen Jahresarbeitsentgeltgrenze, der Arbeitgeber hat „nicht über der Grenze“ angegeben: klären; bei freiwilliger Versicherung Firmen- oder Selbstzahler erfragen.",
+      "source": "§ 6 Abs. 1 Nr. 1 SGB V"
+    },
+    {
+      "id": "firmenzahlerOhnePflicht",
+      "when": {
+        "all": [
+          {
+            "field": "agFirmenzahler",
+            "in": ["firmenzahler", "selbstzahler"]
+          },
+          {
+            "not": {
+              "field": "krankenversicherung",
+              "equals": "gesetzlich"
+            }
+          }
+        ]
+      },
+      "message": "Der Arbeitgeber gibt Firmen- oder Selbstzahler an, die Person ist aber nicht gesetzlich versichert: klären."
     }
   ],
   "validity": {
@@ -6707,7 +6790,62 @@
         },
         {
           "value": "9",
-          "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert – Firmenzahler angenommen; bei Selbstzahlern 0.",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              },
+              {
+                "field": "agFirmenzahler",
+                "equals": "firmenzahler"
+              }
+            ]
+          },
+          "test": {
+            "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "pkvBestand2002",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert, Firmenzahler laut Arbeitgeber."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              },
+              {
+                "field": "agFirmenzahler",
+                "equals": "selbstzahler"
+              }
+            ]
+          },
+          "test": {
+            "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "pkvBestand2002",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert, Selbstzahler laut Arbeitgeber."
+        },
+        {
+          "value": "9",
           "when": {
             "field": "krankenversicherung",
             "equals": "gesetzlich"
@@ -6724,7 +6862,8 @@
               "agBeschaeftigungsbeginn"
             ]
           },
-          "check": true
+          "check": true,
+          "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert; Firmen- oder Selbstzahler fehlt beim Arbeitgeber – Firmenzahler angenommen, bei Selbstzahlern 0."
         },
         {
           "value": "0",

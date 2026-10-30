@@ -447,8 +447,10 @@ Key design decisions (details in `docs/plan.md`):
   list fields and the street without number — field ids never change meaning).
 - **Proposals, known gaps** (2026-10-30): the Personengruppe proposal does not compute the weekly
   hours of a Werkstudent (asks for a check) and treats the employer's kind of employment as decisive
-  (a mismatch with the person's answer is a check hint). Beitragsgruppen: a voluntarily insured person
-  above the JAEG is proposed as Firmenzahler (9, "check"; Selbstzahler 0); the reduced KV contribution
+  (a mismatch with the person's answer is a check hint). Beitragsgruppen: Firmen- or Selbstzahler is asked at the
+  employer behind the gate "Verdienst über der JAEG?" (Tobias 2026-10-30; preselected Nein, a hint compares
+  it with the computed yearly pay); without that answer a voluntarily insured person is proposed as
+  Firmenzahler (9, "check"); the reduced KV contribution
   for a full Erwerbsminderungsrente and for jobs fixed to at most ten weeks rests on §§ 44, 50 SGB V,
   which are not in the local legal texts ("check"); the adding up of several Minijobs is not computed
   (check); the AV proposal "2" after the Regelaltersgrenze is still "1" in the month it is reached
