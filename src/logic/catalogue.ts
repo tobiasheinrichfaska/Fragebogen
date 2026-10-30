@@ -125,6 +125,10 @@ function fieldKind(field: FieldDefinition): string {
   if (field.masterData !== undefined) kind += '; Stammdatum, kann auf dem Gerät gemerkt werden';
   if (field.carryOver === false) kind += '; wird nicht aus einer anderen Datei übernommen';
   if (field.carryOver === 'nextMonth') kind += '; wird übernommen als der folgende Monat';
+  if (field.carryRowsIf) {
+    const columns = new Map((field.columns ?? []).map((column) => [column.id, column]));
+    kind += `; übernommen werden nur Zeilen, bei denen ${describeCondition(field.carryRowsIf, columns)}`;
+  }
   return kind;
 }
 

@@ -4,7 +4,8 @@
 import { join } from 'node:path';
 import { missingRequired, visibleFields } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
-import type { Questionnaire } from '../../src/logic/model';
+import { checkFormDefinition } from '../../src/logic/formDefinition';
+import type { FieldValue, FormDefinition, Questionnaire } from '../../src/logic/model';
 import { prefillFrom } from '../../src/logic/prefill';
 import {
   createQuestionnaire,
@@ -127,13 +128,14 @@ describe('Steuerfreigabe draft', () => {
 
 describe('Lohnmeldung draft — taken over from last month', () => {
   const form = draft('lohnmeldung');
-  const october = () =>
+  const october = (fehlzeiten: Record<string, unknown>[] | null = null) =>
     seal(
       fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', {
         abrechnungsmonat: '10.2026',
         leistungszeitraum: 'abrechnungsmonat',
         agFirma: 'Beispiel Bau GmbH',
         agBetriebsnummer: '12345678',
+        abgabetag: '15',
         ansprechpartner: 'Jürgen Beispiel',
         ansprechpartnerEmail: 'lohn@example.org',
         unterzeichnerName: 'Jürgen Beispiel',
@@ -147,12 +149,18 @@ describe('Lohnmeldung draft — taken over from last month', () => {
             maArbeitsstunden: '38,5',
             maZeitkonto: '-2,5',
           },
+          {
+            rowId: 'r2',
+            maName: 'Beispiel, Max',
+            maVerguetungsart: 'monatsentgelt',
+            maVerguetung: '2.400',
+            maWochenstunden: '40',
+            maScheidetAus: true,
+          },
         ],
         fragZuschlaege: false,
-        fragFehlzeiten: true,
-        fehlzeiten: [
-          { rowId: 'r1', fzPerson: 'Musterfrau, Erika', fzArt: 'urlaub', fzVon: '12.10.2026' },
-        ],
+        fragFehlzeiten: fehlzeiten !== null,
+        ...(fehlzeiten === null ? {} : { fehlzeiten }),
         fragZahlungen: false,
         fragEinAustritte: false,
         fragAenderungen: false,
@@ -163,21 +171,25 @@ describe('Lohnmeldung draft — taken over from last month', () => {
       0,
       { acknowledged: ['abgabe', 'arbeitszeit'] },
     );
+  const november = (source: Questionnaire) => {
+    const { questionnaire, reports } = prefillFrom(
+      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', form),
+      form,
+      source,
+      form,
+    );
+    return { data: currentPart(questionnaire, 'arbeitgeber')?.data ?? {}, report: reports[0] };
+  };
 
   it('can be completed and signed', () => {
     expect(transmissionBlockers(october(), form)).toEqual([]);
   });
 
-  it('moves the month on, keeps people and contacts, leaves every monthly value empty', () => {
-    const { questionnaire } = prefillFrom(
-      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', form),
-      form,
-      october(),
-      form,
-    );
-    const data = currentPart(questionnaire, 'arbeitgeber')?.data ?? {};
+  it('moves the month on, keeps contacts and the deadline, drops leavers, empties monthly values', () => {
+    const { data } = november(october());
     expect(data.abrechnungsmonat).toBe('2026-11');
     expect(data.unterzeichnerName).toBe('Jürgen Beispiel');
+    expect(data.abgabetag).toBe('15');
     expect(data.mitarbeitende).toEqual([
       {
         rowId: 'r1',
@@ -209,17 +221,104 @@ describe('Lohnmeldung draft — taken over from last month', () => {
       ].sort(),
     );
   });
+
+  it('takes over absences that continue, with their start, and answers the question opening them', () => {
+    const { data, report } = november(
+      october([
+        {
+          rowId: 'r1',
+          fzPerson: 'Musterfrau, Erika',
+          fzArt: 'urlaub',
+          fzVon: '12.10.2026',
+          fzBis: '16.10.2026',
+          fzArbeitstage: '5',
+        },
+        {
+          rowId: 'r2',
+          fzPerson: 'Beispiel, Max',
+          fzArt: 'krank',
+          fzVon: '27.10.2026',
+          fzDauertAn: true,
+          fzArbeitstage: '4',
+          fzNachweis: 'eau',
+        },
+      ]),
+    );
+    expect(data.fragFehlzeiten).toBe(true);
+    expect(data.fehlzeiten).toEqual([
+      {
+        rowId: 'r2',
+        fzPerson: 'Beispiel, Max',
+        fzArt: 'krank',
+        fzVon: '2026-10-27',
+        fzBis: null,
+        fzDauertAn: null,
+        fzArbeitstage: null,
+        fzStunden: null,
+        fzNachweis: 'eau',
+        fzBemerkung: null,
+      },
+    ]);
+    expect(report?.applied).toEqual(expect.arrayContaining(['fragFehlzeiten', 'fehlzeiten']));
+    expect(report?.skipped).toEqual([]);
+  });
+
+  it('opens nothing when no absence continues', () => {
+    const { data } = november(
+      october([
+        { rowId: 'r1', fzPerson: 'Musterfrau, Erika', fzArt: 'urlaub', fzVon: '12.10.2026' },
+      ]),
+    );
+    expect(data.fragFehlzeiten ?? null).toBeNull();
+    expect(data.fehlzeiten ?? null).toBeNull();
+  });
+
+  it('accepts the deadline as master data from the bookmark link', () => {
+    const field = form.definition.sections
+      .flatMap((s) => s.fields)
+      .find((f) => f.id === 'abgabetag');
+    expect(field?.masterData).toBe('abgabetag');
+  });
 });
 
-describe('Dienstwagen draft', () => {
+describe('table row rule (carryRowsIf) — definition rules', () => {
+  const raw = () =>
+    structuredClone(readJson(join(DRAFTS_DIR, 'lohnmeldung', '0.1.0.json'))) as FormDefinition;
+  const table = (d: FormDefinition, id: string) => {
+    const field = d.sections.flatMap((s) => s.fields).find((f) => f.id === id);
+    if (!field) throw new Error(`no field ${id}`);
+    return field;
+  };
+
+  it('refuses a rule on a field that is no table, on a column of another table, or without takeover', () => {
+    const notTable = raw();
+    table(notTable, 'bemerkungen').carryRowsIf = { field: 'fzDauertAn', equals: true };
+    expect(checkFormDefinition(notTable).map((i) => i.message)).toEqual(
+      expect.arrayContaining(['only tables have carryRowsIf']),
+    );
+    const foreign = raw();
+    table(foreign, 'zahlungen').carryRowsIf = { field: 'fzDauertAn', equals: true };
+    expect(checkFormDefinition(foreign).map((i) => i.message)).toEqual(
+      expect.arrayContaining(['"fzDauertAn" is not a column of this table']),
+    );
+    const notCarried = raw();
+    table(notCarried, 'fehlzeiten').carryOver = false;
+    expect(checkFormDefinition(notCarried).map((i) => i.message)).toEqual(
+      expect.arrayContaining(['a table that is not taken over cannot filter its rows']),
+    );
+  });
+});
+
+describe('Dienstwagen draft — standard only', () => {
   const form = draft('dienstwagen');
 
-  it('asks charging questions only for electric and plug-in cars', () => {
-    const ids = (antrieb: string) =>
-      visibleFields(form.definition, 'arbeitgeber', { agAntrieb: antrieb }).map((f) => f.id);
-    expect(ids('elektro')).toEqual(expect.arrayContaining(['agHeimladenErstattung', 'agWallbox']));
-    expect(ids('plugin')).toEqual(expect.arrayContaining(['agCo2', 'agReichweite']));
-    expect(ids('verbrenner')).not.toContain('agWallbox');
+  it('asks plug-in details only for plug-in hybrids and the 15 % question only with commuting', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
+    expect(ids({ agAntrieb: 'plugin' })).toEqual(expect.arrayContaining(['agCo2', 'agReichweite']));
+    expect(ids({ agAntrieb: 'verbrenner' })).not.toContain('agCo2');
+    expect(ids({ agFahrtenWohnung: true })).toContain('agPauschal15');
+    expect(ids({ agFahrtenWohnung: false })).not.toContain('agPauschal15');
   });
 
   it('seals the employer part and then the person part over it', () => {
@@ -231,31 +330,16 @@ describe('Dienstwagen draft', () => {
         agKennzeichen: 'KA-B 1234',
         agFahrzeug: 'Beispielmarke Modell E',
         agErstzulassung: '01.03.2026',
-        agFahrzeugHerkunft: 'geleast',
         agAnschaffung: '01.03.2026',
         agListenpreis: '48.900',
         agSonderausstattung: '2.100',
         agAntrieb: 'elektro',
         agErstUeberlassung: '01.04.2026',
         agUeberlassenAb: '01.04.2026',
-        agUeberlassungsart: 'dauerhaft',
         agPrivatnutzung: true,
         agFahrtenWohnung: true,
-        agTaetigkeitsstaette: 'Musterweg 2, 12345 Musterstadt',
-        agTageVorOrt: '3',
-        agPauschal15: false,
-        agEinzelbewertungAusgeschlossen: false,
-        agNutzerAnzahl: 'allein',
-        agMaut: false,
-        agMethodeAbJahr: '2026',
-        agMethode: 'pauschal',
-        agMethodeWohnung: 'einzeln',
-        agNutzungsentgelt: ['nichts'],
-        agLadenBetrieb: true,
-        agHeimladenErstattung: true,
-        agHeimladenAbrechnung: 'pauschale',
-        agOeffentlichLaden: false,
-        agWallbox: 'ueberlassen',
+        agPauschal15: true,
+        agSonderfaelle: ['keine'],
       }),
       form,
       'arbeitgeber',
@@ -270,13 +354,6 @@ describe('Dienstwagen draft', () => {
         vorname: 'Erika',
         fahrtenWohnung: true,
         entfernungKm: '23',
-        mehrereWohnungen: false,
-        teilstrecke: false,
-        einzelbewertungAntrag: true,
-        einzelbewertungZusage: true,
-        ladenZuhause: true,
-        ladezaehler: true,
-        stromtarif: 'fest',
       }),
       form,
       'person',

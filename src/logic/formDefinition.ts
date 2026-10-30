@@ -225,6 +225,7 @@ const FIELD_KEYS = [
   'masterData',
   'rowLabel',
   'carryOver',
+  'carryRowsIf',
   'unit',
   'decimals',
   'signed',
@@ -278,6 +279,10 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
       : o.carryOver === false || o.carryOver === 'nextMonth'
         ? o.carryOver
         : d.report(`${path}.carryOver`, 'expected false or "nextMonth"');
+  const carryRowsIf =
+    o.carryRowsIf === undefined
+      ? undefined
+      : decodeCondition(d, o.carryRowsIf, `${path}.carryRowsIf`, 0);
   const unit = o.unit === undefined ? undefined : d.string(o.unit, `${path}.unit`);
   const decimals = o.decimals === undefined ? undefined : d.integer(o.decimals, `${path}.decimals`);
   const signed = o.signed === undefined ? undefined : d.boolean(o.signed, `${path}.signed`);
@@ -312,6 +317,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(masterData === undefined ? {} : { masterData }),
     ...(rowLabel === undefined ? {} : { rowLabel }),
     ...(carryOver === undefined ? {} : { carryOver }),
+    ...(carryRowsIf === undefined ? {} : { carryRowsIf }),
     ...(unit === undefined ? {} : { unit }),
     ...(decimals === undefined ? {} : { decimals }),
     ...(signed === undefined ? {} : { signed }),
@@ -586,6 +592,25 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     if (field.carryOver === 'nextMonth' && field.type !== 'month') {
       report(`${path}.carryOver`, '"nextMonth" only for month fields');
     }
+    if (field.carryRowsIf) {
+      if (field.type !== 'repeatGroup') {
+        report(`${path}.carryRowsIf`, 'only tables have carryRowsIf');
+      } else if (field.carryOver === false) {
+        report(`${path}.carryRowsIf`, 'a table that is not taken over cannot filter its rows');
+      }
+      const columns = new Map((field.columns ?? []).map((column) => [column.id, column]));
+      forEachLeaf(field.carryRowsIf, `${path}.carryRowsIf`, (leaf, leafPath) => {
+        const column = columns.get(leaf.field);
+        if (!column) {
+          report(`${leafPath}.field`, `"${leaf.field}" is not a column of this table`);
+          return;
+        }
+        const problem = leafProblem(leaf, column);
+        if (problem) {
+          report(`${leafPath}.${problem.at === 'field' ? 'field' : problem.at}`, problem.message);
+        }
+      });
+    }
   }
 }
 
@@ -795,6 +820,8 @@ const MASTER_DATA_TYPES: readonly FieldType[] = [
   'svNumber',
   'betriebsnummer',
   'money',
+  'number',
+  'month',
 ];
 
 /**

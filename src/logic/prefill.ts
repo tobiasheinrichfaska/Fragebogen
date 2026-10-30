@@ -4,6 +4,7 @@
 // values move by id — only when the type matches, only into empty fields, never for fields marked
 // `carryOver: false`. They go through setValue in form order, so a follow-up is filled only when
 // its condition holds, and every value that cannot be taken over is reported with its reason.
+import { evaluateCondition } from './conditions';
 import { addMonths, isIsoMonth } from './dates';
 import { fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
@@ -44,7 +45,10 @@ function carried(field: FieldDefinition, value: FieldValue): FieldValue {
     : value;
 }
 
-/** A table's rows restricted to the target's columns; columns marked carryOver: false stay empty. */
+/**
+ * A table's rows restricted to the target's columns; columns marked carryOver: false stay empty.
+ * With `carryRowsIf` only the rows meeting it are taken over (e.g. absences that continue).
+ */
 function tableValue(
   source: FieldDefinition,
   target: FieldDefinition,
@@ -57,12 +61,23 @@ function tableValue(
   );
   const rows = value.flatMap((row) => {
     if (!isPlainObject(row)) return [];
+    const rowValue = (id: string) => (row[id] as FieldValue | undefined) ?? null;
+    if (target.carryRowsIf && !evaluateCondition(target.carryRowsIf, rowValue)) return [];
     const cells: Record<string, FieldValue> = { [ROW_ID_KEY]: row[ROW_ID_KEY] ?? null };
     for (const column of columns)
       cells[column.id] = carried(column, (row[column.id] as FieldValue | undefined) ?? null);
     return columns.some((column) => cells[column.id] !== null) ? [cells] : [];
   });
   return rows.length === 0 ? null : rows;
+}
+
+/** The yes/no field whose "Ja" alone opens a table (`showIf: { field, equals: true }`). */
+function gateOf(field: FieldDefinition, form: RegisteredForm): FieldId | undefined {
+  const condition = field.showIf;
+  if (field.type !== 'repeatGroup' || !condition || !('field' in condition)) return undefined;
+  if (!('equals' in condition) || condition.equals !== true) return undefined;
+  const gate = fieldsById(form.definition).get(condition.field);
+  return gate?.type === 'boolean' && gate.role === field.role ? gate.id : undefined;
 }
 
 /**
@@ -121,7 +136,21 @@ export function prefillFrom(
       const taken =
         field.type === 'repeatGroup' ? tableValue(origin, field, value) : carried(field, value);
       if (taken === null) continue;
-      const result = setValue(q, targetForm, role.id, field.id, taken);
+      let result = setValue(q, targetForm, role.id, field.id, taken);
+      // Rows taken over answer the yes/no question that opens their table: continuing absences
+      // mean there are absences this month, too.
+      const gate = gateOf(field, targetForm);
+      if (!result.ok && result.code === 'fieldNotAvailable' && gate !== undefined) {
+        const opened =
+          (currentPart(q, role.id)?.data[gate] ?? null) === null
+            ? setValue(q, targetForm, role.id, gate, true)
+            : undefined;
+        if (opened?.ok) {
+          const retry = setValue(opened.questionnaire, targetForm, role.id, field.id, taken);
+          if (retry.ok) report.applied.push(gate);
+          result = retry;
+        }
+      }
       if (result.ok) {
         q = result.questionnaire;
         report.applied.push(field.id);

@@ -79,6 +79,18 @@
           "masterData": "mandantennummer"
         },
         {
+          "id": "abgabetag",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Abgabe bis zum … des Monats",
+          "question": "Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?",
+          "help": "Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen.",
+          "required": false,
+          "purpose": "Termin der lohnabrechnenden Stelle für die Monatsmeldung",
+          "masterData": "abgabetag",
+          "decimals": 0
+        },
+        {
           "id": "ansprechpartner",
           "role": "arbeitgeber",
           "type": "text",
@@ -132,10 +144,16 @@
           "type": "repeatGroup",
           "label": "Mitarbeitende",
           "question": "Wer war im Abrechnungsmonat beschäftigt?",
-          "help": "Eine Zeile für jede Person, auch Neue und Ausscheidende. Die Zeilen werden in die nächste Meldung übernommen; Monatswerte bleiben dann leer. Ausgeschiedene entfernen Sie im nächsten Monat.",
+          "help": "Eine Zeile für jede Person, auch Neue und Ausscheidende. Die Zeilen werden in die nächste Meldung übernommen, außer bei Personen, die ausscheiden; Monatswerte bleiben dann leer.",
           "required": true,
           "purpose": "Lohnabrechnung des Abrechnungsmonats",
           "rowLabel": "Person",
+          "carryRowsIf": {
+            "not": {
+              "field": "maScheidetAus",
+              "equals": true
+            }
+          },
           "columns": [
             {
               "id": "maPersonalnummer",
@@ -378,15 +396,18 @@
           "role": "arbeitgeber",
           "type": "repeatGroup",
           "label": "Fehlzeiten",
-          "help": "Bitte keine Diagnose und keinen Grund angeben, nur die Art.",
+          "help": "Bitte keine Diagnose und keinen Grund angeben, nur die Art. Fehlzeiten, die über das Monatsende andauern, werden in die nächste Meldung übernommen; tragen Sie dort das Ende nach.",
           "required": true,
           "purpose": "Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV)",
           "showIf": {
             "field": "fragFehlzeiten",
             "equals": true
           },
-          "carryOver": false,
           "rowLabel": "Fehlzeit",
+          "carryRowsIf": {
+            "field": "fzDauertAn",
+            "equals": true
+          },
           "columns": [
             {
               "id": "fzPerson",
@@ -477,7 +498,8 @@
               "label": "bis",
               "help": "Leer lassen, wenn das Ende offen ist.",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false
             },
             {
               "id": "fzDauertAn",
@@ -485,7 +507,8 @@
               "type": "boolean",
               "label": "dauert über das Monatsende an",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false
             },
             {
               "id": "fzArbeitstage",
@@ -494,6 +517,7 @@
               "label": "ausgefallene Arbeitstage in diesem Monat",
               "required": false,
               "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false,
               "decimals": 1,
               "unit": "Tage"
             },
@@ -504,6 +528,7 @@
               "label": "ausgefallene Stunden",
               "required": false,
               "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false,
               "decimals": 2,
               "unit": "Std."
             },
@@ -539,7 +564,8 @@
               "type": "text",
               "label": "Bemerkung",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "carryOver": false
             }
           ]
         },
@@ -1038,7 +1064,7 @@
       "id": "abgabe",
       "role": "arbeitgeber",
       "title": "Bis wann die Meldung gebraucht wird",
-      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt. Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.",
+      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt (oben unter „Abgabe bis zum … des Monats“). Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.",
       "asOf": "2026-10-30",
       "acknowledgement": "read"
     },
@@ -1058,6 +1084,6 @@
     "Die Monatsmeldung ist keine Arbeitszeitaufzeichnung nach § 17 MiLoG oder § 16 ArbZG; die Aufzeichnungen bleiben beim Arbeitgeber.",
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).",
     "Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).",
-    "Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden und laufenden Leistungen bleiben, alle Monatswerte sind leer."
+    "Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden (außer Ausscheidenden) und laufenden Leistungen bleiben, Fehlzeiten über das Monatsende werden mit Beginn übernommen, alle Monatswerte sind leer."
   ]
 }

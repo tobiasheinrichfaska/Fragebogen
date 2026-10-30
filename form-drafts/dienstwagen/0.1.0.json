@@ -11,14 +11,14 @@
       "id": "arbeitgeber",
       "label": "Arbeitgeber",
       "stationHeading": "Angaben des Arbeitgebers",
-      "confirmationText": "Ich bestätige die Angaben zu Fahrzeug, Überlassung und Bewertung.",
+      "confirmationText": "Ich bestätige die Angaben zu Fahrzeug und Überlassung.",
       "signature": "required"
     },
     {
       "id": "person",
       "label": "Beschäftigte Person",
       "stationHeading": "Angaben der beschäftigten Person",
-      "confirmationText": "Ich versichere, dass meine Angaben richtig sind. Einen Umzug, einen Wechsel der Tätigkeitsstätte und Änderungen bei Familienheimfahrten teile ich meinem Arbeitgeber unverzüglich mit.",
+      "confirmationText": "Ich versichere, dass meine Angaben richtig sind. Einen Umzug oder einen Wechsel der Tätigkeitsstätte teile ich meinem Arbeitgeber unverzüglich mit.",
       "signature": "required"
     }
   ],
@@ -77,15 +77,6 @@
           "purpose": "Zuordnung"
         },
         {
-          "id": "agFin",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Fahrzeug-Identifizierungsnummer (FIN)",
-          "help": "Zulassungsbescheinigung Teil I, Feld E.",
-          "required": false,
-          "purpose": "Eindeutige Zuordnung"
-        },
-        {
           "id": "agFahrzeug",
           "role": "arbeitgeber",
           "type": "text",
@@ -103,34 +94,11 @@
           "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)"
         },
         {
-          "id": "agFahrzeugHerkunft",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Fahrzeug des Arbeitgebers",
-          "question": "Wie hat der Arbeitgeber das Fahrzeug?",
-          "help": "Bei Leasing muss der Arbeitgeber Leasingnehmer sein.",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "options": [
-            {
-              "id": "gekauft",
-              "label": "gekauft"
-            },
-            {
-              "id": "geleast",
-              "label": "geleast"
-            },
-            {
-              "id": "gemietet",
-              "label": "gemietet"
-            }
-          ]
-        },
-        {
           "id": "agAnschaffung",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Kauf- oder Leasingbeginn beim Arbeitgeber",
+          "help": "Entscheidet bei Elektro- und Hybridfahrzeugen, welche Grenzen gelten.",
           "required": true,
           "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)"
         },
@@ -153,35 +121,13 @@
           "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)"
         },
         {
-          "id": "agReimport",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Reimportfahrzeug",
-          "required": true,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
-          "initial": false
-        },
-        {
-          "id": "agReimportListenpreis",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Ermittlung des inländischen Listenpreises",
-          "help": "Zum Beispiel: vergleichbares deutsches Modell, Ausstattung angepasst.",
-          "required": true,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
-          "showIf": {
-            "field": "agReimport",
-            "equals": true
-          }
-        },
-        {
           "id": "agAntrieb",
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Antrieb",
           "help": "Zulassungsbescheinigung Teil I, Feld 10.",
           "required": true,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
+          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR); geringerer Ansatz für Elektro- und Hybridfahrzeuge",
           "options": [
             {
               "id": "verbrenner",
@@ -246,33 +192,6 @@
           },
           "decimals": 0,
           "unit": "km"
-        },
-        {
-          "id": "agBatterie",
-          "role": "arbeitgeber",
-          "type": "number",
-          "label": "Batteriekapazität",
-          "help": "Zulassungsbescheinigung Teil I, Feld 22. Nur nötig, wenn das Fahrzeug vor 2019 erstmals überlassen wurde oder die Voraussetzungen nicht erfüllt.",
-          "required": false,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
-          "showIf": {
-            "field": "agAntrieb",
-            "in": ["elektro", "plugin", "brennstoff"]
-          },
-          "decimals": 1,
-          "unit": "kWh"
-        },
-        {
-          "id": "agBatterieGemietet",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Batterie gesondert gemietet oder geleast",
-          "required": false,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
-          "showIf": {
-            "field": "agAntrieb",
-            "in": ["elektro", "plugin", "brennstoff"]
-          }
         }
       ]
     },
@@ -286,7 +205,7 @@
           "type": "date",
           "label": "Überlassen ab",
           "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)"
+          "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)"
         },
         {
           "id": "agUeberlassenBis",
@@ -295,25 +214,7 @@
           "label": "Überlassen bis",
           "help": "Nur wenn bekannt oder bei Rückgabe.",
           "required": false,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)"
-        },
-        {
-          "id": "agUeberlassungsart",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Art der Überlassung",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "options": [
-            {
-              "id": "dauerhaft",
-              "label": "dauerhaft"
-            },
-            {
-              "id": "gelegentlich",
-              "label": "gelegentlich aus besonderem Anlass (höchstens 5 Kalendertage im Monat)"
-            }
-          ]
+          "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)"
         },
         {
           "id": "agPrivatnutzung",
@@ -321,17 +222,18 @@
           "type": "boolean",
           "label": "Privatnutzung erlaubt",
           "question": "Darf die Person das Fahrzeug privat nutzen?",
+          "help": "Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger).",
           "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)"
+          "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)"
         },
         {
           "id": "agNutzungsverbot",
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Regelung des Nutzungsverbots",
-          "help": "Das Dokument gehört zum Lohnkonto. Ein Verzicht der Person wird auf Papier erklärt.",
+          "help": "Das Dokument gehört zum Lohnkonto.",
           "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
+          "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)",
           "showIf": {
             "field": "agPrivatnutzung",
             "equals": false
@@ -351,7 +253,7 @@
             },
             {
               "id": "verzicht",
-              "label": "schriftlicher Verzicht der Person"
+              "label": "schriftlicher Verzicht der Person (auf Papier)"
             }
           ]
         },
@@ -362,555 +264,71 @@
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt",
           "question": "Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?",
           "required": true,
-          "purpose": "§ 8 Abs. 2 Satz 3 EStG"
-        },
-        {
-          "id": "agTaetigkeitsstaette",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Anschrift der ersten Tätigkeitsstätte",
-          "required": true,
-          "purpose": "Prüfung der Entfernung (§ 9 Abs. 4 EStG)",
-          "showIf": {
-            "field": "agFahrtenWohnung",
-            "equals": true
-          }
-        },
-        {
-          "id": "agTageVorOrt",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Arbeitstage vor Ort pro Woche",
-          "required": true,
-          "purpose": "Tage bei der Pauschalierung (BMF vom 18.11.2021)",
-          "showIf": {
-            "field": "agFahrtenWohnung",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "1",
-              "label": "1"
-            },
-            {
-              "id": "2",
-              "label": "2"
-            },
-            {
-              "id": "3",
-              "label": "3"
-            },
-            {
-              "id": "4",
-              "label": "4"
-            },
-            {
-              "id": "5",
-              "label": "5"
-            },
-            {
-              "id": "offen",
-              "label": "nicht festgelegt"
-            }
-          ]
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
         },
         {
           "id": "agPauschal15",
           "role": "arbeitgeber",
           "type": "boolean",
           "label": "Pauschalierung mit 15 %",
-          "question": "Sollen diese Fahrten, soweit zulässig, mit 15 % pauschal versteuert werden?",
+          "question": "Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?",
+          "help": "Pauschal versteuert wird der Vorteil für 15 Arbeitstage im Monat; dieser Teil ist in der Sozialversicherung beitragsfrei.",
           "required": true,
-          "purpose": "§ 40 Abs. 2 Satz 2 Nr. 1a EStG; beitragsfrei nach § 1 SvEV",
+          "purpose": "Pauschale Lohnsteuer für 15 Fahrten im Monat (§ 40 Abs. 2 Satz 2 Nr. 1a EStG); beitragsfrei (§ 1 SvEV)",
           "showIf": {
             "field": "agFahrtenWohnung",
             "equals": true
           }
         },
         {
-          "id": "agEinzelbewertungAusgeschlossen",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Einzelbewertung vertraglich ausgeschlossen",
-          "help": "Sonst muss der Arbeitgeber sie auf Wunsch der Person anwenden.",
-          "required": true,
-          "purpose": "BMF vom 03.03.2022 Rn. 13",
-          "showIf": {
-            "field": "agFahrtenWohnung",
-            "equals": true
-          }
-        },
-        {
-          "id": "agFamilienheimfahrten",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Familienheimfahrten erlaubt",
-          "help": "Nur bei doppelter Haushaltsführung.",
-          "required": true,
-          "purpose": "§ 8 Abs. 2 Satz 5 EStG",
-          "initial": false
-        },
-        {
-          "id": "agNutzerAnzahl",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Private Nutzer",
-          "question": "Wer darf das Fahrzeug privat nutzen?",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "agPrivatnutzung",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "allein",
-              "label": "nur diese Person"
-            },
-            {
-              "id": "mehrere",
-              "label": "mehrere Personen"
-            }
-          ]
-        },
-        {
-          "id": "agNutzerZahl",
-          "role": "arbeitgeber",
-          "type": "number",
-          "label": "Anzahl der Nutzungsberechtigten",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "agNutzerAnzahl",
-            "equals": "mehrere"
-          },
-          "decimals": 0
-        },
-        {
-          "id": "agWeiteresFahrzeug",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Weiteres Dienstfahrzeug",
-          "question": "Steht der Person gleichzeitig ein weiteres Dienstfahrzeug zur Verfügung?",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "initial": false
-        },
-        {
-          "id": "agFahrer",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Fahrer gestellt",
-          "question": "Stellt der Arbeitgeber einen Fahrer?",
-          "required": true,
-          "purpose": "R 8.1 Abs. 10 LStR",
-          "initial": false
-        },
-        {
-          "id": "agFahrerFahrten",
+          "id": "agSonderfaelle",
           "role": "arbeitgeber",
           "type": "multiChoice",
-          "label": "Fahrer für",
+          "label": "Sonderfälle",
+          "question": "Trifft einer dieser Sonderfälle zu?",
+          "help": "Diese Fälle deckt der Fragebogen nicht ab; die lohnabrechnende Stelle klärt sie gesondert mit Ihnen.",
           "required": true,
-          "purpose": "R 8.1 Abs. 10 LStR",
-          "showIf": {
-            "field": "agFahrer",
-            "equals": true
-          },
+          "purpose": "Abweichungen von der Standardbewertung, die die lohnabrechnende Stelle gesondert klärt",
           "options": [
             {
-              "id": "privat",
-              "label": "Privatfahrten"
+              "id": "fahrtenbuch",
+              "label": "Fahrtenbuch statt 1-%-Regelung"
             },
             {
-              "id": "wohnung",
-              "label": "Wohnung – erste Tätigkeitsstätte"
+              "id": "einzelbewertung",
+              "label": "Einzelbewertung der Fahrten (0,002 % je Fahrt)"
+            },
+            {
+              "id": "wenigerTage",
+              "label": "weniger als 5 Arbeitstage pro Woche vor Ort (Homeoffice)"
+            },
+            {
+              "id": "zuzahlung",
+              "label": "Zuzahlungen oder Kostenübernahme durch die Person"
             },
             {
               "id": "heimfahrten",
-              "label": "Familienheimfahrten"
-            }
-          ]
-        },
-        {
-          "id": "agMaut",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Maut, Vignetten oder Fähren für Privatfahrten übernommen",
-          "required": true,
-          "purpose": "Eigener geldwerter Vorteil",
-          "showIf": {
-            "field": "agPrivatnutzung",
-            "equals": true
-          }
-        },
-        {
-          "id": "agGehaltsumwandlung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Überlassung im Rahmen einer Gehaltsumwandlung",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "initial": false
-        }
-      ]
-    },
-    {
-      "id": "methode",
-      "title": "Bewertungsmethode",
-      "fields": [
-        {
-          "id": "agMethodeAbJahr",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Methode gilt ab Kalenderjahr",
-          "help": "Zum Beispiel 2027. Die Methode gilt jeweils für ein ganzes Kalenderjahr.",
-          "required": true,
-          "purpose": "R 8.1 Abs. 9 Nr. 3 LStR",
-          "showIf": {
-            "field": "agPrivatnutzung",
-            "equals": true
-          }
-        },
-        {
-          "id": "agMethode",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Methode",
-          "help": "In Abstimmung mit der Person festlegen; kein Wechsel im Jahr.",
-          "required": true,
-          "purpose": "R 8.1 Abs. 9 LStR",
-          "showIf": {
-            "field": "agPrivatnutzung",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "pauschal",
-              "label": "pauschal (1-%-Regelung)"
+              "label": "Familienheimfahrten (doppelte Haushaltsführung)"
             },
             {
-              "id": "fahrtenbuch",
-              "label": "Fahrtenbuch"
-            }
-          ]
-        },
-        {
-          "id": "agFahrtenbuchArt",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Fahrtenbuch",
-          "help": "Elektronisch nur, wenn spätere Änderungen ausgeschlossen oder protokolliert sind.",
-          "required": true,
-          "purpose": "R 8.1 Abs. 9 Nr. 2 LStR",
-          "showIf": {
-            "field": "agMethode",
-            "equals": "fahrtenbuch"
-          },
-          "options": [
-            {
-              "id": "elektronisch",
-              "label": "elektronisch"
+              "id": "fahrer",
+              "label": "Fahrer wird gestellt"
             },
             {
-              "id": "handschriftlich",
-              "label": "handschriftlich"
-            }
-          ]
-        },
-        {
-          "id": "agMethodeWohnung",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Bewertung der Fahrten Wohnung – erste Tätigkeitsstätte",
-          "help": "Einzelbewertung nur mit monatlicher, datumsgenauer Erklärung der Person; höchstens 180 Fahrten im Jahr.",
-          "required": true,
-          "purpose": "BMF vom 03.03.2022 Rn. 13",
-          "showIf": {
-            "all": [
-              {
-                "field": "agMethode",
-                "equals": "pauschal"
-              },
-              {
-                "field": "agFahrtenWohnung",
-                "equals": true
-              }
-            ]
-          },
-          "options": [
-            {
-              "id": "monatlich",
-              "label": "0,03 % je Entfernungskilometer im Monat"
+              "id": "mehrereNutzer",
+              "label": "mehrere Personen nutzen das Fahrzeug privat"
             },
             {
-              "id": "einzeln",
-              "label": "Einzelbewertung 0,002 % je Fahrt"
-            }
-          ]
-        },
-        {
-          "id": "agKostendeckelung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Kostendeckelung prüfen",
-          "help": "Wenn die tatsächlichen Gesamtkosten niedriger sein könnten als der pauschale Wert.",
-          "required": false,
-          "purpose": "BMF vom 03.03.2022 Rn. 8",
-          "showIf": {
-            "field": "agMethode",
-            "equals": "pauschal"
-          }
-        }
-      ]
-    },
-    {
-      "id": "zahlungen",
-      "title": "Zahlungen der beschäftigten Person",
-      "fields": [
-        {
-          "id": "agNutzungsentgelt",
-          "role": "arbeitgeber",
-          "type": "multiChoice",
-          "label": "Nutzungsentgelt der Person",
-          "help": "Ein Gehaltsverzicht (Gehaltsumwandlung) zählt nicht.",
-          "required": true,
-          "purpose": "Nutzungsentgelt mindert den Vorteil (BMF vom 03.03.2022 Rn. 52–57)",
-          "showIf": {
-            "field": "agPrivatnutzung",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "nichts",
-              "label": "nichts"
+              "id": "ladestrom",
+              "label": "Erstattung von Ladestrom zu Hause"
             },
             {
-              "id": "pauschale",
-              "label": "feste Monatspauschale"
+              "id": "gehaltsumwandlung",
+              "label": "Überlassung durch Gehaltsumwandlung"
             },
-            {
-              "id": "jeKm",
-              "label": "Betrag je privat gefahrenem km"
-            },
-            {
-              "id": "leasing",
-              "label": "übernommene Leasingraten"
-            },
-            {
-              "id": "kosten",
-              "label": "einzelne Fahrzeugkosten (zum Beispiel Kraftstoff)"
-            },
-            {
-              "id": "einmal",
-              "label": "Einmalzahlung zu Anschaffung oder Leasingsonderzahlung"
-            }
-          ]
-        },
-        {
-          "id": "agEntgeltPauschale",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Monatspauschale",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "pauschale"
-          }
-        },
-        {
-          "id": "agEntgeltJeKm",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Betrag je privat gefahrenem km",
-          "help": "Die Person meldet dann monatlich ihre privat gefahrenen km.",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "jeKm"
-          }
-        },
-        {
-          "id": "agEntgeltLeasing",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Übernommene Leasingrate je Monat",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "leasing"
-          }
-        },
-        {
-          "id": "agKostenPerson",
-          "role": "arbeitgeber",
-          "type": "multiChoice",
-          "label": "Kosten, die die Person selbst trägt",
-          "help": "Die Person erklärt die Kosten jährlich mit Belegen.",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "kosten"
-          },
-          "options": [
-            {
-              "id": "energie",
-              "label": "Kraftstoff oder Strom"
-            },
-            {
-              "id": "wartung",
-              "label": "Wartung und Reparatur"
-            },
-            {
-              "id": "versicherung",
-              "label": "Versicherung"
-            },
-            {
-              "id": "pflege",
-              "label": "Wagenpflege"
-            },
-            {
-              "id": "sonstiges",
-              "label": "Sonstiges"
-            }
-          ]
-        },
-        {
-          "id": "agEinmalBetrag",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Einmalzahlung: Betrag",
-          "required": true,
-          "purpose": "R 8.1 Abs. 9 Nr. 4a LStR",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "einmal"
-          }
-        },
-        {
-          "id": "agEinmalDatum",
-          "role": "arbeitgeber",
-          "type": "date",
-          "label": "Einmalzahlung: gezahlt am",
-          "required": true,
-          "purpose": "R 8.1 Abs. 9 Nr. 4a LStR",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "einmal"
-          }
-        },
-        {
-          "id": "agEinmalZeitraum",
-          "role": "arbeitgeber",
-          "type": "number",
-          "label": "Vereinbarter Zeitraum der Einmalzahlung",
-          "help": "Leer lassen, wenn kein Zeitraum vereinbart ist.",
-          "required": false,
-          "purpose": "BMF vom 03.03.2022 Rn. 65 f.",
-          "showIf": {
-            "field": "agNutzungsentgelt",
-            "contains": "einmal"
-          },
-          "decimals": 0,
-          "unit": "Monate"
-        }
-      ]
-    },
-    {
-      "id": "laden",
-      "title": "Laden",
-      "fields": [
-        {
-          "id": "agLadenBetrieb",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Laden im Betrieb möglich",
-          "required": true,
-          "purpose": "§ 3 Nr. 46 EStG",
-          "showIf": {
-            "field": "agAntrieb",
-            "in": ["elektro", "plugin"]
-          }
-        },
-        {
-          "id": "agHeimladenErstattung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Erstattung des Ladestroms zu Hause",
-          "help": "Ab 2026 nur mit eigenem Zähler und Nachweis des Preises.",
-          "required": true,
-          "purpose": "§ 3 Nr. 50 EStG; BMF vom 11.11.2025",
-          "showIf": {
-            "field": "agAntrieb",
-            "in": ["elektro", "plugin"]
-          }
-        },
-        {
-          "id": "agHeimladenAbrechnung",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Abrechnung des Heimladestroms im Kalenderjahr",
-          "help": "Für ein ganzes Kalenderjahr einheitlich. 2026: 34 Cent je kWh als Pauschale.",
-          "required": true,
-          "purpose": "BMF vom 11.11.2025 Rn. 30",
-          "showIf": {
-            "field": "agHeimladenErstattung",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "vertrag",
-              "label": "Strompreis laut Stromvertrag"
-            },
-            {
-              "id": "pauschale",
-              "label": "Strompreispauschale"
-            }
-          ]
-        },
-        {
-          "id": "agOeffentlichLaden",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Erstattung öffentlichen Ladens gegen Beleg",
-          "required": true,
-          "purpose": "BMF vom 11.11.2025 Rn. 31",
-          "showIf": {
-            "field": "agAntrieb",
-            "in": ["elektro", "plugin"]
-          }
-        },
-        {
-          "id": "agWallbox",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Ladevorrichtung zu Hause",
-          "required": true,
-          "purpose": "§ 3 Nr. 46, § 40 Abs. 2 EStG",
-          "showIf": {
-            "field": "agAntrieb",
-            "in": ["elektro", "plugin"]
-          },
-          "options": [
             {
               "id": "keine",
-              "label": "keine"
-            },
-            {
-              "id": "ueberlassen",
-              "label": "vom Arbeitgeber überlassen"
-            },
-            {
-              "id": "uebereignet",
-              "label": "an die Person übereignet"
-            },
-            {
-              "id": "zuschuss",
-              "label": "Zuschuss zur eigenen Wallbox"
+              "label": "keiner davon"
             }
           ]
         }
@@ -945,7 +363,7 @@
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte",
           "question": "Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?",
           "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)"
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
         },
         {
           "id": "wohnungMeldeanschrift",
@@ -954,7 +372,7 @@
           "label": "Fahrten von der Meldeanschrift",
           "question": "Fahren Sie von Ihrer Meldeanschrift aus?",
           "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)",
           "initial": true
         },
         {
@@ -963,7 +381,7 @@
           "type": "text",
           "label": "Anschrift der Wohnung, von der Sie fahren",
           "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)",
           "showIf": {
             "field": "wohnungMeldeanschrift",
             "equals": false
@@ -976,207 +394,13 @@
           "label": "Entfernung Wohnung – erste Tätigkeitsstätte",
           "help": "Einfache Strecke, kürzeste Straßenverbindung, auf volle km abgerundet – auch wenn Sie einen längeren Weg fahren.",
           "required": true,
-          "purpose": "0,03 % bzw. 0,002 % je Entfernungskilometer",
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)",
           "showIf": {
             "field": "fahrtenWohnung",
             "equals": true
           },
           "decimals": 0,
           "unit": "km"
-        },
-        {
-          "id": "mehrereWohnungen",
-          "role": "person",
-          "type": "boolean",
-          "label": "Fahrten von mehreren Wohnungen",
-          "question": "Fahren Sie abwechselnd von mehreren Wohnungen?",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "fahrtenWohnung",
-            "equals": true
-          }
-        },
-        {
-          "id": "entfernungWeitere",
-          "role": "person",
-          "type": "number",
-          "label": "Entfernung von der weiteren Wohnung",
-          "required": true,
-          "purpose": "Bewertung des geldwerten Vorteils durch die Lohnabrechnung (§ 8 Abs. 2 EStG, BMF vom 03.03.2022)",
-          "showIf": {
-            "field": "mehrereWohnungen",
-            "equals": true
-          },
-          "decimals": 0,
-          "unit": "km"
-        },
-        {
-          "id": "teilstrecke",
-          "role": "person",
-          "type": "boolean",
-          "label": "Nur eine Teilstrecke mit dem Dienstwagen",
-          "question": "Fahren Sie nur eine Teilstrecke mit dem Dienstwagen und den Rest nachweislich mit Bus oder Bahn?",
-          "help": "Den Nachweis, zum Beispiel eine Kopie der Jahreskarte, geben Sie bitte Ihrem Arbeitgeber.",
-          "required": true,
-          "purpose": "BMF vom 03.03.2022 Rn. 22 f.",
-          "showIf": {
-            "field": "fahrtenWohnung",
-            "equals": true
-          }
-        },
-        {
-          "id": "teilstreckeKm",
-          "role": "person",
-          "type": "number",
-          "label": "Teilstrecke mit dem Dienstwagen",
-          "required": true,
-          "purpose": "BMF vom 03.03.2022 Rn. 22 f.",
-          "showIf": {
-            "field": "teilstrecke",
-            "equals": true
-          },
-          "decimals": 0,
-          "unit": "km"
-        },
-        {
-          "id": "einzelbewertungAntrag",
-          "role": "person",
-          "type": "boolean",
-          "label": "Antrag auf Einzelbewertung",
-          "question": "Beantragen Sie die Einzelbewertung Ihrer Fahrten?",
-          "help": "Lohnt sich meist, wenn Sie seltener als an 15 Tagen im Monat fahren. Dann geben Sie jeden Monat an, an welchen Tagen (mit Datum) Sie gefahren sind; höchstens 180 Fahrten im Jahr.",
-          "required": true,
-          "purpose": "BMF vom 03.03.2022 Rn. 13",
-          "showIf": {
-            "field": "fahrtenWohnung",
-            "equals": true
-          }
-        },
-        {
-          "id": "einzelbewertungZusage",
-          "role": "person",
-          "type": "boolean",
-          "label": "Monatliche Angabe der Fahrtage",
-          "question": "Werden Sie jeden Monat datumsgenau und fahrzeugbezogen angeben, an welchen Tagen Sie gefahren sind?",
-          "help": "Ohne diese Angaben gilt die 0,03-%-Regel.",
-          "required": true,
-          "purpose": "Voraussetzung der Einzelbewertung",
-          "showIf": {
-            "field": "einzelbewertungAntrag",
-            "equals": true
-          }
-        },
-        {
-          "id": "doppelterHaushalt",
-          "role": "person",
-          "type": "boolean",
-          "label": "Doppelter Haushalt",
-          "question": "Führen Sie einen doppelten Haushalt?",
-          "required": true,
-          "purpose": "§ 8 Abs. 2 Satz 5 EStG",
-          "initial": false
-        },
-        {
-          "id": "entfernungHausstand",
-          "role": "person",
-          "type": "number",
-          "label": "Entfernung Beschäftigungsort – eigener Hausstand",
-          "required": true,
-          "purpose": "0,002 % je km ab der zweiten Heimfahrt pro Woche",
-          "showIf": {
-            "field": "doppelterHaushalt",
-            "equals": true
-          },
-          "decimals": 0,
-          "unit": "km"
-        },
-        {
-          "id": "fahrerVorhanden",
-          "role": "person",
-          "type": "boolean",
-          "label": "Fahrer",
-          "question": "Steht Ihnen ein Fahrer zur Verfügung?",
-          "required": true,
-          "purpose": "R 8.1 Abs. 10 LStR",
-          "initial": false
-        },
-        {
-          "id": "fahrerPrivat",
-          "role": "person",
-          "type": "choice",
-          "label": "Wer fährt bei Privatfahrten?",
-          "required": true,
-          "purpose": "R 8.1 Abs. 10 LStR",
-          "showIf": {
-            "field": "fahrerVorhanden",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "fahrer",
-              "label": "überwiegend der Fahrer"
-            },
-            {
-              "id": "teils",
-              "label": "häufig ich selbst"
-            },
-            {
-              "id": "selbst",
-              "label": "weit überwiegend oder nur ich selbst"
-            }
-          ]
-        },
-        {
-          "id": "ladenZuhause",
-          "role": "person",
-          "type": "boolean",
-          "label": "Laden zu Hause",
-          "question": "Laden Sie das Fahrzeug zu Hause?",
-          "required": true,
-          "purpose": "BMF vom 11.11.2025",
-          "initial": false
-        },
-        {
-          "id": "ladezaehler",
-          "role": "person",
-          "type": "boolean",
-          "label": "Eigener Zähler für den Ladestrom",
-          "question": "Haben Sie zu Hause einen eigenen Zähler für den Ladestrom?",
-          "help": "Wallbox-Zähler oder fahrzeuginterner Zähler. Ohne Zähler ist ab 2026 keine steuerfreie Erstattung möglich.",
-          "required": true,
-          "purpose": "BMF vom 11.11.2025 Rn. 27",
-          "showIf": {
-            "field": "ladenZuhause",
-            "equals": true
-          }
-        },
-        {
-          "id": "stromtarif",
-          "role": "person",
-          "type": "choice",
-          "label": "Stromtarif",
-          "help": "Bei Abrechnung nach Vertrag legen Sie den Stromvertrag oder die Rechnung vor; ein Eigenbeleg genügt nicht.",
-          "required": true,
-          "purpose": "BMF vom 11.11.2025 Rn. 28 f.",
-          "showIf": {
-            "field": "ladezaehler",
-            "equals": true
-          },
-          "options": [
-            {
-              "id": "fest",
-              "label": "fester Preis"
-            },
-            {
-              "id": "dynamisch",
-              "label": "dynamischer Tarif"
-            },
-            {
-              "id": "pv",
-              "label": "mit eigener Photovoltaikanlage"
-            }
-          ]
         }
       ]
     }
@@ -1194,7 +418,7 @@
       "id": "pflichten",
       "role": "person",
       "title": "Was Ihre Angaben bewirken",
-      "text": "Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil, meist 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu, auf Antrag stattdessen 0,002 % je tatsächlicher Fahrt. Melden Sie einen Umzug, einen Wechsel der Tätigkeitsstätte und Änderungen bei Familienheimfahrten sofort. Ist ein Fahrtenbuch vereinbart, führen Sie es laufend, vollständig und zeitnah und heben Sie Belege für selbst getragene Kosten auf.",
+      "text": "Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.",
       "asOf": "2026-10-30",
       "acknowledgement": "read"
     }
@@ -1229,8 +453,8 @@
   ],
   "legalNotes": [
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für diese Angaben schreibt das Gesetz keine Form vor.",
-    "Die Finanzverwaltung verlangt einzelne Erklärungen „schriftlich“ (monatliche Fahrtage bei Einzelbewertung, Nutzungsverzicht, jährliche Kostenerklärung). Ob dafür eine einfache elektronische Signatur genügt, ist nicht ausdrücklich geregelt; einen Nutzungsverzicht erklärt die Person auf Papier.",
-    "Dieser Fragebogen ist weder die Dienstwagenvereinbarung noch ein Nutzungsverbot; beides regelt der Arbeitsvertrag.",
+    "Der Fragebogen deckt den Standard ab: 1-%-Regelung, Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 0,03 % je Entfernungskilometer und die Pauschalierung mit 15 %. Sonderfälle (Fahrtenbuch, Einzelbewertung, Zuzahlungen, Familienheimfahrten u. a.) klärt die lohnabrechnende Stelle gesondert.",
+    "Dieser Fragebogen ist weder die Dienstwagenvereinbarung noch ein Nutzungsverbot; beides regelt der Arbeitsvertrag. Einen Nutzungsverzicht erklärt die Person auf Papier.",
     "Den geldwerten Vorteil berechnet die Lohnabrechnung, nicht die App. Bei einem Fahrzeugwechsel ist ein neuer Fragebogen nötig, bei geänderten Bedingungen eine neue Fassung."
   ],
   "partLinks": [["arbeitgeber", "person"]]

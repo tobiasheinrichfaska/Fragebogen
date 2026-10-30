@@ -121,6 +121,11 @@ export interface FieldDefinition {
    * month's payroll report). `nextMonth` (`month` fields only): one month later.
    */
   carryOver?: false | 'nextMonth';
+  /**
+   * Tables only: when taken over from another questionnaire, only rows meeting this condition
+   * (leaves name columns of this table), e.g. absences that continue past the month's end.
+   */
+  carryRowsIf?: Condition;
   /** `number` only: unit shown after the value, e.g. "Std.", "km", "kWh". */
   unit?: string;
   /** `number` only: decimal places, 0 (default), 1 or 2; stored with exactly that many. */

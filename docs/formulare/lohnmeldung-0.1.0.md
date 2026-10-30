@@ -7,7 +7,7 @@
 | --- | --- |
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | 2aba72d200311b320ba7bc562e8c8c667e55969174664eb162402ec00b348733 |
+| Definition (SHA-256) | e4b1aedd89a33a8ba3155e24204263b6610efdd0f66551207a78cecb34462425 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Empfänger | Lohnabrechnende Stelle |
 
@@ -28,6 +28,7 @@
 | Firma des Arbeitgebers (agFirma) | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Zuordnung |
 | Betriebsnummer des Arbeitgebers (agBetriebsnummer) | Arbeitgeber | Betriebsnummer (8 Ziffern); Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Zuordnung |
 | Mandantennummer (mandantennummer)<br>Hilfe: Steht auf Schreiben und Abrechnungen. Nicht zur Hand? Leer lassen. | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | optional | Zuordnung bei der lohnabrechnenden Stelle |
+| Abgabe bis zum … des Monats (abgabetag)<br>Frage: Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?<br>Hilfe: Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen. | Arbeitgeber | Zahl, ganzzahlig; Stammdatum, kann auf dem Gerät gemerkt werden | immer | optional | Termin der lohnabrechnenden Stelle für die Monatsmeldung |
 | Ansprechperson für Rückfragen (ansprechpartner) | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Rückfragen |
 | Telefon (ansprechpartnerTelefon) | Arbeitgeber | Text | immer | Pflicht, wenn „E-Mail“ leer ist | Rückfragen |
 | E-Mail (ansprechpartnerEmail) | Arbeitgeber | Text | immer | Pflicht, wenn „Telefon“ leer ist | Rückfragen |
@@ -37,7 +38,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Mitarbeitende (mitarbeitende)<br>Frage: Wer war im Abrechnungsmonat beschäftigt?<br>Hilfe: Eine Zeile für jede Person, auch Neue und Ausscheidende. Die Zeilen werden in die nächste Meldung übernommen; Monatswerte bleiben dann leer. Ausgeschiedene entfernen Sie im nächsten Monat. | Arbeitgeber | Tabelle | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
+| Mitarbeitende (mitarbeitende)<br>Frage: Wer war im Abrechnungsmonat beschäftigt?<br>Hilfe: Eine Zeile für jede Person, auch Neue und Ausscheidende. Die Zeilen werden in die nächste Meldung übernommen, außer bei Personen, die ausscheiden; Monatswerte bleiben dann leer. | Arbeitgeber | Tabelle; übernommen werden nur Zeilen, bei denen nicht zutrifft, dass „scheidet in diesem Monat aus“ mit „Ja“ beantwortet ist | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Personalnummer (maPersonalnummer)<br>Hilfe: Wie auf der letzten Abrechnung; bei neuen Beschäftigten leer. | Arbeitgeber | Text | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | – Familienname, Vorname (maName) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Vergütung (maVerguetungsart) | Arbeitgeber | Auswahl: Stundenlohn, festes Monatsentgelt | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
@@ -62,16 +63,16 @@
 | – Stunden (zuStunden) | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std. | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Bemerkung (zuBemerkung) | Arbeitgeber | Text | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Fehlzeiten in diesem Monat (fragFehlzeiten)<br>Frage: Gab es in diesem Monat Urlaub, Krankheit oder andere Fehlzeiten?<br>Hilfe: Auch halbe Tage und Fehlzeiten, die schon im Vormonat begonnen haben. | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| Fehlzeiten (fehlzeiten)<br>Hilfe: Bitte keine Diagnose und keinen Grund angeben, nur die Art. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Fehlzeiten in diesem Monat“ mit „Ja“ beantwortet ist | Pflicht | Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV) |
+| Fehlzeiten (fehlzeiten)<br>Hilfe: Bitte keine Diagnose und keinen Grund angeben, nur die Art. Fehlzeiten, die über das Monatsende andauern, werden in die nächste Meldung übernommen; tragen Sie dort das Ende nach. | Arbeitgeber | Tabelle; übernommen werden nur Zeilen, bei denen „dauert über das Monatsende an“ mit „Ja“ beantwortet ist | erst wenn „Fehlzeiten in diesem Monat“ mit „Ja“ beantwortet ist | Pflicht | Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV) |
 | – Person (Personalnummer oder Name) (fzPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Art (fzArt) | Arbeitgeber | Auswahl: Urlaub, arbeitsunfähig (Krankheit), arbeitsunfähig nach Arbeits- oder Wegeunfall, stationäre Reha oder Kur, Kind krank, unbezahlter Urlaub oder unbezahlte Freistellung, Mutterschutz, Beschäftigungsverbot, Elternzeit, Pflegezeit, Kurzarbeit, bezahlte Freistellung, unentschuldigtes Fehlen, Sonstiges | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – von (fzVon) | Arbeitgeber | Datum | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| – bis (fzBis)<br>Hilfe: Leer lassen, wenn das Ende offen ist. | Arbeitgeber | Datum | immer | optional | Lohnabrechnung des Abrechnungsmonats |
-| – dauert über das Monatsende an (fzDauertAn) | Arbeitgeber | Ja/Nein | immer | optional | Lohnabrechnung des Abrechnungsmonats |
-| – ausgefallene Arbeitstage in diesem Monat (fzArbeitstage) | Arbeitgeber | Zahl, 1 Nachkommastellen, in Tage | immer | optional | Lohnabrechnung des Abrechnungsmonats |
-| – ausgefallene Stunden (fzStunden) | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std. | immer | optional | Lohnabrechnung des Abrechnungsmonats |
+| – bis (fzBis)<br>Hilfe: Leer lassen, wenn das Ende offen ist. | Arbeitgeber | Datum; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
+| – dauert über das Monatsende an (fzDauertAn) | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
+| – ausgefallene Arbeitstage in diesem Monat (fzArbeitstage) | Arbeitgeber | Zahl, 1 Nachkommastellen, in Tage; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
+| – ausgefallene Stunden (fzStunden) | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std.; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | – Nachweis (fzNachweis) | Arbeitgeber | Auswahl: elektronische AU, wird bei der Krankenkasse abgerufen, Bescheinigung auf Papier liegt vor, Nachweis fehlt noch, nicht nötig | immer | optional | Lohnabrechnung des Abrechnungsmonats |
-| – Bemerkung (fzBemerkung) | Arbeitgeber | Text | immer | optional | Lohnabrechnung des Abrechnungsmonats |
+| – Bemerkung (fzBemerkung) | Arbeitgeber | Text; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Einmalige Zahlungen in diesem Monat (fragZahlungen)<br>Frage: Gibt es einmalige Zahlungen, Vorschüsse, Sachzuwendungen oder Erstattungen?<br>Hilfe: Bitte früh melden: Für Einmalzahlungen darf nicht mit den Werten des Vormonats gerechnet werden (§ 23 Abs. 1 SGB IV). | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | Einmalige Zahlungen, Vorschüsse und Sachzuwendungen (zahlungen) | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Einmalige Zahlungen in diesem Monat“ mit „Ja“ beantwortet ist | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Person (Personalnummer oder Name) (zaPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
@@ -134,7 +135,7 @@ Alle übrigen Angaben sind unabhängig.
 - Art: wird in der App gelesen und bestätigt
 - Stand: 30.10.2026
 
-> Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt. Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.
+> Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt (oben unter „Abgabe bis zum … des Monats“). Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.
 
 ### Arbeitszeit aufzeichnen
 
@@ -162,4 +163,4 @@ Keine.
 - Die Monatsmeldung ist keine Arbeitszeitaufzeichnung nach § 17 MiLoG oder § 16 ArbZG; die Aufzeichnungen bleiben beim Arbeitgeber.
 - Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).
 - Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).
-- Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden und laufenden Leistungen bleiben, alle Monatswerte sind leer.
+- Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden (außer Ausscheidenden) und laufenden Leistungen bleiben, Fehlzeiten über das Monatsende werden mit Beginn übernommen, alle Monatswerte sind leer.
