@@ -4,6 +4,7 @@
 // the legal guardian must sign with their name and confirm exactly the current version of the
 // person's part. The io layer must refuse to write a transmission PDF while blockers exist.
 import { AGE_OF_MAJORITY, ageOn, compareIsoDates, formatGermanDate, isIsoDate } from './dates';
+import { activeExclusions } from './hints';
 import { describeValidity, outsideValidity, validityRole } from './validity';
 import { describeCondition, evaluateCondition } from './conditions';
 import { fieldsById, missingRequired, signerName, triggerRoleOf, visibility } from './form';
@@ -127,7 +128,8 @@ export type BlockerCode =
   | 'ageUnknown'
   | 'roleMissing'
   | 'partsNotLinked'
-  | 'outsideValidity';
+  | 'outsideValidity'
+  | 'outOfScope';
 
 export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   nothingSealed: 'Es gibt noch keinen abgeschlossenen Teil, der übermittelt werden kann.',
@@ -148,6 +150,8 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   ageUnknown:
     'Das Alter am Tag der Unterschrift lässt sich nicht bestimmen. Bitte das Geburtsdatum prüfen.',
   roleMissing: 'Ein erforderlicher Teil fehlt noch.',
+  outOfScope:
+    'Für diesen Sonderfall ist der Fragebogen nicht gedacht; er kann so nicht weitergegeben werden. Bitte die lohnabrechnende Stelle fragen.',
   outsideValidity:
     'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
   partsNotLinked:
@@ -209,6 +213,13 @@ export function transmissionBlockers(
   if (reference !== undefined && outside !== undefined) {
     add('outsideValidity', reference, [outside, describeValidity(definition) ?? '']);
   }
+  const excluded = activeExclusions(questionnaire, definition);
+  if (excluded.length > 0)
+    add(
+      'outOfScope',
+      undefined,
+      excluded.map((e) => e.message),
+    );
   return blockers;
 }
 

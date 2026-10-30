@@ -71,6 +71,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/hints.ts`                                  | Check hints (Prüfhinweise): `checkHints` over the current parts of all roles (hidden fields count as unanswered; only once every named role has a part), named tests `HINT_TESTS` (Regelaltersgrenze from birth date and start of employment), `describeHint` for the catalogue; informational only, never sealed                                              |
 | `src/logic/validity.ts`                               | Validity of a form version: `withinValidity` (date or month, inclusive), `describeValidity` (German), `validityRole`, `outsideValidity` (reference date of a role's data outside the period)                                                                                                                                                                   |
 | `src/logic/data/rechengroessen.ts`                    | `RECHENGROESSEN` per year (SVBezGrV): JAEG, BBG KV/PV and RV — fixed reference data for the check hints                                                                                                                                                                                                                                                        |
+| `tests/forms/vorfragen.test.ts`                       | Pre-questions and exclusions: firm attributes in the link (yes/no, choice), per-person questions, each special case blocks signing and passing on, fixed term under a week, Vorruhestandsgeld without work questions, Werkstudent semester break                                                                                                               |
 | `tests/forms/review1030b.test.ts`                     | Review of 2026-10-30: payment way and BIC (`startsWith`), preliminary tax data, hints (multiple jobs over BBG/JAEG, fixed term, status marker, Versorgungswerk, A1, missing year), Sozialkasse, validity (warning, refused seal, blocker, rules)                                                                                                               |
 | `src/logic/regelaltersgrenze.ts`                      | Regelaltersgrenze by birth year (§ 235 Abs. 2 SGB VI), day it is reached (§§ 187, 188 BGB), `monthAfter`                                                                                                                                                                                                                                                       |
 | `src/logic/consistency.ts`                            | `contradictions` from the form's `consistencyRules` (text compared case-insensitively)                                                                                                                                                                                                                                                                         |
@@ -300,6 +301,14 @@ Key design decisions (details in `docs/plan.md`):
   without that part it is asked normally (own extra option "Weiß ich nicht."). Conditions stay
   single-role and a seal still covers only its own data; a later contradiction becomes an automatic
   check hint (`fromRole:<field>`). The flow plan recommends that station first.
+- **Special cases are excluded, not guessed** (Tobias 2026-10-30): `exclusions` (shape of check
+  hints, evaluated over all roles as soon as answered) block signing and passing on
+  (`outOfScope`) and show a banner on every interview step. Pre-questions lead there: firm
+  attributes in the bookmark link (yes/no and choices allowed since then, preselection counts as
+  empty), per-person employer questions (home work, workshop participant, farm family, on board)
+  and person questions (Nebenerwerbslandwirt, FELEG); a fixed term under one week is computed
+  (`kuerzerAlsEineWoche`). Covered as kinds of employment: Vorruhestandsgeld (108, no work
+  questions) and Freiwilligendienst (123).
 - **Validity and limits of every form version** (Tobias 2026-10-30): `validity` names a required,
   always available date or month field (reference date, e.g. the first working day) and the period
   it must lie in; outside → warning at input (`validity.outside`), seal refused (`outsideValidity`),

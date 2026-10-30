@@ -6,6 +6,7 @@ import { fieldDependencies } from './dependencies';
 import { placeholderIds } from './display';
 import { describeFieldRules, fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
+import { describeHint } from './hints';
 import { describeValidity } from './validity';
 import type { Condition, FieldDefinition, FieldId, FormDefinition, RoleDefinition } from './model';
 
@@ -57,6 +58,8 @@ export interface FlowPlan {
   validity?: string;
   /** What the questionnaire does not cover. */
   limits: string[];
+  /** Special cases that block signing and passing on, with the answers that lead there. */
+  exclusions: string[];
   /** Notes on the order of the stations. */
   order: string[];
   stations: FlowStation[];
@@ -221,6 +224,9 @@ export function flowPlan(form: RegisteredForm): FlowPlan {
       ? {}
       : { validity: describeValidity(definition) ?? '' }),
     limits: definition.limits ?? [],
+    exclusions: (definition.exclusions ?? []).map(
+      (exclusion) => `${exclusion.message} Gesperrt, ${describeHint(exclusion, definition)}.`,
+    ),
     order: orderNotes(definition),
     stations: definition.roles.map((role) => stationOf(definition, role)),
   };

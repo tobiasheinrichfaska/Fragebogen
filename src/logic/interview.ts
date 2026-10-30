@@ -182,6 +182,8 @@ export interface InterviewSummary {
    * it, with the validity — signing is refused until it fits.
    */
   outsideValidity?: { value: string; validity: string };
+  /** Special cases the form is not made for (exclusions); signing is refused while one holds. */
+  outOfScope?: string[];
   readyToSign: boolean;
 }
 

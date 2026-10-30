@@ -130,6 +130,10 @@ Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen.
 - Eine Erklärung, die das Gesetz eigenhändig unterschrieben verlangt, ersetzt er nicht; dafür bleibt das Papier.
 - Er prüft den Inhalt der Steuerberechnung nicht; das bleibt Sache der Kanzlei und der Mandanten.
 
+## Sonderfälle, die Abschließen und Weitergeben sperren
+
+Keine.
+
 ## Rechtliche Hinweise
 
 - Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). § 87d Abs. 3 AO schreibt für die Zustimmung keine Form vor; nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe.

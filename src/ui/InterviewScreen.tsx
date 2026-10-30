@@ -19,6 +19,7 @@ import {
   goTo,
   nextChoice,
   nextStep,
+  outOfScopeOf,
   previousStep,
   skipToMissing,
   stepsFor,
@@ -58,6 +59,15 @@ export function InterviewScreen(props: Props) {
         </p>
         <progress max={Math.max(progress.total, 1)} value={progress.answered} />
       </div>
+      {outOfScopeOf(session).length > 0 && (
+        <Banner
+          message={{
+            tone: 'warning',
+            text: 'Für diesen Sonderfall ist der Fragebogen nicht gedacht – er weiß nicht, welche Angaben dafür nötig sind. Abschließen und Weitergeben sind gesperrt; bitte wenden Sie sich an die lohnabrechnende Stelle.',
+            detail: outOfScopeOf(session),
+          }}
+        />
+      )}
       {step.kind === 'notice' && <NoticeStep {...props} step={step} />}
       {step.kind === 'question' && tableField?.type === 'repeatGroup' && (
         <TableStep

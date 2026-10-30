@@ -128,6 +128,10 @@ Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen.
 - Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.
 - Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung.
 
+## Sonderfälle, die Abschließen und Weitergeben sperren
+
+Keine.
+
 ## Rechtliche Hinweise
 
 - Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für diese Angaben schreibt das Gesetz keine Form vor.

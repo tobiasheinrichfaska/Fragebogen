@@ -49,6 +49,21 @@ function compareParts(a: DateParts, b: DateParts): -1 | 0 | 1 {
   return diff < 0 ? -1 : diff > 0 ? 1 : 0;
 }
 
+/** Days since a fixed origin (proleptic Gregorian calendar), for durations — never via `Date`. */
+export function dayNumber(value: IsoDate): number {
+  const { year, month, day } = requireDate(value, 'value');
+  const y = month <= 2 ? year - 1 : year;
+  const m = month <= 2 ? month + 9 : month - 3;
+  return (
+    365 * y +
+    Math.floor(y / 4) -
+    Math.floor(y / 100) +
+    Math.floor(y / 400) +
+    Math.floor((153 * m + 2) / 5) +
+    day
+  );
+}
+
 export function compareIsoDates(a: IsoDate, b: IsoDate): -1 | 0 | 1 {
   return compareParts(requireDate(a, 'a'), requireDate(b, 'b'));
 }

@@ -380,6 +380,18 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
     );
   }
   lines.push('', '## Was dieser Fragebogen nicht abdeckt', '', ...list(definition.limits ?? []));
+  lines.push(
+    '',
+    '## Sonderfälle, die Abschließen und Weitergeben sperren',
+    '',
+    ...list(
+      (definition.exclusions ?? []).map(
+        (exclusion) =>
+          `${exclusion.message} – ${describeHint(exclusion, definition)}` +
+          (exclusion.source === undefined ? '' : ` (${exclusion.source})`),
+      ),
+    ),
+  );
   lines.push('', '## Rechtliche Hinweise', '', ...list(definition.legalNotes), '');
   return lines.join('\n');
 }

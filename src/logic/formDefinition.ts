@@ -75,6 +75,7 @@ export const FORM_KEYS = [
   'signatureBasis',
   'validity',
   'limits',
+  'exclusions',
 ] as const;
 
 export const ROLE_KEYS = [
@@ -126,6 +127,10 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
       : d.array(o.checkHints, `${path}.checkHints`, (v, p) => decodeCheckHint(d, v, p), 1);
   const validity =
     o.validity === undefined ? undefined : decodeValidity(d, o.validity, `${path}.validity`);
+  const exclusions =
+    o.exclusions === undefined
+      ? undefined
+      : d.array(o.exclusions, `${path}.exclusions`, (v, p) => decodeCheckHint(d, v, p), 1);
   const limits =
     o.limits === undefined
       ? undefined
@@ -162,6 +167,7 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     ...(signatureBasis === undefined ? {} : { signatureBasis }),
     ...(validity === undefined ? {} : { validity }),
     ...(limits === undefined ? {} : { limits }),
+    ...(exclusions === undefined ? {} : { exclusions }),
   };
 }
 
@@ -974,11 +980,12 @@ const QUICK_ANSWER_TYPES: readonly FieldType[] = [
   'month',
 ];
 
-/** Field types whose stored value is one string — the only ones a bookmark link can carry. */
+/** Field types a bookmark link can carry: one string, or yes/no as "ja"/"nein" (masterData.ts). */
 const MASTER_DATA_TYPES: readonly FieldType[] = [
   'text',
   'date',
   'choice',
+  'boolean',
   'iban',
   'taxId',
   'svNumber',
@@ -1021,7 +1028,7 @@ function masterDataKeys({ fields, report }: CheckContext): void {
     if (field.masterData === undefined) continue;
     const at = `${path}.masterData`;
     if (isColumn || !MASTER_DATA_TYPES.includes(field.type)) {
-      report(at, 'only single text values (top-level, not yes/no or lists) can be master data');
+      report(at, 'only single values (top-level, no lists or tables) can be master data');
     }
     const other = seen.get(field.masterData);
     if (other !== undefined) report(at, `key "${field.masterData}" is already used by "${other}"`);
@@ -1048,10 +1055,20 @@ function partLinks({ definition, roleIds, report }: CheckContext): void {
 }
 
 /** Hints: unique ids, a condition or a test, known fields (any role) and a known test function. */
-function checkHintRules({ definition, fields, report }: CheckContext): void {
+function checkHintRules(context: CheckContext): void {
+  hintListRules(context, context.definition.checkHints ?? [], '$.checkHints');
+  hintListRules(context, context.definition.exclusions ?? [], '$.exclusions');
+}
+
+/** Check hints and exclusions share their shape: a condition and/or a named test. */
+function hintListRules(
+  { fields, report }: CheckContext,
+  hints: readonly CheckHint[],
+  listPath: string,
+): void {
   const ids = new Set<string>();
-  (definition.checkHints ?? []).forEach((hint, i) => {
-    const path = `$.checkHints[${i}]`;
+  hints.forEach((hint, i) => {
+    const path = `${listPath}[${i}]`;
     if (ids.has(hint.id)) report(`${path}.id`, `duplicate hint id "${hint.id}"`);
     ids.add(hint.id);
     if (!hint.when && !hint.test) report(path, 'a hint needs a condition or a test');

@@ -272,6 +272,12 @@ export interface FormDefinition {
   validity?: FormValidity;
   /** What this questionnaire does not cover — shown to every station, in the PDF and the docs. */
   limits?: string[];
+  /**
+   * Special cases the form is not made for (Tobias 2026-10-30): pre-questions such as "home
+   * work?" lead here. While one holds (answers of any role, a draft included), signing and passing
+   * on are refused — the form does not know which answers such a case needs.
+   */
+  exclusions?: CheckHint[];
 }
 
 // ---------------------------------------------------------------------------

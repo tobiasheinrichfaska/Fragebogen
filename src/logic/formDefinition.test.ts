@@ -867,12 +867,14 @@ describe('preselection, master data and linked parts', () => {
       'only always available',
     ],
     [
-      'a yes/no field as master data',
+      'a multiple-choice field as master data',
       (d) => {
-        fieldAt(d, 0, 3).masterData = 'frage';
+        const field = fieldAt(d, 0, 4);
+        field.type = 'multiChoice';
+        field.masterData = 'art';
       },
-      '$.sections[0].fields[3].masterData',
-      'only single text values',
+      '$.sections[0].fields[4].masterData',
+      'only single values',
     ],
     [
       'a master-data key used twice',

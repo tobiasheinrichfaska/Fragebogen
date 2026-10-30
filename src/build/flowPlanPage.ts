@@ -142,6 +142,13 @@ function planHtml({ plan, status, older }: FlowPlanEntry): string {
           '</ul></div>',
         ]
       : []),
+    ...(plan.exclusions.length > 0
+      ? [
+          '<div class="limits"><h3>Sonderfälle: Abschließen und Weitergeben gesperrt</h3><ul>',
+          ...plan.exclusions.map((exclusion) => `<li>${esc(exclusion)}</li>`),
+          '</ul></div>',
+        ]
+      : []),
     '<div class="order"><h3>Reihenfolge der Stationen</h3><ul>',
     ...plan.order.map((note) => `<li>${esc(note)}</li>`),
     '</ul></div>',

@@ -3,7 +3,7 @@
 // functions, e.g. the Regelaltersgrenze from the birth date). Informational only — hints never
 // block and are never sealed, so verification stays independent of other roles.
 import { describeCondition, evaluateCondition, forEachLeaf } from './conditions';
-import { formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
+import { dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
 import { displayValue } from './display';
 import { fieldsById, ownerOfField, roleOf, visibility } from './form';
 import { canonicalize } from './jcs';
@@ -18,7 +18,6 @@ import type {
   Questionnaire,
   RoleId,
 } from './model';
-import { currentPart } from './questionnaire';
 import { RECHENGROESSEN } from './data/rechengroessen';
 import { monthAfter, regelaltersgrenze } from './regelaltersgrenze';
 
@@ -129,6 +128,15 @@ const rechengroesse = (year: string, key: 'bbgKvMonat' | 'bbgRvMonat') => {
 };
 
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
+  kuerzerAlsEineWoche: {
+    args: ['date', 'date'],
+    describe: ([from = '', until = '']) =>
+      `von „${from}“ bis „${until}“ weniger als eine Woche liegt`,
+    run: ([from, until]) =>
+      typeof from === 'string' && typeof until === 'string' && isIsoDate(from) && isIsoDate(until)
+        ? { holds: dayNumber(until) - dayNumber(from) + 1 < 7, detail: [] }
+        : undefined,
+  },
   spaeterAls: {
     args: ['date', 'date'],
     describe: ([later = '', earlier = '']) => `„${later}“ nach „${earlier}“ liegt`,
@@ -218,7 +226,16 @@ function rolesOf(hint: CheckHint, definition: FormDefinition): Set<RoleId> {
  * The hints that hold for the questionnaire as it stands: each role's current part (the latest
  * version, a draft included), hidden fields counting as unanswered.
  */
-export function checkHints(questionnaire: Questionnaire, definition: FormDefinition): HintResult[] {
+const currentPart = (questionnaire: Questionnaire, role: RoleId) =>
+  questionnaire.parts[role]?.at(-1);
+
+interface Values {
+  valueOf: (id: FieldId) => FieldValue;
+  argumentOf: (id: FieldId) => FieldValue;
+}
+
+/** Values of the current parts (drafts included); hidden fields count as unanswered. */
+function valuesOf(questionnaire: Questionnaire, definition: FormDefinition): Values {
   const visible = new Map<RoleId, ReadonlyMap<FieldId, boolean>>();
   const valueOf = (id: FieldId): FieldValue => {
     const role = ownerOfField(definition, id);
@@ -247,14 +264,21 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
       row !== null && typeof row === 'object' && !Array.isArray(row) ? (row[id] ?? null) : null,
     );
   };
+  return { valueOf, argumentOf };
+}
+
+function holding(
+  hints: readonly CheckHint[],
+  values: Values,
+  ready: (hint: CheckHint) => boolean,
+): HintResult[] {
   const results: HintResult[] = [];
-  for (const hint of definition.checkHints ?? []) {
-    const roles = rolesOf(hint, definition);
-    if ([...roles].some((role) => !currentPart(questionnaire, role))) continue;
-    if (hint.when && !evaluateCondition(hint.when, valueOf)) continue;
+  for (const hint of hints) {
+    if (!ready(hint)) continue;
+    if (hint.when && !evaluateCondition(hint.when, values.valueOf)) continue;
     let detail: string[] = [];
     if (hint.test) {
-      const outcome = HINT_TESTS[hint.test.fn]?.run(hint.test.args.map(argumentOf));
+      const outcome = HINT_TESTS[hint.test.fn]?.run(hint.test.args.map(values.argumentOf));
       if (!outcome?.holds) continue;
       detail = outcome.detail;
     }
@@ -265,6 +289,26 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
       detail,
     });
   }
+  return results;
+}
+
+/**
+ * Special cases (`exclusions`) that hold for the questionnaire as it stands — evaluated as soon as
+ * the answers exist, whichever role gave them. While one holds, signing and passing on are refused.
+ */
+export function activeExclusions(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+): HintResult[] {
+  return holding(definition.exclusions ?? [], valuesOf(questionnaire, definition), () => true);
+}
+
+export function checkHints(questionnaire: Questionnaire, definition: FormDefinition): HintResult[] {
+  const values = valuesOf(questionnaire, definition);
+  const { valueOf } = values;
+  const results = holding(definition.checkHints ?? [], values, (hint) =>
+    [...rolesOf(hint, definition)].every((role) => currentPart(questionnaire, role)),
+  );
   return [...results, ...fromRoleHints(questionnaire, definition, valueOf)];
 }
 

@@ -20,6 +20,7 @@ import {
 import { ISSUE_MESSAGES, type IssueCode } from './issues';
 import { applyMasterData, type MasterDataSkip } from './masterData';
 import { displayValue } from './display';
+import { activeExclusions } from './hints';
 import type {
   FieldId,
   Questionnaire,
@@ -433,13 +434,20 @@ export function summaryOf(session: Session): InterviewSummary | undefined {
   const role = session.role;
   const part = role === undefined ? undefined : currentPart(session.questionnaire, role);
   if (role === undefined || part?.status !== 'draft') return undefined;
-  return interviewSummary(
+  const summary = interviewSummary(
     session.form.definition,
     role,
     part,
     session.acknowledged[role] ?? [],
     new Set(fixedFields(session).keys()),
   );
+  const excluded = outOfScopeOf(session);
+  return excluded.length === 0 ? summary : { ...summary, outOfScope: excluded, readyToSign: false };
+}
+
+/** Special cases that hold for the questionnaire on this device (messages). */
+export function outOfScopeOf(session: Session): string[] {
+  return activeExclusions(session.questionnaire, session.form.definition).map((e) => e.message);
 }
 
 export interface SealRequest {

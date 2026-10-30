@@ -134,6 +134,10 @@ Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen.
 
 Keine.
 
+## Sonderfälle, die Abschließen und Weitergeben sperren
+
+Keine.
+
 ## Rechtliche Hinweise
 
 - Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für die Angaben zur Sofortmeldung schreibt das Gesetz keine besondere Form vor.

@@ -165,6 +165,10 @@ Keine.
 - Ein- und Austritte meldet sie an; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.
 - Pfändungen werden nur angezeigt; die Berechnung des pfändbaren Betrags übernimmt die Lohnabrechnung.
 
+## Sonderfälle, die Abschließen und Weitergeben sperren
+
+Keine.
+
 ## Rechtliche Hinweise
 
 - Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung).

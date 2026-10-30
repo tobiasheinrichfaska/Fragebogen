@@ -91,7 +91,7 @@ describe('formCatalogue', () => {
     expect(markdown).toContain('## Hinweise zur Kenntnisnahme\n\nKeine.');
     expect(markdown).toContain('## Prüfregeln\n\nKeine.');
     expect(markdown).toContain(
-      '## Zuordnung getrennt eingegangener Teile\n\nKeine.\n\n## Was dieser Fragebogen nicht abdeckt\n\nKeine.\n\n## Rechtliche',
+      '## Zuordnung getrennt eingegangener Teile\n\nKeine.\n\n## Was dieser Fragebogen nicht abdeckt\n\nKeine.\n\n## Sonderfälle, die Abschließen und Weitergeben sperren\n\nKeine.\n\n## Rechtliche',
     );
   });
 

@@ -485,6 +485,10 @@
               "label": "nichts davon (Arbeitnehmerin oder Arbeitnehmer)"
             },
             {
+              "id": "feleg",
+              "label": "Ausgleichsgeld nach dem FELEG (früher in der Landwirtschaft)"
+            },
+            {
               "id": "sonstiges",
               "label": "etwas anderes"
             }
@@ -1045,6 +1049,20 @@
           "because": "Hauptberuflich Selbständige sind in einer Beschäftigung nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); ob die Selbständigkeit hauptberuflich ist, zeigen Stunden und Einkommen."
         },
         {
+          "id": "selbstLandwirtschaft",
+          "role": "person",
+          "type": "boolean",
+          "label": "Eigener landwirtschaftlicher Betrieb",
+          "question": "Bewirtschaften Sie selbst einen landwirtschaftlichen Betrieb?",
+          "required": true,
+          "showIf": {
+            "field": "situation",
+            "contains": "selbstaendig"
+          },
+          "because": "Nebenerwerbslandwirte haben eigene Personengruppen (113, 114), die der Fragebogen nicht abdeckt; die Frage stellt sich nur bei einer Selbständigkeit.",
+          "purpose": "Vorfrage: Nebenerwerbslandwirte deckt der Fragebogen nicht ab (Personengruppen 113, 114)"
+        },
+        {
           "id": "situationSonstiges",
           "role": "person",
           "type": "text",
@@ -1136,6 +1154,14 @@
             {
               "id": "werkstudent",
               "label": "eine Werkstudententätigkeit"
+            },
+            {
+              "id": "freiwilligendienst",
+              "label": "einen Freiwilligendienst (FSJ, FÖJ, Bundesfreiwilligendienst)"
+            },
+            {
+              "id": "vorruhestand",
+              "label": "Vorruhestandsgeld nach einer Vorruhestandsvereinbarung"
             },
             {
               "id": "unbekannt",
@@ -2633,7 +2659,8 @@
               "id": "ausland",
               "label": "Ausland"
             }
-          ]
+          ],
+          "masterData": "bundesland"
         },
         {
           "id": "agPrivathaushalt",
@@ -2643,7 +2670,8 @@
           "question": "Ist der Arbeitgeber ein Privathaushalt (zum Beispiel für eine Haushaltshilfe)?",
           "required": true,
           "purpose": "Haushaltsscheckverfahren (§ 28a Abs. 7 SGB IV, § 8a SGB IV)",
-          "initial": false
+          "initial": false,
+          "masterData": "privathaushalt"
         },
         {
           "id": "agLandwirtschaft",
@@ -2653,7 +2681,9 @@
           "question": "Ist der Betrieb ein landwirtschaftlicher Betrieb?",
           "required": true,
           "purpose": "Längere Zeitgrenzen für kurzfristige Beschäftigung in der Landwirtschaft; Pauschalsteuer nach § 40a Abs. 3 EStG",
-          "initial": false
+          "initial": false,
+          "masterData": "landwirtschaft",
+          "help": "Gilt für den ganzen Betrieb; steht im Stammdaten-Link, wenn Sie ihn einmal angelegt haben."
         },
         {
           "id": "agSozialkasse",
@@ -2673,6 +2703,47 @@
               "id": "ja",
               "label": "Ja"
             }
+          ],
+          "masterData": "sozialkasse"
+        },
+        {
+          "id": "agSeeschifffahrt",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Betrieb der Seeschifffahrt",
+          "question": "Ist der Betrieb ein Unternehmen der Seeschifffahrt (Reederei)?",
+          "required": true,
+          "initial": false,
+          "masterData": "seeschifffahrt",
+          "purpose": "Vorfrage: Beschäftigung an Bord von Seeschiffen deckt der Fragebogen nicht ab (Personengruppen 140 bis 150, § 13 SGB IV)"
+        },
+        {
+          "id": "agBetriebsart",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Besondere Betriebsart",
+          "question": "Ist der Betrieb eine dieser Einrichtungen?",
+          "required": true,
+          "initial": "keine",
+          "masterData": "betriebsart",
+          "purpose": "Vorfrage: Beschäftigung behinderter Menschen in Werkstätten oder Inklusionsbetrieben und Teilnehmer von Einrichtungen der Jugendhilfe oder Berufsbildungswerken deckt der Fragebogen nicht ab (Personengruppen 107, 111, 127)",
+          "options": [
+            {
+              "id": "keine",
+              "label": "Nein, keine davon"
+            },
+            {
+              "id": "werkstatt",
+              "label": "Werkstatt für behinderte Menschen oder Blindenwerkstatt"
+            },
+            {
+              "id": "inklusionsbetrieb",
+              "label": "Inklusionsbetrieb"
+            },
+            {
+              "id": "einrichtung",
+              "label": "Einrichtung der Jugendhilfe oder Berufsbildungswerk"
+            }
           ]
         }
       ]
@@ -2681,6 +2752,59 @@
       "id": "beschaeftigung",
       "title": "Beschäftigung",
       "fields": [
+        {
+          "id": "agHeimarbeit",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Heimarbeit oder Hausgewerbe",
+          "question": "Arbeitet die Person in Heimarbeit oder als Hausgewerbetreibende(r)?",
+          "help": "Gemeint ist die Arbeit in einer selbst gewählten Arbeitsstätte im Auftrag und für Rechnung des Betriebs (§ 12 SGB IV), nicht das Homeoffice einer angestellten Person.",
+          "required": true,
+          "initial": false,
+          "purpose": "Vorfrage: Heimarbeit und Hausgewerbe deckt der Fragebogen nicht ab (Personengruppen 104, 124)"
+        },
+        {
+          "id": "agEinrichtungTeilnehmer",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Beschäftigt als Werkstattbeschäftigte(r) oder Teilnehmer(in)",
+          "question": "Ist die Person als behinderter Mensch in der Werkstatt oder im Inklusionsbetrieb beschäftigt oder Teilnehmerin bzw. Teilnehmer der Einrichtung – nicht als Personal?",
+          "required": true,
+          "showIf": {
+            "field": "agBetriebsart",
+            "in": ["werkstatt", "inklusionsbetrieb", "einrichtung"]
+          },
+          "because": "Nur in diesen Einrichtungen gibt es die besonderen Personengruppen 107, 111 und 127; ihr Personal ist dagegen gewöhnlich beschäftigt.",
+          "purpose": "Vorfrage: Personengruppen 107, 111, 127 deckt der Fragebogen nicht ab"
+        },
+        {
+          "id": "agFamilieLandwirtschaft",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Mitarbeitende(r) Familienangehörige(r) in der Landwirtschaft",
+          "question": "Ist die Person mit der landwirtschaftlichen Unternehmerin oder dem Unternehmer (oder deren Ehegatten) bis zum 3. Grad verwandt, bis zum 2. Grad verschwägert oder ihr Pflegekind?",
+          "required": true,
+          "showIf": {
+            "field": "agLandwirtschaft",
+            "equals": true
+          },
+          "because": "Nur in einem landwirtschaftlichen Betrieb gibt es mitarbeitende Familienangehörige mit eigener Personengruppe (112).",
+          "purpose": "Vorfrage: mitarbeitende Familienangehörige in der Landwirtschaft deckt der Fragebogen nicht ab (Personengruppe 112)"
+        },
+        {
+          "id": "agAnBord",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Beschäftigung an Bord",
+          "question": "Arbeitet die Person an Bord eines Seeschiffs?",
+          "required": true,
+          "showIf": {
+            "field": "agSeeschifffahrt",
+            "equals": true
+          },
+          "because": "Nur in der Seeschifffahrt gibt es Seeleute mit eigenem Versicherungsrecht (§ 13 SGB IV); das Landpersonal ist gewöhnlich beschäftigt.",
+          "purpose": "Vorfrage: Seeleute deckt der Fragebogen nicht ab (Personengruppen 140 bis 150)"
+        },
         {
           "id": "agBeschaeftigungsart",
           "role": "arbeitgeber",
@@ -2720,10 +2844,61 @@
               "label": "Werkstudent"
             },
             {
+              "id": "freiwilligendienst",
+              "label": "Freiwilligendienst (FSJ, FÖJ, Bundesfreiwilligendienst)"
+            },
+            {
+              "id": "vorruhestand",
+              "label": "Vorruhestandsgeld nach einer Vorruhestandsvereinbarung"
+            },
+            {
               "id": "pruefen",
               "label": "Bitte die lohnabrechnende Stelle prüfen lassen"
             }
           ]
+        },
+        {
+          "id": "agVorruhestandBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Vorruhestandsgeld voraussichtlich bis",
+          "question": "Bis wann wird das Vorruhestandsgeld voraussichtlich gezahlt?",
+          "help": "In der Regel bis zum frühestmöglichen Beginn einer Altersrente oder bis zum Ende des Monats, in dem die Regelaltersgrenze erreicht wird.",
+          "required": true,
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "because": "Nur beim Vorruhestandsgeld zählt, bis wann es gezahlt wird; davon hängt die Versicherungspflicht ab (§ 5 Abs. 3 SGB V, § 3 S. 1 Nr. 4 SGB VI).",
+          "purpose": "Versicherungspflicht der Bezieher von Vorruhestandsgeld (§ 5 Abs. 3 SGB V, § 3 S. 1 Nr. 4 SGB VI); Personengruppe 108"
+        },
+        {
+          "id": "agVorruhestandBetrag",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Vorruhestandsgeld im Monat",
+          "question": "Wie hoch ist das Vorruhestandsgeld im Monat (brutto)?",
+          "required": true,
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "because": "Nur beim Vorruhestandsgeld ist es die beitragspflichtige Einnahme statt eines Arbeitsentgelts.",
+          "purpose": "Beitragspflichtige Einnahme (§ 3 S. 1 Nr. 4 SGB VI); Personengruppe 108"
+        },
+        {
+          "id": "agNurSemesterferien",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Nur in der vorlesungsfreien Zeit",
+          "question": "Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?",
+          "required": true,
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "werkstudent"
+          },
+          "because": "Für Werkstudenten gilt die Grenze von 20 Wochenstunden nur in der Vorlesungszeit; eine Beschäftigung allein in den Semesterferien bleibt auch mit mehr Stunden frei.",
+          "purpose": "Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III); Personengruppe 106"
         },
         {
           "id": "agKurzfristigBis",
@@ -2870,6 +3045,13 @@
           "question": "Welche Tätigkeit übt die Person aus?",
           "help": "Möglichst genau, zum Beispiel „Kreditorenbuchhaltung“ statt „Büro“. Daraus wird der Tätigkeitsschlüssel für die Meldungen gebildet.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung; Zuordnung zur Gefahrtarifstelle der Unfallversicherung"
         },
         {
@@ -2964,6 +3146,13 @@
           "label": "Ist das Arbeitsverhältnis befristet?",
           "help": "Auch eine Befristung bis zum Erreichen eines Zwecks zählt, etwa eine Vertretung.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Vertragsform); Ende der Beschäftigung in der Lohnabrechnung"
         },
         {
@@ -3123,6 +3312,13 @@
           "question": "Arbeitet die Person in Vollzeit oder in Teilzeit?",
           "help": "Vollzeit ist die übliche volle Arbeitszeit in Ihrem Betrieb.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung (Vertragsform)",
           "options": [
             {
@@ -3215,6 +3411,13 @@
           "question": "Wie ist die Arbeitszeit vereinbart?",
           "help": "Danach fragt der Fragebogen nur, was die Lohnabrechnung für dieses Modell braucht.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "options": [
             {
@@ -3722,6 +3925,13 @@
           "question": "Wie viele Urlaubstage stehen der Person im Jahr zu?",
           "help": "Ohne Zusatzurlaub wegen Schwerbehinderung; den rechnet die lohnabrechnende Stelle.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Urlaubsverwaltung (§ 3 BUrlG, Arbeitsvertrag, Tarif)",
           "decimals": 1,
           "unit": "Tage"
@@ -3733,6 +3943,13 @@
           "label": "Bezug der Urlaubstage",
           "question": "Auf wie viele Arbeitstage pro Woche bezieht sich diese Zahl?",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Umrechnung des Urlaubs bei anderer Verteilung der Arbeitstage",
           "options": [
             {
@@ -3763,6 +3980,13 @@
           "question": "Wie wird die Person bezahlt?",
           "help": "Eine Ausbildungsvergütung zählt als festes Monatsentgelt.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Lohnabrechnung",
           "options": [
             {
@@ -4188,6 +4412,13 @@
           "label": "Betriebliche Altersversorgung",
           "question": "Gibt es eine betriebliche Altersversorgung?",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "vorruhestand"
+            }
+          },
+          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Betriebliche Altersversorgung (§ 3 Nr. 63 EStG, § 1a BetrAVG)",
           "options": [
             {
@@ -4734,6 +4965,34 @@
                     }
                   }
                 ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "freiwilligendienst"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "freiwilligendienst"
+                    }
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "vorruhestand"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "vorruhestand"
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -5227,6 +5486,7 @@
   },
   "limits": [
     "Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.",
+    "Sonderfälle (Heimarbeit, Werkstätten und Einrichtungen, Seefahrt, mitarbeitende Familienangehörige und Nebenerwerbslandwirte in der Landwirtschaft, unständige Beschäftigung, Haushaltsscheck, FELEG) schließt er über Vorfragen aus: Dann sind Abschließen und Weitergeben gesperrt.",
     "Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn im Jahr 2026.",
     "Bei mehreren Beschäftigungen erfasst er die Entgelte und weist auf die Beitragsbemessungs- und die Jahresarbeitsentgeltgrenze hin. Die anteilige Beitragsberechnung und das Verfahren mit der Krankenkasse übernimmt die Lohnabrechnung.",
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal sind nur vorläufige Angaben für die erste Abrechnung; maßgeblich sind die abgerufenen ELStAM.",
@@ -5234,5 +5494,103 @@
     "Er ersetzt weder den Arbeitsvertrag noch die schriftliche Befristungsabrede (§ 14 Abs. 4 TzBfG) noch den Nachweis der Vertragsbedingungen nach dem Nachweisgesetz.",
     "Nachweise wie Urkunden für Kinder, Bescheinigungen und Bescheide werden nicht in der App erfasst; der Arbeitgeber vermerkt nur, was vorliegt.",
     "Beschäftigung mit Bezug zum Ausland (A1, Entsendung, Doppelbesteuerung) und Branchenregeln (Sozialkassen, Tarifverträge) erfasst er nur als Hinweis für die Prüfung."
+  ],
+  "exclusions": [
+    {
+      "id": "heimarbeit",
+      "when": {
+        "field": "agHeimarbeit",
+        "equals": true
+      },
+      "message": "Heimarbeit oder Hausgewerbe (Personengruppen 104, 124).",
+      "source": "§ 12 SGB IV"
+    },
+    {
+      "id": "einrichtung",
+      "when": {
+        "field": "agEinrichtungTeilnehmer",
+        "equals": true
+      },
+      "message": "Beschäftigung als behinderter Mensch in einer Werkstatt oder einem Inklusionsbetrieb oder als Teilnehmer(in) einer Einrichtung der Jugendhilfe oder eines Berufsbildungswerks (Personengruppen 107, 111, 127)."
+    },
+    {
+      "id": "familieLandwirtschaft",
+      "when": {
+        "field": "agFamilieLandwirtschaft",
+        "equals": true
+      },
+      "message": "Mitarbeitende(r) Familienangehörige(r) in der Landwirtschaft (Personengruppe 112)."
+    },
+    {
+      "id": "seefahrt",
+      "when": {
+        "field": "agAnBord",
+        "equals": true
+      },
+      "message": "Beschäftigung an Bord eines Seeschiffs (Personengruppen 140 bis 150).",
+      "source": "§ 13 SGB IV"
+    },
+    {
+      "id": "haushaltsscheck",
+      "when": {
+        "all": [
+          {
+            "field": "agPrivathaushalt",
+            "equals": true
+          },
+          {
+            "field": "agBeschaeftigungsart",
+            "in": ["minijob", "kurzfristig"]
+          }
+        ]
+      },
+      "message": "Minijob oder kurzfristige Beschäftigung im Privathaushalt: Gemeldet wird im Haushaltsscheckverfahren über die Minijob-Zentrale (Personengruppen 209, 210).",
+      "source": "§ 28a Abs. 7 SGB IV"
+    },
+    {
+      "id": "unstaendig",
+      "when": {
+        "all": [
+          {
+            "field": "agBefristet",
+            "equals": true
+          },
+          {
+            "field": "agBeschaeftigungsart",
+            "in": [
+              "svpflichtig",
+              "ausbildung",
+              "dualesStudium",
+              "praktikum",
+              "werkstudent",
+              "freiwilligendienst",
+              "pruefen"
+            ]
+          }
+        ]
+      },
+      "test": {
+        "fn": "kuerzerAlsEineWoche",
+        "args": ["agBeschaeftigungsbeginn", "agBefristetBis"]
+      },
+      "message": "Auf weniger als eine Woche befristete versicherungspflichtige Beschäftigung (unständig Beschäftigte, Personengruppen 117, 118).",
+      "source": "DEÜV, Anlage 2 (Stand 17.06.2026), Personengruppen 117, 118"
+    },
+    {
+      "id": "nebenerwerbslandwirt",
+      "when": {
+        "field": "selbstLandwirtschaft",
+        "equals": true
+      },
+      "message": "Nebenerwerbslandwirt(in) (Personengruppen 113, 114)."
+    },
+    {
+      "id": "feleg",
+      "when": {
+        "field": "situation",
+        "contains": "feleg"
+      },
+      "message": "Bezug von Ausgleichsgeld nach dem FELEG (Personengruppe 116)."
+    }
   ]
 }

@@ -173,3 +173,41 @@ bestätigt, Familienname und Vornamen eingegeben.
   dazu der Hinweis zur Jahresarbeitsentgeltgrenze.
 - _Nicht offensichtlich:_ Die anteilige Beitragsberechnung macht der Fragebogen nicht; das steht
   auch unter „Was dieser Fragebogen nicht abdeckt“.
+
+---
+
+## MT-57: Sonderfall sperrt den Fragebogen
+
+**Voraussetzungen:** Personalfragebogen (Entwurf), Rolle „Arbeitgeber“.
+
+**Schritte:**
+
+1. Bei „Arbeitet die Person in Heimarbeit oder als Hausgewerbetreibende(r)?“ **„Ja“** wählen.
+2. Weiter bis zur Zusammenfassung; „Weiter zum Abschluss“ versuchen.
+3. Die Antwort auf **„Nein“** ändern.
+
+**Erwartet:**
+
+- Ab Schritt 1 steht auf jedem Schritt ein gelber Hinweis: „Für diesen Sonderfall ist der
+  Fragebogen nicht gedacht …“ mit „Heimarbeit oder Hausgewerbe (Personengruppen 104, 124)“.
+- Schritt 2: Abschließen ist gesperrt; auf „Wer füllt jetzt aus?“ steht der Grund unter „Noch
+  nicht weitergeben“.
+- Schritt 3: Der Hinweis verschwindet. _Nicht offensichtlich:_ Auch eine Befristung unter einer
+  Woche (Beginn und „befristet bis“) sperrt, ohne dass dafür eine eigene Frage kommt.
+
+---
+
+## MT-58: Betriebsmerkmale im Stammdaten-Link
+
+**Schritte:**
+
+1. Als Arbeitgeber „landwirtschaftlicher Betrieb: Ja“ und „Besondere Betriebsart: Werkstatt“
+   wählen und bis zur Zusammenfassung gehen.
+2. Den Link unter „Stammdaten für das nächste Mal“ kopieren und in einem neuen Tab öffnen; einen
+   neuen Personalfragebogen als Arbeitgeber beginnen.
+
+**Erwartet:**
+
+- Der Link enthält `landwirtschaft=ja` und `betriebsart=werkstatt`.
+- Im neuen Fragebogen sind beide Antworten schon gesetzt (die Vorbelegung „Nein“ wird ersetzt),
+  und die passenden Vorfragen je Person (Familienangehörige, Werkstattbeschäftigte) erscheinen.

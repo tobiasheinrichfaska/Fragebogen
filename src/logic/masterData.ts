@@ -11,14 +11,24 @@ import { currentPart, setValue, type TransitionCode } from './questionnaire';
 /** Remembered master data: key → normalised value. */
 export type MasterData = Record<string, FieldValue>;
 
-/** The role's master data in this part; unanswered fields are left out. */
+/** Yes/no master data travel as text in the link (Tobias 2026-10-30: firm attributes). */
+const YES = 'ja';
+const NO = 'nein';
+
+/** The role's master data in this part; unanswered fields are left out, yes/no as "ja"/"nein". */
 export function masterDataOf(definition: FormDefinition, role: RoleId, data: PartData): MasterData {
   return Object.fromEntries(
     fieldsOfRole(definition, role).flatMap((field) => {
       const value = data[field.id] ?? null;
-      return field.masterData === undefined || value === null ? [] : [[field.masterData, value]];
+      if (field.masterData === undefined || value === null) return [];
+      return [[field.masterData, typeof value === 'boolean' ? (value ? YES : NO) : value]];
     }),
   );
+}
+
+function storedValue(field: { type: string }, value: unknown): unknown {
+  if (field.type !== 'boolean') return value;
+  return value === YES ? true : value === NO ? false : value;
 }
 
 export interface MasterDataSkip {
@@ -61,11 +71,13 @@ export function applyMasterData(
   for (const field of fieldsOfRole(form.definition, role)) {
     const key = field.masterData;
     if (key === undefined || !Object.hasOwn(stored, key)) continue;
-    if ((draft.data[field.id] ?? null) !== null) {
+    // A preselection counts as empty: the remembered value replaces it.
+    const present = draft.data[field.id] ?? null;
+    if (present !== null && present !== field.initial) {
       kept.push(field.id);
       continue;
     }
-    const result = setValue(q, form, role, field.id, stored[key]);
+    const result = setValue(q, form, role, field.id, storedValue(field, stored[key]));
     if (result.ok) {
       q = result.questionnaire;
       applied.push(field.id);

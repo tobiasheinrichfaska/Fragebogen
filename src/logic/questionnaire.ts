@@ -48,6 +48,7 @@ import { NONCE_PATTERN, SEAL_SCHEMA, contentHashOf, fieldHashesOf, strokesHashOf
 import { decodeStrokes, signatureShapeProblem } from './strokes';
 import { sameInstant } from './time';
 import { describeValidity, outsideValidity } from './validity';
+import { activeExclusions } from './hints';
 
 export type TransitionCode =
   | 'wrongForm'
@@ -75,7 +76,8 @@ export type TransitionCode =
   | 'versionInUse'
   | 'alreadyAnswered'
   | 'fixedByOtherRole'
-  | 'outsideValidity';
+  | 'outsideValidity'
+  | 'outOfScope';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -110,6 +112,8 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
     'Diese Angabe hat eine andere Rolle in ihrem abgeschlossenen Teil festgelegt; sie wird von dort übernommen.',
   outsideValidity:
     'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
+  outOfScope:
+    'Für diesen Sonderfall ist der Fragebogen nicht gedacht. Abschließen und Weitergeben sind gesperrt; bitte die lohnabrechnende Stelle fragen.',
 };
 
 export type Transition =
@@ -425,6 +429,12 @@ export function sealPart(
   const unacknowledged = notices.filter((b) => !input.acknowledged.includes(b.id)).map((b) => b.id);
   if (unacknowledged.length > 0) return refuse('noticeNotAcknowledged', unacknowledged);
 
+  const excluded = activeExclusions(questionnaire, definition);
+  if (excluded.length > 0)
+    return refuse(
+      'outOfScope',
+      excluded.map((e) => e.message),
+    );
   const outside = outsideValidity(definition, role, draft.data);
   if (outside !== undefined) {
     return refuse('outsideValidity', [outside, describeValidity(definition) ?? '']);
