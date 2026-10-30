@@ -21,10 +21,14 @@ export const SIGNATURE_POLICIES = ['electronic', 'paperRecommended', 'paperRequi
 export type SignaturePolicy = (typeof SIGNATURE_POLICIES)[number];
 
 /** A role becomes mandatory only when its condition holds (e.g. legal guardian of a minor). */
-export interface RoleCondition {
-  kind: 'minorOnSigning';
-  birthDateField: FieldId;
-}
+/**
+ * When a conditional role is required — always decided on the latest sealed part of another role:
+ * - `minorOnSigning`: that person is under 18 on the local date of their signature (guardian);
+ * - `answer`: that role's answers meet the condition (e.g. the spouse when the Kanzlei states a
+ *   joint assessment). All fields of the condition belong to one other role.
+ */
+export type RoleCondition =
+  { kind: 'minorOnSigning'; birthDateField: FieldId } | { kind: 'answer'; when: Condition };
 
 export interface RoleDefinition {
   id: RoleId;

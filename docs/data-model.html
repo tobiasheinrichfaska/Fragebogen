@@ -220,9 +220,11 @@ Code-Änderung.</p>
 <h3>RoleCondition</h3>
 <table>
   <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
-  <tr><td><code>kind</code></td><td><code>minorOnSigning</code></td><td>ja</td><td>Pflicht, wenn die Person am Unterschriftstag unter 18 ist (<code>isMinorOn</code>)</td></tr>
-  <tr><td><code>birthDateField</code></td><td>FieldId</td><td>ja</td><td>Datumsfeld einer <em>anderen</em> Rolle mit dem Geburtsdatum. Maßgeblich ist das Alter am <strong>Ortsdatum der Unterschrift</strong> dieser Rolle, laut Gerät.</td></tr>
+  <tr><td><code>kind</code></td><td><code>minorOnSigning</code> | <code>answer</code></td><td>ja</td><td><code>minorOnSigning</code>: Pflicht, wenn die Person am Unterschriftstag unter 18 ist (<code>isMinorOn</code>). <code>answer</code>: Pflicht, wenn die Antworten einer anderen Rolle die Bedingung erfüllen (z. B. Ehegatte bei Zusammenveranlagung).</td></tr>
+  <tr><td><code>birthDateField</code></td><td>FieldId</td><td>bei <code>minorOnSigning</code></td><td>Datumsfeld einer <em>anderen</em> Rolle mit dem Geburtsdatum. Maßgeblich ist das Alter am <strong>Ortsdatum der Unterschrift</strong> dieser Rolle, laut Gerät.</td></tr>
+  <tr><td><code>when</code></td><td>Condition</td><td>bei <code>answer</code></td><td>Bedingung über Felder genau <em>einer</em> anderen, unbedingten Rolle. Entschieden wird immer am <strong>letzten abgeschlossenen Teil</strong> dieser Rolle; bis dahin „noch offen“.</td></tr>
 </table>
+<p>Für beide Arten gilt: Die bedingte Rolle muss unterschreiben, ihren Namen angeben (<code>signerNameField</code> oder getippter Name) und die aktuelle Fassung der auslösenden Rolle in <code>receivedParts</code> binden. Die Blocker heißen bei <code>minorOnSigning</code> <code>guardian…</code>, bei <code>answer</code> <code>conditionalRole…</code>. <code>triggerRoleOf</code> (<code>form.ts</code>) liefert die auslösende Rolle, <code>requirementText</code> (<code>requirements.ts</code>) den Satz für die Übersicht.</p>
 
 <h3>SectionDefinition</h3>
 <table>

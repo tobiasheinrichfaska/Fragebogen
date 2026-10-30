@@ -1,7 +1,7 @@
 // Evaluating a form definition against a role's data: availability (showIf), requiredness
 // (required / requiredIf), completeness and the notices a role must acknowledge. A field hidden by
 // its condition counts as unanswered, so conditions that depend on it are false as well.
-import { describeCondition, evaluateCondition } from './conditions';
+import { describeCondition, evaluateCondition, forEachLeaf } from './conditions';
 import { canonicalHash } from './hash';
 import { missingCells } from './normalize';
 import type {
@@ -10,6 +10,7 @@ import type {
   FieldValue,
   FormDefinition,
   InfoBlock,
+  RoleCondition,
   RoleDefinition,
   RoleId,
   SealSignature,
@@ -36,6 +37,20 @@ export function ownerOfField(definition: FormDefinition, fieldId: FieldId): Role
 }
 
 /** At least two letters: a typed signature must be a name, not a mark. */
+/** The role whose latest sealed part decides a conditional role (definition rule: exactly one). */
+export function triggerRoleOf(
+  definition: FormDefinition,
+  condition: RoleCondition,
+): RoleId | undefined {
+  if (condition.kind === 'minorOnSigning')
+    return ownerOfField(definition, condition.birthDateField);
+  let owner: RoleId | undefined;
+  forEachLeaf(condition.when, '$', (leaf) => {
+    owner ??= ownerOfField(definition, leaf.field);
+  });
+  return owner;
+}
+
 export function typedNameIsPlausible(name: string): boolean {
   return (name.match(/\p{L}/gu) ?? []).length >= 2;
 }

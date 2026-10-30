@@ -16,6 +16,7 @@ import {
   sealableData,
   visibility,
   signerName,
+  triggerRoleOf,
   typedNameIsPlausible,
 } from './form';
 import type { RegisteredForm } from './formRegistry';
@@ -366,7 +367,7 @@ export function sealPart(
   // sealed part of the role whose data triggers it.
   if (roleDefinition.requiredIf) {
     if (!signature) return refuse('signatureRequired');
-    const triggerRole = ownerOfField(definition, roleDefinition.requiredIf.birthDateField);
+    const triggerRole = triggerRoleOf(definition, roleDefinition.requiredIf);
     const trigger =
       triggerRole === undefined ? undefined : latestSealed(questionnaire, triggerRole);
     const bound = receivedParts.some(

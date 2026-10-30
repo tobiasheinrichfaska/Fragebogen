@@ -4,12 +4,14 @@
 // the legal guardian must sign with their name and confirm exactly the current version of the
 // person's part. The io layer must refuse to write a transmission PDF while blockers exist.
 import { AGE_OF_MAJORITY, ageOn, compareIsoDates, formatGermanDate, isIsoDate } from './dates';
-import { missingRequired, ownerOfField, signerName } from './form';
+import { describeCondition, evaluateCondition } from './conditions';
+import { fieldsById, missingRequired, signerName, triggerRoleOf, visibility } from './form';
 import { registryOf, type RegisteredForm } from './formRegistry';
 import type {
   FormDefinition,
   IsoDate,
   Questionnaire,
+  RoleCondition,
   RoleDefinition,
   RoleId,
   Seal,
@@ -18,7 +20,8 @@ import type {
 import { currentPart, latestSealed } from './questionnaire';
 import { verifyQuestionnaire } from './verify';
 
-export type RequirementReason = 'always' | 'pending' | 'minor' | 'adult' | 'ageUnknown';
+export type RequirementReason =
+  'always' | 'pending' | 'minor' | 'adult' | 'ageUnknown' | 'answerMet' | 'answerNotMet';
 
 export interface RoleRequirement {
   role: RoleId;
@@ -42,10 +45,19 @@ export function roleRequirement(
 ): RoleRequirement {
   const condition = role.requiredIf;
   if (!condition) return { role: role.id, required: true, reason: 'always' };
-  const triggerRole = ownerOfField(definition, condition.birthDateField);
+  const triggerRole = triggerRoleOf(definition, condition);
   const base = { role: role.id, ...(triggerRole === undefined ? {} : { triggerRole }) };
   const trigger = triggerRole === undefined ? undefined : latestSealed(questionnaire, triggerRole);
-  if (!trigger?.seal) return { ...base, required: false, reason: 'pending' };
+  if (!trigger?.seal || triggerRole === undefined) {
+    return { ...base, required: false, reason: 'pending' };
+  }
+  if (condition.kind === 'answer') {
+    const visible = visibility(definition, triggerRole, trigger.data);
+    const met = evaluateCondition(condition.when, (id) =>
+      visible.get(id) === true ? (trigger.data[id] ?? null) : null,
+    );
+    return { ...base, required: met, reason: met ? 'answerMet' : 'answerNotMet' };
+  }
   const signingDate = trigger.seal.payload.systemNote.signedAtLocal.slice(0, 10);
   const birthDate = trigger.data[condition.birthDateField];
   if (
@@ -59,6 +71,37 @@ export function roleRequirement(
   const age = ageOn(birthDate, signingDate);
   const minor = age < AGE_OF_MAJORITY;
   return { ...base, required: minor, reason: minor ? 'minor' : 'adult', signingDate, age };
+}
+
+/** What the overview says about a conditional role (German); undefined for unconditional roles. */
+export function requirementText(
+  definition: FormDefinition,
+  role: RoleDefinition,
+  requirement: RoleRequirement,
+): string | undefined {
+  const condition = role.requiredIf;
+  if (!condition) return undefined;
+  if (condition.kind === 'answer') {
+    const when = describeCondition(condition.when, fieldsById(definition));
+    switch (requirement.reason) {
+      case 'answerMet':
+        return `Erforderlich, weil ${when}.`;
+      case 'answerNotMet':
+        return 'Nicht erforderlich nach den Angaben im Fragebogen.';
+      default:
+        return `Nur nötig, wenn ${when}.`;
+    }
+  }
+  switch (requirement.reason) {
+    case 'minor':
+      return 'Erforderlich: Die Person ist am Tag ihrer Unterschrift minderjährig.';
+    case 'adult':
+      return 'Nicht erforderlich: Die Person ist volljährig.';
+    case 'ageUnknown':
+      return 'Das Alter lässt sich nicht bestimmen – bitte das Geburtsdatum prüfen.';
+    default:
+      return 'Nur nötig, wenn die Person am Tag ihrer Unterschrift minderjährig ist.';
+  }
 }
 
 export function roleRequirements(
@@ -77,6 +120,9 @@ export type BlockerCode =
   | 'guardianMissing'
   | 'guardianNotBound'
   | 'guardianNameMissing'
+  | 'conditionalRoleMissing'
+  | 'conditionalRoleNotBound'
+  | 'conditionalRoleNameMissing'
   | 'ageUnknown'
   | 'roleMissing'
   | 'partsNotLinked';
@@ -89,6 +135,11 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   partInvalid: 'Ein Teil ist verändert oder fehlerhaft und kann nicht übermittelt werden.',
   guardianMissing:
     'Die Person ist am Tag ihrer Unterschrift minderjährig. Die gesetzliche Vertretung muss mit Namen unterschreiben.',
+  conditionalRoleMissing:
+    'Nach den Angaben im Fragebogen ist ein weiterer Teil erforderlich; er muss mit Namen unterschrieben werden.',
+  conditionalRoleNotBound:
+    'Eine Unterschrift gilt nicht der aktuellen Fassung, auf der sie beruht. Sie muss erneut gegeben werden.',
+  conditionalRoleNameMissing: 'Der Name der unterschreibenden Person fehlt.',
   guardianNotBound:
     'Die Unterschrift der gesetzlichen Vertretung gilt nicht der aktuellen Fassung. Sie muss erneut unterschreiben.',
   guardianNameMissing: 'Der Name der gesetzlichen Vertretung fehlt.',
@@ -143,7 +194,7 @@ export function transmissionBlockers(
     }
   }
   for (const role of definition.roles) {
-    if (role.requiredIf) guardianBlockers(definition, questionnaire, role, add);
+    if (role.requiredIf) conditionalRoleBlockers(definition, questionnaire, role, add);
   }
   return blockers;
 }
@@ -155,7 +206,23 @@ function fieldLabel(definition: FormDefinition, fieldId: string): string {
   );
 }
 
-function guardianBlockers(
+/** Blocker codes per kind of conditional role: the guardian keeps its own wording. */
+const CONDITIONAL_CODES: Readonly<
+  Record<RoleCondition['kind'], { missing: BlockerCode; notBound: BlockerCode; name: BlockerCode }>
+> = {
+  minorOnSigning: {
+    missing: 'guardianMissing',
+    notBound: 'guardianNotBound',
+    name: 'guardianNameMissing',
+  },
+  answer: {
+    missing: 'conditionalRoleMissing',
+    notBound: 'conditionalRoleNotBound',
+    name: 'conditionalRoleNameMissing',
+  },
+};
+
+function conditionalRoleBlockers(
   definition: FormDefinition,
   questionnaire: Questionnaire,
   role: RoleDefinition,
@@ -166,14 +233,18 @@ function guardianBlockers(
     add('ageUnknown', role.id, [role.label]);
     return;
   }
-  if (!requirement.required || requirement.signingDate === undefined) return;
-  const detail = [
-    role.label,
-    `${requirement.age ?? '?'} Jahre am ${formatGermanDate(requirement.signingDate)}`,
-  ];
+  if (!requirement.required || !role.requiredIf) return;
+  const codes = CONDITIONAL_CODES[role.requiredIf.kind];
+  const detail =
+    requirement.signingDate === undefined
+      ? [role.label]
+      : [
+          role.label,
+          `${requirement.age ?? '?'} Jahre am ${formatGermanDate(requirement.signingDate)}`,
+        ];
   const guardian = latestSealed(questionnaire, role.id);
   if (!guardian?.seal) {
-    add('guardianMissing', role.id, detail);
+    add(codes.missing, role.id, detail);
     return;
   }
   const trigger =
@@ -184,9 +255,9 @@ function guardianBlockers(
     (part) =>
       part.role === requirement.triggerRole && part.contentHash === trigger?.seal?.contentHash,
   );
-  if (!bound) add('guardianNotBound', role.id, detail);
+  if (!bound) add(codes.notBound, role.id, detail);
   if (signerName(role, guardian.data, guardian.seal.payload.signature) === undefined) {
-    add('guardianNameMissing', role.id, [role.label]);
+    add(codes.name, role.id, [role.label]);
   }
 }
 

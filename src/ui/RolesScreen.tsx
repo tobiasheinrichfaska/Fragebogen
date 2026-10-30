@@ -1,7 +1,12 @@
 // "Wer füllt jetzt aus?" — the overview of the questionnaire: every role with its state, what
 // still blocks passing it on and what the recipient still misses.
 import { useRef } from 'react';
-import { BLOCKER_MESSAGES, completenessGaps, transmissionBlockers } from '../logic/requirements';
+import {
+  BLOCKER_MESSAGES,
+  completenessGaps,
+  requirementText,
+  transmissionBlockers,
+} from '../logic/requirements';
 import { roleStates, type RoleState, type Session } from '../logic/session';
 import { Banner, Card } from './common';
 
@@ -23,22 +28,6 @@ const STATE_LABEL: Readonly<Record<RoleState['state'], string>> = {
   signed: 'unterschrieben',
 };
 
-function requirementText(state: RoleState): string | undefined {
-  if (!state.role.requiredIf) return undefined;
-  switch (state.requirement.reason) {
-    case 'pending':
-      return 'Nur nötig, wenn die Person am Tag ihrer Unterschrift minderjährig ist.';
-    case 'minor':
-      return 'Erforderlich: Die Person ist am Tag ihrer Unterschrift minderjährig.';
-    case 'adult':
-      return 'Nicht erforderlich: Die Person ist volljährig.';
-    case 'ageUnknown':
-      return 'Das Alter lässt sich nicht bestimmen – bitte das Geburtsdatum prüfen.';
-    default:
-      return undefined;
-  }
-}
-
 export function RolesScreen(props: Props) {
   const { session, onEnter, onNewVersion, onReopen, onSaveInterim, onTakeOver, onPdf, onClose } =
     props;
@@ -59,7 +48,7 @@ export function RolesScreen(props: Props) {
         </p>
         <ul className="roles">
           {states.map((state) => {
-            const note = requirementText(state);
+            const note = requirementText(session.form.definition, state.role, state.requirement);
             const notNeeded =
               state.role.requiredIf && !state.requirement.required && state.state === 'missing';
             return (

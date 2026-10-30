@@ -20,6 +20,7 @@ import {
   type MatchKey,
   type RoleCondition,
   type RoleDefinition,
+  type RoleId,
   type SectionDefinition,
 } from './model';
 
@@ -178,12 +179,19 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
 }
 
 function decodeRoleCondition(d: Decoder, raw: unknown, path: string): RoleCondition | undefined {
+  const kind = typeof raw === 'object' && raw !== null && 'kind' in raw ? raw.kind : undefined;
+  if (kind === 'answer') {
+    const o = d.object(raw, path, ['kind', 'when']);
+    if (!o) return undefined;
+    const when = decodeCondition(d, o.when, `${path}.when`, 0);
+    return when === undefined ? undefined : { kind: 'answer', when };
+  }
   const o = d.object(raw, path, ['kind', 'birthDateField']);
   if (!o) return undefined;
-  const kind = d.literal(o.kind, `${path}.kind`, ['minorOnSigning'] as const);
+  const literal = d.literal(o.kind, `${path}.kind`, ['minorOnSigning', 'answer'] as const);
   const birthDateField = d.string(o.birthDateField, `${path}.birthDateField`, ID);
-  if (kind === undefined || birthDateField === undefined) return undefined;
-  return { kind, birthDateField };
+  if (literal !== 'minorOnSigning' || birthDateField === undefined) return undefined;
+  return { kind: literal, birthDateField };
 }
 
 function decodeSection(d: Decoder, raw: unknown, path: string): SectionDefinition | undefined {
@@ -658,7 +666,34 @@ function roles({ definition, fields, report }: CheckContext): void {
   definition.roles.forEach((role, i) => {
     const path = `$.roles[${i}]`;
     const condition = role.requiredIf;
-    if (condition) {
+    if (condition?.kind === 'answer') {
+      const owners = new Set<RoleId>();
+      forEachLeaf(condition.when, `${path}.requiredIf.when`, (leaf, leafPath) => {
+        const target = fields.get(leaf.field);
+        if (!target || target.isColumn) {
+          report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
+          return;
+        }
+        owners.add(target.field.role);
+        const problem = leafProblem(leaf, target.field);
+        if (problem) {
+          report(`${leafPath}.${problem.at === 'field' ? 'field' : problem.at}`, problem.message);
+        }
+      });
+      if (owners.has(role.id)) {
+        report(`${path}.requiredIf.when`, 'must reference fields of another role');
+      } else if (owners.size > 1) {
+        report(`${path}.requiredIf.when`, 'all fields must belong to one role');
+      } else {
+        const [owner] = owners;
+        if (definition.roles.find((candidate) => candidate.id === owner)?.requiredIf) {
+          report(`${path}.requiredIf.when`, 'the deciding role cannot be conditional itself');
+        }
+      }
+      if (role.signature !== 'required') {
+        report(`${path}.signature`, 'a conditional role must sign ("required")');
+      }
+    } else if (condition) {
       const target = fields.get(condition.birthDateField);
       if (!target) {
         report(`${path}.requiredIf.birthDateField`, `unknown field "${condition.birthDateField}"`);

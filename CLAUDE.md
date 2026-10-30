@@ -380,8 +380,11 @@ Key design decisions (details in `docs/plan.md`):
 - **Fields of type `file` cannot be sealed yet** (their values are not normalised).
 - **Merge needs the form in the registry** for labels, contradictions and gaps; unknown forms are
   merged without them. A receipt is added by the Kanzlei station (step 9), not by the merge.
-- **Conditions cover one role only** — a field cannot depend on another role's answer (e.g. an
-  employer field required because of the person's answer); no date/age comparisons in conditions.
+- **Field conditions cover one role only** — a field cannot depend on another role's answer (e.g. an
+  employer field required because of the person's answer): verification recomputes a sealed
+  part's visible fields from its own data. Whole **roles** can depend on another role's sealed
+  answers (`requiredIf: { kind: 'answer' }`, e.g. the spouse at a joint assessment). No date/age
+  comparisons in conditions.
 - **Verification proves consistency, not authorship:** anyone can produce a fresh, self-consistent
   seal; only confirmations (other roles' seals, receipts, later the DATEV filing) raise the level,
   and receipts are as trustworthy as the station that wrote them.

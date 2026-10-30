@@ -1,6 +1,7 @@
 // Readable field catalogue of a form definition (German Markdown) for the expert review before a
 // form is published. It is generated from the definition alone, so what gets approved is exactly
 // what gets frozen; tests/forms/catalogue.test.ts keeps docs/formulare/ in sync with the JSON.
+import { describeCondition } from './conditions';
 import { formatGermanDate } from './dates';
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
@@ -54,8 +55,15 @@ const ROLE_CONDITIONS: Readonly<
   Record<RoleCondition['kind'], (condition: RoleCondition, definition: FormDefinition) => string>
 > = {
   minorOnSigning: (condition, definition) =>
-    `nur wenn die Person laut „${fieldLabel(definition, condition.birthDateField)}“ am Tag ihrer ` +
-    'Unterschrift unter 18 ist',
+    condition.kind === 'minorOnSigning'
+      ? `nur wenn die Person laut „${fieldLabel(definition, condition.birthDateField)}“ am Tag ` +
+        'ihrer Unterschrift unter 18 ist'
+      : '',
+  answer: (condition, definition) =>
+    condition.kind === 'answer'
+      ? `nur wenn ${describeCondition(condition.when, fieldsById(definition))} (nach dem ` +
+        'abgeschlossenen Teil, der das angibt)'
+      : '',
 };
 
 export const CATALOGUE_STATUSES = ['draft', 'published'] as const;
