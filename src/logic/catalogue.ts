@@ -9,6 +9,7 @@ import { describeHint } from './hints';
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
 import { isTestVersion, type RegisteredForm } from './formRegistry';
+import { describeRule } from './derivations';
 import { describeValidity } from './validity';
 import type {
   AcknowledgementKind,
@@ -380,6 +381,15 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
     );
   }
   lines.push('', '## Was dieser Fragebogen nicht abdeckt', '', ...list(definition.limits ?? []));
+  for (const derivation of definition.derivations ?? []) {
+    lines.push(
+      '',
+      `## Vorschlag ${derivation.label} (erste passende Regel gilt; die App entscheidet nicht)`,
+      '',
+      ...(derivation.source === undefined ? [] : [`Grundlage: ${derivation.source}`, '']),
+      ...derivation.rules.map((rule, i) => `${i + 1}. ${describeRule(rule, definition)}`),
+    );
+  }
   lines.push(
     '',
     '## Sonderfälle, die Abschließen und Weitergeben sperren',

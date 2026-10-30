@@ -18,7 +18,7 @@ import type {
   Questionnaire,
   RoleId,
 } from './model';
-import { RECHENGROESSEN } from './data/rechengroessen';
+import { GERINGVERDIENERGRENZE, RECHENGROESSEN } from './data/rechengroessen';
 import { monthAfter, regelaltersgrenze } from './regelaltersgrenze';
 
 export interface HintResult {
@@ -33,8 +33,13 @@ interface HintTest {
   args: readonly FieldType[];
   /** German clause for the catalogue, from the argument labels. */
   describe: (labels: readonly string[]) => string;
-  /** undefined when an argument is missing — the hint is then not shown. */
-  run: (values: readonly FieldValue[]) => { holds: boolean; detail: string[] } | undefined;
+  /**
+   * undefined when an argument is missing — the hint is then not shown. `uncertain`: the test could
+   * not decide for sure (e.g. a year without Rechengrößen); a derivation then asks for a check.
+   */
+  run: (
+    values: readonly FieldValue[],
+  ) => { holds: boolean; detail: string[]; uncertain?: boolean } | undefined;
 }
 
 function germanMonth(month: string): string {
@@ -128,6 +133,45 @@ const rechengroesse = (year: string, key: 'bbgKvMonat' | 'bbgRvMonat') => {
 };
 
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
+  hoechstensGeringfuegigkeitsgrenze: {
+    args: ['money', 'date'],
+    describe: ([pay = '', on = '']) =>
+      `„${pay}“ höchstens die Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt`,
+    run: ([pay, on]) => {
+      const amount = cents(pay ?? null);
+      if (amount === undefined || typeof on !== 'string' || !isIsoDate(on)) return undefined;
+      const year = on.slice(0, 4);
+      const limit = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
+      if (limit === undefined) {
+        return {
+          holds: true,
+          uncertain: true,
+          detail: [
+            `Für ${year} ist die Geringfügigkeitsgrenze in der App nicht hinterlegt – bitte selbst prüfen.`,
+          ],
+        };
+      }
+      const max = cents(limit) ?? 0;
+      return {
+        holds: amount <= max,
+        detail: [`${euro(amount)} im Monat; Geringfügigkeitsgrenze ${year}: ${euro(max)}.`],
+      };
+    },
+  },
+  hoechstensGeringverdienergrenze: {
+    args: ['money'],
+    describe: ([pay = '']) =>
+      `„${pay}“ (bei einer Tabelle die erste Zeile) höchstens 325 € im Monat beträgt`,
+    run: ([pay]) => {
+      const amount = cents(Array.isArray(pay) ? (pay[0] ?? null) : (pay ?? null));
+      if (amount === undefined) return undefined;
+      const max = cents(GERINGVERDIENERGRENZE) ?? 0;
+      return {
+        holds: amount <= max,
+        detail: [`${euro(amount)} im Monat; Geringverdienergrenze: ${euro(max)}.`],
+      };
+    },
+  },
   kuerzerAlsEineWoche: {
     args: ['date', 'date'],
     describe: ([from = '', until = '']) =>
@@ -207,7 +251,11 @@ export function hintTestProblem(
   return undefined;
 }
 
-function rolesOf(hint: CheckHint, definition: FormDefinition): Set<RoleId> {
+/** Roles whose answers a hint, exclusion or derivation rule reads. */
+export function rolesOf(
+  hint: Pick<CheckHint, 'when' | 'test'>,
+  definition: FormDefinition,
+): Set<RoleId> {
   const roles = new Set<RoleId>();
   const add = (id: FieldId) => {
     const role =
@@ -229,13 +277,13 @@ function rolesOf(hint: CheckHint, definition: FormDefinition): Set<RoleId> {
 const currentPart = (questionnaire: Questionnaire, role: RoleId) =>
   questionnaire.parts[role]?.at(-1);
 
-interface Values {
+export interface Values {
   valueOf: (id: FieldId) => FieldValue;
   argumentOf: (id: FieldId) => FieldValue;
 }
 
 /** Values of the current parts (drafts included); hidden fields count as unanswered. */
-function valuesOf(questionnaire: Questionnaire, definition: FormDefinition): Values {
+export function valuesOf(questionnaire: Questionnaire, definition: FormDefinition): Values {
   const visible = new Map<RoleId, ReadonlyMap<FieldId, boolean>>();
   const valueOf = (id: FieldId): FieldValue => {
     const role = ownerOfField(definition, id);
@@ -265,6 +313,23 @@ function valuesOf(questionnaire: Questionnaire, definition: FormDefinition): Val
     );
   };
   return { valueOf, argumentOf };
+}
+
+/** Whether a condition and named test hold, with the test's facts. */
+export function ruleHolds(
+  rule: Pick<CheckHint, 'when' | 'test'>,
+  values: Values,
+): { holds: boolean; detail: string[]; uncertain: boolean } {
+  if (rule.when && !evaluateCondition(rule.when, values.valueOf)) {
+    return { holds: false, detail: [], uncertain: false };
+  }
+  if (!rule.test) return { holds: true, detail: [], uncertain: false };
+  const outcome = HINT_TESTS[rule.test.fn]?.run(rule.test.args.map(values.argumentOf));
+  return {
+    holds: outcome?.holds === true,
+    detail: outcome?.detail ?? [],
+    uncertain: outcome?.uncertain === true,
+  };
 }
 
 function holding(

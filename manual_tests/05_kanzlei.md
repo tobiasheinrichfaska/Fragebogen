@@ -118,3 +118,26 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 - Dazu „Laut Geburtsdatum ist die Regelaltersgrenze bei Beschäftigungsbeginn erreicht …
   Regelaltersgrenze laut Geburtsdatum: 14.07.2026; Folgemonat: August 2026.“
 - _Nicht offensichtlich:_ Prüfhinweise blockieren nichts; die PDF lässt sich trotzdem erstellen.
+
+---
+
+## MT-45: Vorschlag Personengruppe
+
+**Voraussetzungen:** Vorschau-Fassung; ein Personalfragebogen, in dem der Arbeitgeber „Minijob“ mit
+festem Monatsentgelt **520,00 €** angegeben hat und die Person „keine weitere Beschäftigung“; beide
+Teile abgeschlossen, PDF erstellt.
+
+**Schritte:**
+
+1. Station Kanzlei: die PDF einlesen.
+2. Die PDF für die Personalakte erstellen und das Prüfblatt ansehen.
+
+**Erwartet:**
+
+- Unter „Vorschläge (die App entscheidet nicht – bitte prüfen)“ steht „Personengruppe: 109 –
+  Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze. 520,00 € im Monat;
+  Geringfügigkeitsgrenze 2026: 603,00 €.“
+- Dasselbe steht auf dem Prüfblatt mit „(Die App entscheidet das nicht.)“.
+- _Nicht offensichtlich:_ Mit „weitere Beschäftigung: Ja“ steht zusätzlich „Bitte prüfen.“
+  (Zusammenrechnung); bei einem Sonderfall gibt es keinen Vorschlag, sondern „Sonderfall – bitte
+  selbst beurteilen“.

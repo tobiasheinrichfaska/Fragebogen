@@ -165,6 +165,8 @@ describe('check hints — definition rules', () => {
 
   it('knows the tests the forms use', () => {
     expect(Object.keys(HINT_TESTS).sort()).toEqual([
+      'hoechstensGeringfuegigkeitsgrenze',
+      'hoechstensGeringverdienergrenze',
       'kuerzerAlsEineWoche',
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',

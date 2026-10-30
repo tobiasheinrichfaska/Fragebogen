@@ -299,6 +299,19 @@ export function KanzleiScreen({ registry, onBack }: Props) {
                 }}
               />
             )}
+            {group.derivations.length > 0 && (
+              <Banner
+                message={{
+                  tone: 'info',
+                  text: 'Vorschläge (die App entscheidet nicht – bitte prüfen):',
+                  detail: group.derivations.map(
+                    (d) =>
+                      `${d.label}: ${d.value ?? '–'} – ${[d.reason, ...d.detail].join(' ')}` +
+                      (d.check && d.status === 'proposed' ? ' Bitte prüfen.' : ''),
+                  ),
+                }}
+              />
+            )}
             {group.hints.length > 0 && (
               <Banner
                 message={{

@@ -5,6 +5,7 @@
 // PDF/A-2u. Every page carries "Fragebogen-ID · Daten · Formular · Seite x von y".
 import { PDFDocument, PDFString, rgb, type PDFFont, type PDFPage, type RGB } from '@cantoo/pdf-lib';
 import { describeValidity } from '../logic/validity';
+import { derive } from '../logic/derivations';
 import fontkit from '@cantoo/fontkit';
 import { APP_VERSION } from '../appInfo';
 import type { AppConfig } from '../logic/appConfig';
@@ -479,6 +480,14 @@ export async function writeQuestionnairePdf(
       { size: 8.5 },
     );
     layout.text(`  ${part.contentHash ?? ''}`, { font: fonts.mono, size: 7, color: MUTED });
+  }
+  for (const proposal of derive(questionnaire, definition)) {
+    layout.text(
+      `Vorschlag ${proposal.label}: ${proposal.value ?? '–'} – ${[proposal.reason, ...proposal.detail].join(' ')}` +
+        (proposal.check && proposal.status === 'proposed' ? ' Bitte prüfen.' : '') +
+        ' (Die App entscheidet das nicht.)',
+      { size: 8.5 },
+    );
   }
   for (const finding of [...verdict.findings, ...verdict.parts.flatMap((p) => p.findings)]) {
     layout.text(

@@ -8,9 +8,19 @@ export interface Rechengroessen {
   bbgKvMonat: string;
   /** Beitragsbemessungsgrenze allgemeine Rentenversicherung (§ 159 SGB VI), per month. */
   bbgRvMonat: string;
+  /** Geringfügigkeitsgrenze (§ 8 Abs. 1a SGB IV, follows the minimum wage), per month. */
+  geringfuegigkeitsgrenzeMonat: string;
 }
+
+/** Geringverdienergrenze for trainees (§ 20 Abs. 3 S. 1 Nr. 1 SGB IV), per month — fixed by law. */
+export const GERINGVERDIENERGRENZE = '325.00';
 
 export const RECHENGROESSEN: Readonly<Record<string, Rechengroessen>> = {
   // SVBezGrV 2026 §§ 2, 4
-  '2026': { jaegJahr: '77400.00', bbgKvMonat: '5812.50', bbgRvMonat: '8450.00' },
+  '2026': {
+    jaegJahr: '77400.00',
+    bbgKvMonat: '5812.50',
+    bbgRvMonat: '8450.00',
+    geringfuegigkeitsgrenzeMonat: '603.00',
+  },
 };

@@ -226,6 +226,29 @@ export interface CheckHint {
   source?: string;
 }
 
+/** One rule of a derivation: the first rule whose condition and test hold gives the value. */
+export interface DerivationRule {
+  /** Proposed value, e.g. "109". */
+  value: string;
+  /** Why, in German — shown with the proposal. */
+  reason: string;
+  when?: Condition;
+  test?: { fn: string; args: FieldId[] };
+  /** The proposal needs a closer look (e.g. several jobs to add up). */
+  check?: boolean;
+}
+
+/**
+ * A value the form proposes from the answers of all roles (Tobias 2026-10-30: Personengruppe,
+ * Beitragsgruppen). A proposal for the recipient only — never sealed, never decided by the app.
+ */
+export interface Derivation {
+  id: string;
+  label: string;
+  source?: string;
+  rules: DerivationRule[];
+}
+
 /** Fields that identify the same person across roles when no shared questionnaire id exists. */
 export interface MatchKey {
   label: string;
@@ -278,6 +301,8 @@ export interface FormDefinition {
    * on are refused — the form does not know which answers such a case needs.
    */
   exclusions?: CheckHint[];
+  /** Proposals for the recipient (Personengruppe, Beitragsgruppen), see derivations.ts. */
+  derivations?: Derivation[];
 }
 
 // ---------------------------------------------------------------------------

@@ -16,6 +16,7 @@ import {
   type ChoiceOption,
   type Condition,
   type ConsistencyRule,
+  type Derivation,
   type FieldDefinition,
   type FieldType,
   type FormDefinition,
@@ -76,6 +77,7 @@ export const FORM_KEYS = [
   'validity',
   'limits',
   'exclusions',
+  'derivations',
 ] as const;
 
 export const ROLE_KEYS = [
@@ -131,6 +133,10 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     o.exclusions === undefined
       ? undefined
       : d.array(o.exclusions, `${path}.exclusions`, (v, p) => decodeCheckHint(d, v, p), 1);
+  const derivations =
+    o.derivations === undefined
+      ? undefined
+      : d.array(o.derivations, `${path}.derivations`, (v, p) => decodeDerivation(d, v, p), 1);
   const limits =
     o.limits === undefined
       ? undefined
@@ -168,7 +174,15 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     ...(validity === undefined ? {} : { validity }),
     ...(limits === undefined ? {} : { limits }),
     ...(exclusions === undefined ? {} : { exclusions }),
+    ...(derivations === undefined ? {} : { derivations }),
   };
+}
+
+function decodeHintTest(d: Decoder, raw: unknown, path: string): CheckHint['test'] {
+  const t = d.object(raw, path, ['fn', 'args']);
+  const fn = t && d.string(t.fn, `${path}.fn`, ID);
+  const args = t && d.array(t.args, `${path}.args`, (v, p) => d.string(v, p, ID), 1);
+  return fn !== undefined && args !== undefined ? { fn, args } : undefined;
 }
 
 function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | undefined {
@@ -176,13 +190,7 @@ function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | un
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
   const when = o.when === undefined ? undefined : decodeCondition(d, o.when, `${path}.when`, 0);
-  let test: CheckHint['test'];
-  if (o.test !== undefined) {
-    const t = d.object(o.test, `${path}.test`, ['fn', 'args']);
-    const fn = t && d.string(t.fn, `${path}.test.fn`, ID);
-    const args = t && d.array(t.args, `${path}.test.args`, (v, p) => d.string(v, p, ID), 1);
-    if (fn !== undefined && args !== undefined) test = { fn, args };
-  }
+  const test = o.test === undefined ? undefined : decodeHintTest(d, o.test, `${path}.test`);
   const message = d.string(o.message, `${path}.message`);
   const source = o.source === undefined ? undefined : d.string(o.source, `${path}.source`);
   if (id === undefined || message === undefined) return undefined;
@@ -193,6 +201,38 @@ function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | un
     message,
     ...(source === undefined ? {} : { source }),
   };
+}
+
+function decodeDerivation(d: Decoder, raw: unknown, path: string): Derivation | undefined {
+  const o = d.object(raw, path, ['id', 'label', 'source', 'rules']);
+  if (!o) return undefined;
+  const id = d.string(o.id, `${path}.id`, ID);
+  const label = d.string(o.label, `${path}.label`);
+  const source = o.source === undefined ? undefined : d.string(o.source, `${path}.source`);
+  const rules = d.array(
+    o.rules,
+    `${path}.rules`,
+    (v, p) => {
+      const r = d.object(v, p, ['value', 'reason', 'when', 'test', 'check']);
+      if (!r) return undefined;
+      const value = d.string(r.value, `${p}.value`);
+      const reason = d.string(r.reason, `${p}.reason`);
+      const when = r.when === undefined ? undefined : decodeCondition(d, r.when, `${p}.when`, 0);
+      const test = r.test === undefined ? undefined : decodeHintTest(d, r.test, `${p}.test`);
+      const check = r.check === undefined ? undefined : d.boolean(r.check, `${p}.check`);
+      if (value === undefined || reason === undefined) return undefined;
+      return {
+        value,
+        reason,
+        ...(when === undefined ? {} : { when }),
+        ...(test === undefined ? {} : { test }),
+        ...(check === undefined ? {} : { check }),
+      };
+    },
+    1,
+  );
+  if (id === undefined || label === undefined || rules === undefined) return undefined;
+  return { id, label, ...(source === undefined ? {} : { source }), rules };
 }
 
 function decodeValidity(d: Decoder, raw: unknown, path: string): FormValidity | undefined {
@@ -1058,6 +1098,25 @@ function partLinks({ definition, roleIds, report }: CheckContext): void {
 function checkHintRules(context: CheckContext): void {
   hintListRules(context, context.definition.checkHints ?? [], '$.checkHints');
   hintListRules(context, context.definition.exclusions ?? [], '$.exclusions');
+  const ids = new Set<string>();
+  (context.definition.derivations ?? []).forEach((derivation, i) => {
+    const path = `$.derivations[${i}]`;
+    if (ids.has(derivation.id))
+      context.report(`${path}.id`, `duplicate derivation id "${derivation.id}"`);
+    ids.add(derivation.id);
+    // Rules share the shape of hints; a rule without condition and test is the fallback.
+    hintListRules(
+      context,
+      derivation.rules.map((rule, r) => ({
+        id: `rule${r}`,
+        message: rule.reason,
+        ...(rule.when === undefined ? {} : { when: rule.when }),
+        ...(rule.test === undefined ? {} : { test: rule.test }),
+      })),
+      `${path}.rules`,
+      true,
+    );
+  });
 }
 
 /** Check hints and exclusions share their shape: a condition and/or a named test. */
@@ -1065,13 +1124,16 @@ function hintListRules(
   { fields, report }: CheckContext,
   hints: readonly CheckHint[],
   listPath: string,
+  fallbackAllowed = false,
 ): void {
   const ids = new Set<string>();
   hints.forEach((hint, i) => {
     const path = `${listPath}[${i}]`;
     if (ids.has(hint.id)) report(`${path}.id`, `duplicate hint id "${hint.id}"`);
     ids.add(hint.id);
-    if (!hint.when && !hint.test) report(path, 'a hint needs a condition or a test');
+    if (!hint.when && !hint.test && !fallbackAllowed) {
+      report(path, 'a hint needs a condition or a test');
+    }
     if (hint.when) {
       forEachLeaf(hint.when, `${path}.when`, (leaf, leafPath) => {
         const target = fields.get(leaf.field);

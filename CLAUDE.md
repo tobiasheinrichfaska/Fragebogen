@@ -69,6 +69,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/mergeRecord.ts`                            | `mergeHashOf` (record + receipts + all part hashes), `linkedQuestionnaireIds`                                                                                                                                                                                                                                                                                  |
 | `src/logic/kanzlei.ts`                                | Kanzlei station: inbox of decoded files (duplicates by SHA-256), human decisions (`decide`/`withdraw`, a new version choice replaces the old), `mergeInbox` with the forms the files describe, `withKanzleiReceipts` (one receipt per file with its parts, arrival time, never twice for a part; renews the merge hash; refused receipts returned with reason) |
 | `src/logic/hints.ts`                                  | Check hints (Prüfhinweise): `checkHints` over the current parts of all roles (hidden fields count as unanswered; only once every named role has a part), named tests `HINT_TESTS` (Regelaltersgrenze from birth date and start of employment), `describeHint` for the catalogue; informational only, never sealed                                              |
+| `src/logic/derivations.ts`                            | `derive`: proposals from the form's rule tables (Personengruppe; first match wins, status proposed/incomplete/excluded/none, check flag), `describeRule`                                                                                                                                                                                                       |
+| `tests/forms/personengruppe.test.ts`                  | Personengruppe proposals per case (109 incl. other jobs and above the limit, 110, 102/121/122, 123, 190, 105, 106, 108, 103, 119/120, 101), year without Rechengrößen, special case, missing part, rule checks                                                                                                                                                 |
 | `src/logic/validity.ts`                               | Validity of a form version: `withinValidity` (date or month, inclusive), `describeValidity` (German), `validityRole`, `outsideValidity` (reference date of a role's data outside the period)                                                                                                                                                                   |
 | `src/logic/data/rechengroessen.ts`                    | `RECHENGROESSEN` per year (SVBezGrV): JAEG, BBG KV/PV and RV — fixed reference data for the check hints                                                                                                                                                                                                                                                        |
 | `tests/forms/vorfragen.test.ts`                       | Pre-questions and exclusions: firm attributes in the link (yes/no, choice), per-person questions, each special case blocks signing and passing on, fixed term under a week, Vorruhestandsgeld without work questions, Werkstudent semester break                                                                                                               |
@@ -301,6 +303,11 @@ Key design decisions (details in `docs/plan.md`):
   without that part it is asked normally (own extra option "Weiß ich nicht."). Conditions stay
   single-role and a seal still covers only its own data; a later contradiction becomes an automatic
   check hint (`fromRole:<field>`). The flow plan recommends that station first.
+- **Personengruppe as a proposal** (Tobias 2026-10-30): `derivations` are rule tables in the form
+  (first match wins, order after DEÜV Anlage 2; `derive` in `derivations.ts`); shown in the Kanzlei
+  station and on the PDF Prüfblatt, never sealed, "check" where a rule or an uncertain test asks
+  for it; none for a special case, "incomplete" while a needed part is missing. Covered: 101, 102,
+  103, 105, 106, 108, 109, 110, 119, 120, 121, 122, 123, 190. Beitragsgruppen follow the same way.
 - **Special cases are excluded, not guessed** (Tobias 2026-10-30): `exclusions` (shape of check
   hints, evaluated over all roles as soon as answered) block signing and passing on
   (`outOfScope`) and show a banner on every interview step. Pre-questions lead there: firm
@@ -387,8 +394,9 @@ Key design decisions (details in `docs/plan.md`):
   missing answers instead.
 - **Church tax with flat-rate 20 %, 25 % or 5 %**: the declaration of non-membership (official
   form) is not part of the questionnaire; it stays on paper.
-- **Personengruppe and Beitragsgruppen are not derived** yet — the questionnaire collects the facts
-  and gives hints; a derivation as a proposal for the Kanzlei is an open idea.
+- **Beitragsgruppen are not derived yet** (next step); the Personengruppe proposal does not compute
+  the weekly hours of a Werkstudent (asks for a check) and treats the employer's kind of employment
+  as decisive (a mismatch with the person's answer is a check hint).
 - **Rechengrößen only for 2026** (`RECHENGROESSEN`); later years must be added each year — until
   then the hints say the values are missing.
 - **One version per form at a time:** the start screen offers the newest version; picking the

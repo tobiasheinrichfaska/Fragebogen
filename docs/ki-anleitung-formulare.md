@@ -86,6 +86,7 @@ Gib zurück:
 | `validity`         | nein    | **In Entwürfen Pflicht.** Gültigkeit der Fassung: `{ "field": "agBeschaeftigungsbeginn", "from": "2026-01-01", "until": "2026-12-31" }`. `field` ist ein Pflicht-Datums- oder -Monatsfeld ohne Bedingung (der Stichtag); liegt sein Wert außerhalb, lässt sich der Teil nicht unterschreiben und der Fragebogen nicht weitergeben. `until` fehlt bei offenem Ende. Werte, die sich jährlich ändern (Minijob-Grenze, Rechengrößen), begrenzen die Gültigkeit |
 | `limits`           | nein    | **In Entwürfen Pflicht.** Was der Fragebogen nicht abdeckt, als Liste kurzer Sätze; jede Station sieht es, die PDF und die Doku zeigen es                                                                                                                                                                                                                                                                                                                   |
 | `exclusions`       | nein    | Sonderfälle, für die der Fragebogen nicht gedacht ist, gleiche Form wie `checkHints` (`id`, `when`, `test`, `message`, `source`). Gilt einer, sind Abschließen und Weitergeben gesperrt. Dazu gehören Vorfragen, die zu ihnen führen (z. B. „Heimarbeit?“), möglichst als Betriebsmerkmal im Stammdaten-Link                                                                                                                                                |
+| `derivations`      | nein    | Vorschläge für die lohnabrechnende Stelle (z. B. Personengruppe): `{ "id", "label", "source"?, "rules": [{ "value", "reason", "when"?, "test"?, "check"? }] }`. Die erste Regel, deren Bedingung und Test gelten, liefert Wert und Begründung; eine Regel ohne beides ist der Rest. `check: true` heißt „bitte prüfen“. Nie mitunterschrieben, die App entscheidet nicht                                                                                    |
 | `checkHints`       | nein    | Prüfhinweise für die lohnabrechnende Stelle, siehe unten                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ### Rolle (`roles[]`)
@@ -193,7 +194,9 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   mit festen Feldtypen: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
   `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
   erste liegt nach dem zweiten); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
-  weniger als sieben Tage); `ueberBeitragsbemessungsgrenze` und
+  weniger als sieben Tage); `hoechstensGeringfuegigkeitsgrenze` (Betrag, Datum: Monatsentgelt bis
+  zur Minijob-Grenze des Jahres); `hoechstensGeringverdienergrenze` (Betrag: bis 325 €, bei einer
+  Tabellenspalte die erste Zeile); `ueberBeitragsbemessungsgrenze` und
   `ueberJahresarbeitsentgeltgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
   weiterer Beschäftigungen – darf eine Tabellenspalte sein, sie wird summiert – und der Stichtag,
   dessen Jahr die Rechengrößen bestimmt).

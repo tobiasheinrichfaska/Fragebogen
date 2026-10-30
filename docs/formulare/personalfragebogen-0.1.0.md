@@ -8,7 +8,7 @@
 | Formular | personalfragebogen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026 |
-| Definition (SHA-256) | b427db2030a85a78f6413f901dde47393bada68d46e0faaaa88003d0f45b53c5 |
+| Definition (SHA-256) | 6b7e260c97e01759313176f0bb6c7effa1f781fad1f47a37d7e860f88661dbf7 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -646,6 +646,35 @@ Nur Hinweise: Sie blockieren nichts und werden nicht unterschrieben. Sie erschei
 - Er ersetzt weder den Arbeitsvertrag noch die schriftliche Befristungsabrede (§ 14 Abs. 4 TzBfG) noch den Nachweis der Vertragsbedingungen nach dem Nachweisgesetz.
 - Nachweise wie Urkunden für Kinder, Bescheinigungen und Bescheide werden nicht in der App erfasst; der Arbeitgeber vermerkt nur, was vorliegt.
 - Beschäftigung mit Bezug zum Ausland (A1, Entsendung, Doppelbesteuerung) und Branchenregeln (Sozialkassen, Tarifverträge) erfasst er nur als Hinweis für die Prüfung.
+
+## Vorschlag Personengruppe (erste passende Regel gilt; die App entscheidet nicht)
+
+Grundlage: DEÜV, Anlage 2 (Stand 17.06.2026)
+
+1. prüfen: wenn bei „Vorgesehene Art der Beschäftigung“ „Bitte die lohnabrechnende Stelle prüfen lassen“ gewählt ist – Der Arbeitgeber bittet die lohnabrechnende Stelle, die Art der Beschäftigung zu prüfen. (prüfen)
+2. 108: wenn bei „Vorgesehene Art der Beschäftigung“ „Vorruhestandsgeld nach einer Vorruhestandsvereinbarung“ gewählt ist – Vorruhestandsgeld nach einer Vorruhestandsvereinbarung.
+3. 122: wenn bei „Vorgesehene Art der Beschäftigung“ „Ausbildung“ gewählt ist und „Außerbetriebliche Ausbildung“ mit „Ja“ beantwortet ist – Ausbildung in einer außerbetrieblichen Einrichtung.
+4. 121: wenn bei „Vorgesehene Art der Beschäftigung“ „Ausbildung“ oder „duales Studium“ gewählt ist und „avBetrag“ (bei einer Tabelle die erste Zeile) höchstens 325 € im Monat beträgt – Ausbildung mit einer Vergütung bis zur Geringverdienergrenze: Der Arbeitgeber trägt die Beiträge allein (§ 20 Abs. 3 S. 1 Nr. 1 SGB IV).
+5. 102: wenn bei „Vorgesehene Art der Beschäftigung“ „Ausbildung“ oder „duales Studium“ gewählt ist – Ausbildung oder duales Studium.
+6. 123: wenn bei „Vorgesehene Art der Beschäftigung“ „Freiwilligendienst (FSJ, FÖJ, Bundesfreiwilligendienst)“ gewählt ist – Freiwilligendienst (FSJ, FÖJ oder Bundesfreiwilligendienst).
+7. 190: wenn bei „Vorgesehene Art der Beschäftigung“ „Praktikum“ gewählt ist und bei „Art des Praktikums“ „Pflichtpraktikum während des Studiums“ gewählt ist – Vorgeschriebenes Zwischenpraktikum während des Studiums: nur in der Unfallversicherung versichert.
+8. 121: wenn bei „Vorgesehene Art der Beschäftigung“ „Praktikum“ gewählt ist und bei „Art des Praktikums“ „vorgeschriebenes Vor- oder Nachpraktikum“ gewählt ist und „Monatsentgelt (brutto)“ (bei einer Tabelle die erste Zeile) höchstens 325 € im Monat beträgt – Vorgeschriebenes Vor- oder Nachpraktikum mit einem Entgelt bis zur Geringverdienergrenze.
+9. 121: wenn bei „Vorgesehene Art der Beschäftigung“ „Praktikum“ gewählt ist und bei „Art des Praktikums“ „vorgeschriebenes Vor- oder Nachpraktikum“ gewählt ist und „Erwarteter Monatsverdienst“ (bei einer Tabelle die erste Zeile) höchstens 325 € im Monat beträgt – Vorgeschriebenes Vor- oder Nachpraktikum mit einem erwarteten Entgelt bis zur Geringverdienergrenze.
+10. 105: wenn bei „Vorgesehene Art der Beschäftigung“ „Praktikum“ gewählt ist und bei „Art des Praktikums“ „vorgeschriebenes Vor- oder Nachpraktikum“ gewählt ist – Vorgeschriebenes Vor- oder Nachpraktikum (rentenversicherungspflichtig).
+11. 103: wenn bei „Arbeitszeitmodell“ „Altersteilzeit“ gewählt ist – Altersteilzeit laut Arbeitszeitmodell; die Voraussetzungen nach dem Altersteilzeitgesetz bitte prüfen. (prüfen)
+12. 110: wenn bei „Vorgesehene Art der Beschäftigung“ „kurzfristige Aushilfe (höchstens 3 Monate oder 70 Arbeitstage)“ gewählt ist – Kurzfristige Aushilfe laut Arbeitgeber; Zeitgrenzen und Berufsmäßigkeit stehen in den Prüfhinweisen.
+13. 109: wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist und nicht zutrifft, dass „Haben Sie zurzeit noch eine andere Beschäftigung?“ mit „Ja“ beantwortet ist und „Monatsentgelt (brutto)“ höchstens die Geringfügigkeitsgrenze des Jahres von „Tag der Beschäftigungsaufnahme“ beträgt – Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze.
+14. 109: wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist und nicht zutrifft, dass „Haben Sie zurzeit noch eine andere Beschäftigung?“ mit „Ja“ beantwortet ist und „Erwarteter Monatsverdienst“ höchstens die Geringfügigkeitsgrenze des Jahres von „Tag der Beschäftigungsaufnahme“ beträgt – Minijob: erwarteter Monatsverdienst bis zur Geringfügigkeitsgrenze.
+15. 109: wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist und „Haben Sie zurzeit noch eine andere Beschäftigung?“ mit „Ja“ beantwortet ist und „Monatsentgelt (brutto)“ höchstens die Geringfügigkeitsgrenze des Jahres von „Tag der Beschäftigungsaufnahme“ beträgt – Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV). (prüfen)
+16. 109: wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist und „Haben Sie zurzeit noch eine andere Beschäftigung?“ mit „Ja“ beantwortet ist und „Erwarteter Monatsverdienst“ höchstens die Geringfügigkeitsgrenze des Jahres von „Tag der Beschäftigungsaufnahme“ beträgt – Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV). (prüfen)
+17. 101: wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist – Als Minijob vorgesehen, aber das Entgelt übersteigt die Geringfügigkeitsgrenze oder fehlt: dann versicherungspflichtig. (prüfen)
+18. 106: wenn bei „Vorgesehene Art der Beschäftigung“ „Werkstudent“ gewählt ist und „Nur in der vorlesungsfreien Zeit“ mit „Ja“ beantwortet ist – Werkstudent(in), nur in der vorlesungsfreien Zeit beschäftigt.
+19. 106: wenn bei „Vorgesehene Art der Beschäftigung“ „Werkstudent“ gewählt ist – Werkstudent(in): versicherungsfrei nur bei höchstens 20 Wochenstunden in der Vorlesungszeit – bitte an der Arbeitszeit prüfen. (prüfen)
+20. 120: wenn ((bei „Situation zu Beginn der Beschäftigung“ „Ich habe die Regelaltersgrenze für die Altersrente erreicht (je nach Geburtsjahr 66 bis 67 Jahre).“ angekreuzt ist und bei „Art der Rente“ „Altersrente als Vollrente“ gewählt ist) oder bei „Grund der Pension“ „wegen Alters“ gewählt ist) und bei „Rentenbeiträge trotz Vollrente oder Pension“ „Ja, ich möchte Beiträge zahlen“ gewählt ist – Vollrente wegen Alters nach der Regelaltersgrenze oder Pension wegen Alters, mit Verzicht auf die Rentenversicherungsfreiheit (§ 5 Abs. 4 S. 2 SGB VI).
+21. 119: wenn ((bei „Situation zu Beginn der Beschäftigung“ „Ich habe die Regelaltersgrenze für die Altersrente erreicht (je nach Geburtsjahr 66 bis 67 Jahre).“ angekreuzt ist und bei „Art der Rente“ „Altersrente als Vollrente“ gewählt ist) oder bei „Grund der Pension“ „wegen Alters“ gewählt ist) und bei „Rentenbeiträge trotz Vollrente oder Pension“ „Ich möchte mich erst beraten lassen“ gewählt ist – Vollrente wegen Alters nach der Regelaltersgrenze oder Pension wegen Alters; die Person möchte sich zum Verzicht beraten lassen. (prüfen)
+22. 119: wenn (bei „Situation zu Beginn der Beschäftigung“ „Ich habe die Regelaltersgrenze für die Altersrente erreicht (je nach Geburtsjahr 66 bis 67 Jahre).“ angekreuzt ist und bei „Art der Rente“ „Altersrente als Vollrente“ gewählt ist) oder bei „Grund der Pension“ „wegen Alters“ gewählt ist – Vollrente wegen Alters nach der Regelaltersgrenze oder Pension wegen Alters: rentenversicherungsfrei (§ 5 Abs. 4 SGB VI).
+23. 120: wenn bei „Art der Rente“ „Altersrente als Vollrente“ gewählt ist – Vollrente wegen Alters vor der Regelaltersgrenze (laut Angabe der Person): versicherungspflichtig.
+24. 101: sonst – Versicherungspflichtig ohne besondere Merkmale.
 
 ## Sonderfälle, die Abschließen und Weitergeben sperren
 
