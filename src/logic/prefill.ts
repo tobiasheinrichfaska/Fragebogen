@@ -4,6 +4,7 @@
 // values move by id — only when the type matches, only into empty fields, never for fields marked
 // `carryOver: false`. They go through setValue in form order, so a follow-up is filled only when
 // its condition holds, and every value that cannot be taken over is reported with its reason.
+import { addMonths, isIsoMonth } from './dates';
 import { fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
 import type {
@@ -36,6 +37,13 @@ export interface PrefillReport {
   untouched?: string;
 }
 
+/** The value as taken over: a `nextMonth` month moves on by one month. */
+function carried(field: FieldDefinition, value: FieldValue): FieldValue {
+  return field.carryOver === 'nextMonth' && typeof value === 'string' && isIsoMonth(value)
+    ? addMonths(value, 1)
+    : value;
+}
+
 /** A table's rows restricted to the target's columns; columns marked carryOver: false stay empty. */
 function tableValue(
   source: FieldDefinition,
@@ -51,7 +59,7 @@ function tableValue(
     if (!isPlainObject(row)) return [];
     const cells: Record<string, FieldValue> = { [ROW_ID_KEY]: row[ROW_ID_KEY] ?? null };
     for (const column of columns)
-      cells[column.id] = (row[column.id] as FieldValue | undefined) ?? null;
+      cells[column.id] = carried(column, (row[column.id] as FieldValue | undefined) ?? null);
     return columns.some((column) => cells[column.id] !== null) ? [cells] : [];
   });
   return rows.length === 0 ? null : rows;
@@ -110,7 +118,8 @@ export function prefillFrom(
         continue;
       }
       if (present !== null && present === value) continue;
-      const taken = field.type === 'repeatGroup' ? tableValue(origin, field, value) : value;
+      const taken =
+        field.type === 'repeatGroup' ? tableValue(origin, field, value) : carried(field, value);
       if (taken === null) continue;
       const result = setValue(q, targetForm, role.id, field.id, taken);
       if (result.ok) {

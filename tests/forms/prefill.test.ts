@@ -225,3 +225,60 @@ describe('describePrefill and takeOver', () => {
     expect(taken.session.questionnaire.questionnaireId).toBe(OTHER_ID);
   });
 });
+
+describe('prefillFrom — month fields move on by one month', () => {
+  function withMonths(): RegisteredForm {
+    const definition = structuredClone(tableForm().definition);
+    const personal = definition.sections[0];
+    if (!personal) throw new Error('fixture changed');
+    personal.fields.unshift({
+      id: 'abrechnungsmonat',
+      role: 'person',
+      type: 'month',
+      label: 'Abrechnungsmonat',
+      required: false,
+      purpose: 'Test',
+      carryOver: 'nextMonth',
+    });
+    const table = personal.fields.find((f) => f.id === 'kinder');
+    table?.columns?.push({
+      id: 'kindBisMonat',
+      role: 'person',
+      type: 'month',
+      label: 'bis Monat',
+      required: false,
+      purpose: 'Test',
+      carryOver: 'nextMonth',
+    });
+    definition.version = '1.7.0';
+    return { definition, definitionHash: definitionHash(definition) };
+  }
+
+  it('takes December over as January of the next year, in fields and table cells', () => {
+    const form = withMonths();
+    let source = ok(startPart(createQuestionnaire(OTHER_ID, form), form, 'person'));
+    source = ok(setValue(source, form, 'person', 'abrechnungsmonat', '12.2026'));
+    source = ok(
+      setValue(source, form, 'person', 'kinder', [
+        { rowId: 'r1', kindName: 'Anna', kindGeburtsdatum: '01.02.2015', kindBisMonat: '12.2026' },
+      ]),
+    );
+    const { questionnaire } = prefillFrom(
+      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', form),
+      form,
+      source,
+      form,
+    );
+    const data = currentPart(questionnaire, 'person')?.data ?? {};
+    expect(data.abrechnungsmonat).toBe('2027-01');
+    expect(data.kinder).toEqual([
+      {
+        rowId: 'r1',
+        kindName: 'Anna',
+        kindGeburtsdatum: '2015-02-01',
+        kindVerhaeltnis: null,
+        kindBisMonat: '2027-01',
+      },
+    ]);
+  });
+});

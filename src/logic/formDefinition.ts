@@ -34,6 +34,7 @@ export const OPTION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 export const EXPLAINER_PATH = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,3}$/;
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_CONDITION_DEPTH = 8;
+import { MAX_NUMBER_DECIMALS } from './normalize';
 
 export type DefinitionResult =
   { ok: true; definition: FormDefinition } | { ok: false; issues: DecodeIssue[] };
@@ -216,6 +217,9 @@ const FIELD_KEYS = [
   'masterData',
   'rowLabel',
   'carryOver',
+  'unit',
+  'decimals',
+  'signed',
 ] as const;
 
 function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | undefined {
@@ -261,7 +265,14 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     o.masterData === undefined ? undefined : d.string(o.masterData, `${path}.masterData`, ID);
   const rowLabel = o.rowLabel === undefined ? undefined : d.string(o.rowLabel, `${path}.rowLabel`);
   const carryOver =
-    o.carryOver === undefined ? undefined : d.boolean(o.carryOver, `${path}.carryOver`);
+    o.carryOver === undefined
+      ? undefined
+      : o.carryOver === false || o.carryOver === 'nextMonth'
+        ? o.carryOver
+        : d.report(`${path}.carryOver`, 'expected false or "nextMonth"');
+  const unit = o.unit === undefined ? undefined : d.string(o.unit, `${path}.unit`);
+  const decimals = o.decimals === undefined ? undefined : d.integer(o.decimals, `${path}.decimals`);
+  const signed = o.signed === undefined ? undefined : d.boolean(o.signed, `${path}.signed`);
   if (
     id === undefined ||
     role === undefined ||
@@ -293,6 +304,9 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(masterData === undefined ? {} : { masterData }),
     ...(rowLabel === undefined ? {} : { rowLabel }),
     ...(carryOver === undefined ? {} : { carryOver }),
+    ...(unit === undefined ? {} : { unit }),
+    ...(decimals === undefined ? {} : { decimals }),
+    ...(signed === undefined ? {} : { signed }),
   };
 }
 
@@ -552,6 +566,17 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     }
     if (field.multiline !== undefined && field.type !== 'text') {
       report(`${path}.multiline`, 'only text fields can be multiline');
+    }
+    for (const key of ['unit', 'decimals', 'signed'] as const) {
+      if (field[key] !== undefined && field.type !== 'number') {
+        report(`${path}.${key}`, `only number fields have ${key}`);
+      }
+    }
+    if (field.decimals !== undefined && field.decimals > MAX_NUMBER_DECIMALS) {
+      report(`${path}.decimals`, `at most ${MAX_NUMBER_DECIMALS} decimal places`);
+    }
+    if (field.carryOver === 'nextMonth' && field.type !== 'month') {
+      report(`${path}.carryOver`, '"nextMonth" only for month fields');
     }
   }
 }

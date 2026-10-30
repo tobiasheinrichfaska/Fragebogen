@@ -204,7 +204,9 @@ Key design decisions (details in `docs/plan.md`):
   breaks → LF, tab → space, NFC, collapse whitespace (per line for `multiline`), trim; empty → `null`.
   Date `TT.MM.JJJJ`/ISO → `YYYY-MM-DD`. Money German input (`1.234,56`; `1.234` = thousands) →
   `"1234.56"`. IBAN/SV number compact upper-case, tax id and Betriebsnummer digits only. Multi-choice
-  sorted, unique.
+  sorted, unique. Number (hours, km …) German input → string with exactly `decimals` (0–2) places,
+  minus only when `signed`; month `MM.JJJJ` → `YYYY-MM`. Tables: rows `{ rowId: "r1", … }`, each
+  cell by its column type, all-empty rows dropped.
   Every normaliser maps its own output to itself (property tests).
 - **Form definitions** are decoded strictly (`decode.ts`): unknown keys, missing values, non-NFC
   strings are errors; nothing is defaulted, so `definitionHash` of raw JSON = of decoded object.

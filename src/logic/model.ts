@@ -55,6 +55,8 @@ export const FIELD_TYPES = [
   'money',
   'repeatGroup',
   'file',
+  'number',
+  'month',
 ] as const;
 export type FieldType = (typeof FIELD_TYPES)[number];
 
@@ -110,10 +112,17 @@ export interface FieldDefinition {
   /** Tables only: what one row is called on screen, e.g. "Kind" → "Kind 1", "Kind 2". */
   rowLabel?: string;
   /**
-   * false: the answer is not taken over from another questionnaire (e.g. the hours of last month's
-   * payroll report). Default: taken over when the other form has the same field id and type.
+   * How the answer is taken over from another questionnaire (prefill.ts). Default: as it is, when
+   * the other form has the same field id and type. `false`: not at all (e.g. the hours of last
+   * month's payroll report). `nextMonth` (`month` fields only): one month later.
    */
-  carryOver?: boolean;
+  carryOver?: false | 'nextMonth';
+  /** `number` only: unit shown after the value, e.g. "Std.", "km", "kWh". */
+  unit?: string;
+  /** `number` only: decimal places, 0 (default), 1 or 2; stored with exactly that many. */
+  decimals?: number;
+  /** `number` only: negative values allowed (e.g. a working-time account). */
+  signed?: boolean;
   /** Derived value: name of a pure function in the logic layer, never code in data. */
   computed?: { fn: string; args: FieldId[] };
   /**

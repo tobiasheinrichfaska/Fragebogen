@@ -8,13 +8,21 @@ const INPUT_MODE: Partial<Record<FieldType, 'numeric' | 'decimal' | 'text'>> = {
   taxId: 'numeric',
   betriebsnummer: 'numeric',
   money: 'decimal',
+  number: 'decimal',
+  month: 'decimal',
 };
 
 const PLACEHOLDER: Partial<Record<FieldType, string>> = {
   date: 'TT.MM.JJJJ',
   money: '0,00',
+  month: 'MM.JJJJ',
   iban: 'DE00 0000 0000 0000 0000 00',
 };
+
+function numberPlaceholder(field: FieldDefinition): string {
+  const decimals = field.decimals ?? 0;
+  return decimals === 0 ? '0' : `0,${'0'.repeat(decimals)}`;
+}
 
 interface Props {
   field: FieldDefinition;
@@ -105,8 +113,10 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit 
     <input
       {...common}
       type="text"
-      inputMode={INPUT_MODE[field.type] ?? 'text'}
-      placeholder={PLACEHOLDER[field.type]}
+      inputMode={
+        field.type === 'number' && field.signed ? 'text' : (INPUT_MODE[field.type] ?? 'text')
+      }
+      placeholder={field.type === 'number' ? numberPlaceholder(field) : PLACEHOLDER[field.type]}
       autoCapitalize={
         field.type === 'iban' || field.type === 'svNumber' ? 'characters' : 'sentences'
       }

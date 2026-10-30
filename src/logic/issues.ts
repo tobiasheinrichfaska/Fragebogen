@@ -10,6 +10,12 @@ export type IssueCode =
   | 'money.format'
   | 'money.decimals'
   | 'money.tooLarge'
+  | 'number.format'
+  | 'number.decimals'
+  | 'number.negative'
+  | 'number.tooLarge'
+  | 'month.format'
+  | 'month.invalid'
   | 'iban.format'
   | 'iban.length'
   | 'iban.checksum'
@@ -36,6 +42,12 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'money.format': 'Bitte einen Betrag wie 1.234,56 eingeben.',
   'money.decimals': 'Bitte höchstens zwei Nachkommastellen angeben.',
   'money.tooLarge': 'Der Betrag ist zu groß.',
+  'number.format': 'Bitte eine Zahl wie 12,5 eingeben.',
+  'number.decimals': 'Bitte nicht so viele Nachkommastellen angeben.',
+  'number.negative': 'Hier ist keine negative Zahl möglich.',
+  'number.tooLarge': 'Die Zahl ist zu groß.',
+  'month.format': 'Bitte einen Monat wie 03.2026 eingeben.',
+  'month.invalid': 'Diesen Monat gibt es nicht.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
   'iban.length': 'Die IBAN hat für dieses Land nicht die richtige Länge.',
   'iban.checksum': 'Die IBAN stimmt nicht (Prüfziffer). Bitte noch einmal vergleichen.',

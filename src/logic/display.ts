@@ -1,6 +1,6 @@
 // How stored values read for people — on screen and in the PDF. Values are already normalised
 // (canon 1); this only formats them by German conventions and never changes data.
-import { formatGermanDate, isIsoDate } from './dates';
+import { formatGermanDate, isIsoDate, isIsoMonth, MONTH_NAMES } from './dates';
 import type { FieldDefinition, FieldType, FieldValue } from './model';
 
 export const EMPTY_VALUE = '–';
@@ -25,6 +25,20 @@ function grouped(value: string, sizes: readonly number[]): string {
 function money(value: string): string {
   const [integer = '0', decimals = '00'] = value.split('.');
   return `${integer.replace(/\B(?=(\d{3})+(?!\d))/g, '.')},${decimals} €`;
+}
+
+/** `-1234.5` → `-1.234,5`; the stored decimals are kept as they are. */
+function germanNumber(value: string): string {
+  const negative = value.startsWith('-');
+  const [integer = '0', decimals] = (negative ? value.slice(1) : value).split('.');
+  const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return `${negative ? '\u2212' : ''}${grouped}${decimals === undefined ? '' : `,${decimals}`}`;
+}
+
+function germanMonth(value: string): string {
+  if (!isIsoMonth(value)) return value;
+  const [year = '', month = '1'] = value.split('-');
+  return `${MONTH_NAMES[Number(month) - 1] ?? month} ${year}`;
 }
 
 function optionLabel(field: FieldDefinition, id: string): string {
@@ -63,6 +77,11 @@ const FORMATTERS: Readonly<
           .join('\n')
       : String(value),
   file: () => '(Datei – Anzeige folgt)',
+  number: (value, field) =>
+    typeof value === 'string'
+      ? `${germanNumber(value)}${field.unit === undefined ? '' : ` ${field.unit}`}`
+      : String(value),
+  month: (value) => (typeof value === 'string' ? germanMonth(value) : String(value)),
 };
 
 /** The value as people read it; unanswered → "–". */
@@ -76,5 +95,10 @@ export function editValue(field: FieldDefinition, value: FieldValue | undefined)
   if (value === undefined || value === null || typeof value !== 'string') return '';
   if (field.type === 'date' && isIsoDate(value)) return formatGermanDate(value);
   if (field.type === 'money') return money(value).replace(' €', '');
+  if (field.type === 'number') return germanNumber(value).replace('\u2212', '-');
+  if (field.type === 'month' && isIsoMonth(value)) {
+    const [year = '', month = ''] = value.split('-');
+    return `${month}.${year}`;
+  }
   return value;
 }

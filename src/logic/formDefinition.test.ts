@@ -80,9 +80,16 @@ describe('parseFormDefinition — shape and type errors', () => {
     [
       'bad field type',
       ['sections', 0, 'fields', 0, 'type'],
-      'number',
+      'integer',
       '$.sections[0].fields[0].type',
       'expected one of',
+    ],
+    [
+      'carryOver true (the default, never written)',
+      ['sections', 0, 'fields', 0, 'carryOver'],
+      true,
+      '$.sections[0].fields[0].carryOver',
+      'expected false or "nextMonth"',
     ],
     [
       'non-boolean required',
@@ -325,6 +332,30 @@ describe('checkFormDefinition — references', () => {
       },
       '$.sections[0].fields[1].multiline',
       'only text fields',
+    ],
+    [
+      'unit on a text field',
+      (d) => {
+        fieldAt(d, 0, 0).unit = 'km';
+      },
+      '$.sections[0].fields[0].unit',
+      'only number fields',
+    ],
+    [
+      'three decimal places',
+      (d) => {
+        Object.assign(fieldAt(d, 0, 0), { type: 'number', decimals: 3 });
+      },
+      '$.sections[0].fields[0].decimals',
+      'at most 2',
+    ],
+    [
+      'nextMonth on a date field',
+      (d) => {
+        fieldAt(d, 0, 1).carryOver = 'nextMonth';
+      },
+      '$.sections[0].fields[1].carryOver',
+      'only for month fields',
     ],
     [
       'showIf on an unknown field',

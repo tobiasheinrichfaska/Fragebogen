@@ -29,6 +29,8 @@ export const FIELD_TYPE_LABELS: Readonly<Record<FieldType, string>> = {
   money: 'Betrag in Euro',
   repeatGroup: 'Tabelle',
   file: 'Datei',
+  number: 'Zahl',
+  month: 'Monat',
 };
 
 export const SIGNATURE_POLICY_LABELS: Readonly<Record<SignaturePolicy, string>> = {
@@ -103,10 +105,18 @@ function initialLabel(field: FieldDefinition, initial: boolean | string): string
 function fieldKind(field: FieldDefinition): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
+  if (field.type === 'number') {
+    const decimals = field.decimals ?? 0;
+    kind += decimals === 0 ? ', ganzzahlig' : `, ${decimals} Nachkommastellen`;
+    if (field.unit !== undefined) kind += `, in ${field.unit}`;
+    if (field.signed) kind += ', auch negativ';
+  }
   if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
   if (field.computed) kind += ` (berechnet: ${field.computed.fn})`;
   if (field.initial !== undefined) kind += `; vorbelegt: ${initialLabel(field, field.initial)}`;
   if (field.masterData !== undefined) kind += '; Stammdatum, kann auf dem Gerät gemerkt werden';
+  if (field.carryOver === false) kind += '; wird nicht aus einer anderen Datei übernommen';
+  if (field.carryOver === 'nextMonth') kind += '; wird übernommen als der folgende Monat';
   return kind;
 }
 

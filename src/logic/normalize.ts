@@ -1,7 +1,7 @@
 // Input normalisation, canon version 1. Values are normalised once when entered and stored in that
 // form; verification hashes the stored values as they are. A later change of these rules can then
 // never flip an old verdict — it requires a new CANON_VERSION instead.
-import { parseIsoDate } from './dates';
+import { isIsoMonth, parseIsoDate } from './dates';
 import { accept, reject, type Checked, type IssueCode } from './issues';
 import { isPlainObject, isWellFormed } from './jcs';
 import type { ChoiceOption, FieldDefinition, FieldType, FieldValue, IsoDate } from './model';
@@ -79,6 +79,56 @@ export function normalizeMoney(raw: string): Checked<string> {
   return reject(/,\d{3,}$/.test(text) ? 'money.decimals' : 'money.format');
 }
 
+export const MAX_NUMBER_DECIMALS = 2;
+export const NUMBER_MAX_INTEGER_DIGITS = 9;
+
+// Like money, a dot followed by one or two digits is a decimal point (so the stored form maps to
+// itself), a dot followed by three digits groups thousands. Hence at most two decimal places.
+const NUMBER_FORMS: readonly RegExp[] = [
+  /^(\d+)$/,
+  /^(\d+),(\d+)$/,
+  /^(\d{1,3}(?:\.\d{3})+)(?:,(\d+))?$/,
+  /^(\d+)\.(\d{1,2})$/,
+];
+
+/**
+ * Number (hours, days, km …) → `"-12.50"`-style string with exactly `decimals` places (0 = integer).
+ * German input `1.234,5`; a minus only where the field is `signed`. Never a JSON number.
+ */
+export function normalizeNumber(raw: string, field: FieldDefinition): Checked<string> {
+  const decimals = field.decimals ?? 0;
+  let text = raw.replace(/\s/g, '');
+  if (field.unit !== undefined && text.endsWith(field.unit.replace(/\s/g, ''))) {
+    text = text.slice(0, text.length - field.unit.replace(/\s/g, '').length);
+  }
+  const negative = /^[-\u2212]/.test(text);
+  if (negative) text = text.slice(1);
+  for (const form of NUMBER_FORMS) {
+    const match = form.exec(text);
+    if (!match) continue;
+    const integer = (match[1] ?? '').replace(/\./g, '').replace(/^0+(?=\d)/, '');
+    const fraction = (match[2] ?? '').replace(/0+$/, '');
+    if (fraction.length > decimals) return reject('number.decimals');
+    if (integer.length > NUMBER_MAX_INTEGER_DIGITS) return reject('number.tooLarge');
+    const digits = decimals > 0 ? `${integer}.${fraction.padEnd(decimals, '0')}` : integer;
+    const zero = /^[0.]+$/.test(digits);
+    if (negative && !zero && field.signed !== true) return reject('number.negative');
+    return accept(negative && !zero ? `-${digits}` : digits);
+  }
+  return reject('number.format');
+}
+
+const GERMAN_MONTH = /^(\d{1,2})[./](\d{4})$/;
+
+/** Month: `MM.JJJJ`, `M/JJJJ` or `YYYY-MM` → `YYYY-MM`. */
+export function normalizeMonth(raw: string): Checked<string> {
+  const text = raw.replace(/\s/g, '');
+  const german = GERMAN_MONTH.exec(text);
+  const iso = german ? `${german[2] ?? ''}-${(german[1] ?? '').padStart(2, '0')}` : text;
+  if (!/^\d{4}-\d{2}$/.test(iso)) return reject('month.format');
+  return isIsoMonth(iso) ? accept(iso) : reject('month.invalid');
+}
+
 export function normalizeIban(raw: string): Checked<string> {
   return checkIban(raw.replace(/\s/g, '').toUpperCase());
 }
@@ -112,13 +162,15 @@ export function normalizeMultiChoice(
 type FieldNormalizer = (raw: unknown, field: FieldDefinition) => Checked<FieldValue>;
 
 // Text-based types: empty input (after text normalisation) is stored as null, i.e. "not answered".
-function fromText(normalize: (text: string) => Checked<string>): FieldNormalizer {
+function fromText(
+  normalize: (text: string, field: FieldDefinition) => Checked<string>,
+): FieldNormalizer {
   return (raw, field) => {
     if (raw === null) return accept(null);
     if (typeof raw !== 'string') return reject('value.type');
     const text = normalizeText(raw, field.multiline === true);
     if (!text.ok) return text;
-    return text.value === '' ? accept(null) : normalize(text.value);
+    return text.value === '' ? accept(null) : normalize(text.value, field);
   };
 }
 
@@ -126,6 +178,8 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
   text: fromText((text) => accept(text)),
   date: fromText(normalizeDate),
   money: fromText(normalizeMoney),
+  number: fromText(normalizeNumber),
+  month: fromText(normalizeMonth),
   iban: fromText(normalizeIban),
   taxId: fromText(normalizeTaxId),
   svNumber: fromText(normalizeSvNumber),

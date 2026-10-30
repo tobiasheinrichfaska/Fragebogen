@@ -9,6 +9,8 @@ const TEXT_LIKE: ReadonlySet<FieldType> = new Set([
   'svNumber',
   'betriebsnummer',
   'money',
+  'number',
+  'month',
 ]);
 
 export function isTextLike(field: FieldDefinition): boolean {

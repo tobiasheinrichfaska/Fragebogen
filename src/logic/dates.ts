@@ -79,6 +79,36 @@ export function formatGermanDate(date: IsoDate): string {
 }
 
 /** True when the person is under 18 on `onDate` — then the legal guardian must co-sign. */
+/** A calendar month `YYYY-MM` (stored form of `month` fields). */
+const ISO_MONTH = /^(\d{4})-(0[1-9]|1[0-2])$/;
+
+export function isIsoMonth(value: string): boolean {
+  return ISO_MONTH.test(value);
+}
+
+/** `YYYY-MM` plus (or minus) whole months; throws on a malformed month. */
+export function addMonths(month: string, count: number): string {
+  const match = ISO_MONTH.exec(month);
+  if (!match) throw new RangeError(`not a month: ${month}`);
+  const index = Number(match[1]) * 12 + Number(match[2]) - 1 + count;
+  return `${String(Math.floor(index / 12)).padStart(4, '0')}-${String((index % 12) + 1).padStart(2, '0')}`;
+}
+
+export const MONTH_NAMES = [
+  'Januar',
+  'Februar',
+  'März',
+  'April',
+  'Mai',
+  'Juni',
+  'Juli',
+  'August',
+  'September',
+  'Oktober',
+  'November',
+  'Dezember',
+] as const;
+
 export function isMinorOn(birthDate: IsoDate, onDate: IsoDate): boolean {
   return ageOn(birthDate, onDate) < AGE_OF_MAJORITY;
 }
