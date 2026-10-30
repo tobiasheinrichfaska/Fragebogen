@@ -177,7 +177,7 @@ describe('check hints of the review', () => {
     );
     const hint = checkHints(q, definition).find((h) => h.id === 'jaegMonatsentgelt');
     expect(hint?.detail.join(' ')).toContain(
-      'Für 2027 sind die Rechengrößen in der App nicht hinterlegt',
+      'Für 2027 ist die Jahresarbeitsentgeltgrenze in der App nicht hinterlegt',
     );
   });
 

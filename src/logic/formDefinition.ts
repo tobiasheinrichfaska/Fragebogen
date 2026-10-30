@@ -1148,10 +1148,11 @@ function hintListRules(
       });
     }
     if (hint.test) {
-      // A money test may name a table column: it stands for the sum of that column.
+      // A test may name a money or yes/no table column: it stands for the column's values per row.
       const problem = hintTestProblem(hint.test, (id) => {
         const target = fields.get(id);
-        return target && (!target.isColumn || target.field.type === 'money')
+        return target &&
+          (!target.isColumn || target.field.type === 'money' || target.field.type === 'boolean')
           ? target.field
           : undefined;
       });

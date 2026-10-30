@@ -4,6 +4,8 @@
 export interface Rechengroessen {
   /** Allgemeine Jahresarbeitsentgeltgrenze (§ 6 Abs. 6 SGB V), per year. */
   jaegJahr: string;
+  /** Besondere Jahresarbeitsentgeltgrenze for those privately insured on 31.12.2002 (§ 6 Abs. 7 SGB V), per year. */
+  jaegBesondersJahr: string;
   /** Beitragsbemessungsgrenze Kranken- und Pflegeversicherung (§ 6 Abs. 7, § 223 Abs. 3 SGB V), per month. */
   bbgKvMonat: string;
   /** Beitragsbemessungsgrenze allgemeine Rentenversicherung (§ 159 SGB VI), per month. */
@@ -19,6 +21,7 @@ export const RECHENGROESSEN: Readonly<Record<string, Rechengroessen>> = {
   // SVBezGrV 2026 §§ 2, 4
   '2026': {
     jaegJahr: '77400.00',
+    jaegBesondersJahr: '69750.00',
     bbgKvMonat: '5812.50',
     bbgRvMonat: '8450.00',
     geringfuegigkeitsgrenzeMonat: '603.00',

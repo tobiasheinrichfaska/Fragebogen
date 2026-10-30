@@ -144,13 +144,9 @@ describe('Vorruhestandsgeld, Freiwilligendienst and Werkstudent', () => {
   it('asks no work questions for Vorruhestandsgeld, but its end and amount', () => {
     const ids = shown({ agBeschaeftigungsart: 'vorruhestand' });
     expect(ids).toEqual(expect.arrayContaining(['agVorruhestandBis', 'agVorruhestandBetrag']));
-    for (const id of [
-      'agTaetigkeit',
-      'agArbeitszeitmodell',
-      'agUrlaubstage',
-      'agEntgeltArt',
-      'agBav',
-    ]) {
+    // The pay comes before the kind of employment (Tobias 2026-10-30): "kein Arbeitsentgelt".
+    expect(ids).toContain('agEntgeltArt');
+    for (const id of ['agTaetigkeit', 'agArbeitszeitmodell', 'agUrlaubstage', 'agBav']) {
       expect(ids).not.toContain(id);
     }
   });

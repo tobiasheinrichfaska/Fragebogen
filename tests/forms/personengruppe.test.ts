@@ -167,7 +167,7 @@ describe('Personengruppe proposed from the answers', () => {
 
   it('names the Minijob limit of the year in the facts', () => {
     expect(proposal({ ...MINIJOB, agMonatsentgelt: '520,00' }).detail.join(' ')).toContain(
-      'Geringfügigkeitsgrenze 2026: 603,00 €',
+      'Geringfügigkeitsgrenze 2026: 12 × 603,00 € = 7.236,00 €',
     );
   });
 

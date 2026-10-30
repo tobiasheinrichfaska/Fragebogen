@@ -48,6 +48,7 @@ const EMPLOYER = {
   agEntgeltArt: 'stundenlohn',
   agStundenlohn: '14,50',
   agErwartetMonat: '520,00',
+  agSteuernummer: '21/815/08150',
   agBav: 'keine',
   agSchwerbehinderung: 'nein',
   agBeziehung: 'keine',

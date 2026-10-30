@@ -186,6 +186,39 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
   dort fragt der Fragebogen. Lohnsteuerbescheinigungen früherer Arbeitgeber helfen bei sonstigen
   Bezügen (§ 39b Abs. 3 S. 2 EStG: ohne sie wird hochgerechnet); sie stehen deshalb nur in der
   Liste der Arbeitspapiere.
+- **Prüfung der SV-Beurteilung (30.10.2026, am Gesetzestext geprüft):** Gegen die
+  Versicherungsfreiheits- und Befreiungstatbestände geprüft; ergänzt wurden:
+  - **Befreiung von der Krankenversicherungspflicht** (§ 8 Abs. 1 SGB V): Befreite bleiben
+    versicherungsfrei (§ 6 Abs. 3 SGB V). Die Befreiung wegen Teilzeit gilt auch bei einem
+    Anschlussarbeitgeber (Nr. 3), die wegen Elternzeit oder Pflegezeit nur für diese Zeit (Nr. 2,
+    2a). Gefragt wird nur bei privat oder anderweitig Versicherten.
+  - **Besondere Jahresarbeitsentgeltgrenze** (§ 6 Abs. 7 SGB V) für Personen, die am 31.12.2002
+    wegen Überschreitens der JAEG versicherungsfrei und privat versichert waren: 2026 69.750 € statt
+    77.400 € (§ 2 SVBezGrV 2026).
+  - **Regelmäßiges Jahresarbeitsentgelt** und **Minijob-Grenze** in der Jahresbetrachtung:
+    Einmalzahlungen mit Anspruch zählen mit.
+  - **Pensionäre** sind nur mit Anspruch auf Beihilfe krankenversicherungsfrei (§ 6 Abs. 1 Nr. 6
+    SGB V).
+  - **Rentenversicherungsfrei nach der Regelaltersgrenze** ist auch, wer bis dahin nie versichert
+    war oder sich die Beiträge hat erstatten lassen (§ 5 Abs. 4 S. 1 Nr. 3 SGB VI). Der Arbeitgeber
+    trägt dann seinen Anteil (§ 172 Abs. 1 S. 1 Nr. 3, 4 SGB VI); die Personengruppe 119 gilt dafür
+    nicht (DEÜV Anlage 2). Die Altersrente eines Versorgungswerks macht frei (Nr. 2), eine andere
+    Rente des Versorgungswerks nicht.
+  - **Saisonarbeitnehmer:** Das Kennzeichen gehört in die Anmeldung gesetzlich Krankenversicherter,
+    nicht bei den Personengruppen 109, 110, 190 (§ 188 Abs. 4 SGB V; DEÜV-Rundschreiben 2026
+    Tz. 1.1.11).
+  - **Steuernummer des Arbeitgebers** ist bei Minijobs Pflicht in den Entgeltmeldungen (DEÜV-
+    Rundschreiben 2026 Tz. 1.3.7, am Original gelesen).
+  - **Ausgeschlossen statt abgedeckt:** Vorstände von Aktiengesellschaften (§ 1 S. 3 SGB VI, § 27
+    Abs. 1 Nr. 5 SGB III); Geistliche, Ordensangehörige, Diakonissen (§ 6 Abs. 1 Nr. 4, 7 SGB V);
+    Beschäftigte mit beamtenrechtlicher Absicherung, z. B. Lehrkräfte an Ersatzschulen (§ 6 Abs. 1
+    Nr. 2, 5 SGB V; § 5 Abs. 1 SGB VI); knappschaftliche Betriebe (Datenbaustein Knappschaft/See,
+    Tz. 1.3.5).
+  - **Bereits vorhandene Daten, Auswertung kommt mit den Beitragsgruppen:** Arbeitslosengeld
+    macht arbeitslosenversicherungsfrei (§ 27 Abs. 5 SGB III). Wer höchstens zehn Wochen befristet
+    beschäftigt ist, hat keinen Krankengeldanspruch, weil die Entgeltfortzahlung erst nach vier
+    Wochen beginnt (§ 44 Abs. 2 SGB V, § 3 Abs. 3 EntgFG); daraus folgt der ermäßigte
+    Beitragssatz. Diese Herleitung ist _nicht am Gesetzestext verifiziert_.
 - **Kinder (Pflegeversicherung):** Das BZSt liefert nur „Elterneigenschaft ab …“ und „Anzahl Kinder
   unter 25 ab …“ — keine Namen, keine Geburtsdaten (§ 55a SGB XI). Daraus folgt Datensparsamkeit:
   Einzeldaten nur für **nicht abrufbare** Kinder. Nicht abrufbar sind laut den Gemeinsamen

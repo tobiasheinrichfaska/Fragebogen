@@ -834,14 +834,22 @@
           "role": "person",
           "type": "boolean",
           "label": "Anspruch auf Beihilfe oder Heilfürsorge",
-          "question": "Haben Sie als Beamtin oder Beamter Anspruch auf Beihilfe oder Heilfürsorge?",
+          "question": "Haben Sie als Beamtin, Beamter, Pensionärin oder Pensionär Anspruch auf Beihilfe oder Heilfürsorge?",
           "required": true,
-          "purpose": "Versicherungsfreiheit in der Krankenversicherung (§ 6 Abs. 1 Nr. 2 SGB V)",
+          "purpose": "Versicherungsfreiheit in der Krankenversicherung (§ 6 Abs. 1 Nr. 2 und 6, Abs. 3 SGB V)",
           "showIf": {
-            "field": "situation",
-            "contains": "beamter"
+            "any": [
+              {
+                "field": "situation",
+                "contains": "beamter"
+              },
+              {
+                "field": "situation",
+                "contains": "pensionaer"
+              }
+            ]
           },
-          "because": "Beamte mit Anspruch auf Beihilfe oder Heilfürsorge sind auch in einer Nebenbeschäftigung krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2 SGB V)."
+          "because": "Beamte und Pensionäre mit Anspruch auf Beihilfe oder Heilfürsorge sind auch in einer anderen Beschäftigung krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2 und 6, Abs. 3 SGB V)."
         },
         {
           "id": "pensionArt",
@@ -907,8 +915,12 @@
               "label": "Rente aus dem Ausland"
             },
             {
-              "id": "versorgungswerk",
-              "label": "Rente eines berufsständischen Versorgungswerks"
+              "id": "versorgungswerkAlter",
+              "label": "Altersrente eines berufsständischen Versorgungswerks"
+            },
+            {
+              "id": "versorgungswerkAndere",
+              "label": "andere Rente eines berufsständischen Versorgungswerks (z. B. wegen Berufsunfähigkeit)"
             }
           ]
         },
@@ -942,12 +954,75 @@
           "because": "Nur bei einer Erwerbsminderungsrente gelten Grenzen für Hinzuverdienst und Arbeitszeit (§ 96a SGB VI); bei einer Befristung enden sie mit der Frist."
         },
         {
+          "id": "rvNieVersichert",
+          "role": "person",
+          "type": "choice",
+          "label": "Bis zur Regelaltersgrenze nicht rentenversichert oder Beiträge erstattet",
+          "question": "Waren Sie bis zum Erreichen der Regelaltersgrenze nie in der deutschen gesetzlichen Rentenversicherung versichert, oder haben Sie sich danach Ihre Beiträge erstatten lassen?",
+          "help": "Das betrifft zum Beispiel Menschen, die ihr Berufsleben lang selbstständig oder im Ausland tätig waren. Dann sind Sie in dieser Beschäftigung rentenversicherungsfrei.",
+          "required": true,
+          "purpose": "Versicherungsfreiheit in der Rentenversicherung nach der Regelaltersgrenze (§ 5 Abs. 4 S. 1 Nr. 3 SGB VI) und Arbeitgeberanteil (§ 172 Abs. 1 SGB VI)",
+          "showIf": {
+            "all": [
+              {
+                "field": "situation",
+                "contains": "regelaltersgrenze"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "all": [
+                        {
+                          "field": "situation",
+                          "contains": "regelaltersgrenze"
+                        },
+                        {
+                          "field": "rentenart",
+                          "equals": "altersvoll"
+                        }
+                      ]
+                    },
+                    {
+                      "field": "pensionArt",
+                      "equals": "alter"
+                    },
+                    {
+                      "field": "rentenart",
+                      "equals": "versorgungswerkAlter"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "because": "Wer die Regelaltersgrenze erreicht hat, aber keine Vollrente und keine Versorgung wegen Alters bezieht, ist nur rentenversicherungsfrei, wenn er bis dahin nie versichert war oder sich die Beiträge hat erstatten lassen (§ 5 Abs. 4 S. 1 Nr. 3 SGB VI).",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "nieVersichert",
+              "label": "Ich war bis zur Regelaltersgrenze nie rentenversichert."
+            },
+            {
+              "id": "erstattung",
+              "label": "Ich habe mir meine Beiträge erstatten lassen."
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
           "id": "rvVerzicht",
           "role": "person",
           "type": "choice",
-          "label": "Rentenbeiträge trotz Vollrente oder Pension",
+          "label": "Rentenbeiträge trotz Versicherungsfreiheit im Alter",
           "question": "Möchten Sie in dieser Beschäftigung trotzdem Rentenbeiträge zahlen, um Ihre Rente zu erhöhen?",
-          "help": "Nach Erreichen der Regelaltersgrenze sind Sie mit einer Altersvollrente oder einer Pension wegen Alters rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird auf Papier mit eigenhändiger Unterschrift erklärt.",
+          "help": "Mit einer Altersvollrente nach der Regelaltersgrenze, einer Versorgung wegen Alters oder wenn Sie bis zur Regelaltersgrenze nie versichert waren, sind Sie rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird auf Papier mit eigenhändiger Unterschrift erklärt.",
           "required": true,
           "purpose": "Verzicht auf die Versicherungsfreiheit in der Rentenversicherung (§ 5 Abs. 4 Satz 2 SGB VI)",
           "showIf": {
@@ -955,22 +1030,30 @@
               {
                 "all": [
                   {
-                    "field": "rentenart",
-                    "equals": "altersvoll"
-                  },
-                  {
                     "field": "situation",
                     "contains": "regelaltersgrenze"
+                  },
+                  {
+                    "field": "rentenart",
+                    "equals": "altersvoll"
                   }
                 ]
               },
               {
                 "field": "pensionArt",
                 "equals": "alter"
+              },
+              {
+                "field": "rentenart",
+                "equals": "versorgungswerkAlter"
+              },
+              {
+                "field": "rvNieVersichert",
+                "in": ["nieVersichert", "erstattung"]
               }
             ]
           },
-          "because": "Nur wer eine Vollrente wegen Alters nach der Regelaltersgrenze oder eine Pension wegen Alters bezieht, ist rentenversicherungsfrei und kann darauf verzichten (§ 5 Abs. 4 Satz 2 SGB VI).",
+          "because": "Nur wer nach § 5 Abs. 4 S. 1 SGB VI rentenversicherungsfrei ist (Vollrente wegen Alters nach der Regelaltersgrenze, Versorgung wegen Alters, nie versichert oder Beiträge erstattet), kann darauf verzichten (§ 5 Abs. 4 S. 2 SGB VI).",
           "options": [
             {
               "id": "nein",
@@ -1671,6 +1754,35 @@
           "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
         },
         {
+          "id": "pkvBestand2002",
+          "role": "person",
+          "type": "choice",
+          "label": "Am 31.12.2002 privat versichert",
+          "question": "Waren Sie am 31. Dezember 2002 privat krankenversichert, weil Ihr Verdienst damals über der Versicherungspflichtgrenze lag?",
+          "help": "Dann gilt für Sie eine niedrigere Verdienstgrenze: 2026 sind es 69.750 € statt 77.400 € im Jahr.",
+          "required": true,
+          "purpose": "Besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          },
+          "because": "Die niedrigere Jahresarbeitsentgeltgrenze gilt nur für Personen, die am 31.12.2002 privat versichert waren (§ 6 Abs. 7 SGB V).",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
           "id": "gkvLetzte5Jahre",
           "role": "person",
           "type": "choice",
@@ -1697,6 +1809,98 @@
               "label": "teilweise"
             }
           ]
+        },
+        {
+          "id": "kvBefreiung",
+          "role": "person",
+          "type": "choice",
+          "label": "Befreiung von der Krankenversicherungspflicht",
+          "question": "Hat eine gesetzliche Krankenkasse Sie früher auf Antrag von der Versicherungspflicht befreit?",
+          "help": "Zum Beispiel, weil Ihr Verdienst die Grenze überschritten hatte, wegen Teilzeit, während der Elternzeit oder wegen eines Studiums. Sie haben darüber einen Bescheid bekommen.",
+          "required": true,
+          "purpose": "Befreiung von der Versicherungspflicht (§ 8 SGB V); befreite Personen bleiben versicherungsfrei (§ 6 Abs. 3 SGB V)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "in": ["privat", "anderweitig"]
+          },
+          "because": "Eine frühere Befreiung kann nur fortwirken, wenn die Person heute nicht gesetzlich versichert ist (§ 6 Abs. 3, § 8 SGB V).",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "kvBefreiungGrund",
+          "role": "person",
+          "type": "choice",
+          "label": "Grund der Befreiung",
+          "question": "Weshalb wurden Sie befreit?",
+          "help": "So, wie es im Bescheid der Krankenkasse steht.",
+          "required": true,
+          "purpose": "Reichweite der Befreiung (§ 8 Abs. 1 SGB V): Elternzeit und Pflegezeit wirken nur für diese Zeit, Teilzeit auch bei einem Anschlussarbeitgeber",
+          "showIf": {
+            "field": "kvBefreiung",
+            "equals": "ja"
+          },
+          "because": "Nur bei einer Befreiung kommt es auf ihren Grund an; davon hängt ab, ob sie für diese Beschäftigung gilt (§ 8 Abs. 1 SGB V).",
+          "options": [
+            {
+              "id": "jaeg",
+              "label": "Erhöhung der Jahresarbeitsentgeltgrenze"
+            },
+            {
+              "id": "teilzeit",
+              "label": "Teilzeit (höchstens die Hälfte der Vollzeit)"
+            },
+            {
+              "id": "elternzeit",
+              "label": "Teilzeit während der Elternzeit"
+            },
+            {
+              "id": "pflegezeit",
+              "label": "Pflegezeit oder Familienpflegezeit"
+            },
+            {
+              "id": "arbeitslosengeld",
+              "label": "Bezug von Arbeitslosengeld"
+            },
+            {
+              "id": "rente",
+              "label": "Rentenantrag, Rentenbezug oder Leistung zur Teilhabe"
+            },
+            {
+              "id": "studium",
+              "label": "Studium oder Praktikum"
+            },
+            {
+              "id": "anderer",
+              "label": "ein anderer Grund"
+            }
+          ]
+        },
+        {
+          "id": "kvBefreiungAb",
+          "role": "person",
+          "type": "date",
+          "label": "Befreiung gilt ab",
+          "question": "Ab wann gilt die Befreiung?",
+          "required": false,
+          "purpose": "Beginn der Befreiung (§ 8 Abs. 2 SGB V)",
+          "showIf": {
+            "field": "kvBefreiung",
+            "equals": "ja"
+          },
+          "because": "Nur bei einer Befreiung gibt es ein Datum, ab dem sie gilt."
         }
       ]
     },
@@ -2566,8 +2770,13 @@
           "question": "Wie lautet die Steuernummer des Arbeitgebers?",
           "help": "Die Steuernummer des Betriebsstättenfinanzamts für die Lohnsteuer.",
           "required": false,
-          "purpose": "Pflichtangabe in den Meldungen für Minijobs; Lohnsteuer-Anmeldung",
-          "masterData": "steuernummer"
+          "purpose": "Pflichtangabe in den Entgeltmeldungen für Minijobs (DEÜV-Rundschreiben 2026 Tz. 1.3.7); Lohnsteuer-Anmeldung",
+          "masterData": "steuernummer",
+          "requiredIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "minijob"
+          },
+          "because": "Für Minijobs verlangen die Entgeltmeldungen die Steuernummer des Arbeitgebers (DEÜV-Rundschreiben 2026 Tz. 1.3.7)."
         },
         {
           "id": "agFamilienname",
@@ -2796,11 +3005,11 @@
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Besondere Betriebsart",
-          "question": "Ist der Betrieb eine dieser Einrichtungen?",
+          "question": "Gehört der Betrieb zu einer dieser Arten?",
           "required": true,
           "initial": "keine",
           "masterData": "betriebsart",
-          "purpose": "Vorfrage: Beschäftigung behinderter Menschen in Werkstätten oder Inklusionsbetrieben und Teilnehmer von Einrichtungen der Jugendhilfe oder Berufsbildungswerken deckt der Fragebogen nicht ab (Personengruppen 107, 111, 127)",
+          "purpose": "Vorfrage: Beschäftigung behinderter Menschen in Werkstätten oder Inklusionsbetrieben, Teilnehmer von Einrichtungen der Jugendhilfe oder Berufsbildungswerken und knappschaftliche Betriebe deckt der Fragebogen nicht ab (Personengruppen 107, 111, 127; knappschaftliche Rentenversicherung)",
           "options": [
             {
               "id": "keine",
@@ -2817,14 +3026,18 @@
             {
               "id": "einrichtung",
               "label": "Einrichtung der Jugendhilfe oder Berufsbildungswerk"
+            },
+            {
+              "id": "knappschaft",
+              "label": "knappschaftlicher Betrieb (Bergbau)"
             }
           ]
         }
       ]
     },
     {
-      "id": "beschaeftigung",
-      "title": "Beschäftigung",
+      "id": "besondereFaelle",
+      "title": "Besondere Fälle",
       "fields": [
         {
           "id": "agHeimarbeit",
@@ -2880,12 +3093,320 @@
           "purpose": "Vorfrage: Seeleute deckt der Fragebogen nicht ab (Personengruppen 140 bis 150)"
         },
         {
+          "id": "agSonderstatus",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Besonderer Personenkreis",
+          "question": "Gehört die Person bei Ihnen zu einem dieser Personenkreise?",
+          "help": "Für diese Personenkreise gelten eigene Regeln zur Versicherungsfreiheit.",
+          "required": true,
+          "initial": "keiner",
+          "purpose": "Vorfrage: Vorstände von Aktiengesellschaften, Geistliche und Ordensangehörige sowie Beschäftigte mit beamtenrechtlicher Absicherung deckt der Fragebogen nicht ab (§ 6 Abs. 1 Nr. 2, 4, 5, 7 SGB V; § 1 S. 3, § 5 Abs. 1 SGB VI; § 27 Abs. 1 SGB III)",
+          "options": [
+            {
+              "id": "keiner",
+              "label": "Nein, keiner davon"
+            },
+            {
+              "id": "vorstandAg",
+              "label": "Mitglied des Vorstands einer Aktiengesellschaft"
+            },
+            {
+              "id": "geistlich",
+              "label": "Geistliche(r), Mitglied einer geistlichen Genossenschaft, Diakonisse oder ähnlich"
+            },
+            {
+              "id": "beamtenrechtlich",
+              "label": "Anspruch auf Fortzahlung der Bezüge und Beihilfe bei Krankheit nach beamtenrechtlichen Grundsätzen (z. B. Lehrkraft an einer privaten Ersatzschule)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verdienst",
+      "title": "Verdienst",
+      "fields": [
+        {
+          "id": "agEntgeltArt",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Art der Vergütung",
+          "question": "Wie wird die Person bezahlt?",
+          "help": "Der Verdienst entscheidet, ob die Beschäftigung ein Minijob ist oder versicherungspflichtig; deshalb fragen wir ihn vor der Art der Beschäftigung.",
+          "required": true,
+          "purpose": "Lohnabrechnung; Abgrenzung von Minijob, Übergangsbereich und versicherungspflichtiger Beschäftigung (§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV)",
+          "options": [
+            {
+              "id": "stundenlohn",
+              "label": "Stundenlohn"
+            },
+            {
+              "id": "monatsentgelt",
+              "label": "festes Monatsentgelt"
+            },
+            {
+              "id": "ausbildungsverguetung",
+              "label": "Ausbildungsvergütung"
+            },
+            {
+              "id": "leistungslohn",
+              "label": "Leistungs- oder Akkordlohn"
+            },
+            {
+              "id": "pauschale",
+              "label": "Pauschale je Einsatz"
+            },
+            {
+              "id": "keines",
+              "label": "kein Arbeitsentgelt (nur Vorruhestandsgeld)"
+            }
+          ]
+        },
+        {
+          "id": "agStundenlohn",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Stundenlohn (brutto)",
+          "question": "Wie hoch ist der Stundenlohn brutto?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "stundenlohn"
+          },
+          "because": "Bei Stundenlohn ist der Stundensatz die Grundlage der Abrechnung."
+        },
+        {
+          "id": "agMonatsentgelt",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Monatsentgelt (brutto)",
+          "question": "Wie hoch ist das Monatsentgelt brutto?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "monatsentgelt"
+          },
+          "because": "Bei festem Monatsentgelt ist der Monatsbetrag die Grundlage der Abrechnung."
+        },
+        {
+          "id": "agAusbildungsverguetung",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Ausbildungsvergütung je Ausbildungsjahr",
+          "question": "Wie hoch ist die Vergütung in den einzelnen Ausbildungsjahren?",
+          "required": true,
+          "purpose": "Ausbildungsvergütung (§ 17 BBiG)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "ausbildungsverguetung"
+          },
+          "because": "Nur Auszubildende erhalten eine Ausbildungsvergütung, die je Ausbildungsjahr steigt (§ 17 BBiG).",
+          "rowLabel": "Ausbildungsjahr",
+          "columns": [
+            {
+              "id": "avJahr",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Ausbildungsjahr",
+              "required": true,
+              "purpose": "Ausbildungsvergütung",
+              "decimals": 0
+            },
+            {
+              "id": "avBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Vergütung im Monat (brutto)",
+              "required": true,
+              "purpose": "Ausbildungsvergütung"
+            },
+            {
+              "id": "avGueltigAb",
+              "role": "arbeitgeber",
+              "type": "date",
+              "label": "gültig ab",
+              "required": true,
+              "purpose": "Ausbildungsvergütung je Ausbildungsjahr (§ 17 BBiG)"
+            }
+          ]
+        },
+        {
+          "id": "agLeistungslohn",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Berechnung des Leistungslohns",
+          "question": "Wie berechnet sich der Lohn?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "leistungslohn"
+          },
+          "because": "Bei Leistungs- oder Akkordlohn muss die Berechnung beschrieben werden.",
+          "multiline": true
+        },
+        {
+          "id": "agPauschale",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Pauschale je Einsatz",
+          "question": "Wie hoch ist die Pauschale je Einsatz?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "pauschale"
+          },
+          "because": "Bei einer Pauschale je Einsatz ist ihr Betrag die Grundlage der Abrechnung."
+        },
+        {
+          "id": "agErwartetMonat",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Erwarteter Monatsverdienst",
+          "question": "Mit welchem Verdienst im Monat rechnen Sie im Durchschnitt?",
+          "required": true,
+          "purpose": "Prognose des regelmäßigen Monatsverdiensts für Minijob-Grenze, Übergangsbereich und Jahresarbeitsentgeltgrenze der Krankenversicherung (§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV; § 6 Abs. 1 Nr. 1 SGB V; Geringfügigkeits-Richtlinien B 2.2)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "in": ["stundenlohn", "leistungslohn", "pauschale"]
+          },
+          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), steht er nicht von vornherein fest. Minijob-Grenze, Übergangsbereich und die Frage, ob die Person wegen Überschreitens der Jahresarbeitsentgeltgrenze freiwillig oder privat krankenversichert ist, verlangen eine vorausschauende Schätzung; deshalb ist sie Pflicht.",
+          "help": "Den durchschnittlichen Bruttoverdienst im Monat, mit dem Sie rechnen – geschätzt genügt. Daran prüft die lohnabrechnende Stelle die Minijob-Grenze und den Übergangsbereich."
+        },
+        {
+          "id": "agEinmalzahlungen",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Einmalzahlungen",
+          "question": "Welche Einmalzahlungen sind vereinbart?",
+          "help": "Leer lassen, wenn keine vereinbart sind. Besteht ein Anspruch (Vertrag, Tarif, betriebliche Übung), zählt die Zahlung bei der Minijob-Grenze und der Jahresarbeitsentgeltgrenze mit.",
+          "required": false,
+          "purpose": "Einmalig gezahltes Arbeitsentgelt (§ 23a SGB IV); zählt mit Anspruch bei der Minijob-Grenze (Jahresbetrachtung) und beim regelmäßigen Jahresarbeitsentgelt (§ 6 Abs. 1 Nr. 1 SGB V) mit",
+          "rowLabel": "Einmalzahlung",
+          "columns": [
+            {
+              "id": "ezArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Einmalzahlungen",
+              "options": [
+                {
+                  "id": "weihnachtsgeld",
+                  "label": "Weihnachtsgeld"
+                },
+                {
+                  "id": "urlaubsgeld",
+                  "label": "Urlaubsgeld"
+                },
+                {
+                  "id": "dreizehntes",
+                  "label": "13. Monatsgehalt"
+                },
+                {
+                  "id": "bonus",
+                  "label": "Bonus oder Prämie"
+                },
+                {
+                  "id": "sonstige",
+                  "label": "sonstige"
+                }
+              ]
+            },
+            {
+              "id": "ezBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Betrag (brutto)",
+              "required": true,
+              "purpose": "Einmalzahlungen"
+            },
+            {
+              "id": "ezMonat",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Monat der Zahlung",
+              "required": true,
+              "purpose": "Einmalzahlungen",
+              "options": [
+                {
+                  "id": "01",
+                  "label": "Januar"
+                },
+                {
+                  "id": "02",
+                  "label": "Februar"
+                },
+                {
+                  "id": "03",
+                  "label": "März"
+                },
+                {
+                  "id": "04",
+                  "label": "April"
+                },
+                {
+                  "id": "05",
+                  "label": "Mai"
+                },
+                {
+                  "id": "06",
+                  "label": "Juni"
+                },
+                {
+                  "id": "07",
+                  "label": "Juli"
+                },
+                {
+                  "id": "08",
+                  "label": "August"
+                },
+                {
+                  "id": "09",
+                  "label": "September"
+                },
+                {
+                  "id": "10",
+                  "label": "Oktober"
+                },
+                {
+                  "id": "11",
+                  "label": "November"
+                },
+                {
+                  "id": "12",
+                  "label": "Dezember"
+                }
+              ]
+            },
+            {
+              "id": "ezAnspruch",
+              "role": "arbeitgeber",
+              "type": "boolean",
+              "label": "Rechtsanspruch?",
+              "required": true,
+              "purpose": "Einmalzahlungen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beschaeftigung",
+      "title": "Beschäftigung",
+      "fields": [
+        {
           "id": "agBeschaeftigungsart",
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Vorgesehene Art der Beschäftigung",
           "question": "Wie ist die Beschäftigung vorgesehen?",
-          "help": "Die lohnabrechnende Stelle prüft das anhand aller Angaben; die Person macht dazu eine eigene Angabe.",
+          "help": "Maßgeblich ist der Verdienst: Bis 603 € im Monat – im Jahr 7.236 € einschließlich zugesagter Einmalzahlungen – ist es ein Minijob, darüber eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich). Die lohnabrechnende Stelle prüft das anhand aller Angaben; die Person macht dazu eine eigene Angabe.",
           "required": true,
           "purpose": "Personengruppe und Beitragsgruppen in den Meldungen; Prüfung der Versicherungsfreiheit (§ 8 SGB IV)",
           "options": [
@@ -3377,6 +3898,31 @@
           },
           "because": "Nur bei einer befristeten Beschäftigung fragen die Bescheinigungen beim Austritt danach (Fundstelle noch zu prüfen).",
           "purpose": "Angaben für die Entgelt- und Arbeitsbescheinigung beim Austritt"
+        },
+        {
+          "id": "agSaisonarbeit",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Saisonarbeitnehmer(in)",
+          "question": "Ist die Person Saisonarbeitnehmerin oder Saisonarbeitnehmer?",
+          "help": "Das ist, wer vorübergehend für eine auf höchstens acht Monate befristete Beschäftigung nach Deutschland gekommen ist, um einen jahreszeitlich bedingten, jährlich wiederkehrenden Mehrbedarf des Betriebs zu decken. Ob die Person danach in Deutschland bleibt, müssen Sie nicht prüfen. Die Anmeldung braucht die Angabe nur bei gesetzlich Krankenversicherten.",
+          "required": true,
+          "purpose": "Kennzeichen Saisonarbeitnehmer in der Anmeldung (§ 188 Abs. 4 SGB V; DEÜV-Rundschreiben 2026 Tz. 1.1.11)",
+          "showIf": {
+            "all": [
+              {
+                "field": "agBefristet",
+                "equals": true
+              },
+              {
+                "not": {
+                  "field": "agBeschaeftigungsart",
+                  "in": ["minijob", "kurzfristig"]
+                }
+              }
+            ]
+          },
+          "because": "Das Kennzeichen gehört nur in die Anmeldung befristet Beschäftigter; bei Minijobs und kurzfristigen Aushilfen entfällt es (DEÜV-Rundschreiben 2026 Tz. 1.1.11)."
         },
         {
           "id": "agArbeitszeitform",
@@ -4044,161 +4590,8 @@
     },
     {
       "id": "verguetung",
-      "title": "Vergütung",
+      "title": "Weitere Vergütung",
       "fields": [
-        {
-          "id": "agEntgeltArt",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Art der Vergütung",
-          "question": "Wie wird die Person bezahlt?",
-          "help": "Eine Ausbildungsvergütung zählt als festes Monatsentgelt.",
-          "required": true,
-          "showIf": {
-            "not": {
-              "field": "agBeschaeftigungsart",
-              "equals": "vorruhestand"
-            }
-          },
-          "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
-          "purpose": "Lohnabrechnung",
-          "options": [
-            {
-              "id": "stundenlohn",
-              "label": "Stundenlohn"
-            },
-            {
-              "id": "monatsentgelt",
-              "label": "festes Monatsentgelt"
-            },
-            {
-              "id": "ausbildungsverguetung",
-              "label": "Ausbildungsvergütung"
-            },
-            {
-              "id": "leistungslohn",
-              "label": "Leistungs- oder Akkordlohn"
-            },
-            {
-              "id": "pauschale",
-              "label": "Pauschale je Einsatz"
-            }
-          ]
-        },
-        {
-          "id": "agStundenlohn",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Stundenlohn (brutto)",
-          "question": "Wie hoch ist der Stundenlohn brutto?",
-          "required": true,
-          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
-          "showIf": {
-            "field": "agEntgeltArt",
-            "equals": "stundenlohn"
-          },
-          "because": "Bei Stundenlohn ist der Stundensatz die Grundlage der Abrechnung."
-        },
-        {
-          "id": "agMonatsentgelt",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Monatsentgelt (brutto)",
-          "question": "Wie hoch ist das Monatsentgelt brutto?",
-          "required": true,
-          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
-          "showIf": {
-            "field": "agEntgeltArt",
-            "equals": "monatsentgelt"
-          },
-          "because": "Bei festem Monatsentgelt ist der Monatsbetrag die Grundlage der Abrechnung."
-        },
-        {
-          "id": "agAusbildungsverguetung",
-          "role": "arbeitgeber",
-          "type": "repeatGroup",
-          "label": "Ausbildungsvergütung je Ausbildungsjahr",
-          "question": "Wie hoch ist die Vergütung in den einzelnen Ausbildungsjahren?",
-          "required": true,
-          "purpose": "Ausbildungsvergütung (§ 17 BBiG)",
-          "showIf": {
-            "field": "agEntgeltArt",
-            "equals": "ausbildungsverguetung"
-          },
-          "because": "Nur Auszubildende erhalten eine Ausbildungsvergütung, die je Ausbildungsjahr steigt (§ 17 BBiG).",
-          "rowLabel": "Ausbildungsjahr",
-          "columns": [
-            {
-              "id": "avJahr",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "Ausbildungsjahr",
-              "required": true,
-              "purpose": "Ausbildungsvergütung",
-              "decimals": 0
-            },
-            {
-              "id": "avBetrag",
-              "role": "arbeitgeber",
-              "type": "money",
-              "label": "Vergütung im Monat (brutto)",
-              "required": true,
-              "purpose": "Ausbildungsvergütung"
-            },
-            {
-              "id": "avGueltigAb",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "gültig ab",
-              "required": true,
-              "purpose": "Ausbildungsvergütung je Ausbildungsjahr (§ 17 BBiG)"
-            }
-          ]
-        },
-        {
-          "id": "agLeistungslohn",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Berechnung des Leistungslohns",
-          "question": "Wie berechnet sich der Lohn?",
-          "required": true,
-          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
-          "showIf": {
-            "field": "agEntgeltArt",
-            "equals": "leistungslohn"
-          },
-          "because": "Bei Leistungs- oder Akkordlohn muss die Berechnung beschrieben werden.",
-          "multiline": true
-        },
-        {
-          "id": "agPauschale",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Pauschale je Einsatz",
-          "question": "Wie hoch ist die Pauschale je Einsatz?",
-          "required": true,
-          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
-          "showIf": {
-            "field": "agEntgeltArt",
-            "equals": "pauschale"
-          },
-          "because": "Bei einer Pauschale je Einsatz ist ihr Betrag die Grundlage der Abrechnung."
-        },
-        {
-          "id": "agErwartetMonat",
-          "role": "arbeitgeber",
-          "type": "money",
-          "label": "Erwarteter Monatsverdienst",
-          "question": "Mit welchem Verdienst im Monat rechnen Sie im Durchschnitt?",
-          "required": true,
-          "purpose": "Prognose des regelmäßigen Monatsverdiensts für Minijob-Grenze, Übergangsbereich und Jahresarbeitsentgeltgrenze der Krankenversicherung (§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV; § 6 Abs. 1 Nr. 1 SGB V; Geringfügigkeits-Richtlinien B 2.2)",
-          "showIf": {
-            "field": "agEntgeltArt",
-            "in": ["stundenlohn", "leistungslohn", "pauschale"]
-          },
-          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), steht er nicht von vornherein fest. Minijob-Grenze, Übergangsbereich und die Frage, ob die Person wegen Überschreitens der Jahresarbeitsentgeltgrenze freiwillig oder privat krankenversichert ist, verlangen eine vorausschauende Schätzung; deshalb ist sie Pflicht.",
-          "help": "Den durchschnittlichen Bruttoverdienst im Monat, mit dem Sie rechnen – geschätzt genügt. Daran prüft die lohnabrechnende Stelle die Minijob-Grenze und den Übergangsbereich."
-        },
         {
           "id": "agTarif",
           "role": "arbeitgeber",
@@ -4264,123 +4657,6 @@
               "label": "Höhe (z. B. „25 %“ oder Betrag je Stunde)",
               "required": true,
               "purpose": "Zuschläge"
-            }
-          ]
-        },
-        {
-          "id": "agEinmalzahlungen",
-          "role": "arbeitgeber",
-          "type": "repeatGroup",
-          "label": "Einmalzahlungen",
-          "question": "Welche Einmalzahlungen sind vereinbart?",
-          "help": "Leer lassen, wenn keine vereinbart sind.",
-          "required": false,
-          "purpose": "Einmalig gezahltes Arbeitsentgelt (§ 23a SGB IV); zählt bei Minijobs mit, wenn ein Anspruch besteht",
-          "rowLabel": "Einmalzahlung",
-          "columns": [
-            {
-              "id": "ezArt",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Art",
-              "required": true,
-              "purpose": "Einmalzahlungen",
-              "options": [
-                {
-                  "id": "weihnachtsgeld",
-                  "label": "Weihnachtsgeld"
-                },
-                {
-                  "id": "urlaubsgeld",
-                  "label": "Urlaubsgeld"
-                },
-                {
-                  "id": "dreizehntes",
-                  "label": "13. Monatsgehalt"
-                },
-                {
-                  "id": "bonus",
-                  "label": "Bonus oder Prämie"
-                },
-                {
-                  "id": "sonstige",
-                  "label": "sonstige"
-                }
-              ]
-            },
-            {
-              "id": "ezBetrag",
-              "role": "arbeitgeber",
-              "type": "money",
-              "label": "Betrag (brutto)",
-              "required": true,
-              "purpose": "Einmalzahlungen"
-            },
-            {
-              "id": "ezMonat",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Monat der Zahlung",
-              "required": true,
-              "purpose": "Einmalzahlungen",
-              "options": [
-                {
-                  "id": "01",
-                  "label": "Januar"
-                },
-                {
-                  "id": "02",
-                  "label": "Februar"
-                },
-                {
-                  "id": "03",
-                  "label": "März"
-                },
-                {
-                  "id": "04",
-                  "label": "April"
-                },
-                {
-                  "id": "05",
-                  "label": "Mai"
-                },
-                {
-                  "id": "06",
-                  "label": "Juni"
-                },
-                {
-                  "id": "07",
-                  "label": "Juli"
-                },
-                {
-                  "id": "08",
-                  "label": "August"
-                },
-                {
-                  "id": "09",
-                  "label": "September"
-                },
-                {
-                  "id": "10",
-                  "label": "Oktober"
-                },
-                {
-                  "id": "11",
-                  "label": "November"
-                },
-                {
-                  "id": "12",
-                  "label": "Dezember"
-                }
-              ]
-            },
-            {
-              "id": "ezAnspruch",
-              "role": "arbeitgeber",
-              "type": "boolean",
-              "label": "Rechtsanspruch?",
-              "required": true,
-              "purpose": "Einmalzahlungen"
             }
           ]
         },
@@ -4765,6 +5041,10 @@
               "label": "Bescheinigung der privaten Krankenversicherung für den Zuschuss"
             },
             {
+              "id": "kvBefreiungsbescheid",
+              "label": "Befreiungsbescheid der Krankenkasse"
+            },
+            {
               "id": "schulbescheinigung",
               "label": "Schulbescheinigung"
             },
@@ -5075,6 +5355,94 @@
       "message": "Die Art der Beschäftigung weicht zwischen den Angaben der Person und des Arbeitgebers ab."
     },
     {
+      "id": "entgeltOhneVorruhestand",
+      "when": {
+        "any": [
+          {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "vorruhestand"
+              },
+              {
+                "not": {
+                  "field": "agEntgeltArt",
+                  "equals": "keines"
+                }
+              }
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "agEntgeltArt",
+                "equals": "keines"
+              },
+              {
+                "not": {
+                  "field": "agBeschaeftigungsart",
+                  "equals": "vorruhestand"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "message": "Art der Vergütung und Art der Beschäftigung passen nicht zusammen: „kein Arbeitsentgelt“ gibt es nur beim Vorruhestandsgeld."
+    },
+    {
+      "id": "minijobUeberGrenzeMonatsentgelt",
+      "when": {
+        "field": "agBeschaeftigungsart",
+        "equals": "minijob"
+      },
+      "test": {
+        "fn": "ueberGeringfuegigkeitsgrenze",
+        "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Als Minijob vorgesehen, aber der Verdienst übersteigt die Geringfügigkeitsgrenze im Jahr: kein Minijob, sondern eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich).",
+      "source": "§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV"
+    },
+    {
+      "id": "svpflichtigUnterGrenzeMonatsentgelt",
+      "when": {
+        "field": "agBeschaeftigungsart",
+        "equals": "svpflichtig"
+      },
+      "test": {
+        "fn": "hoechstensGeringfuegigkeitsgrenze",
+        "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Als versicherungspflichtige Beschäftigung vorgesehen, aber der Verdienst liegt im Jahr nicht über der Geringfügigkeitsgrenze: Das ist ein Minijob, wenn er nicht mit einer anderen Beschäftigung zusammengerechnet wird – Art der Beschäftigung prüfen.",
+      "source": "§ 8 Abs. 1 Nr. 1, Abs. 2 SGB IV"
+    },
+    {
+      "id": "minijobUeberGrenzeErwartet",
+      "when": {
+        "field": "agBeschaeftigungsart",
+        "equals": "minijob"
+      },
+      "test": {
+        "fn": "ueberGeringfuegigkeitsgrenze",
+        "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Als Minijob vorgesehen, aber der Verdienst übersteigt die Geringfügigkeitsgrenze im Jahr: kein Minijob, sondern eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich).",
+      "source": "§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV"
+    },
+    {
+      "id": "svpflichtigUnterGrenzeErwartet",
+      "when": {
+        "field": "agBeschaeftigungsart",
+        "equals": "svpflichtig"
+      },
+      "test": {
+        "fn": "hoechstensGeringfuegigkeitsgrenze",
+        "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Als versicherungspflichtige Beschäftigung vorgesehen, aber der Verdienst liegt im Jahr nicht über der Geringfügigkeitsgrenze: Das ist ein Minijob, wenn er nicht mit einer anderen Beschäftigung zusammengerechnet wird – Art der Beschäftigung prüfen.",
+      "source": "§ 8 Abs. 1 Nr. 1, Abs. 2 SGB IV"
+    },
+    {
       "id": "kurzfristigArbeitslos",
       "when": {
         "all": [
@@ -5373,6 +5741,25 @@
       "source": "§ 257 Abs. 2a SGB V"
     },
     {
+      "id": "kvBefreiungsbescheid",
+      "when": {
+        "all": [
+          {
+            "field": "kvBefreiung",
+            "equals": "ja"
+          },
+          {
+            "not": {
+              "field": "agUnterlagen",
+              "contains": "kvBefreiungsbescheid"
+            }
+          }
+        ]
+      },
+      "message": "Befreiung von der Krankenversicherungspflicht angegeben: Bescheid der Krankenkasse anfordern. Eine Befreiung wegen Elternzeit oder Pflegezeit gilt nur für diese Zeit.",
+      "source": "§ 6 Abs. 3, § 8 SGB V"
+    },
+    {
       "id": "befreiungsantragFehlt",
       "when": {
         "all": [
@@ -5538,19 +5925,81 @@
       "id": "jaegMonatsentgelt",
       "test": {
         "fn": "ueberJahresarbeitsentgeltgrenze",
-        "args": ["agMonatsentgelt", "jobEntgeltMonat", "agBeschaeftigungsbeginn"]
+        "args": [
+          "agMonatsentgelt",
+          "jobEntgeltMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "agBeschaeftigungsbeginn"
+        ]
       },
-      "message": "Das Entgelt – mit weiteren Beschäftigungen – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Einmalzahlungen mit Anspruch zählen mit, Minijobs nicht.",
-      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V"
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
+      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V",
+      "when": {
+        "not": {
+          "field": "pkvBestand2002",
+          "equals": "ja"
+        }
+      }
+    },
+    {
+      "id": "jaeg2002Monatsentgelt",
+      "when": {
+        "field": "pkvBestand2002",
+        "equals": "ja"
+      },
+      "test": {
+        "fn": "ueberBesondereJahresarbeitsentgeltgrenze",
+        "args": [
+          "agMonatsentgelt",
+          "jobEntgeltMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "agBeschaeftigungsbeginn"
+        ]
+      },
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die besondere Jahresarbeitsentgeltgrenze für am 31.12.2002 privat Versicherte: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
+      "source": "§ 6 Abs. 1 Nr. 1, Abs. 7, § 257 SGB V"
     },
     {
       "id": "jaegErwartet",
       "test": {
         "fn": "ueberJahresarbeitsentgeltgrenze",
-        "args": ["agErwartetMonat", "jobEntgeltMonat", "agBeschaeftigungsbeginn"]
+        "args": [
+          "agErwartetMonat",
+          "jobEntgeltMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "agBeschaeftigungsbeginn"
+        ]
       },
-      "message": "Das erwartete Entgelt – mit weiteren Beschäftigungen – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Einmalzahlungen mit Anspruch zählen mit, Minijobs nicht.",
-      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V"
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
+      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V",
+      "when": {
+        "not": {
+          "field": "pkvBestand2002",
+          "equals": "ja"
+        }
+      }
+    },
+    {
+      "id": "jaeg2002Erwartet",
+      "when": {
+        "field": "pkvBestand2002",
+        "equals": "ja"
+      },
+      "test": {
+        "fn": "ueberBesondereJahresarbeitsentgeltgrenze",
+        "args": [
+          "agErwartetMonat",
+          "jobEntgeltMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "agBeschaeftigungsbeginn"
+        ]
+      },
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die besondere Jahresarbeitsentgeltgrenze für am 31.12.2002 privat Versicherte: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
+      "source": "§ 6 Abs. 1 Nr. 1, Abs. 7, § 257 SGB V"
     }
   ],
   "validity": {
@@ -5560,7 +6009,7 @@
   },
   "limits": [
     "Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.",
-    "Sonderfälle (Heimarbeit, Werkstätten und Einrichtungen, Seefahrt, mitarbeitende Familienangehörige und Nebenerwerbslandwirte in der Landwirtschaft, unständige Beschäftigung, Haushaltsscheck, FELEG) schließt er über Vorfragen aus: Dann sind Abschließen und Weitergeben gesperrt.",
+    "Sonderfälle (Heimarbeit, Werkstätten und Einrichtungen, Seefahrt, knappschaftliche Betriebe, mitarbeitende Familienangehörige und Nebenerwerbslandwirte in der Landwirtschaft, unständige Beschäftigung, Haushaltsscheck, FELEG, Vorstände von Aktiengesellschaften, Geistliche und Ordensangehörige, Beschäftigte mit beamtenrechtlicher Absicherung) schließt er über Vorfragen aus: Dann sind Abschließen und Weitergeben gesperrt.",
     "Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn im Jahr 2026.",
     "Bei mehreren Beschäftigungen erfasst er die Entgelte und weist auf die Beitragsbemessungs- und die Jahresarbeitsentgeltgrenze hin. Die anteilige Beitragsberechnung und das Verfahren mit der Krankenkasse übernimmt die Lohnabrechnung.",
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal sind nur vorläufige Angaben für die erste Abrechnung; maßgeblich sind die abgerufenen ELStAM.",
@@ -5665,6 +6114,42 @@
         "contains": "feleg"
       },
       "message": "Bezug von Ausgleichsgeld nach dem FELEG (Personengruppe 116)."
+    },
+    {
+      "id": "vorstandAg",
+      "when": {
+        "field": "agSonderstatus",
+        "equals": "vorstandAg"
+      },
+      "message": "Mitglied des Vorstands einer Aktiengesellschaft: in der Renten- und Arbeitslosenversicherung nicht versicherungspflichtig.",
+      "source": "§ 1 S. 3 SGB VI, § 27 Abs. 1 Nr. 5 SGB III"
+    },
+    {
+      "id": "geistlich",
+      "when": {
+        "field": "agSonderstatus",
+        "equals": "geistlich"
+      },
+      "message": "Geistliche, Mitglieder geistlicher Genossenschaften, Diakonissen und ähnliche Personen.",
+      "source": "§ 6 Abs. 1 Nr. 4, 7 SGB V; § 5 Abs. 1 SGB VI"
+    },
+    {
+      "id": "beamtenrechtlich",
+      "when": {
+        "field": "agSonderstatus",
+        "equals": "beamtenrechtlich"
+      },
+      "message": "Beschäftigte mit Anspruch auf Fortzahlung der Bezüge und Beihilfe nach beamtenrechtlichen Grundsätzen (z. B. Lehrkräfte an privaten Ersatzschulen).",
+      "source": "§ 6 Abs. 1 Nr. 2, 5 SGB V; § 5 Abs. 1 SGB VI"
+    },
+    {
+      "id": "knappschaft",
+      "when": {
+        "field": "agBetriebsart",
+        "equals": "knappschaft"
+      },
+      "message": "Beschäftigung in einem knappschaftlichen Betrieb: knappschaftliche Rentenversicherung und Datenbaustein Knappschaft/See.",
+      "source": "DEÜV-Rundschreiben 2026 Tz. 1.3.5"
     }
   ],
   "derivations": [
@@ -5841,7 +6326,7 @@
           },
           "test": {
             "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agMonatsentgelt", "agBeschaeftigungsbeginn"]
+            "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
           },
           "reason": "Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze."
         },
@@ -5863,7 +6348,7 @@
           },
           "test": {
             "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agErwartetMonat", "agBeschaeftigungsbeginn"]
+            "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
           },
           "reason": "Minijob: erwarteter Monatsverdienst bis zur Geringfügigkeitsgrenze."
         },
@@ -5884,7 +6369,7 @@
           "check": true,
           "test": {
             "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agMonatsentgelt", "agBeschaeftigungsbeginn"]
+            "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
           },
           "reason": "Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV)."
         },
@@ -5905,7 +6390,7 @@
           "check": true,
           "test": {
             "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agErwartetMonat", "agBeschaeftigungsbeginn"]
+            "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
           },
           "reason": "Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV)."
         },
@@ -5964,6 +6449,10 @@
                   {
                     "field": "pensionArt",
                     "equals": "alter"
+                  },
+                  {
+                    "field": "rentenart",
+                    "equals": "versorgungswerkAlter"
                   }
                 ]
               },
@@ -5973,7 +6462,7 @@
               }
             ]
           },
-          "reason": "Vollrente wegen Alters nach der Regelaltersgrenze oder Pension wegen Alters, mit Verzicht auf die Rentenversicherungsfreiheit (§ 5 Abs. 4 S. 2 SGB VI)."
+          "reason": "Vollrente wegen Alters nach der Regelaltersgrenze oder Versorgung wegen Alters (Pension, Versorgungswerk), mit Verzicht auf die Rentenversicherungsfreiheit (§ 5 Abs. 4 S. 2 SGB VI)."
         },
         {
           "value": "119",
@@ -5996,6 +6485,10 @@
                   {
                     "field": "pensionArt",
                     "equals": "alter"
+                  },
+                  {
+                    "field": "rentenart",
+                    "equals": "versorgungswerkAlter"
                   }
                 ]
               },
@@ -6006,7 +6499,7 @@
             ]
           },
           "check": true,
-          "reason": "Vollrente wegen Alters nach der Regelaltersgrenze oder Pension wegen Alters; die Person möchte sich zum Verzicht beraten lassen."
+          "reason": "Vollrente wegen Alters nach der Regelaltersgrenze oder Versorgung wegen Alters (Pension, Versorgungswerk); die Person möchte sich zum Verzicht beraten lassen."
         },
         {
           "value": "119",
@@ -6027,10 +6520,14 @@
               {
                 "field": "pensionArt",
                 "equals": "alter"
+              },
+              {
+                "field": "rentenart",
+                "equals": "versorgungswerkAlter"
               }
             ]
           },
-          "reason": "Vollrente wegen Alters nach der Regelaltersgrenze oder Pension wegen Alters: rentenversicherungsfrei (§ 5 Abs. 4 SGB VI)."
+          "reason": "Vollrente wegen Alters nach der Regelaltersgrenze oder Versorgung wegen Alters (Pension, Versorgungswerk): rentenversicherungsfrei (§ 5 Abs. 4 SGB VI)."
         },
         {
           "value": "120",

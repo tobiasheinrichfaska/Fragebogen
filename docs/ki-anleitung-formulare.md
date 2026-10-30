@@ -194,12 +194,16 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   mit festen Feldtypen: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
   `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
   erste liegt nach dem zweiten); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
-  weniger als sieben Tage); `hoechstensGeringfuegigkeitsgrenze` (Betrag, Datum: Monatsentgelt bis
-  zur Minijob-Grenze des Jahres); `hoechstensGeringverdienergrenze` (Betrag: bis 325 €, bei einer
-  Tabellenspalte die erste Zeile); `ueberBeitragsbemessungsgrenze` und
-  `ueberJahresarbeitsentgeltgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
-  weiterer Beschäftigungen – darf eine Tabellenspalte sein, sie wird summiert – und der Stichtag,
-  dessen Jahr die Rechengrößen bestimmt).
+  weniger als sieben Tage); `hoechstensGeringfuegigkeitsgrenze` und `ueberGeringfuegigkeitsgrenze`
+  (Betrag, Betrag, Ja/Nein, Datum: Monatsentgelt, Spalte der Einmalzahlungen und Spalte „Anspruch“
+  derselben Tabelle, Stichtag – zwölf Monate plus Einmalzahlungen mit Anspruch höchstens bzw. mehr
+  als das Zwölffache der Minijob-Grenze des Jahres); `hoechstensGeringverdienergrenze` (Betrag: bis
+  325 €, bei einer Tabellenspalte die erste Zeile); `ueberBeitragsbemessungsgrenze` (Betrag, Betrag,
+  Datum: eigenes Monatsentgelt, Entgelte weiterer Beschäftigungen – darf eine Tabellenspalte sein,
+  sie wird summiert – und der Stichtag, dessen Jahr die Rechengrößen bestimmt);
+  `ueberJahresarbeitsentgeltgrenze` und `ueberBesondereJahresarbeitsentgeltgrenze` (Betrag, Betrag,
+  Betrag, Ja/Nein, Datum: wie zuvor, dazu Einmalzahlungen mit Anspruch; die besondere Grenze nach
+  § 6 Abs. 7 SGB V gilt für am 31.12.2002 privat Versicherte).
 
 ## Regeln, die die App zusätzlich prüft
 

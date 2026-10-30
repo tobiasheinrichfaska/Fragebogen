@@ -73,6 +73,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/personengruppe.test.ts`                  | Personengruppe proposals per case (109 incl. other jobs and above the limit, 110, 102/121/122, 123, 190, 105, 106, 108, 103, 119/120, 101), year without Rechengrößen, special case, missing part, rule checks                                                                                                                                                 |
 | `src/logic/validity.ts`                               | Validity of a form version: `withinValidity` (date or month, inclusive), `describeValidity` (German), `validityRole`, `outsideValidity` (reference date of a role's data outside the period)                                                                                                                                                                   |
 | `src/logic/data/rechengroessen.ts`                    | `RECHENGROESSEN` per year (SVBezGrV): JAEG, BBG KV/PV and RV — fixed reference data for the check hints                                                                                                                                                                                                                                                        |
+| `tests/forms/svSzenarien.test.ts`                     | SV assessment scenarios as tables: answers of person and employer → Personengruppe, check hints, exclusions (Azubi under 600 €, Minijob with Weihnachtsgeld, lower JAEG, KV exemption, Vorruhestand, special groups); the questions that closed the gaps of 2026-10-30; pay before the kind of employment                                                      |
+| `docs/prompts/datev-lug-recherche.md`                 | Prompt for Claude in Chrome (DATEV login): LuG master-data import format and the field order of the LuG screens, answered as JSON into `.tmp/datev/` (German)                                                                                                                                                                                                  |
 | `tests/forms/namensbestandteile.test.ts`              | Title, name prefix and suffix (DEÜV data block Name) behind one yes/no question in both drafts; taken over from the Sofortmeldung into the Personalfragebogen                                                                                                                                                                                                  |
 | `tests/forms/vorfragen.test.ts`                       | Pre-questions and exclusions: firm attributes in the link (yes/no, choice), per-person questions, each special case blocks signing and passing on, fixed term under a week, Vorruhestandsgeld without work questions, Werkstudent semester break                                                                                                               |
 | `tests/forms/review1030b.test.ts`                     | Review of 2026-10-30: payment way and BIC (`startsWith`), preliminary tax data, hints (multiple jobs over BBG/JAEG, fixed term, status marker, Versorgungswerk, A1, missing year), Sozialkasse, validity (warning, refused seal, blocker, rules)                                                                                                               |
@@ -159,7 +161,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `docs/rechtliches.md`                                 | Legal background with sources (German, not legal advice)                                                                                                                                                                                                                                                                                                       |
 | `docs/spike-pdf.md`                                   | Step-1 PDF spike results + **data-page format v1** spec (German)                                                                                                                                                                                                                                                                                               |
 | `assets/fonts/`                                       | Embedded PDF fonts: Noto Sans Regular/SemiBold + Noto Sans Mono, Latin subsets (OFL), `README.md` with source URLs, SHA-256 and the exact `pyftsubset` command                                                                                                                                                                                                 |
-| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md` … `05_kanzlei.md`, `06_aendern_und_ablauf.md` (changing answers, Minijob tax, flow plan), `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)                                                                                                                            |
+| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md` … `05_kanzlei.md`, `06_aendern_und_ablauf.md` (changing answers, Minijob tax, flow plan), `07_sv_beurteilung.md` (pay first, Azubi under 600 €, Minijob limit in the yearly view, special groups, KV exemption), `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)     |
 | `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                                                                                                                                                                                                                                                                              |
 
 ---
@@ -331,6 +333,22 @@ Key design decisions (details in `docs/plan.md`):
   monthly pay; named hint tests sum a table column with the employer's pay against the BBG KV/PV and
   the JAEG of the start year (`RECHENGROESSEN`); a missing year is reported, never guessed. The
   apportionment (§ 22 Abs. 2 SGB IV) stays with the payroll and is listed as a limit.
+- **Pay before the kind of employment** (Tobias 2026-10-30: "Entgelt möglichst früh, damit Minijob und
+  Hauptbeschäftigung unterschieden werden können"): the employer answers the pay (kind, amount or
+  expected month, one-off payments) right after the pre-questions and before "Wie ist die
+  Beschäftigung vorgesehen?"; Vorruhestandsgeld is the pay option "kein Arbeitsentgelt". The Minijob
+  limit is checked in the **yearly view** (twelve months plus one-off payments with entitlement,
+  tests `hoechstensGeringfuegigkeitsgrenze` / `ueberGeringfuegigkeitsgrenze`); hints name a "Minijob"
+  above and an employment subject to insurance below the limit. Test arguments may be yes/no
+  table columns (they filter the amounts of the same table).
+- **SV assessment checked against the law** (2026-10-30, local SGB V/VI/III, SVBezGrV 2026, DEÜV
+  circular 2026): added the KV exemption (§ 8 SGB V), the lower JAEG for those privately insured on
+  31.12.2002 (§ 6 Abs. 7, 69.750 € in 2026; `ueberBesondereJahresarbeitsentgeltgrenze`), one-off
+  payments in the regular yearly pay, Beihilfe for pensioners, "never insured / refund" after the
+  Regelaltersgrenze (§ 5 Abs. 4 S. 1 Nr. 3 SGB VI; not Personengruppe 119), the old-age pension of a
+  Versorgungswerk (119), the seasonal-worker flag and the employer tax number for Minijobs. Excluded
+  by pre-questions: AG board members, clergy and religious orders, civil-service style protection,
+  knappschaftliche Betriebe. Scenarios: `tests/forms/svSzenarien.test.ts`.
 - **Every condition is explained** (Tobias 2026-10-30: "klarer Ablaufplan, weshalb welches Feld
   Bedingung für welches andere ist"): `because` on fields with `showIf`/`requiredIf`/`fromRole`
   and on conditional roles; mandatory in drafts (test), shown in the catalogue and in
@@ -400,6 +418,9 @@ Key design decisions (details in `docs/plan.md`):
 - **Beitragsgruppen are not derived yet** (next step); the Personengruppe proposal does not compute
   the weekly hours of a Werkstudent (asks for a check) and treats the employer's kind of employment
   as decisive (a mismatch with the person's answer is a check hint).
+- **JAEG hint sums every other job** the person lists, Minijobs included, although a Minijob next to
+  this employment does not count; the hint says so ("dann nachrechnen"). Regular allowances and
+  benefits in kind are not part of the yearly pay in the tests.
 - **Rechengrößen only for 2026** (`RECHENGROESSEN`); later years must be added each year — until
   then the hints say the values are missing.
 - **One version per form at a time:** the start screen offers the newest version; picking the

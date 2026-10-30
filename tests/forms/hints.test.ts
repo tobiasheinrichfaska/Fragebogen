@@ -173,6 +173,8 @@ describe('check hints — definition rules', () => {
       'regelaltersgrenzeNichtErreicht',
       'spaeterAls',
       'ueberBeitragsbemessungsgrenze',
+      'ueberBesondereJahresarbeitsentgeltgrenze',
+      'ueberGeringfuegigkeitsgrenze',
       'ueberJahresarbeitsentgeltgrenze',
     ]);
   });
