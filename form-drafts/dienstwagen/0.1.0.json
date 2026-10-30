@@ -161,7 +161,8 @@
           "showIf": {
             "field": "agAntrieb",
             "in": ["elektro", "plugin", "brennstoff"]
-          }
+          },
+          "because": "Bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der ersten Überlassung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG)."
         },
         {
           "id": "agCo2",
@@ -175,6 +176,7 @@
             "field": "agAntrieb",
             "equals": "plugin"
           },
+          "because": "Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).",
           "decimals": 0,
           "unit": "g/km"
         },
@@ -190,6 +192,7 @@
             "field": "agAntrieb",
             "equals": "plugin"
           },
+          "because": "Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).",
           "decimals": 0,
           "unit": "km"
         }
@@ -238,6 +241,7 @@
             "field": "agPrivatnutzung",
             "equals": false
           },
+          "because": "Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht.",
           "options": [
             {
               "id": "arbeitsvertrag",
@@ -278,7 +282,8 @@
           "showIf": {
             "field": "agFahrtenWohnung",
             "equals": true
-          }
+          },
+          "because": "Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG)."
         },
         {
           "id": "agSonderfaelle",
@@ -385,7 +390,8 @@
           "showIf": {
             "field": "wohnungMeldeanschrift",
             "equals": false
-          }
+          },
+          "because": "Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung."
         },
         {
           "id": "entfernungKm",
@@ -399,6 +405,7 @@
             "field": "fahrtenWohnung",
             "equals": true
           },
+          "because": "Nur wer zur ersten Tätigkeitsstätte fährt, braucht die Entfernung für die 0,03 % je Kilometer (§ 8 Abs. 2 Satz 3 EStG).",
           "decimals": 0,
           "unit": "km"
         }

@@ -16,7 +16,7 @@
     "preview": "vite preview --port 5178 --strictPort",
     "test": "vitest run",
     "test:watch": "vitest",
-    "catalogue": "vitest run tests/forms/catalogue.test.ts --update",
+    "catalogue": "vitest run tests/forms/catalogue.test.ts tests/forms/flowPlan.test.ts --update",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",

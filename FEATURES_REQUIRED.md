@@ -15,6 +15,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
 - [ ] **Interview** (default for person and employer) — one question per screen in form order; a follow-up appears right after the answer that opens it; back and forward; progress; the summary lists missing, deferred and no longer applicable answers before signing
 - [ ] **"Weiß ich gerade nicht"** — a question can be put back; it is asked again at the end and survives saving the interim state; a required one must be answered before signing
+- [ ] **Change answers afterwards** — "Zur Zusammenfassung" from any question; "ändern" in the summary returns to the summary after the follow-ups the change opened (not through every later question); a voluntary yes/no or single choice can be taken back ("Auswahl aufheben"); after signing via "Unterschrift zurücknehmen" or "Neue Fassung beginnen"
+- [ ] **Answers another station decides** (`fromRole`, e.g. the employer's kind of wage tax in a Minijob) — taken over from that station's sealed part, not asked and shown as "festgelegt von: …"; asked when that part is missing; a later contradiction becomes a check hint
 - [ ] **Answers kept while their condition is off** — switching a precondition off and on again brings the answer back; only signing drops it (shown in the summary)
 - [ ] **Field logic** — a field accepts input only once its precondition holds (`showIf`); required always or by condition (`requiredIf`, e.g. phone or e-mail); the reason is shown in German
 - [ ] **Acknowledge notices** — `read` notices confirmed in-app; `paperHandout` notices confirmed as handed out on paper
@@ -39,6 +41,10 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Either station first** — employer first (person sees the employer data read-only and signs over it) or person first (employer confirms the person part); the questionnaire is complete only when the parts are linked (`partsNotLinked` otherwise), and passing on to the next station is never blocked by a missing part
 - [ ] **Employer master data via bookmark link** — "Link mit meinen Stammdaten" puts company name and Betriebsnummer into the link; opening the bookmark fills them in; a broken link or a value in the wrong format is shown with its reason
 - [ ] **Preselected answers** — e.g. "Geburtsname gleich Familienname?" starts with Ja and can be changed
+
+## Documentation
+
+- [ ] **Flow plan of every form** (`docs/ablaufplan.html`, `npm run catalogue`) — stations and their order, questions in interview order, decision points, and why each condition applies; every condition in a draft is explained
 
 ## Station 3 — Kanzlei (merge)
 

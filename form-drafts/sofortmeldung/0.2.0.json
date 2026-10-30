@@ -21,6 +21,7 @@
         "kind": "minorOnSigning",
         "birthDateField": "geburtsdatum"
       },
+      "because": "Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.",
       "signerNameField": "vertretungName"
     },
     {
@@ -81,7 +82,8 @@
           "showIf": {
             "field": "geburtsnameWieFamilienname",
             "equals": false
-          }
+          },
+          "because": "Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest."
         },
         {
           "id": "geburtsdatum",
@@ -205,7 +207,8 @@
           "showIf": {
             "field": "anschriftAusland",
             "equals": true
-          }
+          },
+          "because": "Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn."
         },
         {
           "id": "strasse",
@@ -245,6 +248,7 @@
             "field": "anschriftAusland",
             "equals": false
           },
+          "because": "Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.",
           "help": "5 Ziffern."
         },
         {
@@ -259,7 +263,8 @@
           "showIf": {
             "field": "anschriftAusland",
             "equals": true
-          }
+          },
+          "because": "Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen."
         },
         {
           "id": "wohnort",

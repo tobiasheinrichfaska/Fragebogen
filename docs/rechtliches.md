@@ -144,6 +144,15 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
     Steuerklasse VI (§ 39c Abs. 1 EStG); ohne zugeteilte ID Bescheinigung des Finanzamts (§ 39e
     Abs. 8 EStG).
   - Die Steuer-ID dient zugleich der Anmeldung zum Kinderabruf (§ 55a Abs. 3 SGB XI).
+  - **Minijob und kurzfristige Aushilfe (Tobias, 30.10.2026):** Ob pauschal versteuert wird
+    (§ 40a EStG), entscheidet der Arbeitgeber. Bei Pauschalsteuer werden keine ELStAM abgerufen;
+    die Fragen nach erstem oder weiterem Dienstverhältnis und nach einem Freibetrag entfallen dann.
+    Die **Steuer-ID bleibt auch im Minijob Pflicht**, weil sie in den Entgeltmeldungen steht
+    (§ 28a Abs. 3 S. 2 Nr. 2 Buchst. f SGB IV; DEÜV-Rundschreiben 1.3.7 – laut Recherchebericht,
+    nicht am Original gelesen). Die Kirchensteuer ist bei 2 % pauschal enthalten; bei 20 %, 25 %
+    oder 5 % weist der Arbeitgeber die Nichtzugehörigkeit über eine schriftliche Erklärung nach
+    amtlichem Muster nach (gleich lautende Ländererlasse vom 08.08.2016) – im Fragebogen nicht
+    abgefragt, bleibt auf Papier.
 - **Private Krankenversicherung seit 2026:** Die Beiträge kommen als ELStAM (§ 39 Abs. 4 Nr. 4,
   Abs. 4a EStG; § 52 Abs. 36 EStG). Der Arbeitgeber muss sie ansetzen und darf selbst angegebene
   Beträge nicht berücksichtigen (BMF vom 03.06.2025, Rn. 5, 31, 83, 98) — **ein Betragsfeld im

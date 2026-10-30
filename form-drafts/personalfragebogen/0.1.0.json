@@ -21,6 +21,7 @@
         "kind": "minorOnSigning",
         "birthDateField": "geburtsdatum"
       },
+      "because": "Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.",
       "signerNameField": "vertretungName"
     },
     {
@@ -81,7 +82,8 @@
           "showIf": {
             "field": "geburtsnameWieFamilienname",
             "equals": false
-          }
+          },
+          "because": "Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest."
         },
         {
           "id": "geburtsdatum",
@@ -205,7 +207,8 @@
           "showIf": {
             "field": "anschriftAusland",
             "equals": true
-          }
+          },
+          "because": "Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn."
         },
         {
           "id": "strasse",
@@ -245,7 +248,8 @@
           "showIf": {
             "field": "anschriftAusland",
             "equals": false
-          }
+          },
+          "because": "Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt."
         },
         {
           "id": "postleitzahlAusland",
@@ -259,7 +263,8 @@
           "showIf": {
             "field": "anschriftAusland",
             "equals": true
-          }
+          },
+          "because": "Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen."
         },
         {
           "id": "wohnort",
@@ -335,7 +340,8 @@
           "showIf": {
             "field": "kontoinhaberSelbst",
             "equals": false
-          }
+          },
+          "because": "Lautet das Konto auf einen anderen Namen, braucht die Überweisung des Lohns den Namen der Kontoinhaberin oder des Kontoinhabers."
         }
       ]
     },
@@ -435,6 +441,7 @@
             "field": "situation",
             "contains": "schueler"
           },
+          "because": "Nur Schülerinnen und Schüler allgemeinbildender Schulen sind in der Arbeitslosenversicherung frei (§ 27 Abs. 4 Nr. 1 SGB III); die Schulart zählt deshalb nur bei ihnen.",
           "options": [
             {
               "id": "allgemein",
@@ -461,7 +468,8 @@
           "showIf": {
             "field": "situation",
             "contains": "schulende"
-          }
+          },
+          "because": "Zwischen Schule und Ausbildung, Studium oder Dienst kann eine Aushilfe berufsmäßig sein; das Ende der Schulzeit ist dafür der Ausgangspunkt (Geringfügigkeits-Richtlinien B 2.3.3)."
         },
         {
           "id": "planNachSchule",
@@ -475,6 +483,7 @@
             "field": "situation",
             "contains": "schulende"
           },
+          "because": "Ob eine Aushilfe nach der Schule berufsmäßig ist, hängt davon ab, was danach kommt: vor einem Studium nicht, vor einer Ausbildung oder einem Dienst schon (Geringfügigkeits-Richtlinien B 2.3.3).",
           "options": [
             {
               "id": "studium",
@@ -514,6 +523,7 @@
             "field": "situation",
             "contains": "student"
           },
+          "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt.",
           "options": [
             {
               "id": "vollzeit",
@@ -545,7 +555,8 @@
           "showIf": {
             "field": "situation",
             "contains": "student"
-          }
+          },
+          "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
         {
           "id": "urlaubssemester",
@@ -558,7 +569,8 @@
           "showIf": {
             "field": "situation",
             "contains": "student"
-          }
+          },
+          "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
         {
           "id": "fachsemester",
@@ -572,6 +584,7 @@
             "field": "situation",
             "contains": "student"
           },
+          "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt.",
           "decimals": 0
         },
         {
@@ -586,7 +599,8 @@
           "showIf": {
             "field": "situation",
             "contains": "student"
-          }
+          },
+          "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
         {
           "id": "ueber20hJahr",
@@ -600,7 +614,8 @@
           "showIf": {
             "field": "situation",
             "contains": "student"
-          }
+          },
+          "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
         {
           "id": "ueber20hZeiten",
@@ -614,6 +629,7 @@
             "field": "ueber20hJahr",
             "equals": true
           },
+          "because": "Wer im Jahr mehr als 26 Wochen über 20 Wochenstunden gearbeitet hat, fällt aus der Werkstudentenregel; dafür werden diese Zeiten gebraucht.",
           "rowLabel": "Zeitraum",
           "columns": [
             {
@@ -671,7 +687,8 @@
           "showIf": {
             "field": "situation",
             "contains": "studienbewerber"
-          }
+          },
+          "because": "Bei Studienbewerbern hängt die Berufsmäßigkeit einer Aushilfe davon ab, ob das Studium bald beginnt (Geringfügigkeits-Richtlinien)."
         },
         {
           "id": "beamtBeihilfe",
@@ -684,7 +701,8 @@
           "showIf": {
             "field": "situation",
             "contains": "beamter"
-          }
+          },
+          "because": "Beamte mit Anspruch auf Beihilfe oder Heilfürsorge sind auch in einer Nebenbeschäftigung krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2 SGB V)."
         },
         {
           "id": "pensionArt",
@@ -698,6 +716,7 @@
             "field": "situation",
             "contains": "pensionaer"
           },
+          "because": "Nur eine Pension wegen Alters macht in der Rentenversicherung frei (§ 5 Abs. 4 Nr. 2 SGB VI); deshalb wird der Grund nur bei Pensionären gefragt.",
           "options": [
             {
               "id": "alter",
@@ -722,6 +741,7 @@
             "field": "situation",
             "contains": "rente"
           },
+          "because": "Ob eine Rente frei macht oder Arbeitgeberanteile auslöst, hängt von ihrer Art ab; das ist nur bei Rentenbeziehern zu klären.",
           "options": [
             {
               "id": "altersvoll",
@@ -764,7 +784,8 @@
           "showIf": {
             "field": "situation",
             "contains": "rente"
-          }
+          },
+          "because": "Bei Rentenbeziehern beginnen Versicherungsfreiheit oder Arbeitgeberanteile mit der Rente."
         },
         {
           "id": "emBefristetBis",
@@ -778,7 +799,8 @@
           "showIf": {
             "field": "rentenart",
             "in": ["emVoll", "emTeil"]
-          }
+          },
+          "because": "Nur bei einer Erwerbsminderungsrente gelten Grenzen für Hinzuverdienst und Arbeitszeit (§ 96a SGB VI); bei einer Befristung enden sie mit der Frist."
         },
         {
           "id": "rvVerzicht",
@@ -809,6 +831,7 @@
               }
             ]
           },
+          "because": "Nur wer eine Vollrente wegen Alters nach der Regelaltersgrenze oder eine Pension wegen Alters bezieht, ist rentenversicherungsfrei und kann darauf verzichten (§ 5 Abs. 4 Satz 2 SGB VI).",
           "options": [
             {
               "id": "nein",
@@ -844,6 +867,7 @@
               }
             ]
           },
+          "because": "Wer Arbeitslosengeld oder Grundsicherungsgeld bezieht, braucht vom Arbeitgeber eine Nebeneinkommensbescheinigung; unter 15 Wochenstunden kann zudem Arbeitslosenversicherungsfreiheit bestehen.",
           "options": [
             {
               "id": "arbeitslosengeld",
@@ -870,7 +894,8 @@
           "showIf": {
             "field": "situation",
             "contains": "arbeitslos"
-          }
+          },
+          "because": "Bei arbeitslos oder arbeitsuchend Gemeldeten ist eine Aushilfe berufsmäßig, wenn das Entgelt die Geringfügigkeitsgrenze übersteigt; dafür zählt die Meldung."
         },
         {
           "id": "elternzeitBis",
@@ -883,7 +908,8 @@
           "showIf": {
             "field": "situation",
             "contains": "elternzeit"
-          }
+          },
+          "because": "Neben einer Elternzeit kann eine Aushilfe berufsmäßig sein; ihr Ende zeigt, wie lange das gilt (Geringfügigkeits-Richtlinien B 2.3.3)."
         },
         {
           "id": "elternzeitZustimmung",
@@ -897,6 +923,7 @@
             "field": "situation",
             "contains": "elternzeit"
           },
+          "because": "Wer in der Elternzeit bei einem anderen Arbeitgeber arbeitet, braucht die Zustimmung des eigenen Arbeitgebers (§ 15 Abs. 4 BEEG).",
           "options": [
             {
               "id": "ja",
@@ -923,7 +950,8 @@
           "showIf": {
             "field": "situation",
             "contains": "dienst"
-          }
+          },
+          "because": "Während eines Freiwilligen- oder Wehrdienstes kann eine Aushilfe berufsmäßig sein; das Ende des Dienstes zeigt, wie lange."
         },
         {
           "id": "selbstStunden",
@@ -937,6 +965,7 @@
             "field": "situation",
             "contains": "selbstaendig"
           },
+          "because": "Hauptberuflich Selbständige sind in einer Beschäftigung nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); ob die Selbständigkeit hauptberuflich ist, zeigen Stunden und Einkommen.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -951,7 +980,8 @@
           "showIf": {
             "field": "situation",
             "contains": "selbstaendig"
-          }
+          },
+          "because": "Hauptberuflich Selbständige sind in einer Beschäftigung nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); ob die Selbständigkeit hauptberuflich ist, zeigen Stunden und Einkommen."
         },
         {
           "id": "situationSonstiges",
@@ -964,7 +994,8 @@
           "showIf": {
             "field": "situation",
             "contains": "sonstiges"
-          }
+          },
+          "because": "„Etwas anderes“ braucht eine Beschreibung, damit die lohnabrechnende Stelle die Versicherungspflicht beurteilen kann."
         }
       ]
     },
@@ -1024,6 +1055,7 @@
             "field": "artLautVereinbarung",
             "equals": "praktikum"
           },
+          "because": "Nur bei einem Praktikum kommt es darauf an, ob es vorgeschrieben ist: Pflichtpraktika sind versicherungsfrei und vom Mindestlohn ausgenommen (§ 22 MiLoG).",
           "options": [
             {
               "id": "pflicht",
@@ -1051,6 +1083,7 @@
             "field": "rentenart",
             "in": ["emVoll", "emTeil"]
           },
+          "because": "Bei einer Erwerbsminderungsrente muss die tägliche Arbeitszeit unter 3 bzw. 6 Stunden bleiben; sonst ist die Rente gefährdet.",
           "decimals": 2,
           "unit": "Std."
         }
@@ -1082,6 +1115,7 @@
             "field": "weitereBeschaeftigung",
             "equals": true
           },
+          "because": "Nur wer noch eine Beschäftigung hat, gibt sie an: Mehrere Beschäftigungen werden zusammengerechnet (§ 8 Abs. 2 SGB IV).",
           "rowLabel": "Beschäftigung",
           "columns": [
             {
@@ -1209,7 +1243,8 @@
           "showIf": {
             "field": "artLautVereinbarung",
             "in": ["aushilfe", "unbekannt"]
-          }
+          },
+          "because": "Eine Aushilfe ist nur kurzfristig, solange im Kalenderjahr zusammen höchstens 3 Monate oder 70 Arbeitstage erreicht werden (§ 8 Abs. 1 Nr. 2 SGB IV); bei anderen Beschäftigungen zählen frühere Beschäftigungen dafür nicht."
         },
         {
           "id": "vorbeschaeftigungen",
@@ -1224,6 +1259,7 @@
             "field": "vorbeschJahr",
             "equals": true
           },
+          "because": "Nur wer im Kalenderjahr schon beschäftigt war, gibt die früheren Beschäftigungen einzeln an.",
           "rowLabel": "Beschäftigung",
           "columns": [
             {
@@ -1342,7 +1378,8 @@
           "showIf": {
             "field": "krankenversicherung",
             "in": ["gesetzlich", "privat", "anderweitig"]
-          }
+          },
+          "because": "Gesetzlich, privat oder anderweitig Versicherte nennen ihre Kasse oder ihr Unternehmen; ohne Versicherung gibt es keine."
         },
         {
           "id": "pkvLetzteKrankenkasse",
@@ -1356,7 +1393,8 @@
           "showIf": {
             "field": "krankenversicherung",
             "equals": "privat"
-          }
+          },
+          "because": "Bei privat Versicherten gehen die Beiträge zur Renten- und Arbeitslosenversicherung an die zuletzt zuständige gesetzliche Krankenkasse (§ 28i SGB IV)."
         },
         {
           "id": "pkvBescheinigung",
@@ -1371,6 +1409,7 @@
             "field": "krankenversicherung",
             "equals": "privat"
           },
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben.",
           "options": [
             {
               "id": "liegtBei",
@@ -1398,7 +1437,8 @@
           "showIf": {
             "field": "krankenversicherung",
             "equals": "privat"
-          }
+          },
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
         },
         {
           "id": "pkvAngehoerigeEigene",
@@ -1412,7 +1452,8 @@
           "showIf": {
             "field": "krankenversicherung",
             "equals": "privat"
-          }
+          },
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
         },
         {
           "id": "pkvWiderspruch",
@@ -1426,7 +1467,8 @@
           "showIf": {
             "field": "krankenversicherung",
             "equals": "privat"
-          }
+          },
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
         },
         {
           "id": "gkvLetzte5Jahre",
@@ -1440,6 +1482,7 @@
             "field": "krankenversicherung",
             "in": ["privat", "anderweitig"]
           },
+          "because": "Ab 55 Jahren kann versicherungsfrei sein, wer in den letzten fünf Jahren nicht gesetzlich versichert war (§ 6 Abs. 3a SGB V); das ist nur bei privat oder anderweitig Versicherten offen.",
           "options": [
             {
               "id": "ja",
@@ -1474,6 +1517,7 @@
             "field": "artLautVereinbarung",
             "in": ["minijob", "unbekannt"]
           },
+          "because": "Nur im Minijob kann man sich von der Rentenversicherungspflicht befreien lassen (§ 6 Abs. 1b SGB VI); bei „Weiß ich nicht.“ wird vorsorglich gefragt.",
           "options": [
             {
               "id": "nein",
@@ -1501,9 +1545,58 @@
           "type": "taxId",
           "label": "Steuerliche Identifikationsnummer",
           "question": "Wie lautet Ihre Steuer-Identifikationsnummer?",
-          "help": "Sie hat 11 Ziffern und steht zum Beispiel auf Ihrer letzten Lohnsteuerbescheinigung, Ihrem Einkommensteuerbescheid oder dem Schreiben des Bundeszentralamts für Steuern. Haben Sie noch keine, wählen Sie „Weiß ich gerade nicht“ und sagen Sie es Ihrem Arbeitgeber: Höchstens drei Monate lang gilt dann eine vorläufige Steuerklasse, danach Steuerklasse VI.",
+          "help": "Sie hat 11 Ziffern und steht zum Beispiel auf Ihrer letzten Lohnsteuerbescheinigung, Ihrem Einkommensteuerbescheid oder dem Schreiben des Bundeszentralamts für Steuern. Haben Sie noch keine, wählen Sie „Weiß ich gerade nicht“ und sagen Sie es Ihrem Arbeitgeber: Höchstens drei Monate lang gilt dann eine vorläufige Steuerklasse, danach Steuerklasse VI. Sie wird auch bei einem Minijob gebraucht: Der Arbeitgeber gibt sie in den Meldungen an.",
           "required": true,
           "purpose": "Abruf der elektronischen Lohnsteuerabzugsmerkmale beim Bundeszentralamt für Steuern (§ 39e Abs. 4 EStG) und der Kinderzahl für den Pflegeversicherungsbeitrag (§ 55a Abs. 3 SGB XI); Pflichtangabe auch in Minijob-Meldungen"
+        },
+        {
+          "id": "steuerart",
+          "role": "person",
+          "type": "choice",
+          "label": "Art der Lohnsteuer",
+          "question": "Wie wird Ihre Beschäftigung versteuert?",
+          "help": "Das entscheidet Ihr Arbeitgeber. Hat er seinen Teil schon abgeschlossen, übernimmt der Fragebogen seine Angabe, und Sie sehen diese Frage nicht. Wissen Sie es nicht, wählen Sie „Weiß ich nicht.“; dann folgen vorsorglich die Fragen zur Steuerklasse.",
+          "required": true,
+          "purpose": "Fragen zum Dienstverhältnis nur bei Lohnsteuer nach den Lohnsteuermerkmalen (§ 39e Abs. 4 EStG), nicht bei Pauschalsteuer (§ 40a EStG)",
+          "options": [
+            {
+              "id": "elstam",
+              "label": "nach den Lohnsteuermerkmalen (Steuerklasse)"
+            },
+            {
+              "id": "pauschal2",
+              "label": "pauschal 2 % (Minijob)"
+            },
+            {
+              "id": "pauschal20",
+              "label": "pauschal 20 % (Minijob)"
+            },
+            {
+              "id": "pauschal25",
+              "label": "pauschal 25 % (kurzfristige Aushilfe)"
+            },
+            {
+              "id": "pauschal5",
+              "label": "pauschal 5 % (Aushilfe in der Land- und Forstwirtschaft)"
+            },
+            {
+              "id": "pruefen",
+              "label": "Die lohnabrechnende Stelle prüft das noch."
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ],
+          "showIf": {
+            "field": "artLautVereinbarung",
+            "in": ["minijob", "aushilfe", "unbekannt"]
+          },
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agBesteuerung"
+          },
+          "because": "Die Art der Lohnsteuer legt der Arbeitgeber fest; pauschal versteuern lassen sich nur Minijobs und kurzfristige Aushilfen (§ 40a EStG). Hat der Arbeitgeber seinen Teil schon abgeschlossen, wird seine Angabe übernommen und die Person nicht gefragt."
         },
         {
           "id": "dienstverhaeltnis",
@@ -1511,8 +1604,15 @@
           "type": "choice",
           "label": "Erstes oder weiteres Dienstverhältnis",
           "question": "Welches Dienstverhältnis ist diese Beschäftigung für die Lohnsteuer?",
-          "help": "Haben Sie nur diesen Arbeitgeber, ist es das erste. Arbeiten Sie gleichzeitig für mehrere Arbeitgeber, legen Sie fest, welches das erste ist; für jedes weitere gilt Steuerklasse VI. Ohne Angabe muss Ihr Arbeitgeber Steuerklasse VI anwenden. Bei einem Minijob mit pauschaler Steuer spielt die Frage keine Rolle.",
+          "help": "Haben Sie nur diesen Arbeitgeber, ist es das erste. Arbeiten Sie gleichzeitig für mehrere Arbeitgeber, legen Sie fest, welches das erste ist; für jedes weitere gilt Steuerklasse VI. Ohne Angabe muss Ihr Arbeitgeber Steuerklasse VI anwenden.",
           "required": true,
+          "showIf": {
+            "not": {
+              "field": "steuerart",
+              "in": ["pauschal2", "pauschal20", "pauschal25", "pauschal5"]
+            }
+          },
+          "because": "Bei einer Pauschalsteuer werden keine Lohnsteuermerkmale abgerufen (§ 40a EStG); dann spielt keine Rolle, ob dies das erste oder ein weiteres Dienstverhältnis ist. Bei allen anderen Beschäftigungen wird gefragt.",
           "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG); Steuerklasse VI für ein weiteres Dienstverhältnis",
           "options": [
             {
@@ -1536,7 +1636,8 @@
           "showIf": {
             "field": "dienstverhaeltnis",
             "equals": "weiteres"
-          }
+          },
+          "because": "Einen Freibetrag auf eine Nebenbeschäftigung übertragen kann nur, wer sie als weiteres Dienstverhältnis mit Steuerklasse VI hat (§ 39a Abs. 1 Satz 1 Nr. 7 EStG)."
         },
         {
           "id": "freibetragBetrag",
@@ -1550,7 +1651,8 @@
           "showIf": {
             "field": "freibetragAbrufen",
             "equals": true
-          }
+          },
+          "because": "Nur wenn ein Freibetrag abgerufen werden soll, wird seine Höhe gebraucht."
         },
         {
           "id": "aktivrenteMonat",
@@ -1565,6 +1667,7 @@
             "field": "situation",
             "contains": "regelaltersgrenze"
           },
+          "because": "Die Aktivrente (§ 3 Nr. 21 EStG) gibt es erst ab dem Monat nach Erreichen der Regelaltersgrenze und nur einmal je Monat.",
           "options": [
             {
               "id": "nein",
@@ -1599,7 +1702,8 @@
                 "contains": "regelaltersgrenze"
               }
             ]
-          }
+          },
+          "because": "In Steuerklasse VI darf der Arbeitgeber die Aktivrente nur berücksichtigen, wenn die Person bestätigt, dass sie nicht schon in einem anderen Arbeitsverhältnis berücksichtigt wird (§ 3 Nr. 21 EStG)."
         }
       ]
     },
@@ -1619,7 +1723,8 @@
           "showIf": {
             "field": "krankenversicherung",
             "equals": "gesetzlich"
-          }
+          },
+          "because": "Kinder ändern nur den Beitrag zur gesetzlichen Pflegeversicherung (§ 55 Abs. 3, 3a SGB XI); privat oder nicht gesetzlich Versicherte zahlen ihn nicht über den Arbeitgeber."
         },
         {
           "id": "kinderUnter25",
@@ -1634,6 +1739,7 @@
             "field": "kinder",
             "equals": true
           },
+          "because": "Nur wer Kinder hat, zahlt wegen Kindern unter 25 einen niedrigeren Beitrag (§ 55 Abs. 3a SGB XI).",
           "options": [
             {
               "id": "0",
@@ -1674,6 +1780,7 @@
             "field": "kinder",
             "equals": true
           },
+          "because": "Nur wer Kinder hat, kann Kinder haben, die beim Bundeszentralamt für Steuern nicht digital abrufbar sind.",
           "options": [
             {
               "id": "stiefkind",
@@ -1750,6 +1857,7 @@
               }
             ]
           },
+          "because": "Für diese Kinder fehlen die digitalen Daten meistens; der Arbeitgeber braucht dann einen Nachweis (§ 55a SGB XI).",
           "rowLabel": "Kind",
           "columns": [
             {
@@ -2035,7 +2143,8 @@
           "showIf": {
             "field": "agVertragsbeginnAbweichend",
             "equals": true
-          }
+          },
+          "because": "Nur wenn der Arbeitsvertrag an einem anderen Tag beginnt als die Beschäftigung, ist sein Beginn eine eigene Angabe."
         },
         {
           "id": "agArbeitsortBundesland",
@@ -2197,7 +2306,8 @@
           "showIf": {
             "field": "agBeschaeftigungsart",
             "equals": "kurzfristig"
-          }
+          },
+          "because": "Nur eine kurzfristige Aushilfe ist an 3 Monate oder 70 Arbeitstage im Kalenderjahr gebunden (§ 8 Abs. 1 Nr. 2 SGB IV); dafür werden Ende, Arbeitstage und eine Rahmenvereinbarung gebraucht."
         },
         {
           "id": "agKurzfristigArbeitstage",
@@ -2211,6 +2321,7 @@
             "field": "agBeschaeftigungsart",
             "equals": "kurzfristig"
           },
+          "because": "Nur eine kurzfristige Aushilfe ist an 3 Monate oder 70 Arbeitstage im Kalenderjahr gebunden (§ 8 Abs. 1 Nr. 2 SGB IV); dafür werden Ende, Arbeitstage und eine Rahmenvereinbarung gebraucht.",
           "decimals": 0,
           "unit": "Tage"
         },
@@ -2226,7 +2337,8 @@
           "showIf": {
             "field": "agBeschaeftigungsart",
             "equals": "kurzfristig"
-          }
+          },
+          "because": "Nur eine kurzfristige Aushilfe ist an 3 Monate oder 70 Arbeitstage im Kalenderjahr gebunden (§ 8 Abs. 1 Nr. 2 SGB IV); dafür werden Ende, Arbeitstage und eine Rahmenvereinbarung gebraucht."
         },
         {
           "id": "agPraktikumArt",
@@ -2240,6 +2352,7 @@
             "field": "agBeschaeftigungsart",
             "equals": "praktikum"
           },
+          "because": "Nur bei einem Praktikum hängen Versicherungsrecht und Mindestlohn von seiner Art ab (§ 22 MiLoG).",
           "options": [
             {
               "id": "pflichtStudium",
@@ -2274,7 +2387,8 @@
           "showIf": {
             "field": "agBeschaeftigungsart",
             "equals": "praktikum"
-          }
+          },
+          "because": "Ein freiwilliges Praktikum ist nur bis zu 3 Monate vom Mindestlohn ausgenommen (§ 22 Abs. 1 MiLoG)."
         },
         {
           "id": "agAusbildungsberuf",
@@ -2287,7 +2401,8 @@
           "showIf": {
             "field": "agBeschaeftigungsart",
             "in": ["ausbildung", "dualesStudium"]
-          }
+          },
+          "because": "Nur bei Ausbildung und dualem Studium gelten Personengruppe und Tätigkeitsschlüssel für Auszubildende; ihr Ende steht im Vertrag."
         },
         {
           "id": "agAusbildungEnde",
@@ -2300,7 +2415,8 @@
           "showIf": {
             "field": "agBeschaeftigungsart",
             "in": ["ausbildung", "dualesStudium"]
-          }
+          },
+          "because": "Nur bei Ausbildung und dualem Studium gelten Personengruppe und Tätigkeitsschlüssel für Auszubildende; ihr Ende steht im Vertrag."
         },
         {
           "id": "agAusserbetrieblich",
@@ -2313,7 +2429,8 @@
           "showIf": {
             "field": "agBeschaeftigungsart",
             "equals": "ausbildung"
-          }
+          },
+          "because": "Nur eine Ausbildung kann außerbetrieblich sein; dafür gilt eine eigene Personengruppe."
         },
         {
           "id": "agTaetigkeit",
@@ -2366,7 +2483,8 @@
           "showIf": {
             "field": "agBefristet",
             "equals": true
-          }
+          },
+          "because": "Nur ein befristetes Arbeitsverhältnis hat ein vorgesehenes Ende."
         },
         {
           "id": "agArbeitszeitform",
@@ -2401,6 +2519,7 @@
             "field": "agBeschaeftigungsart",
             "in": ["minijob", "kurzfristig", "pruefen"]
           },
+          "because": "Pauschal versteuern lassen sich nur Minijobs und kurzfristige Aushilfen (§ 40a EStG); bei allen anderen Beschäftigungen gelten die Lohnsteuermerkmale. Die Angabe entscheidet auch, welche Steuerfragen die Person bekommt.",
           "options": [
             {
               "id": "elstam",
@@ -2509,6 +2628,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2523,6 +2643,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2537,6 +2658,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2551,6 +2673,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2565,6 +2688,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2579,6 +2703,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2593,6 +2718,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "festeTage"
           },
+          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2608,6 +2734,7 @@
             "field": "agArbeitszeitmodell",
             "in": ["wechselnd", "gleitzeit", "vertrauen"]
           },
+          "because": "Bei wechselnden Tagen, Gleitzeit oder Vertrauensarbeitszeit gibt es keine festen Tagesstunden; dann zählen die Wochenstunden.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2623,6 +2750,7 @@
             "field": "agArbeitszeitmodell",
             "in": ["wechselnd", "gleitzeit", "vertrauen", "monatsstunden"]
           },
+          "because": "Ohne feste Wochentage braucht der Urlaubsanspruch die durchschnittlichen Arbeitstage pro Woche.",
           "decimals": 1,
           "unit": "Tage"
         },
@@ -2638,6 +2766,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "schicht"
           },
+          "because": "Bei Schichtarbeit wiederholt sich die Arbeitszeit erst über mehrere Wochen; Urlaub und Entgeltfortzahlung werden über den ganzen Zyklus berechnet.",
           "decimals": 0,
           "unit": "Wochen"
         },
@@ -2653,6 +2782,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "schicht"
           },
+          "because": "Bei Schichtarbeit wiederholt sich die Arbeitszeit erst über mehrere Wochen; Urlaub und Entgeltfortzahlung werden über den ganzen Zyklus berechnet.",
           "decimals": 0,
           "unit": "Tage"
         },
@@ -2668,6 +2798,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "schicht"
           },
+          "because": "Bei Schichtarbeit wiederholt sich die Arbeitszeit erst über mehrere Wochen; Urlaub und Entgeltfortzahlung werden über den ganzen Zyklus berechnet.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2683,6 +2814,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "monatsstunden"
           },
+          "because": "Bei festen Monatsstunden ist die Monatssumme die vereinbarte Arbeitszeit.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2698,6 +2830,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "jahresarbeitszeit"
           },
+          "because": "Bei Jahresarbeitszeit gilt die Vereinbarung für das ganze Jahr; Urlaub und Entgelt werden daraus berechnet.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2713,6 +2846,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "jahresarbeitszeit"
           },
+          "because": "Bei Jahresarbeitszeit gilt die Vereinbarung für das ganze Jahr; Urlaub und Entgelt werden daraus berechnet.",
           "decimals": 0,
           "unit": "Tage"
         },
@@ -2729,6 +2863,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "abruf"
           },
+          "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2744,6 +2879,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "abruf"
           },
+          "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "options": [
             {
               "id": "keine",
@@ -2771,6 +2907,7 @@
             "field": "agAbrufGrenze",
             "in": ["mindest", "hoechst"]
           },
+          "because": "Nur wenn eine Mindest- oder Höchstarbeitszeit vereinbart ist, braucht es die Stundenzahl (§ 12 Abs. 2 TzBfG).",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2786,6 +2923,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "abruf"
           },
+          "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2801,6 +2939,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "abruf"
           },
+          "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2815,7 +2954,8 @@
           "showIf": {
             "field": "agArbeitszeitmodell",
             "equals": "gleitzeit"
-          }
+          },
+          "because": "Nur bei Gleitzeit gibt es ein Arbeitszeitkonto; seine Grenzen und der Ausgleichszeitraum bestimmen, wann Plus- und Minusstunden ausgeglichen werden."
         },
         {
           "id": "agKontoAusgleich",
@@ -2828,7 +2968,8 @@
           "showIf": {
             "field": "agArbeitszeitmodell",
             "equals": "gleitzeit"
-          }
+          },
+          "because": "Nur bei Gleitzeit gibt es ein Arbeitszeitkonto; seine Grenzen und der Ausgleichszeitraum bestimmen, wann Plus- und Minusstunden ausgeglichen werden."
         },
         {
           "id": "agAtzModell",
@@ -2842,6 +2983,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "altersteilzeit"
           },
+          "because": "Nur bei Altersteilzeit gelten eine eigene Personengruppe und der steuerfreie Aufstockungsbetrag (§ 3 Nr. 28 EStG); dafür werden Modell, Zeitraum und die frühere Arbeitszeit gebraucht.",
           "options": [
             {
               "id": "teilzeit",
@@ -2864,7 +3006,8 @@
           "showIf": {
             "field": "agArbeitszeitmodell",
             "equals": "altersteilzeit"
-          }
+          },
+          "because": "Nur bei Altersteilzeit gelten eine eigene Personengruppe und der steuerfreie Aufstockungsbetrag (§ 3 Nr. 28 EStG); dafür werden Modell, Zeitraum und die frühere Arbeitszeit gebraucht."
         },
         {
           "id": "agAtzBis",
@@ -2877,7 +3020,8 @@
           "showIf": {
             "field": "agArbeitszeitmodell",
             "equals": "altersteilzeit"
-          }
+          },
+          "because": "Nur bei Altersteilzeit gelten eine eigene Personengruppe und der steuerfreie Aufstockungsbetrag (§ 3 Nr. 28 EStG); dafür werden Modell, Zeitraum und die frühere Arbeitszeit gebraucht."
         },
         {
           "id": "agAtzVorherStunden",
@@ -2891,6 +3035,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "altersteilzeit"
           },
+          "because": "Nur bei Altersteilzeit gelten eine eigene Personengruppe und der steuerfreie Aufstockungsbetrag (§ 3 Nr. 28 EStG); dafür werden Modell, Zeitraum und die frühere Arbeitszeit gebraucht.",
           "decimals": 2,
           "unit": "Std."
         },
@@ -2906,6 +3051,7 @@
             "field": "agArbeitszeitmodell",
             "equals": "anderes"
           },
+          "because": "Passt keines der Modelle, muss die Arbeitszeit beschrieben werden.",
           "multiline": true
         },
         {
@@ -3008,7 +3154,8 @@
           "showIf": {
             "field": "agEntgeltArt",
             "equals": "stundenlohn"
-          }
+          },
+          "because": "Bei Stundenlohn ist der Stundensatz die Grundlage der Abrechnung."
         },
         {
           "id": "agMonatsentgelt",
@@ -3021,7 +3168,8 @@
           "showIf": {
             "field": "agEntgeltArt",
             "equals": "monatsentgelt"
-          }
+          },
+          "because": "Bei festem Monatsentgelt ist der Monatsbetrag die Grundlage der Abrechnung."
         },
         {
           "id": "agAusbildungsverguetung",
@@ -3035,6 +3183,7 @@
             "field": "agEntgeltArt",
             "equals": "ausbildungsverguetung"
           },
+          "because": "Nur Auszubildende erhalten eine Ausbildungsvergütung, die je Ausbildungsjahr steigt (§ 17 BBiG).",
           "rowLabel": "Ausbildungsjahr",
           "columns": [
             {
@@ -3068,6 +3217,7 @@
             "field": "agEntgeltArt",
             "equals": "leistungslohn"
           },
+          "because": "Bei Leistungs- oder Akkordlohn muss die Berechnung beschrieben werden.",
           "multiline": true
         },
         {
@@ -3081,7 +3231,8 @@
           "showIf": {
             "field": "agEntgeltArt",
             "equals": "pauschale"
-          }
+          },
+          "because": "Bei einer Pauschale je Einsatz ist ihr Betrag die Grundlage der Abrechnung."
         },
         {
           "id": "agErwartetMonat",
@@ -3094,7 +3245,8 @@
           "showIf": {
             "field": "agEntgeltArt",
             "in": ["stundenlohn", "leistungslohn", "pauschale"]
-          }
+          },
+          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), braucht die Minijob-Grenze eine Prognose des Monatsverdiensts (Geringfügigkeits-Richtlinien B 2.2)."
         },
         {
           "id": "agTarif",
@@ -3302,7 +3454,8 @@
           "showIf": {
             "field": "agVwl",
             "equals": true
-          }
+          },
+          "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es Betrag, Sparrate und das Anlageinstitut für die Überweisung."
         },
         {
           "id": "agVwlSparrate",
@@ -3316,7 +3469,8 @@
           "showIf": {
             "field": "agVwl",
             "equals": true
-          }
+          },
+          "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es Betrag, Sparrate und das Anlageinstitut für die Überweisung."
         },
         {
           "id": "agVwlInstitut",
@@ -3329,7 +3483,8 @@
           "showIf": {
             "field": "agVwl",
             "equals": true
-          }
+          },
+          "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es Betrag, Sparrate und das Anlageinstitut für die Überweisung."
         },
         {
           "id": "agVwlVertrag",
@@ -3342,7 +3497,8 @@
           "showIf": {
             "field": "agVwl",
             "equals": true
-          }
+          },
+          "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es Betrag, Sparrate und das Anlageinstitut für die Überweisung."
         },
         {
           "id": "agVwlIban",
@@ -3355,7 +3511,8 @@
           "showIf": {
             "field": "agVwl",
             "equals": true
-          }
+          },
+          "because": "Nur wenn vermögenswirksame Leistungen vereinbart sind, braucht es Betrag, Sparrate und das Anlageinstitut für die Überweisung."
         },
         {
           "id": "agBav",
@@ -3398,6 +3555,7 @@
               "equals": "keine"
             }
           },
+          "because": "Nur wenn eine betriebliche Altersversorgung besteht, sind ihre Verträge anzugeben.",
           "rowLabel": "Vertrag",
           "columns": [
             {
@@ -3576,6 +3734,7 @@
             "field": "agSchwerbehinderung",
             "in": ["schwerbehindert", "gleichgestellt"]
           },
+          "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören Grad der Behinderung und Gültigkeit in das Verzeichnis des Arbeitgebers (§ 163 SGB IX).",
           "decimals": 0
         },
         {
@@ -3590,7 +3749,8 @@
           "showIf": {
             "field": "agSchwerbehinderung",
             "in": ["schwerbehindert", "gleichgestellt"]
-          }
+          },
+          "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören Grad der Behinderung und Gültigkeit in das Verzeichnis des Arbeitgebers (§ 163 SGB IX)."
         }
       ]
     },
@@ -3712,7 +3872,8 @@
           "showIf": {
             "field": "agUnterlagen",
             "contains": "rvBefreiung"
-          }
+          },
+          "because": "Erst wenn der Befreiungsantrag auf Papier vorliegt, gibt es ein Eingangsdatum; mit ihm beginnt die Befreiung (§ 6 Abs. 4 SGB VI, § 8 Abs. 2 Nr. 4a BVV)."
         },
         {
           "id": "agRvVerzichtEingang",
@@ -3726,7 +3887,8 @@
           "showIf": {
             "field": "agUnterlagen",
             "contains": "rvVerzicht"
-          }
+          },
+          "because": "Erst wenn die Verzichtserklärung auf Papier vorliegt, gibt es ein Eingangsdatum; der Verzicht wirkt für die Zukunft (§ 5 Abs. 4 Satz 2 SGB VI)."
         }
       ]
     }

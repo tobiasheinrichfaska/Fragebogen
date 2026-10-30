@@ -211,6 +211,7 @@ describe('Personalfragebogen draft — complete parts can be sealed', () => {
         },
       ],
       artLautVereinbarung: 'minijob',
+      steuerart: 'pauschal2',
       rvBefreiungWunsch: 'nein',
     };
     for (const [id, raw] of Object.entries(values)) {
@@ -228,6 +229,8 @@ describe('Personalfragebogen draft — complete parts can be sealed', () => {
     );
     expect(sealed.parts.person?.[0]?.status).toBe('signed');
     expect(sealed.parts.person?.[0]?.data.fachsemester).toBe('4');
+    // Flat-rate tax: the tax class question lapsed and is not signed.
+    expect(sealed.parts.person?.[0]?.data).not.toHaveProperty('dienstverhaeltnis');
   });
 
   it('seals an employer part for a Minijob on call with fixed weekly hours', () => {

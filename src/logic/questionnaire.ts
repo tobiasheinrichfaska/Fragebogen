@@ -24,6 +24,8 @@ import { SHA256_HEX } from './hash';
 import type { IssueCode } from './issues';
 import type {
   FieldId,
+  FieldValue,
+  FormDefinition,
   Part,
   Questionnaire,
   Receipt,
@@ -70,7 +72,8 @@ export type TransitionCode =
   | 'fieldNotAvailable'
   | 'noSealedPart'
   | 'versionInUse'
-  | 'alreadyAnswered';
+  | 'alreadyAnswered'
+  | 'fixedByOtherRole';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -101,6 +104,8 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
     'Diese Fassung wurde bereits weitergegeben oder bestätigt. Eine Änderung wird als neue Fassung unterschrieben.',
   alreadyAnswered:
     'Diese Frage ist schon beantwortet. Zum Zurückstellen bitte zuerst die Antwort löschen.',
+  fixedByOtherRole:
+    'Diese Angabe hat eine andere Rolle in ihrem abgeschlossenen Teil festgelegt; sie wird von dort übernommen.',
 };
 
 export type Transition =
@@ -206,6 +211,10 @@ export function setValue(
   if (field.role !== role) return refuse('notOwnField', [fieldId]);
   const value = normalizeFieldValue(field, raw);
   if (!value.ok) return refuse('invalidValue', [fieldId, value.issue]);
+  const fixed = fixedByOtherRoles(questionnaire, form.definition, role).get(fieldId);
+  if (fixed && !sameValue(fixed.value, value.value)) {
+    return refuse('fixedByOtherRole', [fieldId, fixed.from]);
+  }
   // Input is only possible once the field's precondition holds; clearing is always allowed.
   if (value.value !== null && visibility(form.definition, role, draft.data).get(fieldId) !== true) {
     const condition = field.showIf;
@@ -225,6 +234,66 @@ export function setValue(
           (draft.deferred ?? []).filter((id) => id !== fieldId),
         );
   return done(withVersions(questionnaire, role, versions), value.warnings);
+}
+
+function sameValue(a: FieldValue, b: FieldValue): boolean {
+  return canonicalize(a) === canonicalize(b);
+}
+
+/**
+ * Answers another role decided (`FieldDefinition.fromRole`): the value in that role's latest
+ * sealed part, where it holds one. They are copied into this role's own data, so a seal still
+ * covers only the role's own data and verification stays independent of the other part.
+ */
+export function fixedByOtherRoles(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  role: RoleId,
+): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
+  const fixed = new Map<FieldId, { value: FieldValue; from: RoleId }>();
+  for (const field of fieldsOfRole(definition, role)) {
+    if (!field.fromRole) continue;
+    const { role: from, field: source } = field.fromRole;
+    const value = latestSealed(questionnaire, from)?.data[source] ?? null;
+    if (value !== null) fixed.set(field.id, { value, from });
+  }
+  return fixed;
+}
+
+/**
+ * Copies the answers other roles decided into the role's draft (see fixedByOtherRoles) and ends
+ * "Weiß ich gerade nicht" on them. `replaced` names fields whose earlier answer differed.
+ * Without a draft nothing changes.
+ */
+export function adoptFromOtherRoles(
+  questionnaire: Questionnaire,
+  form: RegisteredForm,
+  role: RoleId,
+): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[] } {
+  const draft = currentPart(questionnaire, role);
+  const fixed = fixedByOtherRoles(questionnaire, form.definition, role);
+  const unchanged = { questionnaire, adopted: [], replaced: [] };
+  if (!matchesForm(questionnaire, form) || draft?.status !== 'draft' || fixed.size === 0) {
+    return unchanged;
+  }
+  const adopted: FieldId[] = [];
+  const replaced: FieldId[] = [];
+  const data = { ...draft.data };
+  for (const [id, { value }] of fixed) {
+    const before = data[id] ?? null;
+    if (sameValue(before, value)) continue;
+    if (before !== null) replaced.push(id);
+    adopted.push(id);
+    data[id] = value;
+  }
+  if (adopted.length === 0) return unchanged;
+  const updated = withDeferred(
+    { ...draft, data },
+    (draft.deferred ?? []).filter((id) => !fixed.has(id)),
+  );
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = updated;
+  return { questionnaire: withVersions(questionnaire, role, versions), adopted, replaced };
 }
 
 function withDeferred(part: Part, deferred: readonly FieldId[]): Part {

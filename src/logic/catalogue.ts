@@ -1,6 +1,7 @@
 // Readable field catalogue of a form definition (German Markdown) for the expert review before a
 // form is published. It is generated from the definition alone, so what gets approved is exactly
 // what gets frozen; tests/forms/catalogue.test.ts keeps docs/formulare/ in sync with the JSON.
+// The flow plan with the reason of every condition is docs/ablaufplan.html (flowPlan.ts).
 import { describeCondition } from './conditions';
 import { formatGermanDate } from './dates';
 import { placeholderIds } from './display';
@@ -161,11 +162,22 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
         ]),
     ...(field.explainer === undefined ? [] : [`Erklärvideo: ${field.explainer}`]),
   ].join('\n');
+  const source = field.fromRole && fieldsById(definition).get(field.fromRole.field);
+  const availability = [
+    input,
+    ...(field.fromRole && source
+      ? [
+          `Legt ${roleLabel(definition, field.fromRole.role)} fest („${source.label}“): liegt dessen ` +
+            'abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt',
+        ]
+      : []),
+    ...(field.because === undefined ? [] : [`Warum: ${field.because}`]),
+  ].join('\n');
   const own = [
     name,
     roleLabel(definition, field.role),
     fieldKind(field),
-    input,
+    availability,
     requirement,
     field.purpose,
   ];
@@ -216,9 +228,9 @@ function dependencyTree(definition: FormDefinition): string[] {
 }
 
 function roleRequired(definition: FormDefinition, role: RoleDefinition): string {
-  return role.requiredIf
-    ? ROLE_CONDITIONS[role.requiredIf.kind](role.requiredIf, definition)
-    : 'immer';
+  if (!role.requiredIf) return 'immer';
+  const condition = ROLE_CONDITIONS[role.requiredIf.kind](role.requiredIf, definition);
+  return role.because === undefined ? condition : `${condition}\nWarum: ${role.because}`;
 }
 
 function quote(text: string): string[] {

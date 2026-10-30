@@ -130,7 +130,12 @@ function Workspace({ registry }: { registry: FormRegistry }) {
     }
     setSession(next);
     setScreen({ kind: 'interview' });
-    setBanner(info);
+    setBanner(
+      info ??
+        (result.warnings.length > 0
+          ? { tone: 'info', text: result.warnings.join(' ') }
+          : undefined),
+    );
   };
 
   const saveInterim = () => {

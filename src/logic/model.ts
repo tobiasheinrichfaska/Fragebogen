@@ -39,6 +39,8 @@ export interface RoleDefinition {
   /** Conditional roles (`requiredIf`) must have `required`. */
   signature: SignatureRequirement;
   requiredIf?: RoleCondition;
+  /** Why the role is needed only under `requiredIf` (the flow plan shows it). */
+  because?: string;
   /**
    * Required text field of this role holding the signer's name. Without it, a conditional role
    * (legal guardian) can only sign with a typed name — the name is mandatory either way.
@@ -119,6 +121,18 @@ export interface FieldDefinition {
   options?: ChoiceOption[];
   /** The field is available for input only while this condition holds; otherwise it is hidden. */
   showIf?: Condition;
+  /**
+   * Why `showIf`, `requiredIf` or `fromRole` apply — the flow plan explains every dependency with
+   * it. Only on fields that have one of them.
+   */
+  because?: string;
+  /**
+   * The answer is decided by another role (e.g. the kind of wage tax by the employer): while that
+   * role's sealed part holds a value, it is copied into this field and the field is fixed (not
+   * asked); without it, the field is asked like any other. Same type; a choice must offer every
+   * option of the other field.
+   */
+  fromRole?: { role: RoleId; field: FieldId };
   /** Columns of a repeat group (table); v1: same role as the table, no conditions. */
   columns?: FieldDefinition[];
   /** Tables only: what one row is called on screen, e.g. "Kind" → "Kind 1", "Kind 2". */

@@ -30,10 +30,14 @@ export interface DraftView {
   deferred?: Part['deferred'];
 }
 
+/**
+ * `fixed`: fields another role decided (fromRole) — they are not asked; the summary shows them.
+ */
 export function interviewSteps(
   definition: FormDefinition,
   role: RoleId,
   draft: DraftView,
+  fixed: ReadonlySet<FieldId> = new Set(),
 ): InterviewStep[] {
   const states = fieldStates(definition, role, draft.data);
   const dependencies = fieldDependencies(definition);
@@ -45,7 +49,10 @@ export function interviewSteps(
   }));
   const questions: InterviewStep[] = definition.sections.flatMap((section) =>
     section.fields
-      .filter((field) => field.role === role && states.get(field.id)?.visible === true)
+      .filter(
+        (field) =>
+          field.role === role && states.get(field.id)?.visible === true && !fixed.has(field.id),
+      )
       .map((field) => ({
         kind: 'question' as const,
         key: `question:${field.id}`,
@@ -95,6 +102,34 @@ export function stepBefore(
   return index > 0 ? steps[index - 1] : undefined;
 }
 
+/**
+ * The step after `key` while changing an answer from the summary: the open follow-ups that the
+ * changed answer (`edited`) opened, directly or through other follow-ups — then back to the
+ * summary instead of walking through every later question again.
+ */
+export function stepAfterEdit(
+  definition: FormDefinition,
+  steps: readonly InterviewStep[],
+  key: string,
+  edited: FieldId,
+): InterviewStep {
+  const dependencies = fieldDependencies(definition);
+  const opened = new Set<FieldId>();
+  const collect = (id: FieldId) => {
+    for (const child of dependencies.get(id)?.enables ?? []) {
+      if (opened.has(child)) continue;
+      opened.add(child);
+      collect(child);
+    }
+  };
+  collect(edited);
+  const from = steps.findIndex((step) => step.key === key);
+  const next = steps
+    .slice(from + 1)
+    .find((step) => step.kind === 'question' && step.state === 'open' && opened.has(step.fieldId));
+  return next ?? steps[steps.length - 1] ?? { kind: 'summary', key: 'summary' };
+}
+
 /** Where to continue, e.g. after loading an interim state: the first open question, else the summary. */
 export function resumeStep(steps: readonly InterviewStep[]): InterviewStep {
   const open = steps.find((step) => step.kind === 'question' && step.state === 'open');
@@ -136,6 +171,7 @@ export function interviewSummary(
   role: RoleId,
   draft: DraftView,
   acknowledged: readonly string[],
+  fixed: ReadonlySet<FieldId> = new Set(),
 ): InterviewSummary {
   const states = fieldStates(definition, role, draft.data);
   const fields = definition.sections.flatMap((section) => section.fields);
@@ -145,6 +181,7 @@ export function interviewSummary(
     .filter(
       (field) =>
         field.role === role &&
+        !fixed.has(field.id) &&
         states.get(field.id)?.visible === false &&
         (draft.data[field.id] ?? null) !== null,
     )

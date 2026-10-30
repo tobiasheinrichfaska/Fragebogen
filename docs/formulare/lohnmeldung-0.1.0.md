@@ -7,7 +7,7 @@
 | --- | --- |
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | 2fa76e7810d7ca38e49cee148ad7b2adb922545ed3c58a36828200354d5e585d |
+| Definition (SHA-256) | d540dfde3762baa61db49467a914760fe55000078f2f6514f8ed00b3f6bcbab3 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -31,8 +31,8 @@
 | Mandantennummer (mandantennummer)<br>Hilfe: Steht auf Schreiben und Abrechnungen. Nicht zur Hand? Leer lassen. | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | optional | Zuordnung bei der lohnabrechnenden Stelle |
 | Abgabe bis zum … des Monats (abgabetag)<br>Frage: Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?<br>Hilfe: Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen. | Arbeitgeber | Zahl, ganzzahlig; Stammdatum, kann auf dem Gerät gemerkt werden | immer | optional | Termin der lohnabrechnenden Stelle für die Monatsmeldung |
 | Ansprechperson für Rückfragen (ansprechpartner) | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Rückfragen |
-| Telefon (ansprechpartnerTelefon) | Arbeitgeber | Text | immer | Pflicht, wenn „E-Mail“ leer ist | Rückfragen |
-| E-Mail (ansprechpartnerEmail) | Arbeitgeber | Text | immer | Pflicht, wenn „Telefon“ leer ist | Rückfragen |
+| Telefon (ansprechpartnerTelefon) | Arbeitgeber | Text | immer<br>Warum: Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht. | Pflicht, wenn „E-Mail“ leer ist | Rückfragen |
+| E-Mail (ansprechpartnerEmail) | Arbeitgeber | Text | immer<br>Warum: Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht. | Pflicht, wenn „Telefon“ leer ist | Rückfragen |
 | Name der Person, die die Meldung abgibt (unterzeichnerName)<br>Hilfe: Ihr Vor- und Familienname. | Arbeitgeber | Text | immer | Pflicht | Unterschrift mit Namen |
 
 ### 2. Mitarbeitende
@@ -58,13 +58,13 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Zuschläge in diesem Monat (fragZuschlaege)<br>Frage: Zahlen Sie in diesem Monat Zuschläge für Nacht-, Sonntags- oder Feiertagsarbeit oder für Überstunden? | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| Zuschläge (zuschlaege)<br>Hilfe: Eine Zeile je Person und Art. Stunden, die zugleich Nacht- und Sonntagsstunden sind, in beiden Zeilen angeben. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Zuschläge in diesem Monat“ mit „Ja“ beantwortet ist | Pflicht | Steuerfreie Zuschläge (§ 3b EStG) |
+| Zuschläge (zuschlaege)<br>Hilfe: Eine Zeile je Person und Art. Stunden, die zugleich Nacht- und Sonntagsstunden sind, in beiden Zeilen angeben. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Zuschläge in diesem Monat“ mit „Ja“ beantwortet ist<br>Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz. | Pflicht | Steuerfreie Zuschläge (§ 3b EStG) |
 | – Person (Personalnummer oder Name) (zuPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Art (zuschlagArt) | Arbeitgeber | Auswahl: Nachtarbeit 20 bis 6 Uhr, davon 0 bis 4 Uhr bei Beginn vor 0 Uhr, Sonntagsarbeit, Feiertagsarbeit (auch 31.12. ab 14 Uhr), 24.12. ab 14 Uhr, 25./26.12. und 1. Mai, Überstundenzuschlag, sonstiger Zuschlag | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Stunden (zuStunden) | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std. | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Bemerkung (zuBemerkung) | Arbeitgeber | Text | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Fehlzeiten in diesem Monat (fragFehlzeiten)<br>Frage: Gab es in diesem Monat Urlaub, Krankheit oder andere Fehlzeiten?<br>Hilfe: Auch halbe Tage und Fehlzeiten, die schon im Vormonat begonnen haben. | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| Fehlzeiten (fehlzeiten)<br>Hilfe: Bitte keine Diagnose und keinen Grund angeben, nur die Art. Fehlzeiten, die über das Monatsende andauern, werden in die nächste Meldung übernommen; tragen Sie dort das Ende nach. | Arbeitgeber | Tabelle; übernommen werden nur Zeilen, bei denen „dauert über das Monatsende an“ mit „Ja“ beantwortet ist | erst wenn „Fehlzeiten in diesem Monat“ mit „Ja“ beantwortet ist | Pflicht | Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV) |
+| Fehlzeiten (fehlzeiten)<br>Hilfe: Bitte keine Diagnose und keinen Grund angeben, nur die Art. Fehlzeiten, die über das Monatsende andauern, werden in die nächste Meldung übernommen; tragen Sie dort das Ende nach. | Arbeitgeber | Tabelle; übernommen werden nur Zeilen, bei denen „dauert über das Monatsende an“ mit „Ja“ beantwortet ist | erst wenn „Fehlzeiten in diesem Monat“ mit „Ja“ beantwortet ist<br>Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz. | Pflicht | Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV) |
 | – Person (Personalnummer oder Name) (fzPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Art (fzArt) | Arbeitgeber | Auswahl: Urlaub, arbeitsunfähig (Krankheit), arbeitsunfähig nach Arbeits- oder Wegeunfall, stationäre Reha oder Kur, Kind krank, unbezahlter Urlaub oder unbezahlte Freistellung, Mutterschutz, Beschäftigungsverbot, Elternzeit, Pflegezeit, Kurzarbeit, bezahlte Freistellung, unentschuldigtes Fehlen, Sonstiges | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – von (fzVon) | Arbeitgeber | Datum | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
@@ -75,7 +75,7 @@
 | – Nachweis (fzNachweis) | Arbeitgeber | Auswahl: elektronische AU, wird bei der Krankenkasse abgerufen, Bescheinigung auf Papier liegt vor, Nachweis fehlt noch, nicht nötig | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | – Bemerkung (fzBemerkung) | Arbeitgeber | Text; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Einmalige Zahlungen in diesem Monat (fragZahlungen)<br>Frage: Gibt es einmalige Zahlungen, Vorschüsse, Sachzuwendungen oder Erstattungen?<br>Hilfe: Bitte früh melden: Für Einmalzahlungen darf nicht mit den Werten des Vormonats gerechnet werden (§ 23 Abs. 1 SGB IV). | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| Einmalige Zahlungen, Vorschüsse und Sachzuwendungen (zahlungen) | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Einmalige Zahlungen in diesem Monat“ mit „Ja“ beantwortet ist | Pflicht | Lohnabrechnung des Abrechnungsmonats |
+| Einmalige Zahlungen, Vorschüsse und Sachzuwendungen (zahlungen) | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Einmalige Zahlungen in diesem Monat“ mit „Ja“ beantwortet ist<br>Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz. | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Person (Personalnummer oder Name) (zaPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Art (zaArt) | Arbeitgeber | Auswahl: Prämie, Bonus oder Provision, Urlaubsgeld, Weihnachtsgeld oder 13. Monatsgehalt, Abfindung, Vorschuss oder Abschlag (schon ausgezahlt), einmalige Sachzuwendung, Mahlzeiten, Reisekostenerstattung, Auslagenersatz, Sonstiges | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Betrag (brutto) (zaBetrag) | Arbeitgeber | Betrag in Euro | immer | optional | Lohnabrechnung des Abrechnungsmonats |
@@ -90,7 +90,7 @@
 | – endet am (llBis) | Arbeitgeber | Datum | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | – Bemerkung (llBemerkung) | Arbeitgeber | Text | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Ein- und Austritte (fragEinAustritte)<br>Frage: Hat jemand angefangen oder aufgehört, oder steht ein Austritt fest?<br>Hilfe: Neue Beschäftigte brauchen zusätzlich den Personalfragebogen; in bestimmten Branchen muss die Sofortmeldung vor dem ersten Arbeitstag erstattet sein. | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| Ein- und Austritte (einAustritte) | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Ein- und Austritte“ mit „Ja“ beantwortet ist | Pflicht | Lohnabrechnung des Abrechnungsmonats |
+| Ein- und Austritte (einAustritte) | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Ein- und Austritte“ mit „Ja“ beantwortet ist<br>Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz. | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Person (Personalnummer oder Name) (eaPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Eintritt oder Austritt (eaArt) | Arbeitgeber | Auswahl: Eintritt, Austritt | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Datum (eaDatum)<br>Hilfe: Eintritt: erster Arbeitstag. Austritt: letzter Tag des Arbeitsverhältnisses. | Arbeitgeber | Datum | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
@@ -99,14 +99,14 @@
 | – Unterlagen bei Eintritt (eaUnterlagen) | Arbeitgeber | Auswahl: Personalfragebogen liegt vor, Personalfragebogen folgt | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | – Bemerkung (eaBemerkung) | Arbeitgeber | Text | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Änderungen bei einer Person (fragAenderungen)<br>Frage: Hat sich bei einer Person etwas geändert (Anschrift, Krankenkasse, Name …)?<br>Hilfe: Lohn und Wochenstunden ändern Sie direkt bei den Mitarbeitenden. | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
-| Änderungen (aenderungen)<br>Hilfe: Steuerklasse, Kinder und Konfession bitte nicht melden – sie kommen elektronisch. Eine neue Bankverbindung nur nach schriftlicher Mitteilung der Person selbst: Anrufe oder E-Mails mit neuer Bankverbindung sind ein häufiger Betrugsversuch. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Änderungen bei einer Person“ mit „Ja“ beantwortet ist | Pflicht | Lohnabrechnung des Abrechnungsmonats |
+| Änderungen (aenderungen)<br>Hilfe: Steuerklasse, Kinder und Konfession bitte nicht melden – sie kommen elektronisch. Eine neue Bankverbindung nur nach schriftlicher Mitteilung der Person selbst: Anrufe oder E-Mails mit neuer Bankverbindung sind ein häufiger Betrugsversuch. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Änderungen bei einer Person“ mit „Ja“ beantwortet ist<br>Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz. | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Person (Personalnummer oder Name) (aePerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Was hat sich geändert? (aeArt) | Arbeitgeber | Auswahl: Anschrift, Bankverbindung, Krankenkasse, Name, Tätigkeit, Befristung oder Vertragsende, neue Zusatzleistung, Sonstiges | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – Neue Angabe (aeNeu) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – gilt ab (aeGiltAb) | Arbeitgeber | Datum | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats |
 | – schriftliche Mitteilung der Person liegt vor (aeSchriftlich) | Arbeitgeber | Ja/Nein | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 | Pfändung oder Abtretung eingegangen (fragPfaendung)<br>Frage: Ist eine Pfändung, eine Vorpfändung oder eine Abtretung eingegangen?<br>Hilfe: Bitte schicken Sie das Schreiben sofort, nicht erst mit der Monatsmeldung: Die Erklärung als Drittschuldner ist binnen zwei Wochen fällig. | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Drittschuldnererklärung binnen zwei Wochen (§ 840 ZPO) |
-| Angaben zur Pfändung (pfaendungAngaben)<br>Hilfe: Wer ist betroffen, welche Art von Schreiben, an welchem Tag zugestellt? | Arbeitgeber | Text, mehrzeilig; wird nicht aus einer anderen Datei übernommen | erst wenn „Pfändung oder Abtretung eingegangen“ mit „Ja“ beantwortet ist | Pflicht | § 840 ZPO |
+| Angaben zur Pfändung (pfaendungAngaben)<br>Hilfe: Wer ist betroffen, welche Art von Schreiben, an welchem Tag zugestellt? | Arbeitgeber | Text, mehrzeilig; wird nicht aus einer anderen Datei übernommen | erst wenn „Pfändung oder Abtretung eingegangen“ mit „Ja“ beantwortet ist<br>Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz. | Pflicht | § 840 ZPO |
 | Weitere Hinweise (bemerkungen) | Arbeitgeber | Text, mehrzeilig; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats |
 
 ## Abhängigkeiten

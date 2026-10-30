@@ -4,7 +4,9 @@
 // block and are never sealed, so verification stays independent of other roles.
 import { describeCondition, evaluateCondition, forEachLeaf } from './conditions';
 import { formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
-import { fieldsById, ownerOfField, visibility } from './form';
+import { displayValue } from './display';
+import { fieldsById, ownerOfField, roleOf, visibility } from './form';
+import { canonicalize } from './jcs';
 import type {
   CheckHint,
   FieldDefinition,
@@ -143,6 +145,38 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
       message: hint.message,
       ...(hint.source === undefined ? {} : { source: hint.source }),
       detail,
+    });
+  }
+  return [...results, ...fromRoleHints(questionnaire, definition, valueOf)];
+}
+
+/**
+ * A field another role decides (fromRole) that differs from that role's answer — e.g. the person
+ * signed before the employer changed the kind of wage tax. An own extra option ("Weiß ich nicht")
+ * is no contradiction.
+ */
+function fromRoleHints(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  valueOf: (id: FieldId) => FieldValue,
+): HintResult[] {
+  const fields = fieldsById(definition);
+  const results: HintResult[] = [];
+  for (const field of fields.values()) {
+    const from = field.fromRole;
+    const source = from && fields.get(from.field);
+    if (!from || !source) continue;
+    if (!currentPart(questionnaire, field.role) || !currentPart(questionnaire, from.role)) continue;
+    const own = valueOf(field.id);
+    const decided = valueOf(source.id);
+    if (own === null || decided === null || canonicalize(own) === canonicalize(decided)) continue;
+    if (source.type === 'choice' && !source.options?.some((option) => option.id === own)) continue;
+    const ownRole = roleOf(definition, field.role)?.label ?? field.role;
+    const fromRole = roleOf(definition, from.role)?.label ?? from.role;
+    results.push({
+      id: `fromRole:${field.id}`,
+      message: `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decided)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
+      detail: [],
     });
   }
   return results;

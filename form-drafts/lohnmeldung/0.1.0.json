@@ -109,7 +109,8 @@
           "requiredIf": {
             "field": "ansprechpartnerEmail",
             "answered": false
-          }
+          },
+          "because": "Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht."
         },
         {
           "id": "ansprechpartnerEmail",
@@ -121,7 +122,8 @@
           "requiredIf": {
             "field": "ansprechpartnerTelefon",
             "answered": false
-          }
+          },
+          "because": "Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht."
         },
         {
           "id": "unterzeichnerName",
@@ -311,6 +313,7 @@
             "field": "fragZuschlaege",
             "equals": true
           },
+          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
           "carryOver": false,
           "rowLabel": "Zuschlag",
           "columns": [
@@ -403,6 +406,7 @@
             "field": "fragFehlzeiten",
             "equals": true
           },
+          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
           "rowLabel": "Fehlzeit",
           "carryRowsIf": {
             "field": "fzDauertAn",
@@ -591,6 +595,7 @@
             "field": "fragZahlungen",
             "equals": true
           },
+          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
           "carryOver": false,
           "rowLabel": "Zahlung",
           "columns": [
@@ -804,6 +809,7 @@
             "field": "fragEinAustritte",
             "equals": true
           },
+          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
           "carryOver": false,
           "rowLabel": "Ein- oder Austritt",
           "columns": [
@@ -941,6 +947,7 @@
             "field": "fragAenderungen",
             "equals": true
           },
+          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
           "carryOver": false,
           "rowLabel": "Änderung",
           "columns": [
@@ -1043,6 +1050,7 @@
             "field": "fragPfaendung",
             "equals": true
           },
+          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
           "carryOver": false,
           "multiline": true
         },

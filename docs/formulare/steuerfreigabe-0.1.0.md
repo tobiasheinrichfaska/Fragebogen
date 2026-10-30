@@ -7,7 +7,7 @@
 | --- | --- |
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
-| Definition (SHA-256) | 5292a0d1510cb78bc3f49dcd30f77ab9e8948cac1f1283e556f5e9eab411e1c5 |
+| Definition (SHA-256) | d80abc593068acadaab0398abc630703bfe4398086b697678096a16fb8c424ad |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung. |
 | Empfänger | Kanzlei |
@@ -18,7 +18,7 @@
 | --- | --- | --- | --- | --- |
 | Kanzlei (kanzlei) | Pflicht | immer | – | Wir haben die oben bezeichnete Fassung der Steuererklärung zur Prüfung vorgelegt. |
 | Mandantin oder Mandant (mandant) | Pflicht | immer | – | Ich bestätige meine Angaben und meine Entscheidung oben. |
-| Ehegatte oder Lebenspartner (ehegatte) | Pflicht | nur wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt) | aus „Ihr Vor- und Familienname“ | Ich bestätige meine Angaben und meine Entscheidung oben. |
+| Ehegatte oder Lebenspartner (ehegatte) | Pflicht | nur wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb gibt auch der andere sie frei. | aus „Ihr Vor- und Familienname“ | Ich bestätige meine Angaben und meine Entscheidung oben. |
 
 ## Felder
 
@@ -31,11 +31,11 @@
 | Steuerjahr (steuerjahr)<br>Hilfe: Zum Beispiel 2025. | Kanzlei | Text | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Erklärungen (erklaerungen)<br>Frage: Welche Erklärungen werden freigegeben?<br>Hilfe: Je Steuerjahr eine Freigabe; mehrere Erklärungen desselben Jahres sind möglich. | Kanzlei | Mehrfachauswahl: Einkommensteuer, Umsatzsteuer, Gewerbesteuer, Feststellungserklärung, sonstige Erklärung | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Art der Erklärung (erklaerungArt) | Kanzlei | Auswahl: erstmalige Erklärung, berichtigte Erklärung | immer | Pflicht | Berichtigung nach § 153 AO erkennbar |
-| Veranlagungsart (veranlagung) | Kanzlei | Auswahl: Einzelveranlagung, Zusammenveranlagung (§ 26b EStG), Einzelveranlagung von Ehegatten (§ 26a EStG) | erst wenn bei „Erklärungen“ „Einkommensteuer“ angekreuzt ist | Pflicht | Entscheidet, ob auch der Ehegatte oder Lebenspartner freigeben muss (§ 25 Abs. 3 Satz 2 EStG) |
-| Vor- und Familienname des Ehegatten oder Lebenspartners (ehegatteNameKanzlei) | Kanzlei | Text | erst wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist | Pflicht | Zuordnung; Abgleich mit der Angabe des Ehegatten |
+| Veranlagungsart (veranlagung) | Kanzlei | Auswahl: Einzelveranlagung, Zusammenveranlagung (§ 26b EStG), Einzelveranlagung von Ehegatten (§ 26a EStG) | erst wenn bei „Erklärungen“ „Einkommensteuer“ angekreuzt ist<br>Warum: Eine Veranlagungsart gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner freigibt. | Pflicht | Entscheidet, ob auch der Ehegatte oder Lebenspartner freigeben muss (§ 25 Abs. 3 Satz 2 EStG) |
+| Vor- und Familienname des Ehegatten oder Lebenspartners (ehegatteNameKanzlei) | Kanzlei | Text | erst wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist<br>Warum: Nur bei Zusammenveranlagung gibt der Ehegatte oder Lebenspartner mit frei; dafür nennt die Kanzlei seinen Namen. | Pflicht | Zuordnung; Abgleich mit der Angabe des Ehegatten |
 | Steuernummer (steuernummer) | Kanzlei | Text | immer | optional | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Voraussichtliches Ergebnis laut Steuerberechnung (ergebnis)<br>Hilfe: Vorausberechnung; maßgeblich ist der Bescheid. | Kanzlei | Auswahl: Erstattung, Nachzahlung, ausgeglichen, keine Berechnung | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
-| Betrag laut Steuerberechnung (betrag)<br>Hilfe: Summe aus Einkommensteuer, Solidaritätszuschlag und Kirchensteuer. | Kanzlei | Betrag in Euro | erst wenn bei „Voraussichtliches Ergebnis laut Steuerberechnung“ „Erstattung“ oder „Nachzahlung“ gewählt ist | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
+| Betrag laut Steuerberechnung (betrag)<br>Hilfe: Summe aus Einkommensteuer, Solidaritätszuschlag und Kirchensteuer. | Kanzlei | Betrag in Euro | erst wenn bei „Voraussichtliches Ergebnis laut Steuerberechnung“ „Erstattung“ oder „Nachzahlung“ gewählt ist<br>Warum: Nur bei einer Erstattung oder Nachzahlung gibt es einen Betrag laut Steuerberechnung; er bezeichnet die vorgelegte Fassung (§ 87d Abs. 3 AO). | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Vorgelegte Unterlagen (vorgelegt) | Kanzlei | Mehrfachauswahl: Formularansicht aller Anlagen, Steuerberechnung, Liste der übernommenen Daten Dritter (eDaten), Erläuterungsschreiben, Sonstiges | immer | Pflicht | Nachweis der „leicht nachprüfbaren Form“ (§ 87d Abs. 3 AO) |
 | Bezeichnung der Vorlage (vorlageBezeichnung)<br>Hilfe: Zum Beispiel „ESt 2025, Stand 28.10.2026, 34 Seiten“. | Kanzlei | Text | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Datum der Vorlage (vorlageDatum) | Kanzlei | Datum | immer | Pflicht | Unverzügliche Prüfung nachvollziehbar |
@@ -51,7 +51,7 @@
 | Prüfung der vorgelegten Daten (mandantGeprueft)<br>Frage: Haben Sie die vorgelegten Daten auf Vollständigkeit und Richtigkeit geprüft?<br>Hilfe: Prüfen Sie auch die übernommenen Daten Dritter, zum Beispiel die Lohnsteuerbescheinigung: Sie gelten als Ihre Angaben, wenn Sie nichts anderes sagen. | Mandantin oder Mandant | Ja/Nein | immer | Pflicht | Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO) |
 | Alle Unterlagen gegeben (mandantVollstaendig)<br>Frage: Haben Sie der Kanzlei alle Unterlagen und Angaben gegeben, die für diese Erklärung wichtig sind? | Mandantin oder Mandant | Ja/Nein | immer | Pflicht | Vollständigkeit (§ 150 Abs. 2 AO) |
 | Ihre Entscheidung (mandantEntscheidung)<br>Hilfe: Ihre Zustimmung gilt nur für die oben bezeichnete Fassung. | Mandantin oder Mandant | Auswahl: Ich stimme der elektronischen Übermittlung zu., Ich stimme noch nicht zu – bitte zuerst ändern. | immer | Pflicht | Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO) |
-| Was soll geändert werden? (mandantAenderung) | Mandantin oder Mandant | Text, mehrzeilig | erst wenn bei „Ihre Entscheidung“ „Ich stimme noch nicht zu – bitte zuerst ändern.“ gewählt ist | Pflicht | Rückmeldung an die Kanzlei |
+| Was soll geändert werden? (mandantAenderung) | Mandantin oder Mandant | Text, mehrzeilig | erst wenn bei „Ihre Entscheidung“ „Ich stimme noch nicht zu – bitte zuerst ändern.“ gewählt ist<br>Warum: Wer noch nicht zustimmt, sagt, was vorher geändert werden soll. | Pflicht | Rückmeldung an die Kanzlei |
 
 ### 3. Freigabe des Ehegatten oder Lebenspartners
 
@@ -60,7 +60,7 @@
 | Ihr Vor- und Familienname (ehegatteName) | Ehegatte oder Lebenspartner | Text | immer | Pflicht | Unterschrift mit Namen; Abgleich mit der Angabe der Kanzlei |
 | Prüfung der vorgelegten Daten (ehegatteGeprueft)<br>Frage: Haben Sie die vorgelegten Daten auf Vollständigkeit und Richtigkeit geprüft? | Ehegatte oder Lebenspartner | Ja/Nein | immer | Pflicht | Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO) |
 | Ihre Entscheidung (ehegatteEntscheidung)<br>Hilfe: Ihre Zustimmung gilt nur für die oben bezeichnete Fassung. | Ehegatte oder Lebenspartner | Auswahl: Ich stimme der elektronischen Übermittlung zu., Ich stimme noch nicht zu – bitte zuerst ändern. | immer | Pflicht | Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO) |
-| Was soll geändert werden? (ehegatteAenderung) | Ehegatte oder Lebenspartner | Text, mehrzeilig | erst wenn bei „Ihre Entscheidung“ „Ich stimme noch nicht zu – bitte zuerst ändern.“ gewählt ist | Pflicht | Rückmeldung an die Kanzlei |
+| Was soll geändert werden? (ehegatteAenderung) | Ehegatte oder Lebenspartner | Text, mehrzeilig | erst wenn bei „Ihre Entscheidung“ „Ich stimme noch nicht zu – bitte zuerst ändern.“ gewählt ist<br>Warum: Wer noch nicht zustimmt, sagt, was vorher geändert werden soll. | Pflicht | Rückmeldung an die Kanzlei |
 
 ## Abhängigkeiten
 

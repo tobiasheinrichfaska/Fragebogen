@@ -11,19 +11,30 @@ import {
   interviewSummary,
   resumeStep,
   stepAfter,
+  stepAfterEdit,
   stepBefore,
   type InterviewStep,
   type InterviewSummary,
 } from './interview';
 import { ISSUE_MESSAGES, type IssueCode } from './issues';
 import { applyMasterData, type MasterDataSkip } from './masterData';
-import type { Questionnaire, RoleDefinition, RoleId, Sha256Hex, SystemNote } from './model';
+import { displayValue } from './display';
+import type {
+  FieldId,
+  Questionnaire,
+  RoleDefinition,
+  RoleId,
+  Sha256Hex,
+  SystemNote,
+} from './model';
 import { describePrefill, prefillFrom } from './prefill';
 import {
   TRANSITION_MESSAGES,
+  adoptFromOtherRoles,
   createQuestionnaire,
   currentPart,
   deferQuestion,
+  fixedByOtherRoles,
   latestSealed,
   receivedPartFor,
   reopenPart,
@@ -50,6 +61,8 @@ export interface Session {
   role?: RoleId;
   /** Current interview step of that role. */
   stepKey?: string;
+  /** Answer being changed from the summary: "Weiter" returns there after its follow-ups. */
+  editing?: FieldId;
   /** Notices confirmed per role in this session (the seal needs them). */
   acknowledged: Readonly<Record<RoleId, readonly string[]>>;
   /** When this device got each sealed part, by contentHash. */
@@ -79,6 +92,14 @@ export function transitionMessage(
     const [fieldId = '', issue = ''] = result.detail;
     const text = ISSUE_MESSAGES[issue as IssueCode] ?? TRANSITION_MESSAGES.invalidValue;
     return { message: text, detail: [label(fieldId)] };
+  }
+  if (result.code === 'fixedByOtherRole') {
+    const [fieldId = '', from = ''] = result.detail;
+    const role = form.definition.roles.find((candidate) => candidate.id === from);
+    return {
+      message: TRANSITION_MESSAGES.fixedByOtherRole,
+      detail: [label(fieldId), role?.label ?? from],
+    };
   }
   const detail =
     result.code === 'missingRequired' || result.code === 'fieldNotAvailable'
@@ -211,10 +232,36 @@ function atStart(session: Session, role: RoleId): Partial<Session> {
   return { role, stepKey: stepsFor({ ...session, role })[0]?.key ?? 'summary' };
 }
 
+/** Copies what other roles decided into the role's draft (fromRole); replaced answers are named. */
+function withAdopted(result: SessionResult, role: RoleId): SessionResult {
+  if (!result.ok) return result;
+  const { session } = result;
+  const adoption = adoptFromOtherRoles(session.questionnaire, session.form, role);
+  if (adoption.adopted.length === 0) return result;
+  const fields = fieldsById(session.form.definition);
+  const after = currentPart(adoption.questionnaire, role)?.data ?? {};
+  const notes = adoption.replaced.map((id) => {
+    const field = fields.get(id);
+    return field
+      ? `Aus dem abgeschlossenen Teil der anderen Station übernommen: „${field.label}“ ist jetzt „${displayValue(field, after[id] ?? null)}“.`
+      : id;
+  });
+  return ok({ ...session, questionnaire: adoption.questionnaire, dirty: true }, [
+    ...result.warnings,
+    ...notes,
+  ]);
+}
+
 /** Takes the role to the device: continues its draft or opens its first version. */
 export function enterRole(session: Session, role: RoleId): SessionResult {
+  return withAdopted(enterRoleAsIs(leaveRole(session), role), role);
+}
+
+function enterRoleAsIs(session: Session, role: RoleId): SessionResult {
   const part = currentPart(session.questionnaire, role);
-  if (part?.status === 'draft') return ok({ ...session, ...atResume(session, role) });
+  if (part?.status === 'draft') {
+    return ok({ ...session, ...atResume(adoptedView(session, role), role) });
+  }
   if (part) {
     return {
       ok: false,
@@ -230,15 +277,23 @@ export function enterRole(session: Session, role: RoleId): SessionResult {
 
 /** A change after sealing: the next version starts from the sealed data, at the summary. */
 export function startNewVersion(session: Session, role: RoleId): SessionResult {
-  return fromTransition(session, startPart(session.questionnaire, session.form, role), (q) =>
-    atSummary({ ...session, questionnaire: q }, role),
+  const base = leaveRole(session);
+  return withAdopted(
+    fromTransition(base, startPart(base.questionnaire, base.form, role), (q) =>
+      atSummary({ ...base, questionnaire: q }, role),
+    ),
+    role,
   );
 }
 
 /** "Unterschrift zurücknehmen" before passing on: the sealed version becomes a draft again. */
 export function reopen(session: Session, role: RoleId): SessionResult {
-  return fromTransition(session, reopenPart(session.questionnaire, session.form, role), (q) =>
-    atSummary({ ...session, questionnaire: q }, role),
+  const base = leaveRole(session);
+  return withAdopted(
+    fromTransition(base, reopenPart(base.questionnaire, base.form, role), (q) =>
+      atSummary({ ...base, questionnaire: q }, role),
+    ),
+    role,
   );
 }
 
@@ -246,14 +301,39 @@ export function leaveRole(session: Session): Session {
   const rest: Session = { ...session };
   Reflect.deleteProperty(rest, 'role');
   Reflect.deleteProperty(rest, 'stepKey');
+  Reflect.deleteProperty(rest, 'editing');
   return rest;
+}
+
+/** The session with the other roles' decisions already copied in (for computing steps). */
+function adoptedView(session: Session, role: RoleId): Session {
+  return {
+    ...session,
+    questionnaire: adoptFromOtherRoles(session.questionnaire, session.form, role).questionnaire,
+  };
+}
+
+/** Fields of the active role that another role decided, with that role's label. */
+export function fixedFields(session: Session): ReadonlyMap<FieldId, string> {
+  if (session.role === undefined) return new Map();
+  const { definition } = session.form;
+  const labels = new Map<FieldId, string>();
+  for (const [id, { from }] of fixedByOtherRoles(session.questionnaire, definition, session.role)) {
+    labels.set(id, definition.roles.find((role) => role.id === from)?.label ?? from);
+  }
+  return labels;
 }
 
 export function stepsFor(session: Session): InterviewStep[] {
   const part =
     session.role === undefined ? undefined : currentPart(session.questionnaire, session.role);
   if (!part || part.status !== 'draft' || session.role === undefined) return [];
-  return interviewSteps(session.form.definition, session.role, part);
+  return interviewSteps(
+    session.form.definition,
+    session.role,
+    part,
+    new Set(fixedFields(session).keys()),
+  );
 }
 
 export function currentStep(session: Session): InterviewStep | undefined {
@@ -262,13 +342,25 @@ export function currentStep(session: Session): InterviewStep | undefined {
 }
 
 export function goTo(session: Session, key: string): Session {
-  return { ...session, stepKey: key };
+  const rest: Session = { ...session, stepKey: key };
+  Reflect.deleteProperty(rest, 'editing');
+  return rest;
+}
+
+/** "ändern" in the summary: after this answer and the follow-ups it opens, back to the summary. */
+export function editFromSummary(session: Session, fieldId: FieldId): Session {
+  return { ...session, stepKey: `question:${fieldId}`, editing: fieldId };
 }
 
 export function nextStep(session: Session): Session {
   const steps = stepsFor(session);
-  const next = stepAfter(steps, session.stepKey ?? '');
-  return next ? { ...session, stepKey: next.key } : session;
+  const key = session.stepKey ?? '';
+  if (session.editing !== undefined && steps.some((step) => step.key === key)) {
+    const next = stepAfterEdit(session.form.definition, steps, key, session.editing);
+    return next.kind === 'summary' ? goTo(session, next.key) : { ...session, stepKey: next.key };
+  }
+  const next = stepAfter(steps, key);
+  return next ? goTo(session, next.key) : session;
 }
 
 export function previousStep(session: Session): Session {
@@ -305,7 +397,13 @@ export function summaryOf(session: Session): InterviewSummary | undefined {
   const role = session.role;
   const part = role === undefined ? undefined : currentPart(session.questionnaire, role);
   if (role === undefined || part?.status !== 'draft') return undefined;
-  return interviewSummary(session.form.definition, role, part, session.acknowledged[role] ?? []);
+  return interviewSummary(
+    session.form.definition,
+    role,
+    part,
+    session.acknowledged[role] ?? [],
+    new Set(fixedFields(session).keys()),
+  );
 }
 
 export interface SealRequest {

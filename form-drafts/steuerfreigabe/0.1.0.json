@@ -34,6 +34,7 @@
           "equals": "zusammen"
         }
       },
+      "because": "Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb gibt auch der andere sie frei.",
       "signerNameField": "ehegatteName"
     }
   ],
@@ -130,6 +131,7 @@
             "field": "erklaerungen",
             "contains": "est"
           },
+          "because": "Eine Veranlagungsart gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner freigibt.",
           "options": [
             {
               "id": "einzel",
@@ -155,7 +157,8 @@
           "showIf": {
             "field": "veranlagung",
             "equals": "zusammen"
-          }
+          },
+          "because": "Nur bei Zusammenveranlagung gibt der Ehegatte oder Lebenspartner mit frei; dafür nennt die Kanzlei seinen Namen."
         },
         {
           "id": "steuernummer",
@@ -203,7 +206,8 @@
           "showIf": {
             "field": "ergebnis",
             "in": ["erstattung", "nachzahlung"]
-          }
+          },
+          "because": "Nur bei einer Erstattung oder Nachzahlung gibt es einen Betrag laut Steuerberechnung; er bezeichnet die vorgelegte Fassung (§ 87d Abs. 3 AO)."
         },
         {
           "id": "vorgelegt",
@@ -360,6 +364,7 @@
             "field": "mandantEntscheidung",
             "equals": "aendern"
           },
+          "because": "Wer noch nicht zustimmt, sagt, was vorher geändert werden soll.",
           "multiline": true
         }
       ]
@@ -415,6 +420,7 @@
             "field": "ehegatteEntscheidung",
             "equals": "aendern"
           },
+          "because": "Wer noch nicht zustimmt, sagt, was vorher geändert werden soll.",
           "multiline": true
         }
       ]

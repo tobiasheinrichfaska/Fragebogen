@@ -182,6 +182,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     'confirmationText',
     'signature',
     'requiredIf',
+    'because',
     'signerNameField',
   ]);
   if (!o) return undefined;
@@ -194,6 +195,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     o.requiredIf === undefined
       ? undefined
       : decodeRoleCondition(d, o.requiredIf, `${path}.requiredIf`);
+  const roleBecause = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
   const signerNameField =
     o.signerNameField === undefined
       ? undefined
@@ -214,6 +216,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     confirmationText,
     signature,
     ...(requiredIf === undefined ? {} : { requiredIf }),
+    ...(roleBecause === undefined ? {} : { because: roleBecause }),
     ...(signerNameField === undefined ? {} : { signerNameField }),
   };
 }
@@ -271,6 +274,8 @@ const FIELD_KEYS = [
   'unit',
   'decimals',
   'signed',
+  'because',
+  'fromRole',
 ] as const;
 
 function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | undefined {
@@ -346,6 +351,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const unit = o.unit === undefined ? undefined : d.string(o.unit, `${path}.unit`);
   const decimals = o.decimals === undefined ? undefined : d.integer(o.decimals, `${path}.decimals`);
   const signed = o.signed === undefined ? undefined : d.boolean(o.signed, `${path}.signed`);
+  const because = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
+  const fromRole = o.fromRole === undefined ? undefined : decodeFromRole(d, o.fromRole, path);
   if (
     id === undefined ||
     role === undefined ||
@@ -383,7 +390,22 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(unit === undefined ? {} : { unit }),
     ...(decimals === undefined ? {} : { decimals }),
     ...(signed === undefined ? {} : { signed }),
+    ...(because === undefined ? {} : { because }),
+    ...(fromRole === undefined ? {} : { fromRole }),
   };
+}
+
+function decodeFromRole(
+  d: Decoder,
+  raw: unknown,
+  fieldPath: string,
+): FieldDefinition['fromRole'] | undefined {
+  const path = `${fieldPath}.fromRole`;
+  const o = d.object(raw, path, ['role', 'field']);
+  if (!o) return undefined;
+  const role = d.string(o.role, `${path}.role`, ID);
+  const field = d.string(o.field, `${path}.field`, ID);
+  return role === undefined || field === undefined ? undefined : { role, field };
 }
 
 function decodeOption(d: Decoder, raw: unknown, path: string): ChoiceOption | undefined {
@@ -1025,6 +1047,57 @@ function checkHintRules({ definition, fields, report }: CheckContext): void {
   });
 }
 
+/**
+ * fromRole: another role's top-level field of the same type, itself not taken from a third role;
+ * a choice offers every option of the other field (it may add its own, e.g. "Weiß ich nicht").
+ */
+function fromRoleFields({ fields, report }: CheckContext): void {
+  for (const { field, path } of fields.values()) {
+    const from = field.fromRole;
+    if (!from) continue;
+    const at = `${path}.fromRole`;
+    if (from.role === field.role) {
+      report(`${at}.role`, 'must name another role');
+      continue;
+    }
+    const source = fields.get(from.field);
+    if (!source || source.isColumn) {
+      report(`${at}.field`, `unknown field "${from.field}"`);
+      continue;
+    }
+    if (source.field.role !== from.role) {
+      report(`${at}.field`, `"${from.field}" belongs to role "${source.field.role}"`);
+    }
+    if (source.field.fromRole) report(`${at}.field`, 'the other field is taken over itself');
+    if (source.field.type !== field.type) {
+      report(`${at}.field`, `must have the type of "${from.field}" (${source.field.type})`);
+    }
+    if (field.type === 'repeatGroup') report(at, 'tables cannot be taken from another role');
+    if (field.initial !== undefined)
+      report(`${path}.initial`, 'a taken-over field has no preselection');
+    const own = new Set((field.options ?? []).map((option) => option.id));
+    for (const option of source.field.options ?? []) {
+      if (!own.has(option.id))
+        report(`${path}.options`, `option "${option.id}" of the other field is missing`);
+    }
+  }
+}
+
+/** `because` explains a condition, so only fields with one carry it. */
+function becauseTexts({ definition, fields, report }: CheckContext): void {
+  for (const { field, path } of fields.values()) {
+    if (field.because === undefined) continue;
+    if (!field.showIf && !field.requiredIf && !field.fromRole) {
+      report(`${path}.because`, 'only fields with showIf, requiredIf or fromRole explain them');
+    }
+  }
+  definition.roles.forEach((role, i) => {
+    if (role.because !== undefined && !role.requiredIf) {
+      report(`$.roles[${i}].because`, 'only conditional roles explain their condition');
+    }
+  });
+}
+
 const DEFINITION_RULES: readonly DefinitionRule[] = [
   uniqueIds,
   fieldShapes,
@@ -1040,4 +1113,6 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   interviewOrder,
   checkHintRules,
   placeholders,
+  fromRoleFields,
+  becauseTexts,
 ];

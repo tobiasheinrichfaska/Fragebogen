@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { displayValue, editValue } from '../logic/display';
 import { fillPlaceholders } from '../logic/display';
-import { fieldsById, fieldsOfRole, roleOf } from '../logic/form';
+import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { interviewProgress } from '../logic/interview';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataOf } from '../logic/masterData';
@@ -14,6 +14,8 @@ import {
   answer,
   currentStep,
   defer,
+  editFromSummary,
+  fixedFields,
   goTo,
   nextStep,
   previousStep,
@@ -69,6 +71,15 @@ export function InterviewScreen(props: Props) {
       )}
       {step.kind === 'summary' && <SummaryStep {...props} />}
       <p className="pause">
+        {step.kind !== 'summary' && (
+          <button
+            type="button"
+            className="link"
+            onClick={() => props.onSession(goTo(session, 'summary'))}
+          >
+            Zur Zusammenfassung – alle Angaben ansehen und ändern
+          </button>
+        )}
         <button type="button" className="link" onClick={onPause}>
           Unterbrechen – zur Übersicht (Angaben bleiben erhalten)
         </button>
@@ -204,6 +215,17 @@ function QuestionStep({
       (id) => part?.data[id],
     );
 
+  // A voluntary yes/no or single choice can be taken back; a required one only changed.
+  const clearable =
+    !step.required &&
+    (field.type === 'boolean' || field.type === 'choice') &&
+    value !== undefined &&
+    value !== null;
+  const clear = () => {
+    const committed = commit(null);
+    if (committed) onSession(committed);
+  };
+
   const putBack = () => {
     const result = defer(session, field.id);
     if (!result.ok) {
@@ -234,6 +256,13 @@ function QuestionStep({
           onChoose={choose}
           onSubmit={next}
         />
+        {clearable && (
+          <p className="clear-choice">
+            <button type="button" className="link" onClick={clear}>
+              Auswahl aufheben
+            </button>
+          </p>
+        )}
         {field.quickAnswers && (
           <div className="quick-answers">
             {field.quickAnswers.map((quick) => (
@@ -277,9 +306,12 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
   if (!summary || role === undefined || !part) return null;
   const fields = fieldsById(definition);
   const label = (id: string) => fields.get(id)?.label ?? id;
-  const visible = new Set(
-    stepsFor(session).flatMap((step) => (step.kind === 'question' ? [step.fieldId] : [])),
-  );
+  const fixed = fixedFields(session);
+  const states = fieldStates(definition, role, part.data);
+  const visible = new Set([
+    ...stepsFor(session).flatMap((step) => (step.kind === 'question' ? [step.fieldId] : [])),
+    ...[...fixed.keys()].filter((id) => states.get(id)?.visible === true),
+  ]);
   const others = definition.roles.filter(
     (other) => other.id !== role && latestSealed(session.questionnaire, other.id),
   );
@@ -339,13 +371,17 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
                   <dt>{field.label}</dt>
                   <dd>{displayValue(field, part.data[field.id])}</dd>
                   <dd>
-                    <button
-                      type="button"
-                      className="link"
-                      onClick={() => onSession(goTo(session, `question:${field.id}`))}
-                    >
-                      ändern
-                    </button>
+                    {fixed.has(field.id) ? (
+                      <span className="muted">festgelegt von: {fixed.get(field.id)}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="link"
+                        onClick={() => onSession(editFromSummary(session, field.id))}
+                      >
+                        ändern
+                      </button>
+                    )}
                   </dd>
                 </div>
               ))}

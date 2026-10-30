@@ -305,6 +305,16 @@ textarea {
   margin: 1rem 0 0;
 }
 
+.pause {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.clear-choice {
+  margin: 0.5rem 0 0;
+}
+
 .notice-text ul {
   padding-left: 1.25rem;
 }

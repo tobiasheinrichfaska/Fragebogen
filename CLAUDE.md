@@ -73,6 +73,12 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/consistency.ts`                            | `contradictions` from the form's `consistencyRules` (text compared case-insensitively)                                                                                                                                                                                                                                                                         |
 | `src/logic/provenance.ts`                             | `signatureLayout`: one numbered signature line per sealed version, per field the covering lines and a footnote when changed in a later version                                                                                                                                                                                                                 |
 | `src/logic/catalogue.ts`                              | `formCatalogue`: readable German field catalogue (Markdown) of a definition for the expert review — roles, fields with owner/kind/availability/requirement/purpose, notices, rules, legal notes, `definitionHash`                                                                                                                                              |
+| `src/logic/flowPlan.ts`                               | `flowPlan`: the flow plan of a form (station order notes, per station the questions in interview order with level, condition, depending numbers, `because`, taken-over answers, decision points); `unexplainedConditions`                                                                                                                                      |
+| `src/build/flowPlanPage.ts`                           | Renders all flow plans as one self-contained German HTML page (`docs/ablaufplan.html`, no script, no external resources)                                                                                                                                                                                                                                       |
+| `docs/ablaufplan.html`                                | Generated flow plans of every form and draft (`npm run catalogue`; never edit by hand)                                                                                                                                                                                                                                                                         |
+| `tests/forms/flowPlan.test.ts`                        | `docs/ablaufplan.html` matches the definitions, loads nothing external; every draft explains every condition; Personalfragebogen plan (numbers, decision on the kind of wage tax, "employer first", guardian)                                                                                                                                                  |
+| `tests/forms/minijobSteuer.test.ts`                   | Minijob: the employer's kind of wage tax is taken over into the person part (`fromRole`), not asked, tax-class questions only without a flat rate; person first; lock; replaced answers; check hint on a later contradiction; the person part verifies alone                                                                                                   |
+| `tests/forms/editAnswers.test.ts`                     | Changing answers from the summary (back there after the opened follow-ups), taking back a voluntary answer, definition rules for `fromRole` and `because`                                                                                                                                                                                                      |
 | `src/logic/requirements.ts`                           | Transmission gate `transmissionBlockers` (no transmission without signatures; minor → guardian with name, bound to the current part), `roleRequirement`, `completenessGaps`                                                                                                                                                                                    |
 | `tests/support/sample.ts`                             | Shared fictitious scenarios (person signs, employer seals + chains, Kanzlei/DATEV receipt; second version; minor + guardian on form 1.1.0)                                                                                                                                                                                                                     |
 | `tests/golden/`                                       | Golden questionnaires (`beispiel-<version>/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                                                                                                                                                                                                                   |
@@ -140,7 +146,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `docs/rechtliches.md`                                 | Legal background with sources (German, not legal advice)                                                                                                                                                                                                                                                                                                       |
 | `docs/spike-pdf.md`                                   | Step-1 PDF spike results + **data-page format v1** spec (German)                                                                                                                                                                                                                                                                                               |
 | `assets/fonts/`                                       | Embedded PDF fonts: Noto Sans Regular/SemiBold + Noto Sans Mono, Latin subsets (OFL), `README.md` with source URLs, SHA-256 and the exact `pyftsubset` command                                                                                                                                                                                                 |
-| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md`, `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)                                                                                                                                                                                                                     |
+| `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md` … `05_kanzlei.md`, `06_aendern_und_ablauf.md` (changing answers, Minijob tax, flow plan), `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)                                                                                                                            |
 | `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                                                                                                                                                                                                                                                                              |
 
 ---
@@ -278,6 +284,23 @@ Key design decisions (details in `docs/plan.md`):
   video itself.
 - **Preselection** (`initial`): yes/no or choice answers set when the role's first version opens;
   only on always available fields.
+- **Answers another role decides** (`fromRole`, Tobias 2026-10-30: in a Minijob the employer
+  decides first whether the wage tax is flat-rate, the person's questions depend on it): the value
+  of the other role's latest sealed part is **copied into the role's own data** (`adoptFromOtherRoles`
+  on entering the role, new version, reopen), the field is locked (`fixedByOtherRole`) and not asked;
+  without that part it is asked normally (own extra option "Weiß ich nicht."). Conditions stay
+  single-role and a seal still covers only its own data; a later contradiction becomes an automatic
+  check hint (`fromRole:<field>`). The flow plan recommends that station first.
+- **Every condition is explained** (Tobias 2026-10-30: "klarer Ablaufplan, weshalb welches Feld
+  Bedingung für welches andere ist"): `because` on fields with `showIf`/`requiredIf`/`fromRole`
+  and on conditional roles; mandatory in drafts (test), shown in the catalogue and in
+  `docs/ablaufplan.html` (generated by `npm run catalogue`). The frozen Sofortmeldung 0.1.0 has none.
+- **Changing answers afterwards** (check 2026-10-30): before signing via "Zur Zusammenfassung" and
+  "ändern" — "Weiter" then returns to the summary after the follow-ups the change opened
+  (`editFromSummary`, `stepAfterEdit`), instead of walking through every later question; a
+  voluntary yes/no or choice can be taken back ("Auswahl aufheben"). After signing: "Unterschrift
+  zurücknehmen" (not yet passed on) or a new version. Other stations and the Kanzlei can never change
+  another role's answers.
 
 ---
 
@@ -321,6 +344,11 @@ Key design decisions (details in `docs/plan.md`):
 - **Decisions and the inbox live only in the open tab** — like everything else; the JSON output keeps
   the decisions in the merge record.
 - **Interview progress counts preselected answers** as answered ("2 von etwa 14" at the start).
+- **Changing an answer from the summary** asks only the follow-ups it opened that are still empty;
+  an answer that only becomes required elsewhere (`requiredIf`) shows up in the summary's list of
+  missing answers instead.
+- **Church tax with flat-rate 20 %, 25 % or 5 %**: the declaration of non-membership (official
+  form) is not part of the questionnaire; it stays on paper.
 - **Notice confirmations are not saved in the interim file** — they must be given again in the
   session that signs (deliberate: they belong to the signing).
 - **No CSP yet:** the strict Content-Security-Policy and the built-file no-network test arrive in
@@ -394,7 +422,9 @@ Key design decisions (details in `docs/plan.md`):
   merged without them. A receipt is added by the Kanzlei station (step 9), not by the merge.
 - **Field conditions cover one role only** — a field cannot depend on another role's answer (e.g. an
   employer field required because of the person's answer): verification recomputes a sealed
-  part's visible fields from its own data. Whole **roles** can depend on another role's sealed
+  part's visible fields from its own data. The way around is `fromRole`: the other role's answer is
+  copied into the own part (only from a **sealed** part; an employer draft on the same device does not
+  count), so it depends on the station order whether the person is asked. Whole **roles** can depend on another role's sealed
   answers (`requiredIf: { kind: 'answer' }`, e.g. the spouse at a joint assessment). No date/age
   comparisons in conditions.
 - **Verification proves consistency, not authorship:** anyone can produce a fresh, self-consistent
@@ -464,7 +494,10 @@ test version **0.1.0** (`forms/sofortmeldung/0.1.0.json`, catalogue
 **Drafts awaiting Tobias's review (2026-10-30):** Personalfragebogen (reworked for all employment
 variants), Steuerfreigabe (§ 87d AO), Dienstwagen (Überlassung), Lohnmeldung (monthly); catalogues
 in `docs/formulare/`. After approval: freeze as 0.x test versions (move to `forms/` + hash in
-`published.json`). Open engine ideas from the research: cross-role check hints, row-level carry
-rules (leavers, continuing absences), references between tables, age conditions.
+`published.json`). Open engine ideas from the research: references between tables, age conditions.
+**2026-10-30 (later):** check "Angaben nachträglich ändern" (two weaknesses fixed: summary edit
+returns to the summary, voluntary answers can be taken back; "Zur Zusammenfassung" link),
+`fromRole` + Minijob kind of wage tax decided by the employer, `because` for every condition of
+every draft and the generated flow plans `docs/ablaufplan.html`.
 
 _Last updated: 2026-10-30_
