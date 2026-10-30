@@ -217,6 +217,17 @@ Code-Änderung.</p>
   <tr><td><code>signerNameField</code></td><td>FieldId</td><td>nein</td><td>Pflicht-Textfeld derselben Rolle mit dem Namen der unterschreibenden Person (immer sichtbar). Ohne dieses Feld kann eine bedingte Rolle nur mit getipptem Namen unterschreiben; der Name ist in jedem Fall Pflicht.</td></tr>
 </table>
 
+<h3>CheckHint (Prüfhinweis)</h3>
+<table>
+  <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>ja</td><td>Eindeutig im Formular</td></tr>
+  <tr><td><code>when</code></td><td>Condition</td><td>nein*</td><td>Bedingung über Felder beliebiger Rollen (keine Tabellenspalten)</td></tr>
+  <tr><td><code>test</code></td><td>{ fn, args }</td><td>nein*</td><td>Benannte Prüffunktion aus <code>HINT_TESTS</code> mit Feld-IDs passender Typen</td></tr>
+  <tr><td><code>message</code></td><td>string</td><td>ja</td><td>Hinweistext für die lohnabrechnende Stelle</td></tr>
+  <tr><td><code>source</code></td><td>string</td><td>nein</td><td>Fundstelle</td></tr>
+</table>
+<p>* mindestens eines von beiden. Die Liste <code>checkHints</code> der Formulardefinition ist optional.</p>
+
 <h3>RoleCondition</h3>
 <table>
   <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
@@ -494,6 +505,9 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
   <tr><td><code>masterDataFragment</code></td><td><code>(data: MasterData) =&gt; { ok, fragment } | { ok: false, issue, detail }</code></td><td>Fragment für ein Lesezeichen, z. B. <code>#stammdaten=1&amp;betriebsnummer=12345678&amp;firma=Beispiel+Bau+GmbH</code>; Schlüssel sortiert, höchstens 32 Schlüssel und 2000 Zeichen</td></tr>
   <tr><td><code>parseMasterDataFragment</code></td><td><code>(hash: string) =&gt; { ok, data | undefined } | { ok: false, issue, detail }</code></td><td>Ohne Kennung <code>stammdaten=1</code>: kein Stammdaten-Link. Sonst streng und als Ganzes: fremde Version, ungültige oder doppelte Schlüssel, leere oder unlesbare Werte, Überlänge werden abgelehnt (<code>MASTER_DATA_LINK_MESSAGES</code>). Das Ergebnis läuft danach durch <code>applyMasterData</code>.</td></tr>
   <tr><td><code>applyMasterData</code></td><td><code>(q, form, role, stored: unknown) =&gt; { ok, questionnaire, applied, kept, skipped } | { ok: false, code }</code></td><td>Füllt leere Stammdatenfelder des offenen Entwurfs aus einem gemerkten Datensatz. Der Datensatz ist nicht vertrauenswürdig und läuft durch <code>setValue</code>; abgelehnte Werte stehen mit Grund in <code>skipped</code>, vorhandene Antworten bleiben (<code>kept</code>), Schlüssel anderer Formulare werden übergangen.</td></tr>
+  <tr><td colspan="3"><code>src/logic/hints.ts</code> (Prüfhinweise)</td></tr>
+  <tr><td><code>checkHints</code></td><td><code>(questionnaire, definition) =&gt; HintResult[]</code></td><td>Die Prüfhinweise des Formulars (<code>checkHints</code> der Definition), die zutreffen: <code>when</code> (Bedingung über Felder beliebiger Rollen) und <code>test</code> (benannte reine Funktion) müssen gelten. Ausgewertet wird der aktuelle Teil jeder Rolle; ausgeblendete Felder gelten als unbeantwortet; ein Hinweis erscheint erst, wenn alle genannten Rollen einen Teil haben. Nur Information: blockiert nichts, wird nicht gesiegelt.</td></tr>
+  <tr><td><code>HINT_TESTS</code></td><td><code>regelaltersgrenzeErreicht</code>, <code>regelaltersgrenzeNichtErreicht</code>, <code>regelaltersgrenzeInnerhalbEinesJahres</code> (Geburtsdatum, Stichtag)</td><td>Regelaltersgrenze nach § 235 Abs. 2 SGB VI (<code>regelaltersgrenze.ts</code>: erreicht mit Ablauf des Tages vor dem Jahrestag, §§ 187, 188 BGB); das Ergebnis nennt Tag und Folgemonat.</td></tr>
   <tr><td colspan="3"><code>src/logic/kanzlei.ts</code> (Station Kanzlei)</td></tr>
   <tr><td><code>addToInbox</code> / <code>removeFromInbox</code></td><td><code>(inbox, file) =&gt; { inbox, duplicate }</code> / <code>(inbox, sha) =&gt; Inbox</code></td><td>Eingelesene Dateien (<code>InboxFile</code>: Name, SHA-256, Fragebogen, Formular, Herkunft, Einlesezeit). Dieselbe Datei zählt einmal. Beim Entfernen fallen Entscheidungen weg, deren Fragebögen keine Datei mehr trägt.</td></tr>
   <tr><td><code>decide</code> / <code>withdraw</code></td><td><code>(inbox, decision) =&gt; Inbox</code></td><td>Menschliche Entscheidung (<code>link</code>, <code>chooseVersion</code>) festhalten oder zurücknehmen; eine neue Fassungswahl ersetzt die alte für dieselbe Rolle.</td></tr>

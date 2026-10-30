@@ -96,3 +96,25 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 - _Nicht offensichtlich:_ Danach bleibt „Es fehlt noch: Zwei Teile verweisen nicht aufeinander …“
   stehen. Die Zusammenführung auf Entscheidung ersetzt nicht, dass eine Seite die andere
   bestätigt; dafür muss eine Seite ihren Teil auf Grundlage der anderen neu abschließen.
+
+---
+
+## MT-44: Prüfhinweise bei der Zusammenführung
+
+**Voraussetzungen:** Vorschau-Fassung (`npm run build:preview`), Personalfragebogen-Entwurf.
+
+**Schritte:**
+
+1. Neuen Personalfragebogen beginnen. Als Person bei „Situation“ „arbeitslos oder arbeitsuchend
+   gemeldet“ wählen, Geburtsdatum 15.03.1960, sonst beliebig ausfüllen und unterschreiben.
+2. Als Arbeitgeber „kurzfristige Aushilfe“ wählen, Tag der Beschäftigungsaufnahme 02.11.2026,
+   abschließen, PDF erstellen.
+3. Die PDF unter „Eingänge zusammenführen …“ einlesen.
+
+**Erwartet:**
+
+- In der Karte des Fragebogens steht „Prüfhinweise:“ mit u. a. „Arbeitsuchend gemeldet und als
+  kurzfristige Aushilfe vorgesehen …“ und der Fundstelle.
+- Dazu „Laut Geburtsdatum ist die Regelaltersgrenze bei Beschäftigungsbeginn erreicht …
+  Regelaltersgrenze laut Geburtsdatum: 14.07.2026; Folgemonat: August 2026.“
+- _Nicht offensichtlich:_ Prüfhinweise blockieren nichts; die PDF lässt sich trotzdem erstellen.

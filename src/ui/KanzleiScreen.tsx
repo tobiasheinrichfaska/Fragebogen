@@ -299,6 +299,19 @@ export function KanzleiScreen({ registry, onBack }: Props) {
                 }}
               />
             )}
+            {group.hints.length > 0 && (
+              <Banner
+                message={{
+                  tone: 'info',
+                  text: 'Prüfhinweise:',
+                  detail: group.hints.map(
+                    (hint) =>
+                      [hint.message, ...hint.detail].join(' ') +
+                      (hint.source === undefined ? '' : ` (${hint.source})`),
+                  ),
+                }}
+              />
+            )}
             {ready && group.gaps.length > 0 && (
               <Banner
                 message={{

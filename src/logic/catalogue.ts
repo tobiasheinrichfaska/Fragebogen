@@ -3,6 +3,7 @@
 // what gets frozen; tests/forms/catalogue.test.ts keeps docs/formulare/ in sync with the JSON.
 import { describeCondition } from './conditions';
 import { formatGermanDate } from './dates';
+import { describeHint } from './hints';
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
 import { isTestVersion, type RegisteredForm } from './formRegistry';
@@ -322,6 +323,23 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       '',
       'Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen. Verknüpft wird ' +
         'nur auf menschliche Entscheidung.',
+    );
+  }
+  if ((definition.checkHints ?? []).length > 0) {
+    lines.push(
+      '',
+      '## Prüfhinweise für die lohnabrechnende Stelle',
+      '',
+      'Nur Hinweise: Sie blockieren nichts und werden nicht unterschrieben. Sie erscheinen bei der ' +
+        'Zusammenführung, sobald alle genannten Teile vorliegen.',
+      '',
+      ...list(
+        (definition.checkHints ?? []).map(
+          (hint) =>
+            `„${hint.message}“ – ${describeHint(hint, definition)}` +
+            (hint.source === undefined ? '' : ` (${hint.source})`),
+        ),
+      ),
     );
   }
   lines.push('', '## Rechtliche Hinweise', '', ...list(definition.legalNotes), '');

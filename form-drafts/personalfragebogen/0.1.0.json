@@ -303,7 +303,7 @@
           "type": "multiChoice",
           "label": "Situation zu Beginn der Beschäftigung",
           "question": "Was trifft zu Beginn dieser Beschäftigung auf Sie zu? Wählen Sie alles, was passt.",
-          "help": "Davon hängt ab, ob und wie Sie in dieser Beschäftigung versichert sind. Trifft nichts Besonderes zu, wählen Sie „nichts davon (Arbeitnehmerin oder Arbeitnehmer)“.",
+          "help": "Davon hängt ab, ob und wie Sie in dieser Beschäftigung versichert sind. Trifft nichts Besonderes zu, wählen Sie „nichts davon (Arbeitnehmerin oder Arbeitnehmer)“. Die Regelaltersgrenze liegt bei 67 Jahren; wer vor 1964 geboren ist, erreicht sie früher (zum Beispiel Jahrgang 1960 mit 66 Jahren und 4 Monaten). Sie gilt auch, wenn Sie keine Rente beziehen.",
           "required": true,
           "purpose": "Beurteilung der Versicherungspflicht und der Personengruppe (§§ 5 ff. SGB V, §§ 5 f. SGB VI, §§ 25 ff. SGB III, § 8 SGB IV); Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "options": [
@@ -338,6 +338,10 @@
             {
               "id": "rente",
               "label": "Ich beziehe eine Rente."
+            },
+            {
+              "id": "regelaltersgrenze",
+              "label": "Ich habe die Regelaltersgrenze für die Altersrente erreicht (je nach Geburtsjahr 66 bis 67 Jahre)."
             },
             {
               "id": "arbeitslos",
@@ -736,14 +740,22 @@
           "type": "choice",
           "label": "Rentenbeiträge trotz Vollrente oder Pension",
           "question": "Möchten Sie in dieser Beschäftigung trotzdem Rentenbeiträge zahlen, um Ihre Rente zu erhöhen?",
-          "help": "Nach Erreichen der Regelaltersgrenze sind Sie mit einer Altersvollrente oder einer Pension wegen Alters rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird gesondert schriftlich erklärt.",
+          "help": "Nach Erreichen der Regelaltersgrenze sind Sie mit einer Altersvollrente oder einer Pension wegen Alters rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird gesondert erklärt.",
           "required": true,
           "purpose": "Verzicht auf die Versicherungsfreiheit in der Rentenversicherung (§ 5 Abs. 4 Satz 2 SGB VI)",
           "showIf": {
             "any": [
               {
-                "field": "rentenart",
-                "equals": "altersvoll"
+                "all": [
+                  {
+                    "field": "rentenart",
+                    "equals": "altersvoll"
+                  },
+                  {
+                    "field": "situation",
+                    "contains": "regelaltersgrenze"
+                  }
+                ]
               },
               {
                 "field": "pensionArt",
@@ -1500,20 +1512,12 @@
           "type": "choice",
           "label": "Aktivrente im Monat des Beginns",
           "question": "Haben Sie im Monat, in dem diese Beschäftigung beginnt, die Aktivrente schon bei einem anderen Arbeitgeber erhalten?",
-          "help": "Die Aktivrente gilt erst ab dem Monat nach Erreichen Ihrer Regelaltersgrenze: bis 2.000 € im Monat steuerfrei, nicht im Minijob. Haben Sie die Regelaltersgrenze noch nicht erreicht, wählen Sie „Nein“.",
+          "help": "Die Aktivrente gilt ab dem Monat nach Erreichen der Regelaltersgrenze, auch wenn Sie keine Rente beziehen: Arbeitslohn bis 2.000 € im Monat ist steuerfrei, nicht im Minijob und nur in einem Arbeitsverhältnis zur selben Zeit.",
           "required": true,
           "purpose": "Steuerfreiheit nach § 3 Nr. 21 EStG (Aktivrente) nur einmal je Monat",
           "showIf": {
-            "any": [
-              {
-                "field": "rentenart",
-                "in": ["altersvoll", "altersteil"]
-              },
-              {
-                "field": "pensionArt",
-                "equals": "alter"
-              }
-            ]
+            "field": "situation",
+            "contains": "regelaltersgrenze"
           },
           "options": [
             {
@@ -1545,16 +1549,8 @@
                 "equals": "weiteres"
               },
               {
-                "any": [
-                  {
-                    "field": "rentenart",
-                    "in": ["altersvoll", "altersteil"]
-                  },
-                  {
-                    "field": "pensionArt",
-                    "equals": "alter"
-                  }
-                ]
+                "field": "situation",
+                "contains": "regelaltersgrenze"
               }
             ]
           }
@@ -3705,5 +3701,430 @@
     "Der Fragebogen sammelt die Tatsachen für die versicherungsrechtliche Beurteilung; die Personengruppe und die Beitragsgruppen legt die lohnabrechnende Stelle fest.",
     "Der Befreiungsantrag von der Rentenversicherungspflicht im Minijob und der Verzicht auf die Rentenversicherungsfreiheit werden gesondert erklärt; der Fragebogen fragt nur den Wunsch ab."
   ],
-  "partLinks": [["person", "arbeitgeber"]]
+  "partLinks": [["person", "arbeitgeber"]],
+  "checkHints": [
+    {
+      "id": "artWeichtAb",
+      "when": {
+        "all": [
+          {
+            "field": "artLautVereinbarung",
+            "answered": true
+          },
+          {
+            "field": "agBeschaeftigungsart",
+            "answered": true
+          },
+          {
+            "not": {
+              "field": "artLautVereinbarung",
+              "equals": "unbekannt"
+            }
+          },
+          {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "equals": "pruefen"
+            }
+          },
+          {
+            "any": [
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "festeStelle"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "svpflichtig"
+                    }
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "minijob"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "minijob"
+                    }
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "aushilfe"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "kurzfristig"
+                    }
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "ausbildung"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "in": ["ausbildung", "dualesStudium"]
+                    }
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "praktikum"
+                    }
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "artLautVereinbarung",
+                    "equals": "werkstudent"
+                  },
+                  {
+                    "not": {
+                      "field": "agBeschaeftigungsart",
+                      "equals": "werkstudent"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "message": "Die Art der Beschäftigung weicht zwischen den Angaben der Person und des Arbeitgebers ab."
+    },
+    {
+      "id": "kurzfristigArbeitslos",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          {
+            "field": "situation",
+            "contains": "arbeitslos"
+          }
+        ]
+      },
+      "message": "Arbeitsuchend gemeldet und als kurzfristige Aushilfe vorgesehen: Die Beschäftigung ist berufsmäßig und damit nicht kurzfristig, wenn das Entgelt die Geringfügigkeitsgrenze übersteigt.",
+      "source": "§ 8 Abs. 1 Nr. 2 SGB IV; Geringfügigkeits-Richtlinien 2026 B 2.3.3"
+    },
+    {
+      "id": "kurzfristigNachSchule",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          {
+            "field": "planNachSchule",
+            "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+          }
+        ]
+      },
+      "message": "Zwischen Schule und Ausbildung oder Dienst als kurzfristige Aushilfe: berufsmäßig, wenn das Entgelt die Geringfügigkeitsgrenze übersteigt.",
+      "source": "Geringfügigkeits-Richtlinien 2026 B 2.3.3"
+    },
+    {
+      "id": "kurzfristigElternzeit",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          {
+            "field": "situation",
+            "contains": "elternzeit"
+          }
+        ]
+      },
+      "message": "In Elternzeit und als kurzfristige Aushilfe vorgesehen: Berufsmäßigkeit prüfen.",
+      "source": "Geringfügigkeits-Richtlinien 2026 B 2.3.3"
+    },
+    {
+      "id": "kurzfristigVorbeschaeftigung",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          {
+            "field": "vorbeschJahr",
+            "equals": true
+          }
+        ]
+      },
+      "message": "Frühere Beschäftigungen in diesem Jahr: Die Zeitgrenzen (3 Monate oder 70 Arbeitstage) gelten zusammengerechnet.",
+      "source": "§ 8 Abs. 1 Nr. 2 SGB IV"
+    },
+    {
+      "id": "minijobNebenAnderen",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "minijob"
+          },
+          {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          }
+        ]
+      },
+      "message": "Minijob neben weiteren Beschäftigungen: Zusammenrechnung prüfen – nur ein Minijob neben einer Hauptbeschäftigung bleibt frei.",
+      "source": "§ 8 Abs. 2 SGB IV"
+    },
+    {
+      "id": "minijobAbruf",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "minijob"
+          },
+          {
+            "field": "agArbeitszeitmodell",
+            "equals": "abruf"
+          }
+        ]
+      },
+      "message": "Minijob mit Arbeit auf Abruf: Ohne vereinbarte Wochenstunden gelten 20 Stunden – das übersteigt die Minijob-Grenze.",
+      "source": "§ 12 Abs. 1 TzBfG"
+    },
+    {
+      "id": "minijobBefreiungEinheitlich",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "minijob"
+          },
+          {
+            "field": "rvBefreiungWunsch",
+            "equals": "ja"
+          },
+          {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          }
+        ]
+      },
+      "message": "Die Befreiung von der Rentenversicherung gilt nur einheitlich für alle Minijobs: die anderen Beschäftigungen prüfen.",
+      "source": "§ 6 Abs. 1b SGB VI"
+    },
+    {
+      "id": "minijobAusbildung",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "minijob"
+          },
+          {
+            "any": [
+              {
+                "field": "artLautVereinbarung",
+                "equals": "ausbildung"
+              },
+              {
+                "field": "praktikumArt",
+                "equals": "pflicht"
+              }
+            ]
+          }
+        ]
+      },
+      "message": "Ausbildung oder vorgeschriebenes Praktikum ist kein Minijob.",
+      "source": "Geringfügigkeits-Richtlinien 2026"
+    },
+    {
+      "id": "werkstudentFraglich",
+      "when": {
+        "all": [
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "werkstudent"
+          },
+          {
+            "any": [
+              {
+                "not": {
+                  "field": "situation",
+                  "contains": "student"
+                }
+              },
+              {
+                "field": "urlaubssemester",
+                "equals": true
+              },
+              {
+                "field": "studienArt",
+                "in": ["teilzeit", "promotion"]
+              },
+              {
+                "field": "ueber20hJahr",
+                "equals": true
+              }
+            ]
+          }
+        ]
+      },
+      "message": "Werkstudentenregel fraglich: kein Studium angegeben, Urlaubssemester, Teilzeit- oder Promotionsstudium oder Zeiten über 20 Wochenstunden.",
+      "source": "§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III"
+    },
+    {
+      "id": "regelaltersgrenzeNichtAngegeben",
+      "when": {
+        "all": [
+          {
+            "field": "situation",
+            "answered": true
+          },
+          {
+            "not": {
+              "field": "situation",
+              "contains": "regelaltersgrenze"
+            }
+          }
+        ]
+      },
+      "test": {
+        "fn": "regelaltersgrenzeErreicht",
+        "args": ["geburtsdatum", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Laut Geburtsdatum ist die Regelaltersgrenze bei Beschäftigungsbeginn erreicht; die Person hat das nicht angegeben. Aktivrente sowie Versicherungsfreiheit in der Arbeitslosenversicherung (und mit Vollrente in der Rentenversicherung) prüfen.",
+      "source": "§ 3 Nr. 21 EStG, § 28 Abs. 1 Nr. 1 SGB III, § 5 Abs. 4 SGB VI"
+    },
+    {
+      "id": "regelaltersgrenzeFalschAngegeben",
+      "when": {
+        "field": "situation",
+        "contains": "regelaltersgrenze"
+      },
+      "test": {
+        "fn": "regelaltersgrenzeNichtErreicht",
+        "args": ["geburtsdatum", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Die Person gibt an, die Regelaltersgrenze erreicht zu haben; laut Geburtsdatum ist das bei Beschäftigungsbeginn noch nicht der Fall.",
+      "source": "§ 235 Abs. 2 SGB VI"
+    },
+    {
+      "id": "regelaltersgrenzeBald",
+      "test": {
+        "fn": "regelaltersgrenzeInnerhalbEinesJahres",
+        "args": ["geburtsdatum", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Die Person erreicht die Regelaltersgrenze innerhalb eines Jahres nach Beschäftigungsbeginn: ab dem Folgemonat gelten Aktivrente und Versicherungsfreiheit in der Arbeitslosenversicherung.",
+      "source": "§ 3 Nr. 21 EStG, § 28 Abs. 1 Nr. 1 SGB III"
+    },
+    {
+      "id": "aktivrenteMinijob",
+      "when": {
+        "all": [
+          {
+            "field": "situation",
+            "contains": "regelaltersgrenze"
+          },
+          {
+            "field": "agBeschaeftigungsart",
+            "equals": "minijob"
+          }
+        ]
+      },
+      "message": "Regelaltersgrenze erreicht und Minijob: Die Aktivrente gilt nicht im Minijob.",
+      "source": "§ 3 Nr. 21 EStG"
+    },
+    {
+      "id": "vollrenteOderPension",
+      "when": {
+        "any": [
+          {
+            "field": "rentenart",
+            "equals": "altersvoll"
+          },
+          {
+            "field": "pensionArt",
+            "equals": "alter"
+          }
+        ]
+      },
+      "message": "Altersvollrente oder Pension wegen Alters: Versicherungsfreiheit in der Renten- und Arbeitslosenversicherung prüfen (Arbeitgeberanteile fallen weiter an); einen Wunsch zum Verzicht beachten.",
+      "source": "§ 5 Abs. 4 SGB VI, § 28 Abs. 1 Nr. 1 SGB III"
+    },
+    {
+      "id": "erwerbsminderung",
+      "when": {
+        "field": "rentenart",
+        "in": ["emVoll", "emTeil"]
+      },
+      "message": "Rente wegen Erwerbsminderung: zeitliche Grenzen (unter 3 Stunden täglich bei voller, unter 6 Stunden bei teilweiser Erwerbsminderung) und Hinzuverdienst beachten.",
+      "source": "§ 43, § 96a SGB VI"
+    },
+    {
+      "id": "arbeitslosengeld",
+      "when": {
+        "field": "leistungArbeitslos",
+        "equals": "arbeitslosengeld"
+      },
+      "message": "Arbeitslosengeld: Nebeneinkommensbescheinigung ausstellen; ab 15 Wochenstunden endet die Arbeitslosigkeit.",
+      "source": "§ 138 Abs. 3, § 313 SGB III"
+    },
+    {
+      "id": "keineKrankenversicherung",
+      "when": {
+        "field": "krankenversicherung",
+        "equals": "keine"
+      },
+      "message": "Die Person ist zurzeit nicht krankenversichert: Versicherungspflicht und bei kurzfristiger Beschäftigung das Kennzeichen zum Krankenversicherungsschutz prüfen.",
+      "source": "Geringfügigkeits-Richtlinien 2026 B 2.3"
+    },
+    {
+      "id": "pkvBescheinigungFolgt",
+      "when": {
+        "field": "pkvBescheinigung",
+        "equals": "folgt"
+      },
+      "message": "Die Bescheinigung der privaten Krankenversicherung folgt: Zuschuss erst mit Vorlage.",
+      "source": "§ 257 Abs. 2a SGB V"
+    },
+    {
+      "id": "kinderNachweise",
+      "when": {
+        "field": "kinderNichtAbrufbar",
+        "answered": true
+      },
+      "message": "Kinder, die voraussichtlich nicht digital abrufbar sind: nach dem Abruf beim Bundeszentralamt für Steuern die Nachweise prüfen.",
+      "source": "§ 55a SGB XI"
+    }
+  ]
 }

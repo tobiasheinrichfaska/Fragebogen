@@ -2,6 +2,7 @@
 // strictly into a typed FormDefinition (see decode.ts) and then checks every id reference inside it.
 import { COMPUTE_FUNCTIONS } from './compute';
 import { CONDITION_OPERATORS, forEachLeaf, leafProblem } from './conditions';
+import { hintTestProblem } from './hints';
 import { isIsoDate } from './dates';
 import { Decoder, type DecodeIssue } from './decode';
 import { isPlainObject } from './jcs';
@@ -10,6 +11,7 @@ import {
   FIELD_TYPES,
   SIGNATURE_POLICIES,
   SIGNATURE_REQUIREMENTS,
+  type CheckHint,
   type ChoiceOption,
   type Condition,
   type ConsistencyRule,
@@ -66,6 +68,7 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     'matchKeys',
     'legalNotes',
     'partLinks',
+    'checkHints',
   ]);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, FORM_ID);
@@ -93,6 +96,10 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     o.partLinks === undefined
       ? undefined
       : d.array(o.partLinks, `${path}.partLinks`, (v, p) => decodeRolePair(d, v, p), 1);
+  const checkHints =
+    o.checkHints === undefined
+      ? undefined
+      : d.array(o.checkHints, `${path}.checkHints`, (v, p) => decodeCheckHint(d, v, p), 1);
   if (
     id === undefined ||
     version === undefined ||
@@ -121,6 +128,31 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     matchKeys,
     legalNotes,
     ...(partLinks === undefined ? {} : { partLinks }),
+    ...(checkHints === undefined ? {} : { checkHints }),
+  };
+}
+
+function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | undefined {
+  const o = d.object(raw, path, ['id', 'when', 'test', 'message', 'source']);
+  if (!o) return undefined;
+  const id = d.string(o.id, `${path}.id`, ID);
+  const when = o.when === undefined ? undefined : decodeCondition(d, o.when, `${path}.when`, 0);
+  let test: CheckHint['test'];
+  if (o.test !== undefined) {
+    const t = d.object(o.test, `${path}.test`, ['fn', 'args']);
+    const fn = t && d.string(t.fn, `${path}.test.fn`, ID);
+    const args = t && d.array(t.args, `${path}.test.args`, (v, p) => d.string(v, p, ID), 1);
+    if (fn !== undefined && args !== undefined) test = { fn, args };
+  }
+  const message = d.string(o.message, `${path}.message`);
+  const source = o.source === undefined ? undefined : d.string(o.source, `${path}.source`);
+  if (id === undefined || message === undefined) return undefined;
+  return {
+    id,
+    ...(when === undefined ? {} : { when }),
+    ...(test === undefined ? {} : { test }),
+    message,
+    ...(source === undefined ? {} : { source }),
   };
 }
 
@@ -883,6 +915,37 @@ function partLinks({ definition, roleIds, report }: CheckContext): void {
   });
 }
 
+/** Hints: unique ids, a condition or a test, known fields (any role) and a known test function. */
+function checkHintRules({ definition, fields, report }: CheckContext): void {
+  const ids = new Set<string>();
+  (definition.checkHints ?? []).forEach((hint, i) => {
+    const path = `$.checkHints[${i}]`;
+    if (ids.has(hint.id)) report(`${path}.id`, `duplicate hint id "${hint.id}"`);
+    ids.add(hint.id);
+    if (!hint.when && !hint.test) report(path, 'a hint needs a condition or a test');
+    if (hint.when) {
+      forEachLeaf(hint.when, `${path}.when`, (leaf, leafPath) => {
+        const target = fields.get(leaf.field);
+        if (!target || target.isColumn) {
+          report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
+          return;
+        }
+        const problem = leafProblem(leaf, target.field);
+        if (problem) {
+          report(`${leafPath}.${problem.at === 'field' ? 'field' : problem.at}`, problem.message);
+        }
+      });
+    }
+    if (hint.test) {
+      const problem = hintTestProblem(hint.test, (id) => {
+        const target = fields.get(id);
+        return target && !target.isColumn ? target.field : undefined;
+      });
+      if (problem) report(`${path}.test`, problem);
+    }
+  });
+}
+
 const DEFINITION_RULES: readonly DefinitionRule[] = [
   uniqueIds,
   fieldShapes,
@@ -896,4 +959,5 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   masterDataKeys,
   partLinks,
   interviewOrder,
+  checkHintRules,
 ];

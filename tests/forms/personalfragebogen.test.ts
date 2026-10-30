@@ -78,10 +78,10 @@ describe('Personalfragebogen draft — questions per variant', () => {
     expect(ids).not.toContain('rvBefreiungWunsch');
   });
 
-  it('asks a pensioner with a second job about waiver and Aktivrente', () => {
+  it('asks a pensioner past the Regelaltersgrenze with a second job about waiver and Aktivrente', () => {
     const ids = visible('person', {
       ...BASE_PERSON,
-      situation: ['rente'],
+      situation: ['rente', 'regelaltersgrenze'],
       rentenart: 'altersvoll',
       dienstverhaeltnis: 'weiteres',
       artLautVereinbarung: 'festeStelle',
@@ -96,6 +96,23 @@ describe('Personalfragebogen draft — questions per variant', () => {
       ]),
     );
     expect(ids).not.toContain('emBefristetBis');
+  });
+
+  it('ties the Aktivrente to the Regelaltersgrenze, not to a pension', () => {
+    const withoutPension = visible('person', {
+      ...BASE_PERSON,
+      situation: ['regelaltersgrenze'],
+      artLautVereinbarung: 'festeStelle',
+    });
+    expect(withoutPension).toContain('aktivrenteMonat');
+    const pensionBeforeLimit = visible('person', {
+      ...BASE_PERSON,
+      situation: ['rente'],
+      rentenart: 'altersvoll',
+      artLautVereinbarung: 'festeStelle',
+    });
+    expect(pensionBeforeLimit).not.toContain('aktivrenteMonat');
+    expect(pensionBeforeLimit).not.toContain('rvVerzicht');
   });
 
   it('asks the privately insured about the certificate, never an amount, and skips children', () => {

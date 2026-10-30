@@ -180,6 +180,22 @@ export interface ConsistencyRule {
   message: string;
 }
 
+/**
+ * A check hint (Prüfhinweis) for the recipient: answers — of any roles — that call for a closer
+ * look, e.g. "registered unemployed" plus "short-term job". Informational only: never blocks and is
+ * never sealed, so it may combine roles. It holds when `when` holds and the named `test` (a pure
+ * function in hints.ts, e.g. Regelaltersgrenze from the birth date) is met; it is evaluated only
+ * once every role it names has a part.
+ */
+export interface CheckHint {
+  id: string;
+  when?: Condition;
+  test?: { fn: string; args: FieldId[] };
+  message: string;
+  /** Legal source shown with the hint, e.g. "§ 8 Abs. 1 Nr. 2 SGB IV". */
+  source?: string;
+}
+
 /** Fields that identify the same person across roles when no shared questionnaire id exists. */
 export interface MatchKey {
   label: string;
@@ -204,6 +220,7 @@ export interface FormDefinition {
    * not complete; passing it on to the next station stays possible.
    */
   partLinks?: [RoleId, RoleId][];
+  checkHints?: CheckHint[];
 }
 
 // ---------------------------------------------------------------------------

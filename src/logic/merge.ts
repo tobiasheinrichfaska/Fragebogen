@@ -13,6 +13,7 @@
 // further files equals merging all original files at once.
 import { comparable, contradictions, type Contradiction } from './consistency';
 import type { FormRegistry } from './formRegistry';
+import { checkHints, type HintResult } from './hints';
 import { canonicalize } from './jcs';
 import { linkedQuestionnaireIds, mergeHashOf } from './mergeRecord';
 import type {
@@ -110,6 +111,8 @@ export interface MergeGroup {
   notes: MergeNote[];
   conflicts: MergeConflict[];
   contradictions: Contradiction[];
+  /** Check hints of the form for the recipient (informational, see hints.ts). */
+  hints: HintResult[];
   gaps: Blocker[];
 }
 
@@ -227,6 +230,7 @@ function mergeGroup(
     notes,
     conflicts,
     contradictions: [],
+    hints: [],
     gaps: [],
   };
 
@@ -297,6 +301,7 @@ function mergeGroup(
   group.questionnaire = withRecord ? { ...merged, mergeHash: mergeHashOf(merged) } : merged;
   if (definition && registered) {
     group.contradictions = contradictions(group.questionnaire, definition);
+    group.hints = checkHints(group.questionnaire, definition);
     group.gaps = completenessGaps(group.questionnaire, registered);
   }
   return group;
