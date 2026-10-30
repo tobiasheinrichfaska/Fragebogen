@@ -254,6 +254,7 @@ describe('Personalfragebogen draft — complete parts can be sealed', () => {
       agUrlaubBezug: 'individuell',
       agEntgeltArt: 'stundenlohn',
       agStundenlohn: '14,50',
+      agErwartetMonat: '520,00',
       agBav: 'keine',
       agSchwerbehinderung: 'nein',
     };

@@ -3240,13 +3240,14 @@
           "type": "money",
           "label": "Erwarteter Monatsverdienst",
           "question": "Mit welchem Verdienst im Monat rechnen Sie im Durchschnitt?",
-          "required": false,
-          "purpose": "Prognose der Minijob-Grenze (Geringfügigkeits-Richtlinien B 2.2)",
+          "required": true,
+          "purpose": "Prognose des regelmäßigen Monatsverdiensts für Minijob-Grenze und Übergangsbereich (§ 8 Abs. 1 Nr. 1 SGB IV, § 20 Abs. 2 SGB IV; Geringfügigkeits-Richtlinien B 2.2)",
           "showIf": {
             "field": "agEntgeltArt",
             "in": ["stundenlohn", "leistungslohn", "pauschale"]
           },
-          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), braucht die Minijob-Grenze eine Prognose des Monatsverdiensts (Geringfügigkeits-Richtlinien B 2.2)."
+          "because": "Schwankt der Verdienst (Stundenlohn, Leistungslohn, Pauschale), steht er nicht von vornherein fest. Minijob-Grenze und Übergangsbereich verlangen eine vorausschauende Schätzung des Monatsverdiensts (Geringfügigkeits-Richtlinien B 2.2); deshalb ist sie Pflicht.",
+          "help": "Den durchschnittlichen Bruttoverdienst im Monat, mit dem Sie rechnen – geschätzt genügt. Daran prüft die lohnabrechnende Stelle die Minijob-Grenze und den Übergangsbereich."
         },
         {
           "id": "agTarif",

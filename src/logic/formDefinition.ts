@@ -56,23 +56,37 @@ export function parseFormDefinition(raw: unknown): DefinitionResult {
 // Decoding (shape and types)
 // ---------------------------------------------------------------------------
 
+/** Keys a form definition may have (docs/ki-anleitung-formulare.md names every one). */
+export const FORM_KEYS = [
+  'id',
+  'version',
+  'title',
+  'signaturePolicy',
+  'roles',
+  'recipient',
+  'sections',
+  'infoBlocks',
+  'consistencyRules',
+  'matchKeys',
+  'legalNotes',
+  'partLinks',
+  'checkHints',
+  'signatureBasis',
+] as const;
+
+export const ROLE_KEYS = [
+  'id',
+  'label',
+  'stationHeading',
+  'confirmationText',
+  'signature',
+  'requiredIf',
+  'because',
+  'signerNameField',
+] as const;
+
 function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | undefined {
-  const o = d.object(raw, path, [
-    'id',
-    'version',
-    'title',
-    'signaturePolicy',
-    'roles',
-    'recipient',
-    'sections',
-    'infoBlocks',
-    'consistencyRules',
-    'matchKeys',
-    'legalNotes',
-    'partLinks',
-    'checkHints',
-    'signatureBasis',
-  ]);
+  const o = d.object(raw, path, FORM_KEYS);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, FORM_ID);
   const version = d.string(o.version, `${path}.version`, SEMVER);
@@ -175,16 +189,7 @@ function decodeRolePair(d: Decoder, raw: unknown, path: string): [string, string
 }
 
 function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | undefined {
-  const o = d.object(raw, path, [
-    'id',
-    'label',
-    'stationHeading',
-    'confirmationText',
-    'signature',
-    'requiredIf',
-    'because',
-    'signerNameField',
-  ]);
+  const o = d.object(raw, path, ROLE_KEYS);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
   const label = d.string(o.label, `${path}.label`);
@@ -247,7 +252,7 @@ function decodeSection(d: Decoder, raw: unknown, path: string): SectionDefinitio
   return { id, title, fields };
 }
 
-const FIELD_KEYS = [
+export const FIELD_KEYS = [
   'id',
   'role',
   'type',

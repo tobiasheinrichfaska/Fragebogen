@@ -76,6 +76,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/flowPlan.ts`                               | `flowPlan`: the flow plan of a form (station order notes, per station the questions in interview order with level, condition, depending numbers, `because`, taken-over answers, decision points); `unexplainedConditions`                                                                                                                                      |
 | `src/build/flowPlanPage.ts`                           | Renders all flow plans as one self-contained German HTML page (`docs/ablaufplan.html`, no script, no external resources)                                                                                                                                                                                                                                       |
 | `docs/ablaufplan.html`                                | Generated flow plans of every form and draft (`npm run catalogue`; never edit by hand)                                                                                                                                                                                                                                                                         |
+| `docs/ki-anleitung-formulare.md`                      | Prompt for any AI (and reference for people) to build or adapt a form definition: principles, every key and value, an example, checklist (German)                                                                                                                                                                                                              |
+| `tests/static/kiAnleitung.test.ts`                    | The AI guide names every form/role/field key, type, operator and enum value, and its example is a valid definition                                                                                                                                                                                                                                             |
 | `tests/forms/flowPlan.test.ts`                        | `docs/ablaufplan.html` matches the definitions, loads nothing external; every draft explains every condition; Personalfragebogen plan (numbers, decision on the kind of wage tax, "employer first", guardian)                                                                                                                                                  |
 | `tests/forms/minijobSteuer.test.ts`                   | Minijob: the employer's kind of wage tax is taken over into the person part (`fromRole`), not asked, tax-class questions only without a flat rate; person first; lock; replaced answers; check hint on a later contradiction; the person part verifies alone                                                                                                   |
 | `tests/forms/editAnswers.test.ts`                     | Changing answers from the summary (back there after the opened follow-ups), taking back a voluntary answer, definition rules for `fromRole` and `because`                                                                                                                                                                                                      |
@@ -502,6 +504,11 @@ in `docs/formulare/`. After approval: freeze as 0.x test versions (move to `form
 **2026-10-30 (later):** check "Angaben nachträglich ändern" (two weaknesses fixed: summary edit
 returns to the summary, voluntary answers can be taken back; "Zur Zusammenfassung" link),
 `fromRole` + Minijob kind of wage tax decided by the employer, `because` for every condition of
-every draft and the generated flow plans `docs/ablaufplan.html`.
+every draft and the generated flow plans `docs/ablaufplan.html`. **Form editor decided**
+(Tobias 2026-10-30, after step 10; plan in `docs/plan.md`): long term for everyone, for now local
+and offline for the Kanzlei as a separate HTML tool; forms reach the app via the repo and a build
+for now, long term as Kanzlei-signed forms loaded at runtime (signature in the editor). The existing
+forms are finished together first (good patterns); `docs/ki-anleitung-formulare.md` lets any AI
+draft or adapt forms.
 
 _Last updated: 2026-10-30_

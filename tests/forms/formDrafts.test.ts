@@ -52,6 +52,16 @@ describe('form-drafts/', () => {
     expect(checkFieldIdStability(all)).toEqual([]);
   });
 
+  // Tobias 2026-10-30: "abroad?" decides how the postcode is asked, so it opens the address.
+  it('asks "Liegt die Anschrift im Ausland?" first in every address section', () => {
+    for (const { path } of drafts) {
+      for (const section of registeredFrom(readJson(path)).definition.sections) {
+        const ids = section.fields.map((field) => field.id);
+        if (ids.includes('anschriftAusland')) expect(ids[0]).toBe('anschriftAusland');
+      }
+    }
+  });
+
   it('contains nothing but definition folders and README.md', () => {
     expect(looseFiles(DRAFTS_DIR)).toEqual(['README.md']);
   });
