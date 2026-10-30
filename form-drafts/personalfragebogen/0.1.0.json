@@ -228,7 +228,7 @@
     },
     {
       "id": "kontakt",
-      "title": "Kontakt",
+      "title": "Kontakt (freiwillig)",
       "fields": [
         {
           "id": "telefon",
@@ -236,13 +236,10 @@
           "type": "text",
           "label": "Telefonnummer",
           "question": "Unter welcher Telefonnummer sind Sie erreichbar?",
-          "help": "Für Rückfragen zu Ihren Angaben. Eine Telefonnummer oder eine E-Mail-Adresse genügt.",
+          "help": "Freiwillig, nur für Rückfragen zu Ihren Angaben und zur Lohnabrechnung.",
           "required": false,
-          "requiredIf": {
-            "field": "email",
-            "answered": false
-          },
-          "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung"
+          "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung",
+          "voluntary": true
         },
         {
           "id": "email",
@@ -250,13 +247,10 @@
           "type": "text",
           "label": "E-Mail-Adresse",
           "question": "Wie lautet Ihre E-Mail-Adresse?",
-          "help": "Für Rückfragen zu Ihren Angaben. Haben Sie eine Telefonnummer angegeben, können Sie dieses Feld leer lassen.",
+          "help": "Freiwillig, nur für Rückfragen zu Ihren Angaben und zur Lohnabrechnung.",
           "required": false,
-          "requiredIf": {
-            "field": "telefon",
-            "answered": false
-          },
-          "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung"
+          "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung",
+          "voluntary": true
         }
       ]
     },
@@ -300,6 +294,717 @@
       ]
     },
     {
+      "id": "situation",
+      "title": "Ihre Situation",
+      "fields": [
+        {
+          "id": "situation",
+          "role": "person",
+          "type": "multiChoice",
+          "label": "Situation zu Beginn der Beschäftigung",
+          "question": "Was trifft zu Beginn dieser Beschäftigung auf Sie zu? Wählen Sie alles, was passt.",
+          "help": "Davon hängt ab, ob und wie Sie in dieser Beschäftigung versichert sind. Trifft nichts Besonderes zu, wählen Sie „nichts davon (Arbeitnehmerin oder Arbeitnehmer)“.",
+          "required": true,
+          "purpose": "Beurteilung der Versicherungspflicht und der Personengruppe (§§ 5 ff. SGB V, §§ 5 f. SGB VI, §§ 25 ff. SGB III, § 8 SGB IV); Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "options": [
+            {
+              "id": "schueler",
+              "label": "Schülerin oder Schüler"
+            },
+            {
+              "id": "schulende",
+              "label": "Schule gerade beendet"
+            },
+            {
+              "id": "student",
+              "label": "Studentin oder Student (eingeschrieben)"
+            },
+            {
+              "id": "studienbewerber",
+              "label": "Studienbewerberin oder Studienbewerber"
+            },
+            {
+              "id": "ausbildungAnderswo",
+              "label": "in Ausbildung bei einem anderen Betrieb"
+            },
+            {
+              "id": "beamter",
+              "label": "Beamtin oder Beamter"
+            },
+            {
+              "id": "pensionaer",
+              "label": "Pensionärin oder Pensionär"
+            },
+            {
+              "id": "rente",
+              "label": "Ich beziehe eine Rente."
+            },
+            {
+              "id": "arbeitslos",
+              "label": "arbeitslos oder arbeitsuchend gemeldet"
+            },
+            {
+              "id": "grundsicherung",
+              "label": "Grundsicherungsgeld (früher Bürgergeld)"
+            },
+            {
+              "id": "elternzeit",
+              "label": "in Elternzeit bei einem anderen Arbeitgeber"
+            },
+            {
+              "id": "dienst",
+              "label": "Freiwilligendienst oder Wehrdienst"
+            },
+            {
+              "id": "selbstaendig",
+              "label": "selbständig tätig"
+            },
+            {
+              "id": "haushalt",
+              "label": "Haushaltsführung oder Familienarbeit"
+            },
+            {
+              "id": "arbeitnehmer",
+              "label": "nichts davon (Arbeitnehmerin oder Arbeitnehmer)"
+            },
+            {
+              "id": "sonstiges",
+              "label": "etwas anderes"
+            }
+          ]
+        },
+        {
+          "id": "schulart",
+          "role": "person",
+          "type": "choice",
+          "label": "Schulart",
+          "question": "Welche Schule besuchen Sie?",
+          "required": true,
+          "purpose": "Versicherungsfreiheit in der Arbeitslosenversicherung nur für Schüler allgemeinbildender Schulen (§ 27 Abs. 4 Nr. 1 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "schueler"
+          },
+          "options": [
+            {
+              "id": "allgemein",
+              "label": "allgemeinbildende Schule"
+            },
+            {
+              "id": "beruflich",
+              "label": "berufliche Schule"
+            },
+            {
+              "id": "abend",
+              "label": "Abendschule oder Kolleg"
+            }
+          ]
+        },
+        {
+          "id": "schulendeDatum",
+          "role": "person",
+          "type": "date",
+          "label": "Ende der Schulzeit",
+          "question": "Wann haben Sie die Schule beendet?",
+          "required": true,
+          "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "showIf": {
+            "field": "situation",
+            "contains": "schulende"
+          }
+        },
+        {
+          "id": "planNachSchule",
+          "role": "person",
+          "type": "choice",
+          "label": "Vorhaben nach der Schule",
+          "question": "Was haben Sie nach der Schule vor?",
+          "required": true,
+          "purpose": "Berufsmäßigkeit bei kurzfristiger Beschäftigung (Geringfügigkeits-Richtlinien B 2.3.3)",
+          "showIf": {
+            "field": "situation",
+            "contains": "schulende"
+          },
+          "options": [
+            {
+              "id": "studium",
+              "label": "Studium"
+            },
+            {
+              "id": "ausbildung",
+              "label": "Ausbildung oder duales Studium"
+            },
+            {
+              "id": "freiwilligendienst",
+              "label": "Freiwilligendienst"
+            },
+            {
+              "id": "wehrdienst",
+              "label": "Wehrdienst"
+            },
+            {
+              "id": "arbeit",
+              "label": "Arbeit"
+            },
+            {
+              "id": "offen",
+              "label": "noch offen"
+            }
+          ]
+        },
+        {
+          "id": "studienArt",
+          "role": "person",
+          "type": "choice",
+          "label": "Art des Studiums",
+          "question": "Wie studieren Sie?",
+          "required": true,
+          "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "student"
+          },
+          "options": [
+            {
+              "id": "vollzeit",
+              "label": "Vollzeitstudium"
+            },
+            {
+              "id": "teilzeit",
+              "label": "Teilzeitstudium"
+            },
+            {
+              "id": "dual",
+              "label": "berufsbegleitend oder dual"
+            },
+            {
+              "id": "promotion",
+              "label": "Promotionsstudium"
+            }
+          ]
+        },
+        {
+          "id": "hochschule",
+          "role": "person",
+          "type": "text",
+          "label": "Hochschule",
+          "question": "An welcher Hochschule sind Sie eingeschrieben?",
+          "help": "Bitte legen Sie Ihrem Arbeitgeber für jedes Semester eine Immatrikulationsbescheinigung vor.",
+          "required": true,
+          "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "student"
+          }
+        },
+        {
+          "id": "urlaubssemester",
+          "role": "person",
+          "type": "boolean",
+          "label": "Urlaubssemester",
+          "question": "Sind Sie in diesem Semester beurlaubt?",
+          "required": true,
+          "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "student"
+          }
+        },
+        {
+          "id": "fachsemester",
+          "role": "person",
+          "type": "number",
+          "label": "Fachsemester",
+          "question": "Im wievielten Fachsemester studieren Sie?",
+          "required": true,
+          "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "student"
+          },
+          "decimals": 0
+        },
+        {
+          "id": "studienendeErwartet",
+          "role": "person",
+          "type": "month",
+          "label": "Voraussichtlicher Studienabschluss",
+          "question": "Wann erwarten Sie Ihren Abschluss?",
+          "help": "Ungefähr genügt, zum Beispiel 09.2027.",
+          "required": false,
+          "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "student"
+          }
+        },
+        {
+          "id": "ueber20hJahr",
+          "role": "person",
+          "type": "boolean",
+          "label": "Mehr als 20 Wochenstunden in den letzten 12 Monaten",
+          "question": "Haben Sie in den letzten 12 Monaten irgendwo mehr als 20 Stunden pro Woche gearbeitet?",
+          "help": "Zählen Sie alle Beschäftigungen mit, auch in den Semesterferien.",
+          "required": true,
+          "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+          "showIf": {
+            "field": "situation",
+            "contains": "student"
+          }
+        },
+        {
+          "id": "ueber20hZeiten",
+          "role": "person",
+          "type": "repeatGroup",
+          "label": "Zeiten mit mehr als 20 Wochenstunden",
+          "question": "In welchen Zeiträumen war das?",
+          "required": true,
+          "purpose": "Werkstudentenregel: höchstens 26 Wochen (182 Kalendertage) mit mehr als 20 Wochenstunden im Jahr",
+          "showIf": {
+            "field": "ueber20hJahr",
+            "equals": true
+          },
+          "rowLabel": "Zeitraum",
+          "columns": [
+            {
+              "id": "ueber20hVon",
+              "role": "person",
+              "type": "date",
+              "label": "von",
+              "required": true,
+              "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)"
+            },
+            {
+              "id": "ueber20hBis",
+              "role": "person",
+              "type": "date",
+              "label": "bis",
+              "required": true,
+              "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)"
+            },
+            {
+              "id": "ueber20hStunden",
+              "role": "person",
+              "type": "number",
+              "label": "Stunden pro Woche",
+              "required": true,
+              "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "ueber20hArbeitgeber",
+              "role": "person",
+              "type": "text",
+              "label": "bei welchem Arbeitgeber",
+              "required": false,
+              "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)"
+            },
+            {
+              "id": "ueber20hFerien",
+              "role": "person",
+              "type": "boolean",
+              "label": "in den Semesterferien?",
+              "required": true,
+              "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)"
+            }
+          ]
+        },
+        {
+          "id": "studienbeginnGeplant",
+          "role": "person",
+          "type": "month",
+          "label": "Geplanter Studienbeginn",
+          "question": "Wann beginnt Ihr Studium voraussichtlich?",
+          "required": true,
+          "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "showIf": {
+            "field": "situation",
+            "contains": "studienbewerber"
+          }
+        },
+        {
+          "id": "beamtBeihilfe",
+          "role": "person",
+          "type": "boolean",
+          "label": "Anspruch auf Beihilfe oder Heilfürsorge",
+          "question": "Haben Sie als Beamtin oder Beamter Anspruch auf Beihilfe oder Heilfürsorge?",
+          "required": true,
+          "purpose": "Versicherungsfreiheit in der Krankenversicherung (§ 6 Abs. 1 Nr. 2 SGB V)",
+          "showIf": {
+            "field": "situation",
+            "contains": "beamter"
+          }
+        },
+        {
+          "id": "pensionArt",
+          "role": "person",
+          "type": "choice",
+          "label": "Grund der Pension",
+          "question": "Weshalb beziehen Sie Ihre Pension?",
+          "required": true,
+          "purpose": "Versicherungsfreiheit in der Rentenversicherung nur bei Pension wegen Alters (§ 5 Abs. 4 Nr. 2 SGB VI)",
+          "showIf": {
+            "field": "situation",
+            "contains": "pensionaer"
+          },
+          "options": [
+            {
+              "id": "alter",
+              "label": "wegen Alters"
+            },
+            {
+              "id": "dienstunfaehigkeit",
+              "label": "wegen Dienstunfähigkeit"
+            }
+          ]
+        },
+        {
+          "id": "rentenart",
+          "role": "person",
+          "type": "choice",
+          "label": "Art der Rente",
+          "question": "Welche Rente beziehen Sie?",
+          "help": "Beziehen Sie mehrere, wählen Sie die Rente aus der deutschen Rentenversicherung.",
+          "required": true,
+          "purpose": "Versicherungsfreiheit und Arbeitgeberanteile in Renten- und Arbeitslosenversicherung; Hinzuverdienst bei Erwerbsminderung",
+          "showIf": {
+            "field": "situation",
+            "contains": "rente"
+          },
+          "options": [
+            {
+              "id": "altersvoll",
+              "label": "Altersrente als Vollrente"
+            },
+            {
+              "id": "altersteil",
+              "label": "Altersrente als Teilrente"
+            },
+            {
+              "id": "emVoll",
+              "label": "Rente wegen voller Erwerbsminderung"
+            },
+            {
+              "id": "emTeil",
+              "label": "Rente wegen teilweiser Erwerbsminderung"
+            },
+            {
+              "id": "hinterbliebene",
+              "label": "Hinterbliebenenrente (Witwen-, Witwer-, Waisenrente)"
+            },
+            {
+              "id": "ausland",
+              "label": "Rente aus dem Ausland"
+            },
+            {
+              "id": "versorgungswerk",
+              "label": "Rente eines berufsständischen Versorgungswerks"
+            }
+          ]
+        },
+        {
+          "id": "renteSeit",
+          "role": "person",
+          "type": "date",
+          "label": "Rente seit",
+          "question": "Seit wann beziehen Sie diese Rente?",
+          "required": true,
+          "purpose": "Beginn der Versicherungsfreiheit oder der Arbeitgeberanteile",
+          "showIf": {
+            "field": "situation",
+            "contains": "rente"
+          }
+        },
+        {
+          "id": "emBefristetBis",
+          "role": "person",
+          "type": "date",
+          "label": "Befristung der Erwerbsminderungsrente",
+          "question": "Bis wann ist die Rente befristet?",
+          "help": "Leer lassen, wenn sie unbefristet ist.",
+          "required": false,
+          "purpose": "Hinzuverdienst und zeitliche Grenzen bei Erwerbsminderung (§ 96a SGB VI)",
+          "showIf": {
+            "field": "rentenart",
+            "in": [
+              "emVoll",
+              "emTeil"
+            ]
+          }
+        },
+        {
+          "id": "rvVerzicht",
+          "role": "person",
+          "type": "choice",
+          "label": "Rentenbeiträge trotz Vollrente oder Pension",
+          "question": "Möchten Sie in dieser Beschäftigung trotzdem Rentenbeiträge zahlen, um Ihre Rente zu erhöhen?",
+          "help": "Nach Erreichen der Regelaltersgrenze sind Sie mit einer Altersvollrente oder einer Pension wegen Alters rentenversicherungsfrei. Sie können darauf verzichten; der Verzicht gilt für die Dauer der Beschäftigung und wird gesondert schriftlich erklärt.",
+          "required": true,
+          "purpose": "Verzicht auf die Versicherungsfreiheit in der Rentenversicherung (§ 5 Abs. 4 Satz 2 SGB VI)",
+          "showIf": {
+            "any": [
+              {
+                "field": "rentenart",
+                "equals": "altersvoll"
+              },
+              {
+                "field": "pensionArt",
+                "equals": "alter"
+              }
+            ]
+          },
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja, ich möchte Beiträge zahlen"
+            },
+            {
+              "id": "beratung",
+              "label": "Ich möchte mich erst beraten lassen"
+            }
+          ]
+        },
+        {
+          "id": "leistungArbeitslos",
+          "role": "person",
+          "type": "choice",
+          "label": "Leistung bei Arbeitslosigkeit",
+          "question": "Welche Leistung erhalten Sie?",
+          "required": true,
+          "purpose": "Versicherungsfreiheit in der Arbeitslosenversicherung unter 15 Wochenstunden; Nebeneinkommensbescheinigung des Arbeitgebers",
+          "showIf": {
+            "any": [
+              {
+                "field": "situation",
+                "contains": "arbeitslos"
+              },
+              {
+                "field": "situation",
+                "contains": "grundsicherung"
+              }
+            ]
+          },
+          "options": [
+            {
+              "id": "arbeitslosengeld",
+              "label": "Arbeitslosengeld"
+            },
+            {
+              "id": "grundsicherungsgeld",
+              "label": "Grundsicherungsgeld (früher Bürgergeld)"
+            },
+            {
+              "id": "keine",
+              "label": "keine Leistung"
+            }
+          ]
+        },
+        {
+          "id": "arbeitsuchendSeit",
+          "role": "person",
+          "type": "date",
+          "label": "Arbeitsuchend gemeldet seit",
+          "question": "Seit wann sind Sie arbeitslos oder arbeitsuchend gemeldet?",
+          "required": true,
+          "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "showIf": {
+            "field": "situation",
+            "contains": "arbeitslos"
+          }
+        },
+        {
+          "id": "elternzeitBis",
+          "role": "person",
+          "type": "date",
+          "label": "Elternzeit bis",
+          "question": "Bis wann dauert Ihre Elternzeit?",
+          "required": true,
+          "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "showIf": {
+            "field": "situation",
+            "contains": "elternzeit"
+          }
+        },
+        {
+          "id": "elternzeitZustimmung",
+          "role": "person",
+          "type": "choice",
+          "label": "Zustimmung zur Tätigkeit in der Elternzeit",
+          "question": "Hat Ihr Arbeitgeber in der Elternzeit dieser Tätigkeit zugestimmt?",
+          "required": true,
+          "purpose": "Teilzeit während der Elternzeit bei einem anderen Arbeitgeber bedarf der Zustimmung (§ 15 Abs. 4 BEEG)",
+          "showIf": {
+            "field": "situation",
+            "contains": "elternzeit"
+          },
+          "options": [
+            {
+              "id": "ja",
+              "label": "ja"
+            },
+            {
+              "id": "beantragt",
+              "label": "beantragt"
+            },
+            {
+              "id": "nein",
+              "label": "nein"
+            }
+          ]
+        },
+        {
+          "id": "dienstBis",
+          "role": "person",
+          "type": "date",
+          "label": "Dienst bis",
+          "question": "Bis wann dauert Ihr Freiwilligen- oder Wehrdienst?",
+          "required": true,
+          "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "showIf": {
+            "field": "situation",
+            "contains": "dienst"
+          }
+        },
+        {
+          "id": "selbstStunden",
+          "role": "person",
+          "type": "number",
+          "label": "Selbständige Tätigkeit: Wochenstunden",
+          "question": "Wie viele Stunden pro Woche sind Sie selbständig tätig?",
+          "required": true,
+          "purpose": "Hauptberuflich Selbständige sind nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V)",
+          "showIf": {
+            "field": "situation",
+            "contains": "selbstaendig"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "selbstHauptberuf",
+          "role": "person",
+          "type": "boolean",
+          "label": "Selbständige Tätigkeit als Haupterwerb",
+          "question": "Ist die selbständige Tätigkeit Ihr Haupterwerb?",
+          "required": true,
+          "purpose": "Hauptberuflich Selbständige sind nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V)",
+          "showIf": {
+            "field": "situation",
+            "contains": "selbstaendig"
+          }
+        },
+        {
+          "id": "situationSonstiges",
+          "role": "person",
+          "type": "text",
+          "label": "Andere Situation",
+          "question": "Was trifft sonst auf Sie zu?",
+          "required": true,
+          "purpose": "Beurteilung der Versicherungspflicht und der Personengruppe (§§ 5 ff. SGB V, §§ 5 f. SGB VI, §§ 25 ff. SGB III, § 8 SGB IV)",
+          "showIf": {
+            "field": "situation",
+            "contains": "sonstiges"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sicht",
+      "title": "Diese Beschäftigung aus Ihrer Sicht",
+      "fields": [
+        {
+          "id": "artLautVereinbarung",
+          "role": "person",
+          "type": "choice",
+          "label": "Vereinbarte Art der Beschäftigung",
+          "question": "Was haben Sie mit Ihrem Arbeitgeber vereinbart?",
+          "help": "Ihr Arbeitgeber macht dazu eine eigene Angabe; weichen beide ab, klärt die lohnabrechnende Stelle das mit Ihnen.",
+          "required": true,
+          "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
+          "options": [
+            {
+              "id": "festeStelle",
+              "label": "eine feste Stelle in Voll- oder Teilzeit"
+            },
+            {
+              "id": "minijob",
+              "label": "einen Minijob (bis 603 € im Monat)"
+            },
+            {
+              "id": "aushilfe",
+              "label": "eine Aushilfe für höchstens 3 Monate oder 70 Arbeitstage"
+            },
+            {
+              "id": "ausbildung",
+              "label": "eine Ausbildung oder ein duales Studium"
+            },
+            {
+              "id": "praktikum",
+              "label": "ein Praktikum"
+            },
+            {
+              "id": "werkstudent",
+              "label": "eine Werkstudententätigkeit"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "praktikumArt",
+          "role": "person",
+          "type": "choice",
+          "label": "Pflichtpraktikum",
+          "question": "Ist das Praktikum vorgeschrieben?",
+          "required": true,
+          "purpose": "Versicherungsfreiheit von Pflichtpraktika und Ausnahmen vom Mindestlohn (§ 22 MiLoG)",
+          "showIf": {
+            "field": "artLautVereinbarung",
+            "equals": "praktikum"
+          },
+          "options": [
+            {
+              "id": "pflicht",
+              "label": "Ja, von der Studien-, Prüfungs- oder Ausbildungsordnung"
+            },
+            {
+              "id": "freiwillig",
+              "label": "Nein, es ist freiwillig."
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "taeglichHoechstStunden",
+          "role": "person",
+          "type": "number",
+          "label": "Höchste tägliche Arbeitszeit",
+          "question": "Wie viele Stunden arbeiten Sie an einem Arbeitstag höchstens?",
+          "required": true,
+          "purpose": "Zeitliche Grenzen bei Erwerbsminderungsrente (unter 3 bzw. 6 Stunden täglich)",
+          "showIf": {
+            "field": "rentenart",
+            "in": [
+              "emVoll",
+              "emTeil"
+            ]
+          },
+          "decimals": 2,
+          "unit": "Std."
+        }
+      ]
+    },
+    {
       "id": "weitereBeschaeftigungen",
       "title": "Weitere Beschäftigungen",
       "fields": [
@@ -313,47 +1018,437 @@
           "purpose": "Versicherungsrechtliche Beurteilung bei mehreren Beschäftigungen, zum Beispiel Zusammenrechnung (§ 8 Abs. 2 SGB IV) und Beitragsbemessungsgrenzen (§ 22 Abs. 2 SGB IV)"
         },
         {
-          "id": "weitereArten",
+          "id": "weitereJobs",
           "role": "person",
-          "type": "multiChoice",
-          "label": "Art der anderen Beschäftigungen",
-          "question": "Welcher Art sind Ihre anderen Beschäftigungen?",
-          "help": "Kreuzen Sie alles an, was zutrifft.",
+          "type": "repeatGroup",
+          "label": "Andere Beschäftigungen",
+          "question": "Welche anderen Beschäftigungen haben Sie zurzeit?",
+          "help": "Für jede Beschäftigung eine Zeile, auch Minijobs und Beschäftigungen im Ausland. Beträge und Stunden genügen ungefähr.",
           "required": true,
-          "purpose": "Versicherungsrechtliche Beurteilung bei mehreren Beschäftigungen",
-          "options": [
-            {
-              "id": "versicherungspflichtig",
-              "label": "versicherungspflichtige Beschäftigung (kein Minijob)"
-            },
-            {
-              "id": "minijob",
-              "label": "Minijob (geringfügig entlohnt)"
-            },
-            {
-              "id": "kurzfristig",
-              "label": "kurzfristige Beschäftigung"
-            }
-          ],
+          "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung",
           "showIf": {
             "field": "weitereBeschaeftigung",
             "equals": true
+          },
+          "rowLabel": "Beschäftigung",
+          "columns": [
+            {
+              "id": "jobArbeitgeber",
+              "role": "person",
+              "type": "text",
+              "label": "Arbeitgeber",
+              "required": true,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung"
+            },
+            {
+              "id": "jobArt",
+              "role": "person",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung",
+              "options": [
+                {
+                  "id": "svpflichtig",
+                  "label": "sozialversicherungspflichtig"
+                },
+                {
+                  "id": "minijob",
+                  "label": "Minijob"
+                },
+                {
+                  "id": "kurzfristig",
+                  "label": "kurzfristige Aushilfe"
+                },
+                {
+                  "id": "beamter",
+                  "label": "Beamtenverhältnis"
+                },
+                {
+                  "id": "ausbildung",
+                  "label": "Ausbildung"
+                },
+                {
+                  "id": "ausland",
+                  "label": "im Ausland"
+                }
+              ]
+            },
+            {
+              "id": "jobStaat",
+              "role": "person",
+              "type": "text",
+              "label": "Staat (nur im Ausland)",
+              "required": false,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung"
+            },
+            {
+              "id": "jobSeit",
+              "role": "person",
+              "type": "date",
+              "label": "seit",
+              "required": true,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung"
+            },
+            {
+              "id": "jobBefristetBis",
+              "role": "person",
+              "type": "date",
+              "label": "befristet bis",
+              "required": false,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung"
+            },
+            {
+              "id": "jobEntgeltMonat",
+              "role": "person",
+              "type": "money",
+              "label": "Verdienst im Monat (brutto)",
+              "required": false,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung"
+            },
+            {
+              "id": "jobStundenWoche",
+              "role": "person",
+              "type": "number",
+              "label": "Stunden pro Woche",
+              "required": false,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung",
+              "decimals": 2,
+              "unit": "Std."
+            },
+            {
+              "id": "jobRvBefreit",
+              "role": "person",
+              "type": "choice",
+              "label": "von der Rentenversicherung befreit (nur Minijob)",
+              "required": false,
+              "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung",
+              "options": [
+                {
+                  "id": "ja",
+                  "label": "ja"
+                },
+                {
+                  "id": "nein",
+                  "label": "nein"
+                },
+                {
+                  "id": "unbekannt",
+                  "label": "weiß ich nicht"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vorbeschaeftigungen",
+      "title": "Frühere Beschäftigungen in diesem Jahr",
+      "fields": [
+        {
+          "id": "vorbeschJahr",
+          "role": "person",
+          "type": "boolean",
+          "label": "Frühere Beschäftigungen im Kalenderjahr",
+          "question": "Haben Sie in diesem Kalenderjahr schon anderswo gearbeitet – auch kurz, auch im Ausland?",
+          "required": true,
+          "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)",
+          "showIf": {
+            "field": "artLautVereinbarung",
+            "in": [
+              "aushilfe",
+              "unbekannt"
+            ]
           }
         },
         {
-          "id": "weitereAngaben",
+          "id": "vorbeschaeftigungen",
+          "role": "person",
+          "type": "repeatGroup",
+          "label": "Frühere Beschäftigungen",
+          "question": "Wo haben Sie in diesem Jahr schon gearbeitet?",
+          "help": "Laufen Beschäftigungen über den Jahreswechsel, nennen Sie nur die Zeit in diesem Jahr. Bei Aushilfen tragen Sie die Zahl der Arbeitstage ein; bei durchgehender Beschäftigung bleibt das Feld leer.",
+          "required": true,
+          "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)",
+          "showIf": {
+            "field": "vorbeschJahr",
+            "equals": true
+          },
+          "rowLabel": "Beschäftigung",
+          "columns": [
+            {
+              "id": "vbArbeitgeber",
+              "role": "person",
+              "type": "text",
+              "label": "Arbeitgeber",
+              "required": true,
+              "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)"
+            },
+            {
+              "id": "vbVon",
+              "role": "person",
+              "type": "date",
+              "label": "von",
+              "required": true,
+              "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)"
+            },
+            {
+              "id": "vbBis",
+              "role": "person",
+              "type": "date",
+              "label": "bis",
+              "required": true,
+              "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)"
+            },
+            {
+              "id": "vbArt",
+              "role": "person",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)",
+              "options": [
+                {
+                  "id": "kurzfristig",
+                  "label": "kurzfristige Aushilfe"
+                },
+                {
+                  "id": "minijob",
+                  "label": "Minijob"
+                },
+                {
+                  "id": "mehr",
+                  "label": "mehr als geringfügig"
+                },
+                {
+                  "id": "ausland",
+                  "label": "im Ausland"
+                }
+              ]
+            },
+            {
+              "id": "vbArbeitstage",
+              "role": "person",
+              "type": "number",
+              "label": "Arbeitstage",
+              "required": false,
+              "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)",
+              "decimals": 0,
+              "unit": "Tage"
+            },
+            {
+              "id": "vbEntgeltMonat",
+              "role": "person",
+              "type": "money",
+              "label": "Verdienst im Monat (brutto)",
+              "required": false,
+              "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "krankenversicherung",
+      "title": "Krankenversicherung",
+      "fields": [
+        {
+          "id": "krankenversicherung",
+          "role": "person",
+          "type": "choice",
+          "label": "Krankenversicherung",
+          "question": "Wie sind Sie krankenversichert?",
+          "help": "Sind Sie privat versichert, erhält Ihr Arbeitgeber die Höhe Ihrer Beiträge seit 2026 elektronisch vom Bundeszentralamt für Steuern; eine Beitragsbescheinigung brauchen Sie dafür nicht mehr. Für den Zuschuss Ihres Arbeitgebers legen Sie aber die Bescheinigung Ihrer Versicherung vor, dass sie die gesetzlichen Voraussetzungen erfüllt; sie ist alle drei Jahre neu fällig. „Anderweitig“ ist zum Beispiel Heilfürsorge oder eine Versicherung im Ausland.",
+          "required": true,
+          "purpose": "Anmeldung zur Sozialversicherung; Kennzeichen der Krankenversicherung bei kurzfristiger Beschäftigung; Beitragszuschuss bei privater Versicherung",
+          "options": [
+            {
+              "id": "gesetzlich",
+              "label": "gesetzlich (auch familien-, studenten- oder rentnerversichert)"
+            },
+            {
+              "id": "privat",
+              "label": "privat"
+            },
+            {
+              "id": "anderweitig",
+              "label": "anderweitig (zum Beispiel Heilfürsorge oder im Ausland)"
+            },
+            {
+              "id": "keine",
+              "label": "zurzeit nicht versichert"
+            }
+          ]
+        },
+        {
+          "id": "krankenkasse",
           "role": "person",
           "type": "text",
-          "label": "Angaben zu den anderen Beschäftigungen",
-          "question": "Bei welchen Arbeitgebern, seit wann und in welchem Umfang arbeiten Sie außerdem?",
-          "help": "Bitte eine Zeile je Beschäftigung: Arbeitgeber, Beginn, Stunden pro Woche und Entgelt im Monat, zum Beispiel „Name des Arbeitgebers, seit 01.03.2026, 8 Stunden, 300 Euro“.",
+          "label": "Krankenkasse oder Versicherungsunternehmen",
+          "question": "Bei welcher Krankenkasse oder Versicherung sind Sie versichert?",
+          "help": "Gesetzlich versichert: die Krankenkasse, bei der Sie versichert sind oder Mitglied werden. Privat versichert: der Name des Versicherungsunternehmens.",
           "required": true,
-          "purpose": "Versicherungsrechtliche Beurteilung bei mehreren Beschäftigungen",
-          "multiline": true,
+          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV); Beitragszuschuss bei privater Versicherung",
           "showIf": {
-            "field": "weitereBeschaeftigung",
-            "equals": true
+            "field": "krankenversicherung",
+            "in": [
+              "gesetzlich",
+              "privat",
+              "anderweitig"
+            ]
           }
+        },
+        {
+          "id": "pkvLetzteKrankenkasse",
+          "role": "person",
+          "type": "text",
+          "label": "Letzte gesetzliche Krankenkasse",
+          "question": "Bei welcher gesetzlichen Krankenkasse waren Sie zuletzt versichert?",
+          "help": "Auch wenn Sie dort familienversichert waren. Waren Sie nie gesetzlich versichert, lassen Sie das Feld leer; dann wählt Ihr Arbeitgeber eine Krankenkasse für die Renten- und Arbeitslosenversicherungsbeiträge.",
+          "required": false,
+          "purpose": "Bestimmung der Einzugsstelle für die Beiträge zur Renten- und Arbeitslosenversicherung (§ 28i SGB IV)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          }
+        },
+        {
+          "id": "pkvBescheinigung",
+          "role": "person",
+          "type": "choice",
+          "label": "Bescheinigung für den Arbeitgeberzuschuss",
+          "question": "Legen Sie die Bescheinigung Ihrer Versicherung für den Arbeitgeberzuschuss vor?",
+          "help": "Ohne diese Bescheinigung darf Ihr Arbeitgeber keinen Zuschuss zahlen (§ 257 Abs. 2a SGB V). Einen Betrag brauchen Sie nicht anzugeben: Die Beiträge kommen elektronisch.",
+          "required": true,
+          "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          },
+          "options": [
+            {
+              "id": "liegtBei",
+              "label": "Ja, ich lege sie vor."
+            },
+            {
+              "id": "folgt",
+              "label": "Sie folgt."
+            },
+            {
+              "id": "keinZuschuss",
+              "label": "Ich möchte keinen Zuschuss."
+            }
+          ]
+        },
+        {
+          "id": "pkvAusland",
+          "role": "person",
+          "type": "boolean",
+          "label": "Private Versicherung mit Sitz im Ausland",
+          "question": "Hat Ihre private Krankenversicherung ihren Sitz im Ausland?",
+          "help": "Ausländische Versicherungen übermitteln keine Daten an das Bundeszentralamt für Steuern. Dann legen Sie Ihrem Arbeitgeber regelmäßig eine Bescheinigung über Ihre Beiträge vor.",
+          "required": true,
+          "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          }
+        },
+        {
+          "id": "pkvAngehoerigeEigene",
+          "role": "person",
+          "type": "boolean",
+          "label": "Angehörige mit eigenem privatem Vertrag",
+          "question": "Zahlen Sie Beiträge für Ihre Ehe- oder Lebenspartnerin, Ihren Ehe- oder Lebenspartner oder Kinder, die in einem eigenen privaten Vertrag versichert sind?",
+          "help": "Diese Beiträge kommen nicht immer elektronisch bei Ihrem Arbeitgeber an. Legen Sie dafür bitte eine Beitragsbescheinigung der Versicherung vor.",
+          "required": false,
+          "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          }
+        },
+        {
+          "id": "pkvWiderspruch",
+          "role": "person",
+          "type": "boolean",
+          "label": "Widerspruch gegen die Datenübermittlung",
+          "question": "Haben Sie Ihrer Versicherung untersagt, Ihre Beiträge an das Finanzamt zu melden?",
+          "help": "Dann darf Ihr Arbeitgeber diese Beiträge bei der Lohnsteuer nicht berücksichtigen, auch nicht mit einer Bescheinigung.",
+          "required": false,
+          "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "privat"
+          }
+        },
+        {
+          "id": "gkvLetzte5Jahre",
+          "role": "person",
+          "type": "choice",
+          "label": "Gesetzlich versichert in den letzten fünf Jahren",
+          "question": "Waren Sie in den letzten fünf Jahren gesetzlich krankenversichert?",
+          "required": true,
+          "purpose": "Versicherungsfreiheit ab 55 Jahren (§ 6 Abs. 3a SGB V)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "in": [
+              "privat",
+              "anderweitig"
+            ]
+          },
+          "options": [
+            {
+              "id": "ja",
+              "label": "ja"
+            },
+            {
+              "id": "nein",
+              "label": "nein"
+            },
+            {
+              "id": "teilweise",
+              "label": "teilweise"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minijobRv",
+      "title": "Rentenversicherung im Minijob",
+      "fields": [
+        {
+          "id": "rvBefreiungWunsch",
+          "role": "person",
+          "type": "choice",
+          "label": "Befreiung von der Rentenversicherungspflicht im Minijob",
+          "question": "Möchten Sie sich im Minijob von der Rentenversicherungspflicht befreien lassen?",
+          "help": "Im Minijob zahlen Sie einen kleinen Eigenanteil zur Rentenversicherung (2026: 3,6 % des Verdiensts). Die Befreiung beantragen Sie gesondert mit eigener Unterschrift; sie gilt für alle Ihre Minijobs. Seit Juli 2026 können Sie eine Befreiung einmal für die Zukunft wieder aufheben.",
+          "required": true,
+          "purpose": "Befreiung von der Rentenversicherungspflicht (§ 6 Abs. 1b SGB VI); Eingangstag beim Arbeitgeber (§ 8 Abs. 2 Nr. 4a BVV)",
+          "showIf": {
+            "field": "artLautVereinbarung",
+            "in": [
+              "minijob",
+              "unbekannt"
+            ]
+          },
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein, ich zahle den Eigenanteil."
+            },
+            {
+              "id": "ja",
+              "label": "Ja, ich gebe den Befreiungsantrag ab."
+            },
+            {
+              "id": "schonBefreit",
+              "label": "Ich bin in einem anderen Minijob schon befreit."
+            }
+          ]
         }
       ]
     },
@@ -367,9 +1462,9 @@
           "type": "taxId",
           "label": "Steuerliche Identifikationsnummer",
           "question": "Wie lautet Ihre Steuer-Identifikationsnummer?",
-          "help": "Sie hat 11 Ziffern und steht zum Beispiel auf Ihrer letzten Lohnsteuerbescheinigung, Ihrem Einkommensteuerbescheid oder dem Schreiben des Bundeszentralamts für Steuern, mit dem Sie die Nummer erhalten haben.",
+          "help": "Sie hat 11 Ziffern und steht zum Beispiel auf Ihrer letzten Lohnsteuerbescheinigung, Ihrem Einkommensteuerbescheid oder dem Schreiben des Bundeszentralamts für Steuern. Haben Sie noch keine, wählen Sie „Weiß ich gerade nicht“ und sagen Sie es Ihrem Arbeitgeber: Höchstens drei Monate lang gilt dann eine vorläufige Steuerklasse, danach Steuerklasse VI.",
           "required": true,
-          "purpose": "Abruf der elektronischen Lohnsteuerabzugsmerkmale (ELStAM) beim Bundeszentralamt für Steuern (§ 39e Abs. 4 EStG)"
+          "purpose": "Abruf der elektronischen Lohnsteuerabzugsmerkmale beim Bundeszentralamt für Steuern (§ 39e Abs. 4 EStG) und der Kinderzahl für den Pflegeversicherungsbeitrag (§ 55a Abs. 3 SGB XI); Pflichtangabe auch in Minijob-Meldungen"
         },
         {
           "id": "dienstverhaeltnis",
@@ -377,7 +1472,7 @@
           "type": "choice",
           "label": "Erstes oder weiteres Dienstverhältnis",
           "question": "Welches Dienstverhältnis ist diese Beschäftigung für die Lohnsteuer?",
-          "help": "Haben Sie nur diesen Arbeitgeber, ist es das erste. Arbeiten Sie gleichzeitig für mehrere Arbeitgeber, legen Sie fest, welches Arbeitsverhältnis das erste ist; für jedes weitere gilt Steuerklasse VI.",
+          "help": "Haben Sie nur diesen Arbeitgeber, ist es das erste. Arbeiten Sie gleichzeitig für mehrere Arbeitgeber, legen Sie fest, welches das erste ist; für jedes weitere gilt Steuerklasse VI. Ohne Angabe muss Ihr Arbeitgeber Steuerklasse VI anwenden. Bei einem Minijob mit pauschaler Steuer spielt die Frage keine Rolle.",
           "required": true,
           "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG); Steuerklasse VI für ein weiteres Dienstverhältnis",
           "options": [
@@ -396,7 +1491,7 @@
           "role": "person",
           "type": "boolean",
           "label": "Soll für dieses Dienstverhältnis ein Freibetrag abgerufen werden?",
-          "help": "Das geht nur, wenn das Finanzamt auf Ihren Antrag einen Freibetrag für ein weiteres Dienstverhältnis festgestellt hat. Sonst „Nein“.",
+          "help": "Verdienen Sie in Ihrer Hauptbeschäftigung im Jahr weniger als den Betrag, der dort steuerfrei bleibt, können Sie den ungenutzten Teil vom Finanzamt auf diese Nebenbeschäftigung übertragen lassen. Dann wird hier weniger Lohnsteuer abgezogen, und in der Hauptbeschäftigung wird derselbe Betrag zum Lohn hinzugerechnet. Das geht nur, wenn das Finanzamt den Freibetrag auf Ihren Antrag festgestellt hat; sonst „Nein“.",
           "required": true,
           "purpose": "Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG)",
           "showIf": {
@@ -417,178 +1512,318 @@
             "field": "freibetragAbrufen",
             "equals": true
           }
+        },
+        {
+          "id": "aktivrenteMonat",
+          "role": "person",
+          "type": "choice",
+          "label": "Aktivrente im Monat des Beginns",
+          "question": "Haben Sie im Monat, in dem diese Beschäftigung beginnt, die Aktivrente schon bei einem anderen Arbeitgeber erhalten?",
+          "help": "Die Aktivrente gilt erst ab dem Monat nach Erreichen Ihrer Regelaltersgrenze: bis 2.000 € im Monat steuerfrei, nicht im Minijob. Haben Sie die Regelaltersgrenze noch nicht erreicht, wählen Sie „Nein“.",
+          "required": true,
+          "purpose": "Steuerfreiheit nach § 3 Nr. 21 EStG (Aktivrente) nur einmal je Monat",
+          "showIf": {
+            "any": [
+              {
+                "field": "rentenart",
+                "in": [
+                  "altersvoll",
+                  "altersteil"
+                ]
+              },
+              {
+                "field": "pensionArt",
+                "equals": "alter"
+              }
+            ]
+          },
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "aktivrenteNichtAnderswo",
+          "role": "person",
+          "type": "boolean",
+          "label": "Aktivrente nicht in einem anderen Arbeitsverhältnis",
+          "question": "Bestätigen Sie, dass die Aktivrente nicht schon in einem anderen Arbeitsverhältnis berücksichtigt wird?",
+          "required": true,
+          "purpose": "Aktivrente in Steuerklasse VI nur mit Bestätigung der Person zum Lohnkonto (§ 3 Nr. 21 EStG)",
+          "showIf": {
+            "all": [
+              {
+                "field": "dienstverhaeltnis",
+                "equals": "weiteres"
+              },
+              {
+                "any": [
+                  {
+                    "field": "rentenart",
+                    "in": [
+                      "altersvoll",
+                      "altersteil"
+                    ]
+                  },
+                  {
+                    "field": "pensionArt",
+                    "equals": "alter"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ]
     },
     {
-      "id": "sozialversicherung",
-      "title": "Sozialversicherung",
+      "id": "kinder",
+      "title": "Kinder (Pflegeversicherung)",
       "fields": [
         {
-          "id": "krankenversicherung",
-          "role": "person",
-          "type": "choice",
-          "label": "Krankenversicherung",
-          "question": "Wie sind Sie krankenversichert?",
-          "help": "Sind Sie privat versichert, braucht Ihr Arbeitgeber zusätzlich eine Bescheinigung Ihrer Versicherung über die Beiträge, damit er den Beitragszuschuss zahlen kann.",
-          "required": true,
-          "purpose": "Anmeldung zur Sozialversicherung; Beitragszuschuss des Arbeitgebers bei privater Versicherung",
-          "options": [
-            {
-              "id": "gesetzlich",
-              "label": "gesetzlich (auch familienversichert)"
-            },
-            {
-              "id": "privat",
-              "label": "privat"
-            }
-          ]
-        },
-        {
-          "id": "krankenkasse",
-          "role": "person",
-          "type": "text",
-          "label": "Krankenkasse oder Versicherungsunternehmen",
-          "question": "Bei welcher Krankenkasse oder Versicherung sind Sie versichert?",
-          "help": "Gesetzlich versichert: die Krankenkasse, bei der Sie versichert sind oder Mitglied werden. Privat versichert: der Name des Versicherungsunternehmens.",
-          "required": true,
-          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV); Beitragszuschuss bei privater Versicherung"
-        },
-        {
-          "id": "pkvLetzteKrankenkasse",
-          "role": "person",
-          "type": "text",
-          "label": "Letzte gesetzliche Krankenkasse",
-          "question": "Bei welcher gesetzlichen Krankenkasse waren Sie zuletzt versichert?",
-          "help": "Auch wenn Sie dort familienversichert waren. Waren Sie nie gesetzlich versichert, lassen Sie das Feld leer.",
-          "required": false,
-          "purpose": "Bestimmung der Einzugsstelle für die Beiträge zur Renten- und Arbeitslosenversicherung (§ 28i SGB IV)",
-          "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
-          }
-        },
-        {
-          "id": "statusBeginn",
-          "role": "person",
-          "type": "choice",
-          "label": "Status vor Beginn der Beschäftigung",
-          "question": "Was trifft unmittelbar vor Beginn dieser Beschäftigung auf Sie zu?",
-          "help": "Trifft mehreres zu, wählen Sie, was überwiegt. Schülerinnen, Schüler und Studierende legen ihrem Arbeitgeber bitte zusätzlich eine Schul- oder Immatrikulationsbescheinigung vor.",
-          "required": true,
-          "purpose": "Versicherungsrechtliche Beurteilung der Beschäftigung, zum Beispiel bei Schülern, Studierenden oder Arbeitslosen",
-          "options": [
-            {
-              "id": "schulabgang",
-              "label": "Schule gerade beendet"
-            },
-            {
-              "id": "schueler",
-              "label": "Schülerin oder Schüler"
-            },
-            {
-              "id": "studienbewerber",
-              "label": "Studienbewerberin oder Studienbewerber"
-            },
-            {
-              "id": "student",
-              "label": "Studentin oder Student"
-            },
-            {
-              "id": "arbeitnehmer",
-              "label": "Arbeitnehmerin oder Arbeitnehmer"
-            },
-            {
-              "id": "beamter",
-              "label": "Beamtin oder Beamter"
-            },
-            {
-              "id": "selbstaendig",
-              "label": "selbständig"
-            },
-            {
-              "id": "arbeitslos",
-              "label": "arbeitslos oder arbeitsuchend gemeldet"
-            },
-            {
-              "id": "freiwilligendienst",
-              "label": "Freiwilligendienst oder Wehrdienst"
-            },
-            {
-              "id": "haushalt",
-              "label": "Haushaltsführung oder Familienarbeit"
-            },
-            {
-              "id": "rentner",
-              "label": "Rentnerin oder Rentner"
-            },
-            {
-              "id": "sonstiges",
-              "label": "Sonstiges"
-            }
-          ]
-        },
-        {
-          "id": "statusSonstiges",
-          "role": "person",
-          "type": "text",
-          "label": "Status: Sonstiges",
-          "question": "Was haben Sie vor dieser Beschäftigung gemacht?",
-          "required": true,
-          "purpose": "Versicherungsrechtliche Beurteilung der Beschäftigung",
-          "showIf": {
-            "field": "statusBeginn",
-            "equals": "sonstiges"
-          }
-        },
-        {
-          "id": "rente",
-          "role": "person",
-          "type": "choice",
-          "label": "Rentenbezug",
-          "question": "Beziehen Sie eine Rente oder Pension?",
-          "help": "Beziehen Sie mehrere, wählen Sie die zuerst genannte, die zutrifft. Legen Sie Ihrem Arbeitgeber dann bitte eine Kopie des Bescheids vor.",
-          "required": true,
-          "purpose": "Versicherungsrechtliche Beurteilung in der Renten- und Arbeitslosenversicherung",
-          "options": [
-            {
-              "id": "keine",
-              "label": "nein"
-            },
-            {
-              "id": "altersvollrente",
-              "label": "Altersvollrente"
-            },
-            {
-              "id": "pension",
-              "label": "Pension wegen Alters (Beamtenversorgung)"
-            },
-            {
-              "id": "altersteilrente",
-              "label": "Altersteilrente"
-            },
-            {
-              "id": "emVoll",
-              "label": "Rente wegen voller Erwerbsminderung"
-            },
-            {
-              "id": "emTeil",
-              "label": "Rente wegen teilweiser Erwerbsminderung"
-            },
-            {
-              "id": "andere",
-              "label": "andere Rente (zum Beispiel Hinterbliebenenrente)"
-            }
-          ]
-        },
-        {
-          "id": "kinderOhneAbruf",
+          "id": "kinder",
           "role": "person",
           "type": "boolean",
-          "label": "Haben Sie Kinder, die Ihr Arbeitgeber nicht digital abrufen kann?",
-          "help": "Für den Beitrag zur Pflegeversicherung ruft Ihr Arbeitgeber Ihre Kinder digital beim Bundeszentralamt für Steuern ab. Das geht nur für Kinder, die dort steuerlich erfasst sind, in der Regel mit einer deutschen Steuer-Identifikationsnummer. Andere Kinder weisen Sie getrennt von diesem Fragebogen mit einer Urkunde nach, zum Beispiel mit einer Kopie der Geburtsurkunde. Haben Sie keine Kinder, wählen Sie „Nein“.",
+          "label": "Kinder",
+          "question": "Haben oder hatten Sie Kinder?",
+          "help": "Zählen Sie alle Kinder mit: auch erwachsene und verstorbene Kinder, Adoptivkinder, Stief- und Pflegekinder und Kinder im Ausland. Davon hängt Ihr Beitrag zur Pflegeversicherung ab: Ohne Kinder zahlen Sie ab 23 Jahren einen Zuschlag; ab dem zweiten Kind unter 25 Jahren zahlen Sie weniger.",
           "required": true,
-          "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft (§ 55a SGB XI): Hinweis, dass ein zusätzlicher Nachweis nötig ist"
+          "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)",
+          "showIf": {
+            "field": "krankenversicherung",
+            "equals": "gesetzlich"
+          }
+        },
+        {
+          "id": "kinderUnter25",
+          "role": "person",
+          "type": "choice",
+          "label": "Kinder unter 25 Jahren",
+          "question": "Wie viele Ihrer Kinder sind jünger als 25 Jahre?",
+          "help": "Zählen Sie auch verstorbene Kinder mit, die heute noch keine 25 Jahre alt wären. Ihr Arbeitgeber vergleicht die Zahl mit der Auskunft des Bundeszentralamts für Steuern.",
+          "required": true,
+          "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)",
+          "showIf": {
+            "field": "kinder",
+            "equals": true
+          },
+          "options": [
+            {
+              "id": "0",
+              "label": "keines"
+            },
+            {
+              "id": "1",
+              "label": "eines"
+            },
+            {
+              "id": "2",
+              "label": "zwei"
+            },
+            {
+              "id": "3",
+              "label": "drei"
+            },
+            {
+              "id": "4",
+              "label": "vier"
+            },
+            {
+              "id": "5plus",
+              "label": "fünf oder mehr"
+            }
+          ]
+        },
+        {
+          "id": "kinderSonderfaelle",
+          "role": "person",
+          "type": "multiChoice",
+          "label": "Kinder, die nicht digital abrufbar sind",
+          "question": "Trifft auf eines Ihrer Kinder etwas davon zu?",
+          "help": "Ihr Arbeitgeber erhält die Zahl Ihrer Kinder digital vom Bundeszentralamt für Steuern – ohne Namen und Geburtsdaten. Dort sind aber nur Kinder bekannt, die bei Ihrer Lohnsteuer mit Ihnen verknüpft sind. Für die folgenden Kinder fehlen die Daten dort meistens.",
+          "required": true,
+          "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)",
+          "showIf": {
+            "field": "kinder",
+            "equals": true
+          },
+          "options": [
+            {
+              "id": "stiefkind",
+              "label": "ein Stiefkind (Kind meiner Ehe- oder Lebenspartnerin oder meines Ehe- oder Lebenspartners)"
+            },
+            {
+              "id": "pflegekind",
+              "label": "ein Pflegekind (zum Beispiel Vollzeitpflege über das Jugendamt)"
+            },
+            {
+              "id": "andererOrt",
+              "label": "ein Kind, das als minderjähriges Kind nie mit mir in derselben Gemeinde gemeldet war"
+            },
+            {
+              "id": "ausland",
+              "label": "ein Kind, das im Ausland lebt und nie in Deutschland gemeldet war"
+            },
+            {
+              "id": "vor1993",
+              "label": "Mein jüngstes Kind ist vor 1993 geboren."
+            },
+            {
+              "id": "verstorbenVor2011",
+              "label": "ein Kind, das vor 2011 gestorben ist"
+            },
+            {
+              "id": "freibetragGestrichen",
+              "label": "Ich habe beantragt, dass bei meiner Lohnsteuer keine Kinder berücksichtigt werden."
+            },
+            {
+              "id": "keines",
+              "label": "Nichts davon"
+            }
+          ]
+        },
+        {
+          "id": "kinderNichtAbrufbar",
+          "role": "person",
+          "type": "repeatGroup",
+          "label": "Kinder, für die ein Nachweis nötig sein kann",
+          "question": "Für welche Kinder reichen Sie einen Nachweis ein?",
+          "help": "Nur diese Kinder, nicht alle. Reichen Sie je Kind eine Kopie ein, jede als eigene Datei oder eigenes Blatt: für eigene und Adoptivkinder die Geburts- oder Adoptionsurkunde (oder den Kindergeld- oder Steuerbescheid), für Stiefkinder die Heiratsurkunde und eine Meldebescheinigung, für Pflegekinder eine Meldebescheinigung und eine Bescheinigung des Jugendamts. Kommen die Nachweise innerhalb von sechs Monaten, gelten sie rückwirkend. Ihr Arbeitgeber sagt Ihnen nach dem Abruf, ob er den Nachweis wirklich braucht.",
+          "required": true,
+          "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)",
+          "showIf": {
+            "any": [
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "stiefkind"
+              },
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "pflegekind"
+              },
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "andererOrt"
+              },
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "ausland"
+              },
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "vor1993"
+              },
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "verstorbenVor2011"
+              },
+              {
+                "field": "kinderSonderfaelle",
+                "contains": "freibetragGestrichen"
+              }
+            ]
+          },
+          "rowLabel": "Kind",
+          "columns": [
+            {
+              "id": "kindVorname",
+              "role": "person",
+              "type": "text",
+              "label": "Vorname",
+              "required": false,
+              "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)"
+            },
+            {
+              "id": "kindGeburtsdatum",
+              "role": "person",
+              "type": "date",
+              "label": "Geburtsdatum",
+              "required": true,
+              "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)"
+            },
+            {
+              "id": "kindVerhaeltnis",
+              "role": "person",
+              "type": "choice",
+              "label": "Verhältnis",
+              "required": true,
+              "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)",
+              "options": [
+                {
+                  "id": "leiblich",
+                  "label": "leibliches Kind"
+                },
+                {
+                  "id": "adoptiert",
+                  "label": "Adoptivkind"
+                },
+                {
+                  "id": "stiefkind",
+                  "label": "Stiefkind"
+                },
+                {
+                  "id": "pflegekind",
+                  "label": "Pflegekind"
+                }
+              ]
+            },
+            {
+              "id": "kindVerstorben",
+              "role": "person",
+              "type": "boolean",
+              "label": "verstorben",
+              "required": false,
+              "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)"
+            },
+            {
+              "id": "kindNachweis",
+              "role": "person",
+              "type": "choice",
+              "label": "Nachweis",
+              "required": true,
+              "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)",
+              "options": [
+                {
+                  "id": "geburtsurkunde",
+                  "label": "Geburtsurkunde"
+                },
+                {
+                  "id": "adoptionsurkunde",
+                  "label": "Adoptionsurkunde"
+                },
+                {
+                  "id": "heiratMelde",
+                  "label": "Heiratsurkunde und Meldebescheinigung"
+                },
+                {
+                  "id": "jugendamtMelde",
+                  "label": "Jugendamt und Meldebescheinigung"
+                },
+                {
+                  "id": "kindergeld",
+                  "label": "Kindergeldbescheid"
+                },
+                {
+                  "id": "steuerbescheid",
+                  "label": "Einkommensteuerbescheid"
+                },
+                {
+                  "id": "anderer",
+                  "label": "anderer Nachweis"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -671,37 +1906,6 @@
       ]
     },
     {
-      "id": "freiwillig",
-      "title": "Freiwillige Angabe",
-      "fields": [
-        {
-          "id": "schwerbehinderung",
-          "role": "person",
-          "type": "choice",
-          "label": "Schwerbehinderung oder Gleichstellung",
-          "question": "Sind Sie schwerbehindert oder einem schwerbehinderten Menschen gleichgestellt?",
-          "help": "Diese Angabe ist freiwillig; Sie können die Frage leer lassen. In den ersten sechs Monaten der Beschäftigung darf Ihr Arbeitgeber sie nur als freiwillige Angabe stellen. Trifft eines davon zu, legen Sie bitte eine Kopie des Ausweises oder des Gleichstellungsbescheids vor.",
-          "required": false,
-          "purpose": "Rechte schwerbehinderter Menschen, etwa Zusatzurlaub, und Pflichten des Arbeitgebers nach dem SGB IX",
-          "voluntary": true,
-          "options": [
-            {
-              "id": "nein",
-              "label": "nein"
-            },
-            {
-              "id": "schwerbehindert",
-              "label": "schwerbehindert (Grad der Behinderung mindestens 50)"
-            },
-            {
-              "id": "gleichgestellt",
-              "label": "einem schwerbehinderten Menschen gleichgestellt"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "vertretung",
       "title": "Gesetzliche Vertretung (nur bei Minderjährigen)",
       "fields": [
@@ -744,6 +1948,17 @@
           "masterData": "betriebsnummer"
         },
         {
+          "id": "agSteuernummer",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Steuernummer des Arbeitgebers",
+          "question": "Wie lautet die Steuernummer des Arbeitgebers?",
+          "help": "Die Steuernummer des Betriebsstättenfinanzamts für die Lohnsteuer.",
+          "required": false,
+          "purpose": "Pflichtangabe in den Meldungen für Minijobs; Lohnsteuer-Anmeldung",
+          "masterData": "steuernummer"
+        },
+        {
           "id": "agFamilienname",
           "role": "arbeitgeber",
           "type": "text",
@@ -780,6 +1995,129 @@
           "help": "Der erste Arbeitstag.",
           "required": true,
           "purpose": "Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung"
+        },
+        {
+          "id": "agVertragsbeginnAbweichend",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Vertragsbeginn weicht vom ersten Arbeitstag ab",
+          "question": "Beginnt der Arbeitsvertrag an einem anderen Tag als dem ersten Arbeitstag?",
+          "help": "Zum Beispiel: Vertrag ab dem 1. eines Monats, der erste Arbeitstag ist wegen eines Wochenendes oder Feiertags später.",
+          "required": true,
+          "purpose": "Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung",
+          "initial": false
+        },
+        {
+          "id": "agVertragsbeginn",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Beginn des Arbeitsvertrags",
+          "question": "An welchem Tag beginnt der Arbeitsvertrag?",
+          "required": true,
+          "purpose": "Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung",
+          "showIf": {
+            "field": "agVertragsbeginnAbweichend",
+            "equals": true
+          }
+        },
+        {
+          "id": "agArbeitsortBundesland",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Bundesland des Arbeitsorts",
+          "question": "In welchem Bundesland liegt der Arbeitsort?",
+          "required": true,
+          "purpose": "Feiertage für Entgeltfortzahlung und Urlaub; Kirchensteuer bei Pauschalierung",
+          "options": [
+            {
+              "id": "BW",
+              "label": "Baden-Württemberg"
+            },
+            {
+              "id": "BY",
+              "label": "Bayern"
+            },
+            {
+              "id": "BE",
+              "label": "Berlin"
+            },
+            {
+              "id": "BB",
+              "label": "Brandenburg"
+            },
+            {
+              "id": "HB",
+              "label": "Bremen"
+            },
+            {
+              "id": "HH",
+              "label": "Hamburg"
+            },
+            {
+              "id": "HE",
+              "label": "Hessen"
+            },
+            {
+              "id": "MV",
+              "label": "Mecklenburg-Vorpommern"
+            },
+            {
+              "id": "NI",
+              "label": "Niedersachsen"
+            },
+            {
+              "id": "NW",
+              "label": "Nordrhein-Westfalen"
+            },
+            {
+              "id": "RP",
+              "label": "Rheinland-Pfalz"
+            },
+            {
+              "id": "SL",
+              "label": "Saarland"
+            },
+            {
+              "id": "SN",
+              "label": "Sachsen"
+            },
+            {
+              "id": "ST",
+              "label": "Sachsen-Anhalt"
+            },
+            {
+              "id": "SH",
+              "label": "Schleswig-Holstein"
+            },
+            {
+              "id": "TH",
+              "label": "Thüringen"
+            },
+            {
+              "id": "ausland",
+              "label": "Ausland"
+            }
+          ]
+        },
+        {
+          "id": "agPrivathaushalt",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Privathaushalt",
+          "question": "Ist der Arbeitgeber ein Privathaushalt (zum Beispiel für eine Haushaltshilfe)?",
+          "required": true,
+          "purpose": "Haushaltsscheckverfahren (§ 28a Abs. 7 SGB IV, § 8a SGB IV)",
+          "initial": false
+        },
+        {
+          "id": "agLandwirtschaft",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Landwirtschaftlicher Betrieb",
+          "question": "Ist der Betrieb ein landwirtschaftlicher Betrieb?",
+          "required": true,
+          "purpose": "Längere Zeitgrenzen für kurzfristige Beschäftigung in der Landwirtschaft; Pauschalsteuer nach § 40a Abs. 3 EStG",
+          "initial": false
         }
       ]
     },
@@ -787,6 +2125,185 @@
       "id": "beschaeftigung",
       "title": "Beschäftigung",
       "fields": [
+        {
+          "id": "agBeschaeftigungsart",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Vorgesehene Art der Beschäftigung",
+          "question": "Wie ist die Beschäftigung vorgesehen?",
+          "help": "Die lohnabrechnende Stelle prüft das anhand aller Angaben; die Person macht dazu eine eigene Angabe.",
+          "required": true,
+          "purpose": "Personengruppe und Beitragsgruppen in den Meldungen; Prüfung der Versicherungsfreiheit (§ 8 SGB IV)",
+          "options": [
+            {
+              "id": "svpflichtig",
+              "label": "sozialversicherungspflichtig (Voll- oder Teilzeit)"
+            },
+            {
+              "id": "minijob",
+              "label": "Minijob (bis 603 € im Monat)"
+            },
+            {
+              "id": "kurzfristig",
+              "label": "kurzfristige Aushilfe (höchstens 3 Monate oder 70 Arbeitstage)"
+            },
+            {
+              "id": "ausbildung",
+              "label": "Ausbildung"
+            },
+            {
+              "id": "dualesStudium",
+              "label": "duales Studium"
+            },
+            {
+              "id": "praktikum",
+              "label": "Praktikum"
+            },
+            {
+              "id": "werkstudent",
+              "label": "Werkstudent"
+            },
+            {
+              "id": "pruefen",
+              "label": "Bitte die lohnabrechnende Stelle prüfen lassen"
+            }
+          ]
+        },
+        {
+          "id": "agKurzfristigBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Ende der Aushilfe",
+          "question": "Bis wann ist die Aushilfe befristet?",
+          "required": true,
+          "purpose": "Personengruppe und Beitragsgruppen in den Meldungen; Prüfung der Versicherungsfreiheit (§ 8 SGB IV)",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          }
+        },
+        {
+          "id": "agKurzfristigArbeitstage",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Arbeitstage der Aushilfe",
+          "question": "An wie vielen Arbeitstagen wird die Person insgesamt arbeiten?",
+          "required": true,
+          "purpose": "Personengruppe und Beitragsgruppen in den Meldungen; Prüfung der Versicherungsfreiheit (§ 8 SGB IV)",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "decimals": 0,
+          "unit": "Tage"
+        },
+        {
+          "id": "agRahmenvereinbarung",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Rahmenvereinbarung über Einsätze auf Abruf",
+          "question": "Gibt es eine Rahmenvereinbarung über wiederkehrende Einsätze?",
+          "help": "Wiederkehrende Einsätze über mehr als ein Jahr sind meist keine kurzfristige Beschäftigung.",
+          "required": true,
+          "purpose": "Personengruppe und Beitragsgruppen in den Meldungen; Prüfung der Versicherungsfreiheit (§ 8 SGB IV)",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          }
+        },
+        {
+          "id": "agPraktikumArt",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Art des Praktikums",
+          "question": "Welche Art von Praktikum ist es?",
+          "required": true,
+          "purpose": "Versicherungsrecht und Ausnahmen vom Mindestlohn (§ 22 MiLoG)",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "praktikum"
+          },
+          "options": [
+            {
+              "id": "pflichtStudium",
+              "label": "Pflichtpraktikum während des Studiums"
+            },
+            {
+              "id": "pflichtVorNach",
+              "label": "vorgeschriebenes Vor- oder Nachpraktikum"
+            },
+            {
+              "id": "orientierung",
+              "label": "Orientierungspraktikum bis 3 Monate"
+            },
+            {
+              "id": "begleitend",
+              "label": "freiwilliges studienbegleitendes Praktikum bis 3 Monate"
+            },
+            {
+              "id": "freiwillig",
+              "label": "anderes freiwilliges Praktikum"
+            }
+          ]
+        },
+        {
+          "id": "agPraktikumBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Ende des Praktikums",
+          "question": "Wann endet das Praktikum?",
+          "required": true,
+          "purpose": "Ausnahme vom Mindestlohn nur bis 3 Monate (§ 22 MiLoG)",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "praktikum"
+          }
+        },
+        {
+          "id": "agAusbildungsberuf",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Ausbildungsberuf oder Studiengang",
+          "question": "In welchem Beruf oder Studiengang wird ausgebildet?",
+          "required": true,
+          "purpose": "Tätigkeitsschlüssel und Meldungen",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "in": [
+              "ausbildung",
+              "dualesStudium"
+            ]
+          }
+        },
+        {
+          "id": "agAusbildungEnde",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Vertragliches Ende der Ausbildung",
+          "question": "Wann endet die Ausbildung laut Vertrag?",
+          "required": true,
+          "purpose": "Ende der Personengruppe Auszubildende",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "in": [
+              "ausbildung",
+              "dualesStudium"
+            ]
+          }
+        },
+        {
+          "id": "agAusserbetrieblich",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Außerbetriebliche Ausbildung",
+          "question": "Findet die Ausbildung in einer außerbetrieblichen Einrichtung statt?",
+          "required": true,
+          "purpose": "Personengruppe für außerbetriebliche Ausbildung",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "equals": "ausbildung"
+          }
+        },
         {
           "id": "agTaetigkeit",
           "role": "arbeitgeber",
@@ -796,6 +2313,26 @@
           "help": "Möglichst genau, zum Beispiel „Kreditorenbuchhaltung“ statt „Büro“. Daraus wird der Tätigkeitsschlüssel für die Meldungen gebildet.",
           "required": true,
           "purpose": "Tätigkeitsschlüssel in den Meldungen zur Sozialversicherung; Zuordnung zur Gefahrtarifstelle der Unfallversicherung"
+        },
+        {
+          "id": "agKldb",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Berufskennziffer (KldB 2010)",
+          "question": "Kennen Sie die fünfstellige Berufskennziffer?",
+          "help": "Freiwillig; sonst bildet die lohnabrechnende Stelle sie aus der Tätigkeit.",
+          "required": false,
+          "purpose": "Stellen 1 bis 5 des Tätigkeitsschlüssels in den Meldungen"
+        },
+        {
+          "id": "agArbeitnehmerueberlassung",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Arbeitnehmerüberlassung",
+          "question": "Wird die Person als Leiharbeitnehmerin oder Leiharbeitnehmer überlassen?",
+          "required": true,
+          "purpose": "Stelle 8 des Tätigkeitsschlüssels",
+          "initial": false
         },
         {
           "id": "agBefristet",
@@ -841,34 +2378,48 @@
           ]
         },
         {
-          "id": "agWochenstunden",
+          "id": "agBesteuerung",
           "role": "arbeitgeber",
-          "type": "text",
-          "label": "Wöchentliche Arbeitszeit in Stunden",
-          "question": "Wie viele Stunden pro Woche arbeitet die Person laut Vertrag?",
-          "help": "Zum Beispiel 40 oder 19,5. Schwankt die Arbeitszeit, die vereinbarte durchschnittliche Stundenzahl.",
+          "type": "choice",
+          "label": "Art der Lohnsteuer",
+          "question": "Wie soll die Lohnsteuer erhoben werden?",
+          "help": "Bei einer Pauschalsteuer ohne Abruf der Lohnsteuermerkmale ist für die Kirchensteuer gegebenenfalls eine Erklärung der Person nach amtlichem Muster nötig (eigenes Formular).",
           "required": true,
-          "purpose": "Lohnabrechnung, zum Beispiel Umrechnung zwischen Stunden- und Monatsentgelt"
-        },
-        {
-          "id": "agArbeitstage",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Arbeitstage pro Woche",
-          "question": "An wie vielen Tagen pro Woche arbeitet die Person?",
-          "help": "Zum Beispiel 5.",
-          "required": true,
-          "purpose": "Lohnabrechnung, zum Beispiel Urlaubsentgelt und Entgeltfortzahlung"
-        },
-        {
-          "id": "agUrlaubstage",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Urlaubsanspruch (Arbeitstage im Kalenderjahr)",
-          "question": "Wie viele Urlaubstage stehen der Person im Kalenderjahr zu?",
-          "help": "Laut Arbeitsvertrag, zum Beispiel 30. Beginnt die Beschäftigung im Lauf des Jahres, geben Sie den vollen Jahresanspruch an.",
-          "required": false,
-          "purpose": "Urlaubsverwaltung und Urlaubsentgelt in der Lohnabrechnung"
+          "purpose": "Lohnsteuerabzug nach ELStAM oder Pauschalierung (§ 40a EStG)",
+          "showIf": {
+            "field": "agBeschaeftigungsart",
+            "in": [
+              "minijob",
+              "kurzfristig",
+              "pruefen"
+            ]
+          },
+          "options": [
+            {
+              "id": "elstam",
+              "label": "nach den Lohnsteuermerkmalen (ELStAM)"
+            },
+            {
+              "id": "pauschal2",
+              "label": "pauschal 2 % (Minijob)"
+            },
+            {
+              "id": "pauschal20",
+              "label": "pauschal 20 % (Minijob)"
+            },
+            {
+              "id": "pauschal25",
+              "label": "pauschal 25 % (kurzfristige Aushilfe)"
+            },
+            {
+              "id": "pauschal5",
+              "label": "pauschal 5 % (Aushilfe in der Land- und Forstwirtschaft)"
+            },
+            {
+              "id": "pruefen",
+              "label": "Bitte die lohnabrechnende Stelle prüfen lassen"
+            }
+          ]
         },
         {
           "id": "agKostenstelle",
@@ -879,6 +2430,539 @@
           "help": "Nur, wenn Sie mit Kostenstellen arbeiten.",
           "required": false,
           "purpose": "Zuordnung der Lohnkosten in der Buchhaltung"
+        }
+      ]
+    },
+    {
+      "id": "arbeitszeit",
+      "title": "Arbeitszeit",
+      "fields": [
+        {
+          "id": "agArbeitszeitmodell",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Arbeitszeitmodell",
+          "question": "Wie ist die Arbeitszeit vereinbart?",
+          "help": "Danach fragt der Fragebogen nur, was die Lohnabrechnung für dieses Modell braucht.",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "options": [
+            {
+              "id": "festeTage",
+              "label": "feste Stunden an festen Wochentagen"
+            },
+            {
+              "id": "wechselnd",
+              "label": "feste Wochenstunden, die Tage wechseln (Dienstplan)"
+            },
+            {
+              "id": "schicht",
+              "label": "Schichtarbeit oder rollierender Dienstplan über mehrere Wochen"
+            },
+            {
+              "id": "monatsstunden",
+              "label": "feste Stunden im Monat"
+            },
+            {
+              "id": "jahresarbeitszeit",
+              "label": "Jahresarbeitszeit mit gleichbleibendem Entgelt"
+            },
+            {
+              "id": "abruf",
+              "label": "Arbeit auf Abruf oder nach Bedarf"
+            },
+            {
+              "id": "gleitzeit",
+              "label": "Gleitzeit mit Arbeitszeitkonto"
+            },
+            {
+              "id": "vertrauen",
+              "label": "Vertrauensarbeitszeit"
+            },
+            {
+              "id": "altersteilzeit",
+              "label": "Altersteilzeit"
+            },
+            {
+              "id": "anderes",
+              "label": "anderes Modell"
+            }
+          ]
+        },
+        {
+          "id": "agStdMo",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Montag",
+          "question": "Wie viele Stunden arbeitet die Person am Montag?",
+          "help": "Leer lassen, wenn an diesem Tag nicht gearbeitet wird.",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agStdDi",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Dienstag",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agStdMi",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Mittwoch",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agStdDo",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Donnerstag",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agStdFr",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Freitag",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agStdSa",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Samstag",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agStdSo",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden am Sonntag",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agWochenstunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Wochenstunden",
+          "question": "Wie viele Stunden arbeitet die Person pro Woche (Sollzeit)?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "in": [
+              "wechselnd",
+              "gleitzeit",
+              "vertrauen"
+            ]
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agArbeitstageProWoche",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Arbeitstage pro Woche",
+          "question": "An wie vielen Tagen pro Woche arbeitet die Person im Durchschnitt?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "in": [
+              "wechselnd",
+              "gleitzeit",
+              "vertrauen",
+              "monatsstunden"
+            ]
+          },
+          "decimals": 1,
+          "unit": "Tage"
+        },
+        {
+          "id": "agZyklusWochen",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Länge des Schichtzyklus",
+          "question": "Über wie viele Wochen läuft ein Schichtzyklus?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "schicht"
+          },
+          "decimals": 0,
+          "unit": "Wochen"
+        },
+        {
+          "id": "agArbeitstageZyklus",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Arbeitstage im Zyklus",
+          "question": "An wie vielen Tagen arbeitet die Person in einem Zyklus?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "schicht"
+          },
+          "decimals": 0,
+          "unit": "Tage"
+        },
+        {
+          "id": "agStundenZyklus",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden im Zyklus",
+          "question": "Wie viele Stunden arbeitet die Person in einem Zyklus?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "schicht"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agMonatsstunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Monatsstunden",
+          "question": "Wie viele Stunden arbeitet die Person im Monat?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "monatsstunden"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agJahresstunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Jahresstunden",
+          "question": "Wie viele Stunden arbeitet die Person im Jahr?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "jahresarbeitszeit"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agArbeitstageJahr",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Arbeitstage im Jahr",
+          "question": "An wie vielen Tagen im Jahr arbeitet die Person?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "jahresarbeitszeit"
+          },
+          "decimals": 0,
+          "unit": "Tage"
+        },
+        {
+          "id": "agAbrufWochenstunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Vereinbarte Wochenstunden bei Arbeit auf Abruf",
+          "question": "Wie viele Stunden pro Woche sind vereinbart?",
+          "help": "Ist keine Zahl vereinbart, gelten nach dem Gesetz 20 Stunden pro Woche – das ist 2026 mehr als ein Minijob erlaubt. Dann bitte 20 eintragen.",
+          "required": true,
+          "purpose": "Arbeit auf Abruf (§ 12 TzBfG): ohne vereinbarte Wochenstunden gelten 20 Stunden",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "abruf"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agAbrufGrenze",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Mindest- oder Höchstarbeitszeit bei Arbeit auf Abruf",
+          "question": "Ist eine Mindest- oder Höchstarbeitszeit vereinbart?",
+          "required": true,
+          "purpose": "Abrufspanne (§ 12 Abs. 2 TzBfG: höchstens 25 % mehr oder 20 % weniger)",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "abruf"
+          },
+          "options": [
+            {
+              "id": "keine",
+              "label": "keine"
+            },
+            {
+              "id": "mindest",
+              "label": "eine Mindestarbeitszeit"
+            },
+            {
+              "id": "hoechst",
+              "label": "eine Höchstarbeitszeit"
+            }
+          ]
+        },
+        {
+          "id": "agAbrufGrenzeStunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Mindest- oder Höchststunden pro Woche",
+          "question": "Wie viele Stunden pro Woche beträgt sie?",
+          "required": true,
+          "purpose": "Abrufspanne (§ 12 Abs. 2 TzBfG)",
+          "showIf": {
+            "field": "agAbrufGrenze",
+            "in": [
+              "mindest",
+              "hoechst"
+            ]
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agAbrufTagesstunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Stunden je Einsatz",
+          "question": "Wie viele Stunden dauert ein Einsatz mindestens?",
+          "required": false,
+          "purpose": "Arbeit auf Abruf: ohne Vereinbarung mindestens 3 Stunden am Stück (§ 12 Abs. 1 TzBfG)",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "abruf"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agErwartetStundenMonat",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Erwartete Stunden im Monat",
+          "question": "Mit wie vielen Stunden im Monat rechnen Sie im Durchschnitt?",
+          "required": false,
+          "purpose": "Prognose der Minijob-Grenze (Geringfügigkeits-Richtlinien B 2.2)",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "abruf"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agKontoGrenzen",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Grenzen des Arbeitszeitkontos",
+          "question": "Welche Plus- und Minusgrenzen hat das Arbeitszeitkonto?",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "gleitzeit"
+          }
+        },
+        {
+          "id": "agKontoAusgleich",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Ausgleichszeitraum des Arbeitszeitkontos",
+          "question": "In welchem Zeitraum wird das Konto ausgeglichen?",
+          "required": false,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "gleitzeit"
+          }
+        },
+        {
+          "id": "agAtzModell",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Modell der Altersteilzeit",
+          "question": "Welches Altersteilzeitmodell gilt?",
+          "required": true,
+          "purpose": "Altersteilzeit: Personengruppe, Aufstockungsbetrag (§ 3 Nr. 28 EStG)",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "altersteilzeit"
+          },
+          "options": [
+            {
+              "id": "teilzeit",
+              "label": "Teilzeitmodell"
+            },
+            {
+              "id": "block",
+              "label": "Blockmodell"
+            }
+          ]
+        },
+        {
+          "id": "agAtzVon",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Altersteilzeit von",
+          "question": "Ab wann gilt die Altersteilzeit?",
+          "required": true,
+          "purpose": "Altersteilzeit",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "altersteilzeit"
+          }
+        },
+        {
+          "id": "agAtzBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Altersteilzeit bis",
+          "question": "Bis wann gilt die Altersteilzeit?",
+          "required": true,
+          "purpose": "Altersteilzeit",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "altersteilzeit"
+          }
+        },
+        {
+          "id": "agAtzVorherStunden",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Wochenstunden vor der Altersteilzeit",
+          "question": "Wie viele Wochenstunden waren es vor der Altersteilzeit?",
+          "required": true,
+          "purpose": "Altersteilzeit",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "altersteilzeit"
+          },
+          "decimals": 2,
+          "unit": "Std."
+        },
+        {
+          "id": "agArbeitszeitAnderes",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Beschreibung der Arbeitszeit",
+          "question": "Wie ist die Arbeitszeit vereinbart?",
+          "required": true,
+          "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "anderes"
+          },
+          "multiline": true
+        },
+        {
+          "id": "agWertguthaben",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Wertguthaben (Langzeitkonto)",
+          "question": "Gibt es ein Wertguthaben (Langzeitkonto, zum Beispiel für ein Sabbatical)?",
+          "required": true,
+          "purpose": "Wertguthaben nach § 7b SGB IV",
+          "initial": false
+        }
+      ]
+    },
+    {
+      "id": "urlaub",
+      "title": "Urlaub",
+      "fields": [
+        {
+          "id": "agUrlaubstage",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Urlaubstage im Jahr",
+          "question": "Wie viele Urlaubstage stehen der Person im Jahr zu?",
+          "help": "Ohne Zusatzurlaub wegen Schwerbehinderung; den rechnet die lohnabrechnende Stelle.",
+          "required": true,
+          "purpose": "Urlaubsverwaltung (§ 3 BUrlG, Arbeitsvertrag, Tarif)",
+          "decimals": 1,
+          "unit": "Tage"
+        },
+        {
+          "id": "agUrlaubBezug",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Bezug der Urlaubstage",
+          "question": "Auf wie viele Arbeitstage pro Woche bezieht sich diese Zahl?",
+          "required": true,
+          "purpose": "Umrechnung des Urlaubs bei anderer Verteilung der Arbeitstage",
+          "options": [
+            {
+              "id": "tage5",
+              "label": "auf eine 5-Tage-Woche"
+            },
+            {
+              "id": "tage6",
+              "label": "auf eine 6-Tage-Woche"
+            },
+            {
+              "id": "individuell",
+              "label": "auf die tatsächlichen Arbeitstage der Person"
+            }
+          ]
         }
       ]
     },
@@ -903,18 +2987,550 @@
             {
               "id": "monatsentgelt",
               "label": "festes Monatsentgelt"
+            },
+            {
+              "id": "ausbildungsverguetung",
+              "label": "Ausbildungsvergütung"
+            },
+            {
+              "id": "leistungslohn",
+              "label": "Leistungs- oder Akkordlohn"
+            },
+            {
+              "id": "pauschale",
+              "label": "Pauschale je Einsatz"
             }
           ]
         },
         {
-          "id": "agEntgelt",
+          "id": "agStundenlohn",
           "role": "arbeitgeber",
           "type": "money",
-          "label": "Vergütung brutto",
-          "question": "Wie hoch ist die vereinbarte Vergütung brutto?",
-          "help": "Je nach Art der Vergütung pro Stunde oder pro Monat, zum Beispiel 15,50 oder 3.200,00.",
+          "label": "Stundenlohn (brutto)",
+          "question": "Wie hoch ist der Stundenlohn brutto?",
           "required": true,
-          "purpose": "Lohnabrechnung"
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "stundenlohn"
+          }
+        },
+        {
+          "id": "agMonatsentgelt",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Monatsentgelt (brutto)",
+          "question": "Wie hoch ist das Monatsentgelt brutto?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "monatsentgelt"
+          }
+        },
+        {
+          "id": "agAusbildungsverguetung",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Ausbildungsvergütung je Ausbildungsjahr",
+          "question": "Wie hoch ist die Vergütung in den einzelnen Ausbildungsjahren?",
+          "required": true,
+          "purpose": "Ausbildungsvergütung (§ 17 BBiG)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "ausbildungsverguetung"
+          },
+          "rowLabel": "Ausbildungsjahr",
+          "columns": [
+            {
+              "id": "avJahr",
+              "role": "arbeitgeber",
+              "type": "number",
+              "label": "Ausbildungsjahr",
+              "required": true,
+              "purpose": "Ausbildungsvergütung",
+              "decimals": 0
+            },
+            {
+              "id": "avBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Vergütung im Monat (brutto)",
+              "required": true,
+              "purpose": "Ausbildungsvergütung"
+            }
+          ]
+        },
+        {
+          "id": "agLeistungslohn",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Berechnung des Leistungslohns",
+          "question": "Wie berechnet sich der Lohn?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "leistungslohn"
+          },
+          "multiline": true
+        },
+        {
+          "id": "agPauschale",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Pauschale je Einsatz",
+          "question": "Wie hoch ist die Pauschale je Einsatz?",
+          "required": true,
+          "purpose": "Lohnabrechnung, Mindestlohn (§ 1 MiLoG) und Minijob-Grenze (§ 8 Abs. 1 Nr. 1 SGB IV)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "equals": "pauschale"
+          }
+        },
+        {
+          "id": "agErwartetMonat",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Erwarteter Monatsverdienst",
+          "question": "Mit welchem Verdienst im Monat rechnen Sie im Durchschnitt?",
+          "required": false,
+          "purpose": "Prognose der Minijob-Grenze (Geringfügigkeits-Richtlinien B 2.2)",
+          "showIf": {
+            "field": "agEntgeltArt",
+            "in": [
+              "stundenlohn",
+              "leistungslohn",
+              "pauschale"
+            ]
+          }
+        },
+        {
+          "id": "agTarif",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Tarifvertrag",
+          "question": "Gilt ein Tarifvertrag? Wenn ja, welcher?",
+          "required": false,
+          "purpose": "Entgelt, Urlaub und Zuschläge nach Tarif"
+        },
+        {
+          "id": "agZuschlaege",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Zuschläge",
+          "question": "Welche Zuschläge sind vereinbart?",
+          "help": "Leer lassen, wenn keine vereinbart sind.",
+          "required": false,
+          "purpose": "Steuerfreie Zuschläge (§ 3b EStG) und Beitragsfreiheit (§ 1 SvEV)",
+          "rowLabel": "Zuschlag",
+          "columns": [
+            {
+              "id": "zuArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Zuschläge",
+              "options": [
+                {
+                  "id": "nacht",
+                  "label": "Nachtarbeit"
+                },
+                {
+                  "id": "sonntag",
+                  "label": "Sonntagsarbeit"
+                },
+                {
+                  "id": "feiertag",
+                  "label": "Feiertagsarbeit"
+                },
+                {
+                  "id": "ueberstunden",
+                  "label": "Überstunden"
+                },
+                {
+                  "id": "schicht",
+                  "label": "Schicht"
+                },
+                {
+                  "id": "erschwernis",
+                  "label": "Erschwernis"
+                },
+                {
+                  "id": "sonstige",
+                  "label": "sonstiger Zuschlag"
+                }
+              ]
+            },
+            {
+              "id": "zuSatz",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Höhe (z. B. „25 %“ oder Betrag je Stunde)",
+              "required": true,
+              "purpose": "Zuschläge"
+            }
+          ]
+        },
+        {
+          "id": "agEinmalzahlungen",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Einmalzahlungen",
+          "question": "Welche Einmalzahlungen sind vereinbart?",
+          "help": "Leer lassen, wenn keine vereinbart sind.",
+          "required": false,
+          "purpose": "Einmalig gezahltes Arbeitsentgelt (§ 23a SGB IV); zählt bei Minijobs mit, wenn ein Anspruch besteht",
+          "rowLabel": "Einmalzahlung",
+          "columns": [
+            {
+              "id": "ezArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Einmalzahlungen",
+              "options": [
+                {
+                  "id": "weihnachtsgeld",
+                  "label": "Weihnachtsgeld"
+                },
+                {
+                  "id": "urlaubsgeld",
+                  "label": "Urlaubsgeld"
+                },
+                {
+                  "id": "dreizehntes",
+                  "label": "13. Monatsgehalt"
+                },
+                {
+                  "id": "bonus",
+                  "label": "Bonus oder Prämie"
+                },
+                {
+                  "id": "sonstige",
+                  "label": "sonstige"
+                }
+              ]
+            },
+            {
+              "id": "ezBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Betrag (brutto)",
+              "required": true,
+              "purpose": "Einmalzahlungen"
+            },
+            {
+              "id": "ezMonat",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Monat der Zahlung",
+              "required": true,
+              "purpose": "Einmalzahlungen",
+              "options": [
+                {
+                  "id": "01",
+                  "label": "Januar"
+                },
+                {
+                  "id": "02",
+                  "label": "Februar"
+                },
+                {
+                  "id": "03",
+                  "label": "März"
+                },
+                {
+                  "id": "04",
+                  "label": "April"
+                },
+                {
+                  "id": "05",
+                  "label": "Mai"
+                },
+                {
+                  "id": "06",
+                  "label": "Juni"
+                },
+                {
+                  "id": "07",
+                  "label": "Juli"
+                },
+                {
+                  "id": "08",
+                  "label": "August"
+                },
+                {
+                  "id": "09",
+                  "label": "September"
+                },
+                {
+                  "id": "10",
+                  "label": "Oktober"
+                },
+                {
+                  "id": "11",
+                  "label": "November"
+                },
+                {
+                  "id": "12",
+                  "label": "Dezember"
+                }
+              ]
+            },
+            {
+              "id": "ezAnspruch",
+              "role": "arbeitgeber",
+              "type": "boolean",
+              "label": "Rechtsanspruch?",
+              "required": true,
+              "purpose": "Einmalzahlungen"
+            }
+          ]
+        },
+        {
+          "id": "agVwl",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Vermögenswirksame Leistungen",
+          "question": "Werden vermögenswirksame Leistungen gezahlt?",
+          "required": true,
+          "purpose": "Vermögenswirksame Leistungen (5. VermBG)",
+          "initial": false
+        },
+        {
+          "id": "agVwlArbeitgeber",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Arbeitgeberanteil vermögenswirksame Leistungen im Monat",
+          "question": "Wie viel zahlt der Arbeitgeber im Monat dazu?",
+          "required": true,
+          "purpose": "Vermögenswirksame Leistungen",
+          "showIf": {
+            "field": "agVwl",
+            "equals": true
+          }
+        },
+        {
+          "id": "agVwlSparrate",
+          "role": "arbeitgeber",
+          "type": "money",
+          "label": "Sparrate im Monat insgesamt",
+          "question": "Wie hoch ist die monatliche Sparrate insgesamt?",
+          "help": "Laut Vertrag der Person; die Differenz zum Arbeitgeberanteil wird vom Nettolohn einbehalten.",
+          "required": true,
+          "purpose": "Vermögenswirksame Leistungen",
+          "showIf": {
+            "field": "agVwl",
+            "equals": true
+          }
+        },
+        {
+          "id": "agVwlInstitut",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Anlageinstitut",
+          "question": "An welches Institut gehen die Beträge?",
+          "required": true,
+          "purpose": "Überweisung der vermögenswirksamen Leistungen",
+          "showIf": {
+            "field": "agVwl",
+            "equals": true
+          }
+        },
+        {
+          "id": "agVwlVertrag",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Vertragsnummer",
+          "question": "Wie lautet die Vertragsnummer?",
+          "required": true,
+          "purpose": "Überweisung der vermögenswirksamen Leistungen",
+          "showIf": {
+            "field": "agVwl",
+            "equals": true
+          }
+        },
+        {
+          "id": "agVwlIban",
+          "role": "arbeitgeber",
+          "type": "iban",
+          "label": "IBAN des Anlageinstituts",
+          "question": "Auf welches Konto werden die Beträge überwiesen?",
+          "required": true,
+          "purpose": "Überweisung der vermögenswirksamen Leistungen",
+          "showIf": {
+            "field": "agVwl",
+            "equals": true
+          }
+        },
+        {
+          "id": "agBav",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Betriebliche Altersversorgung",
+          "question": "Gibt es eine betriebliche Altersversorgung?",
+          "required": true,
+          "purpose": "Betriebliche Altersversorgung (§ 3 Nr. 63 EStG, § 1a BetrAVG)",
+          "options": [
+            {
+              "id": "keine",
+              "label": "keine"
+            },
+            {
+              "id": "arbeitgeber",
+              "label": "vom Arbeitgeber finanziert"
+            },
+            {
+              "id": "umwandlung",
+              "label": "durch Entgeltumwandlung"
+            },
+            {
+              "id": "beides",
+              "label": "beides"
+            }
+          ]
+        },
+        {
+          "id": "agBavVertraege",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Verträge der betrieblichen Altersversorgung",
+          "question": "Welche Verträge gibt es?",
+          "required": true,
+          "purpose": "Betriebliche Altersversorgung",
+          "showIf": {
+            "not": {
+              "field": "agBav",
+              "equals": "keine"
+            }
+          },
+          "rowLabel": "Vertrag",
+          "columns": [
+            {
+              "id": "bavWeg",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Durchführungsweg",
+              "required": true,
+              "purpose": "Betriebliche Altersversorgung",
+              "options": [
+                {
+                  "id": "direktversicherung",
+                  "label": "Direktversicherung"
+                },
+                {
+                  "id": "pensionskasse",
+                  "label": "Pensionskasse"
+                },
+                {
+                  "id": "pensionsfonds",
+                  "label": "Pensionsfonds"
+                },
+                {
+                  "id": "unterstuetzungskasse",
+                  "label": "Unterstützungskasse"
+                },
+                {
+                  "id": "direktzusage",
+                  "label": "Direktzusage"
+                }
+              ]
+            },
+            {
+              "id": "bavBeitrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Beitrag im Monat",
+              "required": true,
+              "purpose": "Betriebliche Altersversorgung"
+            },
+            {
+              "id": "bavZuschuss",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "davon Zuschuss des Arbeitgebers",
+              "required": false,
+              "purpose": "Betriebliche Altersversorgung"
+            }
+          ]
+        },
+        {
+          "id": "agSachbezuege",
+          "role": "arbeitgeber",
+          "type": "repeatGroup",
+          "label": "Sachbezüge und Zuschüsse",
+          "question": "Welche Sachbezüge oder Zuschüsse erhält die Person?",
+          "help": "Leer lassen, wenn es keine gibt. Für einen Dienstwagen gibt es einen eigenen Fragebogen.",
+          "required": false,
+          "purpose": "Steuer- und Beitragspflicht von Sachbezügen und Zuschüssen (§ 8 EStG, § 40 EStG)",
+          "rowLabel": "Sachbezug",
+          "columns": [
+            {
+              "id": "sbArt",
+              "role": "arbeitgeber",
+              "type": "choice",
+              "label": "Art",
+              "required": true,
+              "purpose": "Sachbezüge",
+              "options": [
+                {
+                  "id": "dienstwagen",
+                  "label": "Dienstwagen"
+                },
+                {
+                  "id": "ticket",
+                  "label": "Jobticket oder Deutschlandticket"
+                },
+                {
+                  "id": "gutscheine",
+                  "label": "Gutscheine oder Sachbezugskarte"
+                },
+                {
+                  "id": "essen",
+                  "label": "Essenszuschuss"
+                },
+                {
+                  "id": "dienstrad",
+                  "label": "Dienstrad"
+                },
+                {
+                  "id": "kita",
+                  "label": "Kita-Zuschuss"
+                },
+                {
+                  "id": "fahrtkosten",
+                  "label": "Fahrtkostenzuschuss"
+                },
+                {
+                  "id": "internet",
+                  "label": "Internet oder Telefon"
+                },
+                {
+                  "id": "sonstige",
+                  "label": "sonstige"
+                }
+              ]
+            },
+            {
+              "id": "sbBetrag",
+              "role": "arbeitgeber",
+              "type": "money",
+              "label": "Betrag im Monat",
+              "required": false,
+              "purpose": "Sachbezüge"
+            },
+            {
+              "id": "sbHinweis",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Hinweis",
+              "required": false,
+              "purpose": "Sachbezüge"
+            }
+          ]
         },
         {
           "id": "agWeitereBezuege",
@@ -928,6 +3544,172 @@
           "multiline": true
         }
       ]
+    },
+    {
+      "id": "schwerbehinderung",
+      "title": "Schwerbehinderung",
+      "fields": [
+        {
+          "id": "agSchwerbehinderung",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Schwerbehinderung oder Gleichstellung",
+          "question": "Hat die Person Ihnen eine Schwerbehinderung oder Gleichstellung mitgeteilt und nachgewiesen?",
+          "help": "Nur eintragen, was die Person Ihnen freiwillig mitgeteilt und nachgewiesen hat. In den ersten sechs Monaten dürfen Sie danach nur als freiwillige Angabe fragen.",
+          "required": true,
+          "purpose": "Beschäftigungspflicht und Ausgleichsabgabe (§§ 154, 160 SGB IX), Verzeichnis und Anzeige (§ 163 SGB IX), Zusatzurlaub für schwerbehinderte Menschen (§ 208 SGB IX; nicht für Gleichgestellte, § 151 Abs. 3 SGB IX), besonderer Kündigungsschutz (§§ 168 ff. SGB IX)",
+          "options": [
+            {
+              "id": "nein",
+              "label": "nein oder nicht bekannt"
+            },
+            {
+              "id": "schwerbehindert",
+              "label": "schwerbehindert (Grad der Behinderung mindestens 50)"
+            },
+            {
+              "id": "gleichgestellt",
+              "label": "einem schwerbehinderten Menschen gleichgestellt"
+            }
+          ]
+        },
+        {
+          "id": "agGdb",
+          "role": "arbeitgeber",
+          "type": "number",
+          "label": "Grad der Behinderung",
+          "question": "Welcher Grad der Behinderung ist festgestellt?",
+          "required": true,
+          "purpose": "Verzeichnis und Anzeige (§ 163 SGB IX)",
+          "showIf": {
+            "field": "agSchwerbehinderung",
+            "in": [
+              "schwerbehindert",
+              "gleichgestellt"
+            ]
+          },
+          "decimals": 0
+        },
+        {
+          "id": "agSbGueltigBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Ausweis oder Bescheid gültig bis",
+          "question": "Bis wann ist der Ausweis oder Bescheid gültig?",
+          "help": "Leer lassen, wenn er unbefristet ist.",
+          "required": false,
+          "purpose": "Wiedervorlage",
+          "showIf": {
+            "field": "agSchwerbehinderung",
+            "in": [
+              "schwerbehindert",
+              "gleichgestellt"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "arbeitspapiere",
+      "title": "Arbeitspapiere",
+      "fields": [
+        {
+          "id": "agUnterlagen",
+          "role": "arbeitgeber",
+          "type": "multiChoice",
+          "label": "Arbeitspapiere, die vorliegen",
+          "question": "Welche Unterlagen liegen Ihnen vor?",
+          "help": "Kreuzen Sie an, was vorliegt. Was nicht angekreuzt ist, sieht die lohnabrechnende Stelle als offen und vergleicht es mit den Angaben der Person.",
+          "required": false,
+          "purpose": "Vollständigkeit der Entgeltunterlagen (§ 8 BVV); Nachweise für Versicherungsfreiheit, Zuschüsse und Beitragsgruppen",
+          "options": [
+            {
+              "id": "arbeitsvertrag",
+              "label": "Arbeitsvertrag oder Nachweis der Vertragsbedingungen"
+            },
+            {
+              "id": "steuerId",
+              "label": "Mitteilung der Steuer-Identifikationsnummer"
+            },
+            {
+              "id": "svAusweis",
+              "label": "Nachweis der Versicherungsnummer"
+            },
+            {
+              "id": "kvNachweis",
+              "label": "Mitgliedsbescheinigung der Krankenkasse"
+            },
+            {
+              "id": "pkvBescheinigung",
+              "label": "Bescheinigung der privaten Krankenversicherung für den Zuschuss"
+            },
+            {
+              "id": "schulbescheinigung",
+              "label": "Schulbescheinigung"
+            },
+            {
+              "id": "immatrikulation",
+              "label": "Immatrikulationsbescheinigung (je Semester)"
+            },
+            {
+              "id": "praktikumOrdnung",
+              "label": "Nachweis über ein vorgeschriebenes Praktikum"
+            },
+            {
+              "id": "rentenbescheid",
+              "label": "Rentenbescheid"
+            },
+            {
+              "id": "pensionsbescheid",
+              "label": "Pensionsbescheid"
+            },
+            {
+              "id": "rvBefreiung",
+              "label": "Befreiungsantrag Rentenversicherung im Minijob (mit Eingangsdatum)"
+            },
+            {
+              "id": "rvVerzicht",
+              "label": "Verzicht auf die Rentenversicherungsfreiheit (mit Eingangsdatum)"
+            },
+            {
+              "id": "schwerbehindertenausweis",
+              "label": "Schwerbehindertenausweis oder Gleichstellungsbescheid"
+            },
+            {
+              "id": "kinderNachweise",
+              "label": "Nachweise für nicht abrufbare Kinder"
+            },
+            {
+              "id": "a1",
+              "label": "A1-Bescheinigung (Beschäftigung im Ausland)"
+            },
+            {
+              "id": "aufenthaltstitel",
+              "label": "Aufenthaltstitel oder Arbeitserlaubnis"
+            },
+            {
+              "id": "jarbschg",
+              "label": "Bescheinigung über die Erstuntersuchung (Jugendliche)"
+            },
+            {
+              "id": "vwlVertrag",
+              "label": "Vertrag über vermögenswirksame Leistungen"
+            },
+            {
+              "id": "bav",
+              "label": "Unterlagen zur betrieblichen Altersversorgung"
+            },
+            {
+              "id": "elternzeitZustimmung",
+              "label": "Zustimmung des Arbeitgebers in der Elternzeit"
+            },
+            {
+              "id": "kirchensteuer",
+              "label": "Erklärung zur Kirchensteuer bei Pauschalierung"
+            }
+          ]
+        }
+      ]
     }
   ],
   "infoBlocks": [
@@ -935,7 +3717,7 @@
       "id": "datenschutz",
       "role": "person",
       "title": "Datenschutzhinweis",
-      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um Ihr Arbeitsverhältnis durchzuführen und abzurechnen: für die Lohnabrechnung, für den Abruf Ihrer elektronischen Lohnsteuerabzugsmerkmale beim Bundeszentralamt für Steuern (§ 39e EStG) und für die Meldungen zur Sozialversicherung (§ 28a SGB IV). Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO.\n\nDie meisten Angaben müssen Sie machen (§ 28o Abs. 1 SGB IV, § 39e Abs. 4 EStG); fehlen sie, kann Ihr Arbeitgeber Sie nicht richtig anmelden und abrechnen. Ihre Bankverbindung und eine Telefonnummer oder E-Mail-Adresse braucht er für das Arbeitsverhältnis, um Ihnen das Entgelt zu überweisen und Sie bei Rückfragen zu erreichen. Die Angabe zu einer Schwerbehinderung oder Gleichstellung ist freiwillig. Machen Sie sie, verarbeitet Ihr Arbeitgeber sie, um Ihre Rechte als schwerbehinderter Mensch zu wahren und seine Pflichten nach dem SGB IX zu erfüllen (Art. 9 Abs. 2 Buchst. b DSGVO).\n\nAngaben zu Tätigkeit, Arbeitszeit und Vergütung trägt Ihr Arbeitgeber im selben Fragebogen ein.\n\nVerantwortlich ist Ihr Arbeitgeber. Seine Kontaktdaten und gegebenenfalls die seines Datenschutzbeauftragten stehen in der Datenschutzinformation für Beschäftigte, die Sie von Ihrem Arbeitgeber erhalten. Empfänger sind die vom Arbeitgeber beauftragte lohnabrechnende Stelle, die Finanzverwaltung, die zuständige Krankenkasse als Einzugsstelle und die übrigen Träger der Sozialversicherung sowie die Banken, über die Ihr Entgelt überwiesen wird.\n\nDie Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen: Entgeltunterlagen bis zum Ablauf des Kalenderjahres nach der letzten Betriebsprüfung (§ 28f Abs. 1 SGB IV), das Lohnkonto bis zum Ablauf des sechsten Kalenderjahres nach der letzten Lohnzahlung (§ 41 Abs. 1 Satz 9 EStG).\n\nSie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.\n\nDiese App speichert und versendet nichts. Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben.",
+      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um Ihr Arbeitsverhältnis durchzuführen und abzurechnen: für die Lohnabrechnung, für den Abruf Ihrer elektronischen Lohnsteuerabzugsmerkmale beim Bundeszentralamt für Steuern (§ 39e EStG) und für die Meldungen zur Sozialversicherung (§ 28a SGB IV). Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO.\n\nDie meisten Angaben müssen Sie machen (§ 28o Abs. 1 SGB IV, § 39e Abs. 4 EStG); fehlen sie, kann Ihr Arbeitgeber Sie nicht richtig anmelden und abrechnen. Ihre Bankverbindung braucht er, um Ihnen das Entgelt zu überweisen. Telefonnummer und E-Mail-Adresse sind freiwillig; er nutzt sie nur für Rückfragen. Eine Schwerbehinderung oder Gleichstellung trägt Ihr Arbeitgeber nur ein, wenn Sie sie ihm freiwillig mitgeteilt und nachgewiesen haben; er verarbeitet sie, um Ihre Rechte als schwerbehinderter Mensch zu wahren und seine Pflichten nach dem SGB IX zu erfüllen (Art. 9 Abs. 2 Buchst. b DSGVO, § 26 Abs. 3 BDSG). Angaben zu Kindern verarbeitet er nur für den Beitrag zur Pflegeversicherung.\n\nAngaben zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung trägt Ihr Arbeitgeber im selben Fragebogen ein.\n\nVerantwortlich ist Ihr Arbeitgeber. Seine Kontaktdaten und gegebenenfalls die seines Datenschutzbeauftragten stehen in der Datenschutzinformation für Beschäftigte, die Sie von Ihrem Arbeitgeber erhalten. Empfänger sind die vom Arbeitgeber beauftragte lohnabrechnende Stelle, die Finanzverwaltung, die zuständige Krankenkasse als Einzugsstelle und die übrigen Träger der Sozialversicherung sowie die Banken, über die Ihr Entgelt überwiesen wird.\n\nDie Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen: Entgeltunterlagen bis zum Ablauf des Kalenderjahres nach der letzten Betriebsprüfung (§ 28f Abs. 1 SGB IV), das Lohnkonto bis zum Ablauf des sechsten Kalenderjahres nach der letzten Lohnzahlung (§ 41 Abs. 1 Satz 9 EStG).\n\nSie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.\n\nDiese App speichert und versendet nichts. Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben.",
       "asOf": "2026-10-30",
       "acknowledgement": "read"
     }
@@ -943,12 +3725,18 @@
   "consistencyRules": [
     {
       "kind": "equal",
-      "fields": ["familienname", "agFamilienname"],
+      "fields": [
+        "familienname",
+        "agFamilienname"
+      ],
       "message": "Der Familienname weicht zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
     },
     {
       "kind": "equal",
-      "fields": ["vorname", "agVorname"],
+      "fields": [
+        "vorname",
+        "agVorname"
+      ],
       "message": "Die Vornamen weichen zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
     }
   ],
@@ -973,9 +3761,17 @@
     "Hat der Betrieb einen Betriebsrat, bedarf der Personalfragebogen seiner Zustimmung (§ 94 Abs. 1 BetrVG).",
     "Die Angabe „Befristet bis“ ist nicht die Befristungsabrede. Eine Befristung bedarf der Schriftform (§ 14 Abs. 4 TzBfG) und wird gesondert vereinbart.",
     "Der Fragebogen ist nicht der Nachweis der wesentlichen Vertragsbedingungen nach dem Nachweisgesetz.",
-    "Nach einer Schwerbehinderung oder Gleichstellung fragt der Fragebogen nur als freiwillige Angabe: In den ersten sechs Monaten des Arbeitsverhältnisses ist die Frage nur so zulässig (BAG, 6 AZR 553/10).",
     "Nach der Konfession fragt der Fragebogen nicht: Das Kirchensteuermerkmal erhält der Arbeitgeber mit den elektronischen Lohnsteuerabzugsmerkmalen (ELStAM).",
-    "Die Elterneigenschaft für den Beitrag zur Pflegeversicherung ruft der Arbeitgeber seit 01.07.2025 digital beim Bundeszentralamt für Steuern ab (§ 55a SGB XI). Kinder, die dort nicht erfasst sind, weist die beschäftigte Person mit einer Urkundenkopie nach; ein Vermerk „hat vorgelegen“ genügt nicht. Der Fragebogen fragt deshalb nur, ob es solche Kinder gibt."
+    "Eine Schwerbehinderung oder Gleichstellung trägt der Arbeitgeber nur ein, wenn die Person sie freiwillig mitgeteilt und nachgewiesen hat. Laut BAG ist die Frage „jedenfalls nach sechs Monaten“ zulässig (Urteil vom 16.02.2012 – 6 AZR 553/10); vorher gilt sie im Fragebogen als freiwillig. Gleichgestellte erhalten keinen Zusatzurlaub (§ 151 Abs. 3 SGB IX).",
+    "Die Elterneigenschaft und die Zahl der Kinder unter 25 ruft der Arbeitgeber digital beim Bundeszentralamt für Steuern ab (§ 55a SGB XI); er erfährt dabei keine Namen oder Geburtsdaten. Einzelangaben fragt der Fragebogen nur für Kinder, die dort voraussichtlich fehlen; sie werden mit einer Urkundenkopie nachgewiesen, die als eigene Unterlage aufbewahrt wird.",
+    "Die Beiträge zur privaten Kranken- und Pflegeversicherung erhält der Arbeitgeber seit 2026 als elektronische Lohnsteuerabzugsmerkmale (§ 39 Abs. 4 Nr. 4 EStG); der Fragebogen fragt deshalb keinen Betrag ab. Die Bescheinigung des Versicherers über die Zuschussfähigkeit (§ 257 Abs. 2a SGB V) bleibt nötig.",
+    "Der Fragebogen sammelt die Tatsachen für die versicherungsrechtliche Beurteilung; die Personengruppe und die Beitragsgruppen legt die lohnabrechnende Stelle fest.",
+    "Der Befreiungsantrag von der Rentenversicherungspflicht im Minijob und der Verzicht auf die Rentenversicherungsfreiheit werden gesondert erklärt; der Fragebogen fragt nur den Wunsch ab."
   ],
-  "partLinks": [["person", "arbeitgeber"]]
+  "partLinks": [
+    [
+      "person",
+      "arbeitgeber"
+    ]
+  ]
 }
