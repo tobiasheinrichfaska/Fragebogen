@@ -1,5 +1,6 @@
 // "Wer füllt jetzt aus?" — the overview of the questionnaire: every role with its state, what
 // still blocks passing it on and what the recipient still misses.
+import { useRef } from 'react';
 import { BLOCKER_MESSAGES, completenessGaps, transmissionBlockers } from '../logic/requirements';
 import { roleStates, type RoleState, type Session } from '../logic/session';
 import { Banner, Card } from './common';
@@ -10,6 +11,7 @@ interface Props {
   onNewVersion: (role: string) => void;
   onReopen: (role: string) => void;
   onSaveInterim: () => void;
+  onTakeOver: (file: File) => void;
   onPdf: () => void;
   onClose: () => void;
 }
@@ -38,13 +40,16 @@ function requirementText(state: RoleState): string | undefined {
 }
 
 export function RolesScreen(props: Props) {
-  const { session, onEnter, onNewVersion, onReopen, onSaveInterim, onPdf, onClose } = props;
+  const { session, onEnter, onNewVersion, onReopen, onSaveInterim, onTakeOver, onPdf, onClose } =
+    props;
+  const input = useRef<HTMLInputElement>(null);
   const states = roleStates(session);
   const blockers = transmissionBlockers(session.questionnaire, session.form);
   const gaps = completenessGaps(session.questionnaire, session.form).filter(
     (gap) => !blockers.some((b) => b.code === gap.code && b.role === gap.role),
   );
   const anySealed = states.some((s) => s.state === 'sealed' || s.state === 'signed');
+  const anyOpen = states.some((s) => s.state === 'missing' || s.state === 'draft');
   return (
     <>
       <Card title="Wer füllt jetzt aus?">
@@ -94,6 +99,29 @@ export function RolesScreen(props: Props) {
             );
           })}
         </ul>
+        {anyOpen && (
+          <div className="take-over">
+            <p className="muted">
+              Liegt schon ein anderer Fragebogen dieser Person vor (z. B. die Sofortmeldung oder die
+              Meldung des Vormonats)? Seine Angaben lassen sich in die noch offenen Teile übernehmen
+              – nur in leere Felder, und alles bleibt zu prüfen und zu unterschreiben.
+            </p>
+            <input
+              ref={input}
+              type="file"
+              accept=".pdf,.json,application/pdf,application/json,image/*"
+              className="visually-hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) onTakeOver(file);
+                event.target.value = '';
+              }}
+            />
+            <button type="button" onClick={() => input.current?.click()}>
+              Angaben aus einer anderen Datei übernehmen …
+            </button>
+          </div>
+        )}
       </Card>
       <Card title="Stand">
         {blockers.length > 0 && (

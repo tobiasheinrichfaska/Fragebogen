@@ -18,6 +18,7 @@ import {
 import { ISSUE_MESSAGES, type IssueCode } from './issues';
 import { applyMasterData, type MasterDataSkip } from './masterData';
 import type { Questionnaire, RoleDefinition, RoleId, Sha256Hex, SystemNote } from './model';
+import { describePrefill, prefillFrom } from './prefill';
 import {
   TRANSITION_MESSAGES,
   createQuestionnaire,
@@ -113,6 +114,45 @@ export function startSession(form: RegisteredForm, questionnaireId: string): Ses
     acknowledged: {},
     arrivals: {},
     dirty: false,
+  };
+}
+
+/**
+ * Takes answers over from another questionnaire (e.g. the Sofortmeldung, last month's report)
+ * into the roles still open here. The same questionnaire is refused — that is "open", not "take
+ * over"; so is a file whose seals do not hold.
+ */
+export function takeOver(
+  session: Session,
+  source: { questionnaire: Questionnaire; form: RegisteredForm; altered: boolean },
+):
+  | { ok: true; session: Session; applied: number; lines: string[] }
+  | { ok: false; message: string } {
+  if (source.altered) {
+    return {
+      ok: false,
+      message: 'Aus einer Datei, die nach dem Abschluss verändert wurde, wird nichts übernommen.',
+    };
+  }
+  if (source.questionnaire.questionnaireId === session.questionnaire.questionnaireId) {
+    return {
+      ok: false,
+      message:
+        'Das ist derselbe Fragebogen. Bitte auf der Startseite über „Datei öffnen …“ laden statt übernehmen.',
+    };
+  }
+  const { questionnaire, reports } = prefillFrom(
+    session.questionnaire,
+    session.form,
+    source.questionnaire,
+    source.form,
+  );
+  const { applied, lines } = describePrefill(reports, session.form.definition);
+  return {
+    ok: true,
+    session: { ...session, questionnaire, dirty: session.dirty || applied > 0 },
+    applied,
+    lines,
   };
 }
 

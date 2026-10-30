@@ -9,12 +9,28 @@ import {
   setValue,
   startPart,
 } from '../../src/logic/questionnaire';
-import { prefillFrom } from '../../src/logic/prefill';
+import { describePrefill, prefillFrom } from '../../src/logic/prefill';
+import {
+  answer,
+  enterRole,
+  startSession,
+  takeOver,
+  type SessionResult,
+} from '../../src/logic/session';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { definitionHash } from '../../src/logic/formRegistry';
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { NONCE_PERSON, ok, personSealInput, PERSON_VALUES, tableForm } from '../support/sample';
-import { completeSofortmeldung } from '../support/sofortmeldungSession';
+import {
+  completeSofortmeldung,
+  employerOnly,
+  sofortmeldung,
+} from '../support/sofortmeldungSession';
+
+const must = (result: SessionResult) => {
+  if (!result.ok) throw new Error(`${result.message} ${result.detail.join(', ')}`);
+  return result.session;
+};
 
 const OTHER_ID = '7c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f';
 const personalfragebogen = registeredFrom(
@@ -129,5 +145,83 @@ describe('prefillFrom — last month into a new questionnaire of the same form',
     const untouched = prefillFrom(sealedTarget, form, lastMonth(), form);
     expect(untouched.reports[0]?.untouched).toContain('schon abgeschlossen');
     expect(untouched.questionnaire).toBe(sealedTarget);
+  });
+});
+
+describe('prefillFrom — preselections and roles without data', () => {
+  const sofort = sofortmeldung;
+  /** A person draft with a birth name: the preselected "Ja" was changed to "Nein". */
+  const source = () => {
+    let s = must(enterRole(startSession(sofort, OTHER_ID), 'person'));
+    s = must(answer(s, 'familienname', 'Neumann'));
+    s = must(answer(s, 'geburtsnameWieFamilienname', false));
+    s = must(answer(s, 'geburtsname', 'Altmann'));
+    return s.questionnaire;
+  };
+
+  it('replaces a preselection with the other file’s answer, so the follow-up is filled too', () => {
+    const { questionnaire, reports } = prefillFrom(
+      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', sofort),
+      sofort,
+      source(),
+      sofort,
+    );
+    expect(currentPart(questionnaire, 'person')?.data).toMatchObject({
+      geburtsnameWieFamilienname: false,
+      geburtsname: 'Altmann',
+    });
+    expect(reports[0]?.skipped).toEqual([]);
+    expect(reports[0]?.kept).toEqual([]);
+  });
+
+  it('starts no empty draft for a role the other file has nothing for', () => {
+    const employerOnlySource = employerOnly().questionnaire;
+    const target = createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', personalfragebogen);
+    const { questionnaire } = prefillFrom(target, personalfragebogen, employerOnlySource, sofort);
+    expect(currentPart(questionnaire, 'person')).toBeUndefined();
+    expect(currentPart(questionnaire, 'arbeitgeber')?.status).toBe('draft');
+  });
+});
+
+describe('describePrefill and takeOver', () => {
+  it('names counts per role, kept answers and every value not taken over with its reason', () => {
+    const { lines, applied } = describePrefill(
+      [
+        { role: 'person', applied: ['familienname'], kept: ['vorname'], skipped: [] },
+        {
+          role: 'arbeitgeber',
+          applied: [],
+          kept: [],
+          skipped: [{ fieldId: 'agFirma', reason: 'Grund X' }],
+        },
+        { role: 'gesetzlicherVertreter', applied: [], kept: [], skipped: [], untouched: 'fertig' },
+      ],
+      sofortmeldung.definition,
+    );
+    expect(applied).toBe(1);
+    expect(lines[0]).toMatch(
+      /^Beschäftigte Person: 1 Angabe übernommen, 1 vorhandene behalten \(Vornamen\)\.$/,
+    );
+    expect(lines.some((l) => l.includes('nicht übernommen: Grund X'))).toBe(true);
+    expect(lines.at(-1)).toMatch(/: fertig$/);
+  });
+
+  it('refuses the same questionnaire and an altered file, and takes over otherwise', () => {
+    const source = completeSofortmeldung();
+    const target = startSession(personalfragebogen, OTHER_ID);
+    const same = takeOver(startSession(sofortmeldung, source.questionnaire.questionnaireId), {
+      questionnaire: source.questionnaire,
+      form: source.form,
+      altered: false,
+    });
+    expect(same).toMatchObject({ ok: false, message: expect.stringContaining('derselbe') });
+    const altered = takeOver(target, { ...source, altered: true });
+    expect(altered).toMatchObject({ ok: false, message: expect.stringContaining('verändert') });
+
+    const taken = takeOver(target, { ...source, altered: false });
+    if (!taken.ok) throw new Error(taken.message);
+    expect(taken.applied).toBeGreaterThan(10);
+    expect(taken.session.dirty).toBe(true);
+    expect(taken.session.questionnaire.questionnaireId).toBe(OTHER_ID);
   });
 });

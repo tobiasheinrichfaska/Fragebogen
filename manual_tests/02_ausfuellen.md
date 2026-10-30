@@ -171,3 +171,36 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 - Die Seite lädt neu und zeigt die leere Startseite.
 - _Nicht offensichtlich:_ Ein Stammdaten-Link in der Adresszeile (alles hinter `#`) ist danach
   ebenfalls weg. Heruntergeladene Dateien bleiben im Download-Ordner; das ist normal.
+
+---
+
+## MT-18: Angaben aus einer anderen Datei übernehmen
+
+**Voraussetzungen:** Eine vollständige PDF einer Sofortmeldung liegt vor (z. B. aus MT-30).
+
+**Schritte:**
+
+1. Startseite → **„Sofortmeldung“** (ein neuer, leerer Fragebogen).
+2. Auf „Wer füllt jetzt aus?“ klicken Sie **„Angaben aus einer anderen Datei übernehmen …“** und
+   wählen die PDF aus Schritt „Voraussetzungen“.
+3. Klicken Sie bei „Beschäftigte Person“ **„Weitermachen“**, blättern Sie durch das Interview und
+   kehren Sie über **„Unterbrechen – zur Übersicht (Angaben bleiben erhalten)“** zurück.
+4. Wiederholen Sie Schritt 2 mit derselben PDF noch einmal.
+5. Öffnen Sie über **„Datei öffnen …“** auf der Startseite die PDF und versuchen Sie dann, dieselbe
+   PDF über „Angaben aus einer anderen Datei übernehmen …“ zu übernehmen.
+
+**Erwartet:**
+
+- Nach Schritt 2 erscheint eine blaue Meldung „Angaben aus „Sofortmeldung“ übernommen …“ mit einer
+  Zeile je Rolle (z. B. „Beschäftigte Person: 14 Angaben übernommen.“). Beide Rollen stehen jetzt
+  auf **„begonnen, nicht abgeschlossen“** – _nichts ist unterschrieben_, die Unterschriften der
+  alten Datei werden nie übernommen.
+- Im Interview sind die Antworten eingetragen; eine abweichende Vorbelegung (z. B. „Geburtsname
+  gleich Familienname?“ = Nein) ist durch die Antwort der alten Datei ersetzt, die Folgefrage
+  „Geburtsname“ ist gefüllt.
+- Schritt 4: Gelbe Meldung „Aus „Sofortmeldung“ ließ sich nichts übernehmen.“ mit Zeilen wie
+  „Beschäftigte Person: 0 Angaben übernommen, 14 vorhandene behalten (…)“ – vorhandene Antworten
+  werden **nie** überschrieben.
+- Schritt 5: Rote Meldung „Das ist derselbe Fragebogen …“ – derselbe Fragebogen wird geöffnet,
+  nicht übernommen.
+- _Nicht offensichtlich:_ Die Schaltfläche fehlt, sobald alle Rollen abgeschlossen sind.

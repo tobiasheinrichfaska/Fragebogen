@@ -101,7 +101,7 @@ export async function createPdf(
 }
 
 export type OpenResult =
-  | { kind: 'session'; session: Session; message: BannerMessage }
+  | { kind: 'session'; session: Session; altered: boolean; message: BannerMessage }
   | { kind: 'partial'; collected: Uint8Array[]; message: BannerMessage }
   | { kind: 'error'; message: BannerMessage };
 
@@ -147,6 +147,7 @@ export function fromPackageText(
   return {
     kind: 'session',
     session: sessionFromFile(decoded, arrival),
+    altered: verdict.level === 'invalid',
     message: {
       tone,
       text:

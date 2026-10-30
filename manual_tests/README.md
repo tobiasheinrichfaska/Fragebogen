@@ -27,7 +27,7 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 | Datei                                            | Bereich                                                                                   |
 | ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
 | [`01_start.md`](01_start.md)                     | Datei öffnen, Startseite, keine Netzverbindungen                                          |
-| [`02_ausfuellen.md`](02_ausfuellen.md)           | Rollenwahl, Interview, „Weiß ich gerade nicht“, Zusammenfassung, Zwischenstand            |
+| [`02_ausfuellen.md`](02_ausfuellen.md)           | Rollenwahl, Interview, „Weiß ich gerade nicht“, Zusammenfassung, Zwischenstand, Übernahme |
 | [`03_abschluss.md`](03_abschluss.md)             | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung |
 | [`04_pdf.md`](04_pdf.md)                         | PDF erstellen und wieder öffnen, neu gespeicherte PDF, Scan und Fotos der QR-Codes, Link  |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts  |

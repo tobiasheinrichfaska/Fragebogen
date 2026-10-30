@@ -19,6 +19,7 @@ import {
   reopen,
   startNewVersion,
   startSession,
+  takeOver,
   type Session,
   type SessionResult,
 } from '../logic/session';
@@ -28,7 +29,7 @@ import { InterviewScreen } from './InterviewScreen';
 import { RolesScreen } from './RolesScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
-import { createPdf, fromPackageText, openPdfOrImage } from './pdfActions';
+import { createPdf, fromPackageText, openPdfOrImage, type OpenResult } from './pdfActions';
 
 type Screen =
   | { kind: 'start' }
@@ -146,9 +147,13 @@ function Workspace({ registry }: { registry: FormRegistry }) {
     });
   };
 
-  const open = async (file: File) => {
+  /** Reads a PDF, interim file or photo; photos of a print-out are collected until complete. */
+  const readOpened = async (file: File): Promise<OpenResult | undefined> => {
     const read = await readFileBytes(file);
-    if (!read.ok) return setBanner({ tone: 'error', text: read.message });
+    if (!read.ok) {
+      setBanner({ tone: 'error', text: read.message });
+      return undefined;
+    }
     const now = deviceNow();
     const arrival = {
       local: now.local,
@@ -164,13 +169,44 @@ function Workspace({ registry }: { registry: FormRegistry }) {
       : await openPdfOrImage(file, read.bytes, registry, arrival, collected);
     if (opened.kind === 'partial') {
       setCollected(opened.collected);
-      return setBanner(opened.message);
+      setBanner(opened.message);
+      return undefined;
     }
     setCollected([]);
-    if (opened.kind === 'error') return setBanner(opened.message);
+    if (opened.kind === 'error') {
+      setBanner(opened.message);
+      return undefined;
+    }
+    return opened;
+  };
+
+  const open = async (file: File) => {
+    const opened = await readOpened(file);
+    if (opened?.kind !== 'session') return;
     setSession(opened.session);
     setScreen({ kind: 'roles' });
     setBanner(opened.message);
+  };
+
+  const takeOverFile = async (file: File) => {
+    if (!session) return;
+    const opened = await readOpened(file);
+    if (opened?.kind !== 'session') return;
+    const result = takeOver(session, {
+      questionnaire: opened.session.questionnaire,
+      form: opened.session.form,
+      altered: opened.altered,
+    });
+    if (!result.ok) return setBanner({ tone: 'error', text: result.message });
+    setSession(result.session);
+    setBanner({
+      tone: result.applied === 0 ? 'warning' : 'info',
+      text:
+        result.applied === 0
+          ? `Aus „${opened.session.form.definition.title}“ ließ sich nichts übernehmen.`
+          : `Angaben aus „${opened.session.form.definition.title}“ übernommen. Bitte im Interview alles prüfen – unterschrieben ist damit noch nichts.`,
+      detail: result.lines,
+    });
   };
 
   const pdf = async () => {
@@ -239,6 +275,7 @@ function Workspace({ registry }: { registry: FormRegistry }) {
             if (apply(reopen(session, r), { kind: 'interview' })) tracker.reset();
           }}
           onSaveInterim={saveInterim}
+          onTakeOver={(f) => void takeOverFile(f)}
           onPdf={() => void pdf()}
           onClose={close}
         />

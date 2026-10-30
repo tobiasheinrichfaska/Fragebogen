@@ -351,7 +351,10 @@ Key design decisions (details in `docs/plan.md`):
   to the person's previous jobs) are not supported; such data is a separate table of that role.
   At most 30 rows; conditions cannot look into table cells.
 - **Taking answers over from another file** (`prefillFrom`) matches by field id, role and type
-  only; a renamed field in another form is not recognised.
+  only; a renamed field in another form is not recognised. A preselected answer (`initial`) counts as empty there,
+  so the other file's answer replaces it; a chosen answer equal to the preselection is replaced too.
+- **No bundled form has a table yet** — the table step is covered by unit tests only; its manual test
+  follows with the Personalfragebogen test version.
 - **`forms/published.json` immutability** is only checked against the current files; removing or
   editing an entry _together with_ its file is caught once CI compares with the last release (step
   12). Golden files guard only the fixture form so far.

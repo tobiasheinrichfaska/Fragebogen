@@ -6,7 +6,14 @@
 // its condition holds, and every value that cannot be taken over is reported with its reason.
 import { fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
-import type { FieldDefinition, FieldId, FieldValue, Questionnaire, RoleId } from './model';
+import type {
+  FieldDefinition,
+  FieldId,
+  FieldValue,
+  FormDefinition,
+  Questionnaire,
+  RoleId,
+} from './model';
 import { ROW_ID_KEY } from './normalize';
 import {
   currentPart,
@@ -74,6 +81,7 @@ export function prefillFrom(
       report.untouched = 'Dieser Teil ist hier schon abgeschlossen; es wurde nichts übernommen.';
       continue;
     }
+    const before = q;
     if (!existing) {
       const started = startPart(q, targetForm, role.id);
       if (!started.ok) {
@@ -95,10 +103,13 @@ export function prefillFrom(
       ) {
         continue;
       }
-      if ((currentPart(q, role.id)?.data[field.id] ?? null) !== null) {
+      const present = currentPart(q, role.id)?.data[field.id] ?? null;
+      // A preselection is not an answer yet: the other file's answer replaces it.
+      if (present !== null && present !== field.initial) {
         report.kept.push(field.id);
         continue;
       }
+      if (present !== null && present === value) continue;
       const taken = field.type === 'repeatGroup' ? tableValue(origin, field, value) : value;
       if (taken === null) continue;
       const result = setValue(q, targetForm, role.id, field.id, taken);
@@ -109,6 +120,36 @@ export function prefillFrom(
         report.skipped.push({ fieldId: field.id, reason: TRANSITION_MESSAGES[result.code] });
       }
     }
+    // Nothing to take over: no empty draft is left behind for this role.
+    if (!existing && report.applied.length === 0) q = before;
   }
   return { questionnaire: q, reports };
+}
+
+/** The report as people read it: one line per role, every value not taken over with its reason. */
+export function describePrefill(
+  reports: readonly PrefillReport[],
+  definition: FormDefinition,
+): { applied: number; lines: string[] } {
+  const fields = fieldsById(definition);
+  const label = (id: FieldId) => fields.get(id)?.label ?? id;
+  const lines: string[] = [];
+  for (const report of reports) {
+    const role = definition.roles.find((r) => r.id === report.role)?.label ?? report.role;
+    if (report.untouched !== undefined) {
+      lines.push(`${role}: ${report.untouched}`);
+      continue;
+    }
+    const counts = [
+      `${report.applied.length} ${report.applied.length === 1 ? 'Angabe' : 'Angaben'} übernommen`,
+      ...(report.kept.length > 0
+        ? [`${report.kept.length} vorhandene behalten (${report.kept.map(label).join(', ')})`]
+        : []),
+    ];
+    lines.push(`${role}: ${counts.join(', ')}.`);
+    for (const skip of report.skipped) {
+      lines.push(`${role} – „${label(skip.fieldId)}“ nicht übernommen: ${skip.reason}`);
+    }
+  }
+  return { applied: reports.reduce((sum, r) => sum + r.applied.length, 0), lines };
 }

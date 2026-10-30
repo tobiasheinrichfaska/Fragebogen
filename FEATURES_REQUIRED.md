@@ -24,6 +24,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Re-sign before sending** — "Unterschrift zurücknehmen" turns the not-yet-sent version back into a draft; the old signature disappears (no version chain); refused once the version was received or confirmed
 - [ ] **Download the PDF** — readable sections, signature with system note, Prüfblatt, data pages, footer "Seite x von y", visible and clickable address of the app
 - [ ] **Save/load interim state as a file** — round-trips without loss
+- [ ] **Tables** (e.g. children, further employments) — one card per row, add/remove rows; a row with an empty required cell must be completed or removed, the error points at the cell
+- [ ] **Take answers over from another file** (Sofortmeldung → Personalfragebogen, last month → new month) — only into empty fields of open roles, a preselection is replaced, `carryOver: false` values stay empty, nothing is signed; every value not taken over is shown with its reason; the same questionnaire and altered files are refused
 
 ## Station 2 — import & complete (e.g. Arbeitgeber)
 
