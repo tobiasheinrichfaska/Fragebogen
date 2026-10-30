@@ -5010,6 +5010,21 @@
           "decimals": 0
         },
         {
+          "id": "agSbGueltigAb",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Ausweis oder Bescheid gültig ab",
+          "question": "Ab wann gilt die Feststellung laut Ausweis oder Bescheid?",
+          "help": "Das Datum, ab dem der Grad der Behinderung oder die Gleichstellung festgestellt ist.",
+          "required": false,
+          "purpose": "Verzeichnis und Anzeige (§ 163 SGB IX) mit den Angaben aus dem Bescheid; Stammdaten der Lohnabrechnung",
+          "showIf": {
+            "field": "agSchwerbehinderung",
+            "in": ["schwerbehindert", "gleichgestellt"]
+          },
+          "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören die Angaben aus dem Bescheid in das Verzeichnis des Arbeitgebers (§ 163 SGB IX)."
+        },
+        {
           "id": "agSbGueltigBis",
           "role": "arbeitgeber",
           "type": "date",
@@ -5023,6 +5038,36 @@
             "in": ["schwerbehindert", "gleichgestellt"]
           },
           "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören Grad der Behinderung und Gültigkeit in das Verzeichnis des Arbeitgebers (§ 163 SGB IX)."
+        },
+        {
+          "id": "agSbBehoerde",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Ausstellende Behörde",
+          "question": "Welche Behörde hat den Bescheid ausgestellt?",
+          "help": "Zum Beispiel das Versorgungsamt; bei einer Gleichstellung die Agentur für Arbeit.",
+          "required": false,
+          "purpose": "Verzeichnis und Anzeige (§ 163 SGB IX) mit den Angaben aus dem Bescheid; Stammdaten der Lohnabrechnung",
+          "showIf": {
+            "field": "agSchwerbehinderung",
+            "in": ["schwerbehindert", "gleichgestellt"]
+          },
+          "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören die Angaben aus dem Bescheid in das Verzeichnis des Arbeitgebers (§ 163 SGB IX)."
+        },
+        {
+          "id": "agSbAktenzeichen",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Aktenzeichen",
+          "question": "Wie lautet das Aktenzeichen des Bescheids?",
+          "help": "So, wie es auf dem Bescheid oder Ausweis steht.",
+          "required": false,
+          "purpose": "Verzeichnis und Anzeige (§ 163 SGB IX) mit den Angaben aus dem Bescheid; Stammdaten der Lohnabrechnung",
+          "showIf": {
+            "field": "agSchwerbehinderung",
+            "in": ["schwerbehindert", "gleichgestellt"]
+          },
+          "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören die Angaben aus dem Bescheid in das Verzeichnis des Arbeitgebers (§ 163 SGB IX)."
         }
       ]
     },

@@ -328,3 +328,18 @@ describe('pay first (Tobias 2026-10-30)', () => {
     );
   });
 });
+
+describe('details of a severe disability (Tobias 2026-10-30)', () => {
+  const DETAILS = ['agGdb', 'agSbGueltigAb', 'agSbGueltigBis', 'agSbBehoerde', 'agSbAktenzeichen'];
+
+  it('asks valid from, authority and file number only with a disability or equal status', () => {
+    for (const status of ['schwerbehindert', 'gleichgestellt']) {
+      expect(shown('arbeitgeber', { agSchwerbehinderung: status })).toEqual(
+        expect.arrayContaining(DETAILS),
+      );
+    }
+    for (const id of DETAILS) {
+      expect(shown('arbeitgeber', { agSchwerbehinderung: 'nein' })).not.toContain(id);
+    }
+  });
+});
