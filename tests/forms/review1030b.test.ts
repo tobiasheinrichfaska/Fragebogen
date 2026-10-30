@@ -156,7 +156,7 @@ describe('check hints of the review', () => {
       'Zusammen 6.500,00 € im Monat (davon diese Beschäftigung 5.000,00 €)',
     );
     expect(hint?.detail.join(' ')).toContain('5.812,50 €');
-    expect(ids(above)).toContain('jaegMonatsentgelt');
+    expect(ids(above)).toContain('jaeg');
   });
 
   it('flags the JAEG for a single high salary, but not the BBG of several jobs', () => {
@@ -165,7 +165,7 @@ describe('check hints of the review', () => {
       { ...employer, agMonatsentgelt: '7.000,00' },
       filled('person', { weitereBeschaeftigung: false }),
     );
-    expect(ids(q)).toContain('jaegMonatsentgelt');
+    expect(ids(q)).toContain('jaeg');
     expect(ids(q)).not.toContain('mehrfachUeberBbgMonatsentgelt');
   });
 
@@ -175,7 +175,7 @@ describe('check hints of the review', () => {
       { ...employer, agBeschaeftigungsbeginn: '02.01.2027' },
       filled('person', person),
     );
-    const hint = checkHints(q, definition).find((h) => h.id === 'jaegMonatsentgelt');
+    const hint = checkHints(q, definition).find((h) => h.id === 'jaeg');
     expect(hint?.detail.join(' ')).toContain(
       'Für 2027 ist die Jahresarbeitsentgeltgrenze in der App nicht hinterlegt',
     );

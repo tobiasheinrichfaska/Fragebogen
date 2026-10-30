@@ -165,17 +165,19 @@ describe('check hints — definition rules', () => {
 
   it('knows the tests the forms use', () => {
     expect(Object.keys(HINT_TESTS).sort()).toEqual([
+      'ab55Jahren',
       'hoechstensGeringfuegigkeitsgrenze',
       'hoechstensGeringverdienergrenze',
+      'hoechstensZehnWochen',
+      'imUebergangsbereich',
       'kuerzerAlsEineWoche',
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',
       'regelaltersgrenzeNichtErreicht',
       'spaeterAls',
       'ueberBeitragsbemessungsgrenze',
-      'ueberBesondereJahresarbeitsentgeltgrenze',
       'ueberGeringfuegigkeitsgrenze',
-      'ueberJahresarbeitsentgeltgrenze',
+      'ueberMassgeblicheJahresarbeitsentgeltgrenze',
     ]);
   });
 });

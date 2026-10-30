@@ -71,7 +71,7 @@ export interface QuickAnswer {
   value: string | null;
 }
 
-export const TEXT_FORMATS = ['postleitzahlDe'] as const;
+export const TEXT_FORMATS = ['postleitzahlDe', 'kldb2010'] as const;
 export type TextFormat = (typeof TEXT_FORMATS)[number];
 
 export interface ChoiceOption {
@@ -233,8 +233,10 @@ export interface CheckHint {
 
 /** One rule of a derivation: the first rule whose condition and test hold gives the value. */
 export interface DerivationRule {
-  /** Proposed value, e.g. "109". */
-  value: string;
+  /** Proposed value, e.g. "109" — or `valueFrom` instead. */
+  value?: string;
+  /** Instead of `value`: the answer of a top-level text field (e.g. the KldB code); unanswered = no match. */
+  valueFrom?: FieldId;
   /** Why, in German — shown with the proposal. */
   reason: string;
   when?: Condition;
@@ -251,7 +253,13 @@ export interface Derivation {
   id: string;
   label: string;
   source?: string;
-  rules: DerivationRule[];
+  /** Rule table, first match wins — or `parts` instead. */
+  rules?: DerivationRule[];
+  /**
+   * Instead of `rules`: other derivations joined in this order (e.g. the Beitragsgruppen KV RV AV PV,
+   * the Tätigkeitsschlüssel). Parts are shown only inside the joined proposal.
+   */
+  parts?: string[];
 }
 
 /** Fields that identify the same person across roles when no shared questionnaire id exists. */

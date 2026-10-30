@@ -47,13 +47,14 @@ export function derive(
   if (derivations.length === 0) return [];
   const excluded = activeExclusions(questionnaire, definition);
   const values = valuesOf(questionnaire, definition);
-  return derivations.map((derivation) => {
+  const single = (derivation: Derivation): DerivationResult => {
     if (excluded.length > 0) {
       return result(derivation, 'excluded', 'Sonderfall – bitte selbst beurteilen.', {
         detail: excluded.map((e) => e.message),
       });
     }
-    const roles = new Set(derivation.rules.flatMap((rule) => [...rolesOf(rule, definition)]));
+    const rules = derivation.rules ?? [];
+    const roles = new Set(rules.flatMap((rule) => [...rolesOf(rule, definition)]));
     const missing = definition.roles.filter(
       (role) => roles.has(role.id) && (questionnaire.parts[role.id] ?? []).length === 0,
     );
@@ -64,17 +65,48 @@ export function derive(
         `Es fehlt noch der Teil ${missing.map((role) => `„${role.label}“`).join(' und ')}.`,
       );
     }
-    for (const rule of derivation.rules) {
+    for (const rule of rules) {
       const outcome = ruleHolds(rule, values);
       if (!outcome.holds) continue;
+      const value =
+        rule.valueFrom === undefined ? rule.value : (values.valueOf(rule.valueFrom) ?? undefined);
+      if (typeof value !== 'string') continue;
       return result(derivation, 'proposed', rule.reason, {
-        value: rule.value,
+        value,
         check: rule.check === true || outcome.uncertain,
         detail: outcome.detail,
       });
     }
     return result(derivation, 'none', 'Keine Regel passt – bitte selbst bestimmen.');
-  });
+  };
+  const byId = new Map(derivations.map((derivation) => [derivation.id, derivation]));
+  // A joined proposal: every part must give a value; the parts' reasons become its facts.
+  const joined = (derivation: Derivation, parts: readonly string[]): DerivationResult => {
+    const results = parts.flatMap((id) => {
+      const part = byId.get(id);
+      return part ? [single(part)] : [];
+    });
+    const open = results.find((part) => part.status !== 'proposed');
+    if (open) {
+      return result(derivation, open.status, `${open.label}: ${open.reason}`, {
+        detail: open.detail,
+      });
+    }
+    return result(derivation, 'proposed', results.map((part) => part.label).join(' · '), {
+      value: results.map((part) => part.value ?? '').join(''),
+      check: results.some((part) => part.check),
+      detail: results.flatMap((part) => [
+        `${part.label} ${part.value ?? ''}: ${part.reason}${part.check ? ' (prüfen)' : ''}`,
+        ...part.detail,
+      ]),
+    });
+  };
+  const partIds = new Set(derivations.flatMap((derivation) => derivation.parts ?? []));
+  return derivations
+    .filter((derivation) => !partIds.has(derivation.id))
+    .map((derivation) =>
+      derivation.parts ? joined(derivation, derivation.parts) : single(derivation),
+    );
 }
 
 /** One rule as people read it (catalogue, flow plan). */
@@ -83,5 +115,9 @@ export function describeRule(rule: DerivationRule, definition: FormDefinition): 
     rule.when || rule.test
       ? describeHint({ id: 'rule', message: rule.reason, ...rule }, definition)
       : 'sonst';
-  return `${rule.value}: ${when} – ${rule.reason}${rule.check ? ' (prüfen)' : ''}`;
+  const from = definition.sections
+    .flatMap((section) => section.fields)
+    .find((field) => field.id === rule.valueFrom);
+  const value = rule.value ?? `Angabe „${from?.label ?? rule.valueFrom ?? ''}“`;
+  return `${value}: ${when} – ${rule.reason}${rule.check ? ' (prüfen)' : ''}`;
 }

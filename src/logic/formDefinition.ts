@@ -17,6 +17,7 @@ import {
   type Condition,
   type ConsistencyRule,
   type Derivation,
+  type DerivationRule,
   type FieldDefinition,
   type FieldType,
   type FormDefinition,
@@ -205,35 +206,48 @@ function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | un
 }
 
 function decodeDerivation(d: Decoder, raw: unknown, path: string): Derivation | undefined {
-  const o = d.object(raw, path, ['id', 'label', 'source', 'rules']);
+  const o = d.object(raw, path, ['id', 'label', 'source', 'rules', 'parts']);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
   const label = d.string(o.label, `${path}.label`);
   const source = o.source === undefined ? undefined : d.string(o.source, `${path}.source`);
-  const rules = d.array(
-    o.rules,
-    `${path}.rules`,
-    (v, p) => {
-      const r = d.object(v, p, ['value', 'reason', 'when', 'test', 'check']);
-      if (!r) return undefined;
-      const value = d.string(r.value, `${p}.value`);
-      const reason = d.string(r.reason, `${p}.reason`);
-      const when = r.when === undefined ? undefined : decodeCondition(d, r.when, `${p}.when`, 0);
-      const test = r.test === undefined ? undefined : decodeHintTest(d, r.test, `${p}.test`);
-      const check = r.check === undefined ? undefined : d.boolean(r.check, `${p}.check`);
-      if (value === undefined || reason === undefined) return undefined;
-      return {
-        value,
-        reason,
-        ...(when === undefined ? {} : { when }),
-        ...(test === undefined ? {} : { test }),
-        ...(check === undefined ? {} : { check }),
-      };
-    },
-    1,
-  );
-  if (id === undefined || label === undefined || rules === undefined) return undefined;
-  return { id, label, ...(source === undefined ? {} : { source }), rules };
+  const rules =
+    o.rules === undefined
+      ? undefined
+      : d.array(o.rules, `${path}.rules`, (v, p) => decodeDerivationRule(d, v, p), 1);
+  const parts =
+    o.parts === undefined
+      ? undefined
+      : d.array(o.parts, `${path}.parts`, (v, p) => d.string(v, p, ID), 2);
+  if (id === undefined || label === undefined) return undefined;
+  return {
+    id,
+    label,
+    ...(source === undefined ? {} : { source }),
+    ...(rules === undefined ? {} : { rules }),
+    ...(parts === undefined ? {} : { parts }),
+  };
+}
+
+function decodeDerivationRule(d: Decoder, raw: unknown, path: string): DerivationRule | undefined {
+  const r = d.object(raw, path, ['value', 'valueFrom', 'reason', 'when', 'test', 'check']);
+  if (!r) return undefined;
+  const value = r.value === undefined ? undefined : d.string(r.value, `${path}.value`);
+  const valueFrom =
+    r.valueFrom === undefined ? undefined : d.string(r.valueFrom, `${path}.valueFrom`, ID);
+  const reason = d.string(r.reason, `${path}.reason`);
+  const when = r.when === undefined ? undefined : decodeCondition(d, r.when, `${path}.when`, 0);
+  const test = r.test === undefined ? undefined : decodeHintTest(d, r.test, `${path}.test`);
+  const check = r.check === undefined ? undefined : d.boolean(r.check, `${path}.check`);
+  if (reason === undefined) return undefined;
+  return {
+    ...(value === undefined ? {} : { value }),
+    ...(valueFrom === undefined ? {} : { valueFrom }),
+    reason,
+    ...(when === undefined ? {} : { when }),
+    ...(test === undefined ? {} : { test }),
+    ...(check === undefined ? {} : { check }),
+  };
 }
 
 function decodeValidity(d: Decoder, raw: unknown, path: string): FormValidity | undefined {
@@ -1112,15 +1126,43 @@ function checkHintRules(context: CheckContext): void {
   hintListRules(context, context.definition.checkHints ?? [], '$.checkHints');
   hintListRules(context, context.definition.exclusions ?? [], '$.exclusions');
   const ids = new Set<string>();
-  (context.definition.derivations ?? []).forEach((derivation, i) => {
+  const derivations = context.definition.derivations ?? [];
+  const byId = new Map(derivations.map((derivation) => [derivation.id, derivation]));
+  derivations.forEach((derivation, i) => {
     const path = `$.derivations[${i}]`;
     if (ids.has(derivation.id))
       context.report(`${path}.id`, `duplicate derivation id "${derivation.id}"`);
     ids.add(derivation.id);
+    if ((derivation.rules === undefined) === (derivation.parts === undefined)) {
+      context.report(path, 'a derivation has either rules or parts');
+    }
+    const seenParts = new Set<string>();
+    derivation.parts?.forEach((part, p) => {
+      const at = `${path}.parts[${p}]`;
+      const target = byId.get(part);
+      if (!target) context.report(at, `unknown derivation "${part}"`);
+      else if (target.parts || part === derivation.id) {
+        context.report(at, `"${part}" must be a derivation with rules`);
+      }
+      if (seenParts.has(part)) context.report(at, `"${part}" is listed twice`);
+      seenParts.add(part);
+    });
+    (derivation.rules ?? []).forEach((rule, r) => {
+      const at = `${path}.rules[${r}]`;
+      if ((rule.value === undefined) === (rule.valueFrom === undefined)) {
+        context.report(at, 'a rule has either value or valueFrom');
+      }
+      if (rule.valueFrom !== undefined) {
+        const target = context.fields.get(rule.valueFrom);
+        if (!target || target.isColumn || target.field.type !== 'text') {
+          context.report(`${at}.valueFrom`, `"${rule.valueFrom}" must be a top-level text field`);
+        }
+      }
+    });
     // Rules share the shape of hints; a rule without condition and test is the fallback.
     hintListRules(
       context,
-      derivation.rules.map((rule, r) => ({
+      (derivation.rules ?? []).map((rule, r) => ({
         id: `rule${r}`,
         message: rule.reason,
         ...(rule.when === undefined ? {} : { when: rule.when }),

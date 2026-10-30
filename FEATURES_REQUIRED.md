@@ -45,6 +45,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Validity of a form version** — every draft states the period of its reference date (e.g. first working day); a date outside warns at input, blocks signing and passing on; start screen, role choice, PDF and docs show it
 - [ ] **What a form does not cover** — `limits` shown on the role choice, in the Kanzlei form view, the PDF, the catalogue and the flow plan
 - [ ] **Multiple jobs, also above the BBG** — other jobs with monthly pay; check hints sum them against the BBG (KV/PV) and the JAEG of the start year; a missing year is reported, never guessed
+- [ ] **Proposals for the Kanzlei** — Personengruppe, Beitragsgruppen (KV RV AV PV), Kennzeichen Übergangsbereich and Tätigkeitsschlüssel shown with reasons per part, "bitte prüfen" where uncertain; never decided by the app, never sealed; a special case excluded by a pre-question gives none
+- [ ] **Official lists** — nationality, state of birth, foreign state, name prefix and suffix chosen from the DEÜV tables via a search field; anything not listed is refused with a German message
 
 ## Documentation
 

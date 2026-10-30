@@ -76,6 +76,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/logic/options.ts`                                | `optionsOf` (options written in the definition or taken from a reference list), `listOptionFor`, `REFERENCE_LISTS` (DEÜV lists with title, source, Stand in the id)                                                                                                                                                                                            |
 | `src/logic/data/deuevListen.ts`                       | DEÜV Anlage 6 (Vorsatzworte), 7 (Namenszusätze), 8 Teil A (Staatsangehörigkeit, Staaten with Destatis key and Länderkennzeichen) — generated, copied unchanged from the official PDFs                                                                                                                                                                          |
 | `src/logic/options.test.ts`                           | Reference lists: sizes, uniqueness, hash per list id (never changes silently), typed labels → key, idempotence, display, definition rules for `optionsFrom`                                                                                                                                                                                                    |
+| `tests/forms/beitragsgruppen.test.ts`                 | Beitragsgruppen, Kennzeichen Übergangsbereich and Tätigkeitsschlüssel per scenario (Azubi, Minijob with/without RV exemption, PKV/GKV above the JAEG, old-age pension, pupil, civil servant, …); every proposed combination checked against DEÜV Anlage 16; definition rules for `parts` / `valueFrom`                                                         |
 | `tests/forms/listenfelder.test.ts`                    | List fields in both drafts (name prefix/suffix, nationality key, states), street and house number apart, takeover Sofortmeldung 0.2.0 → Personalfragebogen                                                                                                                                                                                                     |
 | `tests/forms/svSzenarien.test.ts`                     | SV assessment scenarios as tables: answers of person and employer → Personengruppe, check hints, exclusions (Azubi under 600 €, Minijob with Weihnachtsgeld, lower JAEG, KV exemption, Vorruhestand, special groups); the questions that closed the gaps of 2026-10-30; pay before the kind of employment                                                      |
 | `docs/prompts/datev-lug-recherche.md`                 | Prompt for Claude in Chrome (DATEV login): LuG master-data import format and the field order of the LuG screens, answered as JSON into `.tmp/datev/` (German)                                                                                                                                                                                                  |
@@ -166,6 +167,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `docs/spike-pdf.md`                                   | Step-1 PDF spike results + **data-page format v1** spec (German)                                                                                                                                                                                                                                                                                               |
 | `assets/fonts/`                                       | Embedded PDF fonts: Noto Sans Regular/SemiBold + Noto Sans Mono, Latin subsets (OFL), `README.md` with source URLs, SHA-256 and the exact `pyftsubset` command                                                                                                                                                                                                 |
 | `manual_tests/`                                       | Human-tester instructions (German): `README.md`, `01_start.md` … `05_kanzlei.md`, `06_aendern_und_ablauf.md` (changing answers, Minijob tax, flow plan), `07_sv_beurteilung.md` (pay first, Azubi under 600 €, Minijob limit in the yearly view, special groups, KV exemption), `90_pdf_gegenproben.md` (Acrobat/DATEV/print counter-checks, non-blocking)     |
+| `import/`                                             | Gitignored: delivered third-party material (DATEV LuG import descriptions, DATEV Excel questionnaires, the Chrome research JSON) — read locally, never committed                                                                                                                                                                                               |
 | `.tmp/`                                               | Gitignored scratch area (spikes, extracted files)                                                                                                                                                                                                                                                                                                              |
 
 ---
@@ -315,6 +317,14 @@ Key design decisions (details in `docs/plan.md`):
   station and on the PDF Prüfblatt, never sealed, "check" where a rule or an uncertain test asks
   for it; none for a special case, "incomplete" while a needed part is missing. Covered: 101, 102,
   103, 105, 106, 108, 109, 110, 119, 120, 121, 122, 123, 190. Beitragsgruppen follow the same way.
+- **Beitragsgruppen, Übergangsbereich, Tätigkeitsschlüssel as proposals** (Tobias 2026-10-30): rule tables
+  in the Personalfragebogen like the Personengruppe — KV, RV, AV, PV each a table, joined by `parts` into one
+  four-digit proposal; the Tätigkeitsschlüssel joins the KldB code (`valueFrom` the employer's answer,
+  format `kldb2010`) with the digits 6–9 of DEÜV Anlage 5 (Altersteilzeit counts as open-ended). Every
+  combination in the scenarios is checked against DEÜV Anlage 16. The PV mirrors the reasons the KV is free
+  for privately insured persons; otherwise they become insured (§ 20 Abs. 1 SGB XI). Combined tests take
+  the fixed or the expected pay (`hoechstensGeringfuegigkeitsgrenze`, `ueberMassgeblicheJahresarbeitsentgeltgrenze`,
+  `imUebergangsbereich`), so each case is one rule.
 - **Special cases are excluded, not guessed** (Tobias 2026-10-30): `exclusions` (shape of check
   hints, evaluated over all roles as soon as answered) block signing and passing on
   (`outOfScope`) and show a banner on every interview step. Pre-questions lead there: firm
@@ -435,9 +445,15 @@ Key design decisions (details in `docs/plan.md`):
 - **Answers of the frozen Sofortmeldung 0.1.0** for nationality, state of birth, foreign state and
   "Straße und Hausnummer" are free text and are not taken over into the drafts (new field ids for the
   list fields and the street without number — field ids never change meaning).
-- **Beitragsgruppen are not derived yet** (next step); the Personengruppe proposal does not compute
-  the weekly hours of a Werkstudent (asks for a check) and treats the employer's kind of employment
-  as decisive (a mismatch with the person's answer is a check hint).
+- **Proposals, known gaps** (2026-10-30): the Personengruppe proposal does not compute the weekly
+  hours of a Werkstudent (asks for a check) and treats the employer's kind of employment as decisive
+  (a mismatch with the person's answer is a check hint). Beitragsgruppen: a voluntarily insured person
+  above the JAEG is proposed as Firmenzahler (9, "check"; Selbstzahler 0); the reduced KV contribution
+  for a full Erwerbsminderungsrente and for jobs fixed to at most ten weeks rests on §§ 44, 50 SGB V,
+  which are not in the local legal texts ("check"); the adding up of several Minijobs is not computed
+  (check); the AV proposal "2" after the Regelaltersgrenze is still "1" in the month it is reached
+  (check). Übergangsbereich: the marker 2 (inside and outside in one report) is not proposed. The
+  Tätigkeitsschlüssel needs the KldB code from the employer, else "?????" (check).
 - **JAEG hint sums every other job** the person lists, Minijobs included, although a Minijob next to
   this employment does not count; the hint says so ("dann nachrechnen"). Regular allowances and
   benefits in kind are not part of the yearly pay in the tests.

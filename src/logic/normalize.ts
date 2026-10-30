@@ -140,6 +140,11 @@ export function normalizeMonth(raw: string): Checked<string> {
 /** Named formats of text fields (`textFormat`). */
 const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<string>>> = {
   // Five digits; no postcode starts with 00.
+  // Occupation code of the Klassifikation der Berufe 2010: five digits (Tätigkeitsschlüssel 1–5).
+  kldb2010: (text) => {
+    const compact = text.replace(/\s/g, '');
+    return /^\d{5}$/.test(compact) ? accept(compact) : reject('kldb.format');
+  },
   postleitzahlDe: (text) => {
     const compact = text.replace(/\s/g, '');
     return /^(?!00)\d{5}$/.test(compact) ? accept(compact) : reject('plz.format');

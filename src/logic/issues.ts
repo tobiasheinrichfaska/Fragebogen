@@ -17,6 +17,7 @@ export type IssueCode =
   | 'month.format'
   | 'month.invalid'
   | 'plz.format'
+  | 'kldb.format'
   | 'validity.outside'
   | 'iban.format'
   | 'iban.length'
@@ -52,6 +53,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'month.format': 'Bitte einen Monat wie 03.2026 eingeben.',
   'month.invalid': 'Diesen Monat gibt es nicht.',
   'plz.format': 'Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.',
+  'kldb.format': 'Die Berufskennziffer nach der Klassifikation der Berufe 2010 hat 5 Ziffern.',
   'validity.outside':
     'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung. Unterschreiben und weitergeben lässt sich der Fragebogen so nicht; bitte die Fassung verwenden, die für dieses Datum gilt.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',

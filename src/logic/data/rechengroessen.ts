@@ -17,6 +17,9 @@ export interface Rechengroessen {
 /** Geringverdienergrenze for trainees (§ 20 Abs. 3 S. 1 Nr. 1 SGB IV), per month — fixed by law. */
 export const GERINGVERDIENERGRENZE = '325.00';
 
+/** Upper limit of the Übergangsbereich (§ 20 Abs. 2 SGB IV), per month — fixed in the law itself. */
+export const UEBERGANGSBEREICH_OBERGRENZE = '2000.00';
+
 export const RECHENGROESSEN: Readonly<Record<string, Rechengroessen>> = {
   // SVBezGrV 2026 §§ 2, 4
   '2026': {

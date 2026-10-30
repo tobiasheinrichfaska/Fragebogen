@@ -3679,9 +3679,10 @@
           "type": "text",
           "label": "Berufskennziffer (KldB 2010)",
           "question": "Kennen Sie die fünfstellige Berufskennziffer?",
-          "help": "Freiwillig; sonst bildet die lohnabrechnende Stelle sie aus der Tätigkeit.",
+          "help": "Die fünfstellige Berufskennziffer nach der Klassifikation der Berufe 2010 (Stellen 1 bis 5 des Tätigkeitsschlüssels). Leer lassen, wenn Sie sie nicht kennen; dann bestimmt sie die lohnabrechnende Stelle aus der Tätigkeit.",
           "required": false,
-          "purpose": "Stellen 1 bis 5 des Tätigkeitsschlüssels in den Meldungen"
+          "purpose": "Stellen 1 bis 5 des Tätigkeitsschlüssels in den Meldungen",
+          "textFormat": "kldb2010"
         },
         {
           "id": "agBerufsbezeichnung",
@@ -5460,53 +5461,39 @@
       "message": "Art der Vergütung und Art der Beschäftigung passen nicht zusammen: „kein Arbeitsentgelt“ gibt es nur beim Vorruhestandsgeld."
     },
     {
-      "id": "minijobUeberGrenzeMonatsentgelt",
+      "id": "minijobUeberGrenze",
       "when": {
         "field": "agBeschaeftigungsart",
         "equals": "minijob"
       },
       "test": {
         "fn": "ueberGeringfuegigkeitsgrenze",
-        "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+        "args": [
+          "agMonatsentgelt",
+          "agErwartetMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "agBeschaeftigungsbeginn"
+        ]
       },
       "message": "Als Minijob vorgesehen, aber der Verdienst übersteigt die Geringfügigkeitsgrenze im Jahr: kein Minijob, sondern eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich).",
       "source": "§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV"
     },
     {
-      "id": "svpflichtigUnterGrenzeMonatsentgelt",
+      "id": "svpflichtigUnterGrenze",
       "when": {
         "field": "agBeschaeftigungsart",
         "equals": "svpflichtig"
       },
       "test": {
         "fn": "hoechstensGeringfuegigkeitsgrenze",
-        "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
-      },
-      "message": "Als versicherungspflichtige Beschäftigung vorgesehen, aber der Verdienst liegt im Jahr nicht über der Geringfügigkeitsgrenze: Das ist ein Minijob, wenn er nicht mit einer anderen Beschäftigung zusammengerechnet wird – Art der Beschäftigung prüfen.",
-      "source": "§ 8 Abs. 1 Nr. 1, Abs. 2 SGB IV"
-    },
-    {
-      "id": "minijobUeberGrenzeErwartet",
-      "when": {
-        "field": "agBeschaeftigungsart",
-        "equals": "minijob"
-      },
-      "test": {
-        "fn": "ueberGeringfuegigkeitsgrenze",
-        "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
-      },
-      "message": "Als Minijob vorgesehen, aber der Verdienst übersteigt die Geringfügigkeitsgrenze im Jahr: kein Minijob, sondern eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich).",
-      "source": "§ 8 Abs. 1 Nr. 1, § 20 Abs. 2 SGB IV"
-    },
-    {
-      "id": "svpflichtigUnterGrenzeErwartet",
-      "when": {
-        "field": "agBeschaeftigungsart",
-        "equals": "svpflichtig"
-      },
-      "test": {
-        "fn": "hoechstensGeringfuegigkeitsgrenze",
-        "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+        "args": [
+          "agMonatsentgelt",
+          "agErwartetMonat",
+          "ezBetrag",
+          "ezAnspruch",
+          "agBeschaeftigungsbeginn"
+        ]
       },
       "message": "Als versicherungspflichtige Beschäftigung vorgesehen, aber der Verdienst liegt im Jahr nicht über der Geringfügigkeitsgrenze: Das ist ein Minijob, wenn er nicht mit einer anderen Beschäftigung zusammengerechnet wird – Art der Beschäftigung prüfen.",
       "source": "§ 8 Abs. 1 Nr. 1, Abs. 2 SGB IV"
@@ -5991,84 +5978,21 @@
       "source": "§ 22 Abs. 2, § 26 Abs. 4 SGB IV"
     },
     {
-      "id": "jaegMonatsentgelt",
+      "id": "jaeg",
       "test": {
-        "fn": "ueberJahresarbeitsentgeltgrenze",
+        "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
         "args": [
           "agMonatsentgelt",
-          "jobEntgeltMonat",
-          "ezBetrag",
-          "ezAnspruch",
-          "agBeschaeftigungsbeginn"
-        ]
-      },
-      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
-      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V",
-      "when": {
-        "not": {
-          "field": "pkvBestand2002",
-          "equals": "ja"
-        }
-      }
-    },
-    {
-      "id": "jaeg2002Monatsentgelt",
-      "when": {
-        "field": "pkvBestand2002",
-        "equals": "ja"
-      },
-      "test": {
-        "fn": "ueberBesondereJahresarbeitsentgeltgrenze",
-        "args": [
-          "agMonatsentgelt",
-          "jobEntgeltMonat",
-          "ezBetrag",
-          "ezAnspruch",
-          "agBeschaeftigungsbeginn"
-        ]
-      },
-      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die besondere Jahresarbeitsentgeltgrenze für am 31.12.2002 privat Versicherte: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
-      "source": "§ 6 Abs. 1 Nr. 1, Abs. 7, § 257 SGB V"
-    },
-    {
-      "id": "jaegErwartet",
-      "test": {
-        "fn": "ueberJahresarbeitsentgeltgrenze",
-        "args": [
           "agErwartetMonat",
           "jobEntgeltMonat",
           "ezBetrag",
           "ezAnspruch",
+          "pkvBestand2002",
           "agBeschaeftigungsbeginn"
         ]
       },
-      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die Jahresarbeitsentgeltgrenze: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
-      "source": "§ 6 Abs. 1 Nr. 1, § 257 SGB V",
-      "when": {
-        "not": {
-          "field": "pkvBestand2002",
-          "equals": "ja"
-        }
-      }
-    },
-    {
-      "id": "jaeg2002Erwartet",
-      "when": {
-        "field": "pkvBestand2002",
-        "equals": "ja"
-      },
-      "test": {
-        "fn": "ueberBesondereJahresarbeitsentgeltgrenze",
-        "args": [
-          "agErwartetMonat",
-          "jobEntgeltMonat",
-          "ezBetrag",
-          "ezAnspruch",
-          "agBeschaeftigungsbeginn"
-        ]
-      },
-      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die besondere Jahresarbeitsentgeltgrenze für am 31.12.2002 privat Versicherte: Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
-      "source": "§ 6 Abs. 1 Nr. 1, Abs. 7, § 257 SGB V"
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
+      "source": "§ 6 Abs. 1 Nr. 1, Abs. 6, 7, § 257 SGB V"
     }
   ],
   "validity": {
@@ -6395,7 +6319,13 @@
           },
           "test": {
             "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
           },
           "reason": "Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze."
         },
@@ -6408,28 +6338,6 @@
                 "equals": "minijob"
               },
               {
-                "not": {
-                  "field": "weitereBeschaeftigung",
-                  "equals": true
-                }
-              }
-            ]
-          },
-          "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
-          },
-          "reason": "Minijob: erwarteter Monatsverdienst bis zur Geringfügigkeitsgrenze."
-        },
-        {
-          "value": "109",
-          "when": {
-            "all": [
-              {
-                "field": "agBeschaeftigungsart",
-                "equals": "minijob"
-              },
-              {
                 "field": "weitereBeschaeftigung",
                 "equals": true
               }
@@ -6438,28 +6346,13 @@
           "check": true,
           "test": {
             "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agMonatsentgelt", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
-          },
-          "reason": "Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV)."
-        },
-        {
-          "value": "109",
-          "when": {
-            "all": [
-              {
-                "field": "agBeschaeftigungsart",
-                "equals": "minijob"
-              },
-              {
-                "field": "weitereBeschaeftigung",
-                "equals": true
-              }
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
             ]
-          },
-          "check": true,
-          "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
-            "args": ["agErwartetMonat", "ezBetrag", "ezAnspruch", "agBeschaeftigungsbeginn"]
           },
           "reason": "Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV)."
         },
@@ -6609,6 +6502,1487 @@
         {
           "value": "101",
           "reason": "Versicherungspflichtig ohne besondere Merkmale."
+        }
+      ]
+    },
+    {
+      "id": "beitragsgruppen",
+      "label": "Beitragsgruppen (KV RV AV PV)",
+      "source": "DEÜV-Rundschreiben, Anlage 1 (Stand 26.06.2024) und Anlage 16 (Version 8.01)",
+      "parts": ["bgrKv", "bgrRv", "bgrAv", "bgrPv"]
+    },
+    {
+      "id": "bgrKv",
+      "label": "KV",
+      "rules": [
+        {
+          "value": "?",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "pruefen"
+          },
+          "check": true,
+          "reason": "Die Art der Beschäftigung ist noch offen."
+        },
+        {
+          "value": "0",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtStudium"
+              }
+            ]
+          },
+          "reason": "Vorgeschriebenes Praktikum während des Studiums: nur unfallversichert (Personengruppe 190 nur mit 0000)."
+        },
+        {
+          "value": "0",
+          "reason": "Werkstudent: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 3 SGB V).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "werkstudent"
+          }
+        },
+        {
+          "value": "6",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              },
+              {
+                "all": [
+                  {
+                    "field": "krankenversicherung",
+                    "equals": "gesetzlich"
+                  },
+                  {
+                    "field": "weitereBeschaeftigung",
+                    "equals": true
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob neben weiteren Beschäftigungen, gesetzlich versichert: Pauschalbeitrag (§ 249b SGB V), wenn die Zusammenrechnung nichts anderes ergibt.",
+          "check": true
+        },
+        {
+          "value": "6",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              },
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob, gesetzlich versichert: Pauschalbeitrag des Arbeitgebers (§ 249b SGB V)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob ohne gesetzliche Krankenversicherung: kein Pauschalbeitrag (§ 249b SGB V gilt nur für Versicherte)."
+        },
+        {
+          "value": "3",
+          "reason": "Vorruhestandsgeld: ermäßigter Beitrag (Personengruppe 108 kennt in der KV nur 0, 3, 4, 9 – DEÜV Anlage 16).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "vorruhestand"
+              },
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              }
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Vorruhestandsgeld ohne gesetzliche Krankenversicherung.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Beamte oder Pensionäre mit Anspruch auf Beihilfe: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2, 6, Abs. 3 SGB V).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "situation",
+                    "contains": "beamter"
+                  },
+                  {
+                    "field": "situation",
+                    "contains": "pensionaer"
+                  }
+                ]
+              },
+              {
+                "field": "beamtBeihilfe",
+                "equals": true
+              }
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Von der Krankenversicherungspflicht befreit (§ 6 Abs. 3, § 8 SGB V) – am Bescheid prüfen, ob die Befreiung für diese Beschäftigung gilt.",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "kvBefreiung",
+                "equals": "ja"
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "9",
+          "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert – Firmenzahler angenommen; bei Selbstzahlern 0.",
+          "when": {
+            "field": "krankenversicherung",
+            "equals": "gesetzlich"
+          },
+          "test": {
+            "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "pkvBestand2002",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V); privat oder anderweitig versichert.",
+          "when": {
+            "field": "krankenversicherung",
+            "in": ["privat", "anderweitig"]
+          },
+          "test": {
+            "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "pkvBestand2002",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Über der Jahresarbeitsentgeltgrenze, aber keine Krankenversicherung angegeben: Absicherung klären.",
+          "test": {
+            "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "pkvBestand2002",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Hauptberuflich selbständig: nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "situation",
+                "contains": "selbstaendig"
+              },
+              {
+                "field": "selbstHauptberuf",
+                "equals": true
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Ab 55 Jahren und in den letzten fünf Jahren nicht gesetzlich versichert: versicherungsfrei, wenn mindestens die Hälfte dieser Zeit versicherungsfrei, befreit oder hauptberuflich selbständig war (§ 6 Abs. 3a SGB V).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "gkvLetzte5Jahre",
+                "equals": "nein"
+              }
+            ]
+          },
+          "test": {
+            "fn": "ab55Jahren",
+            "args": ["geburtsdatum", "agBeschaeftigungsbeginn"]
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Privat oder anderweitig versichert, aber kein Grund für Versicherungsfreiheit erkennbar: versicherungspflichtig (§ 5 Abs. 1 Nr. 1 SGB V) – Krankenkasse wählen lassen.",
+          "when": {
+            "field": "krankenversicherung",
+            "in": ["privat", "anderweitig"]
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Zurzeit nicht versichert: versicherungspflichtig – Krankenkasse wählen lassen.",
+          "when": {
+            "field": "krankenversicherung",
+            "equals": "keine"
+          },
+          "check": true
+        },
+        {
+          "value": "3",
+          "reason": "Altersvollrente oder Versorgung wegen Alters: ermäßigter Beitrag (Personengruppen 119/120 kennen in der KV nur 0, 3, 9 – DEÜV Anlage 16).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              },
+              {
+                "any": [
+                  {
+                    "field": "rentenart",
+                    "in": ["altersvoll", "versorgungswerkAlter"]
+                  },
+                  {
+                    "field": "pensionArt",
+                    "equals": "alter"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "value": "3",
+          "reason": "Rente wegen voller Erwerbsminderung: kein Krankengeld, ermäßigter Beitrag (§ 243 SGB V; § 50 SGB V nicht am Gesetzestext geprüft).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              },
+              {
+                "field": "rentenart",
+                "equals": "emVoll"
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "3",
+          "reason": "Auf höchstens zehn Wochen befristet: kein Krankengeldanspruch, ermäßigter Beitrag (§ 243 SGB V; § 44 Abs. 2 SGB V, § 3 Abs. 3 EntgFG nicht am Gesetzestext geprüft).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              },
+              {
+                "field": "agBefristet",
+                "equals": true
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensZehnWochen",
+            "args": ["agBeschaeftigungsbeginn", "agBefristetBis"]
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Gesetzlich versichert: allgemeiner Beitrag.",
+          "when": {
+            "field": "krankenversicherung",
+            "equals": "gesetzlich"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bgrRv",
+      "label": "RV",
+      "rules": [
+        {
+          "value": "?",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "pruefen"
+          },
+          "check": true,
+          "reason": "Die Art der Beschäftigung ist noch offen."
+        },
+        {
+          "value": "0",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtStudium"
+              }
+            ]
+          },
+          "reason": "Vorgeschriebenes Praktikum während des Studiums: nur unfallversichert (Personengruppe 190 nur mit 0000)."
+        },
+        {
+          "value": "5",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              },
+              {
+                "any": [
+                  {
+                    "field": "rvBefreiungWunsch",
+                    "in": ["ja", "schonBefreit"]
+                  },
+                  {
+                    "all": [
+                      {
+                        "any": [
+                          {
+                            "all": [
+                              {
+                                "field": "situation",
+                                "contains": "regelaltersgrenze"
+                              },
+                              {
+                                "field": "rentenart",
+                                "equals": "altersvoll"
+                              }
+                            ]
+                          },
+                          {
+                            "field": "pensionArt",
+                            "equals": "alter"
+                          },
+                          {
+                            "field": "rentenart",
+                            "equals": "versorgungswerkAlter"
+                          }
+                        ]
+                      },
+                      {
+                        "not": {
+                          "field": "rvVerzicht",
+                          "equals": "ja"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "rvNieVersichert",
+                        "in": ["nieVersichert", "erstattung"]
+                      },
+                      {
+                        "not": {
+                          "field": "rvVerzicht",
+                          "equals": "ja"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob, von der Rentenversicherungspflicht befreit oder rentenversicherungsfrei: Pauschalbeitrag des Arbeitgebers (§ 6 Abs. 1b, § 172 Abs. 3 SGB VI)."
+        },
+        {
+          "value": "1",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob ohne Befreiung: rentenversicherungspflichtig, mit Eigenanteil der Person (§ 6 Abs. 1b SGB VI: Befreiung nur auf Antrag)."
+        },
+        {
+          "value": "0",
+          "reason": "Für diese Beschäftigung zugunsten des Versorgungswerks befreit (§ 6 Abs. 1 S. 1 Nr. 1 SGB VI).",
+          "when": {
+            "field": "versorgungswerk",
+            "equals": "befreit"
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Befreiung zugunsten des Versorgungswerks beantragt: bis zum Bescheid prüfen; sie wirkt ab Beginn, wenn sie binnen drei Monaten beantragt wird (§ 6 Abs. 4 SGB VI).",
+          "when": {
+            "field": "versorgungswerk",
+            "equals": "offen"
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Verzicht auf die Rentenversicherungsfreiheit (§ 5 Abs. 4 S. 2 SGB VI): voller Beitrag.",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "any": [
+                      {
+                        "all": [
+                          {
+                            "field": "situation",
+                            "contains": "regelaltersgrenze"
+                          },
+                          {
+                            "field": "rentenart",
+                            "equals": "altersvoll"
+                          }
+                        ]
+                      },
+                      {
+                        "field": "pensionArt",
+                        "equals": "alter"
+                      },
+                      {
+                        "field": "rentenart",
+                        "equals": "versorgungswerkAlter"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "rvNieVersichert",
+                    "in": ["nieVersichert", "erstattung"]
+                  }
+                ]
+              },
+              {
+                "field": "rvVerzicht",
+                "equals": "ja"
+              }
+            ]
+          }
+        },
+        {
+          "value": "3",
+          "reason": "Rentenversicherungsfrei (§ 5 Abs. 4 SGB VI), die Person möchte sich zum Verzicht beraten lassen: Arbeitgeberanteil (§ 172 Abs. 1 SGB VI).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "any": [
+                      {
+                        "all": [
+                          {
+                            "field": "situation",
+                            "contains": "regelaltersgrenze"
+                          },
+                          {
+                            "field": "rentenart",
+                            "equals": "altersvoll"
+                          }
+                        ]
+                      },
+                      {
+                        "field": "pensionArt",
+                        "equals": "alter"
+                      },
+                      {
+                        "field": "rentenart",
+                        "equals": "versorgungswerkAlter"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "rvNieVersichert",
+                    "in": ["nieVersichert", "erstattung"]
+                  }
+                ]
+              },
+              {
+                "field": "rvVerzicht",
+                "equals": "beratung"
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "3",
+          "reason": "Rentenversicherungsfrei wegen Altersvollrente oder Versorgung (§ 5 Abs. 4 S. 1 Nr. 1, 2 SGB VI): Arbeitgeberanteil (§ 172 Abs. 1 S. 1 Nr. 1, 2 SGB VI).",
+          "when": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "field": "situation",
+                    "contains": "regelaltersgrenze"
+                  },
+                  {
+                    "field": "rentenart",
+                    "equals": "altersvoll"
+                  }
+                ]
+              },
+              {
+                "field": "pensionArt",
+                "equals": "alter"
+              },
+              {
+                "field": "rentenart",
+                "equals": "versorgungswerkAlter"
+              }
+            ]
+          }
+        },
+        {
+          "value": "3",
+          "reason": "Bis zur Regelaltersgrenze nicht versichert oder Beiträge erstattet: rentenversicherungsfrei (§ 5 Abs. 4 S. 1 Nr. 3 SGB VI), Arbeitgeberanteil (§ 172 Abs. 1 S. 1 Nr. 3, 4 SGB VI).",
+          "when": {
+            "field": "rvNieVersichert",
+            "in": ["nieVersichert", "erstattung"]
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Ob die Person bis zur Regelaltersgrenze versichert war, ist offen.",
+          "when": {
+            "field": "rvNieVersichert",
+            "equals": "unbekannt"
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Vorruhestandsgeld: in der Regel rentenversicherungspflichtig (Personengruppe 108 kennt 0, 1, 2).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Rentenversicherungspflichtig: voller Beitrag."
+        }
+      ]
+    },
+    {
+      "id": "bgrAv",
+      "label": "AV",
+      "rules": [
+        {
+          "value": "?",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "pruefen"
+          },
+          "check": true,
+          "reason": "Die Art der Beschäftigung ist noch offen."
+        },
+        {
+          "value": "0",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtStudium"
+              }
+            ]
+          },
+          "reason": "Vorgeschriebenes Praktikum während des Studiums: nur unfallversichert (Personengruppe 190 nur mit 0000)."
+        },
+        {
+          "value": "0",
+          "reason": "Werkstudent: arbeitslosenversicherungsfrei (§ 27 Abs. 4 S. 1 Nr. 2 SGB III).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "werkstudent"
+          }
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob: arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III)."
+        },
+        {
+          "value": "0",
+          "reason": "Vorruhestandsgeld: Personengruppe 108 kennt in der AV nur 0 (DEÜV Anlage 16).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          }
+        },
+        {
+          "value": "2",
+          "reason": "Regelaltersgrenze erreicht: arbeitslosenversicherungsfrei ab dem Ablauf des Monats (§ 28 Abs. 1 Nr. 1 SGB III); der Arbeitgeber trägt die Hälfte (§ 346 Abs. 3 SGB III). Im Monat des Erreichens noch voller Beitrag.",
+          "test": {
+            "fn": "regelaltersgrenzeErreicht",
+            "args": ["geburtsdatum", "agBeschaeftigungsbeginn"]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Rente wegen voller Erwerbsminderung: arbeitslosenversicherungsfrei (§ 28 Abs. 2 SGB III).",
+          "when": {
+            "field": "rentenart",
+            "equals": "emVoll"
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Schüler(in) einer allgemeinbildenden Schule: arbeitslosenversicherungsfrei (§ 27 Abs. 4 S. 1 Nr. 1 SGB III).",
+          "when": {
+            "all": [
+              {
+                "field": "situation",
+                "contains": "schueler"
+              },
+              {
+                "field": "schulart",
+                "equals": "allgemein"
+              }
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Anspruch auf Arbeitslosengeld: arbeitslosenversicherungsfrei (§ 27 Abs. 5 SGB III).",
+          "when": {
+            "field": "leistungArbeitslos",
+            "equals": "arbeitslosengeld"
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Arbeitslosenversicherungspflichtig: voller Beitrag."
+        }
+      ]
+    },
+    {
+      "id": "bgrPv",
+      "label": "PV",
+      "rules": [
+        {
+          "value": "?",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "pruefen"
+          },
+          "check": true,
+          "reason": "Die Art der Beschäftigung ist noch offen."
+        },
+        {
+          "value": "0",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtStudium"
+              }
+            ]
+          },
+          "reason": "Vorgeschriebenes Praktikum während des Studiums: nur unfallversichert (Personengruppe 190 nur mit 0000)."
+        },
+        {
+          "value": "0",
+          "reason": "Werkstudent: Personengruppe 106 kennt in der PV nur 0 (DEÜV Anlage 16).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "werkstudent"
+          }
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob: keine Beiträge zur Pflegeversicherung (DEÜV Anlage 1, Fußnote 2)."
+        },
+        {
+          "value": "0",
+          "reason": "Krankenversicherungsfrei (wie KV), privat oder anderweitig abgesichert: Beamte oder Pensionäre mit Anspruch auf Beihilfe: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2, 6, Abs. 3 SGB V).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "all": [
+                  {
+                    "any": [
+                      {
+                        "field": "situation",
+                        "contains": "beamter"
+                      },
+                      {
+                        "field": "situation",
+                        "contains": "pensionaer"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "beamtBeihilfe",
+                    "equals": true
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Krankenversicherungsfrei (wie KV), privat oder anderweitig abgesichert: Von der Krankenversicherungspflicht befreit (§ 6 Abs. 3, § 8 SGB V) – am Bescheid prüfen, ob die Befreiung für diese Beschäftigung gilt.",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "all": [
+                  {
+                    "field": "krankenversicherung",
+                    "in": ["privat", "anderweitig"]
+                  },
+                  {
+                    "field": "kvBefreiung",
+                    "equals": "ja"
+                  }
+                ]
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Krankenversicherungsfrei (wie KV), privat oder anderweitig abgesichert: Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V); privat oder anderweitig versichert.",
+          "when": {
+            "field": "krankenversicherung",
+            "in": ["privat", "anderweitig"]
+          },
+          "test": {
+            "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "pkvBestand2002",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Krankenversicherungsfrei (wie KV), privat oder anderweitig abgesichert: Hauptberuflich selbständig: nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "all": [
+                  {
+                    "field": "krankenversicherung",
+                    "in": ["privat", "anderweitig"]
+                  },
+                  {
+                    "field": "situation",
+                    "contains": "selbstaendig"
+                  },
+                  {
+                    "field": "selbstHauptberuf",
+                    "equals": true
+                  }
+                ]
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Krankenversicherungsfrei (wie KV), privat oder anderweitig abgesichert: Ab 55 Jahren und in den letzten fünf Jahren nicht gesetzlich versichert: versicherungsfrei, wenn mindestens die Hälfte dieser Zeit versicherungsfrei, befreit oder hauptberuflich selbständig war (§ 6 Abs. 3a SGB V).",
+          "when": {
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "all": [
+                  {
+                    "field": "krankenversicherung",
+                    "in": ["privat", "anderweitig"]
+                  },
+                  {
+                    "field": "gkvLetzte5Jahre",
+                    "equals": "nein"
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "ab55Jahren",
+            "args": ["geburtsdatum", "agBeschaeftigungsbeginn"]
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "when": {
+            "field": "krankenversicherung",
+            "in": ["privat", "anderweitig"]
+          },
+          "check": true,
+          "reason": "Privat oder anderweitig versichert, aber kein Grund für Versicherungsfreiheit erkennbar: mit der gesetzlichen Krankenversicherung auch pflegeversichert (§ 20 Abs. 1 SGB XI) – prüfen."
+        },
+        {
+          "value": "1",
+          "reason": "Zurzeit nicht versichert: mit der Krankenkasse auch pflegeversichert – Krankenkasse wählen lassen.",
+          "when": {
+            "field": "krankenversicherung",
+            "equals": "keine"
+          },
+          "check": true
+        },
+        {
+          "value": "2",
+          "reason": "Mit Anspruch auf Beihilfe in der sozialen Pflegeversicherung: halber Beitragssatz (§ 28 Abs. 2, § 55 Abs. 1 S. 3 SGB XI).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "any": [
+                      {
+                        "field": "situation",
+                        "contains": "beamter"
+                      },
+                      {
+                        "field": "situation",
+                        "contains": "pensionaer"
+                      }
+                    ]
+                  },
+                  {
+                    "field": "beamtBeihilfe",
+                    "equals": true
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              }
+            ]
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Gesetzlich versichert: voller Beitrag zur Pflegeversicherung, auch bei freiwilliger Versicherung (DEÜV Anlage 1, Fußnote 2).",
+          "when": {
+            "field": "krankenversicherung",
+            "equals": "gesetzlich"
+          }
+        }
+      ]
+    },
+    {
+      "id": "uebergangsbereich",
+      "label": "Kennzeichen Übergangsbereich",
+      "source": "DEÜV-Rundschreiben 2026, Tz. 1.1.6; § 20 Abs. 2 SGB IV",
+      "rules": [
+        {
+          "value": "?",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "pruefen"
+          },
+          "check": true,
+          "reason": "Die Art der Beschäftigung ist noch offen."
+        },
+        {
+          "value": "0",
+          "reason": "Keine versicherungspflichtige Beschäftigung.",
+          "when": {
+            "any": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "equals": "pflichtStudium"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "reason": "Minijob: kein Übergangsbereich (§ 20 Abs. 2 SGB IV gilt erst über der Geringfügigkeitsgrenze)."
+        },
+        {
+          "value": "0",
+          "reason": "Zur Berufsausbildung Beschäftigte: keine Regeln des Übergangsbereichs (§ 20 Abs. 2a SGB IV, letzter Satz).",
+          "when": {
+            "any": [
+              {
+                "field": "agBeschaeftigungsart",
+                "in": ["ausbildung", "dualesStudium"]
+              },
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "equals": "pflichtVorNach"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Vorruhestandsgeld ist kein Arbeitsentgelt aus einer Beschäftigung.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Arbeitsentgelt aller Beschäftigungen im Übergangsbereich (§ 20 Abs. 2 SGB IV) – mit den weiteren Beschäftigungen zusammengerechnet; prüfen.",
+          "when": {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          },
+          "test": {
+            "fn": "imUebergangsbereich",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Arbeitsentgelt im Übergangsbereich (§ 20 Abs. 2 SGB IV).",
+          "test": {
+            "fn": "imUebergangsbereich",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "jobEntgeltMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Arbeitsentgelt über 2.000 € im Monat: kein Übergangsbereich."
+        }
+      ]
+    },
+    {
+      "id": "taetigkeitsschluessel",
+      "label": "Tätigkeitsschlüssel",
+      "source": "DEÜV-Rundschreiben, Anlage 5 (Version 3.06, Teil B1)",
+      "parts": ["tsTaetigkeit", "tsSchule", "tsAusbildung", "tsUeberlassung", "tsVertrag"]
+    },
+    {
+      "id": "tsTaetigkeit",
+      "label": "Stellen 1–5 (Tätigkeit nach KldB 2010)",
+      "rules": [
+        {
+          "valueFrom": "agKldb",
+          "when": {
+            "field": "agKldb",
+            "answered": true
+          },
+          "reason": "Berufskennziffer laut Arbeitgeber."
+        },
+        {
+          "value": "?????",
+          "reason": "Berufskennziffer fehlt: aus der ausgeübten Tätigkeit bestimmen (Schlüsselverzeichnis der Bundesagentur für Arbeit, „Tätigkeitsschlüssel online“).",
+          "check": true
+        }
+      ]
+    },
+    {
+      "id": "tsSchule",
+      "label": "Stelle 6 (Schulabschluss)",
+      "rules": [
+        {
+          "value": "1",
+          "when": {
+            "field": "schulabschluss",
+            "equals": "ohne"
+          },
+          "reason": "Ohne Schulabschluss."
+        },
+        {
+          "value": "2",
+          "when": {
+            "field": "schulabschluss",
+            "equals": "hauptschule"
+          },
+          "reason": "Haupt-/Volksschulabschluss."
+        },
+        {
+          "value": "3",
+          "when": {
+            "field": "schulabschluss",
+            "equals": "mittlereReife"
+          },
+          "reason": "Mittlere Reife oder gleichwertiger Abschluss."
+        },
+        {
+          "value": "4",
+          "when": {
+            "field": "schulabschluss",
+            "equals": "abitur"
+          },
+          "reason": "Abitur/Fachabitur."
+        },
+        {
+          "value": "9",
+          "when": {
+            "field": "schulabschluss",
+            "equals": "unbekannt"
+          },
+          "reason": "Abschluss unbekannt – nur, wenn gar nichts bekannt ist (Anlage 5).",
+          "check": true
+        }
+      ]
+    },
+    {
+      "id": "tsAusbildung",
+      "label": "Stelle 7 (Ausbildungsabschluss)",
+      "rules": [
+        {
+          "value": "1",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "ohne"
+          },
+          "reason": "Ohne beruflichen Ausbildungsabschluss."
+        },
+        {
+          "value": "2",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "berufsausbildung"
+          },
+          "reason": "Abschluss einer anerkannten Berufsausbildung."
+        },
+        {
+          "value": "3",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "meister"
+          },
+          "reason": "Meister-/Techniker- oder gleichwertiger Fachschulabschluss."
+        },
+        {
+          "value": "4",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "bachelor"
+          },
+          "reason": "Bachelor."
+        },
+        {
+          "value": "5",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "master"
+          },
+          "reason": "Diplom/Magister/Master/Staatsexamen."
+        },
+        {
+          "value": "6",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "promotion"
+          },
+          "reason": "Promotion."
+        },
+        {
+          "value": "9",
+          "when": {
+            "field": "berufsabschluss",
+            "equals": "unbekannt"
+          },
+          "reason": "Abschluss unbekannt – nur, wenn gar nichts bekannt ist (Anlage 5).",
+          "check": true
+        }
+      ]
+    },
+    {
+      "id": "tsUeberlassung",
+      "label": "Stelle 8 (Arbeitnehmerüberlassung)",
+      "rules": [
+        {
+          "value": "2",
+          "reason": "Arbeitnehmerüberlassung: ja.",
+          "when": {
+            "field": "agArbeitnehmerueberlassung",
+            "equals": true
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Arbeitnehmerüberlassung: nein.",
+          "when": {
+            "field": "agArbeitnehmerueberlassung",
+            "equals": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "tsVertrag",
+      "label": "Stelle 9 (Vertragsform)",
+      "rules": [
+        {
+          "value": "?",
+          "reason": "Vorruhestandsgeld: Angaben der letzten Beschäftigung prüfen.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Vollzeit; Altersteilzeit gilt als unbefristet (Anlage 5).",
+          "when": {
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "altersteilzeit"
+              },
+              {
+                "field": "agArbeitszeitform",
+                "equals": "vollzeit"
+              }
+            ]
+          }
+        },
+        {
+          "value": "2",
+          "reason": "Teilzeit; Altersteilzeit gilt als unbefristet (Anlage 5).",
+          "when": {
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "altersteilzeit"
+              },
+              {
+                "field": "agArbeitszeitform",
+                "equals": "teilzeit"
+              }
+            ]
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Vollzeit, unbefristet.",
+          "when": {
+            "all": [
+              {
+                "field": "agBefristet",
+                "equals": false
+              },
+              {
+                "field": "agArbeitszeitform",
+                "equals": "vollzeit"
+              }
+            ]
+          }
+        },
+        {
+          "value": "2",
+          "reason": "Teilzeit, unbefristet.",
+          "when": {
+            "all": [
+              {
+                "field": "agBefristet",
+                "equals": false
+              },
+              {
+                "field": "agArbeitszeitform",
+                "equals": "teilzeit"
+              }
+            ]
+          }
+        },
+        {
+          "value": "3",
+          "reason": "Vollzeit, befristet.",
+          "when": {
+            "all": [
+              {
+                "field": "agBefristet",
+                "equals": true
+              },
+              {
+                "field": "agArbeitszeitform",
+                "equals": "vollzeit"
+              }
+            ]
+          }
+        },
+        {
+          "value": "4",
+          "reason": "Teilzeit, befristet.",
+          "when": {
+            "all": [
+              {
+                "field": "agBefristet",
+                "equals": true
+              },
+              {
+                "field": "agArbeitszeitform",
+                "equals": "teilzeit"
+              }
+            ]
+          }
         }
       ]
     }

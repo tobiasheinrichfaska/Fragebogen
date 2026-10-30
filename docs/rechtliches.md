@@ -219,6 +219,16 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
     beschäftigt ist, hat keinen Krankengeldanspruch, weil die Entgeltfortzahlung erst nach vier
     Wochen beginnt (§ 44 Abs. 2 SGB V, § 3 Abs. 3 EntgFG); daraus folgt der ermäßigte
     Beitragssatz. Diese Herleitung ist _nicht am Gesetzestext verifiziert_.
+- **Beitragsgruppen, Übergangsbereich, Tätigkeitsschlüssel (30.10.2026):** Die Vorschläge stützen sich auf
+  DEÜV Anlage 1 (Schlüssel, Stand 26.06.2024), Anlage 16 (zulässige Kombinationen je Personengruppe, Version
+  8.01) und Anlage 5 (Tätigkeitsschlüssel, Version 3.06, am Original gelesen: Stelle 6 Schulabschluss 1–4/9,
+  Stelle 7 Ausbildung 1–6/9, Stelle 8 Arbeitnehmerüberlassung 1/2, Stelle 9 Vertragsform 1–4; eine
+  Altersteilzeit mit vereinbartem Ende gilt als unbefristet). Am Gesetzestext geprüft: § 6, § 243, § 249b
+  SGB V; § 5 Abs. 4, § 6 Abs. 1b, § 172 SGB VI; § 27 Abs. 2, 4, 5, § 28, § 346 Abs. 3 SGB III (Arbeitgeberanteil
+  nach der Regelaltersgrenze, wieder seit 2022); § 20 Abs. 1, § 28 Abs. 2, § 55 Abs. 1 S. 3 SGB XI (halber
+  PV-Beitrag bei Beihilfe); § 20 Abs. 2, 2a SGB IV (Übergangsbereich bis 2.000 €, nicht für zur
+  Berufsausbildung Beschäftigte). _Nicht verifiziert_ (nicht in den lokalen Texten): § 44 Abs. 2 und § 50
+  SGB V (kein Krankengeld bei Befristung bis zehn Wochen bzw. voller Erwerbsminderungsrente).
 - **Kinder (Pflegeversicherung):** Das BZSt liefert nur „Elterneigenschaft ab …“ und „Anzahl Kinder
   unter 25 ab …“ — keine Namen, keine Geburtsdaten (§ 55a SGB XI). Daraus folgt Datensparsamkeit:
   Einzeldaten nur für **nicht abrufbare** Kinder. Nicht abrufbar sind laut den Gemeinsamen

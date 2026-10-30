@@ -120,6 +120,7 @@ function fieldKind(field: FieldDefinition): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
   if (field.textFormat === 'postleitzahlDe') kind += ', deutsche Postleitzahl (5 Ziffern)';
+  if (field.textFormat === 'kldb2010') kind += ', Berufskennziffer KldB 2010 (5 Ziffern)';
   if (field.type === 'number') {
     const decimals = field.decimals ?? 0;
     kind += decimals === 0 ? ', ganzzahlig' : `, ${decimals} Nachkommastellen`;
@@ -391,7 +392,14 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       `## Vorschlag ${derivation.label} (erste passende Regel gilt; die App entscheidet nicht)`,
       '',
       ...(derivation.source === undefined ? [] : [`Grundlage: ${derivation.source}`, '']),
-      ...derivation.rules.map((rule, i) => `${i + 1}. ${describeRule(rule, definition)}`),
+      ...(derivation.parts
+        ? [
+            `Zusammengesetzt aus: ${derivation.parts
+              .map((id) => definition.derivations?.find((d) => d.id === id)?.label ?? id)
+              .join(' · ')}`,
+          ]
+        : []),
+      ...(derivation.rules ?? []).map((rule, i) => `${i + 1}. ${describeRule(rule, definition)}`),
     );
   }
   lines.push(

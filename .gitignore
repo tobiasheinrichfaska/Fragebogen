@@ -11,6 +11,9 @@ test-results/
 # Project-bound scratch area (workspace rule: never use global temp)
 .tmp/
 
+# Delivered third-party material (DATEV documents, research results) — never committed
+import/
+
 # Local environment / editor
 .env
 .env.*

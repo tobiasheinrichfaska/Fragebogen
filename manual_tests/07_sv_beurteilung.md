@@ -130,3 +130,26 @@ abgeschlossen; Station „Kanzlei“.
   sagt, dass ein nicht aufgeführtes Vorsatzwort zum Familiennamen gehört.
 - Schritt 4 wird angenommen.
 - Schritt 5: Straße und Hausnummer sind zwei Fragen; „Keine Hausnummer“ ist möglich.
+
+---
+
+## MT-66: Beitragsgruppen, Übergangsbereich und Tätigkeitsschlüssel in der Kanzlei
+
+**Voraussetzungen:** Personalfragebogen mit beiden Teilen, Station „Kanzlei“.
+
+**Schritte:**
+
+1. Person: gesetzlich versichert, Abitur, Bachelor.
+2. Arbeitgeber: festes Monatsentgelt 1.500,00 €, „sozialversicherungspflichtig“, unbefristet,
+   Teilzeit, keine Arbeitnehmerüberlassung, Berufskennziffer 71402.
+3. Beide Teile in der Kanzlei einlesen; die Vorschläge ansehen.
+4. Gegenprobe: die Berufskennziffer leer lassen.
+
+**Erwartet:**
+
+- Vorschläge: Personengruppe 101, Beitragsgruppen 1111, Kennzeichen Übergangsbereich 1,
+  Tätigkeitsschlüssel 714024412.
+- Zu jedem Vorschlag steht die Begründung, bei den Beitragsgruppen für KV, RV, AV und PV einzeln.
+- Schritt 4: Tätigkeitsschlüssel „?????4412“ mit „bitte prüfen“.
+- _Nicht offensichtlich:_ Die App entscheidet nichts. Die Vorschläge stehen auch auf dem Prüfblatt der PDF,
+  werden aber nie mitunterschrieben.

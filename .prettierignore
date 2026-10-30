@@ -1,6 +1,7 @@
 dist/
 coverage/
 .tmp/
+import/
 node_modules/
 package-lock.json
 docs/*.html

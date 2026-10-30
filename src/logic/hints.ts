@@ -3,7 +3,7 @@
 // functions, e.g. the Regelaltersgrenze from the birth date). Informational only — hints never
 // block and are never sealed, so verification stays independent of other roles.
 import { describeCondition, evaluateCondition, forEachLeaf } from './conditions';
-import { dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
+import { ageOn, dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
 import { displayValue } from './display';
 import { fieldsById, ownerOfField, roleOf, visibility } from './form';
 import { canonicalize } from './jcs';
@@ -19,7 +19,11 @@ import type {
   Questionnaire,
   RoleId,
 } from './model';
-import { GERINGVERDIENERGRENZE, RECHENGROESSEN } from './data/rechengroessen';
+import {
+  GERINGVERDIENERGRENZE,
+  RECHENGROESSEN,
+  UEBERGANGSBEREICH_OBERGRENZE,
+} from './data/rechengroessen';
 import { monthAfter, regelaltersgrenze } from './regelaltersgrenze';
 
 export interface HintResult {
@@ -149,42 +153,63 @@ function yearlyPay(monthly: number, oneOff: FieldValue, entitled: FieldValue) {
   return { yearly, facts };
 }
 
+/** The monthly pay: the fixed amount, else the expected one (only one is asked). */
+const UEBERGANGSBEREICH_OBERGRENZE_CENT = cents(UEBERGANGSBEREICH_OBERGRENZE) ?? 0;
+
+const ownPay = (fixed: FieldValue | undefined, expected: FieldValue | undefined) =>
+  cents(fixed ?? null) ?? cents(expected ?? null);
+
+const yearOf = (on: FieldValue | undefined) =>
+  typeof on === 'string' && isIsoDate(on) ? on.slice(0, 4) : undefined;
+
 /**
- * Regular yearly pay (§ 6 Abs. 1 Nr. 1 SGB V) of this and the other jobs (monthly column) against a
- * Jahresarbeitsentgeltgrenze of the start year. A missing year holds and says so.
+ * Regular yearly pay (§ 6 Abs. 1 Nr. 1 SGB V) of this and the other jobs (monthly column) plus
+ * one-off payments with entitlement, against the Jahresarbeitsentgeltgrenze that applies: the
+ * lower one (§ 6 Abs. 7) when the choice says "ja" (privately insured on 31.12.2002). A missing
+ * year holds and says so.
  */
-function overJaeg(key: 'jaegJahr' | 'jaegBesondersJahr', label: string, what: string): HintTest {
-  return {
-    args: ['money', 'money', 'money', 'boolean', 'date'],
-    describe: ([own = '', others = '', oneOff = '', entitled = '', on = '']) =>
-      `zwölfmal „${own}“ und „${others}“ zusammen mit „${oneOff}“ (nur bei „${entitled}“) ${what} des Jahres von „${on}“ übersteigen`,
-    run: ([own, others, oneOff, entitled, on]) => {
-      const mine = cents(own ?? null);
-      if (mine === undefined || typeof on !== 'string' || !isIsoDate(on)) return undefined;
-      const { yearly, facts } = yearlyPay(
-        mine + (cents(others ?? null) ?? 0),
-        oneOff ?? null,
-        entitled ?? null,
-      );
-      const year = on.slice(0, 4);
-      const value = RECHENGROESSEN[year]?.[key];
-      const limit = value === undefined ? undefined : cents(value);
-      if (limit === undefined) {
-        return {
-          holds: true,
-          uncertain: true,
-          detail: [
-            `Regelmäßiges Jahresarbeitsentgelt: ${facts}. Für ${year} ist die ${label} in der App nicht hinterlegt – bitte selbst prüfen.`,
-          ],
-        };
-      }
+const massgeblicheJaeg: HintTest = {
+  args: ['money', 'money', 'money', 'money', 'boolean', 'choice', 'date'],
+  describe: ([
+    fixed = '',
+    expected = '',
+    others = '',
+    oneOff = '',
+    entitled = '',
+    y2002 = '',
+    on = '',
+  ]) =>
+    `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist`,
+  run: ([fixed, expected, others, oneOff, entitled, y2002, on]) => {
+    const mine = ownPay(fixed, expected);
+    const year = yearOf(on);
+    if (mine === undefined || year === undefined) return undefined;
+    const { yearly, facts } = yearlyPay(
+      mine + (cents(others ?? null) ?? 0),
+      oneOff ?? null,
+      entitled ?? null,
+    );
+    const special = y2002 === 'ja';
+    const label = special
+      ? 'besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)'
+      : 'Jahresarbeitsentgeltgrenze';
+    const value = RECHENGROESSEN[year]?.[special ? 'jaegBesondersJahr' : 'jaegJahr'];
+    const limit = value === undefined ? undefined : cents(value);
+    if (limit === undefined) {
       return {
-        holds: yearly > limit,
-        detail: [`Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(limit)}.`],
+        holds: true,
+        uncertain: true,
+        detail: [
+          `Regelmäßiges Jahresarbeitsentgelt: ${facts}. Für ${year} ist die ${label} in der App nicht hinterlegt – bitte selbst prüfen.`,
+        ],
       };
-    },
-  };
-}
+    }
+    return {
+      holds: yearly > limit,
+      detail: [`Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(limit)}.`],
+    };
+  },
+};
 
 /**
  * Minijob limit in the yearly view (Geringfügigkeits-Richtlinien): twelve months plus one-off
@@ -193,14 +218,14 @@ function overJaeg(key: 'jaegJahr' | 'jaegBesondersJahr', label: string, what: st
  */
 function geringfuegigkeit(within: boolean): HintTest {
   return {
-    args: ['money', 'money', 'boolean', 'date'],
-    describe: ([pay = '', oneOff = '', entitled = '', on = '']) =>
-      `zwölfmal „${pay}“ mit „${oneOff}“ (nur bei „${entitled}“) ${within ? 'höchstens das Zwölffache der' : 'mehr als das Zwölffache der'} Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt`,
-    run: ([pay, oneOff, entitled, on]) => {
-      const amount = cents(pay ?? null);
-      if (amount === undefined || typeof on !== 'string' || !isIsoDate(on)) return undefined;
+    args: ['money', 'money', 'money', 'boolean', 'date'],
+    describe: ([fixed = '', expected = '', oneOff = '', entitled = '', on = '']) =>
+      `zwölfmal „${fixed}“ bzw. „${expected}“ mit „${oneOff}“ (nur bei „${entitled}“) ${within ? 'höchstens das Zwölffache der' : 'mehr als das Zwölffache der'} Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt`,
+    run: ([fixed, expected, oneOff, entitled, on]) => {
+      const amount = ownPay(fixed, expected);
+      const year = yearOf(on);
+      if (amount === undefined || year === undefined) return undefined;
       const { yearly, facts } = yearlyPay(amount, oneOff ?? null, entitled ?? null);
-      const year = on.slice(0, 4);
       const limit = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
       if (limit === undefined) {
         return {
@@ -222,9 +247,71 @@ function geringfuegigkeit(within: boolean): HintTest {
   };
 }
 
+/**
+ * Übergangsbereich (§ 20 Abs. 2 SGB IV): the regular monthly pay of all jobs together — yearly view
+ * divided by twelve — above the Minijob limit and at most 2.000 €. A year without data holds, uncertain.
+ */
+const uebergangsbereich: HintTest = {
+  args: ['money', 'money', 'money', 'money', 'boolean', 'date'],
+  describe: ([fixed = '', expected = '', others = '', oneOff = '', entitled = '', on = '']) =>
+    `„${fixed}“ bzw. „${expected}“ und „${others}“ mit „${oneOff}“ (nur bei „${entitled}“) im Monat über der Geringfügigkeitsgrenze des Jahres von „${on}“ und höchstens bei 2.000 € liegen`,
+  run: ([fixed, expected, others, oneOff, entitled, on]) => {
+    const mine = ownPay(fixed, expected);
+    const year = yearOf(on);
+    if (mine === undefined || year === undefined) return undefined;
+    const { yearly, facts } = yearlyPay(
+      mine + (cents(others ?? null) ?? 0),
+      oneOff ?? null,
+      entitled ?? null,
+    );
+    const lower = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
+    if (lower === undefined) {
+      return {
+        holds: true,
+        uncertain: true,
+        detail: [
+          `${facts}. Für ${year} ist die Geringfügigkeitsgrenze in der App nicht hinterlegt – bitte selbst prüfen.`,
+        ],
+      };
+    }
+    const monthly = yearly / 12;
+    return {
+      holds: monthly > (cents(lower) ?? 0) && monthly <= UEBERGANGSBEREICH_OBERGRENZE_CENT,
+      detail: [
+        `${facts}, im Monat ${euro(Math.round(monthly))}; Übergangsbereich ${year}: über ${euro(cents(lower) ?? 0)} bis ${euro(UEBERGANGSBEREICH_OBERGRENZE_CENT)}.`,
+      ],
+    };
+  },
+};
+
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   hoechstensGeringfuegigkeitsgrenze: geringfuegigkeit(true),
   ueberGeringfuegigkeitsgrenze: geringfuegigkeit(false),
+  imUebergangsbereich: uebergangsbereich,
+  ueberMassgeblicheJahresarbeitsentgeltgrenze: massgeblicheJaeg,
+  ab55Jahren: {
+    args: ['date', 'date'],
+    describe: ([birth = '', on = '']) => `laut „${birth}“ am „${on}“ mindestens 55 Jahre alt`,
+    run: ([birth, on]) =>
+      typeof birth === 'string' && typeof on === 'string' && isIsoDate(birth) && isIsoDate(on)
+        ? {
+            holds: ageOn(birth, on) >= 55,
+            detail: [`Alter am Stichtag: ${ageOn(birth, on)} Jahre.`],
+          }
+        : undefined,
+  },
+  hoechstensZehnWochen: {
+    args: ['date', 'date'],
+    describe: ([from = '', until = '']) =>
+      `von „${from}“ bis „${until}“ höchstens zehn Wochen liegen`,
+    run: ([from, until]) =>
+      typeof from === 'string' && typeof until === 'string' && isIsoDate(from) && isIsoDate(until)
+        ? {
+            holds: dayNumber(until) - dayNumber(from) + 1 <= 70,
+            detail: [`Dauer: ${dayNumber(until) - dayNumber(from) + 1} Tage.`],
+          }
+        : undefined,
+  },
   hoechstensGeringverdienergrenze: {
     args: ['money'],
     describe: ([pay = '']) =>
@@ -259,16 +346,6 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
         ? { holds: later > earlier, detail: [] }
         : undefined,
   },
-  ueberJahresarbeitsentgeltgrenze: overJaeg(
-    'jaegJahr',
-    'Jahresarbeitsentgeltgrenze',
-    'die Jahresarbeitsentgeltgrenze',
-  ),
-  ueberBesondereJahresarbeitsentgeltgrenze: overJaeg(
-    'jaegBesondersJahr',
-    'besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)',
-    'die besondere Jahresarbeitsentgeltgrenze für am 31.12.2002 privat Versicherte',
-  ),
   ueberBeitragsbemessungsgrenze: overLimit(
     (year) => {
       const kv = rechengroesse(year, 'bbgKvMonat');
