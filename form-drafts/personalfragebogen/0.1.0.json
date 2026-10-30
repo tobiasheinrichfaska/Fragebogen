@@ -727,10 +727,7 @@
           "purpose": "Hinzuverdienst und zeitliche Grenzen bei Erwerbsminderung (§ 96a SGB VI)",
           "showIf": {
             "field": "rentenart",
-            "in": [
-              "emVoll",
-              "emTeil"
-            ]
+            "in": ["emVoll", "emTeil"]
           }
         },
         {
@@ -994,10 +991,7 @@
           "purpose": "Zeitliche Grenzen bei Erwerbsminderungsrente (unter 3 bzw. 6 Stunden täglich)",
           "showIf": {
             "field": "rentenart",
-            "in": [
-              "emVoll",
-              "emTeil"
-            ]
+            "in": ["emVoll", "emTeil"]
           },
           "decimals": 2,
           "unit": "Std."
@@ -1156,10 +1150,7 @@
           "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)",
           "showIf": {
             "field": "artLautVereinbarung",
-            "in": [
-              "aushilfe",
-              "unbekannt"
-            ]
+            "in": ["aushilfe", "unbekannt"]
           }
         },
         {
@@ -1292,11 +1283,7 @@
           "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV); Beitragszuschuss bei privater Versicherung",
           "showIf": {
             "field": "krankenversicherung",
-            "in": [
-              "gesetzlich",
-              "privat",
-              "anderweitig"
-            ]
+            "in": ["gesetzlich", "privat", "anderweitig"]
           }
         },
         {
@@ -1393,10 +1380,7 @@
           "purpose": "Versicherungsfreiheit ab 55 Jahren (§ 6 Abs. 3a SGB V)",
           "showIf": {
             "field": "krankenversicherung",
-            "in": [
-              "privat",
-              "anderweitig"
-            ]
+            "in": ["privat", "anderweitig"]
           },
           "options": [
             {
@@ -1430,10 +1414,7 @@
           "purpose": "Befreiung von der Rentenversicherungspflicht (§ 6 Abs. 1b SGB VI); Eingangstag beim Arbeitgeber (§ 8 Abs. 2 Nr. 4a BVV)",
           "showIf": {
             "field": "artLautVereinbarung",
-            "in": [
-              "minijob",
-              "unbekannt"
-            ]
+            "in": ["minijob", "unbekannt"]
           },
           "options": [
             {
@@ -1526,10 +1507,7 @@
             "any": [
               {
                 "field": "rentenart",
-                "in": [
-                  "altersvoll",
-                  "altersteil"
-                ]
+                "in": ["altersvoll", "altersteil"]
               },
               {
                 "field": "pensionArt",
@@ -1570,10 +1548,7 @@
                 "any": [
                   {
                     "field": "rentenart",
-                    "in": [
-                      "altersvoll",
-                      "altersteil"
-                    ]
+                    "in": ["altersvoll", "altersteil"]
                   },
                   {
                     "field": "pensionArt",
@@ -2269,10 +2244,7 @@
           "purpose": "Tätigkeitsschlüssel und Meldungen",
           "showIf": {
             "field": "agBeschaeftigungsart",
-            "in": [
-              "ausbildung",
-              "dualesStudium"
-            ]
+            "in": ["ausbildung", "dualesStudium"]
           }
         },
         {
@@ -2285,10 +2257,7 @@
           "purpose": "Ende der Personengruppe Auszubildende",
           "showIf": {
             "field": "agBeschaeftigungsart",
-            "in": [
-              "ausbildung",
-              "dualesStudium"
-            ]
+            "in": ["ausbildung", "dualesStudium"]
           }
         },
         {
@@ -2388,11 +2357,7 @@
           "purpose": "Lohnsteuerabzug nach ELStAM oder Pauschalierung (§ 40a EStG)",
           "showIf": {
             "field": "agBeschaeftigungsart",
-            "in": [
-              "minijob",
-              "kurzfristig",
-              "pruefen"
-            ]
+            "in": ["minijob", "kurzfristig", "pruefen"]
           },
           "options": [
             {
@@ -2599,11 +2564,7 @@
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
             "field": "agArbeitszeitmodell",
-            "in": [
-              "wechselnd",
-              "gleitzeit",
-              "vertrauen"
-            ]
+            "in": ["wechselnd", "gleitzeit", "vertrauen"]
           },
           "decimals": 2,
           "unit": "Std."
@@ -2618,12 +2579,7 @@
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
             "field": "agArbeitszeitmodell",
-            "in": [
-              "wechselnd",
-              "gleitzeit",
-              "vertrauen",
-              "monatsstunden"
-            ]
+            "in": ["wechselnd", "gleitzeit", "vertrauen", "monatsstunden"]
           },
           "decimals": 1,
           "unit": "Tage"
@@ -2771,10 +2727,7 @@
           "purpose": "Abrufspanne (§ 12 Abs. 2 TzBfG)",
           "showIf": {
             "field": "agAbrufGrenze",
-            "in": [
-              "mindest",
-              "hoechst"
-            ]
+            "in": ["mindest", "hoechst"]
           },
           "decimals": 2,
           "unit": "Std."
@@ -3098,11 +3051,7 @@
           "purpose": "Prognose der Minijob-Grenze (Geringfügigkeits-Richtlinien B 2.2)",
           "showIf": {
             "field": "agEntgeltArt",
-            "in": [
-              "stundenlohn",
-              "leistungslohn",
-              "pauschale"
-            ]
+            "in": ["stundenlohn", "leistungslohn", "pauschale"]
           }
         },
         {
@@ -3583,10 +3532,7 @@
           "purpose": "Verzeichnis und Anzeige (§ 163 SGB IX)",
           "showIf": {
             "field": "agSchwerbehinderung",
-            "in": [
-              "schwerbehindert",
-              "gleichgestellt"
-            ]
+            "in": ["schwerbehindert", "gleichgestellt"]
           },
           "decimals": 0
         },
@@ -3601,10 +3547,7 @@
           "purpose": "Wiedervorlage",
           "showIf": {
             "field": "agSchwerbehinderung",
-            "in": [
-              "schwerbehindert",
-              "gleichgestellt"
-            ]
+            "in": ["schwerbehindert", "gleichgestellt"]
           }
         }
       ]
@@ -3725,18 +3668,12 @@
   "consistencyRules": [
     {
       "kind": "equal",
-      "fields": [
-        "familienname",
-        "agFamilienname"
-      ],
+      "fields": ["familienname", "agFamilienname"],
       "message": "Der Familienname weicht zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
     },
     {
       "kind": "equal",
-      "fields": [
-        "vorname",
-        "agVorname"
-      ],
+      "fields": ["vorname", "agVorname"],
       "message": "Die Vornamen weichen zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab."
     }
   ],
@@ -3768,10 +3705,5 @@
     "Der Fragebogen sammelt die Tatsachen für die versicherungsrechtliche Beurteilung; die Personengruppe und die Beitragsgruppen legt die lohnabrechnende Stelle fest.",
     "Der Befreiungsantrag von der Rentenversicherungspflicht im Minijob und der Verzicht auf die Rentenversicherungsfreiheit werden gesondert erklärt; der Fragebogen fragt nur den Wunsch ab."
   ],
-  "partLinks": [
-    [
-      "person",
-      "arbeitgeber"
-    ]
-  ]
+  "partLinks": [["person", "arbeitgeber"]]
 }
