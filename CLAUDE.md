@@ -448,10 +448,12 @@ word order) and 5b (review applied: all birth/address data, preselected yes/no q
 (interview logic: `interview.ts`, `dependencies.ts`, `deferQuestion`, `question`/`help` texts,
 interview-order rule; Sofortmeldung question and help texts drafted) done. The Sofortmeldung is frozen as
 test version **0.1.0** (`forms/sofortmeldung/0.1.0.json`, catalogue
-`docs/formulare/sofortmeldung-0.1.0.md`). **Next:** draft the general Personalfragebogen the
-same way (draft → catalogue → approval → 0.x freeze). Decided for step 8: QR codes on the data
-pages (paper path) and a visible address of the app plus a clickable URI link (address from
-configuration, never data in the link). Planned for step 6: links to explainer videos from the
-configuration.
+`docs/formulare/sofortmeldung-0.1.0.md`).
+
+**Drafts awaiting Tobias's review (2026-10-30):** Personalfragebogen (reworked for all employment
+variants), Steuerfreigabe (§ 87d AO), Dienstwagen (Überlassung), Lohnmeldung (monthly); catalogues
+in `docs/formulare/`. After approval: freeze as 0.x test versions (move to `forms/` + hash in
+`published.json`). Open engine ideas from the research: cross-role check hints, row-level carry
+rules (leavers, continuing absences), references between tables, age conditions.
 
 _Last updated: 2026-10-30_
