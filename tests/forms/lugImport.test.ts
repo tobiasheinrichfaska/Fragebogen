@@ -82,7 +82,10 @@ describe('export mapping', () => {
     expect(parsed.ok).toBe(false);
     const messages = parsed.ok ? [] : parsed.issues.map((i) => i.message);
     expect(messages).toEqual(
-      expect.arrayContaining(['unknown property', 'needs exactly one of field, derivation, const']),
+      expect.arrayContaining([
+        'unknown property',
+        'needs exactly one of field, derivation, const, blank',
+      ]),
     );
     expect(parseExportMappings([{ ...raw[0], version: 2 }]).ok).toBe(false);
   });
@@ -192,6 +195,45 @@ describe('import file', () => {
     // Without the person part the new employee has no name: no file.
     expect(open.text).toBeUndefined();
     expect(open.blocking).toContain('Für die Neuanlage fehlt: Familienname.');
+  });
+
+  it('leaves out a record whose key only the user knows (wage type) and says so', () => {
+    expect(result.text).not.toContain('Beispiel|Bezug');
+    expect(result.problems).toContain(
+      'Beispiel|Bezug: „Lohnart“ selbst erfassen – Datensatz nicht übertragen',
+    );
+    expect(result.sheet).toContainEqual({
+      mask: 'Beispiel|Bezug',
+      field: 'Lohnart',
+      value: '',
+      problem: 'selbst erfassen',
+    });
+    expect(result.sheet).toContainEqual({
+      mask: 'Beispiel|Bezug',
+      field: 'Betrag',
+      value: '2500,00',
+    });
+  });
+
+  it('leaves out a combination field with such a gap, but writes the rest of the record', () => {
+    expect(result.problems).toContain(
+      'Beispiel|Vertrag – Beitrag: unvollständig, nicht übertragen',
+    );
+    expect(lines).toContain('1005;Beispiel|Vertrag;Ort');
+    expect(lines).toContain('1005;Wien');
+  });
+
+  it('leaves out a history field without its value, silently (the month alone is no value)', () => {
+    expect(result.text).not.toContain('Beispiel|Historie');
+    expect(result.problems.join(' ')).not.toContain('Nummer');
+    const withNumber = buildLugImport(
+      questionnaire({ ...PERSON, versicherungsnummer: '65 170839 J 003' }),
+      definition,
+      mapping(),
+      { mandantennummer: '123' },
+    );
+    expect(withNumber.text).toContain('Beispiel|Historie;Nummer(Gueltig_ab;Nummer)');
+    expect(withNumber.text).toContain(';11/2026;65170839J003');
   });
 
   it('writes no file without client and employee number', () => {

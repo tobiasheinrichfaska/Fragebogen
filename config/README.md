@@ -29,6 +29,19 @@ hat der Build keine Übergabe. Mit ihr zeigt die Station „Kanzlei“ je Frageb
 in der Reihenfolge der Programmmasken und bietet die Importdatei an (Lohn und Gehalt:
 Kanzleiebene, Extras | Stammdatenimport).
 
+**Nur der Kanzlei-Build** (`npm run build:kanzlei`, Ausgabe `dist-kanzlei/`) und die Prüf-Vorschau
+enthalten die Zuordnung. Die gehostete App für die Mandanten (`npm run build`) enthält sie nie; ein
+E2E-Test prüft das.
+
 Aufbau (eine Liste, je Formular eine Zuordnung): siehe `src/logic/exportMapping.ts` und das frei
 erfundene Beispiel `tests/fixtures/export/beispiel.json`. Eine ungültige Datei bricht den Build ab;
 ob sie zur Formularfassung passt, prüft die Kanzlei-Station und zeigt Abweichungen an.
+
+Besondere Werte:
+
+- `"blank": true`: Diesen Wert kennt nur die Kanzlei, z. B. die Lohnart des Mandanten. Ist er Teil
+  eines Einzelfelds, wird der ganze Datensatz nicht übertragen. Das Erfassungsblatt zeigt ihn mit
+  „selbst erfassen“.
+- `"companion": true`: Dieser Wert, z. B. der Monat „gültig ab“ eines Historienfelds, zählt nur
+  zusammen mit den übrigen Werten des Felds.
+- `"optional": true`: Das Unterfeld darf leer bleiben; das Programm ergänzt es selbst.

@@ -205,3 +205,10 @@ test('the built file carries the policy and loads nothing from outside', () => {
   expect(html).toMatch(/<meta http-equiv="Content-Security-Policy" content="default-src 'none';/);
   expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+rel="stylesheet"/);
 });
+
+test('the hosted build carries no mapping to a payroll program (Kanzlei build only)', () => {
+  // A mapping names the program's fields (config/export.local.json); only `--mode kanzlei` and the
+  // review preview bundle it. Its fixed record descriptions would show up in the file.
+  const html = readFileSync(APP, 'utf8');
+  expect(html).not.toMatch(/MitarbeiterSelOderNeu/);
+});

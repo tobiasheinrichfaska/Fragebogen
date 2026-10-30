@@ -80,6 +80,7 @@ export function buildLugImport(
 
   const resolve = (value: ExportValue): Resolved => {
     let text: string | undefined;
+    if (value.blank) return { empty: true };
     if (value.const !== undefined) text = value.const;
     else if (value.derivation !== undefined) {
       const proposal = proposals.get(value.derivation);
@@ -119,27 +120,43 @@ export function buildLugImport(
     if (record.when && !evaluateCondition(record.when, values.valueOf)) continue;
     const used: ExportField[] = [];
     const written: string[] = [];
+    // A value only the program's user knows (blank, not optional) in a single field is a key of the
+    // record (e.g. the wage type): without it the record must not be written at all.
+    let missingKey: string | undefined;
     for (const field of record.fields) {
       const subs = subFields(field.name);
       const results = field.values.map(resolve);
       const label = field.label ?? baseName(field.name);
       results.forEach((result, i) => {
         const sub = subs.length > 1 ? `${label} › ${subs[i] ?? ''}` : label;
+        const value = field.values[i];
         if ('problem' in result) {
           sheet.push({ mask: record.mask, field: sub, value: '', problem: result.problem });
           problems.push(`${record.mask} – ${sub}: ${result.problem}`);
+        } else if (value?.blank && value.optional !== true) {
+          sheet.push({ mask: record.mask, field: sub, value: '', problem: 'selbst erfassen' });
         } else {
           sheet.push({ mask: record.mask, field: sub, value: 'text' in result ? result.text : '' });
         }
       });
+      if (subs.length === 1 && field.values[0]?.blank && field.values[0].optional !== true) {
+        missingKey = label;
+        continue;
+      }
       // A field is written only complete; a combination with a gap stays out (the sheet shows why).
-      if (results.some((r) => 'problem' in r) || results.every((r) => 'empty' in r)) continue;
+      // Companion values (e.g. a valid-from month) do not count when everything else is empty.
+      const core = results.filter((_, i) => field.values[i]?.companion !== true);
+      if (results.some((r) => 'problem' in r) || core.every((r) => 'empty' in r)) continue;
       if (results.some((r, i) => 'empty' in r && field.values[i]?.optional !== true)) {
         problems.push(`${record.mask} – ${label}: unvollständig, nicht übertragen`);
         continue;
       }
       used.push(field);
       written.push(...results.map((r) => ('text' in r ? r.text : '')));
+    }
+    if (missingKey !== undefined) {
+      problems.push(`${record.mask}: „${missingKey}“ selbst erfassen – Datensatz nicht übertragen`);
+      continue;
     }
     if (used.length > 0) records.push({ mask: record.mask, fields: used, written });
   }

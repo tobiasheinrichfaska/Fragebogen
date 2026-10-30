@@ -80,7 +80,7 @@ if (!exportMappings.ok) {
   throw new Error(`Invalid export mapping: ${JSON.stringify(exportMappings.issues)}`);
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // Relative asset paths so the single file also runs from file://
   base: './',
   plugins: [
@@ -93,7 +93,10 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),
-    __EXPORT_MAPPINGS__: JSON.stringify(exportMappings.mappings),
+    // Only the Kanzlei build and the review preview carry the mapping — never the hosted app.
+    __EXPORT_MAPPINGS__: JSON.stringify(
+      mode === 'kanzlei' || mode === 'drafts' ? exportMappings.mappings : [],
+    ),
   },
   build: {
     target: 'es2022',
@@ -110,4 +113,4 @@ export default defineConfig({
     pool: 'forks',
     globals: true,
   },
-});
+}));

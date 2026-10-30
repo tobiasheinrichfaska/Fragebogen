@@ -148,7 +148,8 @@ Teile abgeschlossen, PDF erstellt.
 
 **Voraussetzungen:**
 
-- Build mit `config/export.local.json` (Vorschau-Build: `npm run build:preview`).
+- Kanzlei-Build mit `config/export.local.json`: `npm run build:kanzlei` (für den Entwurf des
+  Personalfragebogens die Vorschau: `npm run build:preview`).
 - Ein vollständiger Personalfragebogen (beide Teile).
 - **Ein Testmandant** in Lohn und Gehalt, nie ein echter Mandant.
 
@@ -169,6 +170,8 @@ Teile abgeschlossen, PDF erstellt.
 - Schritt 3: Das Erfassungsblatt folgt den Masken von Lohn und Gehalt (Personaldaten, Beschäftigung,
   Sozialversicherung, Steuer …). Nicht Übertragbares steht mit Grund in der Liste „Nicht übertragen“.
 - Schritt 4/5: Der Mitarbeiter ist angelegt; das Protokoll zeigt die übernommenen Felder.
-  _Nicht offensichtlich:_ Krankenkasse und Lohnarten werden nicht übertragen (in Lohn und Gehalt
-  selbst erfassen); fehlerhafte Felder nennt nur das Protokoll von Lohn und Gehalt.
+  _Nicht offensichtlich:_ Krankenkasse und Lohnarten werden nicht übertragen; sie müssen in Lohn
+  und Gehalt selbst erfasst werden. Das Gehalt steht deshalb nur auf dem Erfassungsblatt („Lohnart …
+  selbst erfassen“). Fehlerhafte Felder nennt nur das Protokoll von Lohn und Gehalt.
+- Gegenprobe: Die Datei `dist/index.html` (gehostete App) enthält die Zuordnung nicht.
 - Danach den Testmitarbeiter wieder löschen.

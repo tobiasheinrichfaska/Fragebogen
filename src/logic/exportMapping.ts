@@ -23,6 +23,9 @@ export interface ExportValue {
   /** A proposal of the form (only when proposed). */
   derivation?: string;
   const?: string;
+  /** Always empty: a value only the program's user knows (e.g. a client's wage type). Unless
+   * `optional`, the field is then not written — the Erfassungsblatt still shows its other values. */
+  blank?: true;
   /** Characters [start, end) of the value, e.g. one digit of the Beitragsgruppen. */
   slice?: [number, number];
   /** List-backed choice: one of the entry's codes (e.g. "laenderkennzeichen") instead of its id. */
@@ -32,6 +35,11 @@ export interface ExportValue {
   format?: ExportFormat;
   /** Inside a combination field: may stay empty (the program fills it, e.g. a state name). */
   optional?: boolean;
+  /**
+   * Inside a combination field: written only along with the field's other values (e.g. the
+   * valid-from month of a history field); when those are all empty the field is simply left out.
+   */
+  companion?: boolean;
 }
 
 /** A target field; a combination field ("Name(a;b)") has one value per sub-field. */
@@ -100,17 +108,25 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
     'field',
     'derivation',
     'const',
+    'blank',
     'slice',
     'code',
     'map',
     'format',
     'optional',
+    'companion',
   ]);
   if (!o) return undefined;
   const field = o.field === undefined ? undefined : d.string(o.field, `${path}.field`, ID);
   const derivation =
     o.derivation === undefined ? undefined : d.string(o.derivation, `${path}.derivation`, ID);
   const constant = o.const === undefined ? undefined : d.string(o.const, `${path}.const`);
+  const blank =
+    o.blank === undefined
+      ? undefined
+      : o.blank === true
+        ? true
+        : d.report(`${path}.blank`, 'expected true');
   const slice =
     o.slice === undefined
       ? undefined
@@ -125,8 +141,10 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
   const format =
     o.format === undefined ? undefined : d.literal(o.format, `${path}.format`, EXPORT_FORMATS);
   const optional = o.optional === undefined ? undefined : d.boolean(o.optional, `${path}.optional`);
-  const sources = [field, derivation, constant].filter((s) => s !== undefined).length;
-  if (sources !== 1) d.report(path, 'needs exactly one of field, derivation, const');
+  const companion =
+    o.companion === undefined ? undefined : d.boolean(o.companion, `${path}.companion`);
+  const sources = [field, derivation, constant, blank].filter((s) => s !== undefined).length;
+  if (sources !== 1) d.report(path, 'needs exactly one of field, derivation, const, blank');
   if (slice !== undefined && (slice.length !== 2 || (slice[0] ?? 0) >= (slice[1] ?? 0))) {
     d.report(`${path}.slice`, 'expected [start, end) with start < end');
   }
@@ -134,11 +152,13 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
     ...(field === undefined ? {} : { field }),
     ...(derivation === undefined ? {} : { derivation }),
     ...(constant === undefined ? {} : { const: constant }),
+    ...(blank === undefined ? {} : { blank }),
     ...(slice === undefined ? {} : { slice: [slice[0] ?? 0, slice[1] ?? 0] as [number, number] }),
     ...(code === undefined ? {} : { code }),
     ...(map === undefined ? {} : { map }),
     ...(format === undefined ? {} : { format }),
     ...(optional === undefined ? {} : { optional }),
+    ...(companion === undefined ? {} : { companion }),
   };
 }
 
