@@ -7,6 +7,7 @@ import { dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
 import { displayValue } from './display';
 import { fieldsById, ownerOfField, roleOf, visibility } from './form';
 import { canonicalize } from './jcs';
+import { optionsOf } from './options';
 import type {
   CheckHint,
   FieldDefinition,
@@ -459,7 +460,8 @@ function fromRoleHints(
     const own = valueOf(field.id);
     const decided = valueOf(source.id);
     if (own === null || decided === null || canonicalize(own) === canonicalize(decided)) continue;
-    if (source.type === 'choice' && !source.options?.some((option) => option.id === own)) continue;
+    if (source.type === 'choice' && !optionsOf(source).some((option) => option.id === own))
+      continue;
     const ownRole = roleOf(definition, field.role)?.label ?? field.role;
     const fromRole = roleOf(definition, from.role)?.label ?? from.role;
     results.push({

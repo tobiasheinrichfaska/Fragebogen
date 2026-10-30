@@ -95,44 +95,46 @@
         {
           "id": "vorsatzwort",
           "role": "person",
-          "type": "text",
+          "type": "choice",
           "label": "Vorsatzwort",
           "question": "Wie lautet das Vorsatzwort Ihres Namens?",
-          "help": "Zum Beispiel „von“, „van der“ oder „de“ – so, wie es in Ihrem Ausweis steht.",
+          "help": "Zum Beispiel „von“, „van der“ oder „de“ – aus der amtlichen Liste. Steht Ihr Vorsatzwort nicht darin, gehört es zum Familiennamen; lassen Sie dieses Feld dann leer.",
           "required": false,
           "showIf": {
             "field": "namensbestandteile",
             "equals": true
           },
           "because": "Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.",
-          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung",
+          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung – nur Einträge der amtlichen Liste (DEÜV-Rundschreiben, Anlagen 6 und 7)",
           "quickAnswers": [
             {
               "label": "Keines",
               "value": null
             }
-          ]
+          ],
+          "optionsFrom": "deuevVorsatzworte2026"
         },
         {
           "id": "namenszusatz",
           "role": "person",
-          "type": "text",
+          "type": "choice",
           "label": "Namenszusatz",
           "question": "Wie lautet der Namenszusatz?",
-          "help": "Zum Beispiel „Freiherr“, „Gräfin“ oder „Edle“.",
+          "help": "Zum Beispiel „Freiherr“, „Gräfin“ oder „Edle“ – aus der amtlichen Liste. Steht er nicht darin, gehört er zum Familiennamen; lassen Sie dieses Feld dann leer.",
           "required": false,
           "showIf": {
             "field": "namensbestandteile",
             "equals": true
           },
           "because": "Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.",
-          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung",
+          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung – nur Einträge der amtlichen Liste (DEÜV-Rundschreiben, Anlagen 6 und 7)",
           "quickAnswers": [
             {
               "label": "Keinen",
               "value": null
             }
-          ]
+          ],
+          "optionsFrom": "deuevNamenszusaetze2006"
         },
         {
           "id": "geburtsnameWieFamilienname",
@@ -180,9 +182,9 @@
           "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
         {
-          "id": "geburtsland",
+          "id": "geburtsstaat",
           "role": "person",
-          "type": "text",
+          "type": "choice",
           "label": "Geburtsland",
           "question": "In welchem Land sind Sie geboren?",
           "required": true,
@@ -192,7 +194,9 @@
               "label": "Deutschland",
               "value": "Deutschland"
             }
-          ]
+          ],
+          "optionsFrom": "deuevStaaten2025",
+          "help": "Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste. Gibt es den Staat nicht mehr (zum Beispiel Sowjetunion oder Jugoslawien), wählen Sie den heutigen Staat, in dem Ihr Geburtsort liegt."
         },
         {
           "id": "geschlecht",
@@ -223,12 +227,12 @@
           ]
         },
         {
-          "id": "staatsangehoerigkeit",
+          "id": "staatsangehoerigkeitSchluessel",
           "role": "person",
-          "type": "text",
+          "type": "choice",
           "label": "Staatsangehörigkeit",
           "question": "Welche Staatsangehörigkeit haben Sie?",
-          "help": "Zum Beispiel „deutsch“.",
+          "help": "Tippen Sie die ersten Buchstaben, zum Beispiel „deutsch“, und wählen Sie aus der Liste. Bei mehreren Staatsangehörigkeiten genügt eine; eine deutsche geht vor.",
           "required": true,
           "purpose": "Meldungen zur Sozialversicherung",
           "quickAnswers": [
@@ -236,7 +240,8 @@
               "label": "deutsch",
               "value": "deutsch"
             }
-          ]
+          ],
+          "optionsFrom": "deuevStaatsangehoerigkeit2025"
         },
         {
           "id": "versicherungsnummer",
@@ -271,9 +276,9 @@
           "help": "Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht."
         },
         {
-          "id": "wohnstaat",
+          "id": "anschriftStaat",
           "role": "person",
-          "type": "text",
+          "type": "choice",
           "label": "Staat",
           "question": "In welchem Staat liegt Ihre Anschrift?",
           "required": true,
@@ -282,16 +287,35 @@
             "field": "anschriftAusland",
             "equals": true
           },
-          "because": "Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn."
+          "because": "Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.",
+          "optionsFrom": "deuevStaatenAusland2025",
+          "help": "Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste."
         },
         {
-          "id": "strasse",
+          "id": "strassenname",
           "role": "person",
           "type": "text",
-          "label": "Straße und Hausnummer",
-          "question": "Wie lauten Straße und Hausnummer Ihrer Anschrift?",
+          "label": "Straße",
+          "question": "In welcher Straße wohnen Sie?",
           "required": true,
-          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung",
+          "help": "Nur der Straßenname; die Hausnummer kommt als Nächstes."
+        },
+        {
+          "id": "hausnummer",
+          "role": "person",
+          "type": "text",
+          "label": "Hausnummer",
+          "question": "Welche Hausnummer hat die Anschrift?",
+          "help": "Mit Zusatz, zum Beispiel „12a“. Leer lassen, wenn die Anschrift keine Hausnummer hat.",
+          "required": false,
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung – die Meldungen führen Straße und Hausnummer getrennt",
+          "quickAnswers": [
+            {
+              "label": "Keine Hausnummer",
+              "value": null
+            }
+          ]
         },
         {
           "id": "anschriftZusatz",

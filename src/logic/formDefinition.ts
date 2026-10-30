@@ -42,6 +42,7 @@ export const EXPLAINER_PATH = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_CONDITION_DEPTH = 8;
 import { MAX_NUMBER_DECIMALS, normalizeFieldValue } from './normalize';
+import { optionsOf, REFERENCE_LISTS } from './options';
 
 export type DefinitionResult =
   { ok: true; definition: FormDefinition } | { ok: false; issues: DecodeIssue[] };
@@ -334,6 +335,7 @@ export const FIELD_KEYS = [
   'voluntary',
   'multiline',
   'options',
+  'optionsFrom',
   'showIf',
   'columns',
   'computed',
@@ -378,6 +380,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     o.options === undefined
       ? undefined
       : d.array(o.options, `${path}.options`, (v, p) => decodeOption(d, v, p), 1);
+  const optionsFrom =
+    o.optionsFrom === undefined ? undefined : d.string(o.optionsFrom, `${path}.optionsFrom`, ID);
   const showIf =
     o.showIf === undefined ? undefined : decodeCondition(d, o.showIf, `${path}.showIf`, 0);
   const columns =
@@ -450,6 +454,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(voluntary === undefined ? {} : { voluntary }),
     ...(multiline === undefined ? {} : { multiline }),
     ...(options === undefined ? {} : { options }),
+    ...(optionsFrom === undefined ? {} : { optionsFrom }),
     ...(showIf === undefined ? {} : { showIf }),
     ...(columns === undefined ? {} : { columns }),
     ...(computed === undefined ? {} : { computed }),
@@ -706,8 +711,16 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
   for (const { field, path, isColumn } of fields.values()) {
     if (!roleIds.has(field.role)) report(`${path}.role`, `unknown role "${field.role}"`);
     const isChoice = field.type === 'choice' || field.type === 'multiChoice';
-    if (isChoice && !field.options) report(path, `${field.type} field needs options`);
+    if (isChoice && !field.options && !field.optionsFrom) {
+      report(path, `${field.type} field needs options`);
+    }
     if (!isChoice && field.options) report(`${path}.options`, `only choice fields have options`);
+    if (field.optionsFrom !== undefined) {
+      const at = `${path}.optionsFrom`;
+      if (field.type !== 'choice') report(at, 'only choice fields take options from a list');
+      if (field.options) report(at, 'either options or optionsFrom');
+      if (!REFERENCE_LISTS[field.optionsFrom]) report(at, `unknown list "${field.optionsFrom}"`);
+    }
     const optionIds = new Set<string>();
     field.options?.forEach((option, i) => {
       if (optionIds.has(option.id)) {
@@ -758,7 +771,7 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     }
     field.quickAnswers?.forEach((quick, q) => {
       const at = `${path}.quickAnswers[${q}].value`;
-      if (!QUICK_ANSWER_TYPES.includes(field.type)) {
+      if (!QUICK_ANSWER_TYPES.includes(field.type) && field.optionsFrom === undefined) {
         report(`${path}.quickAnswers`, 'only typed fields have quick answers');
         return;
       }
@@ -976,7 +989,7 @@ function initialValues({ fields, report }: CheckContext): void {
     if (field.type === 'boolean') {
       if (typeof field.initial !== 'boolean') report(at, 'expected a boolean');
     } else if (field.type === 'choice') {
-      if (!field.options?.some((option) => option.id === field.initial)) {
+      if (!optionsOf(field).some((option) => option.id === field.initial)) {
         report(at, `"${String(field.initial)}" is not an option id`);
       }
     } else {
@@ -1189,8 +1202,8 @@ function fromRoleFields({ fields, report }: CheckContext): void {
     if (field.type === 'repeatGroup') report(at, 'tables cannot be taken from another role');
     if (field.initial !== undefined)
       report(`${path}.initial`, 'a taken-over field has no preselection');
-    const own = new Set((field.options ?? []).map((option) => option.id));
-    for (const option of source.field.options ?? []) {
+    const own = new Set(optionsOf(field).map((option) => option.id));
+    for (const option of optionsOf(source.field)) {
       if (!own.has(option.id))
         report(`${path}.options`, `option "${option.id}" of the other field is missing`);
     }

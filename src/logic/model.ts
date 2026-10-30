@@ -120,6 +120,11 @@ export interface FieldDefinition {
   /** `text` only: keep line breaks (e.g. remarks); otherwise all whitespace collapses. */
   multiline?: boolean;
   options?: ChoiceOption[];
+  /**
+   * `choice` only, instead of `options`: a reference list compiled into the app (`REFERENCE_LISTS`
+   * in options.ts, e.g. the DEÜV tables). Asked as a search field; typed labels map to the entry.
+   */
+  optionsFrom?: string;
   /** The field is available for input only while this condition holds; otherwise it is hidden. */
   showIf?: Condition;
   /**

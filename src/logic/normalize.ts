@@ -12,6 +12,7 @@ import type {
   IsoDate,
   TextFormat,
 } from './model';
+import { listOptionFor, optionsOf } from './options';
 import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
 export const CANON_VERSION = 1;
@@ -205,9 +206,14 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
   boolean: (raw) => (raw === null || typeof raw === 'boolean' ? accept(raw) : reject('value.type')),
   choice: (raw, field) => {
     if (raw === null || raw === '') return accept(null);
-    return typeof raw === 'string'
-      ? normalizeChoice(raw, field.options ?? [])
-      : reject('value.type');
+    if (typeof raw !== 'string') return reject('value.type');
+    if (field.optionsFrom === undefined) return normalizeChoice(raw, field.options ?? []);
+    // A list entry is typed: its id or label in any case.
+    const text = normalizeText(raw, false);
+    if (!text.ok) return text;
+    if (text.value === '') return accept(null);
+    const found = listOptionFor(optionsOf(field), text.value);
+    return found ? accept(found.id) : reject('choice.notInList');
   },
   multiChoice: (raw, field) => {
     if (raw === null) return accept(null);

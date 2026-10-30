@@ -38,7 +38,7 @@ describe('Sofortmeldung 0.2.0 draft', () => {
   });
 
   it('offers quick answers where most people give the same answer', () => {
-    expect(fields.get('geburtsland')?.quickAnswers).toEqual([
+    expect(fields.get('geburtsstaat')?.quickAnswers).toEqual([
       { label: 'Deutschland', value: 'Deutschland' },
     ]);
     expect(fields.get('versicherungsnummer')?.quickAnswers).toEqual([

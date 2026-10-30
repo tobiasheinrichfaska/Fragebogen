@@ -7,6 +7,7 @@ import { placeholderIds } from './display';
 import { describeFieldRules, fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
 import { describeHint } from './hints';
+import { REFERENCE_LISTS } from './options';
 import { describeValidity } from './validity';
 import type { Condition, FieldDefinition, FieldId, FormDefinition, RoleDefinition } from './model';
 
@@ -107,7 +108,10 @@ function shown(definition: FormDefinition, text: string): string {
 }
 
 function kindOf(field: FieldDefinition): string {
-  const options = field.options?.map((option) => option.label).join(' · ');
+  const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
+  const options = list
+    ? `aus der Liste „${list.title}“ (${list.options.length} Einträge; ${list.source})`
+    : field.options?.map((option) => option.label).join(' · ');
   const columns = field.columns?.map((column) => column.label).join(' · ');
   if (options) return `${KIND[field.type]}: ${options}`;
   if (columns) return `${KIND[field.type]} mit den Spalten ${columns}`;

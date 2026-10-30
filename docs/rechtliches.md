@@ -297,6 +297,13 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
 
 ## Quellen
 
+- DEÜV-Tabellen (abgerufen 30.10.2026 von www.gkv-datenaustausch.de, unverändert übernommen):
+  Gemeinsames Rundschreiben „Meldeverfahren zur Sozialversicherung“ (Stand 17.06.2026), Anlage 6
+  Vorsatzworte (Stand 18.03.2026; Vorfassung 08.08.2007), Anlage 7 Namenszusätze (Stand 04.05.2006),
+  Anlage 8 Staatsangehörigkeit und Länderkennzeichen (Stand 11.09.2025); Datenbausteine DBNA, DBGB,
+  DBAN nach Anlage 4 der Gemeinsamen Grundsätze § 28b SGB IV (gültig ab 01.01.2026): Titel ist
+  Freitext; Straße (33) und Hausnummer (9) sind getrennte Felder; das Geschlecht kennt M, W, X, D.
+
 - Gemeinsame Grundsätze nach § 9a BVV vom 18.03.2022 mit Verfahrensbeschreibung 1.0:
   https://berlin.de/politik-und-verwaltung/rundschreiben/download.php/4328001 und
   https://www.informationsportal.de/wp-content/uploads/document__17488__GG-elektronische-Entgeltunterlagen-vom-18.03.2022.pdf

@@ -2,6 +2,7 @@
 // (canon 1); this only formats them by German conventions and never changes data.
 import { formatGermanDate, isIsoDate, isIsoMonth, MONTH_NAMES } from './dates';
 import type { FieldDefinition, FieldType, FieldValue } from './model';
+import { optionsOf } from './options';
 
 export const EMPTY_VALUE = '–';
 
@@ -42,7 +43,7 @@ function germanMonth(value: string): string {
 }
 
 function optionLabel(field: FieldDefinition, id: string): string {
-  return field.options?.find((option) => option.id === id)?.label ?? id;
+  return optionsOf(field).find((option) => option.id === id)?.label ?? id;
 }
 
 const FORMATTERS: Readonly<
@@ -118,6 +119,7 @@ export function editValue(field: FieldDefinition, value: FieldValue | undefined)
   if (value === undefined || value === null || typeof value !== 'string') return '';
   if (field.type === 'date' && isIsoDate(value)) return formatGermanDate(value);
   if (field.type === 'money') return money(value).replace(' €', '');
+  if (field.optionsFrom !== undefined) return optionLabel(field, value);
   if (field.type === 'number') return germanNumber(value).replace('\u2212', '-');
   if (field.type === 'month' && isIsoMonth(value)) {
     const [year = '', month = ''] = value.split('-');

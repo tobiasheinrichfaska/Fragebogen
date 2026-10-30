@@ -105,3 +105,28 @@ abgeschlossen; Station „Kanzlei“.
 - Bei „gesetzlich“ erscheint keine dieser Fragen.
 - _Nicht offensichtlich:_ Ohne angekreuzten „Befreiungsbescheid der Krankenkasse“ beim Arbeitgeber
   zeigt die Kanzlei den Hinweis, den Bescheid anzufordern.
+
+---
+
+## MT-65: Auswahl aus den amtlichen Listen
+
+**Voraussetzungen:** Personalfragebogen oder Sofortmeldung 0.2.0 (Entwurf), Rolle „Person“.
+
+**Schritte:**
+
+1. Bei der Staatsangehörigkeit „deu“ tippen.
+2. Aus den Vorschlägen „deutsch“ wählen, „Weiter“.
+3. Bei „Titel, Vorsatzwort oder Namenszusatz“ „Ja“ wählen; als Vorsatzwort „zum Kuckuck“ eingeben
+   und „Weiter“ drücken.
+4. Stattdessen „van der“ eingeben.
+5. Die Anschrift ansehen.
+
+**Erwartet:**
+
+- Schritt 1: Unter dem Feld erscheinen Vorschläge aus der Liste.
+- Schritt 2: In der Zusammenfassung steht „deutsch“. _Nicht offensichtlich:_ Gespeichert wird der
+  amtliche Schlüssel 000; auf dem PDF steht trotzdem „deutsch“.
+- Schritt 3: Die Meldung „Diese Angabe steht nicht in der amtlichen Liste …“ erscheint; die Hilfe
+  sagt, dass ein nicht aufgeführtes Vorsatzwort zum Familiennamen gehört.
+- Schritt 4 wird angenommen.
+- Schritt 5: Straße und Hausnummer sind zwei Fragen; „Keine Hausnummer“ ist möglich.

@@ -1,6 +1,7 @@
 // One input per field type. Text-like fields keep the typed text locally and hand it over on
 // "Weiter" (normalising every keystroke would fight the person); choices answer immediately.
 import type { FieldDefinition, FieldType, FieldValue } from '../logic/model';
+import { optionsOf } from '../logic/options';
 import { isTextLike } from './fieldKinds';
 
 const INPUT_MODE: Partial<Record<FieldType, 'numeric' | 'decimal' | 'text'>> = {
@@ -54,6 +55,32 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit 
           </button>
         ))}
       </div>
+    );
+  }
+  if (field.type === 'choice' && field.optionsFrom !== undefined) {
+    const listId = `${id}-list`;
+    return (
+      <>
+        <input
+          id={id}
+          type="text"
+          value={text}
+          list={listId}
+          autoComplete="off"
+          spellCheck={false}
+          aria-labelledby={`${id}-label`}
+          placeholder="Tippen und aus der Liste wählen"
+          onChange={(event) => onText(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') onSubmit();
+          }}
+        />
+        <datalist id={listId}>
+          {optionsOf(field).map((option) => (
+            <option key={option.id} value={option.label} />
+          ))}
+        </datalist>
+      </>
     );
   }
   if (field.type === 'choice') {

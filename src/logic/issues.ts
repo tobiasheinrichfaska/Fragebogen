@@ -30,6 +30,7 @@ export type IssueCode =
   | 'svNumber.checksum'
   | 'betriebsnummer.format'
   | 'choice.unknown'
+  | 'choice.notInList'
   | 'rows.tooMany'
   | 'rows.rowId'
   | 'rows.unknownColumn'
@@ -67,6 +68,8 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'svNumber.checksum': 'Die Versicherungsnummer stimmt nicht (Prüfziffer).',
   'betriebsnummer.format': 'Die Betriebsnummer hat genau 8 Ziffern.',
   'choice.unknown': 'Bitte eine der angebotenen Möglichkeiten wählen.',
+  'choice.notInList':
+    'Diese Angabe steht nicht in der amtlichen Liste. Bitte einen Eintrag aus den Vorschlägen wählen.',
   'rows.tooMany': 'Die Tabelle hat zu viele Zeilen (höchstens 30).',
   'rows.rowId': 'Eine Tabellenzeile ist fehlerhaft gekennzeichnet.',
   'rows.unknownColumn': 'Eine Tabellenzeile enthält eine unbekannte Spalte.',

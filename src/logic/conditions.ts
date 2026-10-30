@@ -10,6 +10,7 @@ import {
   type FieldType,
   type FieldValue,
 } from './model';
+import { optionsOf } from './options';
 
 export type LeafCondition = Extract<Condition, { field: FieldId }>;
 export const CONDITION_OPERATORS = ['equals', 'in', 'contains', 'answered', 'startsWith'] as const;
@@ -25,11 +26,11 @@ interface OperatorSpec {
 }
 
 const isOption = (target: FieldDefinition, id: unknown) =>
-  typeof id === 'string' && (target.options?.some((option) => option.id === id) ?? false);
+  typeof id === 'string' && optionsOf(target).some((option) => option.id === id);
 
 function shown(target: FieldDefinition, operand: unknown): string {
   if (typeof operand === 'boolean') return operand ? 'Ja' : 'Nein';
-  return target.options?.find((option) => option.id === operand)?.label ?? String(operand);
+  return optionsOf(target).find((option) => option.id === operand)?.label ?? String(operand);
 }
 
 const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {

@@ -73,6 +73,10 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/personengruppe.test.ts`                  | Personengruppe proposals per case (109 incl. other jobs and above the limit, 110, 102/121/122, 123, 190, 105, 106, 108, 103, 119/120, 101), year without Rechengrößen, special case, missing part, rule checks                                                                                                                                                 |
 | `src/logic/validity.ts`                               | Validity of a form version: `withinValidity` (date or month, inclusive), `describeValidity` (German), `validityRole`, `outsideValidity` (reference date of a role's data outside the period)                                                                                                                                                                   |
 | `src/logic/data/rechengroessen.ts`                    | `RECHENGROESSEN` per year (SVBezGrV): JAEG, BBG KV/PV and RV — fixed reference data for the check hints                                                                                                                                                                                                                                                        |
+| `src/logic/options.ts`                                | `optionsOf` (options written in the definition or taken from a reference list), `listOptionFor`, `REFERENCE_LISTS` (DEÜV lists with title, source, Stand in the id)                                                                                                                                                                                            |
+| `src/logic/data/deuevListen.ts`                       | DEÜV Anlage 6 (Vorsatzworte), 7 (Namenszusätze), 8 Teil A (Staatsangehörigkeit, Staaten with Destatis key and Länderkennzeichen) — generated, copied unchanged from the official PDFs                                                                                                                                                                          |
+| `src/logic/options.test.ts`                           | Reference lists: sizes, uniqueness, hash per list id (never changes silently), typed labels → key, idempotence, display, definition rules for `optionsFrom`                                                                                                                                                                                                    |
+| `tests/forms/listenfelder.test.ts`                    | List fields in both drafts (name prefix/suffix, nationality key, states), street and house number apart, takeover Sofortmeldung 0.2.0 → Personalfragebogen                                                                                                                                                                                                     |
 | `tests/forms/svSzenarien.test.ts`                     | SV assessment scenarios as tables: answers of person and employer → Personengruppe, check hints, exclusions (Azubi under 600 €, Minijob with Weihnachtsgeld, lower JAEG, KV exemption, Vorruhestand, special groups); the questions that closed the gaps of 2026-10-30; pay before the kind of employment                                                      |
 | `docs/prompts/datev-lug-recherche.md`                 | Prompt for Claude in Chrome (DATEV login): LuG master-data import format and the field order of the LuG screens, answered as JSON into `.tmp/datev/` (German)                                                                                                                                                                                                  |
 | `tests/forms/namensbestandteile.test.ts`              | Title, name prefix and suffix (DEÜV data block Name) behind one yes/no question in both drafts; taken over from the Sofortmeldung into the Personalfragebogen                                                                                                                                                                                                  |
@@ -333,6 +337,14 @@ Key design decisions (details in `docs/plan.md`):
   monthly pay; named hint tests sum a table column with the employer's pay against the BBG KV/PV and
   the JAEG of the start year (`RECHENGROESSEN`); a missing year is reported, never guessed. The
   apportionment (§ 22 Abs. 2 SGB IV) stays with the payroll and is listed as a limit.
+- **Official DEÜV lists** (Tobias 2026-10-30: "Vorsatzwort und Namenszusatz gegen die amtlichen Listen
+  prüfen"; nationality and countries with DEÜV keys): a `choice` field may take its options from a
+  compiled reference list (`optionsFrom`); it is asked as a search field (`<datalist>`), a typed
+  label maps to the entry, anything else is refused (`choice.notInList`). Nationality stores the
+  Destatis key (`000` = deutsch), states store the official name (key and Länderkennzeichen follow
+  from the list). Street and house number are separate (DBAN STRASSE 33 / HAUS-NR 9). New ids in
+  both drafts: `staatsangehoerigkeitSchluessel`, `geburtsstaat`, `anschriftStaat`, `strassenname`,
+  `hausnummer`. The title stays free text (no official list).
 - **Pay before the kind of employment** (Tobias 2026-10-30: "Entgelt möglichst früh, damit Minijob und
   Hauptbeschäftigung unterschieden werden können"): the employer answers the pay (kind, amount or
   expected month, one-off payments) right after the pre-questions and before "Wie ist die
@@ -413,8 +425,16 @@ Key design decisions (details in `docs/plan.md`):
   missing answers instead.
 - **Church tax with flat-rate 20 %, 25 % or 5 %**: the declaration of non-membership (official
   form) is not part of the questionnaire; it stays on paper.
-- **Name prefix and suffix are free text** (DEÜV data block Name): not yet checked against the
-  official tables of the Gemeinsame Grundsätze (Anlagen 6 and 7 of the DEÜV circular).
+- **Official lists, open points** (research 2026-10-30, `.tmp/research/deuev-anlagen/quellen.md`):
+  the name-prefix list joins the Stand 18.03.2026 and the spellings only in the version of 08.08.2007
+  (which applies in 2026 is unclear; the change log dates the new check to 01.01.2027); the state of
+  birth offers only Anlage 8 Teil A (current states) — whether historical keys (Teil B) are allowed
+  there is not stated; the tables carry no licence, the Impressum allows unchanged quotation with the
+  source (they are copied unchanged, with source). Field lengths of the reports (e.g. family name 30,
+  street 33, house number 9 characters) are not enforced.
+- **Answers of the frozen Sofortmeldung 0.1.0** for nationality, state of birth, foreign state and
+  "Straße und Hausnummer" are free text and are not taken over into the drafts (new field ids for the
+  list fields and the street without number — field ids never change meaning).
 - **Beitragsgruppen are not derived yet** (next step); the Personengruppe proposal does not compute
   the weekly hours of a Werkstudent (asks for a check) and treats the employer's kind of employment
   as decisive (a mismatch with the person's answer is a check hint).

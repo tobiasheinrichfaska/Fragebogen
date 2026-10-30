@@ -244,6 +244,7 @@ function QuestionStep({
   // A voluntary yes/no or single choice can be taken back; a required one only changed.
   const clearable =
     !step.required &&
+    !textLike &&
     (field.type === 'boolean' || field.type === 'choice') &&
     value !== undefined &&
     value !== null;

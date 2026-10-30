@@ -126,9 +126,9 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
       ...BASE,
       geburtsdatum: '17.05.1990',
       geburtsort: 'Musterstadt',
-      geburtsland: 'Deutschland',
+      geburtsstaat: 'Deutschland',
       geschlecht: 'weiblich',
-      staatsangehoerigkeit: 'deutsch',
+      staatsangehoerigkeitSchluessel: 'deutsch',
     });
     expect(nextChoice(goTo(filled, 'question:familienname')).skip?.key).toBe(
       'question:versicherungsnummer',

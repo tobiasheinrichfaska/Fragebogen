@@ -10,6 +10,7 @@ import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldsById } from './form';
 import { isTestVersion, type RegisteredForm } from './formRegistry';
 import { describeRule } from './derivations';
+import { optionsOf, REFERENCE_LISTS } from './options';
 import { describeValidity } from './validity';
 import type {
   AcknowledgementKind,
@@ -112,7 +113,7 @@ function roleLabel(definition: FormDefinition, id: string): string {
 
 function initialLabel(field: FieldDefinition, initial: boolean | string): string {
   if (typeof initial === 'boolean') return initial ? 'Ja' : 'Nein';
-  return field.options?.find((option) => option.id === initial)?.label ?? initial;
+  return optionsOf(field).find((option) => option.id === initial)?.label ?? initial;
 }
 
 function fieldKind(field: FieldDefinition): string {
@@ -126,6 +127,9 @@ function fieldKind(field: FieldDefinition): string {
     if (field.signed) kind += ', auch negativ';
   }
   if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
+  const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
+  if (list)
+    kind += `: aus der Liste „${list.title}“ (${list.options.length} Einträge; ${list.source})`;
   if (field.computed) kind += ` (berechnet: ${field.computed.fn})`;
   if (field.initial !== undefined) kind += `; vorbelegt: ${initialLabel(field, field.initial)}`;
   if (field.masterData !== undefined) kind += '; Stammdatum, kann auf dem Gerät gemerkt werden';

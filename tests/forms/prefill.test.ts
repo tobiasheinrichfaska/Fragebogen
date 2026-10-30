@@ -55,7 +55,6 @@ describe('prefillFrom — Sofortmeldung into the Personalfragebogen', () => {
         'vorname',
         'geburtsdatum',
         'versicherungsnummer',
-        'strasse',
         'wohnort',
       ]),
     );
