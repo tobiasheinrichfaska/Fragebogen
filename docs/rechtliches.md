@@ -6,14 +6,14 @@
 
 ## 1. Formerfordernisse je Formular
 
-| Formular                                | Genügt eine einfache elektronische Signatur?                                                                                                                                                                                                                               | Grundlage                                                    |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Personalfragebogen (allgemein)          | **Ja.** Es gibt keine Formvorschrift; der Arbeitnehmer muss die Angaben nur „mitteilen“ bzw. „machen“.                                                                                                                                                                     | § 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV                       |
-| Personalfragebogen Auszubildende        | **Ja**, wie oben. Der Ausbildungsvertrag ist ein eigenes Dokument (Textform).                                                                                                                                                                                              | § 11 BBiG                                                    |
-| Minijob / kurzfristige Beschäftigung    | **Ja.** Die Erklärungen zu weiteren Beschäftigungen und zum Krankenversicherungsschutz haben keine Schriftform.                                                                                                                                                            | § 8 Abs. 2 Nr. 7, 7a BVV; § 28a Abs. 9a SGB IV               |
-| Antrag auf Befreiung von der RV-Pflicht | **Nein.** Laut den SV-Trägern gilt Schriftform: QES, Papieroriginal oder Scan mit fortgeschrittener Signatur des Arbeitgebers (siehe 2.2). Das Gesetz spricht von „schriftlich oder elektronisch“; diese Fassung ist laut buzer.de neu seit 12/2025 (_nicht verifiziert_). | § 6 Abs. 1b SGB VI; Gemeinsame Grundsätze Ziff. 2.1.3        |
-| Nachweis der Elterneigenschaft          | **Die Unterschrift beweist nichts.** Seit 01.07.2025 ist der digitale Abruf beim BZSt (DaBPV) Pflicht. Kinder ohne steuerliche Erfassung sind per Urkundenkopie zu belegen; ein Vermerk „hat vorgelegen“ genügt nicht.                                                     | § 55a SGB XI; GKV-SV, Grundsätzliche Hinweise vom 31.03.2025 |
-| Sofortmeldung (Angaben)                 | Für die Angaben des Arbeitnehmers **ja**. Den Hinweis auf die Mitführungspflicht von Ausweispapieren muss der Arbeitgeber aber „nachweislich und schriftlich“ geben. Dieser Hinweis erfolgt daher auf Papier; im Fragebogen wird nur die Aushändigung bestätigt.           | § 28a Abs. 4 SGB IV; § 2a Abs. 2 SchwarzArbG                 |
+| Formular                                | Genügt eine einfache elektronische Signatur?                                                                                                                                                                                                                                                                                                                                                                                                                        | Grundlage                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Personalfragebogen (allgemein)          | **Ja.** Es gibt keine Formvorschrift; der Arbeitnehmer muss die Angaben nur „mitteilen“ bzw. „machen“.                                                                                                                                                                                                                                                                                                                                                              | § 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV                       |
+| Personalfragebogen Auszubildende        | **Ja**, wie oben. Der Ausbildungsvertrag ist ein eigenes Dokument (Textform).                                                                                                                                                                                                                                                                                                                                                                                       | § 11 BBiG                                                    |
+| Minijob / kurzfristige Beschäftigung    | **Ja.** Die Erklärungen zu weiteren Beschäftigungen und zum Krankenversicherungsschutz haben keine Schriftform.                                                                                                                                                                                                                                                                                                                                                     | § 8 Abs. 2 Nr. 7, 7a BVV; § 28a Abs. 9a SGB IV               |
+| Antrag auf Befreiung von der RV-Pflicht | **Nein.** Laut den SV-Trägern gilt Schriftform: QES, Papieroriginal oder Scan mit fortgeschrittener Signatur des Arbeitgebers (siehe 2.2). Das Gesetz spricht von „schriftlich oder elektronisch“; diese Fassung ist laut buzer.de neu seit 12/2025 (_nicht verifiziert_).                                                                                                                                                                                          | § 6 Abs. 1b SGB VI; Gemeinsame Grundsätze Ziff. 2.1.3        |
+| Nachweis der Elterneigenschaft          | **Die Unterschrift beweist nichts.** Seit 01.07.2025 ist der digitale Abruf beim BZSt (DaBPV) Pflicht. Zu belegen sind Kinder ohne lohnsteuerliche Eltern-Kind-Verknüpfung beim BZSt (z. B. Stiefkinder, auswärtige Kinder, Auslandskinder, vor 2011 volljährige Kinder), per Urkundenkopie; ein Vermerk „hat vorgelegen“ genügt nicht. Rückwirkend gilt ein Nachweis, der binnen **sechs** Monaten kommt (§ 55 Abs. 3a S. 4 SGB XI; die GH 2025 nennen noch drei). | § 55a SGB XI; GKV-SV, Grundsätzliche Hinweise vom 31.03.2025 |
+| Sofortmeldung (Angaben)                 | Für die Angaben des Arbeitnehmers **ja**. Den Hinweis auf die Mitführungspflicht von Ausweispapieren muss der Arbeitgeber aber „nachweislich und schriftlich“ geben. Dieser Hinweis erfolgt daher auf Papier; im Fragebogen wird nur die Aushändigung bestätigt.                                                                                                                                                                                                    | § 28a Abs. 4 SGB IV; § 2a Abs. 2 SchwarzArbG                 |
 
 **Branchen seit 30.12.2025 (am Gesetzestext geprüft am 29.10.2026):** Das Gesetz zur
 Modernisierung und Digitalisierung der Schwarzarbeitsbekämpfung (BGBl. vom 29.12.2025) hat die
@@ -78,14 +78,23 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
 
 ## 3. Inhalt der Fragebögen (Datenschutz, Fragerecht)
 
-- **Rechtsgrundlage:** Art. 6 Abs. 1 lit. b und c DSGVO. Die Generalklausel des § 26 Abs. 1 BDSG
-  ist nach EuGH C-34/21 (30.03.2023) praktisch nicht mehr anwendbar.
+- **Rechtsgrundlage:** Art. 6 Abs. 1 lit. b und c DSGVO. Die Generalklausel des § 26 Abs. 1 S. 1
+  BDSG ist nach EuGH C-34/21 (30.03.2023) praktisch nicht mehr anwendbar. Das Urteil betrifft nur
+  diese Generalklausel; § 26 Abs. 3 BDSG (besondere Kategorien, z. B. Schwerbehinderung) bleibt im
+  Zusammenspiel mit einer konkreten Pflicht nutzbar (Handreichung der hessischen
+  Datenschutzaufsicht vom 25.04.2023; Urteilstext am Original _nicht verifiziert_).
 - **Information:** Die Pflichtangaben nach Art. 13 DSGVO stehen im Formular.
 - **Konfession:** Die Frage entfällt, weil das Kirchensteuermerkmal aus ELStAM kommt. Ausnahme:
   Bei Pauschalierung (§ 40a EStG) gibt es die Erklärung über die Nichtzugehörigkeit nach den gleich
   lautenden Ländererlassen vom 08.08.2016.
-- **Schwerbehinderung:** Die Frage ist im bestehenden Arbeitsverhältnis nach sechs Monaten zulässig
-  (BAG 6 AZR 553/10), vorher nur als freiwillige Angabe.
+- **Schwerbehinderung:** Laut BAG ist die Frage im bestehenden Arbeitsverhältnis „jedenfalls nach
+  sechs Monaten“ zulässig (Urteil vom 16.02.2012 – 6 AZR 553/10, am Urteilstext geprüft). Für die
+  Zeit davor hat das BAG nichts entschieden; dass die Angabe dann **freiwillig** ist, entscheidet
+  die App aus Vorsicht (AGG, § 164 Abs. 2 SGB IX). Grundlage der Verarbeitung: Art. 9 Abs. 2
+  Buchst. b DSGVO, § 26 Abs. 3 BDSG mit den konkreten Pflichten aus §§ 154, 160, 163 SGB IX
+  (Beschäftigungspflicht, Ausgleichsabgabe, Verzeichnis und Anzeige) und § 208 SGB IX
+  (Zusatzurlaub). **Gleichgestellte bekommen keinen Zusatzurlaub** (§ 151 Abs. 3 SGB IX). Der
+  besondere Kündigungsschutz greift erst nach sechs Monaten (§ 173 Abs. 1 Nr. 1 SGB IX).
 - **Unzulässig** sind etwa Fragen nach Schwangerschaft (BAG 2 AZR 621/01), Gewerkschaft, Partei
   oder Familienplanung.
 - **Betriebsrat:** Personalfragebögen bedürfen seiner Zustimmung (§ 94 Abs. 1 BetrVG). Ob reine
@@ -104,7 +113,102 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
     S. 9 EStG).
   - Elterneigenschaft: Dauer des Versicherungsverhältnisses plus vier Kalenderjahre.
 
-## 5. Signatur und Zeit
+## 5. Angaben im Personalfragebogen (Recherche 30.10.2026, am Gesetzestext geprüft)
+
+- **Lohnsteuer (§ 39e Abs. 4 S. 1 EStG):** Die Person teilt jedem Arbeitgeber Steuer-ID und
+  Geburtstag mit, ob es das erste oder ein weiteres Dienstverhältnis ist, und ob und in welcher
+  Höhe ein Freibetrag nach § 39a Abs. 1 S. 1 Nr. 7 EStG abgerufen werden soll.
+  - **Freibetrag Nr. 7 in Laiensprache:** Wer in der Hauptbeschäftigung weniger verdient, als dort
+    steuerfrei bleibt, kann den ungenutzten Teil auf eine Nebenbeschäftigung übertragen lassen; in
+    der Hauptbeschäftigung wird derselbe Betrag hinzugerechnet. 2026 höchstens 13.614 € bei
+    Steuerklasse I/IV (12.348 + 1.230 + 36 €). Gültig höchstens zwei Kalenderjahre (§ 39a Abs. 1
+    S. 3). Die Person entscheidet, ob und in welcher Höhe der Arbeitgeber abruft (BMF ELStAM vom
+    13.12.2024, Rn. 127).
+  - **Ohne Angabe zum Dienstverhältnis** gilt Steuerklasse VI (BMF 13.12.2024, Rn. 49).
+  - **Fehlende Steuer-ID:** höchstens drei Monate vorläufige Merkmale, danach rückwirkend
+    Steuerklasse VI (§ 39c Abs. 1 EStG); ohne zugeteilte ID Bescheinigung des Finanzamts (§ 39e
+    Abs. 8 EStG).
+  - Die Steuer-ID dient zugleich der Anmeldung zum Kinderabruf (§ 55a Abs. 3 SGB XI).
+- **Private Krankenversicherung seit 2026:** Die Beiträge kommen als ELStAM (§ 39 Abs. 4 Nr. 4,
+  Abs. 4a EStG; § 52 Abs. 36 EStG). Der Arbeitgeber muss sie ansetzen und darf selbst angegebene
+  Beträge nicht berücksichtigen (BMF vom 03.06.2025, Rn. 5, 31, 83, 98) — **ein Betragsfeld im
+  Fragebogen ist nutzlos.** Weiter nötig: die Bescheinigung des Versicherers über die
+  Zuschussfähigkeit alle drei Jahre (§ 257 Abs. 2a S. 2 SGB V, § 61 Abs. 6 SGB XI; am 30.10.2026
+  unverändert in Kraft, eine Digitalisierung durch das JStG 2026 ist _nicht verifiziert_) und
+  Belege nur in Ausnahmefällen (Versicherer im Ausland, Angehörige mit eigenem Vertrag). Nach einem
+  Widerspruch gegen die Übermittlung darf der Arbeitgeber auch Papierbescheinigungen nicht
+  berücksichtigen (Rn. 59); ob dann auch der Zuschuss entfällt, ist _nicht verifiziert_.
+- **Letzte gesetzliche Krankenkasse** bei privat Versicherten: Einzugsstelle für Renten- und
+  Arbeitslosenversicherungsbeiträge (§ 28i S. 2 SGB IV i. V. m. § 175 Abs. 3 S. 2 SGB V).
+- **Weitere Beschäftigungen:** Mehrere Minijobs werden zusammengerechnet, ein Minijob neben einer
+  Hauptbeschäftigung bleibt frei (§ 8 Abs. 2 SGB IV); über der Beitragsbemessungsgrenze werden
+  mehrere Entgelte verhältnismäßig gekürzt (§ 22 Abs. 2 SGB IV).
+- **Kinder (Pflegeversicherung):** Das BZSt liefert nur „Elterneigenschaft ab …“ und „Anzahl Kinder
+  unter 25 ab …“ — keine Namen, keine Geburtsdaten (§ 55a SGB XI). Daraus folgt Datensparsamkeit:
+  Einzeldaten nur für **nicht abrufbare** Kinder. Nicht abrufbar sind laut den Gemeinsamen
+  Grundsätzen DaBPV (Version 1.0, ab 01.04.2025) u. a. Stiefkinder, Kinder, die beim anderen
+  Elternteil in einer anderen Gemeinde gemeldet waren, Auslandskinder, vor 2011 volljährige Kinder,
+  vom Finanzamt nicht erfasste Pflegekinder und alle Kinder, wenn die Kinderfreibeträge gestrichen
+  wurden. Nur bei sozialer Pflegeversicherung relevant; Minijobs zahlen keine PV-Beiträge. Dass vor
+  2011 verstorbene Kinder nicht abrufbar sind, ist eine eigene Ableitung (_nicht verifiziert_).
+
+## 6. Zustimmung zur Übermittlung der Steuererklärung (§ 87d AO)
+
+- **Wortlaut § 87d Abs. 3 AO** (am Gesetzestext geprüft): Der Auftragnehmer stellt die Daten „in
+  leicht nachprüfbarer Form zur Zustimmung zur Verfügung“; der Auftraggeber prüft sie
+  „unverzüglich auf Vollständigkeit und Richtigkeit“.
+- **Keine Form vorgeschrieben** (auch nicht im AEAO zu § 87d, der nur die Identifizierung regelt).
+  Die Bundessteuerberaterkammer (FAQ digitale Aufbewahrung, Stand 19.03.2026, Nr. 1.2.41): „Für
+  Steuererklärungen u. ä. reicht eine Freigabe.“ Die einfache elektronische Signatur der App
+  genügt also.
+- **Zeitpunkt:** Der Wortlaut („zur Zustimmung“) spricht für eine Freigabe **vor** der
+  Übermittlung, die Gesetzesbegründung (BT-Drs. 18/7457, S. 67) für eine Prüfung der übermittelten
+  Daten. Empfehlung: Freigabe vorher, Übertragungsprotokoll danach (_Auslegung, nicht
+  verifiziert_).
+- **Ehegatten:** Die gemeinsame Erklärung unterschreiben auf Papier beide (§ 25 Abs. 3 S. 2 EStG);
+  dass elektronisch beide freigeben müssen, ist abgeleitet, nicht ausdrücklich geregelt
+  (_nicht verifiziert_). Lebenspartner gelten als Ehegatten (§ 2 Abs. 8 EStG).
+- **Weitere Normen:** § 150 Abs. 2 AO (wahrheitsgemäß), § 150 Abs. 7 S. 2 AO (übernommene eDaten
+  gelten als Angaben des Steuerpflichtigen), § 153 AO (Berichtigungspflicht).
+- **Aufbewahrung:** Identifizierung fünf Jahre (§ 87d Abs. 2 AO), Handakte mit der Freigabe zehn
+  Jahre (§ 66 Abs. 1 StBerG).
+
+## 7. Dienstwagen (Kfz-Gestellung)
+
+- **Keine gesetzliche Form** für die Überlassung; die einfache elektronische Signatur genügt. Das
+  BMF verlangt aber für einzelne Erklärungen „schriftlich“ (Fahrtage der Einzelbewertung,
+  Nutzungsverzicht, Kostenerklärung; BMF vom 03.03.2022). Ob die einfache elektronische Signatur
+  das erfüllt, ist _nicht verifiziert_ — den Nutzungsverzicht vorerst auf Papier.
+- **Listenpreis:** inländischer Bruttolistenpreis bei Erstzulassung plus werkseitige
+  Sonderausstattung, abgerundet auf volle 100 € (R 8.1 Abs. 9 Nr. 1 S. 6 LStR).
+- **Elektro 0,25 %:** keine CO2-Emission und Listenpreis höchstens 100.000 € bei Anschaffung nach
+  dem 30.06.2025 (§ 52 Abs. 12 S. 6 EStG). Welches Datum bei Arbeitnehmern entscheidet
+  (Anschaffung oder erstmalige Überlassung), ist _nicht verifiziert_ — der Entwurf fragt beide.
+- **Einzelbewertung der Fahrten Wohnung – erste Tätigkeitsstätte:** 0,002 % je Fahrt, höchstens
+  180 Fahrten im Jahr, monatliche Angabe der Fahrtage mit Datum (BMF vom 03.03.2022).
+- **Ladestrom ab 2026:** keine Monatspauschalen mehr; Strompreispauschale 2026 34 Cent/kWh oder
+  Vertragspreis, eigener Zähler (BMF vom 11.11.2025).
+
+## 8. Monatliche Meldung der Lohndaten
+
+- **Fristen der Kanzlei:** Beiträge fällig am drittletzten Bankarbeitstag (§ 23 Abs. 1 SGB IV),
+  Beitragsnachweis zwei Arbeitstage vorher (§ 28f Abs. 3 S. 1 SGB IV), beides am Gesetzestext
+  geprüft. Ohne Meldung darf die Kanzlei mit den Beiträgen des Vormonats rechnen, außer für
+  Einmalzahlungen. Den Abgabetag für den Arbeitgeber legt die Kanzlei fest (Konfiguration, kein
+  gesetzlicher Termin).
+- **Die Meldung ersetzt keine Arbeitszeitaufzeichnung:** Minijobs und Branchen nach § 2a
+  SchwarzArbG zeichnen Beginn, Ende und Dauer der täglichen Arbeitszeit bis zum 7. Tag danach auf
+  und bewahren sie zwei Jahre auf (§ 17 MiLoG); dazu § 16 Abs. 2 ArbZG.
+- **Fehlzeiten mit Datum:** Entgeltfortzahlung bis sechs Wochen, erst nach vier Wochen
+  Beschäftigung (§ 3 EFZG); „U“ im Lohnkonto bei mindestens fünf Arbeitstagen ohne Lohn (§ 41 EStG,
+  § 4 LStDV); unbezahlter Urlaub über einen Monat beendet die Versicherungspflicht (§ 7 Abs. 3
+  SGB IV). **Keine Diagnosen** — Gesundheitsdaten; die AU kommt elektronisch (§ 109 SGB IV).
+- **Pfändung:** Die Drittschuldnererklärung ist binnen zwei Wochen fällig (§ 840 ZPO) — sofort
+  weitergeben, nicht mit der Monatsmeldung.
+- **Zuschläge** nach § 3b EStG (Nacht, Sonntag, Feiertag; am Gesetzestext geprüft); beitragsfrei in
+  der SV nur bis 25 €/h Grundlohn (§ 1 SvEV, Sekundärquellen).
+
+## 9. Signatur und Zeit
 
 - **Einfache elektronische Signatur:** Die Unterschrift in der App ist eine einfache elektronische
   Signatur (eIDAS Art. 3 Nr. 10). Sie ist weder fortgeschritten noch qualifiziert.
@@ -142,3 +246,31 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
 - DATEV SmartCard / mIDentity:
   https://www.datev.de/web/de/mydatev/datev-cloud-sicherheit/anmeldeverfahren-bei-datev/datev-smartcard-datev-midentity/
 - Bundesnetzagentur zur DATEV-Zertifizierungsstelle: https://davedata.bundesnetzagentur.de/TL-Links/DATEV.html
+- § 26 BDSG: https://www.gesetze-im-internet.de/bdsg_2018/__26.html
+- Hessische Datenschutzaufsicht, Handreichung zum EuGH-Urteil C-34/21:
+  https://www.datenschutz.hessen.de/sites/datenschutz.hessen.de/files/2023-05/handreichung_beschaeftigtendatenschutz_eugh-urteil.pdf
+- BAG, Urteil vom 16.02.2012 – 6 AZR 553/10:
+  https://www.bundesarbeitsgericht.de/wp-content/uploads/2021/01/6-AZR-553-10.pdf
+- SGB IX §§ 151, 154, 160, 163, 173, 208: https://www.gesetze-im-internet.de/sgb_9_2018/
+- § 28i SGB IV: https://www.gesetze-im-internet.de/sgb_4/__28i.html; § 175 SGB V:
+  https://www.gesetze-im-internet.de/sgb_5/__175.html
+- § 8, § 22, § 23, § 28f SGB IV: https://www.gesetze-im-internet.de/sgb_4/
+- § 55 SGB XI: https://www.gesetze-im-internet.de/sgb_11/__55.html
+- Gemeinsame Grundsätze DaBPV (Version 1.0):
+  https://www.gkv-datenaustausch.de/media/dokumente/abrufverfahren/elterneigenschaft/grundsaetze_8/Gemeinsame_Grundsaetze_DaBPV_V01.00.00.pdf
+- § 257 SGB V: https://www.gesetze-im-internet.de/sgb_5/__257.html; § 61 SGB XI:
+  https://www.gesetze-im-internet.de/sgb_11/__61.html
+- § 39, § 52 EStG: https://www.gesetze-im-internet.de/estg/__39.html,
+  https://www.gesetze-im-internet.de/estg/__52.html
+- BMF vom 03.06.2025 (PKV-Datenaustausch ab 2026):
+  https://www.elster.de/elsterweb/attachments/elstam_(arbeitgeber)/2025-06-03-dataustausch-priv-kv-pv-finw-arbeitg-1.pdf
+- BMF vom 13.12.2024 (ELStAM):
+  https://elster.de/elsterweb/attachments/elstam_(arbeitgeber)/2024-12-13-ELStAM-elektr-lohnsteuerabzugsmerkmale.pdf
+- § 87d AO: https://www.gesetze-im-internet.de/ao_1977/__87d.html; § 150 AO:
+  https://www.gesetze-im-internet.de/ao_1977/__150.html; § 25 EStG:
+  https://www.gesetze-im-internet.de/estg/__25.html; § 66 StBerG:
+  https://www.gesetze-im-internet.de/stberg/__66.html
+- § 17 MiLoG: https://www.gesetze-im-internet.de/milog/__17.html; § 3 EFZG:
+  https://www.gesetze-im-internet.de/entgfg/__3.html; § 840 ZPO:
+  https://www.gesetze-im-internet.de/zpo/__840.html; § 3b EStG:
+  https://www.gesetze-im-internet.de/estg/__3b.html
