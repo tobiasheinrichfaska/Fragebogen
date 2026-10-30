@@ -214,6 +214,8 @@ const FIELD_KEYS = [
   'computed',
   'initial',
   'masterData',
+  'rowLabel',
+  'carryOver',
 ] as const;
 
 function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | undefined {
@@ -257,6 +259,9 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
       : d.string(o.initial, `${path}.initial`, OPTION_ID);
   const masterData =
     o.masterData === undefined ? undefined : d.string(o.masterData, `${path}.masterData`, ID);
+  const rowLabel = o.rowLabel === undefined ? undefined : d.string(o.rowLabel, `${path}.rowLabel`);
+  const carryOver =
+    o.carryOver === undefined ? undefined : d.boolean(o.carryOver, `${path}.carryOver`);
   if (
     id === undefined ||
     role === undefined ||
@@ -286,6 +291,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(computed === undefined ? {} : { computed }),
     ...(initial === undefined ? {} : { initial }),
     ...(masterData === undefined ? {} : { masterData }),
+    ...(rowLabel === undefined ? {} : { rowLabel }),
+    ...(carryOver === undefined ? {} : { carryOver }),
   };
 }
 
@@ -524,6 +531,25 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
       report(`${path}.columns`, 'only repeatGroup fields have columns');
     }
     if (isColumn && field.type === 'repeatGroup') report(path, 'repeat groups cannot be nested');
+    if (isColumn && field.type === 'file') report(path, 'a table column cannot hold a file');
+    if (field.rowLabel !== undefined && field.type !== 'repeatGroup') {
+      report(`${path}.rowLabel`, 'only tables have a row label');
+    }
+    if (isColumn && field.id === 'rowId')
+      report(`${path}.id`, '"rowId" is reserved for the row id');
+    // v1: a column belongs to its table's role and has no conditions or extras of its own.
+    for (const key of ['showIf', 'requiredIf', 'initial', 'masterData', 'computed'] as const) {
+      if (isColumn && field[key] !== undefined)
+        report(`${path}.${key}`, `table columns cannot have ${key}`);
+    }
+    for (const column of field.columns ?? []) {
+      if (column.role !== field.role) {
+        report(
+          `${path}.columns`,
+          `column "${column.id}" must belong to the table's role "${field.role}"`,
+        );
+      }
+    }
     if (field.multiline !== undefined && field.type !== 'text') {
       report(`${path}.multiline`, 'only text fields can be multiline');
     }

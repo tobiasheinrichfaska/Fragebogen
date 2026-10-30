@@ -3,6 +3,7 @@
 // its condition counts as unanswered, so conditions that depend on it are false as well.
 import { describeCondition, evaluateCondition } from './conditions';
 import { canonicalHash } from './hash';
+import { missingCells } from './normalize';
 import type {
   FieldDefinition,
   FieldId,
@@ -111,9 +112,15 @@ export function fieldStates(
         isVisible &&
         (field.required ||
           (field.requiredIf !== undefined && evaluateCondition(field.requiredIf, valueOf)));
+      // A table is also incomplete when a row leaves a required column empty.
+      const incomplete = isVisible && missingCells(field, valueOf(field.id)).length > 0;
       return [
         field.id,
-        { visible: isVisible, required, missing: required && valueOf(field.id) === null },
+        {
+          visible: isVisible,
+          required,
+          missing: (required && valueOf(field.id) === null) || incomplete,
+        },
       ];
     }),
   );

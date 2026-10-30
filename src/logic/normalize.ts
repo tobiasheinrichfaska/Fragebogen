@@ -2,8 +2,8 @@
 // form; verification hashes the stored values as they are. A later change of these rules can then
 // never flip an old verdict — it requires a new CANON_VERSION instead.
 import { parseIsoDate } from './dates';
-import { accept, reject, type Checked } from './issues';
-import { isWellFormed } from './jcs';
+import { accept, reject, type Checked, type IssueCode } from './issues';
+import { isPlainObject, isWellFormed } from './jcs';
 import type { ChoiceOption, FieldDefinition, FieldType, FieldValue, IsoDate } from './model';
 import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
@@ -145,10 +145,82 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
     const chosen = normalizeMultiChoice(raw, field.options ?? []);
     return chosen.ok && chosen.value.length === 0 ? accept(null) : chosen;
   },
-  // Row ids and cross-role columns are designed together with the first form using them (step 5).
-  repeatGroup: () => reject('type.unsupported'),
+  repeatGroup: (raw, field) => {
+    const rows = normalizeRows(field, raw);
+    return rows.ok ? accept(rows.value, rows.warnings) : reject(rows.issue);
+  },
   file: () => reject('type.unsupported'),
 };
+
+/** Row ids of a table: "r1", "r2", … — a new row takes the next free number, ids never shift. */
+export const ROW_ID = /^r[1-9][0-9]{0,2}$/;
+export const ROW_ID_KEY = 'rowId';
+export const MAX_ROWS = 30;
+
+export type RowsResult =
+  | { ok: true; value: FieldValue; warnings: readonly IssueCode[] }
+  | { ok: false; issue: IssueCode; row?: number; column?: string };
+
+/**
+ * A table (repeat group): a list of rows `{ rowId, <column>: value, … }`. Every cell is normalised
+ * by its column's type; every row lists all columns (unanswered as null), so the hash does not
+ * depend on how the input was spelled. Rows without any answer are dropped; no rows = null.
+ * A refusal names the row (0-based) and column, so the UI can point at the cell.
+ */
+export function normalizeRows(field: FieldDefinition, raw: unknown): RowsResult {
+  if (raw === null) return { ok: true, value: null, warnings: [] };
+  if (!Array.isArray(raw)) return { ok: false, issue: 'value.type' };
+  if (raw.length > MAX_ROWS) return { ok: false, issue: 'rows.tooMany' };
+  const columns = field.columns ?? [];
+  const allowed = new Set([ROW_ID_KEY, ...columns.map((column) => column.id)]);
+  const seen = new Set<string>();
+  const rows: Record<string, FieldValue>[] = [];
+  const warnings: IssueCode[] = [];
+  for (const [index, row] of raw.entries()) {
+    if (!isPlainObject(row)) return { ok: false, issue: 'value.type', row: index };
+    const unknown = Object.keys(row).find((key) => !allowed.has(key));
+    if (unknown !== undefined)
+      return { ok: false, issue: 'rows.unknownColumn', row: index, column: unknown };
+    const rowId = row[ROW_ID_KEY];
+    if (typeof rowId !== 'string' || !ROW_ID.test(rowId) || seen.has(rowId)) {
+      return { ok: false, issue: 'rows.rowId', row: index };
+    }
+    seen.add(rowId);
+    const cells: Record<string, FieldValue> = { [ROW_ID_KEY]: rowId };
+    for (const column of columns) {
+      const cell = normalizeFieldValue(column, row[column.id] ?? null);
+      if (!cell.ok) return { ok: false, issue: cell.issue, row: index, column: column.id };
+      warnings.push(...cell.warnings);
+      cells[column.id] = cell.value;
+    }
+    if (columns.some((column) => cells[column.id] !== null)) rows.push(cells);
+  }
+  return { ok: true, value: rows.length === 0 ? null : rows, warnings };
+}
+
+/** Cells of required columns left empty, per row — a table with such rows is incomplete. */
+export function missingCells(
+  field: FieldDefinition,
+  value: FieldValue | undefined,
+): { rowId: string; column: string }[] {
+  if (field.type !== 'repeatGroup' || !Array.isArray(value)) return [];
+  const required = (field.columns ?? []).filter((column) => column.required);
+  return value.flatMap((row) => {
+    if (!isPlainObject(row)) return [];
+    const rowId = String(row[ROW_ID_KEY] ?? '');
+    return required
+      .filter((column) => (row[column.id] ?? null) === null)
+      .map((column) => ({ rowId, column: column.id }));
+  });
+}
+
+/** Id for a new row: one above the highest existing number. */
+export function nextRowId(rows: readonly { rowId?: unknown }[]): string {
+  const numbers = rows.map((row) =>
+    typeof row.rowId === 'string' && ROW_ID.test(row.rowId) ? Number(row.rowId.slice(1)) : 0,
+  );
+  return `r${Math.max(0, ...numbers) + 1}`;
+}
 
 /** Normalises one raw input value for its field; the result is what gets stored and hashed. */
 export function normalizeFieldValue(field: FieldDefinition, raw: unknown): Checked<FieldValue> {

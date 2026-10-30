@@ -81,6 +81,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/formDrafts.test.ts`                      | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                                        |
 | `tests/forms/catalogue.test.ts`                       | `docs/formulare/` matches the definitions (file snapshots), no stale catalogues                                                                                                                                                                              |
 | `tests/forms/sofortmeldung.test.ts`                   | The Sofortmeldung 0.1.0 through the engine: what is asked, preselections, notices, both station orders, part link, minor + guardian, name cross-check, master data                                                                                           |
+| `tests/forms/prefill.test.ts`                         | Sofortmeldung → Personalfragebogen draft, last month → new questionnaire (`carryOver: false` stays empty, sealed parts untouched)                                                                                                                            |
 | `src/logic/interview.ts`                              | Interview logic: `interviewSteps` (notices, available questions in form order with level and state, summary), `stepAfter`/`stepBefore`/`resumeStep`, `interviewProgress`, `interviewSummary` (missing, deferred, inactive answers with reason, notices)      |
 | `src/logic/dependencies.ts`                           | `fieldDependencies`: which answers rest on others (showIf level 0…n, requiredIf separately, what a field enables)                                                                                                                                            |
 | `src/logic/dataPackage.ts`                            | Data package = questionnaire + its form definition (`fragebogen-paket` 1): `buildPackage`, `packageText` (JCS), strict `decodePackage` (definition must hash to the sealed one; origin `published` / `embedded`)                                             |
@@ -89,6 +90,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/io/qr.ts`                                        | `qrMatrix` (qrcode-generator, MIT) and `readQrCodes` (jsQR, Apache-2.0): cuts the image along white rows/columns into cells, decodes each; `rasterize` for tests                                                                                             |
 | `src/logic/masterDataLink.ts`                         | `masterDataFragment` / `parseMasterDataFragment`: master data in the bookmark link (`#stammdaten=1&…`), strict all-or-nothing parsing with German messages                                                                                                   |
 | `src/logic/masterData.ts`                             | `masterDataOf` / `applyMasterData`: a station's own master data (`FieldDefinition.masterData` keys) to remember on its device and fill in again; refused values reported                                                                                     |
+| `src/logic/prefill.ts`                                | `prefillFrom`: answers taken over from another questionnaire (Sofortmeldung → Personalfragebogen, last month → new month) by field id, role and type, only into empty fields, never `carryOver: false`; report per role                                      |
 | `tests/fixtures/forms/beispiel/1.0.0.json`            | Fictitious fixture form (3 roles, showIf, notice, rule, match key) for the definition/registry tests; frozen by golden files                                                                                                                                 |
 | `tests/fixtures/forms/beispiel/1.1.0.json`            | Same form with a required guardian name field (`signerNameField`); frozen by golden files                                                                                                                                                                    |
 | `tests/forms/publishedForms.test.ts`                  | Guards the real `forms/` folder: valid, published, unchanged hash, file naming, field-id stability                                                                                                                                                           |
@@ -97,6 +99,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/ui/StartScreen.tsx`                              | New questionnaire (latest published version per form, test versions marked), open file, delete all data                                                                                                                                                      |
 | `src/ui/RolesScreen.tsx`                              | Role choice with state per role (guardian requirement), blockers and gaps, reopen / new version, save, PDF                                                                                                                                                   |
 | `src/ui/InterviewScreen.tsx`                          | Interview steps: notice (confirm), question (help, explainer, "Weiß ich gerade nicht"), summary (missing, deferred, inactive, other roles read-only, master-data link)                                                                                       |
+| `src/ui/TableStep.tsx`                                | Interview step for a table: one card per row (`rowLabel`), add/remove rows, error at the offending cell                                                                                                                                                      |
 | `src/ui/FieldInput.tsx`                               | Input per field type (text-like kept locally until "Weiter", choices/yes-no as buttons)                                                                                                                                                                      |
 | `src/ui/fieldKinds.ts`                                | `isTextLike`                                                                                                                                                                                                                                                 |
 | `src/ui/SignatureScreen.tsx`                          | Step 7: confirmation text, draw / type / complete without signature (per role), seal with device time + system note                                                                                                                                          |
@@ -342,16 +345,20 @@ Key design decisions (details in `docs/plan.md`):
 - **Versicherungsnummer:** only shape and check digit; area number and the birth-date part are not
   checked (a cross-check with the birth date will be a form rule).
 - **Money:** at most 2 decimals, no negative amounts, at most 12 integer digits.
-- **Field types `repeatGroup` and `file`** are not normalised yet (`type.unsupported`) — row ids and
-  cross-role columns are designed with the first form that needs them (step 5). No compute
-  functions exist yet, so `computed` fields are rejected.
+- **Field type `file`** is not normalised yet (`type.unsupported`). No compute functions exist yet,
+  so `computed` fields are rejected.
+- **Tables (`repeatGroup`) belong to one role** — columns of another role (e.g. employer days next
+  to the person's previous jobs) are not supported; such data is a separate table of that role.
+  At most 30 rows; conditions cannot look into table cells.
+- **Taking answers over from another file** (`prefillFrom`) matches by field id, role and type
+  only; a renamed field in another form is not recognised.
 - **`forms/published.json` immutability** is only checked against the current files; removing or
   editing an entry _together with_ its file is caught once CI compares with the last release (step
   12). Golden files guard only the fixture form so far.
 - **Age check relies on self-reported data:** the birth date is the person's own answer and the
   signing day comes from the device clock; a wrong birth date or a manipulated clock is not
   detectable (a signature dated after a receipt is flagged as implausible).
-- **Fields of type `repeatGroup`/`file` cannot be sealed yet** (their values are not normalised).
+- **Fields of type `file` cannot be sealed yet** (their values are not normalised).
 - **Merge needs the form in the registry** for labels, contradictions and gaps; unknown forms are
   merged without them. A receipt is added by the Kanzlei station (step 9), not by the merge.
 - **Conditions cover one role only** — a field cannot depend on another role's answer (e.g. an
@@ -423,4 +430,4 @@ pages (paper path) and a visible address of the app plus a clickable URI link (a
 configuration, never data in the link). Planned for step 6: links to explainer videos from the
 configuration.
 
-_Last updated: 2026-10-29_
+_Last updated: 2026-10-30_

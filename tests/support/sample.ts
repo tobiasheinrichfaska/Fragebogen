@@ -392,3 +392,46 @@ export function chainForm(): RegisteredForm {
   );
   return registered(raw);
 }
+
+/**
+ * In-memory variant of the fixture (never published) with a table: the person lists children
+ * (name and date of birth required, relationship as a choice).
+ */
+export function tableForm(): RegisteredForm {
+  const raw = structuredClone(beispiel) as unknown as {
+    version: string;
+    sections: { id: string; title: string; fields: Record<string, unknown>[] }[];
+  };
+  raw.version = '1.6.0';
+  const column = (id: string, extra: Record<string, unknown>) => ({
+    id,
+    role: 'person',
+    type: 'text',
+    label: id,
+    required: true,
+    purpose: 'Test der Tabellen',
+    ...extra,
+  });
+  raw.sections[0]?.fields.push({
+    id: 'kinder',
+    role: 'person',
+    type: 'repeatGroup',
+    label: 'Kinder',
+    required: false,
+    purpose: 'Test der Tabellen',
+    columns: [
+      column('kindName', { label: 'Name' }),
+      column('kindGeburtsdatum', { label: 'Geburtsdatum', type: 'date' }),
+      column('kindVerhaeltnis', {
+        label: 'Verhältnis',
+        type: 'choice',
+        required: false,
+        options: [
+          { id: 'leiblich', label: 'leibliches Kind' },
+          { id: 'pflege', label: 'Pflegekind' },
+        ],
+      }),
+    ],
+  });
+  return registered(raw);
+}

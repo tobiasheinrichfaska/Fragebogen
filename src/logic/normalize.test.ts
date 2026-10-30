@@ -281,8 +281,11 @@ describe('normalizeFieldValue', () => {
     });
   });
 
-  it.each<FieldType>(['repeatGroup', 'file'])('reports %s as not yet supported', (type) => {
-    expect(normalizeFieldValue(field(type), [])).toEqual({ ok: false, issue: 'type.unsupported' });
+  it('reports file fields as not yet supported', () => {
+    expect(normalizeFieldValue(field('file'), [])).toEqual({
+      ok: false,
+      issue: 'type.unsupported',
+    });
   });
 
   it('is idempotent on its own output for every scalar type', () => {

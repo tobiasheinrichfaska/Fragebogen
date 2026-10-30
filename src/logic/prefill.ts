@@ -1,0 +1,114 @@
+// Taking answers over from another questionnaire (Tobias, 2026-10-30): a Sofortmeldung fills the
+// Personalfragebogen, last month's payroll report fills the new one. The same field id means the
+// same thing across forms (definition rule within a form, workspace convention across forms), so
+// values move by id — only when the type matches, only into empty fields, never for fields marked
+// `carryOver: false`. They go through setValue in form order, so a follow-up is filled only when
+// its condition holds, and every value that cannot be taken over is reported with its reason.
+import { fieldsById, fieldsOfRole } from './form';
+import type { RegisteredForm } from './formRegistry';
+import type { FieldDefinition, FieldId, FieldValue, Questionnaire, RoleId } from './model';
+import { ROW_ID_KEY } from './normalize';
+import {
+  currentPart,
+  latestSealed,
+  setValue,
+  startPart,
+  TRANSITION_MESSAGES,
+} from './questionnaire';
+import { isPlainObject } from './jcs';
+
+export interface PrefillReport {
+  role: RoleId;
+  /** Fields filled from the other questionnaire. */
+  applied: FieldId[];
+  /** Fields that already had an answer here; it is kept. */
+  kept: FieldId[];
+  /** Values the form refused, with the German reason. */
+  skipped: { fieldId: FieldId; reason: string }[];
+  /** Set when the role was not touched at all, e.g. because its part is already sealed. */
+  untouched?: string;
+}
+
+/** A table's rows restricted to the target's columns; columns marked carryOver: false stay empty. */
+function tableValue(
+  source: FieldDefinition,
+  target: FieldDefinition,
+  value: FieldValue,
+): FieldValue {
+  if (!Array.isArray(value)) return null;
+  const sourceColumns = new Map((source.columns ?? []).map((column) => [column.id, column]));
+  const columns = (target.columns ?? []).filter(
+    (column) => column.carryOver !== false && sourceColumns.get(column.id)?.type === column.type,
+  );
+  const rows = value.flatMap((row) => {
+    if (!isPlainObject(row)) return [];
+    const cells: Record<string, FieldValue> = { [ROW_ID_KEY]: row[ROW_ID_KEY] ?? null };
+    for (const column of columns)
+      cells[column.id] = (row[column.id] as FieldValue | undefined) ?? null;
+    return columns.some((column) => cells[column.id] !== null) ? [cells] : [];
+  });
+  return rows.length === 0 ? null : rows;
+}
+
+/**
+ * Fills the roles of `target` from the latest version (sealed, else draft) of the same roles in
+ * `source`. A role without a part gets a new draft; a role whose part is already sealed is left
+ * alone.
+ */
+export function prefillFrom(
+  target: Questionnaire,
+  targetForm: RegisteredForm,
+  source: Questionnaire,
+  sourceForm: RegisteredForm,
+): { questionnaire: Questionnaire; reports: PrefillReport[] } {
+  const sourceFields = fieldsById(sourceForm.definition);
+  let q = target;
+  const reports: PrefillReport[] = [];
+  for (const role of targetForm.definition.roles) {
+    const from = latestSealed(source, role.id) ?? currentPart(source, role.id);
+    if (!from) continue;
+    const report: PrefillReport = { role: role.id, applied: [], kept: [], skipped: [] };
+    reports.push(report);
+    const existing = currentPart(q, role.id);
+    if (existing && existing.status !== 'draft') {
+      report.untouched = 'Dieser Teil ist hier schon abgeschlossen; es wurde nichts übernommen.';
+      continue;
+    }
+    if (!existing) {
+      const started = startPart(q, targetForm, role.id);
+      if (!started.ok) {
+        report.untouched = TRANSITION_MESSAGES[started.code];
+        continue;
+      }
+      q = started.questionnaire;
+    }
+    for (const field of fieldsOfRole(targetForm.definition, role.id)) {
+      const origin = sourceFields.get(field.id);
+      const value = from.data[field.id];
+      if (
+        field.carryOver === false ||
+        !origin ||
+        origin.role !== role.id ||
+        origin.type !== field.type ||
+        value === undefined ||
+        value === null
+      ) {
+        continue;
+      }
+      if ((currentPart(q, role.id)?.data[field.id] ?? null) !== null) {
+        report.kept.push(field.id);
+        continue;
+      }
+      const taken = field.type === 'repeatGroup' ? tableValue(origin, field, value) : value;
+      if (taken === null) continue;
+      const result = setValue(q, targetForm, role.id, field.id, taken);
+      if (result.ok) {
+        q = result.questionnaire;
+        report.applied.push(field.id);
+      } else {
+        report.skipped.push({ fieldId: field.id, reason: TRANSITION_MESSAGES[result.code] });
+      }
+    }
+  }
+  return { questionnaire: q, reports };
+}

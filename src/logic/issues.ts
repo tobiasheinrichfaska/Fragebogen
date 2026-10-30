@@ -22,6 +22,9 @@ export type IssueCode =
   | 'svNumber.checksum'
   | 'betriebsnummer.format'
   | 'choice.unknown'
+  | 'rows.tooMany'
+  | 'rows.rowId'
+  | 'rows.unknownColumn'
   | 'signature.nameMismatch';
 
 export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
@@ -47,6 +50,9 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'svNumber.checksum': 'Die Versicherungsnummer stimmt nicht (Prüfziffer).',
   'betriebsnummer.format': 'Die Betriebsnummer hat genau 8 Ziffern.',
   'choice.unknown': 'Bitte eine der angebotenen Möglichkeiten wählen.',
+  'rows.tooMany': 'Die Tabelle hat zu viele Zeilen (höchstens 30).',
+  'rows.rowId': 'Eine Tabellenzeile ist fehlerhaft gekennzeichnet.',
+  'rows.unknownColumn': 'Eine Tabellenzeile enthält eine unbekannte Spalte.',
   'signature.nameMismatch': 'Der getippte Name weicht vom angegebenen Namen ab. Bitte prüfen.',
 };
 

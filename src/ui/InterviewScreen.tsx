@@ -23,6 +23,7 @@ import {
 import { Banner, Card, Explainer, NoticeText, type BannerMessage } from './common';
 import { isTextLike } from './fieldKinds';
 import { FieldInput } from './FieldInput';
+import { TableStep } from './TableStep';
 
 interface Props {
   session: Session;
@@ -41,6 +42,8 @@ export function InterviewScreen(props: Props) {
   const role =
     session.role === undefined ? undefined : roleOf(session.form.definition, session.role);
   if (!step || !role) return null;
+  const tableField =
+    step.kind === 'question' ? fieldsById(session.form.definition).get(step.fieldId) : undefined;
   return (
     <div className="interview">
       <div className="interview-head">
@@ -51,7 +54,18 @@ export function InterviewScreen(props: Props) {
         <progress max={Math.max(progress.total, 1)} value={progress.answered} />
       </div>
       {step.kind === 'notice' && <NoticeStep {...props} step={step} />}
-      {step.kind === 'question' && <QuestionStep key={step.key} {...props} step={step} />}
+      {step.kind === 'question' && tableField?.type === 'repeatGroup' && (
+        <TableStep
+          key={step.key}
+          session={session}
+          field={tableField}
+          step={step}
+          onSession={props.onSession}
+        />
+      )}
+      {step.kind === 'question' && tableField?.type !== 'repeatGroup' && (
+        <QuestionStep key={step.key} {...props} step={step} />
+      )}
       {step.kind === 'summary' && <SummaryStep {...props} />}
       <p className="pause">
         <button type="button" className="link" onClick={onPause}>

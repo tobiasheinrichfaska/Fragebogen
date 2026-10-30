@@ -50,7 +50,18 @@ const FORMATTERS: Readonly<
   svNumber: (value) =>
     typeof value === 'string' ? grouped(value, GROUPS.svNumber ?? []) : String(value),
   betriebsnummer: (value) => String(value),
-  repeatGroup: () => '(Tabelle – Anzeige folgt)',
+  repeatGroup: (value, field) =>
+    Array.isArray(value)
+      ? value
+          .map((row, i) => {
+            const cells = typeof row === 'object' && row !== null && !Array.isArray(row) ? row : {};
+            const parts = (field.columns ?? []).map(
+              (column) => `${column.label}: ${displayValue(column, cells[column.id])}`,
+            );
+            return `${i + 1}. ${parts.join('; ')}`;
+          })
+          .join('\n')
+      : String(value),
   file: () => '(Datei – Anzeige folgt)',
 };
 

@@ -105,8 +105,15 @@ export interface FieldDefinition {
   options?: ChoiceOption[];
   /** The field is available for input only while this condition holds; otherwise it is hidden. */
   showIf?: Condition;
-  /** Columns of a repeat group; a column may belong to another role (referenced by row id). */
+  /** Columns of a repeat group (table); v1: same role as the table, no conditions. */
   columns?: FieldDefinition[];
+  /** Tables only: what one row is called on screen, e.g. "Kind" → "Kind 1", "Kind 2". */
+  rowLabel?: string;
+  /**
+   * false: the answer is not taken over from another questionnaire (e.g. the hours of last month's
+   * payroll report). Default: taken over when the other form has the same field id and type.
+   */
+  carryOver?: boolean;
   /** Derived value: name of a pure function in the logic layer, never code in data. */
   computed?: { fn: string; args: FieldId[] };
   /**
