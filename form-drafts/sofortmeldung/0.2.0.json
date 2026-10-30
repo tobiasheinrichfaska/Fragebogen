@@ -46,7 +46,7 @@
           "type": "text",
           "label": "Familienname",
           "question": "Wie lautet Ihr Familienname?",
-          "help": "So, wie er in Ihrem Ausweis steht.",
+          "help": "So, wie er in Ihrem Ausweis steht – ohne Titel wie „Dr.“ und ohne Vorsatzwort wie „von“; nach diesen fragen wir gleich gesondert.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
         },
@@ -59,6 +59,80 @@
           "help": "Alle Vornamen, wie in Ihrem Ausweis.",
           "required": true,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)"
+        },
+        {
+          "id": "namensbestandteile",
+          "role": "person",
+          "type": "boolean",
+          "label": "Titel, Vorsatzwort oder Namenszusatz",
+          "question": "Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?",
+          "help": "Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.",
+          "required": true,
+          "initial": false,
+          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung"
+        },
+        {
+          "id": "titel",
+          "role": "person",
+          "type": "text",
+          "label": "Titel",
+          "question": "Welchen akademischen Grad oder Titel führen Sie im Namen?",
+          "help": "Zum Beispiel „Dr.“ oder „Prof. Dr.“ – so, wie er in Ihrem Ausweis steht.",
+          "required": false,
+          "showIf": {
+            "field": "namensbestandteile",
+            "equals": true
+          },
+          "because": "Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.",
+          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung",
+          "quickAnswers": [
+            {
+              "label": "Keinen",
+              "value": null
+            }
+          ]
+        },
+        {
+          "id": "vorsatzwort",
+          "role": "person",
+          "type": "text",
+          "label": "Vorsatzwort",
+          "question": "Wie lautet das Vorsatzwort Ihres Namens?",
+          "help": "Zum Beispiel „von“, „van der“ oder „de“ – so, wie es in Ihrem Ausweis steht.",
+          "required": false,
+          "showIf": {
+            "field": "namensbestandteile",
+            "equals": true
+          },
+          "because": "Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.",
+          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung",
+          "quickAnswers": [
+            {
+              "label": "Keines",
+              "value": null
+            }
+          ]
+        },
+        {
+          "id": "namenszusatz",
+          "role": "person",
+          "type": "text",
+          "label": "Namenszusatz",
+          "question": "Wie lautet der Namenszusatz?",
+          "help": "Zum Beispiel „Freiherr“, „Gräfin“ oder „Edle“.",
+          "required": false,
+          "showIf": {
+            "field": "namensbestandteile",
+            "equals": true
+          },
+          "because": "Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.",
+          "purpose": "Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung",
+          "quickAnswers": [
+            {
+              "label": "Keinen",
+              "value": null
+            }
+          ]
         },
         {
           "id": "geburtsnameWieFamilienname",

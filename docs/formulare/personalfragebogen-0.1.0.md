@@ -8,7 +8,7 @@
 | Formular | personalfragebogen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026 |
-| Definition (SHA-256) | 6b7e260c97e01759313176f0bb6c7effa1f781fad1f47a37d7e860f88661dbf7 |
+| Definition (SHA-256) | a419b7ce90f309424d43e62ef97298c9e22fd776189d898d0b173615636c2bba |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -27,8 +27,12 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname?<br>Hilfe: So, wie er in Ihrem Ausweis steht. | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung |
+| Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname?<br>Hilfe: So, wie er in Ihrem Ausweis steht – ohne Titel wie „Dr.“ und ohne Vorsatzwort wie „von“; nach diesen fragen wir gleich gesondert. | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung |
 | Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen?<br>Hilfe: Alle Vornamen, wie in Ihrem Ausweis. | Beschäftigte Person | Text | immer | Pflicht | Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung |
+| Titel, Vorsatzwort oder Namenszusatz (namensbestandteile)<br>Frage: Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?<br>Hilfe: Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern. | Beschäftigte Person | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung |
+| Titel (titel)<br>Frage: Welchen akademischen Grad oder Titel führen Sie im Namen?<br>Hilfe: Zum Beispiel „Dr.“ oder „Prof. Dr.“ – so, wie er in Ihrem Ausweis steht.<br>Knöpfe: „Keinen“ (leer lassen) | Beschäftigte Person | Text | erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist<br>Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern. | optional | Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung |
+| Vorsatzwort (vorsatzwort)<br>Frage: Wie lautet das Vorsatzwort Ihres Namens?<br>Hilfe: Zum Beispiel „von“, „van der“ oder „de“ – so, wie es in Ihrem Ausweis steht.<br>Knöpfe: „Keines“ (leer lassen) | Beschäftigte Person | Text | erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist<br>Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern. | optional | Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung |
+| Namenszusatz (namenszusatz)<br>Frage: Wie lautet der Namenszusatz?<br>Hilfe: Zum Beispiel „Freiherr“, „Gräfin“ oder „Edle“.<br>Knöpfe: „Keinen“ (leer lassen) | Beschäftigte Person | Text | erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist<br>Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern. | optional | Meldungen zur Sozialversicherung (Datenbaustein Name nach den Gemeinsamen Grundsätzen zur DEÜV: Titel, Vorsatzwort und Namenszusatz in eigenen Feldern); Stammdaten der Lohnabrechnung |
 | Ist Ihr Geburtsname gleich Ihrem Familiennamen? (geburtsnameWieFamilienname)<br>Frage: Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?<br>Hilfe: Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten. | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Geburtsname (geburtsname)<br>Frage: Wie lautet Ihr Geburtsname? | Beschäftigte Person | Text | erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist<br>Warum: Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest. | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Geburtsdatum (geburtsdatum)<br>Frage: Wann sind Sie geboren?<br>Hilfe: Zum Beispiel 17.05.1990. | Beschäftigte Person | Datum | immer | Pflicht | Abruf der Lohnsteuerabzugsmerkmale (§ 39e Abs. 4 EStG); Meldungen zur Sozialversicherung; Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss |
@@ -392,6 +396,10 @@
 
 Eingerückte Angaben beruhen auf der Angabe darüber und werden direkt nach ihr abgefragt. Fällt die Voraussetzung später weg, bleibt die Antwort bis zur Unterschrift erhalten (sie kommt zurück, wenn die Voraussetzung wieder gilt), wird aber nicht mit unterschrieben.
 
+- Titel, Vorsatzwort oder Namenszusatz (Beschäftigte Person; unabhängig)
+  - Titel (Beschäftigte Person; Ebene 1) – erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist
+  - Vorsatzwort (Beschäftigte Person; Ebene 1) – erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist
+  - Namenszusatz (Beschäftigte Person; Ebene 1) – erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist
 - Ist Ihr Geburtsname gleich Ihrem Familiennamen? (Beschäftigte Person; unabhängig)
   - Geburtsname (Beschäftigte Person; Ebene 1) – erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist
 - Liegt die Anschrift im Ausland? (Beschäftigte Person; unabhängig)
