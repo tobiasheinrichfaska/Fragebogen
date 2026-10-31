@@ -246,6 +246,7 @@
         {
           "id": "versicherungsnummer",
           "role": "person",
+          "explainer": "versicherungsnummer",
           "type": "svNumber",
           "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
           "question": "Wie lautet Ihre Versicherungsnummer der Rentenversicherung?",

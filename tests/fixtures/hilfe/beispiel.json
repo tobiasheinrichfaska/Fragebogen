@@ -1,0 +1,61 @@
+{
+  "musters": [
+    {
+      "id": "beispielschreiben",
+      "title": "Beispielschreiben",
+      "basis": "frei erfunden, nur zum Testen",
+      "width": 210,
+      "height": 297,
+      "items": [
+        {
+          "kind": "text",
+          "x": 20,
+          "y": 22,
+          "text": "Beispielamt · Musterweg 1 · 12345 Musterstadt",
+          "size": 24
+        },
+        { "kind": "lines", "x": 20, "y": 40, "w": 70, "rows": 4 },
+        {
+          "kind": "field",
+          "id": "kundennummer",
+          "x": 120,
+          "y": 38,
+          "w": 70,
+          "h": 12,
+          "text": "Kundennummer",
+          "value": "12 345 678 901",
+          "size": 40
+        },
+        { "kind": "title", "x": 20, "y": 80, "text": "Ihr Beispielschreiben", "size": 50 },
+        { "kind": "lines", "x": 20, "y": 92, "w": 170, "rows": 12 },
+        { "kind": "box", "x": 20, "y": 160, "w": 170, "h": 40 }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "path": "beispiel-nummer",
+      "title": "Wo finde ich meine Beispielnummer?",
+      "intro": ["Die Beispielnummer hat 11 Ziffern."],
+      "choicesTitle": "Was haben Sie zur Hand?",
+      "choices": [
+        {
+          "id": "schreiben",
+          "label": "Beispielschreiben",
+          "muster": "beispielschreiben",
+          "target": "kundennummer",
+          "text": ["Oben rechts im Kasten „Kundennummer“."],
+          "source": { "label": "Beispielquelle", "url": "https://www.example.org/quelle" }
+        },
+        {
+          "id": "nichts",
+          "label": "Nichts davon",
+          "text": ["Fordern Sie die Nummer neu an."],
+          "links": [{ "label": "Anforderung", "url": "https://www.example.org/anfordern" }]
+        }
+      ],
+      "traps": ["Nicht die Aktennummer: Die hat Buchstaben."],
+      "stand": "2026-10-31"
+    }
+  ]
+}

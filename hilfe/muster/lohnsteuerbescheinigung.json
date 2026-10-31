@@ -1,0 +1,144 @@
+{
+  "id": "lohnsteuerbescheinigung",
+  "title": "Ausdruck der elektronischen Lohnsteuerbescheinigung",
+  "basis": "vereinfacht nach dem amtlichen Muster des Bundesministeriums der Finanzen für 2026 (Bekanntmachung vom 29.08.2025)",
+  "width": 210,
+  "height": 297,
+  "items": [
+    {
+      "kind": "title",
+      "x": 15,
+      "y": 20,
+      "text": "Ausdruck der elektronischen Lohnsteuerbescheinigung für 2026",
+      "size": 44
+    },
+    {
+      "kind": "text",
+      "x": 15,
+      "y": 27,
+      "text": "Nachstehende Daten wurden maschinell an die Finanzverwaltung übermittelt.",
+      "size": 24
+    },
+    { "kind": "box", "x": 15, "y": 34, "w": 82, "h": 30 },
+    { "kind": "lines", "x": 19, "y": 41, "w": 60, "rows": 4 },
+    { "kind": "text", "x": 15, "y": 74, "text": "Korrektur:", "size": 26 },
+    { "kind": "text", "x": 15, "y": 80, "text": "Stornierung:", "size": 26 },
+    { "kind": "text", "x": 15, "y": 86, "text": "Datum: 15.01.2027", "size": 26 },
+    {
+      "kind": "field",
+      "id": "steuerId",
+      "x": 15,
+      "y": 89,
+      "w": 82,
+      "h": 11,
+      "text": "Identifikationsnummer:",
+      "value": "99 999 999 999",
+      "size": 40
+    },
+    { "kind": "text", "x": 15, "y": 106, "text": "Personalnummer: 4711", "size": 26 },
+    { "kind": "text", "x": 15, "y": 112, "text": "Geburtsdatum: 01.01.1990", "size": 26 },
+    { "kind": "text", "x": 15, "y": 118, "text": "Transferticket: XXXX9999XXX99999", "size": 26 },
+    {
+      "kind": "text",
+      "x": 15,
+      "y": 128,
+      "text": "Für den letzten Lohnzahlungszeitraum wurden folgende",
+      "size": 24
+    },
+    {
+      "kind": "text",
+      "x": 15,
+      "y": 132,
+      "text": "Lohnsteuerabzugsmerkmale zugrunde gelegt:",
+      "size": 24
+    },
+    {
+      "kind": "field",
+      "id": "steuerklasse",
+      "x": 15,
+      "y": 136,
+      "w": 82,
+      "h": 10,
+      "text": "Steuerklasse/Faktor",
+      "value": "1",
+      "size": 34
+    },
+    {
+      "kind": "field",
+      "id": "kinderfreibetraege",
+      "x": 15,
+      "y": 148,
+      "w": 82,
+      "h": 10,
+      "text": "Zahl der Kinderfreibeträge",
+      "value": "0,5",
+      "size": 34
+    },
+    {
+      "kind": "field",
+      "id": "kirchensteuer",
+      "x": 15,
+      "y": 160,
+      "w": 82,
+      "h": 10,
+      "text": "Kirchensteuermerkmale",
+      "value": "ev",
+      "size": 34
+    },
+    { "kind": "lines", "x": 15, "y": 178, "w": 82, "rows": 3 },
+    { "kind": "box", "x": 15, "y": 200, "w": 82, "h": 34 },
+    {
+      "kind": "text",
+      "x": 17,
+      "y": 205,
+      "text": "Anschrift und Steuernummer des Arbeitgebers:",
+      "size": 22
+    },
+    { "kind": "lines", "x": 17, "y": 211, "w": 70, "rows": 4 },
+    { "kind": "text", "x": 103, "y": 40, "text": "1. Bescheinigungszeitraum", "size": 24 },
+    {
+      "kind": "text",
+      "x": 103,
+      "y": 47,
+      "text": "2. Zeiträume ohne Anspruch auf Arbeitslohn",
+      "size": 24
+    },
+    {
+      "kind": "text",
+      "x": 103,
+      "y": 54,
+      "text": "3. Bruttoarbeitslohn einschl. Sachbezüge",
+      "size": 24
+    },
+    { "kind": "text", "x": 103, "y": 61, "text": "4. Einbehaltene Lohnsteuer von 3.", "size": 24 },
+    {
+      "kind": "text",
+      "x": 103,
+      "y": 68,
+      "text": "5. Einbehaltener Solidaritätszuschlag von 3.",
+      "size": 24
+    },
+    {
+      "kind": "text",
+      "x": 103,
+      "y": 75,
+      "text": "6. Einbehaltene Kirchensteuer des Arbeitnehmers von 3.",
+      "size": 24
+    },
+    {
+      "kind": "text",
+      "x": 103,
+      "y": 82,
+      "text": "7. Einbehaltene Kirchensteuer des Ehegatten …",
+      "size": 24
+    },
+    {
+      "kind": "text",
+      "x": 103,
+      "y": 89,
+      "text": "8. In 3. enthaltene Versorgungsbezüge",
+      "size": 24
+    },
+    { "kind": "lines", "x": 103, "y": 96, "w": 92, "rows": 32 }
+  ]
+}

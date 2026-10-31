@@ -1,0 +1,61 @@
+{
+  "id": "lohnabrechnung",
+  "title": "Lohnabrechnung",
+  "basis": "frei erfunden; jedes Lohnprogramm ordnet die Angaben anders an",
+  "width": 210,
+  "height": 297,
+  "items": [
+    {
+      "kind": "title",
+      "x": 15,
+      "y": 20,
+      "text": "Abrechnung der Brutto-/Netto-Bezüge Januar 2027",
+      "size": 40
+    },
+    {
+      "kind": "text",
+      "x": 15,
+      "y": 28,
+      "text": "Beispiel GmbH · Musterweg 1 · 12345 Musterstadt",
+      "size": 24
+    },
+    { "kind": "box", "x": 15, "y": 34, "w": 85, "h": 32 },
+    { "kind": "lines", "x": 19, "y": 41, "w": 60, "rows": 4 },
+    {
+      "kind": "field",
+      "id": "steuerId",
+      "x": 110,
+      "y": 34,
+      "w": 85,
+      "h": 10,
+      "text": "Steuer-ID",
+      "value": "99 999 999 999",
+      "size": 34
+    },
+    {
+      "kind": "field",
+      "id": "versicherungsnummer",
+      "x": 110,
+      "y": 46,
+      "w": 85,
+      "h": 10,
+      "text": "Versicherungsnummer (SV-Nr.)",
+      "value": "99 999999 X 999",
+      "size": 34
+    },
+    {
+      "kind": "field",
+      "id": "steuermerkmale",
+      "x": 110,
+      "y": 58,
+      "w": 85,
+      "h": 10,
+      "text": "StKl. / Kinderfreibeträge / Konfession",
+      "value": "1 / 0,5 / ev",
+      "size": 34
+    },
+    { "kind": "box", "x": 15, "y": 78, "w": 180, "h": 120 },
+    { "kind": "lines", "x": 19, "y": 84, "w": 170, "rows": 22 },
+    { "kind": "lines", "x": 15, "y": 210, "w": 180, "rows": 10 }
+  ]
+}

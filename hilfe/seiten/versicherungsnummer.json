@@ -1,0 +1,95 @@
+{
+  "path": "versicherungsnummer",
+  "title": "Wo finde ich meine Versicherungsnummer (Sozialversicherungsnummer)?",
+  "intro": [
+    "Die Versicherungsnummer der Rentenversicherung hat 12 Zeichen, darunter genau einen Buchstaben – aufgebaut wie „99 999999 X 999“. Sie bleibt Ihr Leben lang gleich."
+  ],
+  "choicesTitle": "Was haben Sie zur Hand?",
+  "choices": [
+    {
+      "id": "nachweis",
+      "label": "Versicherungsnummernachweis (früher: Sozialversicherungsausweis)",
+      "muster": "versicherungsnummernachweis",
+      "target": "versicherungsnummer",
+      "text": [
+        "Auf der rechten Hälfte ganz oben im Feld „Versicherungsnummer:“.",
+        "Den Nachweis schickt die Deutsche Rentenversicherung bei der ersten Beschäftigung; bis 2022 hieß er Sozialversicherungsausweis."
+      ],
+      "source": {
+        "label": "Deutsche Rentenversicherung: Versicherungsnummernachweis",
+        "url": "https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Allgemeine-Informationen/Sozialversicherungsausweis/sozialversicherungsausweis_node.html"
+      }
+    },
+    {
+      "id": "lohnabrechnung",
+      "label": "Lohnabrechnung",
+      "muster": "lohnabrechnung",
+      "target": "versicherungsnummer",
+      "text": [
+        "Die Versicherungsnummer muss auf jeder Lohnabrechnung stehen. Wo genau, ist je nach Lohnprogramm verschieden; suchen Sie nach „Versicherungsnummer“, „SV-Nummer“ oder „RV-Nummer“."
+      ],
+      "source": {
+        "label": "§ 1 Abs. 1 Nr. 3 Entgeltbescheinigungsverordnung",
+        "url": "https://www.gesetze-im-internet.de/entgbv/BJNR271200012.html"
+      }
+    },
+    {
+      "id": "rentenversicherung",
+      "label": "Brief der Rentenversicherung (zum Beispiel Renteninformation)",
+      "muster": "renteninformation",
+      "target": "versicherungsnummer",
+      "text": [
+        "Die Nummer steht auf allen Schreiben der Deutschen Rentenversicherung. Bei der Renteninformation steht sie ganz oben auf der ersten Seite, bei „Versicherungsnummer, Kennzeichen“."
+      ],
+      "source": {
+        "label": "Deutsche Rentenversicherung Baden-Württemberg, Pressemitteilung vom 15.12.2025",
+        "url": "https://www.deutsche-rentenversicherung.de/BadenWuerttemberg/DE/Presse/Pressemitteilungen/2025/251215_Rentenversicherungsnummer"
+      }
+    },
+    {
+      "id": "meldebescheinigung",
+      "label": "Meldebescheinigung zur Sozialversicherung",
+      "text": [
+        "Ihr Arbeitgeber schickt sie mindestens einmal im Jahr, für sich oder als Anhang zu einer Lohnabrechnung. Sie enthält die Versicherungsnummer; wie sie aussieht, ist nicht einheitlich."
+      ],
+      "source": {
+        "label": "§ 28a Abs. 3 und 5 SGB IV",
+        "url": "https://www.gesetze-im-internet.de/sgb_4/__28a.html"
+      }
+    },
+    {
+      "id": "gesundheitskarte",
+      "label": "Gesundheitskarte der Krankenkasse",
+      "muster": "gesundheitskarte",
+      "target": "versichertennummer",
+      "trap": true,
+      "text": [
+        "Achtung: Die Nummer auf der Gesundheitskarte ist Ihre Krankenversichertennummer (ein Buchstabe und 9 Ziffern) – nicht die Versicherungsnummer der Rentenversicherung.",
+        "Auch die 9-stellige Nummer bei „Versicherung“ ist eine andere Nummer: die Ihrer Krankenkasse."
+      ],
+      "source": {
+        "label": "§ 290 SGB V (Krankenversichertennummer)",
+        "url": "https://www.gesetze-im-internet.de/sgb_5/__290.html"
+      }
+    },
+    {
+      "id": "nichts",
+      "label": "Nichts davon",
+      "text": [
+        "Kein Problem: Ihr Arbeitgeber kann die Nummer seit 2023 selbst bei der Rentenversicherung abfragen. Wählen Sie im Fragebogen „Kenne ich nicht“.",
+        "Einen neuen Nachweis bekommen Sie kostenlos bei der Deutschen Rentenversicherung oder über Ihre Krankenkasse. Bezahlte Internetdienste, die die Nummer „besorgen“, brauchen Sie nicht."
+      ],
+      "links": [
+        {
+          "label": "Deutsche Rentenversicherung Baden-Württemberg: So finden Sie Ihre Rentenversicherungsnummer",
+          "url": "https://www.deutsche-rentenversicherung.de/BadenWuerttemberg/DE/Presse/Pressemitteilungen/2025/251215_Rentenversicherungsnummer"
+        }
+      ]
+    }
+  ],
+  "traps": [
+    "Nicht die Steuer-ID: Sie hat 11 Ziffern und keinen Buchstaben.",
+    "Nicht die Nummern auf der Gesundheitskarte (siehe oben)."
+  ],
+  "stand": "2026-10-31"
+}

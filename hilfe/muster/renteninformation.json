@@ -1,0 +1,32 @@
+{
+  "id": "renteninformation",
+  "title": "Renteninformation der Deutschen Rentenversicherung",
+  "basis": "vereinfacht gezeichnet nach der Broschüre „Die Renteninformation – mehr wissen“ der Deutschen Rentenversicherung (2/2026; kein Nachbau)",
+  "width": 210,
+  "height": 297,
+  "items": [
+    {
+      "kind": "field",
+      "id": "versicherungsnummer",
+      "x": 15,
+      "y": 10,
+      "w": 92,
+      "h": 11,
+      "text": "Versicherungsnummer, Kennzeichen",
+      "value": "99 999999 X 999",
+      "size": 40
+    },
+    {
+      "kind": "text",
+      "x": 15,
+      "y": 30,
+      "text": "Absender: Deutsche Rentenversicherung",
+      "size": 24
+    },
+    { "kind": "box", "x": 15, "y": 35, "w": 85, "h": 32 },
+    { "kind": "lines", "x": 19, "y": 42, "w": 60, "rows": 4 },
+    { "kind": "lines", "x": 130, "y": 35, "w": 65, "rows": 4 },
+    { "kind": "title", "x": 15, "y": 88, "text": "Renteninformation", "size": 46 },
+    { "kind": "lines", "x": 15, "y": 98, "w": 180, "rows": 30 }
+  ]
+}

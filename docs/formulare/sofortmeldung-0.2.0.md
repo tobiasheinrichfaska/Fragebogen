@@ -8,7 +8,7 @@
 | Formular | sofortmeldung, Version 0.2.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026 |
-| Definition (SHA-256) | bef79a99e5ad592e0c8b039bf543d4a96af800bde1263316e3782f175b5a3125 |
+| Definition (SHA-256) | d7bec09f0592b53a9423f75037b9a5d5632e917d5cb1867bbeee2b85dc8ad2d0 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -40,7 +40,7 @@
 | Geburtsland (geburtsstaat)<br>Frage: In welchem Land sind Sie geboren?<br>Hilfe: Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste. Gibt es den Staat nicht mehr (zum Beispiel Sowjetunion oder Jugoslawien), wählen Sie den heutigen Staat, in dem Ihr Geburtsort liegt.<br>Knöpfe: „Deutschland“ | Beschäftigte Person | Auswahl: aus der Liste „Staaten und Gebiete“ (259 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Geschlecht (geschlecht)<br>Frage: Welches Geschlecht ist bei Ihnen eingetragen?<br>Hilfe: So, wie es in Ihren amtlichen Papieren steht. | Beschäftigte Person | Auswahl: männlich, weiblich, divers, unbestimmt | immer | Pflicht | Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung |
 | Staatsangehörigkeit (staatsangehoerigkeitSchluessel)<br>Frage: Welche Staatsangehörigkeit haben Sie?<br>Hilfe: Tippen Sie die ersten Buchstaben, zum Beispiel „deutsch“, und wählen Sie aus der Liste. Bei mehreren Staatsangehörigkeiten genügt eine; eine deutsche geht vor.<br>Knöpfe: „deutsch“ | Beschäftigte Person | Auswahl: aus der Liste „Staatsangehörigkeiten“ (204 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) | immer | Pflicht | Meldungen zur Sozialversicherung |
-| Versicherungsnummer der Rentenversicherung (falls bekannt) (versicherungsnummer)<br>Frage: Wie lautet Ihre Versicherungsnummer der Rentenversicherung?<br>Hilfe: Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.<br>Knöpfe: „Kenne ich nicht“ (leer lassen) | Beschäftigte Person | Versicherungsnummer | immer | optional | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
+| Versicherungsnummer der Rentenversicherung (falls bekannt) (versicherungsnummer)<br>Frage: Wie lautet Ihre Versicherungsnummer der Rentenversicherung?<br>Hilfe: Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.<br>Knöpfe: „Kenne ich nicht“ (leer lassen)<br>Erklärvideo: versicherungsnummer | Beschäftigte Person | Versicherungsnummer | immer | optional | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
 
 ### 2. Anschrift
 

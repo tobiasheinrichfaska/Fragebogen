@@ -1,0 +1,51 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hilfe zum Fragebogen</title><style>
+:root { --bg:#f7f6f2; --fg:#1d1f22; --muted:#5d636b; --line:#d9d6cf; --card:#ffffff;
+  --accent:#1f5f8b; --paper:#ffffff; --ink:#1d1f22; --filler:#d4d1ca; --mark:#d9480f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141619; --fg:#e8e6e1; --muted:#a4a9b0; --line:#3a3e44; --card:#1d2024;
+  --accent:#86bce6; --paper:#f4f2ec; --ink:#2a2c30; --filler:#c9c6bf; --mark:#e8590c; } }
+:root[data-theme="dark"] { --bg:#141619; --fg:#e8e6e1; --muted:#a4a9b0; --line:#3a3e44; --card:#1d2024;
+  --accent:#86bce6; --paper:#f4f2ec; --ink:#2a2c30; --filler:#c9c6bf; --mark:#e8590c; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg);
+  font:17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+h1 { font-size: 1.55rem; line-height: 1.25; margin: 0 0 .75rem; }
+h2 { font-size: 1.2rem; margin: 2rem 0 .75rem; }
+h3 { font-size: 1.15rem; margin: 0 0 .75rem; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.tiles { display:grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap:.75rem;
+  padding:0; margin:0; list-style:none; }
+.tiles a { display:block; height:100%; padding:1rem; border:1px solid var(--line); border-radius:10px;
+  background:var(--card); color:var(--fg); text-decoration:none; font-weight:600; }
+.tiles a:hover, .tiles a:focus-visible { border-color: var(--accent); outline: 2px solid var(--accent); }
+.choice { display:none; margin-top:1.5rem; padding:1rem; border:1px solid var(--line);
+  border-radius:12px; background:var(--card); }
+.choice:target { display:block; }
+figure { margin:0 0 1rem; }
+.stage { overflow:hidden; border-radius:6px; border:1px solid var(--line); max-width:30rem; }
+.stage svg { display:block; width:100%; height:auto; transform-origin: 0 0; }
+.paper { fill: var(--paper); }
+svg text { fill: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+svg .label { fill: var(--muted); }
+svg .value { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.filler { fill: var(--filler); }
+/* Strokes keep their width on screen, whatever the size of the sheet or the zoom. */
+.frame { fill: none; stroke: var(--filler); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.watermark { fill: var(--mark); opacity: .12; font-weight: 800; letter-spacing: 2px; }
+.mark { fill: none; stroke: var(--mark); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.mark.trap { stroke-dasharray: 9 6; }
+figcaption { display:flex; flex-direction:column; gap:.2rem; margin-top:.5rem; font-size:.92rem; }
+.found { font-weight:700; color: var(--mark); }
+.traps { border-left: 4px solid var(--mark); padding:.25rem 1rem; background: var(--card); }
+.links { padding-left: 1.2rem; }
+footer { margin-top: 3rem; font-size: .85rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .choice:target .stage svg { animation: zoom 1.6s ease-in-out .6s both; }
+  .choice:target .mark { animation: mark 1.2s ease-out 2.1s both; }
+  .choice:target .found { animation: show .6s ease-out 2.4s both; }
+}
+@keyframes zoom { from { transform: none; } to { transform: translate(var(--tx), var(--ty)) scale(var(--s)); } }
+@keyframes mark { 0% { opacity: 0; stroke-width: 10px; } 60% { opacity: 1; } 100% { opacity: 1; stroke-width: 3.5px; } }
+@keyframes show { from { opacity: 0; } to { opacity: 1; } }
+</style></head><body><main><h1>Hilfe zum Fragebogen</h1><ul><li><a href="steuer-id/">Wo finde ich meine Steuer-Identifikationsnummer?</a></li><li><a href="versicherungsnummer/">Wo finde ich meine Versicherungsnummer (Sozialversicherungsnummer)?</a></li></ul></main></body></html>

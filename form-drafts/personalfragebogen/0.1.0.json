@@ -246,6 +246,7 @@
         {
           "id": "versicherungsnummer",
           "role": "person",
+          "explainer": "versicherungsnummer",
           "type": "svNumber",
           "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
           "question": "Wie lautet Ihre Versicherungsnummer der Rentenversicherung?",
@@ -2046,6 +2047,7 @@
         {
           "id": "steuerId",
           "role": "person",
+          "explainer": "steuer-id",
           "type": "taxId",
           "label": "Steuerliche Identifikationsnummer",
           "question": "Wie lautet Ihre Steuer-Identifikationsnummer?",

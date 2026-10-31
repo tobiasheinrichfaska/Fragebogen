@@ -1,0 +1,35 @@
+{
+  "id": "gesundheitskarte",
+  "title": "Gesundheitskarte der Krankenkasse (Vorderseite)",
+  "basis": "vereinfacht gezeichnet (kein Nachbau der Karte)",
+  "width": 86,
+  "height": 54,
+  "items": [
+    { "kind": "box", "x": 1, "y": 1, "w": 84, "h": 52 },
+    { "kind": "text", "x": 5, "y": 8, "text": "Muster-Krankenkasse", "size": 30 },
+    { "kind": "box", "x": 62, "y": 6, "w": 19, "h": 24 },
+    { "kind": "text", "x": 5, "y": 20, "text": "Erika Musterfrau", "size": 32 },
+    {
+      "kind": "field",
+      "id": "versichertennummer",
+      "x": 5,
+      "y": 26,
+      "w": 46,
+      "h": 9,
+      "text": "Versichertennummer",
+      "value": "X999999999",
+      "size": 30
+    },
+    {
+      "kind": "field",
+      "id": "kassennummer",
+      "x": 5,
+      "y": 38,
+      "w": 46,
+      "h": 9,
+      "text": "Versicherung",
+      "value": "999999999",
+      "size": 30
+    }
+  ]
+}

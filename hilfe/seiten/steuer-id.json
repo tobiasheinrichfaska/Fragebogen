@@ -1,0 +1,85 @@
+{
+  "path": "steuer-id",
+  "title": "Wo finde ich meine Steuer-Identifikationsnummer?",
+  "intro": [
+    "Die Steuer-Identifikationsnummer (kurz Steuer-ID oder IdNr) hat 11 Ziffern. Sie bekommen sie nur einmal im Leben; sie ändert sich auch nach einem Umzug, einer Heirat oder einer Namensänderung nicht."
+  ],
+  "choicesTitle": "Was haben Sie zur Hand?",
+  "choices": [
+    {
+      "id": "lohnsteuerbescheinigung",
+      "label": "Lohnsteuerbescheinigung eines früheren Arbeitgebers",
+      "muster": "lohnsteuerbescheinigung",
+      "target": "steuerId",
+      "text": [
+        "Links oben im Feld „Identifikationsnummer:“ – zwischen „Datum“ und „Personalnummer“. Sie steht in keiner nummerierten Zeile; die Zeilen 1 bis 34 rechts sind Zeiträume und Beträge.",
+        "Personalnummer und Transferticket direkt darunter sind andere Nummern."
+      ],
+      "source": {
+        "label": "Bundesministerium der Finanzen: Muster für den Ausdruck der elektronischen Lohnsteuerbescheinigung 2026",
+        "url": "https://www.bundesfinanzministerium.de/Content/DE/Downloads/BMF_Schreiben/Steuerarten/Lohnsteuer/2025-08-29-ausdruck-elektr-lstbesch-2026.html"
+      }
+    },
+    {
+      "id": "steuerbescheid",
+      "label": "Steuerbescheid vom Finanzamt",
+      "muster": "einkommensteuerbescheid",
+      "target": "steuerId",
+      "text": [
+        "Auf dem Einkommensteuerbescheid steht die Nummer oben links – so beschreibt es die Finanzverwaltung Nordrhein-Westfalen. In anderen Ländern kann der Bescheid etwas anders aussehen; suchen Sie nach „Identifikationsnummer“.",
+        "Ist es ein gemeinsamer Bescheid für Ehepaare, nehmen Sie Ihre eigene Nummer, nicht die Ihres Ehepartners."
+      ],
+      "source": {
+        "label": "Finanzverwaltung Nordrhein-Westfalen: Steuerliche Identifikationsnummer",
+        "url": "https://www.finanzamt.nrw.de/steuerinfos/weitere-themen/steuernummer-und-aktenzeichen/steuerliche-identifikationsnummer"
+      }
+    },
+    {
+      "id": "brief",
+      "label": "Brief vom Bundeszentralamt für Steuern",
+      "muster": "bzstMitteilung",
+      "target": "steuerId",
+      "text": [
+        "Im Brief „Mitteilung Ihrer Identifikationsnummer“ steht die Nummer gleich nach der Anrede: „Sie lautet: …“.",
+        "In älteren Briefen aus dem Jahr 2008 steht sie oben rechts."
+      ],
+      "source": {
+        "label": "Bundeszentralamt für Steuern: Muster des Mitteilungsschreibens",
+        "url": "https://www.bzst.de/SharedDocs/Downloads/DE/Muster_Mitteilungsschreiben_wasserzeichen.pdf?__blob=publicationFile"
+      }
+    },
+    {
+      "id": "lohnabrechnung",
+      "label": "Lohnabrechnung",
+      "muster": "lohnabrechnung",
+      "target": "steuerId",
+      "text": [
+        "Die Steuer-ID muss auf jeder Lohnabrechnung stehen. Wo genau, ist je nach Lohnprogramm verschieden; suchen Sie nach „Steuer-ID“, „IdNr“ oder „Identifikationsnummer“."
+      ],
+      "source": {
+        "label": "§ 1 Abs. 1 Nr. 7 Entgeltbescheinigungsverordnung",
+        "url": "https://www.gesetze-im-internet.de/entgbv/BJNR271200012.html"
+      }
+    },
+    {
+      "id": "nichts",
+      "label": "Nichts davon",
+      "text": [
+        "Sie können die Nummer beim Bundeszentralamt für Steuern neu anfordern. Sie kommt nur per Brief an Ihre Meldeanschrift; das kann derzeit bis zu vier Wochen dauern. Telefonisch oder per E-Mail wird sie nicht mitgeteilt.",
+        "Ohne die Nummer lässt sich der Fragebogen nicht unterschreiben. Speichern Sie bis dahin mit „Zwischenstand speichern“ und machen Sie weiter, sobald der Brief da ist."
+      ],
+      "links": [
+        {
+          "label": "Bundeszentralamt für Steuern: Identifikationsnummer erneut mitteilen lassen",
+          "url": "https://www.bzst.de/SiteGlobals/Kontaktformulare/DE/IdNr/Mitteilung_IdNr/mitteilung_IdNr_node.html"
+        }
+      ]
+    }
+  ],
+  "traps": [
+    "Nicht die Steuernummer: Die vergibt das Finanzamt nur bei Bedarf, sie kann sich zum Beispiel bei einem Umzug ändern und ist anders aufgebaut.",
+    "Nicht die Wirtschafts-Identifikationsnummer oder die Umsatzsteuer-Identifikationsnummer: Sie beginnen mit „DE“ und gelten für wirtschaftlich Tätige.",
+    "Nicht die Versicherungsnummer der Rentenversicherung: Sie hat 12 Zeichen, darunter einen Buchstaben."
+  ],
+  "stand": "2026-10-31"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "einkommensteuerbescheid",
+  "title": "Einkommensteuerbescheid",
+  "basis": "vereinfacht gezeichnet; die Finanzverwaltung Nordrhein-Westfalen nennt die Stelle „oben links“, in anderen Ländern kann der Bescheid anders aussehen",
+  "width": 210,
+  "height": 297,
+  "items": [
+    { "kind": "text", "x": 15, "y": 16, "text": "Finanzamt Musterstadt", "size": 26 },
+    {
+      "kind": "field",
+      "id": "steuerId",
+      "x": 15,
+      "y": 20,
+      "w": 80,
+      "h": 11,
+      "text": "Identifikationsnummer",
+      "value": "99 999 999 999",
+      "size": 40
+    },
+    { "kind": "lines", "x": 125, "y": 16, "w": 70, "rows": 4 },
+    { "kind": "box", "x": 15, "y": 40, "w": 85, "h": 32 },
+    { "kind": "lines", "x": 19, "y": 47, "w": 60, "rows": 4 },
+    {
+      "kind": "title",
+      "x": 15,
+      "y": 92,
+      "text": "Bescheid für 2025 über Einkommensteuer",
+      "size": 44
+    },
+    { "kind": "lines", "x": 15, "y": 102, "w": 180, "rows": 30 }
+  ]
+}

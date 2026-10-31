@@ -1,0 +1,27 @@
+{
+  "id": "versicherungsnummernachweis",
+  "title": "Versicherungsnummernachweis (früher: Sozialversicherungsausweis)",
+  "basis": "vereinfacht gezeichnet nach der Beschreibung der Deutschen Rentenversicherung (kein Nachbau)",
+  "width": 150,
+  "height": 90,
+  "items": [
+    { "kind": "box", "x": 2, "y": 2, "w": 146, "h": 86 },
+    { "kind": "title", "x": 8, "y": 14, "text": "Versicherungsnummernachweis", "size": 36 },
+    { "kind": "lines", "x": 8, "y": 22, "w": 58, "rows": 8 },
+    {
+      "kind": "field",
+      "id": "versicherungsnummer",
+      "x": 78,
+      "y": 8,
+      "w": 66,
+      "h": 12,
+      "text": "Versicherungsnummer:",
+      "value": "99 999999 X 999",
+      "size": 38
+    },
+    { "kind": "text", "x": 78, "y": 32, "text": "Name, Vorname: Musterfrau, Erika", "size": 26 },
+    { "kind": "text", "x": 78, "y": 40, "text": "Geburtsname: Muster", "size": 26 },
+    { "kind": "text", "x": 78, "y": 48, "text": "ausgestellt am: 04.01.2023", "size": 26 },
+    { "kind": "lines", "x": 78, "y": 58, "w": 62, "rows": 5 }
+  ]
+}

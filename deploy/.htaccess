@@ -1,0 +1,41 @@
+# Fragebogen – Auslieferung auf einer eigenen Subdomain (Apache, z. B. IONOS).
+# Diese Datei gehört in den Ordner der Subdomain, neben index.html (und ggf. den Ordner hilfe/).
+# Sie beschränkt den Zugriff NICHT: jeder darf die Seite aufrufen. Sie sagt dem Browser nur,
+# wie er die Seite behandeln soll. Bei einem Update der App muss sie nicht geändert werden.
+
+# Nur HTTPS: jede http-Anfrage wird dauerhaft auf https umgeleitet.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Keine Ordnerlisten, keine versteckten Dateien (wie diese) ausliefern.
+Options -Indexes
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+AddDefaultCharset utf-8
+
+<IfModule mod_headers.c>
+  # Ergänzt die Content-Security-Policy, die als Meta-Tag in index.html steht (dort die Hash-Werte
+  # von Skript und Stil, die sich mit jedem Build ändern). Hier nur, was ein Meta-Tag nicht kann:
+  # die Seite darf nicht in fremde Seiten eingebettet werden (Schutz vor Phishing-Rahmen).
+  Header always set Content-Security-Policy "frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
+  Header always set X-Frame-Options "DENY"
+
+  # Ein Jahr lang nur noch per HTTPS (erst setzen, wenn HTTPS sicher funktioniert).
+  Header always set Strict-Transport-Security "max-age=31536000"
+
+  # Dateitypen nicht raten, keine Herkunftsadresse weitergeben, keine Geräte-Funktionen.
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+
+  # Betatest: der Browser fragt bei jedem Aufruf nach, ob es eine neue Fassung gibt
+  # (sonst sehen Tester nach einem Update tagelang die alte).
+  Header set Cache-Control "no-cache"
+</IfModule>

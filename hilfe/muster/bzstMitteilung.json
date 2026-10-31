@@ -1,0 +1,40 @@
+{
+  "id": "bzstMitteilung",
+  "title": "Brief „Mitteilung Ihrer Identifikationsnummer“",
+  "basis": "vereinfacht gezeichnet nach der Beschreibung des Bundeszentralamts für Steuern (kein Nachbau des Schreibens)",
+  "width": 210,
+  "height": 297,
+  "items": [
+    {
+      "kind": "text",
+      "x": 15,
+      "y": 18,
+      "text": "Absender: Bundeszentralamt für Steuern",
+      "size": 24
+    },
+    { "kind": "box", "x": 15, "y": 30, "w": 85, "h": 32 },
+    { "kind": "lines", "x": 19, "y": 37, "w": 60, "rows": 4 },
+    { "kind": "lines", "x": 130, "y": 30, "w": 65, "rows": 4 },
+    {
+      "kind": "title",
+      "x": 15,
+      "y": 88,
+      "text": "Mitteilung Ihrer Identifikationsnummer",
+      "size": 42
+    },
+    { "kind": "text", "x": 15, "y": 100, "text": "Sehr geehrte Frau Musterfrau,", "size": 30 },
+    { "kind": "lines", "x": 15, "y": 106, "w": 170, "rows": 2 },
+    {
+      "kind": "field",
+      "id": "steuerId",
+      "x": 15,
+      "y": 118,
+      "w": 80,
+      "h": 11,
+      "text": "Sie lautet:",
+      "value": "99 999 999 999",
+      "size": 40
+    },
+    { "kind": "lines", "x": 15, "y": 140, "w": 170, "rows": 22 }
+  ]
+}

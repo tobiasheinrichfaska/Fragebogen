@@ -53,6 +53,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Health insurer from the list** — the person picks the statutory insurer from a search list (typing filters, "TK" finds Techniker Krankenkasse); free text is allowed with a visible warning about extra work; the Kanzlei gets the insurer's Betriebsnummer prefilled, a free entry leaves it to the Kanzlei
 - [ ] **Employee number checked before the import file** — asked when the questionnaire has none, named when it does not fit, a safety question before every download
 
+- [ ] **Help pages "Wo finde ich …?"** — per data item the documents to pick, a watermarked sample zooming to the spot with source, "Nichts davon" with how to get it; no script, nothing external; every `explainer` path leads to a page
+
 ## Documentation
 
 - [ ] **Flow plan of every form** (`docs/ablaufplan.html`, `npm run catalogue`) — stations and their order, questions in interview order, decision points, and why each condition applies; every condition in a draft is explained
