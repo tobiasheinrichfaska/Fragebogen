@@ -8,6 +8,7 @@ import { EXPORT_MAPPINGS } from '../config';
 import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import { displayValue } from '../logic/display';
+import { mappingFor } from '../logic/exportMapping';
 import { fileNameFor } from '../logic/fileNames';
 import { fieldsById } from '../logic/form';
 import type { FormRegistry } from '../logic/formRegistry';
@@ -387,14 +388,16 @@ export function KanzleiScreen({ registry, onBack }: Props) {
             {ready &&
               group.questionnaire &&
               definition &&
-              EXPORT_MAPPINGS.filter((mapping) => mapping.form === definition.id).map((mapping) => (
-                <LugExport
-                  key={mapping.title}
-                  questionnaire={group.questionnaire as NonNullable<typeof group.questionnaire>}
-                  definition={definition}
-                  mapping={mapping}
-                />
-              ))}
+              EXPORT_MAPPINGS.filter((mapping) => mappingFor(mapping, definition)).map(
+                (mapping) => (
+                  <LugExport
+                    key={mapping.title}
+                    questionnaire={group.questionnaire as NonNullable<typeof group.questionnaire>}
+                    definition={definition}
+                    mapping={mapping}
+                  />
+                ),
+              )}
           </Card>
         );
       })}

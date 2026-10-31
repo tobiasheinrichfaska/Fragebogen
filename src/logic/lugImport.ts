@@ -1,15 +1,24 @@
 // Master-data import file for DATEV Lohn und Gehalt (Kanzleiebene: Extras | Stammdatenimport) and the
 // Erfassungsblatt in the order of its masks, from a questionnaire and an export mapping (data). Pure:
 // the io layer encodes the text (Windows-1252) and downloads it. Nothing is guessed — a value that
-// cannot be written is left out and named.
+// cannot be written is left out and named; what only the Kanzlei knows it enters per questionnaire.
 import { evaluateCondition } from './conditions';
 import { isIsoDate } from './dates';
 import { derive } from './derivations';
-import { subFields, type ExportField, type ExportMapping, type ExportValue } from './exportMapping';
+import { displayValue } from './display';
+import {
+  inputProblem,
+  subFields,
+  type EmployeeMode,
+  type ExportField,
+  type ExportInput,
+  type ExportMapping,
+  type ExportValue,
+} from './exportMapping';
 import { fieldsById } from './form';
 import { valuesOf } from './hints';
 import type { FormDefinition, Questionnaire } from './model';
-import { listCodesOf } from './options';
+import { listCodesOf, optionsOf } from './options';
 
 export interface SheetRow {
   mask: string;
@@ -18,6 +27,17 @@ export interface SheetRow {
   /** The value as written into the file; empty = nothing to enter. */
   value: string;
   problem?: string;
+  /** Written, but to be checked (e.g. a value the program's description does not list). */
+  note?: string;
+}
+
+export interface LugEntries {
+  mandantennummer?: string;
+  mitarbeiternummer?: string;
+  /** neu: the import creates the employee; vorhanden: it only completes an existing one. */
+  mode?: EmployeeMode;
+  /** Values of the mapping's inputs, by input id. */
+  inputs?: Readonly<Record<string, string>>;
 }
 
 export interface LugImport {
@@ -26,8 +46,21 @@ export interface LugImport {
   sheet: SheetRow[];
   /** Values left out, with the reason. */
   problems: string[];
+  /** Values written that should be checked in the program's import report. */
+  notes: string[];
   /** Why no file can be written (e.g. missing Mandantennummer). */
   blocking: string[];
+  /** Whom the file is about — to compare with the program before reading it in. */
+  employee: { number: string; name: string; firstName: string; start: string };
+}
+
+export interface NeededInput {
+  input: ExportInput;
+  /** Entered value, else the default; empty when neither. */
+  value: string;
+  problem?: string;
+  /** Answers that help to fill it in, e.g. the health insurer the person named. */
+  context: { label: string; value: string }[];
 }
 
 const baseName = (name: string) => {
@@ -35,7 +68,12 @@ const baseName = (name: string) => {
   return open < 0 ? name : name.slice(0, open).trim();
 };
 
-type Resolved = { text: string } | { empty: true } | { problem: string };
+type Resolved =
+  | { text: string; note?: string }
+  | { empty: true }
+  /** An input the Kanzlei has not filled in (its label). */
+  | { missing: string }
+  | { problem: string };
 
 function format(text: string, value: ExportValue): Resolved {
   switch (value.format ?? 'text') {
@@ -68,79 +106,184 @@ function escape(text: string): Resolved {
   return { text: /[;]|^\s|\s$/.test(text) ? `"${text}"` : text };
 }
 
+/** Input ids a value uses, nested `first` sources included. */
+function inputIdsOf(value: ExportValue): string[] {
+  return [
+    ...(value.input === undefined ? [] : [value.input]),
+    ...(value.first ?? []).flatMap(inputIdsOf),
+  ];
+}
+
+function context(questionnaire: Questionnaire, definition: FormDefinition) {
+  const values = valuesOf(questionnaire, definition);
+  const applies = (when: ExportInput['when']) =>
+    when === undefined || evaluateCondition(when, values.valueOf);
+  return { values, applies };
+}
+
+/** The inputs the Kanzlei has to fill in for this questionnaire, in the mapping's order. */
+export function neededInputs(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  mapping: ExportMapping,
+  entered: Readonly<Record<string, string>> = {},
+): NeededInput[] {
+  const { values, applies } = context(questionnaire, definition);
+  const fields = fieldsById(definition);
+  const used = new Set(
+    mapping.records
+      .filter((record) => applies(record.when))
+      .flatMap((record) => record.fields.flatMap((field) => field.values.flatMap(inputIdsOf))),
+  );
+  return (mapping.inputs ?? [])
+    .filter((input) => used.has(input.id) && applies(input.when))
+    .map((input) => {
+      const value = entered[input.id]?.trim() || input.default || '';
+      const problem = value === '' ? undefined : inputProblem(input, value);
+      return {
+        input,
+        value,
+        ...(problem === undefined ? {} : { problem }),
+        context: (input.context ?? []).flatMap((id) => {
+          const field = fields.get(id);
+          const stored = values.valueOf(id);
+          return field && stored !== null
+            ? [{ label: field.label, value: displayValue(field, stored) }]
+            : [];
+        }),
+      };
+    });
+}
+
 export function buildLugImport(
   questionnaire: Questionnaire,
   definition: FormDefinition,
   mapping: ExportMapping,
-  numbers: { mandantennummer?: string; mitarbeiternummer?: string },
+  entries: LugEntries,
 ): LugImport {
-  const values = valuesOf(questionnaire, definition);
+  const { values, applies } = context(questionnaire, definition);
   const fields = fieldsById(definition);
   const proposals = new Map(derive(questionnaire, definition).map((d) => [d.id, d] as const));
+  const inputs = new Map((mapping.inputs ?? []).map((input) => [input.id, input] as const));
 
-  const resolve = (value: ExportValue): Resolved => {
-    let text: string | undefined;
+  const source = (value: ExportValue): Resolved => {
     if (value.blank) return { empty: true };
-    if (value.const !== undefined) text = value.const;
-    else if (value.derivation !== undefined) {
+    if (value.const !== undefined) return { text: value.const };
+    if (value.first !== undefined) {
+      const results = value.first.map(resolve);
+      return (
+        results.find((r) => 'text' in r) ??
+        results.find((r) => 'missing' in r) ??
+        results.find((r) => 'problem' in r) ?? { empty: true }
+      );
+    }
+    if (value.input !== undefined) {
+      const input = inputs.get(value.input);
+      if (!input || !applies(input.when)) return { empty: true };
+      const text = entries.inputs?.[input.id]?.trim() || input.default || '';
+      if (text === '') return { missing: input.label };
+      const problem = inputProblem(input, text);
+      return problem === undefined ? { text } : { problem: `„${input.label}“: ${problem}` };
+    }
+    if (value.derivation !== undefined) {
       const proposal = proposals.get(value.derivation);
       if (proposal?.status !== 'proposed' || proposal.value === undefined) {
         return { problem: `Vorschlag „${proposal?.label ?? value.derivation}“ fehlt` };
       }
-      text = proposal.value;
-    } else if (value.field !== undefined) {
+      return { text: proposal.value };
+    }
+    if (value.field !== undefined) {
       const stored = values.valueOf(value.field);
       if (stored === null) return { empty: true };
-      if (typeof stored === 'boolean') text = String(stored);
-      else if (typeof stored === 'string') text = stored;
-      else return { problem: 'Tabellen werden nicht übertragen' };
-      if (value.code !== undefined) {
-        const listId = fields.get(value.field)?.optionsFrom ?? '';
-        text = listCodesOf(listId, text)[value.code];
-        if (text === undefined) return { empty: true };
-      }
+      if (typeof stored === 'boolean') return { text: String(stored) };
+      if (typeof stored !== 'string') return { problem: 'Tabellen werden nicht übertragen' };
+      if (value.code === undefined) return { text: stored };
+      const listId = fields.get(value.field)?.optionsFrom ?? '';
+      const code = listCodesOf(listId, stored)[value.code];
+      return code === undefined ? { empty: true } : { text: code };
     }
-    if (text === undefined) return { empty: true };
+    return { empty: true };
+  };
+
+  const resolve = (value: ExportValue): Resolved => {
+    const found = source(value);
+    if (!('text' in found)) return found;
+    let text = found.text;
     if (value.slice) text = text.slice(value.slice[0], value.slice[1]);
-    if (text.includes('?')) return { problem: `Vorschlag „${text}“ ist noch offen` };
+    if (value.derivation !== undefined && text.includes('?')) {
+      return { problem: `Vorschlag „${text}“ ist noch offen` };
+    }
+    const note = value.notes?.[text] ?? found.note;
     if (value.map) {
       const mapped = value.map[text];
-      if (mapped === undefined) return { problem: `für „${text}“ gibt es keine Zuordnung` };
+      if (mapped === undefined) {
+        const field = value.field === undefined ? undefined : fields.get(value.field);
+        const shown = field ? (optionsOf(field).find((o) => o.id === text)?.label ?? text) : text;
+        return { problem: `für „${shown}“ gibt es keine Zuordnung` };
+      }
       text = mapped;
     }
     if (text === '') return { empty: true };
     const formatted = format(text, value);
-    return 'text' in formatted ? escape(formatted.text) : formatted;
+    if (!('text' in formatted)) return formatted;
+    const escaped = escape(formatted.text);
+    return 'text' in escaped && note !== undefined ? { ...escaped, note } : escaped;
   };
 
   const sheet: SheetRow[] = [];
   const problems: string[] = [];
-  const records: { mask: string; fields: ExportField[]; written: string[] }[] = [];
+  const notes: string[] = [];
+  const records: { mask: string; fields: ExportField[]; written: string[]; notes: string[] }[] = [];
   for (const record of mapping.records) {
-    if (record.when && !evaluateCondition(record.when, values.valueOf)) continue;
+    if (!applies(record.when)) continue;
     const used: ExportField[] = [];
     const written: string[] = [];
-    // A value only the program's user knows (blank, not optional) in a single field is a key of the
-    // record (e.g. the wage type): without it the record must not be written at all.
-    let missingKey: string | undefined;
+    const recordNotes: string[] = [];
+    // A value only the Kanzlei knows (blank or an input not filled in) in a single field is a key
+    // of the record (e.g. the wage type): without it the record must not be written at all.
+    let missingKey: { label: string; input: boolean } | undefined;
     for (const field of record.fields) {
       const subs = subFields(field.name);
-      const results = field.values.map(resolve);
+      const results = field.values.map((value): Resolved => {
+        const result = resolve(value);
+        return 'missing' in result && value.optional === true ? { empty: true } : result;
+      });
       const label = field.label ?? baseName(field.name);
+      const fieldNotes: string[] = [];
       results.forEach((result, i) => {
         const sub = subs.length > 1 ? `${label} › ${subs[i] ?? ''}` : label;
         const value = field.values[i];
         if ('problem' in result) {
           sheet.push({ mask: record.mask, field: sub, value: '', problem: result.problem });
           problems.push(`${record.mask} – ${sub}: ${result.problem}`);
+        } else if ('missing' in result) {
+          sheet.push({ mask: record.mask, field: sub, value: '', problem: 'oben eintragen' });
         } else if (value?.blank && value.optional !== true) {
           sheet.push({ mask: record.mask, field: sub, value: '', problem: 'selbst erfassen' });
+        } else if ('text' in result) {
+          sheet.push({
+            mask: record.mask,
+            field: sub,
+            value: result.text,
+            ...(result.note === undefined ? {} : { note: result.note }),
+          });
+          if (result.note !== undefined) fieldNotes.push(`${record.mask} – ${sub}: ${result.note}`);
         } else {
-          sheet.push({ mask: record.mask, field: sub, value: 'text' in result ? result.text : '' });
+          sheet.push({ mask: record.mask, field: sub, value: '' });
         }
       });
-      if (subs.length === 1 && field.values[0]?.blank && field.values[0].optional !== true) {
-        missingKey = label;
+      const missing = results.flatMap((r) => ('missing' in r ? [r.missing] : []));
+      if (
+        subs.length === 1 &&
+        (missing.length > 0 || (field.values[0]?.blank && field.values[0].optional !== true))
+      ) {
+        missingKey = { label: missing[0] ?? label, input: missing.length > 0 };
+        continue;
+      }
+      if (missing.length > 0) {
+        problems.push(
+          `${record.mask} – ${label}: „${missing.join('“, „')}“ oben eintragen – nicht übertragen`,
+        );
         continue;
       }
       // A field is written only complete; a combination with a gap stays out (the sheet shows why).
@@ -153,34 +296,62 @@ export function buildLugImport(
       }
       used.push(field);
       written.push(...results.map((r) => ('text' in r ? r.text : '')));
+      recordNotes.push(...fieldNotes);
     }
     if (missingKey !== undefined) {
-      problems.push(`${record.mask}: „${missingKey}“ selbst erfassen – Datensatz nicht übertragen`);
+      problems.push(
+        missingKey.input
+          ? `${record.mask}: „${missingKey.label}“ oben eintragen – Datensatz nicht übertragen`
+          : `${record.mask}: „${missingKey.label}“ selbst erfassen – Datensatz nicht übertragen`,
+      );
       continue;
     }
-    if (used.length > 0) records.push({ mask: record.mask, fields: used, written });
+    if (used.length > 0) {
+      records.push({ mask: record.mask, fields: used, written, notes: recordNotes });
+      notes.push(...recordNotes);
+    }
   }
 
+  const textOf = (value: ExportValue | undefined) => {
+    const result = value === undefined ? { empty: true as const } : resolve(value);
+    return 'text' in result ? result.text : '';
+  };
+  const employee = {
+    number: entries.mitarbeiternummer?.trim() || textOf(mapping.employee.number),
+    name: textOf(mapping.employee.name),
+    firstName: textOf(mapping.employee.firstName),
+    start: textOf(mapping.employee.start),
+  };
+
   const blocking: string[] = [];
-  const mandant = numbers.mandantennummer?.trim() ?? '';
+  const mandant = entries.mandantennummer?.trim() ?? '';
   if (!/^\d{1,5}$/.test(mandant)) blocking.push('Mandantennummer (1 bis 5 Ziffern) fehlt.');
-  const fromForm = mapping.employee.number ? resolve(mapping.employee.number) : { empty: true };
-  const employeeNumber =
-    numbers.mitarbeiternummer?.trim() || ('text' in fromForm ? fromForm.text : '');
-  if (!/^\d{1,5}$/.test(employeeNumber))
+  if (!/^\d{1,5}$/.test(employee.number)) {
     blocking.push('Mitarbeiternummer (1 bis 5 Ziffern) fehlt.');
+  }
+  if (entries.mode === undefined) {
+    blocking.push('Bitte wählen: Mitarbeiter neu anlegen oder vorhandenen Mitarbeiter ergänzen.');
+  }
+  for (const problem of neededInputs(questionnaire, definition, mapping, entries.inputs ?? {})) {
+    if (problem.problem !== undefined) {
+      blocking.push(`„${problem.input.label}“: ${problem.problem}.`);
+    }
+  }
   const HEAD = {
     name: 'Familienname',
     firstName: 'Vorname',
     start: 'Eintrittsdatum',
     firstMonth: 'erster abzurechnender Monat',
   } as const;
-  const head = (Object.keys(HEAD) as (keyof typeof HEAD)[]).map((key) => {
-    const result = resolve(mapping.employee[key]);
-    if (!('text' in result)) blocking.push(`Für die Neuanlage fehlt: ${HEAD[key]}.`);
-    return 'text' in result ? result.text : '';
-  });
-  if (blocking.length > 0) return { sheet, problems, blocking };
+  const head =
+    entries.mode === 'neu'
+      ? (Object.keys(HEAD) as (keyof typeof HEAD)[]).map((key) => {
+          const result = resolve(mapping.employee[key]);
+          if (!('text' in result)) blocking.push(`Für die Neuanlage fehlt: ${HEAD[key]}.`);
+          return 'text' in result ? result.text : '';
+        })
+      : [];
+  if (blocking.length > 0) return { sheet, problems, notes, blocking, employee };
 
   const idOf = (special: string) => special.split(';')[0]?.trim() ?? '';
   const lines = [
@@ -198,7 +369,7 @@ export function buildLugImport(
     '[Satzbeschreibung]',
     mapping.special.mandantSel,
     mapping.special.mitarbeiterSel,
-    mapping.special.mitarbeiterSelOderNeu,
+    mapping.special.mitarbeiterNeu,
     ...records.map(
       (record, i) => `${1000 + i};${record.mask};${record.fields.map((f) => f.name).join(';')}`,
     ),
@@ -206,13 +377,18 @@ export function buildLugImport(
     '[Mandant]',
     `${idOf(mapping.special.mandantSel)};${mandant}`,
     '',
+    // A new employee is created in a section of its own, then selected like an existing one.
+    ...(entries.mode === 'neu'
+      ? [
+          '[Mitarbeiter]',
+          `${idOf(mapping.special.mitarbeiterNeu)};${[employee.number, ...head].join(';')}`,
+          '',
+        ]
+      : []),
     '[Mitarbeiter]',
-    `${idOf(mapping.special.mitarbeiterSelOderNeu)};${[employeeNumber, ...head].join(';')}`,
-    '',
-    '[Mitarbeiter]',
-    `${idOf(mapping.special.mitarbeiterSel)};${employeeNumber}`,
+    `${idOf(mapping.special.mitarbeiterSel)};${employee.number}`,
     ...records.map((record, i) => `${1000 + i};${record.written.join(';')}`),
     '',
   ];
-  return { text: lines.join('\r\n'), sheet, problems, blocking };
+  return { text: lines.join('\r\n'), sheet, problems, notes, blocking, employee };
 }

@@ -2218,6 +2218,22 @@
           ]
         },
         {
+          "id": "kinderfreibetraegeZahl",
+          "role": "person",
+          "type": "text",
+          "label": "Kinderfreibeträge, genaue Zahl (vorläufig)",
+          "question": "Wie viele Kinderfreibeträge sind es genau?",
+          "help": "In halben Schritten, zum Beispiel 4 oder 4,5 – so wie auf einer Lohnabrechnung Ihres bisherigen Arbeitgebers.",
+          "required": true,
+          "showIf": {
+            "field": "kinderfreibetraege",
+            "equals": "mehr"
+          },
+          "because": "Nur bei mehr als drei Kinderfreibeträgen braucht die erste Abrechnung die genaue Zahl; bis drei genügt die Auswahl.",
+          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)",
+          "textFormat": "halbeSchritte"
+        },
+        {
           "id": "kirchensteuer",
           "role": "person",
           "type": "choice",

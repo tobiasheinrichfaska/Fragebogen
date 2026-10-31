@@ -2,7 +2,7 @@
 // the Sofortmeldung, the person signs with the mouse, the PDF is created and opened again, and the
 // Kanzlei reads it in and writes the PDF for the personnel file. Guards: no request leaves the
 // device, no CSP violation, no console error, nothing left in the browser's storage.
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { expectClean, guard } from './guards';
@@ -207,8 +207,15 @@ test('the built file carries the policy and loads nothing from outside', () => {
 });
 
 test('the hosted build carries no mapping to a payroll program (Kanzlei build only)', () => {
-  // A mapping names the program's fields (config/export.local.json); only `--mode kanzlei` and the
-  // review preview bundle it. Its fixed record descriptions would show up in the file.
+  // A mapping names the program's fields (config/export.local.json, gitignored); only `--mode
+  // kanzlei` and the review preview bundle it. The markers come from the local file itself, so this
+  // public test names none of them; without the file there is nothing that could leak.
   const html = readFileSync(APP, 'utf8');
-  expect(html).not.toMatch(/MitarbeiterSelOderNeu/);
+  const local = fileURLToPath(new URL('../../config/export.local.json', import.meta.url));
+  const markers = existsSync(local)
+    ? (JSON.parse(readFileSync(local, 'utf8')) as { records: { mask: string }[] }[]).flatMap(
+        (mapping) => mapping.records.map((record) => record.mask),
+      )
+    : [];
+  for (const marker of new Set(markers)) expect(html.includes(marker), marker).toBe(false);
 });

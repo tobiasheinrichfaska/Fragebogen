@@ -1,4 +1,10 @@
-import { MAX_FILE_NAME, fileNameFor, safeFileName } from './fileNames';
+import {
+  MAX_FILE_NAME,
+  fileNameFor,
+  importFileName,
+  safeFileName,
+  sheetFileName,
+} from './fileNames';
 
 describe('safeFileName (Gemeinsame Grundsätze § 9a BVV)', () => {
   it('transliterates umlauts and ß and replaces everything else by "_"', () => {
@@ -33,5 +39,15 @@ describe('fileNameFor', () => {
     const name = fileNameFor('minijob-kurzfristig', id, 'handover');
     expect(name).toBe('MinijobKurzfristig_3f2b8c1e_Weitergabe.pdf');
     expect(name.replace(/\.pdf$/, '')).toMatch(/^[A-Za-z0-9_]{1,64}$/);
+  });
+});
+
+describe('file names of the hand-over to a payroll program', () => {
+  it('carry the numbers, never a name', () => {
+    expect(importFileName('LuG', '10001', '42')).toBe('LuG_Stammdaten_10001_42.txt');
+    expect(importFileName('LuG', '10001', '')).toBe('LuG_Stammdaten_10001_neu.txt');
+    expect(sheetFileName('LuG', '10001', '42', '3f2b8c1e-0000-4000-8000-000000000000')).toBe(
+      'Erfassungsblatt_LuG_M10001_MA42_3f2b8c1e.pdf',
+    );
   });
 });

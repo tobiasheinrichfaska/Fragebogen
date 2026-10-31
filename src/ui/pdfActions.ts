@@ -17,6 +17,7 @@ import {
   type PdfJsLike,
 } from '../io/pdfReader';
 import { writeQuestionnairePdf } from '../io/pdfWriter';
+import { writeSheetPdf, type SheetPdfInput } from '../io/sheetPdf';
 import { readQrCodes } from '../io/qr';
 import { decodePackage, ORIGIN_MESSAGES } from '../logic/dataPackage';
 import { DATA_LINES_MESSAGES, decodeDataLines } from '../logic/dataPages';
@@ -97,6 +98,30 @@ export async function createPdf(
         text: 'Die PDF ließ sich nicht erstellen.',
         detail: [String(error)],
       },
+    };
+  }
+}
+
+/** The Erfassungsblatt of a hand-over as a PDF of its own for the Personalakte. */
+export async function createSheetPdf(
+  input: Omit<SheetPdfInput, 'config' | 'created'>,
+): Promise<BannerMessage> {
+  try {
+    const now = deviceNow();
+    const result = await writeSheetPdf(
+      { ...input, config: APP_CONFIG, created: { local: now.local, utc: now.utc } },
+      { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
+    );
+    downloadFile(result.fileName, result.bytes, 'application/pdf');
+    return {
+      tone: 'success',
+      text: `Erfassungsblatt „${result.fileName}“ erstellt (${result.pages} Seiten) – zur Ablage in der Personalakte.`,
+    };
+  } catch (error) {
+    return {
+      tone: 'error',
+      text: 'Das Erfassungsblatt ließ sich nicht als PDF erstellen.',
+      detail: [String(error)],
     };
   }
 }

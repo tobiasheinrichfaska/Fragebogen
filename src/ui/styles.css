@@ -562,10 +562,30 @@ textarea {
   flex-wrap: wrap;
   gap: 1rem;
 }
-.export-numbers label {
+.export-numbers label,
+.export-inputs label {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+.export-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+.export-mode {
+  margin: 0.75rem 0;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 6px;
+}
+.export-mode label {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-right: 1.25rem;
+}
+.error-text {
+  color: var(--danger);
 }
 table.sheet {
   width: 100%;

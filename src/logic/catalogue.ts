@@ -121,6 +121,7 @@ function fieldKind(field: FieldDefinition): string {
   if (field.multiline) kind += ', mehrzeilig';
   if (field.textFormat === 'postleitzahlDe') kind += ', deutsche Postleitzahl (5 Ziffern)';
   if (field.textFormat === 'kldb2010') kind += ', Berufskennziffer KldB 2010 (5 Ziffern)';
+  if (field.textFormat === 'halbeSchritte') kind += ', Zahl in halben Schritten (z. B. 4,5)';
   if (field.type === 'number') {
     const decimals = field.decimals ?? 0;
     kind += decimals === 0 ? ', ganzzahlig' : `, ${decimals} Nachkommastellen`;

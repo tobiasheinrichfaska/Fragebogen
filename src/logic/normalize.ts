@@ -149,6 +149,13 @@ const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<
     const compact = text.replace(/\s/g, '');
     return /^(?!00)\d{5}$/.test(compact) ? accept(compact) : reject('plz.format');
   },
+  // A count in half steps such as the Kinderfreibetragszähler: "4", "4,5" (stored with a comma).
+  halbeSchritte: (text) => {
+    const match = /^(\d{1,2})(?:[,.]([05])0?)?$/.exec(text.replace(/\s/g, ''));
+    if (!match) return reject('halbeSchritte.format');
+    const whole = String(Number(match[1]));
+    return accept(match[2] === '5' ? `${whole},5` : whole);
+  },
 };
 
 export function normalizeIban(raw: string): Checked<string> {

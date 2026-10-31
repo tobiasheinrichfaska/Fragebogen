@@ -29,6 +29,23 @@ describe('German postcode (textFormat postleitzahlDe)', () => {
     expect(normalizeFieldValue(plz, raw)).toEqual({ ok: false, issue: 'plz.format' });
   });
 
+  it('takes counts in half steps (Kinderfreibetragszähler) and stores them with a comma', () => {
+    const half: FieldDefinition = { ...plain, textFormat: 'halbeSchritte' };
+    for (const [raw, stored] of [
+      ['4', '4'],
+      ['4,5', '4,5'],
+      ['4.5', '4,5'],
+      [' 04,50 ', '4,5'],
+      ['10,0', '10'],
+    ] as const) {
+      expect(normalizeFieldValue(half, raw)).toEqual({ ok: true, value: stored, warnings: [] });
+      expect(normalizeFieldValue(half, stored)).toEqual({ ok: true, value: stored, warnings: [] });
+    }
+    for (const raw of ['4,3', '4,25', '100', 'vier', '-1']) {
+      expect(normalizeFieldValue(half, raw)).toEqual({ ok: false, issue: 'halbeSchritte.format' });
+    }
+  });
+
   it('leaves text fields without a format alone', () => {
     expect(normalizeFieldValue(plain, '1234')).toEqual({ ok: true, value: '1234', warnings: [] });
   });

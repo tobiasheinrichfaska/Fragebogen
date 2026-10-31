@@ -71,7 +71,7 @@ export interface QuickAnswer {
   value: string | null;
 }
 
-export const TEXT_FORMATS = ['postleitzahlDe', 'kldb2010'] as const;
+export const TEXT_FORMATS = ['postleitzahlDe', 'kldb2010', 'halbeSchritte'] as const;
 export type TextFormat = (typeof TEXT_FORMATS)[number];
 
 export interface ChoiceOption {

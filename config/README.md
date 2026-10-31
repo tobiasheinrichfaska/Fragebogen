@@ -33,8 +33,10 @@ Kanzleiebene, Extras | Stammdatenimport).
 enthalten die Zuordnung. Die gehostete App für die Mandanten (`npm run build`) enthält sie nie; ein
 E2E-Test prüft das.
 
-Aufbau (eine Liste, je Formular eine Zuordnung): siehe `src/logic/exportMapping.ts` und das frei
-erfundene Beispiel `tests/fixtures/export/beispiel.json`. Eine ungültige Datei bricht den Build ab;
+Aufbau (eine Liste, je Formular eine Zuordnung; `formVersion` beschränkt sie auf eine Fassung, z. B.
+die Sofortmeldung 0.2.0): siehe `src/logic/exportMapping.ts` und das frei erfundene Beispiel
+`tests/fixtures/export/beispiel.json`. `howTo` steht neben dem Download (wo die Datei eingespielt
+wird). Eine ungültige Datei bricht den Build ab;
 ob sie zur Formularfassung passt, prüft die Kanzlei-Station und zeigt Abweichungen an.
 
 Besondere Werte:
@@ -45,3 +47,18 @@ Besondere Werte:
 - `"companion": true`: Dieser Wert, z. B. der Monat „gültig ab“ eines Historienfelds, zählt nur
   zusammen mit den übrigen Werten des Felds.
 - `"optional": true`: Das Unterfeld darf leer bleiben; das Programm ergänzt es selbst.
+- `"input": "<id>"`: Den Wert trägt die Kanzlei je Fragebogen in der Station ein (`inputs`: Bezeichnung,
+  Hilfe, `digits` [min, max] oder `options`, `default`, `when`, `context` = Antworten, die beim
+  Ausfüllen helfen). Beispiele: Lohnart des Mandanten, Betriebsnummer und KK-Nr. der Krankenkasse,
+  Kürzel einer „anderen“ Konfession. Gefragt wird nur, solange ein Datensatz sie braucht. Leer zählt wie
+  `blank`; ein Wert, der nicht passt, sperrt die Importdatei.
+- `"first": [ … ]`: der erste dieser Werte, der etwas ergibt (z. B. die genaue Zahl der
+  Kinderfreibeträge hinter „mehr als 3“, sonst die gewählte Zahl).
+- `"notes": { "<Wert>": "<Hinweis>" }`: Der Wert wird übertragen, aber mit Hinweis „im Importprotokoll
+  prüfen“ (z. B. Personengruppe 120, die in der Werteliste der LuG-Feldbeschreibung V16.1 fehlt).
+
+**Mitarbeiter neu anlegen oder vorhandenen ergänzen** (Pflichtwahl in der Station): „neu anlegen“
+schreibt die spezielle Satzbeschreibung `mitarbeiterNeu`, „vorhandenen ergänzen“ nur `mitarbeiterSel`
+(legt nie einen Mitarbeiter an). So wird die Sofortmeldung als neuer Mitarbeiter eingespielt und der
+Personalfragebogen später unter derselben Mitarbeiternummer ergänzt. Die Station zeigt Nummer, Name
+und Eintritt zum Vergleich mit dem Lohnprogramm.

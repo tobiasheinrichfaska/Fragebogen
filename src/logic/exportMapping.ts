@@ -26,6 +26,12 @@ export interface ExportValue {
   /** Always empty: a value only the program's user knows (e.g. a client's wage type). Unless
    * `optional`, the field is then not written — the Erfassungsblatt still shows its other values. */
   blank?: true;
+  /** Entered in the Kanzlei station per questionnaire (`ExportMapping.inputs`); empty counts like `blank`. */
+  input?: string;
+  /** The first of these sources that yields a value, e.g. the exact count behind "mehr als 3". */
+  first?: ExportValue[];
+  /** Written as is, but with a note to check (keyed by the value before `map`). */
+  notes?: Record<string, string>;
   /** Characters [start, end) of the value, e.g. one digit of the Beitragsgruppen. */
   slice?: [number, number];
   /** List-backed choice: one of the entry's codes (e.g. "laenderkennzeichen") instead of its id. */
@@ -51,12 +57,36 @@ export interface ExportField {
 }
 
 export interface ExportRecord {
-  /** The program's mask path, e.g. "Mitarbeiter|Stammdaten|…". */
+  /** The program's mask path: menu items and mask, separated by "|". */
   mask: string;
   /** Written only while this condition (any role) holds. */
   when?: Condition;
   fields: ExportField[];
 }
+
+/**
+ * A value the Kanzlei enters per questionnaire because only it knows it (the client's wage type,
+ * the health insurer's number in the program). Asked only while a record using it is written.
+ */
+export interface ExportInput {
+  id: string;
+  label: string;
+  help?: string;
+  /** Digits only, between [min, max] of them. */
+  digits?: [number, number];
+  /** Or one of these values (shown as "value – label"). */
+  options?: { value: string; label: string }[];
+  /** Prefilled, e.g. the wage type the Kanzlei usually uses; can be changed per questionnaire. */
+  default?: string;
+  /** Asked only while this condition (any role) holds. */
+  when?: Condition;
+  /** Answers shown next to the input, e.g. the health insurer the person named. */
+  context?: string[];
+}
+
+/** Whether the import creates the employee or completes one that already exists. */
+export const EMPLOYEE_MODES = ['neu', 'vorhanden'] as const;
+export type EmployeeMode = (typeof EMPLOYEE_MODES)[number];
 
 export interface ExportMapping {
   format: typeof EXPORT_FORMAT;
@@ -66,10 +96,15 @@ export interface ExportMapping {
   title: string;
   /** The form whose answers are mapped. */
   form: string;
+  /** Only this version of the form (the fields of other versions may differ). */
+  formVersion?: string;
+  /** Where the file is read in, shown next to the download (e.g. the program's menu path). */
+  howTo?: string[];
   /** Version of the import file format (LuG: VersionImportDatei). */
   importVersion: string;
   /** The program's fixed record descriptions, copied unchanged ("2; MandantSel; …"). */
-  special: { mandantSel: string; mitarbeiterSel: string; mitarbeiterSelOderNeu: string };
+  special: { mandantSel: string; mitarbeiterSel: string; mitarbeiterNeu: string };
+  inputs?: ExportInput[];
   employee: {
     number?: ExportValue;
     name: ExportValue;
@@ -103,12 +138,18 @@ export function subFields(name: string): string[] {
 const MAP_KEY = /^[^\n]{1,64}$/;
 const SPECIAL = /^\d{1,5};\s*[A-Za-z]+;[^\n]*$/;
 
-function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | undefined {
+const SOURCES = 'needs exactly one of field, derivation, const, blank, input, first';
+const MAX_FIRST_DEPTH = 2;
+
+function decodeValue(d: Decoder, raw: unknown, path: string, depth = 0): ExportValue | undefined {
   const o = d.object(raw, path, [
     'field',
     'derivation',
     'const',
     'blank',
+    'input',
+    'first',
+    'notes',
     'slice',
     'code',
     'map',
@@ -127,6 +168,19 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
       : o.blank === true
         ? true
         : d.report(`${path}.blank`, 'expected true');
+  const input = o.input === undefined ? undefined : d.string(o.input, `${path}.input`, ID);
+  const first =
+    o.first === undefined
+      ? undefined
+      : depth >= MAX_FIRST_DEPTH
+        ? d.report(`${path}.first`, 'nested too deeply')
+        : d.array(o.first, `${path}.first`, (v, p) => decodeValue(d, v, p, depth + 1), 1);
+  const notes =
+    o.notes === undefined
+      ? undefined
+      : d.record(o.notes, `${path}.notes`, MAP_KEY, (v, p) =>
+          typeof v === 'string' && v !== '' ? v : d.report(p, 'expected a text'),
+        );
   const slice =
     o.slice === undefined
       ? undefined
@@ -143,8 +197,8 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
   const optional = o.optional === undefined ? undefined : d.boolean(o.optional, `${path}.optional`);
   const companion =
     o.companion === undefined ? undefined : d.boolean(o.companion, `${path}.companion`);
-  const sources = [field, derivation, constant, blank].filter((s) => s !== undefined).length;
-  if (sources !== 1) d.report(path, 'needs exactly one of field, derivation, const, blank');
+  const given = [o.field, o.derivation, o.const, o.blank, o.input, o.first];
+  if (given.filter((s) => s !== undefined).length !== 1) d.report(path, SOURCES);
   if (slice !== undefined && (slice.length !== 2 || (slice[0] ?? 0) >= (slice[1] ?? 0))) {
     d.report(`${path}.slice`, 'expected [start, end) with start < end');
   }
@@ -153,6 +207,9 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
     ...(derivation === undefined ? {} : { derivation }),
     ...(constant === undefined ? {} : { const: constant }),
     ...(blank === undefined ? {} : { blank }),
+    ...(input === undefined ? {} : { input }),
+    ...(first === undefined ? {} : { first }),
+    ...(notes === undefined ? {} : { notes }),
     ...(slice === undefined ? {} : { slice: [slice[0] ?? 0, slice[1] ?? 0] as [number, number] }),
     ...(code === undefined ? {} : { code }),
     ...(map === undefined ? {} : { map }),
@@ -162,6 +219,80 @@ function decodeValue(d: Decoder, raw: unknown, path: string): ExportValue | unde
   };
 }
 
+function decodeInput(d: Decoder, raw: unknown, path: string): ExportInput | undefined {
+  const o = d.object(raw, path, [
+    'id',
+    'label',
+    'help',
+    'digits',
+    'options',
+    'default',
+    'when',
+    'context',
+  ]);
+  if (!o) return undefined;
+  const id = d.string(o.id, `${path}.id`, ID);
+  const label = d.string(o.label, `${path}.label`);
+  const help = o.help === undefined ? undefined : d.string(o.help, `${path}.help`);
+  const digits =
+    o.digits === undefined
+      ? undefined
+      : d.array(o.digits, `${path}.digits`, (v, p) => d.integer(v, p, 1), 2);
+  if (digits !== undefined && (digits.length !== 2 || (digits[0] ?? 0) > (digits[1] ?? 0))) {
+    d.report(`${path}.digits`, 'expected [min, max] with min <= max');
+  }
+  const options =
+    o.options === undefined
+      ? undefined
+      : d.array(
+          o.options,
+          `${path}.options`,
+          (v, p) => {
+            const option = d.object(v, p, ['value', 'label']);
+            const value = option && d.string(option.value, `${p}.value`, MAP_KEY);
+            const text = option && d.string(option.label, `${p}.label`);
+            return value === undefined || text === undefined ? undefined : { value, label: text };
+          },
+          1,
+        );
+  if ((digits === undefined) === (options === undefined)) {
+    d.report(path, 'needs exactly one of digits, options');
+  }
+  const preset = o.default === undefined ? undefined : d.string(o.default, `${path}.default`);
+  const when = o.when === undefined ? undefined : decodeCondition(d, o.when, `${path}.when`, 0);
+  const context =
+    o.context === undefined
+      ? undefined
+      : d.array(o.context, `${path}.context`, (v, p) => d.string(v, p, ID), 1);
+  if (id === undefined || label === undefined) return undefined;
+  const input: ExportInput = {
+    id,
+    label,
+    ...(help === undefined ? {} : { help }),
+    ...(digits === undefined ? {} : { digits: [digits[0] ?? 1, digits[1] ?? 1] }),
+    ...(options === undefined ? {} : { options }),
+    ...(preset === undefined ? {} : { default: preset }),
+    ...(when === undefined ? {} : { when }),
+    ...(context === undefined ? {} : { context }),
+  };
+  if (preset !== undefined && inputProblem(input, preset) !== undefined) {
+    d.report(`${path}.default`, 'does not fit digits or options');
+  }
+  return input;
+}
+
+/** Why an entered value does not fit the input (German, for the Kanzlei), or undefined. */
+export function inputProblem(input: ExportInput, value: string): string | undefined {
+  if (input.digits) {
+    const [min, max] = input.digits;
+    if (/^\d+$/.test(value) && value.length >= min && value.length <= max) return undefined;
+    return min === max ? `genau ${min} Ziffern` : `${min} bis ${max} Ziffern`;
+  }
+  return (input.options ?? []).some((option) => option.value === value)
+    ? undefined
+    : 'bitte aus der Liste wählen';
+}
+
 function decodeMapping(d: Decoder, raw: unknown, path: string): ExportMapping | undefined {
   const o = d.object(raw, path, [
     'format',
@@ -169,8 +300,11 @@ function decodeMapping(d: Decoder, raw: unknown, path: string): ExportMapping | 
     'target',
     'title',
     'form',
+    'formVersion',
+    'howTo',
     'importVersion',
     'special',
+    'inputs',
     'employee',
     'records',
   ]);
@@ -180,21 +314,29 @@ function decodeMapping(d: Decoder, raw: unknown, path: string): ExportMapping | 
   const target = d.literal(o.target, `${path}.target`, EXPORT_TARGETS);
   const title = d.string(o.title, `${path}.title`);
   const form = d.string(o.form, `${path}.form`);
+  const formVersion =
+    o.formVersion === undefined ? undefined : d.string(o.formVersion, `${path}.formVersion`);
+  const howTo =
+    o.howTo === undefined
+      ? undefined
+      : d.array(o.howTo, `${path}.howTo`, (v, p) => d.string(v, p), 1);
   const importVersion = d.string(o.importVersion, `${path}.importVersion`);
   const s = d.object(o.special, `${path}.special`, [
     'mandantSel',
     'mitarbeiterSel',
-    'mitarbeiterSelOderNeu',
+    'mitarbeiterNeu',
   ]);
   const special = s && {
     mandantSel: d.string(s.mandantSel, `${path}.special.mandantSel`, SPECIAL),
     mitarbeiterSel: d.string(s.mitarbeiterSel, `${path}.special.mitarbeiterSel`, SPECIAL),
-    mitarbeiterSelOderNeu: d.string(
-      s.mitarbeiterSelOderNeu,
-      `${path}.special.mitarbeiterSelOderNeu`,
-      SPECIAL,
-    ),
+    mitarbeiterNeu: d.string(s.mitarbeiterNeu, `${path}.special.mitarbeiterNeu`, SPECIAL),
   };
+  const inputs =
+    o.inputs === undefined
+      ? undefined
+      : d.array(o.inputs, `${path}.inputs`, (v, p) => decodeInput(d, v, p), 1);
+  const ids = (inputs ?? []).map((input) => input.id);
+  if (new Set(ids).size !== ids.length) d.report(`${path}.inputs`, 'input ids must be unique');
   const e = d.object(o.employee, `${path}.employee`, [
     'number',
     'name',
@@ -246,13 +388,15 @@ function decodeMapping(d: Decoder, raw: unknown, path: string): ExportMapping | 
     !importVersion ||
     !special?.mandantSel ||
     !special.mitarbeiterSel ||
-    !special.mitarbeiterSelOderNeu ||
+    !special.mitarbeiterNeu ||
     !employee?.name ||
     !employee.firstName ||
     !employee.start ||
     !employee.firstMonth ||
     !records ||
-    (e?.number !== undefined && !employee.number)
+    (e?.number !== undefined && !employee.number) ||
+    (o.inputs !== undefined && !inputs) ||
+    (o.howTo !== undefined && !howTo)
   ) {
     return undefined;
   }
@@ -262,12 +406,15 @@ function decodeMapping(d: Decoder, raw: unknown, path: string): ExportMapping | 
     target,
     title,
     form,
+    ...(formVersion === undefined ? {} : { formVersion }),
+    ...(howTo === undefined ? {} : { howTo }),
     importVersion,
     special: {
       mandantSel: special.mandantSel,
       mitarbeiterSel: special.mitarbeiterSel,
-      mitarbeiterSelOderNeu: special.mitarbeiterSelOderNeu,
+      mitarbeiterNeu: special.mitarbeiterNeu,
     },
+    ...(inputs === undefined ? {} : { inputs }),
     employee: {
       ...(employee.number === undefined ? {} : { number: employee.number }),
       name: employee.name,
@@ -296,9 +443,16 @@ function valueProblems(
   path: string,
   fields: ReadonlyMap<string, FieldDefinition>,
   definition: FormDefinition,
+  inputs: ReadonlySet<string>,
 ): DecodeIssue[] {
   const issues: DecodeIssue[] = [];
   const report = (message: string) => issues.push({ path, message });
+  if (value.input !== undefined && !inputs.has(value.input)) {
+    report(`unknown input "${value.input}"`);
+  }
+  (value.first ?? []).forEach((inner, i) => {
+    issues.push(...valueProblems(inner, `${path}.first[${i}]`, fields, definition, inputs));
+  });
   if (value.field !== undefined) {
     const field = fields.get(value.field);
     if (!field) report(`unknown field "${value.field}"`);
@@ -324,33 +478,51 @@ function valueProblems(
   return issues;
 }
 
-/** Whether a mapping fits the form definition: fields, proposals, list codes and conditions. */
+/** Whether the mapping is meant for this form version (by id, and by version if it names one). */
+export function mappingFor(mapping: ExportMapping, definition: FormDefinition): boolean {
+  return (
+    mapping.form === definition.id &&
+    (mapping.formVersion === undefined || mapping.formVersion === definition.version)
+  );
+}
+
+/** Whether a mapping fits the form definition: fields, proposals, list codes, inputs, conditions. */
 export function checkExportMapping(
   mapping: ExportMapping,
   definition: FormDefinition,
 ): DecodeIssue[] {
   const fields = fieldsById(definition);
   const issues: DecodeIssue[] = [];
-  if (mapping.form !== definition.id) {
+  const inputs = new Set((mapping.inputs ?? []).map((input) => input.id));
+  if (!mappingFor(mapping, definition)) {
     issues.push({
       path: '$.form',
-      message: `mapping for "${mapping.form}", not "${definition.id}"`,
+      message: `mapping for "${mapping.form}" ${mapping.formVersion ?? ''}, not "${definition.id}" ${definition.version}`,
     });
   }
+  const checkCondition = (condition: Condition, path: string) => {
+    forEachLeaf(condition, path, (leaf, leafPath) => {
+      const target = fields.get(leaf.field);
+      if (!target) issues.push({ path: leafPath, message: `unknown field "${leaf.field}"` });
+      else {
+        const problem = leafProblem(leaf, target);
+        if (problem) issues.push({ path: leafPath, message: problem.message });
+      }
+    });
+  };
+  (mapping.inputs ?? []).forEach((input, i) => {
+    if (input.when) checkCondition(input.when, `$.inputs[${i}].when`);
+    (input.context ?? []).forEach((id, c) => {
+      if (!fields.has(id)) {
+        issues.push({ path: `$.inputs[${i}].context[${c}]`, message: `unknown field "${id}"` });
+      }
+    });
+  });
   for (const [key, value] of Object.entries(mapping.employee)) {
-    issues.push(...valueProblems(value, `$.employee.${key}`, fields, definition));
+    issues.push(...valueProblems(value, `$.employee.${key}`, fields, definition, inputs));
   }
   mapping.records.forEach((record, r) => {
-    if (record.when) {
-      forEachLeaf(record.when, `$.records[${r}].when`, (leaf, leafPath) => {
-        const target = fields.get(leaf.field);
-        if (!target) issues.push({ path: leafPath, message: `unknown field "${leaf.field}"` });
-        else {
-          const problem = leafProblem(leaf, target);
-          if (problem) issues.push({ path: leafPath, message: problem.message });
-        }
-      });
-    }
+    if (record.when) checkCondition(record.when, `$.records[${r}].when`);
     record.fields.forEach((field, f) => {
       const subs = subFields(field.name).length;
       if (field.values.length !== subs) {
@@ -361,7 +533,13 @@ export function checkExportMapping(
       }
       field.values.forEach((value, v) => {
         issues.push(
-          ...valueProblems(value, `$.records[${r}].fields[${f}].values[${v}]`, fields, definition),
+          ...valueProblems(
+            value,
+            `$.records[${r}].fields[${f}].values[${v}]`,
+            fields,
+            definition,
+            inputs,
+          ),
         );
       });
     });

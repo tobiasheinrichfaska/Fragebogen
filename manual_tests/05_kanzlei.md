@@ -157,8 +157,9 @@ Teile abgeschlossen, PDF erstellt.
 
 1. Station „Kanzlei“: die PDFs einlesen.
 2. Unter „Übergabe an DATEV Lohn und Gehalt“ zunächst nichts eintragen.
-3. Mandantennummer des Testmandanten und eine freie Mitarbeiternummer eintragen;
-   „Erfassungsblatt ansehen“.
+3. Mandantennummer des Testmandanten und eine freie Mitarbeiternummer eintragen; „neu anlegen“
+   wählen; „Lohnart für das Monatsentgelt“, „Betriebsnummer der Krankenkasse“ und „KK-Nr. der
+   Krankenkasse beim Mandanten“ aus dem Testmandanten eintragen; „Erfassungsblatt ansehen“.
 4. „Importdatei herunterladen“; in Lohn und Gehalt auf Kanzleiebene Extras | Stammdatenimport
    die Datei wählen.
 5. Auf Mandantenebene das Protokoll (Mandant | Ausgeben | Protokolle, „Stammdaten-Import-Prot.“)
@@ -166,12 +167,64 @@ Teile abgeschlossen, PDF erstellt.
 
 **Erwartet:**
 
-- Schritt 2: „Noch keine Importdatei: Mandantennummer … fehlt“; der Knopf ist gesperrt.
+- Schritt 2: „Noch keine Importdatei: Mandantennummer … fehlt“ und „Bitte wählen: Mitarbeiter neu
+  anlegen oder vorhandenen Mitarbeiter ergänzen.“; der Knopf ist gesperrt. Unter den Eingabefeldern
+  steht die Krankenkasse, die die Person genannt hat.
 - Schritt 3: Das Erfassungsblatt folgt den Masken von Lohn und Gehalt (Personaldaten, Beschäftigung,
   Sozialversicherung, Steuer …). Nicht Übertragbares steht mit Grund in der Liste „Nicht übertragen“.
 - Schritt 4/5: Der Mitarbeiter ist angelegt; das Protokoll zeigt die übernommenen Felder.
-  _Nicht offensichtlich:_ Krankenkasse und Lohnarten werden nicht übertragen; sie müssen in Lohn
-  und Gehalt selbst erfasst werden. Das Gehalt steht deshalb nur auf dem Erfassungsblatt („Lohnart …
-  selbst erfassen“). Fehlerhafte Felder nennt nur das Protokoll von Lohn und Gehalt.
+  Krankenkasse und Gehalt (mit der eingetragenen Lohnart) sind übernommen.
+  _Nicht offensichtlich:_ Die Krankenkasse muss beim Testmandanten schon angelegt sein, sonst lehnt
+  Lohn und Gehalt sie ab. Fehlerhafte Felder nennt nur das Protokoll von Lohn und Gehalt.
+- Variante Rentner (Altersvollrente vor der Regelaltersgrenze): Personengruppe 120 wird übertragen
+  und steht unter „Übertragen, bitte im Importprotokoll prüfen“. **Bitte im Protokoll nachsehen, ob
+  Lohn und Gehalt die 120 annimmt**; die Feldbeschreibung V16.1 führt sie nicht.
 - Gegenprobe: Die Datei `dist/index.html` (gehostete App) enthält die Zuordnung nicht.
 - Danach den Testmitarbeiter wieder löschen.
+
+## MT-69: Erfassungsblatt als PDF für die Personalakte
+
+**Voraussetzungen:** wie MT-68, Schritt 3 erledigt.
+
+**Schritte:**
+
+1. „Erfassungsblatt als PDF“.
+2. Die PDF öffnen.
+
+**Erwartet:**
+
+- Dateiname nur mit Nummern, z. B. `Erfassungsblatt_LuG_M10001_MA42_3f2b8c1e.pdf` (kein Name).
+- Oben: Mandant, Mitarbeiter, „neu anlegen“ oder „vorhandenen Mitarbeiter ergänzen“, Name und Eintritt;
+  darunter die Grundlage (Teile mit SHA-256), „Von der Kanzlei eingetragen“, dann alle Werte in der
+  Reihenfolge der Masken, „Nicht übertragen …“, „Übertragen, bitte im Importprotokoll prüfen“ und
+  „Einspielen“.
+- _Nicht offensichtlich:_ Das Blatt geht auch ohne Importdatei (dann steht oben „Noch keine
+  Importdatei: …“). Es ist eine eigene Datei, keine Seite der Fragebogen-PDF (eine Unterlage je Datei).
+
+## MT-70: Sofortmeldung zuerst, Personalfragebogen später zum selben Mitarbeiter
+
+**Voraussetzungen:** Vorschau-Build mit Zuordnung (`npm run build:preview`), Testmandant; eine
+Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen derselben Person
+(„Angaben übernehmen“ aus der Sofortmeldung).
+
+**Schritte:**
+
+1. Station „Kanzlei“: die Sofortmeldung einlesen; „neu anlegen“, Mandanten- und Mitarbeiternummer;
+   Importdatei herunterladen und einspielen.
+2. Später den Personalfragebogen einlesen; dieselbe Mitarbeiternummer, „vorhandenen Mitarbeiter
+   ergänzen“; die Zeile „Bitte in DATEV Lohn und Gehalt vergleichen: Mitarbeiter … ist …“ mit Lohn und
+   Gehalt vergleichen; Importdatei einspielen.
+3. Gegenprobe: eine Mitarbeiternummer, die es im Testmandanten nicht gibt, mit „vorhandenen Mitarbeiter
+   ergänzen“ einspielen.
+
+**Erwartet:**
+
+- Schritt 1: Der Mitarbeiter ist mit Name, Anschrift und persönlichen Angaben angelegt.
+- Schritt 2: Derselbe Mitarbeiter ist ergänzt; es gibt keinen zweiten.
+- Schritt 3: **Bitte festhalten, was das Protokoll meldet** – erwartet ist ein Fehler „Mitarbeiter nicht
+  gefunden“ und kein neu angelegter Mitarbeiter (in der DATEV-Beschreibung nicht ausdrücklich
+  beschrieben).
+- _Nicht offensichtlich:_ Die eingefrorene Sofortmeldung 0.1.0 hat keine Übergabe (Straße mit
+  Hausnummer und Staatsangehörigkeit als Freitext). Den Personalfragebogen **nicht zweimal**
+  einspielen: Lohn und Gehalt legt Bezüge/Abzüge dann ein zweites Mal an (Auswahl nach „Gültig ab“ und
+  Bezug/Abzug-Nr.).

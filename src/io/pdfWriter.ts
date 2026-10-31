@@ -48,12 +48,12 @@ export interface PdfResult {
   qrCodes: number;
 }
 
-const A4: [number, number] = [595.28, 841.89];
-const MARGIN = 42;
+export const A4: [number, number] = [595.28, 841.89];
+export const MARGIN = 42;
 const BOTTOM = 56;
-const INK = rgb(0.11, 0.13, 0.19);
-const MUTED = rgb(0.36, 0.39, 0.45);
-const SHADE = rgb(0.91, 0.92, 0.94);
+export const INK = rgb(0.11, 0.13, 0.19);
+export const MUTED = rgb(0.36, 0.39, 0.45);
+export const SHADE = rgb(0.91, 0.92, 0.94);
 const LINE = rgb(0.8, 0.82, 0.86);
 /** One QR module printed as 0.5 mm — readable by flatbed scanners and phone cameras. */
 const QR_MODULE = (0.5 / 25.4) * 72;
@@ -87,7 +87,8 @@ export function printable(text: string): string {
     .join('');
 }
 
-class Layout {
+/** Top-to-bottom page filling with wrapped text (shared by the PDFs this app writes). */
+export class Layout {
   page: PDFPage;
   y = 0;
   constructor(
@@ -150,7 +151,7 @@ class Layout {
   }
 }
 
-function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
+export function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
   const lines: string[] = [];
   for (const paragraph of text.split('\n')) {
     let line = '';

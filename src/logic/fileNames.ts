@@ -58,3 +58,25 @@ export function fileNameFor(formId: string, questionnaireId: string, kind: FileK
     safeFileName([formName(formId), questionnaireId.slice(0, 8), SUFFIX[kind]]) + EXTENSION[kind]
   );
 }
+
+/** Import file for a payroll program, e.g. "LuG_Stammdaten_10001_42.txt" — numbers, never a name. */
+export function importFileName(target: string, mandant: string, employee: string): string {
+  return `${safeFileName([target, 'Stammdaten', mandant, employee || 'neu'])}.txt`;
+}
+
+/** Erfassungsblatt of that import, e.g. "Erfassungsblatt_LuG_M10001_MA42_3f2b8c1e.pdf". */
+export function sheetFileName(
+  target: string,
+  mandant: string,
+  employee: string,
+  questionnaireId: string,
+): string {
+  const parts = [
+    'Erfassungsblatt',
+    target,
+    `M${mandant}`,
+    `MA${employee}`,
+    questionnaireId.slice(0, 8),
+  ];
+  return `${safeFileName(parts)}.pdf`;
+}

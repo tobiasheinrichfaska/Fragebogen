@@ -5,11 +5,13 @@ import mappingsRaw from '../fixtures/export/beispiel.json';
 import { encodeWindows1252 } from '../../src/io/windows1252';
 import {
   checkExportMapping,
+  inputProblem,
+  mappingFor,
   parseExportMappings,
   subFields,
   type ExportMapping,
 } from '../../src/logic/exportMapping';
-import { buildLugImport } from '../../src/logic/lugImport';
+import { buildLugImport, neededInputs } from '../../src/logic/lugImport';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
@@ -84,7 +86,7 @@ describe('export mapping', () => {
     expect(messages).toEqual(
       expect.arrayContaining([
         'unknown property',
-        'needs exactly one of field, derivation, const, blank',
+        'needs exactly one of field, derivation, const, blank, input, first',
       ]),
     );
     expect(parseExportMappings([{ ...raw[0], version: 2 }]).ok).toBe(false);
@@ -116,6 +118,72 @@ describe('export mapping', () => {
     ]);
   });
 
+  it('checks inputs: references, the fields they show and their conditions', () => {
+    const base = mapping();
+    const broken: ExportMapping = {
+      ...base,
+      inputs: [
+        ...(base.inputs ?? []),
+        {
+          id: 'extra',
+          label: 'X',
+          digits: [1, 2],
+          context: ['gibtsNicht'],
+          when: { field: 'auchNicht', equals: 'a' },
+        },
+      ],
+      records: [{ mask: 'X', fields: [{ name: 'A', values: [{ input: 'unbekannt' }] }] }],
+    };
+    expect(checkExportMapping(broken, definition).map((i) => i.message)).toEqual([
+      'unknown field "auchNicht"',
+      'unknown field "gibtsNicht"',
+      'unknown input "unbekannt"',
+    ]);
+  });
+
+  it('refuses inputs with two kinds, a default that does not fit, twice the same id, deep nesting', () => {
+    const raw = structuredClone(mappingsRaw) as unknown as Record<string, unknown>[];
+    const first = raw[0] as Record<string, unknown>;
+    first.inputs = [
+      { id: 'a', label: 'A', digits: [1, 2], options: [{ value: 'x', label: 'X' }] },
+      { id: 'b', label: 'B', digits: [8, 8], default: '123' },
+      { id: 'b', label: 'B2', digits: [1, 1] },
+    ];
+    const record = (first.records as Record<string, unknown>[])[0] as Record<string, unknown>;
+    (record.fields as Record<string, unknown>[])[0] = {
+      name: 'X',
+      values: [{ first: [{ first: [{ first: [{ const: 'x' }] }] }] }],
+    };
+    const parsed = parseExportMappings(raw);
+    const messages = parsed.ok ? [] : parsed.issues.map((i) => i.message);
+    expect(messages).toEqual(
+      expect.arrayContaining([
+        'needs exactly one of digits, options',
+        'does not fit digits or options',
+        'input ids must be unique',
+        'nested too deeply',
+      ]),
+    );
+  });
+
+  it('is meant for one form version only when it names one', () => {
+    const base = mapping();
+    expect(mappingFor(base, definition)).toBe(true);
+    const other = { ...base, formVersion: '9.9.9' };
+    expect(mappingFor(other, definition)).toBe(false);
+    expect(checkExportMapping(other, definition).map((i) => i.path)).toContain('$.form');
+    expect(mappingFor({ ...base, formVersion: definition.version }, definition)).toBe(true);
+  });
+
+  it('names the Kanzlei input problems in German', () => {
+    expect(inputProblem({ id: 'a', label: 'A', digits: [8, 8] }, '1234')).toBe('genau 8 Ziffern');
+    expect(inputProblem({ id: 'a', label: 'A', digits: [1, 4] }, '12a')).toBe('1 bis 4 Ziffern');
+    expect(inputProblem({ id: 'a', label: 'A', digits: [1, 4] }, '2000')).toBeUndefined();
+    const list = { id: 'a', label: 'A', options: [{ value: 'ib', label: 'Baden' }] };
+    expect(inputProblem(list, 'ib')).toBeUndefined();
+    expect(inputProblem(list, 'xx')).toBe('bitte aus der Liste wählen');
+  });
+
   it('splits combination fields into their sub-fields, nested ones too', () => {
     expect(subFields('Land(Kennzeichen;Name)')).toEqual(['Kennzeichen', 'Name']);
     expect(subFields('T(Gueltig_ab;A(B;C);D)')).toEqual(['Gueltig_ab', 'B', 'C', 'D']);
@@ -126,6 +194,7 @@ describe('export mapping', () => {
 describe('import file', () => {
   const result = buildLugImport(questionnaire(), definition, mapping(), {
     mandantennummer: '123',
+    mode: 'neu',
   });
   const lines = (result.text ?? '').split('\r\n');
 
@@ -140,11 +209,17 @@ describe('import file', () => {
     expect(lines).toContain('12;123');
   });
 
-  it('creates or selects the employee, then writes the records', () => {
+  it('creates the employee in a section of its own, then selects it and writes the records', () => {
     const first = lines.indexOf('[Mitarbeiter]');
-    expect(lines[first + 1]).toBe('15;42;Musterfrau;Erika;02.11.2026;11/2026');
+    expect(lines[first + 1]).toBe('13;42;Musterfrau;Erika;02.11.2026;11/2026');
     expect(lines).toContain('14;42');
     expect(lines.lastIndexOf('[Mitarbeiter]')).toBeGreaterThan(first);
+    expect(result.employee).toEqual({
+      number: '42',
+      name: 'Musterfrau',
+      firstName: 'Erika',
+      start: '02.11.2026',
+    });
   });
 
   it('formats dates, months, decimals, codes, mapped choices and proposals', () => {
@@ -178,9 +253,10 @@ describe('import file', () => {
       questionnaire(withoutKey({ ...PERSON, zahlungsweg: 'bar' }, 'iban')),
       definition,
       mapping(),
-      { mandantennummer: '123' },
+      { mandantennummer: '123', mode: 'neu' },
     );
-    expect(bar.problems.join(' ')).toContain('für „bar“ gibt es keine Zuordnung');
+    // The answer is named as the person read it, not by its stored id.
+    expect(bar.problems.join(' ')).toContain('für „bar (so vereinbart)“ gibt es keine Zuordnung');
     expect(bar.text).not.toContain(';SEPA');
   });
 
@@ -189,6 +265,7 @@ describe('import file', () => {
     const open = buildLugImport(q, definition, mapping(), {
       mandantennummer: '123',
       mitarbeiternummer: '7',
+      mode: 'neu',
     });
     expect(open.problems.join(' ')).toContain('Vorschlag „Beitragsgruppen (KV RV AV PV)“ fehlt');
     expect(open.sheet.find((row) => row.field === 'Beitragsgruppen › KV')?.problem).toBeDefined();
@@ -230,7 +307,7 @@ describe('import file', () => {
       questionnaire({ ...PERSON, versicherungsnummer: '65 170839 J 003' }),
       definition,
       mapping(),
-      { mandantennummer: '123' },
+      { mandantennummer: '123', mode: 'neu' },
     );
     expect(withNumber.text).toContain('Beispiel|Historie;Nummer(Gueltig_ab;Nummer)');
     expect(withNumber.text).toContain(';11/2026;65170839J003');
@@ -247,7 +324,154 @@ describe('import file', () => {
     expect(blocked.blocking).toEqual([
       'Mandantennummer (1 bis 5 Ziffern) fehlt.',
       'Mitarbeiternummer (1 bis 5 Ziffern) fehlt.',
+      'Bitte wählen: Mitarbeiter neu anlegen oder vorhandenen Mitarbeiter ergänzen.',
     ]);
+  });
+
+  it('completes an existing employee without creating one (follow-up import)', () => {
+    // Only the employer part: no name for a new employee, but none is needed to select one.
+    const q = filled('arbeitgeber', EMPLOYER, createQuestionnaire(QUESTIONNAIRE_ID, form));
+    const follow = buildLugImport(q, definition, mapping(), {
+      mandantennummer: '123',
+      mode: 'vorhanden',
+    });
+    expect(follow.blocking).toEqual([]);
+    const text = (follow.text ?? '').split('\r\n');
+    expect(text).toContain('14;42');
+    expect(text.some((line) => line.startsWith('13;42'))).toBe(false);
+    expect(text.filter((line) => line === '[Mitarbeiter]')).toHaveLength(1);
+  });
+});
+
+describe('inputs of the Kanzlei', () => {
+  it('asks only for the inputs of written records whose condition holds, with helpful answers', () => {
+    const needed = neededInputs(questionnaire(), definition, mapping());
+    expect(needed.map((n) => [n.input.id, n.value])).toEqual([
+      ['lohnart', ''],
+      ['kasse', ''],
+      ['stelle', '7'],
+    ]);
+    expect(needed[1]?.context).toEqual([
+      { label: 'Krankenkasse oder Versicherungsunternehmen', value: 'Muster-BKK' },
+    ]);
+  });
+
+  it('leaves out a record whose key is not entered, and a combination field missing an input', () => {
+    const result = buildLugImport(questionnaire(), definition, mapping(), {
+      mandantennummer: '123',
+      mode: 'neu',
+    });
+    expect(result.problems).toContain(
+      'Beispiel|Gehalt: „Lohnart für das Gehalt“ oben eintragen – Datensatz nicht übertragen',
+    );
+    expect(result.problems).toContain(
+      'Beispiel|Kasse – Krankenkasse: „Betriebsnummer der Krankenkasse“ oben eintragen – nicht übertragen',
+    );
+    expect(result.text).not.toContain('Beispiel|Gehalt');
+    // The rest of the record is written; the default fills its input.
+    expect(result.text).toContain('Beispiel|Kasse;Stelle');
+    expect(result.sheet).toContainEqual({
+      mask: 'Beispiel|Kasse',
+      field: 'Krankenkasse › Nummer',
+      value: '',
+      problem: 'oben eintragen',
+    });
+  });
+
+  it('writes what the Kanzlei entered', () => {
+    const result = buildLugImport(questionnaire(), definition, mapping(), {
+      mandantennummer: '123',
+      mode: 'neu',
+      inputs: { lohnart: '2000', kasse: '12345678', stelle: '3' },
+    });
+    expect(result.problems.join(' ')).not.toContain('oben eintragen');
+    const lines = (result.text ?? '').split('\r\n');
+    const gehalt = lines.find((line) => line.endsWith(';Beispiel|Gehalt;Lohnart;Betrag'));
+    expect(gehalt).toBeDefined();
+    expect(lines).toContain(`${gehalt?.split(';')[0] ?? ''};2000;2500,00`);
+    const kasse = lines.find((line) =>
+      line.endsWith(';Beispiel|Kasse;Kasse(Gueltig_ab;Nummer);Stelle'),
+    );
+    expect(lines).toContain(`${kasse?.split(';')[0] ?? ''};11/2026;12345678;3`);
+  });
+
+  it('refuses an input that does not fit, and blocks the file until it is corrected', () => {
+    const result = buildLugImport(questionnaire(), definition, mapping(), {
+      mandantennummer: '123',
+      mode: 'neu',
+      inputs: { lohnart: '2000', kasse: '1234' },
+    });
+    expect(result.blocking).toEqual(['„Betriebsnummer der Krankenkasse“: genau 8 Ziffern.']);
+    expect(result.text).toBeUndefined();
+    const needed = neededInputs(questionnaire(), definition, mapping(), { kasse: '1234' });
+    expect(needed[1]?.problem).toBe('genau 8 Ziffern');
+  });
+});
+
+describe('values from the first source that has one, and notes', () => {
+  const TAX: Answers = { ...PERSON, dienstverhaeltnis: 'erstes', steuerklasse: '1' };
+  const tax = (answers: Answers, inputs: Record<string, string> = {}) =>
+    buildLugImport(
+      questionnaire({ ...TAX, kirchensteuer: 'ev', ...answers }),
+      definition,
+      mapping(),
+      { mandantennummer: '123', mode: 'neu', inputs },
+    );
+  const rowOf = (result: ReturnType<typeof tax>, field: string) =>
+    result.sheet.find((row) => row.mask === 'Beispiel|Steuer' && row.field === field);
+
+  it('takes the exact child allowances behind "mehr als 3", else the chosen count', () => {
+    const more = tax({ kinderfreibetraege: 'mehr', kinderfreibetraegeZahl: '4,5' });
+    expect(rowOf(more, 'Kfb')?.value).toBe('4,5');
+    expect(rowOf(tax({ kinderfreibetraege: '2_5' }), 'Kfb')?.value).toBe('2,5');
+  });
+
+  it('asks the Kanzlei for the church tax code of another community, showing the answer', () => {
+    const other: Answers = {
+      kinderfreibetraege: '0',
+      kirchensteuer: 'andere',
+      kirchensteuerAndere: 'Gemeinde X',
+    };
+    const needed = neededInputs(questionnaire({ ...TAX, ...other }), definition, mapping());
+    expect(needed.find((n) => n.input.id === 'konfession')?.context).toEqual([
+      { label: 'Religionsgemeinschaft', value: 'Gemeinde X' },
+    ]);
+    expect(tax(other).problems).toContain(
+      'Beispiel|Steuer – Konfession: „Konfession (Kürzel)“ oben eintragen – nicht übertragen',
+    );
+    expect(rowOf(tax(other, { konfession: 'is' }), 'Konfession › Kuerzel')?.value).toBe('is');
+    expect(rowOf(tax({ kinderfreibetraege: '0' }), 'Konfession › Kuerzel')?.value).toBe('ev');
+    expect(tax(other, { konfession: 'xx' }).blocking).toEqual([
+      '„Konfession (Kürzel)“: bitte aus der Liste wählen.',
+    ]);
+  });
+
+  it('writes Personengruppe 120 with its note, and lists the note to check', () => {
+    const pensioner = questionnaire({
+      ...PERSON,
+      situation: ['rente'],
+      rentenart: 'altersvoll',
+      renteSeit: '01.01.2026',
+    });
+    const result = buildLugImport(pensioner, definition, mapping(), {
+      mandantennummer: '123',
+      mode: 'neu',
+    });
+    expect(result.sheet).toContainEqual({
+      mask: 'Beispiel|Gruppe',
+      field: 'PGS',
+      value: '120',
+      note: 'steht nicht in der Werteliste – im Protokoll prüfen',
+    });
+    expect(result.notes).toEqual([
+      'Beispiel|Gruppe – PGS: steht nicht in der Werteliste – im Protokoll prüfen',
+    ]);
+    // An ordinary employee: no note.
+    const ordinary = buildLugImport(questionnaire(), definition, mapping(), {
+      mandantennummer: '1',
+      mode: 'neu',
+    });
+    expect(ordinary.notes).toEqual([]);
   });
 });
 
