@@ -152,8 +152,7 @@ describe.skipIf(!existsSync(FILE))('local export mappings (config/export.local.j
       situation: ['rente'],
       rentenart: 'altersvoll',
       renteSeit: '01.01.2026',
-      kinderfreibetraege: 'mehr',
-      kinderfreibetraegeZahl: '4,5',
+      kinderfreibetraege: '4,5',
       kirchensteuer: 'andere',
       kirchensteuerAndere: 'Jüdische Gemeinde Musterstadt',
     });

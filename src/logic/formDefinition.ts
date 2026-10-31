@@ -350,6 +350,7 @@ export const FIELD_KEYS = [
   'multiline',
   'options',
   'optionsFrom',
+  'suggestionsFrom',
   'showIf',
   'columns',
   'computed',
@@ -396,6 +397,10 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
       : d.array(o.options, `${path}.options`, (v, p) => decodeOption(d, v, p), 1);
   const optionsFrom =
     o.optionsFrom === undefined ? undefined : d.string(o.optionsFrom, `${path}.optionsFrom`, ID);
+  const suggestionsFrom =
+    o.suggestionsFrom === undefined
+      ? undefined
+      : d.string(o.suggestionsFrom, `${path}.suggestionsFrom`, ID);
   const showIf =
     o.showIf === undefined ? undefined : decodeCondition(d, o.showIf, `${path}.showIf`, 0);
   const columns =
@@ -469,6 +474,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(multiline === undefined ? {} : { multiline }),
     ...(options === undefined ? {} : { options }),
     ...(optionsFrom === undefined ? {} : { optionsFrom }),
+    ...(suggestionsFrom === undefined ? {} : { suggestionsFrom }),
     ...(showIf === undefined ? {} : { showIf }),
     ...(columns === undefined ? {} : { columns }),
     ...(computed === undefined ? {} : { computed }),
@@ -734,6 +740,14 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
       if (field.type !== 'choice') report(at, 'only choice fields take options from a list');
       if (field.options) report(at, 'either options or optionsFrom');
       if (!REFERENCE_LISTS[field.optionsFrom]) report(at, `unknown list "${field.optionsFrom}"`);
+    }
+    if (field.suggestionsFrom !== undefined) {
+      const at = `${path}.suggestionsFrom`;
+      if (field.type !== 'text') report(at, 'only text fields take suggestions from a list');
+      if (field.textFormat !== undefined) report(at, 'either textFormat or suggestionsFrom');
+      if (!REFERENCE_LISTS[field.suggestionsFrom]) {
+        report(at, `unknown list "${field.suggestionsFrom}"`);
+      }
     }
     const optionIds = new Set<string>();
     field.options?.forEach((option, i) => {

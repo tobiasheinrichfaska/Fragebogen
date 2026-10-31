@@ -12,7 +12,7 @@ import type {
   IsoDate,
   TextFormat,
 } from './model';
-import { listOptionFor, optionsOf } from './options';
+import { listOptionFor, optionsOf, suggestionsOf } from './options';
 import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
 export const CANON_VERSION = 1;
@@ -158,6 +158,14 @@ const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<
   },
 };
 
+/** − / + of a count in half steps ("1,5" → "2"); empty or unreadable counts as 0, never below 0. */
+export function stepHalfSteps(text: string, direction: 1 | -1): string {
+  const checked = TEXT_FORMAT_CHECKS.halbeSchritte(text);
+  const current = checked.ok ? Number(checked.value.replace(',', '.')) : 0;
+  const next = Math.min(99.5, Math.max(0, current + direction * 0.5));
+  return Number.isInteger(next) ? String(next) : `${Math.floor(next)},5`;
+}
+
 export function normalizeIban(raw: string): Checked<string> {
   return checkIban(raw.replace(/\s/g, '').toUpperCase());
 }
@@ -204,9 +212,13 @@ function fromText(
 }
 
 const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
-  text: fromText((text, field) =>
-    field.textFormat === undefined ? accept(text) : TEXT_FORMAT_CHECKS[field.textFormat](text),
-  ),
+  text: fromText((text, field) => {
+    if (field.textFormat !== undefined) return TEXT_FORMAT_CHECKS[field.textFormat](text);
+    if (field.suggestionsFrom === undefined) return accept(text);
+    // A list entry is stored by its exact name; anything else is free text with a warning.
+    const found = listOptionFor(suggestionsOf(field), text);
+    return found ? accept(found.label) : accept(text, ['list.freeEntry']);
+  }),
   date: fromText(normalizeDate),
   money: fromText(normalizeMoney),
   number: fromText(normalizeNumber),

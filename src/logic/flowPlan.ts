@@ -109,9 +109,13 @@ function shown(definition: FormDefinition, text: string): string {
 
 function kindOf(field: FieldDefinition): string {
   const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
+  const hints =
+    field.suggestionsFrom === undefined ? undefined : REFERENCE_LISTS[field.suggestionsFrom];
   const options = list
     ? `aus der Liste „${list.title}“ (${list.options.length} Einträge; ${list.source})`
-    : field.options?.map((option) => option.label).join(' · ');
+    : hints
+      ? `Vorschläge aus der Liste „${hints.title}“ (${hints.options.length} Einträge; ${hints.source}), freie Eingabe mit Hinweis`
+      : field.options?.map((option) => option.label).join(' · ');
   const columns = field.columns?.map((column) => column.label).join(' · ');
   if (options) return `${KIND[field.type]}: ${options}`;
   if (columns) return `${KIND[field.type]} mit den Spalten ${columns}`;

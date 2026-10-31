@@ -228,3 +228,37 @@ Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen dersel
   Hausnummer und Staatsangehörigkeit als Freitext). Den Personalfragebogen **nicht zweimal**
   einspielen: Lohn und Gehalt legt Bezüge/Abzüge dann ein zweites Mal an (Auswahl nach „Gültig ab“ und
   Bezug/Abzug-Nr.).
+
+## MT-71: Krankenkasse aus der Liste, frei eingegeben, und die Sicherheitsfrage
+
+**Voraussetzungen:** Vorschau- oder Kanzlei-Build mit Zuordnung; ein Personalfragebogen, in dem die Person
+„gesetzlich“ gewählt hat.
+
+**Schritte:**
+
+1. Als Person bei „Gesetzliche Krankenkasse“ „tk“ tippen.
+2. Den Eintrag „Techniker Krankenkasse“ mit den Pfeiltasten und Enter wählen; weiter bis zum Ende,
+   unterschreiben.
+3. Zweiter Bogen: „Meine Betriebskasse“ frei eintippen und „Weiter“.
+4. Kanzlei-Station: beide Bögen einlesen, je „Übergabe an DATEV Lohn und Gehalt“ öffnen.
+5. Mandanten-/Mitarbeiternummer und „neu anlegen“ wählen, „Importdatei herunterladen“.
+
+**Erwartet:**
+
+- Schritt 1: Die Liste filtert beim Tippen; „Techniker Krankenkasse“ steht oben (Suchwort TK).
+- Schritt 3: Unter dem Feld erscheint sofort „Nicht in der Liste. Die freie Eingabe ist möglich, kann aber
+  Rückfragen und Zusatzaufwand verursachen …“; „Weiter“ geht trotzdem.
+- Schritt 4: Beim ersten Bogen steht 15027365 schon im Feld „Betriebsnummer der Krankenkasse“; beim
+  zweiten ist es leer. Die Suchliste findet Kassen nach Name oder Nummer; eine fehlende Kasse lässt sich
+  mit 8 Ziffern eintippen.
+- Schritt 5: Vor dem Download erscheint die Sicherheitsfrage („Mitarbeiternummer … Ist sie … noch frei?“);
+  erst „Ja, geprüft – Datei herunterladen“ lädt die Datei. Ohne Personalnummer im Fragebogen steht am
+  Feld „Im Fragebogen nicht angegeben – bitte eintragen.“
+
+## MT-72: Kinderfreibeträge mit − und +
+
+**Schritte:** Als Person bei „Kinderfreibeträge“ dreimal „+“, einmal „−“ drücken; dann „4,3“ tippen und
+„Weiter“.
+
+**Erwartet:** Die Zahl geht 0,5 → 1 → 1,5 → 1; „4,3“ wird abgelehnt („Bitte eine Zahl in halben Schritten
+eingeben …“), „4,5“ wird angenommen. Unter 0 geht es nicht.

@@ -18,7 +18,7 @@ import {
 import { fieldsById } from './form';
 import { valuesOf } from './hints';
 import type { FormDefinition, Questionnaire } from './model';
-import { listCodesOf, optionsOf } from './options';
+import { listCodesOf, listEntryOf, listOf, optionsOf } from './options';
 
 export interface SheetRow {
   mask: string;
@@ -51,7 +51,16 @@ export interface LugImport {
   /** Why no file can be written (e.g. missing Mandantennummer). */
   blocking: string[];
   /** Whom the file is about — to compare with the program before reading it in. */
-  employee: { number: string; name: string; firstName: string; start: string };
+  employee: {
+    number: string;
+    /** Where the number comes from: entered in the station, the questionnaire, or nowhere. */
+    source: 'entered' | 'form' | 'none';
+    name: string;
+    firstName: string;
+    start: string;
+  };
+  /** Asked before the download (the number decides which employee the file changes). */
+  confirm?: string;
 }
 
 export interface NeededInput {
@@ -114,57 +123,26 @@ function inputIdsOf(value: ExportValue): string[] {
   ];
 }
 
-function context(questionnaire: Questionnaire, definition: FormDefinition) {
+/** Evaluates the mapping's values against a questionnaire and the Kanzlei's entries. */
+function resolverFor(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  mapping: ExportMapping,
+  entered: Readonly<Record<string, string>>,
+) {
   const values = valuesOf(questionnaire, definition);
   const applies = (when: ExportInput['when']) =>
     when === undefined || evaluateCondition(when, values.valueOf);
-  return { values, applies };
-}
-
-/** The inputs the Kanzlei has to fill in for this questionnaire, in the mapping's order. */
-export function neededInputs(
-  questionnaire: Questionnaire,
-  definition: FormDefinition,
-  mapping: ExportMapping,
-  entered: Readonly<Record<string, string>> = {},
-): NeededInput[] {
-  const { values, applies } = context(questionnaire, definition);
-  const fields = fieldsById(definition);
-  const used = new Set(
-    mapping.records
-      .filter((record) => applies(record.when))
-      .flatMap((record) => record.fields.flatMap((field) => field.values.flatMap(inputIdsOf))),
-  );
-  return (mapping.inputs ?? [])
-    .filter((input) => used.has(input.id) && applies(input.when))
-    .map((input) => {
-      const value = entered[input.id]?.trim() || input.default || '';
-      const problem = value === '' ? undefined : inputProblem(input, value);
-      return {
-        input,
-        value,
-        ...(problem === undefined ? {} : { problem }),
-        context: (input.context ?? []).flatMap((id) => {
-          const field = fields.get(id);
-          const stored = values.valueOf(id);
-          return field && stored !== null
-            ? [{ label: field.label, value: displayValue(field, stored) }]
-            : [];
-        }),
-      };
-    });
-}
-
-export function buildLugImport(
-  questionnaire: Questionnaire,
-  definition: FormDefinition,
-  mapping: ExportMapping,
-  entries: LugEntries,
-): LugImport {
-  const { values, applies } = context(questionnaire, definition);
   const fields = fieldsById(definition);
   const proposals = new Map(derive(questionnaire, definition).map((d) => [d.id, d] as const));
   const inputs = new Map((mapping.inputs ?? []).map((input) => [input.id, input] as const));
+  // Entered, else prefilled from the questionnaire, else the mapping's default.
+  const inputValue = (input: ExportInput): string => {
+    const typed = entered[input.id]?.trim();
+    if (typed) return typed;
+    const from = input.defaultFrom === undefined ? undefined : resolve(input.defaultFrom);
+    return (from && 'text' in from ? from.text : '') || input.default || '';
+  };
 
   const source = (value: ExportValue): Resolved => {
     if (value.blank) return { empty: true };
@@ -180,7 +158,7 @@ export function buildLugImport(
     if (value.input !== undefined) {
       const input = inputs.get(value.input);
       if (!input || !applies(input.when)) return { empty: true };
-      const text = entries.inputs?.[input.id]?.trim() || input.default || '';
+      const text = inputValue(input);
       if (text === '') return { missing: input.label };
       const problem = inputProblem(input, text);
       return problem === undefined ? { text } : { problem: `„${input.label}“: ${problem}` };
@@ -198,8 +176,12 @@ export function buildLugImport(
       if (typeof stored === 'boolean') return { text: String(stored) };
       if (typeof stored !== 'string') return { problem: 'Tabellen werden nicht übertragen' };
       if (value.code === undefined) return { text: stored };
-      const listId = fields.get(value.field)?.optionsFrom ?? '';
-      const code = listCodesOf(listId, stored)[value.code];
+      const target = fields.get(value.field);
+      const entry = target ? listEntryOf(target, stored) : undefined;
+      const code =
+        target && entry !== undefined
+          ? listCodesOf(listOf(target) ?? '', entry)[value.code]
+          : undefined;
       return code === undefined ? { empty: true } : { text: code };
     }
     return { empty: true };
@@ -229,6 +211,84 @@ export function buildLugImport(
     const escaped = escape(formatted.text);
     return 'text' in escaped && note !== undefined ? { ...escaped, note } : escaped;
   };
+
+  return { values, applies, fields, resolve, inputValue };
+}
+
+/** The inputs the Kanzlei has to fill in for this questionnaire, in the mapping's order. */
+export function neededInputs(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  mapping: ExportMapping,
+  entered: Readonly<Record<string, string>> = {},
+): NeededInput[] {
+  const { values, applies, fields, inputValue } = resolverFor(
+    questionnaire,
+    definition,
+    mapping,
+    entered,
+  );
+  const used = new Set(
+    mapping.records
+      .filter((record) => applies(record.when))
+      .flatMap((record) => record.fields.flatMap((field) => field.values.flatMap(inputIdsOf))),
+  );
+  return (mapping.inputs ?? [])
+    .filter((input) => used.has(input.id) && applies(input.when))
+    .map((input) => {
+      const value = inputValue(input);
+      const problem = value === '' ? undefined : inputProblem(input, value);
+      return {
+        input,
+        value,
+        ...(problem === undefined ? {} : { problem }),
+        context: (input.context ?? []).flatMap((id) => {
+          const field = fields.get(id);
+          const stored = values.valueOf(id);
+          return field && stored !== null
+            ? [{ label: field.label, value: displayValue(field, stored) }]
+            : [];
+        }),
+      };
+    });
+}
+
+const NUMBER_MESSAGES: Readonly<
+  Record<LugImport['employee']['source'], (number: string) => string>
+> = {
+  none: () =>
+    'Mitarbeiternummer fehlt: Der Fragebogen nennt keine Personalnummer. Bitte oben die Nummer aus dem Lohnprogramm eintragen (1 bis 5 Ziffern).',
+  form: (number) =>
+    `Die Personalnummer laut Fragebogen („${number}“) passt nicht (1 bis 5 Ziffern). Bitte oben die Mitarbeiternummer aus dem Lohnprogramm eintragen.`,
+  entered: () => 'Die eingetragene Mitarbeiternummer muss 1 bis 5 Ziffern haben.',
+};
+
+/** The safety question before the download: the number decides which employee the file changes. */
+export function employeeQuestion(
+  title: string,
+  mandant: string,
+  employee: LugImport['employee'],
+  mode: EmployeeMode,
+): string {
+  const who = [employee.name, employee.firstName].filter(Boolean).join(', ') || 'diese Person';
+  const source = employee.source === 'form' ? 'aus dem Fragebogen' : 'eingetragen';
+  return mode === 'neu'
+    ? `Mitarbeiternummer ${employee.number} (${source}): Ist sie in ${title} beim Mandanten ${mandant} noch frei? Die Datei legt ${who} unter dieser Nummer neu an.`
+    : `Gehört die Mitarbeiternummer ${employee.number} (${source}) in ${title} beim Mandanten ${mandant} zu ${who}${employee.start ? `, Eintritt ${employee.start}` : ''}? Die Datei überschreibt die Stammdaten dieses Mitarbeiters mit den Angaben des Fragebogens.`;
+}
+
+export function buildLugImport(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  mapping: ExportMapping,
+  entries: LugEntries,
+): LugImport {
+  const { applies, resolve } = resolverFor(
+    questionnaire,
+    definition,
+    mapping,
+    entries.inputs ?? {},
+  );
 
   const sheet: SheetRow[] = [];
   const problems: string[] = [];
@@ -316,8 +376,11 @@ export function buildLugImport(
     const result = value === undefined ? { empty: true as const } : resolve(value);
     return 'text' in result ? result.text : '';
   };
+  const entered = entries.mitarbeiternummer?.trim() ?? '';
+  const fromForm = textOf(mapping.employee.number);
   const employee = {
-    number: entries.mitarbeiternummer?.trim() || textOf(mapping.employee.number),
+    number: entered || fromForm,
+    source: entered ? ('entered' as const) : fromForm ? ('form' as const) : ('none' as const),
     name: textOf(mapping.employee.name),
     firstName: textOf(mapping.employee.firstName),
     start: textOf(mapping.employee.start),
@@ -326,9 +389,8 @@ export function buildLugImport(
   const blocking: string[] = [];
   const mandant = entries.mandantennummer?.trim() ?? '';
   if (!/^\d{1,5}$/.test(mandant)) blocking.push('Mandantennummer (1 bis 5 Ziffern) fehlt.');
-  if (!/^\d{1,5}$/.test(employee.number)) {
-    blocking.push('Mitarbeiternummer (1 bis 5 Ziffern) fehlt.');
-  }
+  if (!/^\d{1,5}$/.test(employee.number))
+    blocking.push(NUMBER_MESSAGES[employee.source](employee.number));
   if (entries.mode === undefined) {
     blocking.push('Bitte wählen: Mitarbeiter neu anlegen oder vorhandenen Mitarbeiter ergänzen.');
   }
@@ -352,6 +414,7 @@ export function buildLugImport(
         })
       : [];
   if (blocking.length > 0) return { sheet, problems, notes, blocking, employee };
+  const confirm = employeeQuestion(mapping.title, mandant, employee, entries.mode ?? 'neu');
 
   const idOf = (special: string) => special.split(';')[0]?.trim() ?? '';
   const lines = [
@@ -390,5 +453,5 @@ export function buildLugImport(
     ...records.map((record, i) => `${1000 + i};${record.written.join(';')}`),
     '',
   ];
-  return { text: lines.join('\r\n'), sheet, problems, notes, blocking, employee };
+  return { text: lines.join('\r\n'), sheet, problems, notes, blocking, employee, confirm };
 }

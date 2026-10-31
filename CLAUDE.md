@@ -81,7 +81,11 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/ui/LugExport.tsx`                                | Kanzlei: hand-over to the payroll program — numbers, "neu anlegen" / "vorhandenen ergänzen" with the employee to compare, Kanzlei inputs with the person's answers, problems, notes, Erfassungsblatt table and PDF, import file download, how to read it in (only with a local mapping)                                                                                                                                                                                                                          |
 | `tests/forms/exportLocal.test.ts`                     | The LOCAL mappings (`config/export.local.json`) against the Personalfragebogen and Sofortmeldung 0.2.0 drafts: typical new employee, Minijob health insurer, more than three child allowances, another church tax code, Personengruppe 120 with note, Sofortmeldung first then follow-up import — runs only where the file exists, skipped in the public repo                                                                                                                                                    |
 | `tests/forms/lugImport.test.ts`                       | Import file and Erfassungsblatt with a fictitious mapping (`tests/fixtures/export/beispiel.json`): header, client, employee, formats, codes, conditions, problems, blocking, Windows-1252                                                                                                                                                                                                                                                                                                                        |
-| `src/logic/options.ts`                                | `optionsOf` (options written in the definition or taken from a reference list), `listOptionFor`, `REFERENCE_LISTS` (DEÜV lists with title, source, Stand in the id)                                                                                                                                                                                                                                                                                                                                              |
+| `src/logic/options.ts`                                | `optionsOf` (options written in the definition or taken from a reference list), `suggestionsOf`, `listOptionFor`, `listEntryOf`, `filterOptions` (search list: every word, accents folded, exact code first), `REFERENCE_LISTS` (DEÜV lists, statutory health insurers; Stand in the id), list codes, search words ("TK"), per-entry validity (`listValidityOf`, `validOn`, `validityNote`)                                                                                                                      |
+| `src/logic/data/krankenkassen.ts`                     | The 92 statutory health insurers (GKV-Spitzenverband list, Stand 31.10.2026) with the Betriebsnummer from each insurer's own website (empty: several numbers or none) and room for validity — generated, sources in `docs/quellen-krankenkassen.md`                                                                                                                                                                                                                                                              |
+| `docs/quellen-krankenkassen.md`                       | Sources of the health-insurer list: completeness, one row per insurer and number with its URL, open points (planned mergers 2027)                                                                                                                                                                                                                                                                                                                                                                                |
+| `src/ui/SearchSelect.tsx`                             | Pick list with search (typing filters, arrows/Enter/click choose) for list fields, suggestion fields and Kanzlei inputs                                                                                                                                                                                                                                                                                                                                                                                          |
+| `tests/forms/retiredVersion.test.ts`                  | A form version removed from the app: the questionnaire still opens from its file, is continued by the next station and verifies                                                                                                                                                                                                                                                                                                                                                                                  |
 | `src/logic/data/deuevListen.ts`                       | DEÜV Anlage 6 (Vorsatzworte), 7 (Namenszusätze), 8 Teil A (Staatsangehörigkeit, Staaten with Destatis key and Länderkennzeichen) — generated, copied unchanged from the official PDFs                                                                                                                                                                                                                                                                                                                            |
 | `src/logic/options.test.ts`                           | Reference lists: sizes, uniqueness, hash per list id (never changes silently), typed labels → key, idempotence, display, definition rules for `optionsFrom`                                                                                                                                                                                                                                                                                                                                                      |
 | `tests/forms/beitragsgruppen.test.ts`                 | Beitragsgruppen, Kennzeichen Übergangsbereich and Tätigkeitsschlüssel per scenario (Azubi, Minijob with/without RV exemption, PKV/GKV above the JAEG, old-age pension, pupil, civil servant, …); every proposed combination checked against DEÜV Anlage 16; definition rules for `parts` / `valueFrom`                                                                                                                                                                                                           |
@@ -289,8 +293,11 @@ Key design decisions (details in `docs/plan.md`):
   them with the reason first. Dependencies are explicit per level (`fieldDependencies`, catalogue
   tree). Definition rule: `showIf` only looks back in form order (`requiredIf` may look ahead).
 - **Form versions 0.x are test versions** (Tobias 2026-10-29, `isTestVersion`): frozen like any
-  other, but deletable before the first release as long as no real questionnaire used them;
-  from 1.0.0 on a version stays forever. The app itself is 0.1.0 as well.
+  other; **during test and beta they may be removed from the app at any time** (Tobias 2026-10-31) —
+  a questionnaire started with a removed version is still opened, continued and verified from its own
+  file, because the file carries the definition (`origin: embedded`, `tests/forms/retiredVersion.test.ts`).
+  Never change a version under the same number, never reuse a number for other content. From 1.0.0 on a
+  version stays. The app itself is 0.1.0 as well.
 - **QR codes for the paper path** (decided 2026-10-29): the data pages additionally carry the
   compressed package as numbered QR codes (byte mode, error correction M, 700 bytes each), so a
   scan or a phone photo of the printed PDF can be read back and verified like the PDF. The
@@ -380,6 +387,22 @@ Key design decisions (details in `docs/plan.md`):
   its own mapping (`formVersion`), so the employee can be created early and completed later under the same
   number; the station shows number, name and start to compare. The Erfassungsblatt is also a PDF of its own
   (`sheetPdf.ts`; one Unterlage per file).
+- **Health insurers from a list, free entry with a warning** (Tobias 2026-10-31): `suggestionsFrom` on a
+  text field offers a reference list while typing (search list, `SearchSelect`); a chosen entry is stored
+  by its exact name, other text is allowed with the warning `list.freeEntry` ("kann Rückfragen und
+  Zusatzaufwand verursachen", shown at once under the box). List `gkvKrankenkassen202610`: all 92 insurers
+  of the GKV-Spitzenverband list, Betriebsnummer from each insurer's own website (research 2026-10-31;
+  BMW BKK checked by hand: 87271125, not the Datenannahmestelle's 35382142). Entries may carry a validity
+  (mergers); the hint test `listeneintragNichtGueltig` flags an insurer not valid at the start of
+  employment. The Personalfragebogen splits `krankenkasse` (statutory, from the list) from
+  `versicherungsunternehmen` (private or other cover); `pkvLetzteKrankenkasse` uses the list too. The
+  Kanzlei input for the insurer number is prefilled from the person's choice (`defaultFrom`), offers every
+  Einzugsstelle number with region as a search list and accepts any 8 digits. Child allowances are one
+  number in half steps (text format `halbeSchritte`, − / + buttons).
+- **Employee number before the import file** (Tobias 2026-10-31): without a number in the questionnaire
+  the station asks for it; a number from the questionnaire that LuG cannot take (not 1–5 digits) is
+  named; before the download a safety question asks whether the number is free ("neu anlegen") or belongs
+  to this person ("vorhandenen ergänzen") — `employeeQuestion`.
 - **Official DEÜV lists** (Tobias 2026-10-30: "Vorsatzwort und Namenszusatz gegen die amtlichen Listen
   prüfen"; nationality and countries with DEÜV keys): a `choice` field may take its options from a
   compiled reference list (`optionsFrom`); it is asked as a search field (`<datalist>`), a typed
@@ -489,6 +512,12 @@ Key design decisions (details in `docs/plan.md`):
   (check); the AV proposal "2" after the Regelaltersgrenze is still "1" in the month it is reached
   (check). Übergangsbereich: the marker 2 (inside and outside in one report) is not proposed. The
   Tätigkeitsschlüssel needs the KldB code from the employer, else "?????" (check).
+- **Health-insurer list, open points:** numbers stem from the insurers' websites (31.10.2026), not from an
+  official machine-readable file (none found that may be reused); SVLFG (9 regional numbers) and BKK PFAFF
+  (Rechtskreis West/Ost) carry no number in the list — the Kanzlei picks; announced mergers (01.01.2027,
+  01.07.2027) are not entered as validity until they are certain. Check the list at every turn of the year.
+  The new search list, the − / + buttons and the safety question are covered by unit tests of their logic
+  only; manual tests MT-71, MT-72.
 - **LuG import file not yet tried in Lohn und Gehalt** — built after the V16.1 description and DATEV's sample
   file; first import into a test client (manual tests MT-68–70). `tests/forms/exportLocal.test.ts` checks the
   local mappings only on a machine that has them; in the public repo it is skipped (not a pass for the
@@ -669,4 +698,4 @@ for now, long term as Kanzlei-signed forms loaded at runtime (signature in the e
 forms are finished together first (good patterns); `docs/ki-anleitung-formulare.md` lets any AI
 draft or adapt forms.
 
-_Last updated: 2026-10-31_
+_Last updated: 2026-10-31 (later)_

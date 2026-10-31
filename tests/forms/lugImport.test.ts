@@ -131,12 +131,15 @@ describe('export mapping', () => {
           context: ['gibtsNicht'],
           when: { field: 'auchNicht', equals: 'a' },
         },
+        // Prefilled from another input: could go round in circles.
+        { id: 'loop', label: 'L', digits: [1, 1], defaultFrom: { input: 'extra' } },
       ],
       records: [{ mask: 'X', fields: [{ name: 'A', values: [{ input: 'unbekannt' }] }] }],
     };
     expect(checkExportMapping(broken, definition).map((i) => i.message)).toEqual([
       'unknown field "auchNicht"',
       'unknown field "gibtsNicht"',
+      'cannot come from an input',
       'unknown input "unbekannt"',
     ]);
   });
@@ -145,7 +148,7 @@ describe('export mapping', () => {
     const raw = structuredClone(mappingsRaw) as unknown as Record<string, unknown>[];
     const first = raw[0] as Record<string, unknown>;
     first.inputs = [
-      { id: 'a', label: 'A', digits: [1, 2], options: [{ value: 'x', label: 'X' }] },
+      { id: 'a', label: 'A' },
       { id: 'b', label: 'B', digits: [8, 8], default: '123' },
       { id: 'b', label: 'B2', digits: [1, 1] },
     ];
@@ -158,7 +161,7 @@ describe('export mapping', () => {
     const messages = parsed.ok ? [] : parsed.issues.map((i) => i.message);
     expect(messages).toEqual(
       expect.arrayContaining([
-        'needs exactly one of digits, options',
+        'needs digits or options',
         'does not fit digits or options',
         'input ids must be unique',
         'nested too deeply',
@@ -182,6 +185,10 @@ describe('export mapping', () => {
     const list = { id: 'a', label: 'A', options: [{ value: 'ib', label: 'Baden' }] };
     expect(inputProblem(list, 'ib')).toBeUndefined();
     expect(inputProblem(list, 'xx')).toBe('bitte aus der Liste wählen');
+    // With digits the list only suggests: a number missing from it is accepted.
+    const kasse = { ...list, digits: [8, 8] as [number, number] };
+    expect(inputProblem(kasse, '12345678')).toBeUndefined();
+    expect(inputProblem(kasse, 'ib')).toBe('genau 8 Ziffern');
   });
 
   it('splits combination fields into their sub-fields, nested ones too', () => {
@@ -216,6 +223,7 @@ describe('import file', () => {
     expect(lines.lastIndexOf('[Mitarbeiter]')).toBeGreaterThan(first);
     expect(result.employee).toEqual({
       number: '42',
+      source: 'form',
       name: 'Musterfrau',
       firstName: 'Erika',
       start: '02.11.2026',
@@ -323,9 +331,42 @@ describe('import file', () => {
     expect(blocked.text).toBeUndefined();
     expect(blocked.blocking).toEqual([
       'Mandantennummer (1 bis 5 Ziffern) fehlt.',
-      'Mitarbeiternummer (1 bis 5 Ziffern) fehlt.',
+      'Mitarbeiternummer fehlt: Der Fragebogen nennt keine Personalnummer. Bitte oben die Nummer aus dem Lohnprogramm eintragen (1 bis 5 Ziffern).',
       'Bitte wählen: Mitarbeiter neu anlegen oder vorhandenen Mitarbeiter ergänzen.',
     ]);
+    expect(blocked.employee.source).toBe('none');
+  });
+
+  it('names a questionnaire number that does not fit, and takes an entered one instead', () => {
+    const odd = questionnaire(PERSON, { ...EMPLOYER, agPersonalnummer: 'A-17' });
+    const refused = buildLugImport(odd, definition, mapping(), {
+      mandantennummer: '1',
+      mode: 'neu',
+    });
+    expect(refused.blocking).toEqual([
+      'Die Personalnummer laut Fragebogen („A-17“) passt nicht (1 bis 5 Ziffern). Bitte oben die Mitarbeiternummer aus dem Lohnprogramm eintragen.',
+    ]);
+    const entered = buildLugImport(odd, definition, mapping(), {
+      mandantennummer: '1',
+      mitarbeiternummer: '17',
+      mode: 'neu',
+    });
+    expect(entered.blocking).toEqual([]);
+    expect(entered.employee).toMatchObject({ number: '17', source: 'entered' });
+  });
+
+  it('asks before the download whether the number is free or belongs to this person', () => {
+    expect(result.confirm).toBe(
+      'Mitarbeiternummer 42 (aus dem Fragebogen): Ist sie in Beispielprogramm beim Mandanten 123 noch frei? Die Datei legt Musterfrau, Erika unter dieser Nummer neu an.',
+    );
+    const follow = buildLugImport(questionnaire(), definition, mapping(), {
+      mandantennummer: '123',
+      mitarbeiternummer: '42',
+      mode: 'vorhanden',
+    });
+    expect(follow.confirm).toBe(
+      'Gehört die Mitarbeiternummer 42 (eingetragen) in Beispielprogramm beim Mandanten 123 zu Musterfrau, Erika, Eintritt 02.11.2026? Die Datei überschreibt die Stammdaten dieses Mitarbeiters mit den Angaben des Fragebogens.',
+    );
   });
 
   it('completes an existing employee without creating one (follow-up import)', () => {
@@ -352,8 +393,26 @@ describe('inputs of the Kanzlei', () => {
       ['stelle', '7'],
     ]);
     expect(needed[1]?.context).toEqual([
-      { label: 'Krankenkasse oder Versicherungsunternehmen', value: 'Muster-BKK' },
+      { label: 'Gesetzliche Krankenkasse', value: 'Muster-BKK' },
     ]);
+  });
+
+  it('prefills the insurer number from the list choice of the person; free text gives none', () => {
+    const listed = questionnaire({ ...PERSON, krankenkasse: 'techniker krankenkasse' });
+    expect(neededInputs(listed, definition, mapping())[1]?.value).toBe('15027365');
+    const lines = (
+      buildLugImport(listed, definition, mapping(), {
+        mandantennummer: '123',
+        mode: 'neu',
+        inputs: { lohnart: '2000' },
+      }).text ?? ''
+    ).split('\r\n');
+    expect(lines.some((line) => line.endsWith(';11/2026;15027365;7'))).toBe(true);
+    // The Kanzlei can still override it, and a free name (Muster-BKK) prefills nothing.
+    expect(neededInputs(listed, definition, mapping(), { kasse: '87654321' })[1]?.value).toBe(
+      '87654321',
+    );
+    expect(neededInputs(questionnaire(), definition, mapping())[1]?.value).toBe('');
   });
 
   it('leaves out a record whose key is not entered, and a combination field missing an input', () => {
@@ -408,7 +467,7 @@ describe('inputs of the Kanzlei', () => {
   });
 });
 
-describe('values from the first source that has one, and notes', () => {
+describe('child allowances, the first source that has a value, and notes', () => {
   const TAX: Answers = { ...PERSON, dienstverhaeltnis: 'erstes', steuerklasse: '1' };
   const tax = (answers: Answers, inputs: Record<string, string> = {}) =>
     buildLugImport(
@@ -420,10 +479,9 @@ describe('values from the first source that has one, and notes', () => {
   const rowOf = (result: ReturnType<typeof tax>, field: string) =>
     result.sheet.find((row) => row.mask === 'Beispiel|Steuer' && row.field === field);
 
-  it('takes the exact child allowances behind "mehr als 3", else the chosen count', () => {
-    const more = tax({ kinderfreibetraege: 'mehr', kinderfreibetraegeZahl: '4,5' });
-    expect(rowOf(more, 'Kfb')?.value).toBe('4,5');
-    expect(rowOf(tax({ kinderfreibetraege: '2_5' }), 'Kfb')?.value).toBe('2,5');
+  it('writes the child allowances as entered, in half steps', () => {
+    expect(rowOf(tax({ kinderfreibetraege: '4,5' }), 'Kfb')?.value).toBe('4,5');
+    expect(rowOf(tax({ kinderfreibetraege: '0' }), 'Kfb')?.value).toBe('0');
   });
 
   it('asks the Kanzlei for the church tax code of another community, showing the answer', () => {

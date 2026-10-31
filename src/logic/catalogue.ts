@@ -132,6 +132,10 @@ function fieldKind(field: FieldDefinition): string {
   const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
   if (list)
     kind += `: aus der Liste „${list.title}“ (${list.options.length} Einträge; ${list.source})`;
+  const hints =
+    field.suggestionsFrom === undefined ? undefined : REFERENCE_LISTS[field.suggestionsFrom];
+  if (hints)
+    kind += `, Vorschläge aus der Liste „${hints.title}“ (${hints.options.length} Einträge; ${hints.source}); freie Eingabe mit Hinweis`;
   if (field.computed) kind += ` (berechnet: ${field.computed.fn})`;
   if (field.initial !== undefined) kind += `; vorbelegt: ${initialLabel(field, field.initial)}`;
   if (field.masterData !== undefined) kind += '; Stammdatum, kann auf dem Gerät gemerkt werden';

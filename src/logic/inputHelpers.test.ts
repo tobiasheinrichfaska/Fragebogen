@@ -3,7 +3,7 @@
 import { fillPlaceholders, placeholderIds } from './display';
 import { checkFormDefinition } from './formDefinition';
 import type { FieldDefinition, FormDefinition } from './model';
-import { normalizeFieldValue } from './normalize';
+import { normalizeFieldValue, stepHalfSteps } from './normalize';
 import { beispielForm } from '../../tests/support/sample';
 
 const plain: FieldDefinition = {
@@ -44,6 +44,34 @@ describe('German postcode (textFormat postleitzahlDe)', () => {
     for (const raw of ['4,3', '4,25', '100', 'vier', '-1']) {
       expect(normalizeFieldValue(half, raw)).toEqual({ ok: false, issue: 'halbeSchritte.format' });
     }
+  });
+
+  it('steps a count in half steps with − and +, never below 0', () => {
+    expect(stepHalfSteps('', 1)).toBe('0,5');
+    expect(stepHalfSteps('1,5', 1)).toBe('2');
+    expect(stepHalfSteps('2', -1)).toBe('1,5');
+    expect(stepHalfSteps('0', -1)).toBe('0');
+    expect(stepHalfSteps('quatsch', 1)).toBe('0,5');
+    expect(stepHalfSteps('99,5', 1)).toBe('99,5');
+  });
+
+  it('stores a list entry of a suggestion field by its exact name, free text with a warning', () => {
+    const kasse: FieldDefinition = { ...plain, suggestionsFrom: 'gkvKrankenkassen202610' };
+    expect(normalizeFieldValue(kasse, ' techniker  krankenkasse ')).toEqual({
+      ok: true,
+      value: 'Techniker Krankenkasse',
+      warnings: [],
+    });
+    expect(normalizeFieldValue(kasse, 'Meine Betriebskasse')).toEqual({
+      ok: true,
+      value: 'Meine Betriebskasse',
+      warnings: ['list.freeEntry'],
+    });
+    expect(normalizeFieldValue(kasse, 'Techniker Krankenkasse')).toEqual({
+      ok: true,
+      value: 'Techniker Krankenkasse',
+      warnings: [],
+    });
   });
 
   it('leaves text fields without a format alone', () => {

@@ -7,7 +7,7 @@ import { ageOn, dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './da
 import { displayValue } from './display';
 import { fieldsById, ownerOfField, roleOf, visibility } from './form';
 import { canonicalize } from './jcs';
-import { optionsOf } from './options';
+import { optionsOf, validityByName, validityNote, validOn } from './options';
 import type {
   CheckHint,
   FieldDefinition,
@@ -289,6 +289,20 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   ueberGeringfuegigkeitsgrenze: geringfuegigkeit(false),
   imUebergangsbereich: uebergangsbereich,
   ueberMassgeblicheJahresarbeitsentgeltgrenze: massgeblicheJaeg,
+  // A list entry (e.g. a health insurer after a merger) that is not valid on the reference day.
+  listeneintragNichtGueltig: {
+    args: ['text', 'date'],
+    describe: ([entry = '', on = '']) =>
+      `der Eintrag „${entry}“ am „${on}“ nicht mehr oder noch nicht gilt`,
+    run: ([entry, on]) => {
+      if (typeof entry !== 'string' || typeof on !== 'string' || !isIsoDate(on)) return undefined;
+      const validity = validityByName(entry);
+      return {
+        holds: validity !== undefined && !validOn(validity, on),
+        detail: validity ? [`${entry}: ${validityNote(validity)}.`] : [],
+      };
+    },
+  },
   ab55Jahren: {
     args: ['date', 'date'],
     describe: ([birth = '', on = '']) => `laut „${birth}“ am „${on}“ mindestens 55 Jahre alt`,

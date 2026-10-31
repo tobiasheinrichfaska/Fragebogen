@@ -6,7 +6,19 @@ import beispiel from '../../tests/fixtures/forms/beispiel/1.0.0.json';
 import { checkFormDefinition, parseFormDefinition } from './formDefinition';
 import type { FieldDefinition, FormDefinition } from './model';
 import { normalizeFieldValue } from './normalize';
-import { listOptionFor, optionsOf, REFERENCE_LISTS } from './options';
+import {
+  filterOptions,
+  listCodesOf,
+  listEntryOf,
+  listOptionFor,
+  listValidityOf,
+  optionsOf,
+  REFERENCE_LISTS,
+  searchWordsOf,
+  validityNote,
+  validOn,
+} from './options';
+import { KRANKENKASSEN } from './data/krankenkassen';
 
 const field = (optionsFrom: string): FieldDefinition => ({
   id: 'x',
@@ -45,6 +57,7 @@ describe('REFERENCE_LISTS', () => {
         "deuevStaatenAusland2025": "a2966925cb709c1f07b4199ea8a770a79b8ed1e49ddf2b73d5a91e64e65814e4",
         "deuevStaatsangehoerigkeit2025": "91d4abd592c9922c20e67ab8165fc0989bd4a3af780791363bc0b10dfcc9dff2",
         "deuevVorsatzworte2026": "2c4f022f374bf59659e8960580f0f55bba06734582ed7cf5bdad7460a4b358ca",
+        "gkvKrankenkassen202610": "ebb01eb3c1df77ef1e1173a46cca139429d79ad0ebc08d35abe0d758db1d874c",
       }
     `);
   });
@@ -140,5 +153,87 @@ describe('definition rules for optionsFrom', () => {
     expect(problems({ quickAnswers: [{ label: 'Atlantis', value: 'Atlantis' }] }).join()).toContain(
       'not a valid answer (choice.notInList)',
     );
+  });
+});
+
+describe('search lists (filterOptions)', () => {
+  const OPTIONS = [
+    { value: 'fb', label: 'Freireligiöse Landesgemeinde Baden' },
+    { value: 'ib', label: 'Israelitische Religionsgemeinschaft Baden' },
+    { value: 'is', label: 'Israelitische / Jüdische Kultussteuer' },
+  ];
+  const values = (query: string) => filterOptions(OPTIONS, query).shown.map((o) => o.value);
+
+  it('keeps entries that contain every typed word, in any case and without accents', () => {
+    expect(values('baden')).toEqual(['fb', 'ib']);
+    expect(values('isr bad')).toEqual(['ib']);
+    expect(values('JUDISCH')).toEqual(['is']);
+    expect(values('')).toEqual(['fb', 'ib', 'is']);
+    expect(values('xyz')).toEqual([]);
+  });
+
+  it('puts entries starting with the typed text first, by value or label', () => {
+    expect(values('is')).toEqual(['is', 'ib']);
+    expect(values('Israel')).toEqual(['ib', 'is']);
+  });
+
+  it('shows at most the limit and says how many more match', () => {
+    expect(filterOptions(OPTIONS, '', 2)).toEqual({ shown: OPTIONS.slice(0, 2), more: 1 });
+  });
+
+  it('works on the DEÜV lists (ß as ss)', () => {
+    const states = optionsOf({ optionsFrom: 'deuevStaaten2025' } as FieldDefinition).map((o) => ({
+      value: o.id,
+      label: o.label,
+    }));
+    expect(filterOptions(states, 'deutschl').shown.map((o) => o.label)).toContain('Deutschland');
+  });
+});
+
+describe('statutory health insurers (gkvKrankenkassen202610)', () => {
+  const LIST = 'gkvKrankenkassen202610';
+  const kasse = { suggestionsFrom: LIST } as FieldDefinition;
+
+  it('has all 92 insurers of the GKV-Spitzenverband list, numbers with 8 digits', () => {
+    expect(REFERENCE_LISTS[LIST]?.options).toHaveLength(92);
+    for (const [, number] of KRANKENKASSEN) expect(number).toMatch(/^(\d{8})?$/);
+    expect(listCodesOf(LIST, 'BMW BKK')).toEqual({ betriebsnummer: '87271125' });
+    expect(listCodesOf(LIST, 'Techniker Krankenkasse')).toEqual({ betriebsnummer: '15027365' });
+    // Several numbers (regions, Rechtskreise): none, the Kanzlei picks.
+    expect(
+      listCodesOf(LIST, 'Sozialversicherung für Landwirtschaft, Forsten und Gartenbau (SVLFG)'),
+    ).toEqual({});
+  });
+
+  // Numbers and validity matter for the hand-over: any change must be deliberate (new Stand = new id).
+  it('keeps the numbers and validities unchanged', () => {
+    expect(canonicalHash(KRANKENKASSEN.map((entry) => [...entry]))).toMatchInlineSnapshot(
+      `"c5a5603fbfb8068af084b5686b594e0b270fa5d37e3272867d90df6696b785e2"`,
+    );
+  });
+
+  it('finds an entry by its name in a text field, and short names people type', () => {
+    expect(listEntryOf(kasse, 'BMW BKK')).toBe('BMW BKK');
+    expect(listEntryOf(kasse, 'Meine Betriebskasse')).toBeUndefined();
+    expect(searchWordsOf(LIST, 'Techniker Krankenkasse')).toBe('TK');
+    const options = (REFERENCE_LISTS[LIST]?.options ?? []).map((o) => ({
+      value: o.id,
+      label: o.label,
+      keywords: searchWordsOf(LIST, o.id),
+    }));
+    expect(filterOptions(options, 'tk').shown[0]?.label).toBe('Techniker Krankenkasse');
+    expect(filterOptions(options, 'aok bad').shown.map((o) => o.label)).toEqual([
+      'AOK Baden-Württemberg',
+    ]);
+  });
+
+  it('describes and checks the validity of an entry', () => {
+    expect(listValidityOf(LIST, 'BMW BKK')).toBeUndefined();
+    expect(validityNote({ to: '2026-12-31' })).toBe('gültig bis 31.12.2026');
+    expect(validityNote({ from: '2027-01-01' })).toBe('gültig ab 01.01.2027');
+    expect(validOn({ to: '2026-12-31' }, '2026-12-31')).toBe(true);
+    expect(validOn({ to: '2026-12-31' }, '2027-01-01')).toBe(false);
+    expect(validOn({ from: '2027-01-01' }, '2026-12-31')).toBe(false);
+    expect(validOn(undefined, '2027-01-01')).toBe(true);
   });
 });

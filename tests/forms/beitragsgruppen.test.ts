@@ -22,7 +22,7 @@ function filled(role: string, values: Answers, base: Questionnaire): Questionnai
 }
 
 const GKV: Answers = { krankenversicherung: 'gesetzlich', krankenkasse: 'Muster-BKK' };
-const PKV: Answers = { krankenversicherung: 'privat', krankenkasse: 'Muster-PKV' };
+const PKV: Answers = { krankenversicherung: 'privat', versicherungsunternehmen: 'Muster-PKV' };
 
 function proposals(employer: Answers, person: Answers = GKV) {
   const q = filled(

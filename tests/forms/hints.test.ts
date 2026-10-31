@@ -171,6 +171,7 @@ describe('check hints — definition rules', () => {
       'hoechstensZehnWochen',
       'imUebergangsbereich',
       'kuerzerAlsEineWoche',
+      'listeneintragNichtGueltig',
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',
       'regelaltersgrenzeNichtErreicht',

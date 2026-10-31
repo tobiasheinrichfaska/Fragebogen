@@ -59,7 +59,7 @@ const weihnachtsgeld = (betrag: string, anspruch: boolean): Answers => ({
     { rowId: 'r1', ezArt: 'weihnachtsgeld', ezBetrag: betrag, ezMonat: '11', ezAnspruch: anspruch },
   ],
 });
-const PRIVAT = { krankenversicherung: 'privat', krankenkasse: 'Muster-PKV' };
+const PRIVAT = { krankenversicherung: 'privat', versicherungsunternehmen: 'Muster-PKV' };
 
 describe('Personengruppe per scenario', () => {
   it.each<[string, Answers, Answers, string, boolean]>([

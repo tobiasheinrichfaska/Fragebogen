@@ -125,6 +125,12 @@ export interface FieldDefinition {
    * in options.ts, e.g. the DEÜV tables). Asked as a search field; typed labels map to the entry.
    */
   optionsFrom?: string;
+  /**
+   * `text` only: entries of a reference list offered while typing (search list). A chosen entry is
+   * stored by its exact name; other text is allowed with a warning (e.g. a health insurer missing
+   * from the list causes extra work).
+   */
+  suggestionsFrom?: string;
   /** The field is available for input only while this condition holds; otherwise it is hidden. */
   showIf?: Condition;
   /**

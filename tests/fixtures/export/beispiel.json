@@ -30,7 +30,21 @@
           "field": "krankenversicherung",
           "equals": "gesetzlich"
         },
-        "context": ["krankenkasse"]
+        "context": ["krankenkasse"],
+        "options": [
+          {
+            "value": "12345678",
+            "label": "Muster-BKK"
+          },
+          {
+            "value": "87654321",
+            "label": "Beispiel-Kasse"
+          }
+        ],
+        "defaultFrom": {
+          "field": "krankenkasse",
+          "code": "betriebsnummer"
+        }
       },
       {
         "id": "konfession",
@@ -384,23 +398,7 @@
             "name": "Kfb",
             "values": [
               {
-                "first": [
-                  {
-                    "field": "kinderfreibetraegeZahl"
-                  },
-                  {
-                    "field": "kinderfreibetraege",
-                    "map": {
-                      "0": "0",
-                      "0_5": "0,5",
-                      "1": "1",
-                      "1_5": "1,5",
-                      "2": "2",
-                      "2_5": "2,5",
-                      "3": "3"
-                    }
-                  }
-                ]
+                "field": "kinderfreibetraege"
               }
             ]
           },

@@ -50,6 +50,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Erfassungsblatt as PDF** — its own PDF/A file for the Personalakte, named by numbers only
 - [ ] **Sofortmeldung first, Personalfragebogen later** — the Sofortmeldung 0.2.0 creates the employee in LuG; the Personalfragebogen completes the same employee number without creating a second one
 - [ ] **Official lists** — nationality, state of birth, foreign state, name prefix and suffix chosen from the DEÜV tables via a search field; anything not listed is refused with a German message
+- [ ] **Health insurer from the list** — the person picks the statutory insurer from a search list (typing filters, "TK" finds Techniker Krankenkasse); free text is allowed with a visible warning about extra work; the Kanzlei gets the insurer's Betriebsnummer prefilled, a free entry leaves it to the Kanzlei
+- [ ] **Employee number checked before the import file** — asked when the questionnaire has none, named when it does not fit, a safety question before every download
 
 ## Documentation
 

@@ -1,8 +1,18 @@
 // One input per field type. Text-like fields keep the typed text locally and hand it over on
 // "Weiter" (normalising every keystroke would fight the person); choices answer immediately.
 import type { FieldDefinition, FieldType, FieldValue } from '../logic/model';
-import { optionsOf } from '../logic/options';
+import { stepHalfSteps } from '../logic/normalize';
+import { ISSUE_MESSAGES } from '../logic/issues';
+import {
+  listOptionFor,
+  listValidityOf,
+  optionsOf,
+  searchWordsOf,
+  suggestionsOf,
+  validityNote,
+} from '../logic/options';
 import { isTextLike } from './fieldKinds';
+import { SearchSelect } from './SearchSelect';
 
 const INPUT_MODE: Partial<Record<FieldType, 'numeric' | 'decimal' | 'text'>> = {
   date: 'numeric',
@@ -57,30 +67,49 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit 
       </div>
     );
   }
-  if (field.type === 'choice' && field.optionsFrom !== undefined) {
-    const listId = `${id}-list`;
+  if (field.type === 'text' && field.suggestionsFrom !== undefined) {
+    const listId = field.suggestionsFrom;
+    const options = suggestionsOf(field);
+    const typed = text.trim();
+    // Free text is allowed; the hint shows at once, before "Weiter".
+    const free = typed !== '' && listOptionFor(options, typed) === undefined;
     return (
       <>
-        <input
+        <SearchSelect
           id={id}
-          type="text"
-          value={text}
-          list={listId}
-          autoComplete="off"
-          spellCheck={false}
-          aria-labelledby={`${id}-label`}
-          placeholder="Tippen und aus der Liste wählen"
-          onChange={(event) => onText(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') onSubmit();
+          options={options.map((option) => ({
+            value: option.id,
+            label: option.label,
+            keywords: searchWordsOf(listId, option.id),
+          }))}
+          text={text}
+          onText={onText}
+          onPick={(option) => onText(option.label)}
+          onSubmit={onSubmit}
+          show={(option) => {
+            const note = validityNote(listValidityOf(listId, option.value));
+            return note ? `${option.label} (${note})` : option.label;
           }}
+          placeholder="Tippen und aus der Liste wählen"
+          labelledBy={`${id}-label`}
         />
-        <datalist id={listId}>
-          {optionsOf(field).map((option) => (
-            <option key={option.id} value={option.label} />
-          ))}
-        </datalist>
+        {free && <p className="warning-text">{ISSUE_MESSAGES['list.freeEntry']}</p>}
       </>
+    );
+  }
+  if (field.type === 'choice' && field.optionsFrom !== undefined) {
+    // The chosen label goes into the box; "Weiter" maps it to the entry (listOptionFor).
+    return (
+      <SearchSelect
+        id={id}
+        options={optionsOf(field).map((option) => ({ value: option.id, label: option.label }))}
+        text={text}
+        onText={onText}
+        onPick={(option) => onText(option.label)}
+        onSubmit={onSubmit}
+        placeholder="Tippen und aus der Liste wählen"
+        labelledBy={`${id}-label`}
+      />
     );
   }
   if (field.type === 'choice') {
@@ -136,6 +165,31 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit 
     onChange: (event: { target: { value: string } }) => onText(event.target.value),
   };
   if (field.multiline) return <textarea {...common} rows={4} />;
+  if (field.textFormat === 'halbeSchritte') {
+    return (
+      <div className="stepper">
+        <button
+          type="button"
+          aria-label="0,5 weniger"
+          onClick={() => onText(stepHalfSteps(text, -1))}
+        >
+          −
+        </button>
+        <input
+          {...common}
+          type="text"
+          inputMode="decimal"
+          placeholder="0"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') onSubmit();
+          }}
+        />
+        <button type="button" aria-label="0,5 mehr" onClick={() => onText(stepHalfSteps(text, 1))}>
+          +
+        </button>
+      </div>
+    );
+  }
   return (
     <input
       {...common}

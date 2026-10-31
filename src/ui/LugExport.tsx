@@ -12,10 +12,11 @@ import {
   type ExportMapping,
 } from '../logic/exportMapping';
 import { importFileName } from '../logic/fileNames';
-import { buildLugImport, neededInputs, type SheetRow } from '../logic/lugImport';
+import { buildLugImport, neededInputs, type NeededInput, type SheetRow } from '../logic/lugImport';
 import type { FormDefinition, Questionnaire } from '../logic/model';
 import { Banner, type BannerMessage } from './common';
 import { createSheetPdf } from './pdfActions';
+import { SearchSelect } from './SearchSelect';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -35,6 +36,7 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
   const [mode, setMode] = useState<EmployeeMode | undefined>();
   const [entered, setEntered] = useState<Record<string, string>>({});
   const [showSheet, setShowSheet] = useState(false);
+  const [asking, setAsking] = useState(false);
   const [banner, setBanner] = useState<BannerMessage | undefined>();
   const unfit = useMemo(() => checkExportMapping(mapping, definition), [mapping, definition]);
   const inputs = useMemo(
@@ -76,6 +78,7 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
       return;
     }
     setBanner(undefined);
+    setAsking(false);
     downloadFile(
       importFileName(mapping.target, mandant.trim(), result.employee.number),
       encoded.bytes,
@@ -117,11 +120,12 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
             value={employeeNumber}
             inputMode="numeric"
             autoComplete="off"
-            placeholder={
-              employee.number ? `laut Fragebogen: ${employee.number}` : 'laut Fragebogen'
-            }
+            placeholder={employee.source === 'form' ? `laut Fragebogen: ${employee.number}` : ''}
             onChange={(event) => setEmployeeNumber(event.target.value)}
           />
+          {employee.source === 'none' && (
+            <span className="error-text">Im Fragebogen nicht angegeben – bitte eintragen.</span>
+          )}
         </label>
       </div>
       <fieldset className="export-mode">
@@ -147,27 +151,19 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
       {inputs.length > 0 && (
         <div className="export-inputs">
           {inputs.map((needed) => (
-            <label key={needed.input.id}>
-              {needed.input.label}
+            <div key={needed.input.id} className="export-input">
+              <span id={`input-${needed.input.id}`}>{needed.input.label}</span>
               {needed.input.options ? (
-                <select
-                  value={needed.value}
-                  onChange={(event) =>
-                    setEntered({ ...entered, [needed.input.id]: event.target.value })
-                  }
-                >
-                  <option value="">– bitte wählen –</option>
-                  {needed.input.options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.value} – {option.label}
-                    </option>
-                  ))}
-                </select>
+                <InputPicker
+                  needed={needed}
+                  onValue={(value) => setEntered({ ...entered, [needed.input.id]: value })}
+                />
               ) : (
                 <input
                   value={entered[needed.input.id] ?? needed.input.default ?? ''}
                   inputMode="numeric"
                   autoComplete="off"
+                  aria-labelledby={`input-${needed.input.id}`}
                   onChange={(event) =>
                     setEntered({ ...entered, [needed.input.id]: event.target.value })
                   }
@@ -180,7 +176,7 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
               ))}
               {needed.input.help && <span className="muted">{needed.input.help}</span>}
               {needed.problem && <span className="error-text">{needed.problem}</span>}
-            </label>
+            </div>
           ))}
         </div>
       )}
@@ -219,11 +215,26 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
           type="button"
           className="primary"
           disabled={result.text === undefined}
-          onClick={download}
+          onClick={() => setAsking(true)}
         >
           Importdatei herunterladen
         </button>
       </div>
+      {asking && result.text !== undefined && result.confirm && (
+        <div className="confirm" role="alertdialog" aria-label="Sicherheitsfrage">
+          <p>
+            <strong>Sicherheitsfrage:</strong> {result.confirm}
+          </p>
+          <div className="nav">
+            <button type="button" onClick={() => setAsking(false)}>
+              Abbrechen
+            </button>
+            <button type="button" className="primary" onClick={download}>
+              Ja, geprüft – Datei herunterladen
+            </button>
+          </div>
+        </div>
+      )}
       {(mapping.howTo ?? []).map((step) => (
         <p key={step} className="muted">
           {step}
@@ -249,6 +260,41 @@ export function LugExport({ questionnaire, definition, mapping }: Props) {
         </table>
       )}
     </div>
+  );
+}
+
+/** A Kanzlei input with a list: search by name or number; with `digits` any fitting number goes. */
+function InputPicker({
+  needed,
+  onValue,
+}: {
+  needed: NeededInput;
+  onValue: (value: string) => void;
+}) {
+  const options = needed.input.options ?? [];
+  const chosen = options.find((option) => option.value === needed.value);
+  const [text, setText] = useState(chosen ? `${chosen.value} – ${chosen.label}` : needed.value);
+  return (
+    <SearchSelect
+      options={options}
+      text={text}
+      labelledBy={`input-${needed.input.id}`}
+      show={(option) => `${option.value} – ${option.label}`}
+      placeholder={
+        needed.input.digits
+          ? 'Name suchen oder Nummer eintippen'
+          : 'Tippen, um die Liste zu filtern'
+      }
+      onText={(typed) => {
+        setText(typed);
+        // Typed digits count as an entry where digits are allowed; anything else needs a pick.
+        onValue(needed.input.digits && /^\d+$/.test(typed.trim()) ? typed.trim() : '');
+      }}
+      onPick={(option) => {
+        setText(`${option.value} – ${option.label}`);
+        onValue(option.value);
+      }}
+    />
   );
 }
 

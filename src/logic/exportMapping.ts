@@ -6,7 +6,7 @@ import { Decoder, type DecodeIssue } from './decode';
 import { forEachLeaf, leafProblem } from './conditions';
 import { decodeCondition, ID } from './formDefinition';
 import { fieldsById } from './form';
-import { listCodesOf, REFERENCE_LISTS } from './options';
+import { listCodesOf, listOf, REFERENCE_LISTS } from './options';
 import type { Condition, FieldDefinition, FormDefinition } from './model';
 
 export const EXPORT_FORMAT = 'fragebogen.export';
@@ -74,10 +74,15 @@ export interface ExportInput {
   help?: string;
   /** Digits only, between [min, max] of them. */
   digits?: [number, number];
-  /** Or one of these values (shown as "value – label"). */
+  /**
+   * A search list (shown as "value – label"). Alone: the value must be one of them; with `digits`:
+   * suggestions, any value of the right digits is accepted (e.g. an insurer missing from the list).
+   */
   options?: { value: string; label: string }[];
   /** Prefilled, e.g. the wage type the Kanzlei usually uses; can be changed per questionnaire. */
   default?: string;
+  /** Prefilled from the questionnaire (before `default`), e.g. the number of the insurer chosen from the list. */
+  defaultFrom?: ExportValue;
   /** Asked only while this condition (any role) holds. */
   when?: Condition;
   /** Answers shown next to the input, e.g. the health insurer the person named. */
@@ -227,6 +232,7 @@ function decodeInput(d: Decoder, raw: unknown, path: string): ExportInput | unde
     'digits',
     'options',
     'default',
+    'defaultFrom',
     'when',
     'context',
   ]);
@@ -255,10 +261,12 @@ function decodeInput(d: Decoder, raw: unknown, path: string): ExportInput | unde
           },
           1,
         );
-  if ((digits === undefined) === (options === undefined)) {
-    d.report(path, 'needs exactly one of digits, options');
+  if (o.digits === undefined && o.options === undefined) {
+    d.report(path, 'needs digits or options');
   }
   const preset = o.default === undefined ? undefined : d.string(o.default, `${path}.default`);
+  const defaultFrom =
+    o.defaultFrom === undefined ? undefined : decodeValue(d, o.defaultFrom, `${path}.defaultFrom`);
   const when = o.when === undefined ? undefined : decodeCondition(d, o.when, `${path}.when`, 0);
   const context =
     o.context === undefined
@@ -272,6 +280,7 @@ function decodeInput(d: Decoder, raw: unknown, path: string): ExportInput | unde
     ...(digits === undefined ? {} : { digits: [digits[0] ?? 1, digits[1] ?? 1] }),
     ...(options === undefined ? {} : { options }),
     ...(preset === undefined ? {} : { default: preset }),
+    ...(defaultFrom === undefined ? {} : { defaultFrom }),
     ...(when === undefined ? {} : { when }),
     ...(context === undefined ? {} : { context }),
   };
@@ -438,6 +447,13 @@ export function parseExportMappings(
   return { ok: true, mappings };
 }
 
+function inputIdsIn(value: ExportValue): string[] {
+  return [
+    ...(value.input === undefined ? [] : [value.input]),
+    ...(value.first ?? []).flatMap(inputIdsIn),
+  ];
+}
+
 function valueProblems(
   value: ExportValue,
   path: string,
@@ -458,13 +474,10 @@ function valueProblems(
     if (!field) report(`unknown field "${value.field}"`);
     else if (field.type === 'repeatGroup') report(`"${value.field}" is a table`);
     else if (value.code !== undefined) {
-      const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
+      const listId = listOf(field);
+      const list = listId === undefined ? undefined : REFERENCE_LISTS[listId];
       const first = list?.options[0];
-      if (
-        !list ||
-        !first ||
-        listCodesOf(field.optionsFrom ?? '', first.id)[value.code] === undefined
-      ) {
+      if (!list || !first || listCodesOf(listId ?? '', first.id)[value.code] === undefined) {
         report(`"${value.field}" has no list code "${value.code}"`);
       }
     }
@@ -512,6 +525,14 @@ export function checkExportMapping(
   };
   (mapping.inputs ?? []).forEach((input, i) => {
     if (input.when) checkCondition(input.when, `$.inputs[${i}].when`);
+    if (input.defaultFrom) {
+      const at = `$.inputs[${i}].defaultFrom`;
+      // An input prefilled from another input could go round in circles.
+      if (inputIdsIn(input.defaultFrom).length > 0) {
+        issues.push({ path: at, message: 'cannot come from an input' });
+      }
+      issues.push(...valueProblems(input.defaultFrom, at, fields, definition, inputs));
+    }
     (input.context ?? []).forEach((id, c) => {
       if (!fields.has(id)) {
         issues.push({ path: `$.inputs[${i}].context[${c}]`, message: `unknown field "${id}"` });

@@ -24,6 +24,7 @@ export type IssueCode =
   | 'iban.length'
   | 'iban.checksum'
   | 'iban.unknownCountry'
+  | 'list.freeEntry'
   | 'taxId.format'
   | 'taxId.leadingZero'
   | 'taxId.digitPattern'
@@ -61,6 +62,8 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
   'iban.length': 'Die IBAN hat für dieses Land nicht die richtige Länge.',
   'iban.checksum': 'Die IBAN stimmt nicht (Prüfziffer). Bitte noch einmal vergleichen.',
+  'list.freeEntry':
+    'Nicht in der Liste. Die freie Eingabe ist möglich, kann aber Rückfragen und Zusatzaufwand verursachen – bitte möglichst einen Eintrag aus der Liste wählen.',
   'iban.unknownCountry':
     'Das Länderkürzel kennt die App nicht; die Länge der IBAN wurde daher nicht geprüft.',
   'taxId.format': 'Die Steuer-Identifikationsnummer hat genau 11 Ziffern.',

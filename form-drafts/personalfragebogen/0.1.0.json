@@ -1677,16 +1677,32 @@
           "id": "krankenkasse",
           "role": "person",
           "type": "text",
-          "label": "Krankenkasse oder Versicherungsunternehmen",
-          "question": "Bei welcher Krankenkasse oder Versicherung sind Sie versichert?",
-          "help": "Gesetzlich versichert: die Krankenkasse, bei der Sie versichert sind oder Mitglied werden. Privat versichert: der Name des Versicherungsunternehmens.",
+          "label": "Gesetzliche Krankenkasse",
+          "question": "Bei welcher gesetzlichen Krankenkasse sind Sie versichert?",
+          "help": "Die Krankenkasse, bei der Sie versichert sind oder Mitglied werden – auch bei einer Familienversicherung. Tippen Sie den Namen und wählen Sie Ihre Kasse aus der Liste. Steht sie nicht darin, können Sie den Namen frei eingeben; das kann Rückfragen und Zusatzaufwand verursachen.",
           "required": true,
-          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV); Beitragszuschuss bei privater Versicherung",
+          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV)",
           "showIf": {
             "field": "krankenversicherung",
-            "in": ["gesetzlich", "privat", "anderweitig"]
+            "equals": "gesetzlich"
           },
-          "because": "Gesetzlich, privat oder anderweitig Versicherte nennen ihre Kasse oder ihr Unternehmen; ohne Versicherung gibt es keine."
+          "because": "Nur gesetzlich Versicherte haben eine Krankenkasse als Einzugsstelle; privat oder anderweitig Versicherte nennen stattdessen ihr Versicherungsunternehmen.",
+          "suggestionsFrom": "gkvKrankenkassen202610"
+        },
+        {
+          "id": "versicherungsunternehmen",
+          "role": "person",
+          "type": "text",
+          "label": "Versicherungsunternehmen",
+          "question": "Bei welchem Unternehmen oder welcher Stelle sind Sie versichert?",
+          "help": "Privat versichert: der Name des Versicherungsunternehmens. Anderweitig abgesichert: zum Beispiel die Heilfürsorge oder die ausländische Versicherung.",
+          "required": true,
+          "purpose": "Beitragszuschuss bei privater Versicherung (§ 257 SGB V); Nachweis der anderweitigen Absicherung im Krankheitsfall",
+          "showIf": {
+            "field": "krankenversicherung",
+            "in": ["privat", "anderweitig"]
+          },
+          "because": "Wer privat oder anderweitig abgesichert ist, hat keine gesetzliche Krankenkasse, sondern ein Unternehmen oder eine Stelle, die ihn absichert."
         },
         {
           "id": "pkvLetzteKrankenkasse",
@@ -1694,14 +1710,15 @@
           "type": "text",
           "label": "Letzte gesetzliche Krankenkasse",
           "question": "Bei welcher gesetzlichen Krankenkasse waren Sie zuletzt versichert?",
-          "help": "Auch wenn Sie dort familienversichert waren. Waren Sie nie gesetzlich versichert, lassen Sie das Feld leer; dann wählt Ihr Arbeitgeber eine Krankenkasse für die Renten- und Arbeitslosenversicherungsbeiträge.",
+          "help": "Auch wenn Sie dort familienversichert waren. Tippen Sie den Namen und wählen Sie die Kasse aus der Liste; steht sie nicht darin, können Sie den Namen frei eingeben (das kann Rückfragen verursachen). Waren Sie nie gesetzlich versichert, lassen Sie das Feld leer; dann wählt Ihr Arbeitgeber eine Krankenkasse für die Renten- und Arbeitslosenversicherungsbeiträge.",
           "required": false,
           "purpose": "Bestimmung der Einzugsstelle für die Beiträge zur Renten- und Arbeitslosenversicherung (§ 28i SGB IV)",
           "showIf": {
             "field": "krankenversicherung",
             "equals": "privat"
           },
-          "because": "Bei privat Versicherten gehen die Beiträge zur Renten- und Arbeitslosenversicherung an die zuletzt zuständige gesetzliche Krankenkasse (§ 28i SGB IV)."
+          "because": "Bei privat Versicherten gehen die Beiträge zur Renten- und Arbeitslosenversicherung an die zuletzt zuständige gesetzliche Krankenkasse (§ 28i SGB IV).",
+          "suggestionsFrom": "gkvKrankenkassen202610"
         },
         {
           "id": "pkvBescheinigung",
@@ -2171,65 +2188,16 @@
         {
           "id": "kinderfreibetraege",
           "role": "person",
-          "type": "choice",
+          "type": "text",
           "label": "Kinderfreibeträge (vorläufig)",
           "question": "Wie viele Kinderfreibeträge sind für Sie eingetragen?",
-          "help": "Steht auf einer Lohnabrechnung Ihres bisherigen Arbeitgebers, oft als „Kfb“. Sie wirken auf Solidaritätszuschlag und Kirchensteuer.",
+          "help": "Eine Zahl in halben Schritten, zum Beispiel 0, 1 oder 1,5 – so wie auf einer Lohnabrechnung Ihres bisherigen Arbeitgebers, oft als „Kfb“. Sie wirken auf Solidaritätszuschlag und Kirchensteuer.",
           "required": true,
           "showIf": {
             "field": "steuerklasse",
             "in": ["1", "2", "3", "4", "4f"]
           },
           "because": "Kinderfreibeträge werden nur in den Steuerklassen I bis IV berücksichtigt (§ 38b Abs. 2 EStG).",
-          "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)",
-          "options": [
-            {
-              "id": "0",
-              "label": "keine"
-            },
-            {
-              "id": "0_5",
-              "label": "0,5"
-            },
-            {
-              "id": "1",
-              "label": "1"
-            },
-            {
-              "id": "1_5",
-              "label": "1,5"
-            },
-            {
-              "id": "2",
-              "label": "2"
-            },
-            {
-              "id": "2_5",
-              "label": "2,5"
-            },
-            {
-              "id": "3",
-              "label": "3"
-            },
-            {
-              "id": "mehr",
-              "label": "mehr als 3"
-            }
-          ]
-        },
-        {
-          "id": "kinderfreibetraegeZahl",
-          "role": "person",
-          "type": "text",
-          "label": "Kinderfreibeträge, genaue Zahl (vorläufig)",
-          "question": "Wie viele Kinderfreibeträge sind es genau?",
-          "help": "In halben Schritten, zum Beispiel 4 oder 4,5 – so wie auf einer Lohnabrechnung Ihres bisherigen Arbeitgebers.",
-          "required": true,
-          "showIf": {
-            "field": "kinderfreibetraege",
-            "equals": "mehr"
-          },
-          "because": "Nur bei mehr als drei Kinderfreibeträgen braucht die erste Abrechnung die genaue Zahl; bis drei genügt die Auswahl.",
           "purpose": "Voraussichtliche Lohnsteuerabzugsmerkmale für die erste Abrechnung, solange die ELStAM nicht abgerufen werden können (§ 39c Abs. 1 S. 2 EStG)",
           "textFormat": "halbeSchritte"
         },
@@ -5340,6 +5308,16 @@
   "partLinks": [["person", "arbeitgeber"]],
   "signatureBasis": "Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab.",
   "checkHints": [
+    {
+      "id": "krankenkasseNichtGueltig",
+      "when": { "field": "krankenversicherung", "equals": "gesetzlich" },
+      "test": {
+        "fn": "listeneintragNichtGueltig",
+        "args": ["krankenkasse", "agBeschaeftigungsbeginn"]
+      },
+      "message": "Die gewählte Krankenkasse gilt am Beginn der Beschäftigung laut Liste nicht (zum Beispiel nach einer Fusion): bitte die zuständige Kasse klären.",
+      "source": "§ 28i SGB IV"
+    },
     {
       "id": "artWeichtAb",
       "when": {

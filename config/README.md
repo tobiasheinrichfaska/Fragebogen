@@ -48,7 +48,9 @@ Besondere Werte:
   zusammen mit den übrigen Werten des Felds.
 - `"optional": true`: Das Unterfeld darf leer bleiben; das Programm ergänzt es selbst.
 - `"input": "<id>"`: Den Wert trägt die Kanzlei je Fragebogen in der Station ein (`inputs`: Bezeichnung,
-  Hilfe, `digits` [min, max] oder `options`, `default`, `when`, `context` = Antworten, die beim
+  Hilfe, `digits` [min, max] und/oder `options` (mit `digits` nur Vorschläge, jede passende Zahl geht),
+  `default`, `defaultFrom` (Vorbelegung aus dem Fragebogen, z. B. die Betriebsnummer der Kasse, die die Person
+  aus der Liste gewählt hat), `when`, `context` = Antworten, die beim
   Ausfüllen helfen). Beispiele: Lohnart des Mandanten, Betriebsnummer und KK-Nr. der Krankenkasse,
   Kürzel einer „anderen“ Konfession. Gefragt wird nur, solange ein Datensatz sie braucht. Leer zählt wie
   `blank`; ein Wert, der nicht passt, sperrt die Importdatei.
