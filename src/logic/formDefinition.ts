@@ -370,6 +370,7 @@ export const FIELD_KEYS = [
   'monthFrom',
   'rowTitle',
   'pages',
+  'carryFrom',
 ] as const;
 
 function decodePage(d: Decoder, raw: unknown, path: string): TablePage | undefined {
@@ -466,6 +467,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const fromRole = o.fromRole === undefined ? undefined : decodeFromRole(d, o.fromRole, path);
   const monthFrom =
     o.monthFrom === undefined ? undefined : d.string(o.monthFrom, `${path}.monthFrom`, ID);
+  const carryFrom =
+    o.carryFrom === undefined ? undefined : d.string(o.carryFrom, `${path}.carryFrom`, ID);
   const rowTitle =
     o.rowTitle === undefined
       ? undefined
@@ -518,6 +521,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(monthFrom === undefined ? {} : { monthFrom }),
     ...(rowTitle === undefined ? {} : { rowTitle }),
     ...(pages === undefined ? {} : { pages }),
+    ...(carryFrom === undefined ? {} : { carryFrom }),
   };
 }
 
@@ -795,6 +799,17 @@ function calendarShape(
 
 /** Row titles and further pages of a table name its own columns; every column on one page at most. */
 function tablePages(field: FieldDefinition, path: string, report: CheckContext['report']): void {
+  (field.columns ?? []).forEach((column, c) => {
+    if (column.carryFrom === undefined) return;
+    const at = `${path}.columns[${c}].carryFrom`;
+    const source = field.columns?.find((other) => other.id === column.carryFrom);
+    if (!source || source.id === column.id) {
+      report(at, `"${column.carryFrom}" is not another column of this table`);
+    } else if (source.type !== column.type) {
+      report(at, `"${column.carryFrom}" must have the type ${column.type}`);
+    }
+    if (column.required) report(at, 'a column filled from last month cannot be required');
+  });
   if (field.type !== 'repeatGroup') {
     if (field.rowTitle) report(`${path}.rowTitle`, 'only tables have a row title');
     if (field.pages) report(`${path}.pages`, 'only tables have pages');
@@ -847,8 +862,9 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
       const at = `${path}.suggestionsFrom`;
       if (field.type !== 'text') report(at, 'only text fields take suggestions from a list');
       if (field.textFormat !== undefined) report(at, 'either textFormat or suggestionsFrom');
-      if (!REFERENCE_LISTS[field.suggestionsFrom]) {
-        report(at, `unknown list "${field.suggestionsFrom}"`);
+      // Otherwise it names an earlier answer (suggestionSources).
+      if (!REFERENCE_LISTS[field.suggestionsFrom] && !fields.has(field.suggestionsFrom)) {
+        report(at, `unknown list or field "${field.suggestionsFrom}"`);
       }
     }
     const optionIds = new Set<string>();
@@ -869,8 +885,9 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     }
     if (isColumn && field.id === 'rowId')
       report(`${path}.id`, '"rowId" is reserved for the row id');
-    // v1: a column belongs to its table's role and has no conditions or extras of its own.
-    for (const key of ['showIf', 'requiredIf', 'initial', 'masterData', 'computed'] as const) {
+    // A column belongs to its table's role; its only condition is a row condition (showIf on
+    // earlier columns of the same row, see rowConditions), and it has no other extras.
+    for (const key of ['requiredIf', 'initial', 'masterData', 'computed'] as const) {
       if (isColumn && field[key] !== undefined)
         report(`${path}.${key}`, `table columns cannot have ${key}`);
     }
@@ -941,13 +958,14 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
  */
 function conditions({ fields, report }: CheckContext): void {
   const dependsOn = new Map<string, string[]>();
-  for (const { field, path } of fields.values()) {
+  for (const { field, path, isColumn } of fields.values()) {
     if (field.required && field.requiredIf) {
       report(`${path}.requiredIf`, 'use either "required": true or "requiredIf", not both');
     }
     for (const kind of ['showIf', 'requiredIf'] as const) {
       const condition = field[kind];
-      if (!condition) continue;
+      // A column's showIf is a row condition (rowConditions).
+      if (!condition || isColumn) continue;
       const targets: string[] = [];
       forEachLeaf(condition, `${path}.${kind}`, (leaf, leafPath) => {
         targets.push(leaf.field);
@@ -969,6 +987,68 @@ function conditions({ fields, report }: CheckContext): void {
   }
   const cycle = findCycle(dependsOn);
   if (cycle) report('$', `showIf conditions form a cycle: ${cycle.join(' → ')}`);
+}
+
+/**
+ * Row conditions (Tobias 2026-11-01: hours only for an hourly wage): a column's showIf names only
+ * columns of the same table that come before it, so a row is judged on its own and in order.
+ */
+function rowConditions({ definition, report }: CheckContext): void {
+  definition.sections.forEach((section, s) => {
+    section.fields.forEach((table, f) => {
+      const earlier = new Map<string, FieldDefinition>();
+      table.columns?.forEach((column, c) => {
+        if (column.showIf) {
+          forEachLeaf(
+            column.showIf,
+            `$.sections[${s}].fields[${f}].columns[${c}].showIf`,
+            (leaf, at) => {
+              const target = earlier.get(leaf.field);
+              if (!target) {
+                report(`${at}.field`, `"${leaf.field}" is not an earlier column of this table`);
+                return;
+              }
+              const problem = leafProblem(leaf, target);
+              if (problem) report(`${at}.${problem.at}`, problem.message);
+            },
+          );
+        }
+        earlier.set(column.id, column);
+      });
+    });
+  });
+}
+
+/**
+ * Suggestions from an answer: an earlier top-level field of the same role — a table with row titles
+ * (e.g. the employees) or a multi-line text (e.g. the Lohnarten from the link).
+ */
+function suggestionSources({ definition, report }: CheckContext): void {
+  const earlier = new Map<string, FieldDefinition>();
+  definition.sections.forEach((section, s) => {
+    section.fields.forEach((field, f) => {
+      const check = (candidate: FieldDefinition, at: string) => {
+        const id = candidate.suggestionsFrom;
+        if (id === undefined || REFERENCE_LISTS[id]) return;
+        const source = earlier.get(id);
+        if (!source) {
+          report(at, `"${id}" must be an earlier field of the form`);
+          return;
+        }
+        if (source.role !== candidate.role) report(at, `"${id}" belongs to another role`);
+        const fits =
+          (source.type === 'repeatGroup' && source.rowTitle !== undefined) ||
+          (source.type === 'text' && source.multiline === true);
+        if (!fits) report(at, `"${id}" must be a table with rowTitle or a multi-line text`);
+      };
+      const path = `$.sections[${s}].fields[${f}]`;
+      check(field, `${path}.suggestionsFrom`);
+      field.columns?.forEach((column, c) => {
+        check(column, `${path}.columns[${c}].suggestionsFrom`);
+      });
+      earlier.set(field.id, field);
+    });
+  });
 }
 
 /** Returns one cycle (start … start) in the dependency graph, if any. */
@@ -1422,6 +1502,8 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   uniqueIds,
   fieldShapes,
   conditions,
+  rowConditions,
+  suggestionSources,
   computedFields,
   roles,
   infoBlocks,

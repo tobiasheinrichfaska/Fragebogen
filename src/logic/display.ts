@@ -3,6 +3,7 @@
 import { describeCalendar } from './calendar';
 import { formatGermanDate, isIsoDate, isIsoMonth, MONTH_NAMES } from './dates';
 import type { FieldDefinition, FieldType, FieldValue } from './model';
+import { columnShown } from './normalize';
 import { optionsOf } from './options';
 
 export const EMPTY_VALUE = '–';
@@ -71,9 +72,20 @@ const FORMATTERS: Readonly<
       ? value
           .map((row, i) => {
             const cells = typeof row === 'object' && row !== null && !Array.isArray(row) ? row : {};
-            const parts = (field.columns ?? []).map(
-              (column) => `${column.label}: ${displayValue(column, cells[column.id])}`,
-            );
+            const parts = (field.columns ?? [])
+              .filter((column) => columnShown(column, cells))
+              .map((column) => {
+                const shown = `${column.label}: ${displayValue(column, cells[column.id])}`;
+                // A previous month's value (carryFrom) says whether this month's answer differs.
+                const current = column.carryFrom === undefined ? null : cells[column.carryFrom];
+                const previous = cells[column.id] ?? null;
+                const changed =
+                  previous !== null &&
+                  current !== null &&
+                  current !== undefined &&
+                  current !== previous;
+                return changed ? `${shown} (geändert)` : shown;
+              });
             return `${i + 1}. ${parts.join('; ')}`;
           })
           .join('\n')

@@ -134,11 +134,19 @@ export interface FieldDefinition {
    */
   optionsFrom?: string;
   /**
-   * `text` only: entries of a reference list offered while typing (search list). A chosen entry is
-   * stored by its exact name; other text is allowed with a warning (e.g. a health insurer missing
-   * from the list causes extra work).
+   * `text` only: entries offered while typing (search list) — from a reference list (a chosen entry
+   * is stored by its exact name; other text is allowed with a warning, e.g. a health insurer missing
+   * from the list causes extra work), or from an earlier answer of the same role: the rows of a
+   * table (by `rowTitle`, e.g. the employees) or the lines of a multi-line text (e.g. the Lohnarten
+   * from the bookmark link). Suggestions from answers are only offered, never enforced.
    */
   suggestionsFrom?: string;
+  /**
+   * Columns only: last month's value of another column of the same row, filled when the answers are
+   * taken over from the previous file and never typed (e.g. the pay of last month next to this
+   * month's pay); the display marks the row "geändert" when they differ.
+   */
+  carryFrom?: FieldId;
   /** The field is available for input only while this condition holds; otherwise it is hidden. */
   showIf?: Condition;
   /**

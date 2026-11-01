@@ -168,11 +168,18 @@ describe('table columns in a definition', () => {
       "must belong to the table's role",
     ],
     [
-      'a condition',
+      'a condition on a field outside the row',
       (c) => {
         c.showIf = { field: 'nachname', answered: true };
       },
-      'table columns cannot have showIf',
+      '"nachname" is not an earlier column of this table',
+    ],
+    [
+      'a condition on a later column',
+      (c) => {
+        c.showIf = { field: 'kindVerhaeltnis', equals: 'leiblich' };
+      },
+      '"kindVerhaeltnis" is not an earlier column of this table',
     ],
     [
       'a preselection',
@@ -197,5 +204,45 @@ describe('table columns in a definition', () => {
     ],
   ])('refuses a column with %s', (_label, change, message) => {
     expect(variant(change)).toContain(message);
+  });
+});
+
+// Tobias 2026-11-01: hours of absence only for an hourly wage — a column asked by the row's own
+// earlier answers.
+describe('row conditions', () => {
+  const definition = structuredClone(form.definition);
+  const kinder = definition.sections[0]?.fields.find((f) => f.id === 'kinder');
+  const geburt = kinder?.columns?.find((c) => c.id === 'kindGeburtsdatum');
+  if (!kinder || !geburt) throw new Error('fixture changed');
+  geburt.showIf = { field: 'kindName', answered: true };
+
+  it('accepts a condition on an earlier column of the same row', () => {
+    expect(checkFormDefinition(definition)).toEqual([]);
+  });
+
+  it('stores a cell whose condition does not hold as empty', () => {
+    const rows = normalizeRows(kinder, [
+      { rowId: 'r1', kindGeburtsdatum: '2015-02-01', kindVerhaeltnis: 'leiblich' },
+      { rowId: 'r2', kindName: 'Ben', kindGeburtsdatum: '2017-03-04' },
+    ]);
+    expect(rows).toMatchObject({
+      ok: true,
+      value: [
+        { rowId: 'r1', kindName: null, kindGeburtsdatum: null, kindVerhaeltnis: 'leiblich' },
+        { rowId: 'r2', kindName: 'Ben', kindGeburtsdatum: '2017-03-04' },
+      ],
+    });
+  });
+
+  it('does not miss a required cell that is not asked in its row', () => {
+    const required = {
+      ...kinder,
+      columns: (kinder.columns ?? []).map((c) => ({ ...c, required: true })),
+    };
+    expect(
+      missingCells(required, [
+        { rowId: 'r1', kindName: null, kindGeburtsdatum: null, kindVerhaeltnis: 'leiblich' },
+      ]),
+    ).toEqual([{ rowId: 'r1', column: 'kindName' }]);
   });
 });

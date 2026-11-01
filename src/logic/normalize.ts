@@ -2,6 +2,7 @@
 // form; verification hashes the stored values as they are. A later change of these rules can then
 // never flip an old verdict — it requires a new CANON_VERSION instead.
 import { normalizeCalendar } from './calendar';
+import { evaluateCondition } from './conditions';
 import { isIsoMonth, parseIsoDate } from './dates';
 import { accept, reject, type Checked, type IssueCode } from './issues';
 import { isPlainObject, isWellFormed } from './jcs';
@@ -13,7 +14,7 @@ import type {
   IsoDate,
   TextFormat,
 } from './model';
-import { listOptionFor, optionsOf, suggestionsOf } from './options';
+import { listOptionFor, optionsOf, REFERENCE_LISTS, suggestionsOf } from './options';
 import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
 
 export const CANON_VERSION = 1;
@@ -243,7 +244,10 @@ function fromText(
 const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
   text: fromText((text, field) => {
     if (field.textFormat !== undefined) return TEXT_FORMAT_CHECKS[field.textFormat](text);
-    if (field.suggestionsFrom === undefined) return accept(text);
+    // Suggestions from an earlier answer are only offered; nothing to check here.
+    if (field.suggestionsFrom === undefined || !REFERENCE_LISTS[field.suggestionsFrom]) {
+      return accept(text);
+    }
     // A list entry is stored by its exact name; anything else is free text with a warning.
     const found = listOptionFor(suggestionsOf(field), text);
     return found ? accept(found.label) : accept(text, ['list.freeEntry']);
@@ -320,6 +324,11 @@ export function normalizeRows(field: FieldDefinition, raw: unknown): RowsResult 
     seen.add(rowId);
     const cells: Record<string, FieldValue> = { [ROW_ID_KEY]: rowId };
     for (const column of columns) {
+      // A cell whose row condition does not hold is not asked; it is stored empty.
+      if (!columnShown(column, cells)) {
+        cells[column.id] = null;
+        continue;
+      }
       const cell = normalizeFieldValue(column, row[column.id] ?? null);
       if (!cell.ok) return { ok: false, issue: cell.issue, row: index, column: column.id };
       warnings.push(...cell.warnings);
@@ -328,6 +337,17 @@ export function normalizeRows(field: FieldDefinition, raw: unknown): RowsResult 
     if (columns.some((column) => cells[column.id] !== null)) rows.push(cells);
   }
   return { ok: true, value: rows.length === 0 ? null : rows, warnings };
+}
+
+/** Whether a column is asked in this row: its row condition (earlier cells) holds, if it has one. */
+export function columnShown(
+  column: FieldDefinition,
+  cells: Readonly<Record<string, unknown>>,
+): boolean {
+  return (
+    !column.showIf ||
+    evaluateCondition(column.showIf, (id) => (cells[id] as FieldValue | undefined) ?? null)
+  );
 }
 
 /** Cells of required columns left empty, per row — a table with such rows is incomplete. */
@@ -341,7 +361,7 @@ export function missingCells(
     if (!isPlainObject(row)) return [];
     const rowId = String(row[ROW_ID_KEY] ?? '');
     return required
-      .filter((column) => (row[column.id] ?? null) === null)
+      .filter((column) => columnShown(column, row) && (row[column.id] ?? null) === null)
       .map((column) => ({ rowId, column: column.id }));
   });
 }

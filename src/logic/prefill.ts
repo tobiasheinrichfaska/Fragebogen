@@ -56,8 +56,10 @@ function tableValue(
 ): FieldValue {
   if (!Array.isArray(value)) return null;
   const sourceColumns = new Map((source.columns ?? []).map((column) => [column.id, column]));
+  // A column filled from last month (carryFrom) takes the other column's value of the old row.
+  const from = (column: FieldDefinition) => column.carryFrom ?? column.id;
   const columns = (target.columns ?? []).filter(
-    (column) => column.carryOver !== false && sourceColumns.get(column.id)?.type === column.type,
+    (column) => column.carryOver !== false && sourceColumns.get(from(column))?.type === column.type,
   );
   const rows = value.flatMap((row) => {
     if (!isPlainObject(row)) return [];
@@ -65,7 +67,7 @@ function tableValue(
     if (target.carryRowsIf && !evaluateCondition(target.carryRowsIf, rowValue)) return [];
     const cells: Record<string, FieldValue> = { [ROW_ID_KEY]: row[ROW_ID_KEY] ?? null };
     for (const column of columns)
-      cells[column.id] = carried(column, (row[column.id] as FieldValue | undefined) ?? null);
+      cells[column.id] = carried(column, (row[from(column)] as FieldValue | undefined) ?? null);
     return columns.some((column) => cells[column.id] !== null) ? [cells] : [];
   });
   return rows.length === 0 ? null : rows;

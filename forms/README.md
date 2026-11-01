@@ -10,12 +10,17 @@ auf den Namen einer Funktion in `src/logic/compute.ts`.
 1. **Veröffentlicht heißt eingefroren.** Jede mitgelieferte Version steht mit ihrem
    `definitionHash` in [`published.json`](published.json). Der Hash ist SHA-256 über die
    JCS-Form (RFC 8785) der Definition. Ein Fragebogen verweist über diesen Hash auf seine
-   Definition. Eine nachträgliche Änderung würde alte Fragebögen unprüfbar machen.
+   Definition. Eine nachträgliche Änderung würde Bögen, die mit dieser Version unterwegs sind,
+   unprüfbar machen und ihre Weiterbearbeitung verhindern.
 2. **Änderung = neue Version.** Eine neue Datei mit höherer Versionsnummer, dazu ein neuer Eintrag
    in `published.json`. Der Test `tests/forms/publishedForms.test.ts` nennt den Hash, der
    einzutragen ist.
-3. **Einträge in `published.json` werden nie entfernt** und nie geändert. Einzige Ausnahme sind
-   **Testfassungen** (siehe unten).
+3. **Einträge in `published.json` werden nie geändert.** Eine Version **darf entfernt werden**
+   (Datei und Eintrag gemeinsam), sobald keine Bögen mehr mit ihr unterwegs sind (Tobias
+   2026-11-01: „wir brauchen alte Bögen nicht eingefroren aufbewahren, da wir die fertigen Bögen
+   bei DATEV einreichen“). Die fertige PDF in DATEV ist der Beleg. Jede Datei trägt ihre
+   Definition mit; ein alter Bogen bleibt lesbar, die App bestätigt ihn dann nur nicht mehr als
+   eigene Fassung („nur in der Datei beschrieben“).
 4. **Eine Feld-ID wird nie umgedeutet.** Innerhalb eines Formulars behält eine ID über alle
    Versionen denselben Typ und dieselbe Rolle. Für eine neue Bedeutung gibt es eine neue ID.
 5. Dateiname und Ordner müssen zu `id` und `version` in der Datei passen.
@@ -27,12 +32,11 @@ denn sie verweisen per Hash auf ihre Definition.
 
 ## Testfassungen (Version 0.x)
 
-Versionen mit führender 0, etwa `sofortmeldung/0.1.0.json`, sind Testfassungen. Sie werden
-eingefroren wie jede andere Version, damit Oberfläche und PDF gegen einen festen Stand gebaut
-werden können. **Vor dem ersten Release der App dürfen sie samt Eintrag gelöscht werden**, aber
-nur, solange kein echter Fragebogen damit ausgefüllt wurde. Wer eine Testfassung mit echten
-Daten einsetzt, macht sie dauerhaft. Ab Version 1.0.0 bleibt jede veröffentlichte Version für
-immer. Golden-Dateien gibt es erst für dauerhafte Versionen.
+Versionen mit führender 0, etwa `sofortmeldung/0.2.0.json`, sind Testfassungen; die App
+kennzeichnet sie. Sie werden eingefroren wie jede andere Version und dürfen, wie jede Version,
+entfernt werden, sobald keine Bögen mehr mit ihnen unterwegs sind. Golden-Dateien prüfen das
+Dateiformat (Siegel, Kanonisierung) gegen feste Beispiele; sie hängen nicht davon ab, welche
+Fassungen die App mitliefert.
 
 ## Entwürfe
 
