@@ -3,8 +3,8 @@
 // (`node deploy/uploadPlan.ts <target> [--remote dir] [--ips a,b]`, JSON on stdout); the PowerShell
 // script only asks, decrypts the password and runs psftp.
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 // With the extension: Node runs this file directly (type stripping), without a bundler.
 import { TESTERS_FILE, htpasswd, parseTesters } from './testers.ts';
@@ -145,6 +145,36 @@ export function parseUploadSpec(raw: unknown): Parsed {
     };
   }
   return problems.length > 0 ? { ok: false, problems } : { ok: true, spec: { targets, forbidden } };
+}
+
+/**
+ * A file entry ending in "/" stands for every file below that folder (e.g. "docs/hilfe/" →
+ * "hilfe/"). `list` gives the relative paths of the files in a local folder, or undefined when it
+ * does not exist — the entry then stays and the plan reports it as missing.
+ */
+export function expandFolders(
+  files: readonly UploadFile[],
+  list: (folder: string) => readonly string[] | undefined,
+): UploadFile[] {
+  return files.flatMap((file) => {
+    if (!file.from.endsWith('/')) return [file];
+    const inside = list(file.from);
+    if (!inside) return [file];
+    const to = file.to.endsWith('/') ? file.to : `${file.to}/`;
+    return [...inside].sort().map((path) => ({ from: `${file.from}${path}`, to: `${to}${path}` }));
+  });
+}
+
+/** Every folder the files need on the server, parents first ("hilfe", "hilfe/steuer-id"). */
+export function foldersOf(files: readonly { to: string }[]): string[] {
+  const folders = new Set<string>();
+  for (const file of files) {
+    const parts = file.to.split('/').slice(0, -1);
+    parts.forEach((_part, i) => folders.add(parts.slice(0, i + 1).join('/')));
+  }
+  return [...folders].sort(
+    (a, b) => a.split('/').length - b.split('/').length || a.localeCompare(b),
+  );
 }
 
 /** The masks a local payroll mapping names (config/export.local.json). */
@@ -300,13 +330,21 @@ export function psftpBatch(
 }
 
 /**
- * Creates the target's folder and prints its absolute path ("Remote directory is …", needed for the
- * login); run with psftp -be, because mkdir fails when the folder exists.
+ * Creates the target's folder and the subfolders its files need, and prints the folder's absolute
+ * path ("Remote directory is …", needed for the login); run with psftp -be, because mkdir fails
+ * when a folder exists.
  */
-export function prepareBatch(remoteDir: string, folder: string): string | undefined {
-  if (folder === '') return undefined;
-  const cd = remoteDir === '' ? [] : [`cd ${quoted(remoteDir)}`];
-  return `${[...cd, `mkdir ${quoted(folder)}`, `cd ${quoted(folder)}`, 'pwd'].join('\n')}\n`;
+export function prepareBatch(
+  remoteDir: string,
+  folder: string,
+  subfolders: readonly string[] = [],
+): string | undefined {
+  if (folder === '' && subfolders.length === 0) return undefined;
+  const lines = remoteDir === '' ? [] : [`cd ${quoted(remoteDir)}`];
+  if (folder !== '') lines.push(`mkdir ${quoted(folder)}`, `cd ${quoted(folder)}`);
+  for (const sub of subfolders) lines.push(`mkdir ${quoted(sub)}`);
+  if (folder !== '') lines.push('pwd');
+  return `${lines.join('\n')}\n`;
 }
 
 /** The folder psftp's `pwd` printed, if any. */
@@ -342,7 +380,23 @@ function cli(args: readonly string[]): unknown {
   const markers = existsSync(local) ? mappingMarkers(JSON.parse(readFileSync(local, 'utf8'))) : [];
   const read = (path: string) => {
     const full = join(root, path);
-    return existsSync(full) ? readFileSync(full) : undefined;
+    return existsSync(full) && statSync(full).isFile() ? readFileSync(full) : undefined;
+  };
+  const list = (folder: string) => {
+    const full = join(root, folder);
+    if (!existsSync(full) || !statSync(full).isDirectory()) return undefined;
+    return readdirSync(full, { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => relative(full, join(entry.parentPath, entry.name)).split(sep).join('/'));
+  };
+  const spec: UploadSpec = {
+    ...parsed.spec,
+    targets: Object.fromEntries(
+      Object.entries(parsed.spec.targets).map(([name, target]) => [
+        name,
+        { ...target, files: expandFolders(target.files, list) },
+      ]),
+    ),
   };
   const directory = option(args, '--pfad');
   const testersFile = join(root, TESTERS_FILE);
@@ -357,7 +411,7 @@ function cli(args: readonly string[]): unknown {
               : [],
           ),
         };
-  const plan = planUpload(parsed.spec, targetName, read, markers, ips, login);
+  const plan = planUpload(spec, targetName, read, markers, ips, login);
   if (!plan.ok || remote === undefined) return plan;
   // Generated files go to deploy/.local/ (gitignored) and up first, so a protected folder is never
   // open, not even for a moment.
@@ -369,7 +423,7 @@ function cli(args: readonly string[]): unknown {
     return { local: path, to: file.to };
   });
   puts.push(...plan.files.map((file) => ({ local: join(root, file.from), to: file.to })));
-  const prepare = prepareBatch(remote, plan.folder);
+  const prepare = prepareBatch(remote, plan.folder, foldersOf(plan.files));
   return {
     ...plan,
     batch: psftpBatch(remote, plan.folder, puts),

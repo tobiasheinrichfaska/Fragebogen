@@ -1,6 +1,15 @@
 import { explainerUrl, parseAppConfig } from './appConfig';
 
 describe('parseAppConfig', () => {
+  it('takes the help pages as a relative folder, so each hosted folder links to its own', () => {
+    expect(parseAppConfig({ explainerBase: 'hilfe' })).toEqual({
+      ok: true,
+      config: { explainerBase: 'hilfe' },
+    });
+    expect(explainerUrl({ explainerBase: 'hilfe' }, 'steuer-id')).toBe('hilfe/steuer-id');
+    expect(parseAppConfig({ explainerBase: '../hilfe' }).ok).toBe(false);
+  });
+
   it('takes the test folder as a plain relative path or an https address', () => {
     expect(parseAppConfig({ testAddress: 'test/' })).toEqual({
       ok: true,

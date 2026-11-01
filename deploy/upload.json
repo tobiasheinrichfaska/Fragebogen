@@ -7,7 +7,8 @@
       "access": "public",
       "files": [
         { "from": "dist/index.html", "to": "index.html", "verify": true },
-        { "from": "deploy/.htaccess", "to": ".htaccess" }
+        { "from": "deploy/.htaccess", "to": ".htaccess" },
+        { "from": "docs/hilfe/", "to": "hilfe/" }
       ]
     },
     "test": {
@@ -16,7 +17,10 @@
       "folder": "test",
       "access": "ipOrLogin",
       "allowMapping": true,
-      "files": [{ "from": "dist-test/index.html", "to": "index.html", "verify": true }]
+      "files": [
+        { "from": "dist-test/index.html", "to": "index.html", "verify": true },
+        { "from": "docs/hilfe/", "to": "hilfe/" }
+      ]
     },
     "mehrfachbearbeitung": {
       "description": "Mehrfachbearbeitung: Kanzlei-Fassung mit Übergabe an das Lohnprogramm (nur von den IP-Adressen der Kanzlei; vorerst nicht hochgeladen)",

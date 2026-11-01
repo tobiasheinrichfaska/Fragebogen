@@ -36,16 +36,20 @@ export function Banner({ message, onClose }: { message: BannerMessage; onClose?:
   );
 }
 
-/** Link to an explainer video on the Kanzlei homepage — only when the build configures one. */
+/**
+ * Link to the help page "Wo finde ich …?" — only when the build configures one. A relative base
+ * works only on the hosted app; a downloaded file would link into nothing, so it shows no link.
+ */
 export function Explainer({ path }: { path: string | undefined }) {
   const url = explainerUrl(APP_CONFIG, path);
   if (!url) return null;
+  if (!url.startsWith('https://') && location.protocol !== 'https:') return null;
   return (
     <p className="explainer">
       <a href={url} target="_blank" rel="noopener noreferrer">
-        Erklärvideo ansehen
+        Wo finde ich das?
       </a>{' '}
-      <span className="muted">(öffnet eine Webseite außerhalb der App)</span>
+      <span className="muted">(Hilfe, öffnet eine neue Seite)</span>
     </p>
   );
 }

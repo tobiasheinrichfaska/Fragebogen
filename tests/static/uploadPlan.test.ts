@@ -17,6 +17,33 @@ import {
   remoteDirectoryOf,
   type UploadSpec,
 } from '../../deploy/uploadPlan';
+import { expandFolders, foldersOf } from '../../deploy/uploadPlan';
+
+describe('folders in the upload list', () => {
+  const list = (folder: string) =>
+    folder === 'docs/hilfe/'
+      ? ['versicherungsnummer/index.html', 'index.html', 'steuer-id/index.html']
+      : undefined;
+
+  it('stands for every file below it, sorted', () => {
+    expect(expandFolders([{ from: 'docs/hilfe/', to: 'hilfe/' }], list)).toEqual([
+      { from: 'docs/hilfe/index.html', to: 'hilfe/index.html' },
+      { from: 'docs/hilfe/steuer-id/index.html', to: 'hilfe/steuer-id/index.html' },
+      {
+        from: 'docs/hilfe/versicherungsnummer/index.html',
+        to: 'hilfe/versicherungsnummer/index.html',
+      },
+    ]);
+  });
+
+  it('keeps a missing folder, so the plan names it, and leaves files alone', () => {
+    const files = [
+      { from: 'docs/fehlt/', to: 'x/' },
+      { from: 'dist/index.html', to: 'index.html' },
+    ];
+    expect(expandFolders(files, list)).toEqual(files);
+  });
+});
 
 const ROOT = join(__dirname, '..', '..');
 const text = (path: string) => readFileSync(join(ROOT, path), 'utf8');
@@ -69,11 +96,19 @@ const SPEC = spec({
 describe('deploy/upload.json', () => {
   const committed = spec(JSON.parse(text('deploy/upload.json')));
 
-  it('puts the public app with its .htaccess in the subdomain folder, for everyone', () => {
+  it('puts the public app with its .htaccess and the help pages in the subdomain folder', () => {
     expect(committed.targets.oeffentlich).toMatchObject({ folder: '', access: 'public' });
     expect(committed.targets.oeffentlich?.files.map((f) => [f.from, f.to])).toEqual([
       ['dist/index.html', 'index.html'],
       ['deploy/.htaccess', '.htaccess'],
+      ['docs/hilfe/', 'hilfe/'],
+    ]);
+  });
+
+  it('gives the test folder its own help pages (Tobias 2026-11-01)', () => {
+    expect(committed.targets.test?.files.map((f) => [f.from, f.to])).toContainEqual([
+      'docs/hilfe/',
+      'hilfe/',
     ]);
   });
 
@@ -341,6 +376,22 @@ describe('psftp batches', () => {
       'cd "/fragebogen"\nmkdir "test"\ncd "test"\npwd\n',
     );
     expect(prepareBatch('/fragebogen', '')).toBeUndefined();
+  });
+
+  it('creates the subfolders of the files, parents first', () => {
+    const files = [
+      { to: 'index.html' },
+      { to: 'hilfe/index.html' },
+      { to: 'hilfe/steuer-id/index.html' },
+      { to: 'hilfe/versicherungsnummer/index.html' },
+    ];
+    expect(foldersOf(files)).toEqual(['hilfe', 'hilfe/steuer-id', 'hilfe/versicherungsnummer']);
+    expect(prepareBatch('', '', foldersOf(files))).toBe(
+      'mkdir "hilfe"\nmkdir "hilfe/steuer-id"\nmkdir "hilfe/versicherungsnummer"\n',
+    );
+    expect(prepareBatch('', 'test', ['hilfe'])).toBe(
+      'mkdir "test"\ncd "test"\nmkdir "hilfe"\npwd\n',
+    );
   });
 
   it("reads the folder from psftp's pwd", () => {

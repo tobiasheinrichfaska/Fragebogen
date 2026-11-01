@@ -8,7 +8,10 @@ export interface AppConfig {
   kanzleiName?: string;
   /** Official address of the hosted app, printed and linked in every PDF. */
   appAddress?: string;
-  /** Base address of the explainer videos on the Kanzlei homepage. */
+  /**
+   * Base address of the help pages ("Wo finde ich …?") or explainer videos: https, or a plain
+   * relative path such as "hilfe" next to the hosted app.
+   */
   explainerBase?: string;
   /**
    * The test folder, linked on the start page of the hosted app (Tobias 2026-11-01) — a plain
@@ -48,14 +51,14 @@ export function parseAppConfig(
     o.kanzleiName === undefined ? undefined : d.string(o.kanzleiName, '$.kanzleiName');
   const appAddress =
     o.appAddress === undefined ? undefined : httpsAddress(d, o.appAddress, '$.appAddress');
+  // A plain relative path resolves against the page: "hilfe" is /hilfe/ for the public app and
+  // /test/hilfe/ for the test folder build (Tobias 2026-11-01).
+  const relativeOrHttps = (value: unknown, path: string) =>
+    typeof value === 'string' && RELATIVE_PATH.test(value) ? value : httpsAddress(d, value, path);
   const explainerBase =
-    o.explainerBase === undefined ? undefined : httpsAddress(d, o.explainerBase, '$.explainerBase');
+    o.explainerBase === undefined ? undefined : relativeOrHttps(o.explainerBase, '$.explainerBase');
   const testAddress =
-    o.testAddress === undefined
-      ? undefined
-      : typeof o.testAddress === 'string' && RELATIVE_PATH.test(o.testAddress)
-        ? o.testAddress
-        : httpsAddress(d, o.testAddress, '$.testAddress');
+    o.testAddress === undefined ? undefined : relativeOrHttps(o.testAddress, '$.testAddress');
   if (d.issues.length > 0) return { ok: false, issues: d.issues };
   return {
     ok: true,
