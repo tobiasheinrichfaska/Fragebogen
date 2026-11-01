@@ -361,7 +361,7 @@ describe('Sofortmeldung 0.1.0 — interview', () => {
     expect(latestSealed(signed, 'person')?.data).not.toHaveProperty('geburtsname');
   });
 
-  it('lets the person skip the Versicherungsnummer with "Weiß ich gerade nicht" and still sign', () => {
+  it('lets the person skip the Versicherungsnummer with "Vorerst überspringen" and still sign', () => {
     const withoutNumber = Object.fromEntries(
       Object.entries(PERSON).filter(([id]) => id !== 'versicherungsnummer'),
     );

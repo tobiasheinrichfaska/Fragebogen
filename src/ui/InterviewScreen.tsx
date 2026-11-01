@@ -17,6 +17,7 @@ import {
   editFromSummary,
   fixedFields,
   goTo,
+  leaveEmpty,
   nextChoice,
   nextStep,
   outOfScopeOf,
@@ -38,6 +39,7 @@ interface Props {
   onSign: () => void;
   onPause: () => void;
   onSaveInterim: () => void;
+  onDiscard: () => void;
 }
 
 export function InterviewScreen(props: Props) {
@@ -95,6 +97,9 @@ export function InterviewScreen(props: Props) {
         <button type="button" className="link" onClick={onPause}>
           Unterbrechen – zur Übersicht (Angaben bleiben erhalten)
         </button>
+        <button type="button" className="link danger" onClick={props.onDiscard}>
+          Fragebogen verwerfen
+        </button>
       </p>
     </div>
   );
@@ -142,6 +147,7 @@ function Nav({
   onSession,
   onNext,
   onSkip,
+  onDefer,
   nextDisabled,
 }: {
   session: Session;
@@ -149,6 +155,8 @@ function Nav({
   onNext?: () => void;
   /** Like onNext, but ends at the next missing answer (the step commits its input first). */
   onSkip?: () => void;
+  /** "Vorerst überspringen" — only while the question has no answer. */
+  onDefer?: () => void;
   nextDisabled?: boolean;
 }) {
   const first = stepsFor(session)[0]?.key === session.stepKey;
@@ -158,6 +166,11 @@ function Nav({
       <button type="button" disabled={first} onClick={() => onSession(previousStep(session))}>
         Zurück
       </button>
+      {onDefer && (
+        <button type="button" onClick={onDefer}>
+          Vorerst überspringen
+        </button>
+      )}
       <button
         type="button"
         className="primary"
@@ -305,7 +318,7 @@ function QuestionStep({
           </p>
         )}
         {step.state === 'deferred' && empty && (
-          <p className="muted">Zurückgestellt mit „Weiß ich gerade nicht“.</p>
+          <p className="muted">Übersprungen – Sie können die Frage jetzt beantworten.</p>
         )}
       </div>
       <Nav
@@ -313,15 +326,9 @@ function QuestionStep({
         onSession={onSession}
         onNext={next}
         onSkip={() => leave(skipToMissing)}
+        {...(empty && step.state !== 'deferred' ? { onDefer: putBack } : {})}
         nextDisabled={step.required && empty && step.state !== 'deferred'}
       />
-      {empty && (
-        <p className="defer">
-          <button type="button" className="link" onClick={putBack}>
-            Weiß ich gerade nicht – später beantworten
-          </button>
-        </p>
-      )}
     </Card>
   );
 }
@@ -377,13 +384,45 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
         />
       )}
       {summary.deferred.length > 0 && (
-        <Banner
-          message={{
-            tone: 'info',
-            text: 'Zurückgestellt mit „Weiß ich gerade nicht“:',
-            detail: summary.deferred.map(label),
-          }}
-        />
+        <div className="skipped" role="group" aria-label="Übersprungene Fragen">
+          <p>
+            <strong>Übersprungen:</strong> Beantworten Sie diese Fragen jetzt oder lassen Sie
+            freiwillige leer.
+          </p>
+          <ul>
+            {summary.deferred.map((id) => {
+              const required = summary.missingRequired.includes(id);
+              return (
+                <li key={id}>
+                  <span>
+                    {label(id)}
+                    {required && <span className="muted"> (Pflicht)</span>}
+                  </span>
+                  <button
+                    type="button"
+                    className="link"
+                    onClick={() => onSession(editFromSummary(session, id))}
+                  >
+                    beantworten
+                  </button>
+                  {!required && (
+                    <button
+                      type="button"
+                      className="link"
+                      onClick={() => {
+                        const result = leaveEmpty(session, id);
+                        if (result.ok) onSession(result.session);
+                        else onBanner({ tone: 'error', text: result.message });
+                      }}
+                    >
+                      leer lassen
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
       {summary.inactive.length > 0 && (
         <Banner

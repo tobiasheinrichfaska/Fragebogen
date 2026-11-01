@@ -19,6 +19,7 @@ interface Props {
   onTakeOver: (file: File) => void;
   onPdf: () => void;
   onClose: () => void;
+  onDiscard: () => void;
 }
 
 const STATE_LABEL: Readonly<Record<RoleState['state'], string>> = {
@@ -29,8 +30,17 @@ const STATE_LABEL: Readonly<Record<RoleState['state'], string>> = {
 };
 
 export function RolesScreen(props: Props) {
-  const { session, onEnter, onNewVersion, onReopen, onSaveInterim, onTakeOver, onPdf, onClose } =
-    props;
+  const {
+    session,
+    onEnter,
+    onNewVersion,
+    onReopen,
+    onSaveInterim,
+    onTakeOver,
+    onPdf,
+    onClose,
+    onDiscard,
+  } = props;
   const input = useRef<HTMLInputElement>(null);
   const states = roleStates(session);
   const blockers = transmissionBlockers(session.questionnaire, session.form);
@@ -162,6 +172,9 @@ export function RolesScreen(props: Props) {
           </button>
           <button type="button" className="link" onClick={onClose}>
             Fragebogen schließen
+          </button>
+          <button type="button" className="link danger" onClick={onDiscard}>
+            Fragebogen verwerfen
           </button>
         </div>
       </Card>

@@ -56,6 +56,7 @@ describe('REFERENCE_LISTS', () => {
         "deuevStaaten2025": "f4c7fc003e0f80580e6ffef15a86cd34b5fde8ecbcca62d05088fead9125b79a",
         "deuevStaatenAusland2025": "a2966925cb709c1f07b4199ea8a770a79b8ed1e49ddf2b73d5a91e64e65814e4",
         "deuevStaatsangehoerigkeit2025": "91d4abd592c9922c20e67ab8165fc0989bd4a3af780791363bc0b10dfcc9dff2",
+        "deuevStaatsangehoerigkeitAusland2025": "078c1816cbefefdc2617ee281af9a454232cfc7fad50c604719561f72725751e",
         "deuevVorsatzworte2026": "2c4f022f374bf59659e8960580f0f55bba06734582ed7cf5bdad7460a4b358ca",
         "gkvKrankenkassen202610": "ebb01eb3c1df77ef1e1173a46cca139429d79ad0ebc08d35abe0d758db1d874c",
       }
@@ -74,6 +75,9 @@ describe('REFERENCE_LISTS', () => {
     expect(optionsOf(field('deuevStaatenAusland2025')).map((o) => o.id)).not.toContain(
       'Deutschland',
     );
+    const foreign = optionsOf(field('deuevStaatsangehoerigkeitAusland2025'));
+    expect(foreign.map((o) => o.id)).not.toContain('000');
+    expect(foreign).toHaveLength(optionsOf(field('deuevStaatsangehoerigkeit2025')).length - 1);
   });
 });
 

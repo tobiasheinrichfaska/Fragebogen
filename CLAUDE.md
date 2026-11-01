@@ -151,7 +151,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `src/ui/RolesScreen.tsx`                                 | Role choice with state per role (guardian requirement), blockers and gaps, reopen / new version, save, PDF                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `src/ui/KanzleiScreen.tsx`                               | Station Kanzlei: batch import, report per file, link proposals, conflicts with field comparison and "Diese Fassung gilt", decisions with withdrawal, notes/contradictions/gaps, PDF for the Personalakte and JSON                                                                                                                                                                                                                                                                                                |
 | `src/ui/FormView.tsx`                                    | Read-only form view: answers by section with owner, footnotes for later versions, signature lines, receipts                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `src/ui/InterviewScreen.tsx`                             | Interview steps: notice (confirm), question (help, explainer, "Weiß ich gerade nicht"), summary (missing, deferred, inactive, other roles read-only, master-data link)                                                                                                                                                                                                                                                                                                                                           |
+| `src/ui/InterviewScreen.tsx`                             | Interview steps: notice (confirm), question (help, explainer, "Vorerst überspringen" next to "Weiter"), summary (missing, skipped with "beantworten" / "leer lassen", inactive, other roles read-only, master-data link)                                                                                                                                                                                                                                                                                         |
 | `src/ui/TableStep.tsx`                                   | Interview step for a table: one card per row (`rowLabel`), add/remove rows, error at the offending cell                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `src/ui/FieldInput.tsx`                                  | Input per field type (text-like kept locally until "Weiter", choices/yes-no as buttons)                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `src/ui/fieldKinds.ts`                                   | `isTextLike`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -294,7 +294,11 @@ Key design decisions (details in `docs/plan.md`):
   uses the form view (step 9). One step per screen from the definition (no AI, no network):
   notices first, then the available questions in form order (a follow-up right after the answer
   that opens it), then the summary. `question` / `help` texts per field are part of the
-  definition (hence before freezing). **"Weiß ich gerade nicht"** = `deferQuestion`: the mark
+  definition (hence before freezing). **"Vorerst überspringen"** (until 2026-11-01 "Weiß ich gerade
+  nicht"; a button next to "Weiter" while the question has no answer) = `deferQuestion`; in the summary
+  each skipped question offers "beantworten" and, if voluntary, "leer lassen" (`leaveQuestionEmpty`,
+  ends the mark; a required one cannot stay empty). "Fragebogen verwerfen" (interview and overview)
+  always asks first and drops the questionnaire from the app. The mark
   lives in the draft (`Part.deferred`, survives the interim file, never sealed); a deferred
   required question still blocks signing. **Answers whose condition no longer holds stay in the
   draft** and return when it holds again; they are dropped only at signing, and the summary lists
@@ -427,8 +431,19 @@ Key design decisions (details in `docs/plan.md`):
   label maps to the entry, anything else is refused (`choice.notInList`). Nationality stores the
   Destatis key (`000` = deutsch), states store the official name (key and Länderkennzeichen follow
   from the list). Street and house number are separate (DBAN STRASSE 33 / HAUS-NR 9). New ids in
-  both drafts: `staatsangehoerigkeitSchluessel`, `geburtsstaat`, `anschriftStaat`, `strassenname`,
+  both drafts: `geburtsstaat`, `anschriftStaat`, `strassenname`,
   `hausnummer`. The title stays free text (no official list).
+- **Country of birth and nationality** (Tobias 2026-11-01: "Geburtsland Deutschland vorbelegen,
+  Auswahlliste, freie Eingabe nur mit Warnhinweis; Geboren in Deutschland? zuerst"): yes/no first,
+  preselected Ja (`geborenInDeutschland`, `deutscheStaatsangehoerigkeit`); only on Nein a search list
+  (`geburtsstaat` with `deuevStaatenAusland2025`, `andereStaatsangehoerigkeit` with
+  `deuevStaatsangehoerigkeitAusland2025`) as `text` + `suggestionsFrom`: a listed entry is stored by its
+  official name (key and Länderkennzeichen follow from the list), free text is kept with the warning
+  `list.freeEntry`. The place of birth comes after the country ("Stadt oder Gemeinde"). The EU/EWR step
+  Tobias suggested is not built: the list holds every state, so it would add a question without a
+  gain (asked 2026-11-01). Export: `first` with the German code as fallback; **a free entry where a
+  list code is needed is a problem ("bitte von Hand eintragen") and ends `first`** (regression
+  2026-11-01: it used to be blank silently, so the fallback would have exported "deutsch").
 - **Pay before the kind of employment** (Tobias 2026-10-30: "Entgelt möglichst früh, damit Minijob und
   Hauptbeschäftigung unterschieden werden können"): the employer answers the pay (kind, amount or
   expected month, one-off payments) right after the pre-questions and before "Wie ist die

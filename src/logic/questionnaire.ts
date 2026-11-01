@@ -5,6 +5,7 @@ import { describeCondition } from './conditions';
 import { canonicalize } from './jcs';
 import { Decoder } from './decode';
 import {
+  fieldStates,
   fieldsById,
   fieldsOfRole,
   infoBlocksOfRole,
@@ -75,6 +76,8 @@ export type TransitionCode =
   | 'noSealedPart'
   | 'versionInUse'
   | 'alreadyAnswered'
+  | 'notDeferred'
+  | 'requiredStaysOpen'
   | 'fixedByOtherRole'
   | 'outsideValidity'
   | 'outOfScope';
@@ -108,6 +111,9 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
     'Diese Fassung wurde bereits weitergegeben oder bestätigt. Eine Änderung wird als neue Fassung unterschrieben.',
   alreadyAnswered:
     'Diese Frage ist schon beantwortet. Zum Zurückstellen bitte zuerst die Antwort löschen.',
+  notDeferred: 'Diese Frage ist nicht übersprungen.',
+  requiredStaysOpen:
+    'Diese Angabe ist Pflicht und kann nicht leer bleiben. Bitte beantworten Sie die Frage vor dem Abschluss.',
   fixedByOtherRole:
     'Diese Angabe hat eine andere Rolle in ihrem abgeschlossenen Teil festgelegt; sie wird von dort übernommen.',
   outsideValidity:
@@ -347,6 +353,31 @@ export function deferQuestion(
   versions[versions.length - 1] = withDeferred(
     draft,
     own.map((candidate) => candidate.id).filter((id) => marked.has(id)),
+  );
+  return done(withVersions(questionnaire, role, versions));
+}
+
+/**
+ * "Leer lassen" in the summary: ends the skip mark of a voluntary question, which then stays
+ * unanswered and is no longer listed. A required question cannot stay empty (it keeps its mark).
+ */
+export function leaveQuestionEmpty(
+  questionnaire: Questionnaire,
+  form: RegisteredForm,
+  role: RoleId,
+  fieldId: FieldId,
+): Transition {
+  if (!matchesForm(questionnaire, form)) return refuse('wrongForm');
+  const draft = currentPart(questionnaire, role);
+  if (draft?.status !== 'draft') return refuse('noDraft', [role]);
+  if (!(draft.deferred ?? []).includes(fieldId)) return refuse('notDeferred', [fieldId]);
+  if (fieldStates(form.definition, role, draft.data).get(fieldId)?.required === true) {
+    return refuse('requiredStaysOpen', [fieldId]);
+  }
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = withDeferred(
+    draft,
+    (draft.deferred ?? []).filter((id) => id !== fieldId),
   );
   return done(withVersions(questionnaire, role, versions));
 }

@@ -36,6 +36,14 @@ export const REFERENCE_LISTS: Readonly<Record<string, ReferenceList>> = {
     source: 'DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)',
     options: STAATSANGEHOERIGKEITEN.map(([key, label]) => ({ id: key, label })),
   },
+  deuevStaatsangehoerigkeitAusland2025: {
+    title: 'Staatsangehörigkeiten außer der deutschen',
+    source: 'DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)',
+    options: STAATSANGEHOERIGKEITEN.filter(([key]) => key !== '000').map(([key, label]) => ({
+      id: key,
+      label,
+    })),
+  },
   deuevStaaten2025: {
     title: 'Staaten und Gebiete',
     source: 'DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)',
@@ -66,6 +74,7 @@ const insurerCodes = new Map(
 const LIST_CODES: Readonly<Record<string, ReadonlyMap<string, Readonly<Record<string, string>>>>> =
   {
     deuevStaatsangehoerigkeit2025: nationalityCodes,
+    deuevStaatsangehoerigkeitAusland2025: nationalityCodes,
     deuevStaaten2025: stateCodes,
     deuevStaatenAusland2025: stateCodes,
     gkvKrankenkassen202610: insurerCodes,

@@ -184,6 +184,18 @@ export function TableStep({ session, field, step, onSession }: Props) {
         <button type="button" disabled={first} onClick={() => onSession(previousStep(session))}>
           Zurück
         </button>
+        {rows.length === 0 && step.state !== 'deferred' && (
+          <button
+            type="button"
+            onClick={() => {
+              const result = defer(session, field.id);
+              if (result.ok) onSession(nextStep(result.session));
+              else setError({ text: result.message });
+            }}
+          >
+            Vorerst überspringen
+          </button>
+        )}
         <button
           type="button"
           className="primary"
@@ -204,21 +216,6 @@ export function TableStep({ session, field, step, onSession }: Props) {
           </button>
         )}
       </div>
-      {rows.length === 0 && (
-        <p className="defer">
-          <button
-            type="button"
-            className="link"
-            onClick={() => {
-              const result = defer(session, field.id);
-              if (result.ok) onSession(nextStep(result.session));
-              else setError({ text: result.message });
-            }}
-          >
-            Weiß ich gerade nicht – später beantworten
-          </button>
-        </p>
-      )}
     </Card>
   );
 }

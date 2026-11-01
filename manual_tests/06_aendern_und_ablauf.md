@@ -55,7 +55,7 @@ bestätigt, Familienname und Vornamen eingegeben.
   nächste Frage, auch wenn sie beantwortet ist) und **„Zur nächsten fehlenden Angabe“**.
 - Schritt 2 zeigt die Vornamen, Schritt 3 springt über alles Beantwortete zur nächsten **Frage
   ohne Antwort** – hier „Wann sind Sie geboren?“. _Nicht offensichtlich:_ Auch **freiwillige**
-  leere Fragen (z. B. die Versicherungsnummer „falls bekannt“) und mit „Weiß ich gerade nicht“
+  leere Fragen (z. B. die Versicherungsnummer „falls bekannt“) und mit „Vorerst überspringen“
   zurückgestellte Fragen zählen als fehlend.
 - Fehlt nichts mehr, heißt der zweite Knopf **„Zur Zusammenfassung“**.
 - Auf einer noch offenen Frage gibt es nur „Weiter“.

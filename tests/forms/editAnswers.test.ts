@@ -109,7 +109,7 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
     );
   });
 
-  it('stops at a required question put back with "Weiß ich gerade nicht"', () => {
+  it('stops at a required question skipped with "Vorerst überspringen"', () => {
     const deferred = goTo(
       must(defer(goTo(person(BASE), 'question:geburtsdatum'), 'geburtsdatum')),
       'question:familienname',
@@ -118,7 +118,8 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
   });
 
   it('offers no shortcut while the next question is still open', () => {
-    expect(nextChoice(goTo(person(BASE), 'question:geburtsdatum')).skip).toBeUndefined();
+    // After "In Deutschland geboren?" (preselected Ja) comes the open place of birth.
+    expect(nextChoice(goTo(person(BASE), 'question:geborenInDeutschland')).skip).toBeUndefined();
   });
 
   it('stops at a voluntary question left empty as well', () => {
@@ -126,9 +127,9 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
       ...BASE,
       geburtsdatum: '17.05.1990',
       geburtsort: 'Musterstadt',
-      geburtsstaat: 'Deutschland',
+      geborenInDeutschland: true,
       geschlecht: 'weiblich',
-      staatsangehoerigkeitSchluessel: 'deutsch',
+      deutscheStaatsangehoerigkeit: true,
     });
     expect(nextChoice(goTo(filled, 'question:familienname')).skip?.key).toBe(
       'question:versicherungsnummer',

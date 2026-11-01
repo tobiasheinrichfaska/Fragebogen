@@ -37,6 +37,7 @@ import {
   currentPart,
   deferQuestion,
   fixedByOtherRoles,
+  leaveQuestionEmpty,
   latestSealed,
   receivedPartFor,
   reopenPart,
@@ -419,6 +420,16 @@ export function defer(session: Session, fieldId: string): SessionResult {
   const role = activeRole(session);
   if (typeof role !== 'string') return role;
   return fromTransition(session, deferQuestion(session.questionnaire, session.form, role, fieldId));
+}
+
+/** "Leer lassen" for a skipped voluntary question (see leaveQuestionEmpty). */
+export function leaveEmpty(session: Session, fieldId: string): SessionResult {
+  const role = activeRole(session);
+  if (typeof role !== 'string') return role;
+  return fromTransition(
+    session,
+    leaveQuestionEmpty(session.questionnaire, session.form, role, fieldId),
+  );
 }
 
 export function acknowledge(session: Session, infoBlockId: string, confirmed: boolean): Session {

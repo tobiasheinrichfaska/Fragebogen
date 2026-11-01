@@ -172,31 +172,41 @@
           "purpose": "Prüfung, ob die gesetzliche Vertretung mitunterschreiben muss; Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV)"
         },
         {
-          "id": "geburtsort",
+          "id": "geborenInDeutschland",
           "role": "person",
-          "type": "text",
-          "label": "Geburtsort",
-          "question": "Wo sind Sie geboren?",
-          "help": "Der Ort, wie er in Ihrem Ausweis steht.",
+          "type": "boolean",
+          "label": "In Deutschland geboren?",
+          "question": "Sind Sie in Deutschland geboren?",
+          "help": "Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel in der DDR geboren ist, antwortet mit Ja.",
           "required": true,
-          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
+          "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
+          "initial": true
         },
         {
           "id": "geburtsstaat",
           "role": "person",
-          "type": "choice",
+          "type": "text",
           "label": "Geburtsland",
-          "question": "In welchem Land sind Sie geboren?",
+          "question": "In welchem Staat sind Sie geboren?",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
-          "quickAnswers": [
-            {
-              "label": "Deutschland",
-              "value": "Deutschland"
-            }
-          ],
-          "optionsFrom": "deuevStaaten2025",
-          "help": "Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste. Gibt es den Staat nicht mehr (zum Beispiel Sowjetunion oder Jugoslawien), wählen Sie den heutigen Staat, in dem Ihr Geburtsort liegt."
+          "help": "Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste. Gibt es den Staat nicht mehr (zum Beispiel Sowjetunion oder Jugoslawien), wählen Sie den Staat, zu dem Ihr Geburtsort heute gehört. Nur wenn er nicht in der Liste steht, schreiben Sie ihn selbst – das macht der lohnabrechnenden Stelle aber Nacharbeit.",
+          "showIf": {
+            "field": "geborenInDeutschland",
+            "equals": false
+          },
+          "because": "Wer in Deutschland geboren ist, braucht kein Geburtsland anzugeben; es steht dann fest.",
+          "suggestionsFrom": "deuevStaatenAusland2025"
+        },
+        {
+          "id": "geburtsort",
+          "role": "person",
+          "type": "text",
+          "label": "Geburtsort (Stadt oder Gemeinde)",
+          "question": "In welcher Stadt oder Gemeinde sind Sie geboren?",
+          "help": "Nur der Ort, so wie er in Ihrem Ausweis steht – zum Beispiel „Karlsruhe“.",
+          "required": true,
+          "purpose": "Inhalt der Sofortmeldung, wenn die Versicherungsnummer fehlt (§ 28a Abs. 4 SGB IV); Stammdaten für die Lohnabrechnung"
         },
         {
           "id": "geschlecht",
@@ -227,21 +237,31 @@
           ]
         },
         {
-          "id": "staatsangehoerigkeitSchluessel",
+          "id": "deutscheStaatsangehoerigkeit",
           "role": "person",
-          "type": "choice",
-          "label": "Staatsangehörigkeit",
-          "question": "Welche Staatsangehörigkeit haben Sie?",
-          "help": "Tippen Sie die ersten Buchstaben, zum Beispiel „deutsch“, und wählen Sie aus der Liste. Bei mehreren Staatsangehörigkeiten genügt eine; eine deutsche geht vor.",
+          "type": "boolean",
+          "label": "Deutsche Staatsangehörigkeit?",
+          "question": "Haben Sie die deutsche Staatsangehörigkeit?",
+          "help": "Auch wenn Sie daneben noch eine andere haben: Dann antworten Sie mit Ja.",
           "required": true,
           "purpose": "Meldungen zur Sozialversicherung",
-          "quickAnswers": [
-            {
-              "label": "deutsch",
-              "value": "deutsch"
-            }
-          ],
-          "optionsFrom": "deuevStaatsangehoerigkeit2025"
+          "initial": true
+        },
+        {
+          "id": "andereStaatsangehoerigkeit",
+          "role": "person",
+          "type": "text",
+          "label": "Staatsangehörigkeit",
+          "question": "Welche Staatsangehörigkeit haben Sie?",
+          "help": "Tippen Sie die ersten Buchstaben, zum Beispiel „türkisch“, und wählen Sie aus der Liste. Bei mehreren genügt eine. Nur wenn sie nicht in der Liste steht, schreiben Sie sie selbst – das macht der lohnabrechnenden Stelle aber Nacharbeit.",
+          "required": true,
+          "purpose": "Meldungen zur Sozialversicherung",
+          "showIf": {
+            "field": "deutscheStaatsangehoerigkeit",
+            "equals": false
+          },
+          "because": "Wer die deutsche Staatsangehörigkeit hat, gibt nur diese an; sie geht bei den Meldungen vor.",
+          "suggestionsFrom": "deuevStaatsangehoerigkeitAusland2025"
         },
         {
           "id": "versicherungsnummer",
@@ -250,7 +270,7 @@
           "type": "svNumber",
           "label": "Versicherungsnummer der Rentenversicherung (falls bekannt)",
           "question": "Wie lautet Ihre Versicherungsnummer der Rentenversicherung?",
-          "help": "Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Weiß ich gerade nicht“ wählen.",
+          "help": "Sie hat 12 Stellen und steht auf Ihrem Sozialversicherungsausweis oder einer Meldebescheinigung zur Sozialversicherung. Nicht zur Hand? Dann „Vorerst überspringen“ wählen.",
           "required": false,
           "purpose": "Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV)",
           "quickAnswers": [

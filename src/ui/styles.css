@@ -193,6 +193,10 @@ button.link {
   text-decoration: underline;
 }
 
+button.link.danger {
+  color: var(--danger);
+}
+
 button.wide {
   width: 100%;
   text-align: left;
@@ -299,7 +303,37 @@ textarea {
   flex: none;
 }
 
-.defer,
+.skipped {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--info-border);
+  border-radius: 0.5rem;
+  background: var(--info-bg);
+}
+
+.skipped p {
+  margin: 0 0 0.5rem;
+}
+
+.skipped ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skipped li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--info-border);
+}
+
+.skipped li > span {
+  flex: 1 1 12rem;
+}
+
 .pause,
 .explainer {
   margin: 1rem 0 0;

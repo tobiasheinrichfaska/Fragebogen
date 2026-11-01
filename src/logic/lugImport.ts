@@ -149,11 +149,11 @@ function resolverFor(
     if (value.const !== undefined) return { text: value.const };
     if (value.first !== undefined) {
       const results = value.first.map(resolve);
-      return (
-        results.find((r) => 'text' in r) ??
-        results.find((r) => 'missing' in r) ??
-        results.find((r) => 'problem' in r) ?? { empty: true }
-      );
+      // The first value wins. A value that cannot be exported (e.g. a free entry without a list
+      // code) ends the search, so a fallback never hides it; an input not yet entered does not.
+      const found = results.find((r) => 'text' in r || 'problem' in r);
+      if (found && 'text' in found) return found;
+      return results.find((r) => 'missing' in r) ?? found ?? { empty: true };
     }
     if (value.input !== undefined) {
       const input = inputs.get(value.input);
@@ -178,11 +178,15 @@ function resolverFor(
       if (value.code === undefined) return { text: stored };
       const target = fields.get(value.field);
       const entry = target ? listEntryOf(target, stored) : undefined;
-      const code =
-        target && entry !== undefined
-          ? listCodesOf(listOf(target) ?? '', entry)[value.code]
-          : undefined;
-      return code === undefined ? { empty: true } : { text: code };
+      // A free entry (or an entry without that code) is named, never left blank silently — and a
+      // `first` with a fallback must not skip over it.
+      if (entry === undefined) {
+        return { problem: `„${stored}“ steht nicht in der Liste – bitte von Hand eintragen` };
+      }
+      const code = listCodesOf(listOf(target ?? {}) ?? '', entry)[value.code];
+      return code === undefined
+        ? { problem: `Für „${stored}“ ist kein Schlüssel hinterlegt – bitte von Hand eintragen` }
+        : { text: code };
     }
     return { empty: true };
   };

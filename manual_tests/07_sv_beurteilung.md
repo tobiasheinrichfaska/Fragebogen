@@ -114,8 +114,8 @@ abgeschlossen; Station „Kanzlei“.
 
 **Schritte:**
 
-1. Bei der Staatsangehörigkeit „deu“ tippen.
-2. Aus den Vorschlägen „deutsch“ wählen, „Weiter“.
+1. Bei der deutschen Staatsangehörigkeit „Nein“, dann bei der Staatsangehörigkeit „pol“ tippen.
+2. Aus den Vorschlägen „polnisch“ wählen, „Weiter“.
 3. Bei „Titel, Vorsatzwort oder Namenszusatz“ „Ja“ wählen; als Vorsatzwort „zum Kuckuck“ eingeben
    und „Weiter“ drücken.
 4. Stattdessen „van der“ eingeben.
@@ -124,8 +124,8 @@ abgeschlossen; Station „Kanzlei“.
 **Erwartet:**
 
 - Schritt 1: Unter dem Feld erscheinen Vorschläge aus der Liste.
-- Schritt 2: In der Zusammenfassung steht „deutsch“. _Nicht offensichtlich:_ Gespeichert wird der
-  amtliche Schlüssel 000; auf dem PDF steht trotzdem „deutsch“.
+- Schritt 2: In der Zusammenfassung steht „polnisch“. _Nicht offensichtlich:_ Der amtliche Schlüssel
+  folgt aus der Liste; ein frei eingetippter Wert wird gespeichert, aber gelb markiert (MT-26).
 - Schritt 3: Die Meldung „Diese Angabe steht nicht in der amtlichen Liste …“ erscheint; die Hilfe
   sagt, dass ein nicht aufgeführtes Vorsatzwort zum Familiennamen gehört.
 - Schritt 4 wird angenommen.

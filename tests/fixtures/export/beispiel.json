@@ -163,8 +163,15 @@
             "name": "Nationalitaet(Schluessel;Zusatz)",
             "values": [
               {
-                "field": "staatsangehoerigkeitSchluessel",
-                "code": "schluessel"
+                "first": [
+                  {
+                    "field": "andereStaatsangehoerigkeit",
+                    "code": "schluessel"
+                  },
+                  {
+                    "const": "000"
+                  }
+                ]
               },
               {
                 "field": "titel",

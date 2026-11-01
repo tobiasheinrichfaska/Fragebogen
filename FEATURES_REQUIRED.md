@@ -14,7 +14,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
 - [ ] **Interview** (default for person and employer) — one question per screen in form order; a follow-up appears right after the answer that opens it; back and forward; progress; the summary lists missing, deferred and no longer applicable answers before signing
-- [ ] **"Weiß ich gerade nicht"** — a question can be put back; it is asked again at the end and survives saving the interim state; a required one must be answered before signing
+- [ ] **"Vorerst überspringen"** — a button next to "Weiter" puts a question back; it is asked again at the end and survives saving the interim state; in the summary each skipped question offers "beantworten" and, if voluntary, "leer lassen"; a required one must be answered before signing
+- [ ] **"Fragebogen verwerfen"** — in the interview and on the overview; always asks first, then the questionnaire is gone from the app (downloaded files stay)
 - [ ] **Change answers afterwards** — "Zur Zusammenfassung" from any question; "ändern" in the summary returns to the summary after the follow-ups the change opened (not through every later question); a voluntary yes/no or single choice can be taken back ("Auswahl aufheben"); while revising, "Weiter" or "Zur nächsten fehlenden Angabe"; after signing via "Unterschrift zurücknehmen" or "Neue Fassung beginnen"
 - [ ] **Answers another station decides** (`fromRole`, e.g. the employer's kind of wage tax in a Minijob) — taken over from that station's sealed part, not asked and shown as "festgelegt von: …"; asked when that part is missing; a later contradiction becomes a check hint
 - [ ] **Answers kept while their condition is off** — switching a precondition off and on again brings the answer back; only signing drops it (shown in the summary)
@@ -49,7 +50,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Hand-over to DATEV Lohn und Gehalt** (Kanzlei build with a local mapping) — Erfassungsblatt in the order of the LuG masks; import file (Windows-1252) only with Mandanten- and Mitarbeiternummer and the choice "neu anlegen" / "vorhandenen ergänzen"; wage types and health insurer entered by the Kanzlei per questionnaire; everything not transferable is listed with its reason, values to check are listed as notes
 - [ ] **Erfassungsblatt as PDF** — its own PDF/A file for the Personalakte, named by numbers only
 - [ ] **Sofortmeldung first, Personalfragebogen later** — the Sofortmeldung 0.2.0 creates the employee in LuG; the Personalfragebogen completes the same employee number without creating a second one
-- [ ] **Official lists** — nationality, state of birth, foreign state, name prefix and suffix chosen from the DEÜV tables via a search field; anything not listed is refused with a German message
+- [ ] **Official lists** — foreign state of the address, name prefix and suffix chosen from the DEÜV tables via a search field; anything not listed is refused with a German message
+- [ ] **Country of birth and nationality** — "In Deutschland geboren?" and "deutsche Staatsangehörigkeit?" first, preselected Ja; on Nein a search list where free text is allowed with a visible warning; the hand-over names a free entry instead of exporting a code
 - [ ] **Health insurer from the list** — the person picks the statutory insurer from a search list (typing filters, "TK" finds Techniker Krankenkasse); free text is allowed with a visible warning about extra work; the Kanzlei gets the insurer's Betriebsnummer prefilled, a free entry leaves it to the Kanzlei
 - [ ] **Employee number checked before the import file** — asked when the questionnaire has none, named when it does not fit, a safety question before every download
 

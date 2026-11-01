@@ -225,6 +225,20 @@ function Workspace({ registry }: { registry: FormRegistry }) {
     setBanner(undefined);
   };
 
+  // "Fragebogen verwerfen": always asked, whatever was saved; files already downloaded stay.
+  const discard = () => {
+    if (
+      !confirm(
+        'Fragebogen endgültig verwerfen?\n\nAlle Angaben dieses Fragebogens werden aus der App gelöscht. Das lässt sich nicht rückgängig machen. Bereits gespeicherte Dateien (PDF oder Zwischenstand) bleiben erhalten.',
+      )
+    ) {
+      return;
+    }
+    setSession(undefined);
+    setScreen({ kind: 'start' });
+    setBanner({ tone: 'success', text: 'Der Fragebogen wurde verworfen.' });
+  };
+
   const role = session?.role;
   const roleLabel = session?.form.definition.roles.find((r) => r.id === role)?.label;
 
@@ -282,6 +296,7 @@ function Workspace({ registry }: { registry: FormRegistry }) {
           onTakeOver={(f) => void takeOverFile(f)}
           onPdf={() => void pdf()}
           onClose={close}
+          onDiscard={discard}
         />
       )}
       {session && screen.kind === 'interview' && (
@@ -295,6 +310,7 @@ function Workspace({ registry }: { registry: FormRegistry }) {
             setScreen({ kind: 'roles' });
           }}
           onSaveInterim={saveInterim}
+          onDiscard={discard}
         />
       )}
       {session && screen.kind === 'sign' && (

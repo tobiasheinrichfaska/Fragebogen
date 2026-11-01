@@ -11,6 +11,7 @@ import {
   createQuestionnaire,
   currentPart,
   deferQuestion,
+  leaveQuestionEmpty,
   sealPart,
   setValue,
   startPart,
@@ -22,7 +23,7 @@ const start = () => ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), fo
 const defer = (q: Questionnaire, id: string) => ok(deferQuestion(q, form, 'person', id));
 const deferredOf = (q: Questionnaire) => currentPart(q, 'person')?.deferred;
 
-describe('deferQuestion — "Weiß ich gerade nicht"', () => {
+describe('deferQuestion — "Vorerst überspringen"', () => {
   it('marks questions in form order, whatever the order of deferring', () => {
     const q = defer(defer(start(), 'steuerId'), 'nachname');
     expect(deferredOf(q)).toEqual(['nachname', 'steuerId']);
@@ -91,6 +92,24 @@ describe('deferQuestion — "Weiß ich gerade nicht"', () => {
     const sealed = currentPart(ok(sealPart(q, form, 'person', personSealInput())), 'person');
     expect(sealed).not.toHaveProperty('deferred');
     expect(sealed?.data).not.toHaveProperty('weitereArt');
+  });
+});
+
+describe('leaveQuestionEmpty — "leer lassen" in the summary (Tobias 2026-11-01)', () => {
+  const leave = (q: Questionnaire, id: string) => leaveQuestionEmpty(q, form, 'person', id);
+
+  it('ends the skip mark of a voluntary question, which stays unanswered', () => {
+    const q = ok(leave(defer(defer(start(), 'bemerkungen'), 'steuerId'), 'bemerkungen'));
+    expect(deferredOf(q)).toEqual(['steuerId']);
+    expect(currentPart(q, 'person')?.data.bemerkungen ?? null).toBeNull();
+  });
+
+  it.each<[string, (q: Questionnaire) => Questionnaire, string, string]>([
+    ['a required question', (q) => defer(q, 'steuerId'), 'steuerId', 'requiredStaysOpen'],
+    ['a question that was not skipped', (q) => q, 'bemerkungen', 'notDeferred'],
+  ])('refuses %s', (_label, prepare, id, code) => {
+    const result = leave(prepare(start()), id);
+    expect(result.ok ? 'accepted' : result.code).toBe(code);
   });
 });
 

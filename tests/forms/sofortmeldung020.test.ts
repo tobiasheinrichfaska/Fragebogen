@@ -38,9 +38,8 @@ describe('Sofortmeldung 0.2.0 draft', () => {
   });
 
   it('offers quick answers where most people give the same answer', () => {
-    expect(fields.get('geburtsstaat')?.quickAnswers).toEqual([
-      { label: 'Deutschland', value: 'Deutschland' },
-    ]);
+    // Born in Germany is a preselected yes/no question now (Tobias 2026-11-01).
+    expect(fields.get('geborenInDeutschland')?.initial).toBe(true);
     expect(fields.get('versicherungsnummer')?.quickAnswers).toEqual([
       { label: 'Kenne ich nicht', value: null },
     ]);

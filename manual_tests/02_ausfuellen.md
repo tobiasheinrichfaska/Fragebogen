@@ -64,7 +64,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ---
 
-## MT-13: Hinweise und „Weiß ich gerade nicht“ (Person)
+## MT-13: Hinweise und „Vorerst überspringen“ (Person)
 
 **Voraussetzungen:** MT-10.
 
@@ -75,18 +75,23 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
    und klicken Sie **„Weiter“**.
 3. Beim Hinweis **„Ausweispapiere mitführen“** klicken Sie **„Weiter“**, **ohne** das Häkchen zu
    setzen.
-4. Beantworten Sie die Fragen. Bei der **Versicherungsnummer** klicken Sie **„Weiß ich gerade
-   nicht – später beantworten“**.
+4. Beantworten Sie die Fragen. Bei der **Versicherungsnummer** klicken Sie **„Vorerst überspringen“**
+   (neben „Weiter“).
+5. In der Zusammenfassung tippen Sie bei der Versicherungsnummer auf **„leer lassen“**.
 
 **Erwartet:**
 
 - Die beiden Hinweise kommen **vor** der ersten Frage.
 - _Nicht offensichtlich:_ Beim Papierhinweis steht ein Satz, dass Sie erst bestätigen sollen, wenn
   Sie das Papier erhalten haben. Weitermachen geht trotzdem.
-- Nach „Weiß ich gerade nicht“ springt das Interview zur nächsten Frage.
+- Nach „Vorerst überspringen“ springt das Interview zur nächsten Frage. _Nicht offensichtlich:_ Der
+  Knopf fehlt, sobald die Frage eine Antwort hat – auch eine vorbelegte (z. B. „In Deutschland
+  geboren? Ja“).
 - In der Zusammenfassung stehen zwei Kästen: **„Bitte bestätigen Sie noch diese Hinweise:
-  Hinweis: Ausweispapiere mitführen …“** und **„Zurückgestellt mit ‚Weiß ich gerade nicht‘:
-  Versicherungsnummer …“**.
+  Hinweis: Ausweispapiere mitführen …“** und **„Übersprungen: …“** mit der Versicherungsnummer und den
+  Knöpfen **„beantworten“** und **„leer lassen“**. Bei einer Pflichtangabe steht „(Pflicht)“ und es
+  gibt nur „beantworten“.
+- Schritt 5: Die Versicherungsnummer verschwindet aus „Übersprungen“ und bleibt leer.
 - **„Weiter zum Abschluss“** ist ausgegraut, bis der Papierhinweis bestätigt ist (zurück zum
   Hinweis über „Zurück“). Die zurückgestellte Versicherungsnummer verhindert den Abschluss
   **nicht**, sie ist freiwillig.
@@ -215,8 +220,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 1. Als „Beschäftigte Person“ den Familiennamen „Musterfrau“ eingeben, „Weiter“.
 2. Die Frage nach dem Geburtsnamen lesen und **„Ja“** antippen.
-3. Bei „Geburtsland“ den Knopf **„Deutschland“**, bei der Staatsangehörigkeit **„deutsch“** und bei
-   der Versicherungsnummer **„Kenne ich nicht“** antippen.
+3. Bei „Sind Sie in Deutschland geboren?“ und „Haben Sie die deutsche Staatsangehörigkeit?“ ist
+   **„Ja“** schon gewählt – „Weiter“. Bei der Versicherungsnummer **„Kenne ich nicht“** antippen.
 4. Bei „Liegt die Anschrift im Ausland?“ **„Nein“**, beim Anschriftenzusatz **„Kein Zusatz“**.
 5. Als Postleitzahl „1234“ eingeben, „Weiter“; dann „76131“.
 
@@ -225,10 +230,54 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 - Schritt 2: Die Frage lautet „… gleich dem gerade angegebenen Familiennamen „Musterfrau“?“. Ein
   Tipp auf „Ja“ antwortet **und** blättert weiter – „Weiter“ ist nicht nötig. Mit „Zurück“ lässt
   sich die Antwort ändern.
-- Schritt 3: Jeder Knopf trägt die Antwort ein und blättert weiter; „Kenne ich nicht“ lässt das
-  freiwillige Feld leer.
+- Schritt 3: Nach „In Deutschland geboren? Ja“ kommt direkt der Geburtsort („In welcher Stadt oder
+  Gemeinde …“), kein Geburtsland. „Kenne ich nicht“ lässt das freiwillige Feld leer und blättert
+  weiter.
 - Schritt 5: „1234“ wird abgelehnt („Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.“),
   „76131“ angenommen. _Nicht offensichtlich:_ Bei „Ausland: Ja“ fragt der Fragebogen stattdessen
   eine Postleitzahl ohne Prüfung.
 - Auf der Unterschriftsseite erklärt „Warum genügt das?“ mit Fundstellen, weshalb auch ein
   getippter Name als Unterschrift genügt.
+
+---
+
+## MT-26: Geburtsland und Staatsangehörigkeit außerhalb Deutschlands
+
+**Voraussetzungen:** Vorschau-Fassung (`npm run build:preview`), Personalfragebogen oder Sofortmeldung
+0.2.0 (Entwurf), Rolle „Beschäftigte Person“.
+
+**Schritte:**
+
+1. Bei „Sind Sie in Deutschland geboren?“ **„Nein“** antippen.
+2. Beim Geburtsland „tür“ tippen und „Türkei“ aus der Liste wählen, „Weiter“.
+3. „Zurück“, stattdessen „Sowjetunion“ eintippen, „Weiter“.
+4. Bei „Haben Sie die deutsche Staatsangehörigkeit?“ **„Nein“**, dann „türkisch“ aus der Liste.
+
+**Erwartet:**
+
+- Schritt 1: Erst jetzt kommt die Frage „In welchem Staat sind Sie geboren?“; danach der Geburtsort.
+- Schritt 2: Keine Warnung; in der Zusammenfassung steht „Türkei“.
+- Schritt 3: Schon beim Tippen erscheint gelb der Hinweis, dass ein Eintrag außerhalb der Liste
+  Rückfragen und Zusatzaufwand verursachen kann. „Weiter“ geht trotzdem. _Nicht offensichtlich:_ In
+  der Übergabe an Lohn und Gehalt steht dafür ein Problem „bitte von Hand eintragen“ – kein Schlüssel
+  wird geraten.
+- Schritt 4: „Deutschland“ und „deutsch“ stehen nicht in diesen Listen (das beantwortet die Ja/Nein-Frage).
+
+---
+
+## MT-27: Fragebogen verwerfen
+
+**Voraussetzungen:** Ein Fragebogen ist geöffnet, einige Angaben sind gemacht.
+
+**Schritte:**
+
+1. Unten im Interview **„Fragebogen verwerfen“** tippen, bei der Sicherheitsabfrage **„Abbrechen“**.
+2. Noch einmal, jetzt **„OK“**.
+
+**Erwartet:**
+
+- Schritt 1: Die Abfrage sagt, dass alle Angaben gelöscht werden und das nicht rückgängig zu machen ist;
+  nach „Abbrechen“ ist alles unverändert.
+- Schritt 2: Die Startseite erscheint mit „Der Fragebogen wurde verworfen.“ _Nicht offensichtlich:_
+  Die Abfrage kommt immer, auch direkt nach „Zwischenstand speichern“; schon heruntergeladene Dateien
+  bleiben auf dem Gerät.

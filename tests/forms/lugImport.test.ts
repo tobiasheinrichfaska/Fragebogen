@@ -40,7 +40,7 @@ const PERSON: Answers = {
   vorname: 'Erika',
   geburtsdatum: '17.05.1990',
   geschlecht: 'weiblich',
-  staatsangehoerigkeitSchluessel: 'deutsch',
+  deutscheStaatsangehoerigkeit: true,
   anschriftAusland: true,
   anschriftStaat: 'Österreich',
   wohnort: 'Wien',
@@ -236,6 +236,28 @@ describe('import file', () => {
     expect(lines).toContain('1002;11/2026;1;1;1;1');
     expect(lines).toContain('1003;DE89370400440532013000;SEPA');
     expect(lines).toContain('1004;2500,00;"Verkauf; Kasse"');
+  });
+
+  // Regression 2026-11-01: a free entry used to give an empty code silently, so a `first` with a
+  // fallback (German nationality "000") would have exported the wrong state.
+  it('names a free entry where a list code is needed and never falls back past it', () => {
+    const other = (nationality: string) =>
+      buildLugImport(
+        questionnaire({
+          ...PERSON,
+          deutscheStaatsangehoerigkeit: false,
+          andereStaatsangehoerigkeit: nationality,
+        }),
+        definition,
+        mapping(),
+        { mandantennummer: '123', mode: 'neu' },
+      );
+    const free = other('sowjetisch');
+    expect(free.problems.join(' ')).toContain(
+      '„sowjetisch“ steht nicht in der Liste – bitte von Hand eintragen',
+    );
+    expect(free.text ?? '').not.toContain(';w;000');
+    expect((other('türkisch').text ?? '').split('\r\n')).toContain('1001;17.05.1990;w;163;');
   });
 
   it('leaves out records whose condition does not hold', () => {
