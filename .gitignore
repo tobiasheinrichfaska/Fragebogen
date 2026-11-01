@@ -31,3 +31,5 @@ desktop.ini
 config/kanzlei.local.json
 # Mappings to payroll programs name the programs' fields (DATEV material) — local only
 config/export.local.json
+# SFTP upload: server, user, pinned host key, DPAPI-encrypted password, upload log — local only
+deploy/.local/

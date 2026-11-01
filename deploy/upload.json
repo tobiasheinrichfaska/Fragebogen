@@ -1,0 +1,13 @@
+{
+  "targets": {
+    "oeffentlich": {
+      "description": "Öffentliche App im Hauptordner der Subdomain",
+      "build": "build",
+      "files": [
+        { "from": "dist/index.html", "to": "index.html", "verify": true },
+        { "from": "deploy/.htaccess", "to": ".htaccess" }
+      ]
+    }
+  },
+  "forbidden": ["dist-kanzlei/", "dist-preview/", "config/", "import/", ".tmp/", "deploy/.local/"]
+}

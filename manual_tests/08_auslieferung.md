@@ -28,6 +28,31 @@
 - Schritt 4: „Forbidden“ (versteckte Dateien werden nicht ausgeliefert).
 - Schritt 5: Ein Hinweis auf eine fehlende Skript-Regel im Header ist erwartbar (sie steht im Meta-Tag).
 
+## MT-82: Hochladen mit dem Upload-Werkzeug
+
+**Voraussetzungen:** SFTP-Zugang bei IONOS (Server, Benutzer, Passwort), Ordner der Subdomain; PuTTY
+installiert.
+
+**Schritte:**
+
+1. In VS Code im Terminal: `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf`.
+2. Im Fenster die Zugangsdaten eintragen, „Speichern“; den angezeigten Schlüssel mit „Ja“ bestätigen.
+3. Ohne `-Probelauf` erneut aufrufen und die Rückfrage „Jetzt hochladen?“ mit „Ja“ beantworten.
+4. Erneut mit `-Probelauf` aufrufen.
+5. Die Datei `deploy/.local/sftp-passwort.dpapi` in einem Editor öffnen.
+
+**Erwartet:**
+
+- Schritt 2: „Verbindung in Ordnung“ mit der Liste der Dateien; der Inhalt des Zielordners steht im
+  Terminal. Es wurde nichts hochgeladen.
+- Schritt 3: Die App wird gebaut; die Rückfrage nennt Server, Ordner, Stand (Commit) und beide Dateien.
+  Danach: „Hochgeladen …“ und **„index.html: online identisch“**. _Nicht offensichtlich:_ Gibt es nicht
+  committete Änderungen, warnt die Rückfrage davor.
+- Schritt 4: Kein Fenster mit Zugangsdaten mehr – sie sind gespeichert.
+- Schritt 5: Nur eine lange Zeichenfolge, kein lesbares Passwort.
+- _Nicht offensichtlich:_ Ein anderer Windows-Benutzer (oder ein anderer PC) kann die Datei nicht
+  entschlüsseln; dort fragt das Werkzeug neu.
+
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 
 **Voraussetzungen:** `docs/hilfe/` (aus `npm run catalogue`) lokal geöffnet oder auf der Homepage unter

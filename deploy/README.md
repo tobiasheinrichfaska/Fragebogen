@@ -15,6 +15,30 @@ keine Daten: Er liefert nur die Datei aus, die App sendet nichts.
 **Nie hochladen:** `dist-kanzlei/` oder `dist-preview/` (enthalten die lokale Zuordnung zum Lohnprogramm),
 `config/*.local.json`, `import/`, `.tmp/`.
 
+## Hochladen mit dem Upload-Werkzeug (SFTP)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf   # erst prüfen, nichts hochladen
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1              # bauen, prüfen, hochladen
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten  # Zugang ändern
+```
+
+- **Beim ersten Aufruf** fragt ein Fenster Server, Port, Benutzer, Passwort, Zielordner und die Adresse
+  der Seite ab (IONOS-Kundenbereich, SFTP-Zugang des Hosting-Pakets). Danach zeigt es den Schlüssel des
+  Servers; mit „Ja“ wird er gemerkt. Meldet sich der Server später mit einem anderen Schlüssel, bricht
+  der Upload ab.
+- **Gespeichert** wird nur auf diesem PC in `deploy/.local/` (nie im Repo): `sftp.json` (Server, Port,
+  Benutzer, Ordner, Adresse, Schlüssel des Servers), `sftp-passwort.dpapi` (das Passwort, mit Windows
+  verschlüsselt – nur dieses Windows-Konto auf diesem PC kann es lesen) und `upload-protokoll.txt`
+  (wann welcher Stand mit welchem SHA-256 hochgeladen wurde).
+- **Was hochgeladen wird**, steht in `deploy/upload.json` (Ziel `oeffentlich`: `dist/index.html` und
+  diese `.htaccess`). Vorher prüft `deploy/uploadPlan.ts`: keine Datei aus `dist-kanzlei/`,
+  `dist-preview/`, `config/` usw.; keine Seite, die die Zuordnung zum Lohnprogramm enthält.
+- **Danach** lädt das Werkzeug die Seite über die Adresse und vergleicht den SHA-256 mit der
+  hochgeladenen Datei („online identisch“).
+- Voraussetzung: PuTTY (`psftp.exe`) und Node.js; der eingebaute Windows-OpenSSH-Client liest nur den
+  Schlüssel des Servers.
+
 ## Was die `.htaccess` tut
 
 - leitet `http://` auf `https://` um und sagt dem Browser, die Seite ein Jahr lang nur per HTTPS zu laden;
