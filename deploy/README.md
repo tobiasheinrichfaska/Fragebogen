@@ -26,11 +26,11 @@ powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei  # Kanz
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten    # Zugang oder IPs ändern
 ```
 
-| Ziel          | Ordner     | Inhalt                                                      | Wer darf zugreifen                                         |
-| ------------- | ---------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
-| `oeffentlich` | Subdomain  | App (`npm run build`) und diese `.htaccess`                 | alle                                                       |
-| `test`        | `test/`    | App mit Formular-Entwürfen, **ohne** Lohnprogramm-Zuordnung | IP-Adressen der Kanzlei; Tester-Anmeldung für andere folgt |
-| `kanzlei`     | `kanzlei/` | Kanzlei-App mit Übergabe an Lohn und Gehalt                 | **nur** IP-Adressen der Kanzlei                            |
+| Ziel          | Ordner     | Inhalt                                                     | Wer darf zugreifen                                             |
+| ------------- | ---------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
+| `oeffentlich` | Subdomain  | App (`npm run build`) und diese `.htaccess`                | alle                                                           |
+| `test`        | `test/`    | App mit Formular-Entwürfen und Übergabe an Lohn und Gehalt | IP-Adressen der Kanzlei; sonst Tester-Anmeldung (`tester.ps1`) |
+| `kanzlei`     | `kanzlei/` | Kanzlei-App mit Übergabe an Lohn und Gehalt                | **nur** IP-Adressen der Kanzlei                                |
 
 Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen im Einrichtungsfenster
 und lädt sie **vor** der App hoch – der Ordner ist also nie offen. Die IP-Adressen stehen nur in

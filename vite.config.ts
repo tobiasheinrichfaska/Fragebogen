@@ -96,9 +96,12 @@ export default defineConfig(({ mode }) => ({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),
-    // Only the Kanzlei build and the review preview carry the mapping — never the hosted app.
+    // Only the Kanzlei build, the review preview and the test folder build (behind IPs or a tester
+    // login, Tobias 2026-11-01) carry the mapping — never the public app.
     __EXPORT_MAPPINGS__: JSON.stringify(
-      mode === 'kanzlei' || mode === 'drafts' ? exportMappings.mappings : [],
+      mode === 'kanzlei' || mode === 'drafts' || mode === 'testbereich'
+        ? exportMappings.mappings
+        : [],
     ),
   },
   build: {

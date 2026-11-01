@@ -71,7 +71,8 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
   Danach „index.html: online identisch“.
 - Schritt 2: Solange es keinen freigegebenen Tester gibt, zusätzlich der Hinweis „Noch kein
   freigegebener Tester … – bis dahin nur eure IPs“.
-- Schritt 3: Kanzlei-App bzw. „Fragebogen-Test“ mit dem gelben Hinweis auf Formular-Entwürfe.
+- Schritt 3: Kanzlei-App bzw. „Fragebogen-Test“ mit dem gelben Hinweis auf Formular-Entwürfe. _Nicht
+  offensichtlich:_ Auch im Testordner bietet die Kanzlei-Station die Übergabe an Lohn und Gehalt an.
 - Schritt 4: **„Forbidden“** bei beiden. _Nicht offensichtlich:_ Die öffentliche App unter der
   Hauptadresse geht weiter für alle.
 

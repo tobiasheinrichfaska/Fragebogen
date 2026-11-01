@@ -11,10 +11,11 @@
       ]
     },
     "test": {
-      "description": "Testbereich: Formular-Entwürfe, ohne Zuordnung zum Lohnprogramm",
+      "description": "Testbereich: Formular-Entwürfe, mit Übergabe an das Lohnprogramm (eure IPs oder Tester-Anmeldung)",
       "build": "build:test",
       "folder": "test",
       "access": "ipOrLogin",
+      "allowMapping": true,
       "files": [{ "from": "dist-test/index.html", "to": "index.html", "verify": true }]
     },
     "kanzlei": {

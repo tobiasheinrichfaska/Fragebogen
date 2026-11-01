@@ -76,9 +76,10 @@ describe('deploy/upload.json', () => {
     ]);
   });
 
-  it('keeps the payroll mapping to the Kanzlei folder, reachable from the Kanzlei IPs only', () => {
+  it('keeps the payroll mapping to the protected folders, never the public one', () => {
     const withMapping = Object.entries(committed.targets).filter(([, t]) => t.allowMapping);
     expect(withMapping.map(([name, t]) => [name, t.folder, t.access])).toEqual([
+      ['test', 'test', 'ipOrLogin'],
       ['kanzlei', 'kanzlei', 'ip'],
     ]);
     expect(committed.targets.test).toMatchObject({ folder: 'test', access: 'ipOrLogin' });
@@ -278,11 +279,12 @@ describe('parseUploadSpec', () => {
     expect(parsed.ok ? [] : parsed.problems.join(' ')).toContain('kein erlaubter relativer Pfad');
   });
 
-  it('allows the payroll mapping only behind the Kanzlei IPs', () => {
-    const parsed = parseUploadSpec(target({ access: 'ipOrLogin', allowMapping: true }));
+  it('allows the payroll mapping in protected folders only', () => {
+    const parsed = parseUploadSpec(target({ access: 'public', allowMapping: true }));
     expect(parsed.ok ? [] : parsed.problems.join(' ')).toContain(
-      'Die Zuordnung zum Lohnprogramm nur mit "access": "ip"',
+      'Die Zuordnung zum Lohnprogramm nie in einen öffentlichen Ordner',
     );
+    expect(parseUploadSpec(target({ access: 'ipOrLogin', allowMapping: true })).ok).toBe(true);
   });
 
   it('refuses an unknown kind of access', () => {

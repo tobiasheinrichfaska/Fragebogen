@@ -31,7 +31,10 @@ export interface UploadTarget {
   /** Subfolder below the subdomain folder; "" = the subdomain folder itself. */
   folder: string;
   access: Access;
-  /** Only a target reachable from the Kanzlei's IPs alone may carry the payroll mapping. */
+  /**
+   * Only a protected target may carry the payroll mapping (DATEV's field names): the Kanzlei folder
+   * (IPs only) and the test folder (IPs or a tester login, Tobias 2026-11-01) — never the public one.
+   */
   allowMapping?: boolean;
   files: UploadFile[];
 }
@@ -108,8 +111,10 @@ export function parseUploadSpec(raw: unknown): Parsed {
     if (target.build !== undefined && typeof target.build !== 'string') {
       problems.push(`Ziel „${name}“: "build" ist kein Text.`);
     }
-    if (target.allowMapping === true && access !== 'ip') {
-      problems.push(`Ziel „${name}“: Die Zuordnung zum Lohnprogramm nur mit "access": "ip".`);
+    if (target.allowMapping === true && (access === undefined || access === 'public')) {
+      problems.push(
+        `Ziel „${name}“: Die Zuordnung zum Lohnprogramm nie in einen öffentlichen Ordner.`,
+      );
     }
     const files: UploadFile[] = [];
     for (const file of target.files) {
@@ -240,7 +245,7 @@ export function planUpload(
       const text = new TextDecoder().decode(bytes);
       if (markers.some((marker) => text.includes(marker))) {
         problems.push(
-          `„${file.from}“ enthält die Zuordnung zum Lohnprogramm – nur in den Kanzlei-Ordner (nur eure IPs).`,
+          `„${file.from}“ enthält die Zuordnung zum Lohnprogramm – nur in einen geschützten Ordner (Kanzlei, Test).`,
         );
         continue;
       }
