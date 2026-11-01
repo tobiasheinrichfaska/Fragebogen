@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "types": ["vitest/globals", "node"]
   },
   "include": ["src", "tests", "deploy", "vite.config.ts"]

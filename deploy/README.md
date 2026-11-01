@@ -52,6 +52,20 @@ und lädt sie **vor** der App hoch – der Ordner ist also nie offen. Die IP-Adr
 - Voraussetzung: PuTTY (`psftp.exe`) und Node.js; der eingebaute Windows-OpenSSH-Client liest nur den
   Schlüssel des Servers.
 
+## Tester des Testordners
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\tester.ps1
+```
+
+- Ein Fenster mit der Liste der Tester: **„Neuer Tester …“**, **„Neues Passwort“**, **„Sperren /
+  Freigeben“**, **„Löschen“** und **„Testordner aktualisieren“** (lädt den Testordner neu hoch).
+- Ein neues Passwort erscheint **einmal** zum Kopieren; gespeichert wird nur sein Hash
+  (`deploy/.local/tester.json`). Am besten getrennt von der Adresse weitergeben, z. B. am Telefon.
+- Von den IP-Adressen der Kanzlei geht der Testordner ohne Anmeldung; von anderswo fragt der Browser
+  nach Anmeldename und Passwort – nur über HTTPS. Merken übernimmt der Passwortmanager des Browsers.
+- Änderungen gelten erst nach „Testordner aktualisieren“.
+
 ## Was die `.htaccess` tut
 
 - leitet `http://` auf `https://` um und sagt dem Browser, die Seite ein Jahr lang nur per HTTPS zu laden;

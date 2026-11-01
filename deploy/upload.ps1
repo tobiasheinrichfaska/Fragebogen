@@ -264,9 +264,13 @@ try {
   }
 
   $ips = @($settings.ips) -join ','
-  $planJson = Invoke-Native { & node.exe (Join-Path $PSScriptRoot 'uploadPlan.ts') $Ziel --remote $settings.ordner --ips $ips 2>$null }
-  $plan = ($planJson -join "`n") | ConvertFrom-Json
-  if (-not $plan.ok) { throw ("Nicht hochgeladen:`n" + ($plan.problems -join "`n")) }
+  function Get-Plan([string[]]$extra = @()) {
+    $json = Invoke-Native { & node.exe (Join-Path $PSScriptRoot 'uploadPlan.ts') $Ziel --remote $settings.ordner --ips $ips @extra 2>$null }
+    $result = ($json -join "`n") | ConvertFrom-Json
+    if (-not $result.ok) { throw ("Nicht hochgeladen:`n" + ($result.problems -join "`n")) }
+    return $result
+  }
+  $plan = Get-Plan
 
   $place = (@($settings.ordner, $plan.folder) | Where-Object { $_ }) -join '/'
   $commit = (Invoke-Native { & git.exe -C $root rev-parse --short HEAD }) -join ''
@@ -289,14 +293,25 @@ try {
   $answer = Show-Message ("$($plan.description)`nnach $($settings.server):$place`nStand $commit$warning`n`n$fileList$notes`n`nJetzt hochladen?") 'YesNo' 'Question'
   if ($answer -ne 'Yes') { exit 1 }
 
-  if ($plan.prepare) { Invoke-Psftp $settings $plan.prepare -IgnoreErrors | Out-Null }
+  $checks = @()
+  if ($plan.prepare) {
+    # Creates the folder and prints its absolute path, which the tester login needs.
+    $prepared = Invoke-Psftp $settings $plan.prepare -IgnoreErrors
+    if ($plan.access -eq 'ipOrLogin') {
+      $found = [regex]::Matches($prepared.Output, '(?m)^Remote directory is (/\S*)\s*$')
+      if ($found.Count -gt 0) { $plan = Get-Plan @('--pfad', $found[$found.Count - 1].Groups[1].Value) }
+      else { $checks += 'Pfad auf dem Server nicht ermittelt – der Testordner bleibt nur für eure IPs.' }
+    }
+  }
+  $checks += @($plan.notes)
   $result = Invoke-Psftp $settings $plan.batch
   if (-not $result.Ok) {
     Write-Log "FEHLER  Ziel=$Ziel  Stand=$commit  $($result.Output -replace "`n", ' | ')"
     throw "Upload fehlgeschlagen:`n$($result.Output)"
   }
 
-  $checks = @()
+  $fileList = (@($plan.generated | ForEach-Object { "  $($_.to)  (erzeugt)" }) +
+    @($plan.files | ForEach-Object { "  $($_.to)  ($([math]::Round($_.bytes / 1KB)) KB)" })) -join "`n"
   if ($settings.adresse) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $base = (@($settings.adresse, $plan.folder) | Where-Object { $_ }) -join '/'

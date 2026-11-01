@@ -13,6 +13,7 @@ import {
   planUpload,
   prepareBatch,
   psftpBatch,
+  remoteDirectoryOf,
   type UploadSpec,
 } from '../../deploy/uploadPlan';
 
@@ -122,11 +123,57 @@ describe('planUpload', () => {
     expect(accessRules('ip', IPS)).toContain('Require ip 203.0.113.7 2001:db8::/48\n');
   });
 
-  it('protects the test folder by IP until the tester login exists, and says so', () => {
-    const plan = planUpload(SPEC, 'test', files({ 'dist-test/index.html': 'App' }), [], IPS);
-    expect(plan).toMatchObject({ ok: true, folder: 'test', access: 'ipOrLogin' });
-    expect(plan.ok && plan.generated[0]?.content).toContain('Require ip 203.0.113.7');
-    expect(plan.ok && plan.notes.join(' ')).toContain('bis dahin nur eure IPs');
+  it('keeps the test folder IP-only without a server path or without testers, and says so', () => {
+    const app = files({ 'dist-test/index.html': 'App' });
+    for (const [login, note] of [
+      [undefined, 'Ohne den Pfad auf dem Server keine Anmeldung'],
+      [{ directory: '/home/www/test', htpasswd: '' }, 'Noch kein freigegebener Tester'],
+    ] as const) {
+      const plan = planUpload(SPEC, 'test', app, [], IPS, login);
+      expect(plan).toMatchObject({ ok: true, folder: 'test', access: 'ipOrLogin' });
+      expect(plan.ok && plan.generated).toEqual([
+        { to: '.htaccess', content: accessRules('ipOrLogin', IPS) },
+      ]);
+      expect(plan.ok && plan.notes.join(' ')).toContain(note);
+    }
+  });
+
+  it('lets testers in from other addresses, over HTTPS only, the password file first', () => {
+    const login = { directory: '/home/www/public/test', htpasswd: 'anna:$6$x\n' };
+    const plan = planUpload(SPEC, 'test', files({ 'dist-test/index.html': 'App' }), [], IPS, login);
+    expect(plan.ok && plan.generated.map((file) => file.to)).toEqual(['.htpasswd', '.htaccess']);
+    expect(plan.ok && plan.generated[0]?.content).toBe('anna:$6$x\n');
+    expect(plan.ok && plan.notes).toEqual([]);
+    const rules = plan.ok ? (plan.generated[1]?.content ?? '') : '';
+    expect(rules).toContain('AuthType Basic\n');
+    expect(rules).toContain('AuthUserFile "/home/www/public/test/.htpasswd"\n');
+    expect(rules).toContain(
+      "<RequireAll>\n  Require expr %{HTTPS} == 'on'\n  <RequireAny>\n" +
+        '    Require ip 203.0.113.7 2001:db8::/48\n    Require valid-user\n  </RequireAny>\n</RequireAll>\n',
+    );
+  });
+
+  it('never adds a login to the Kanzlei folder', () => {
+    const login = { directory: '/home/www/public/kanzlei', htpasswd: 'anna:$6$x\n' };
+    const plan = planUpload(
+      SPEC,
+      'kanzlei',
+      files({ 'dist-kanzlei/index.html': 'x' }),
+      [],
+      IPS,
+      login,
+    );
+    expect(plan.ok && plan.generated).toEqual([
+      { to: '.htaccess', content: accessRules('ip', IPS) },
+    ]);
+  });
+
+  it('refuses a server path that is not absolute', () => {
+    const plan = planUpload(SPEC, 'test', files({ 'dist-test/index.html': 'App' }), [], IPS, {
+      directory: 'test',
+      htpasswd: 'anna:$6$x\n',
+    });
+    expect(plan.ok ? [] : plan.problems.join(' ')).toContain('kein absoluter Pfad');
   });
 
   it.each<[string, string, (path: string) => Uint8Array | undefined, string[], string[], string]>([
@@ -258,9 +305,18 @@ describe('psftp batches', () => {
     expect(psftpBatch('', '', [])).toBe('\n');
   });
 
-  it('creates a subfolder first, and nothing for the subdomain folder itself', () => {
-    expect(prepareBatch('/fragebogen', 'test')).toBe('cd "/fragebogen"\nmkdir "test"\n');
+  it('creates a subfolder first and asks for its path, nothing for the subdomain folder', () => {
+    expect(prepareBatch('/fragebogen', 'test')).toBe(
+      'cd "/fragebogen"\nmkdir "test"\ncd "test"\npwd\n',
+    );
     expect(prepareBatch('/fragebogen', '')).toBeUndefined();
+  });
+
+  it("reads the folder from psftp's pwd", () => {
+    const output =
+      'Remote working directory is /\nmkdir /test: failure\nRemote directory is /home/www/public/test\n';
+    expect(remoteDirectoryOf(output)).toBe('/home/www/public/test');
+    expect(remoteDirectoryOf('Verbindung abgelehnt')).toBeUndefined();
   });
 
   it('refuses a folder name that would break the batch', () => {
@@ -268,9 +324,8 @@ describe('psftp batches', () => {
   });
 });
 
-describe('deploy/upload.ps1', () => {
-  const raw = readFileSync(join(ROOT, 'deploy/upload.ps1'));
-  const script = raw.toString('utf8');
+describe.each(['deploy/upload.ps1', 'deploy/tester.ps1'])('%s', (path) => {
+  const raw = readFileSync(join(ROOT, path));
 
   // Windows PowerShell 5.1 reads a script without BOM as ANSI: the German texts would break.
   it('is UTF-8 with BOM', () => {
@@ -285,18 +340,19 @@ describe('deploy/upload.ps1', () => {
     () => {
       const parse =
         '$e=$null;$t=$null;[void][System.Management.Automation.Language.Parser]::ParseFile(' +
-        '$env:UPLOAD_PS1,[ref]$t,[ref]$e);$e|ForEach-Object{"$($_.Extent.StartLineNumber): $($_.Message)"}';
+        '$env:PS1_FILE,[ref]$t,[ref]$e);$e|ForEach-Object{"$($_.Extent.StartLineNumber): $($_.Message)"}';
       const out = execFileSync(
         'powershell.exe',
         ['-NoProfile', '-NonInteractive', '-Command', parse],
-        {
-          env: { ...process.env, UPLOAD_PS1: join(ROOT, 'deploy/upload.ps1') },
-          encoding: 'utf8',
-        },
+        { env: { ...process.env, PS1_FILE: join(ROOT, path) }, encoding: 'utf8' },
       );
       expect(out.trim()).toBe('');
     },
   );
+});
+
+describe('deploy/upload.ps1', () => {
+  const script = readFileSync(join(ROOT, 'deploy/upload.ps1'), 'utf8');
 
   it('never puts the password on a command line and pins the host key', () => {
     expect(script).toContain('-pwfile');

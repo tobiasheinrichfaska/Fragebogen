@@ -33,7 +33,7 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 | [`05_kanzlei.md`](05_kanzlei.md)                       | Kanzlei: viele Dateien einlesen, zusammenführen, Konflikte entscheiden, PDF für die Personalakte, Übergabe an Lohn und Gehalt (MT-68–72) |
 | [`06_aendern_und_ablauf.md`](06_aendern_und_ablauf.md) | Angaben ändern, Minijob-Steuer, Ablaufplan, Gültigkeit, Grenzen, Mehrfachbeschäftigung                                                   |
 | [`07_sv_beurteilung.md`](07_sv_beurteilung.md)         | Verdienst zuerst, Azubi unter 600 €, Minijob mit Weihnachtsgeld, Sonderfälle, Befreiung, amtliche Listen                                 |
-| [`08_auslieferung.md`](08_auslieferung.md)             | Auslieferung auf der Homepage: `.htaccess`, HTTPS, Header (MT-80); Hilfeseiten (MT-81); Hochladen (MT-82, 83)                            |
+| [`08_auslieferung.md`](08_auslieferung.md)             | Auslieferung auf der Homepage: `.htaccess`, HTTPS, Header (MT-80); Hilfeseiten (MT-81); Hochladen, Ordner, Tester (MT-82–84)             |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md)       | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                 |
 
 ## Bitte nicht als Fehler melden

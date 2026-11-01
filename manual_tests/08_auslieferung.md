@@ -69,11 +69,39 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 
 - Schritt 1: Die Rückfrage nennt zuerst `.htaccess (Zugriffsregeln, erzeugt)`, dann `index.html`.
   Danach „index.html: online identisch“.
-- Schritt 2: Zusätzlich der Hinweis, dass andere Adressen die Anmeldung erst mit der
-  Testerverwaltung bekommen.
+- Schritt 2: Solange es keinen freigegebenen Tester gibt, zusätzlich der Hinweis „Noch kein
+  freigegebener Tester … – bis dahin nur eure IPs“.
 - Schritt 3: Kanzlei-App bzw. „Fragebogen-Test“ mit dem gelben Hinweis auf Formular-Entwürfe.
 - Schritt 4: **„Forbidden“** bei beiden. _Nicht offensichtlich:_ Die öffentliche App unter der
   Hauptadresse geht weiter für alle.
+
+## MT-84: Tester anlegen und von außen anmelden
+
+**Voraussetzungen:** MT-83 erledigt.
+
+**Schritte:**
+
+1. `powershell -ExecutionPolicy Bypass -File deploy\tester.ps1`, **„Neuer Tester …“**, Name
+   „probe.tester“, „Anlegen“. Das angezeigte Passwort notieren, „Fertig“.
+2. **„Testordner aktualisieren“**, Rückfrage mit „Ja“.
+3. Am Handy **ohne WLAN** `https://…/test/` öffnen, mit „probe.tester“ und dem Passwort anmelden.
+4. Dieselbe Adresse mit `http://` statt `https://` öffnen.
+5. Im Fenster „probe.tester“ wählen, **„Sperren / Freigeben“**, wieder „Testordner aktualisieren“;
+   am Handy die Seite neu laden (ggf. privates Fenster).
+6. Im Büro `…/test/` öffnen.
+
+**Erwartet:**
+
+- Schritt 1: Das Passwort hat die Form „abcd-efgh-jkmn“ und erscheint nur dieses eine Mal.
+- Schritt 2: Die Liste nennt `.htpasswd (erzeugt)` vor `.htaccess (erzeugt)`; kein Hinweis „nur eure
+  IPs“ mehr.
+- Schritt 3: Der Browser fragt nach Name und Passwort, danach erscheint „Fragebogen-Test“. _Nicht
+  offensichtlich:_ Erscheint stattdessen „Internal Server Error“, stimmt der Pfad zur Passwortdatei
+  nicht oder der Server kennt das Passwortformat nicht – bitte melden, nicht weiter probieren.
+- Schritt 4: **Keine** Passwortabfrage über `http://` (erst die Umleitung auf `https://`, oder
+  „Forbidden“).
+- Schritt 5: Die Anmeldung gelingt nicht mehr.
+- Schritt 6: Ohne Anmeldung.
 
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 
