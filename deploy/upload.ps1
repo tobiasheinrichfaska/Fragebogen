@@ -1,12 +1,14 @@
 ﻿# SFTP upload of the hosted app to the Kanzlei webspace (Tobias 2026-11-01).
-# First run (or -Einrichten): a dialog asks server, port, user, password, target folder and the site
-# address; the server's host key is shown once and pinned. Everything lands in deploy/.local/
-# (gitignored); the password only DPAPI-encrypted, readable by this Windows account on this PC.
-# Which files go where is decided and checked by deploy/uploadPlan.ts (data: deploy/upload.json).
+# First run (or -Einrichten): a dialog asks server, port, user, password, target folder, site address
+# and the Kanzlei's IP addresses; the server's host key is shown once and pinned. Everything lands in
+# deploy/.local/ (gitignored); the password only DPAPI-encrypted, readable by this Windows account on
+# this PC. Which files go where is decided and checked by deploy/uploadPlan.ts (deploy/upload.json).
 #
-#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1              # build, check, upload
-#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf   # check + connection test
-#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten  # change the access data
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1                   # public app
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test        # test folder
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei     # Kanzlei folder
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf        # check + connection test
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten       # change the access data
 [CmdletBinding()]
 param(
   [string]$Ziel = 'oeffentlich',
@@ -26,6 +28,7 @@ $passwordPath = Join-Path $localDir 'sftp-passwort.dpapi'
 $logPath = Join-Path $localDir 'upload-protokoll.txt'
 $title = 'Fragebogen – Upload'
 
+# PowerShell reads „ and “ as quote marks: German quotes only inside single-quoted strings.
 function Show-Message([string]$text, [string]$buttons = 'OK', [string]$icon = 'Information') {
   return [System.Windows.Forms.MessageBox]::Show($text, $title, $buttons, $icon)
 }
@@ -59,7 +62,7 @@ function Show-SetupDialog($current) {
   $form.MaximizeBox = $false
   $form.MinimizeBox = $false
   $form.Font = New-Object System.Drawing.Font('Segoe UI', 10)
-  $form.ClientSize = New-Object System.Drawing.Size(560, 400)
+  $form.ClientSize = New-Object System.Drawing.Size(560, 480)
 
   $intro = New-Object System.Windows.Forms.Label
   $intro.Location = New-Object System.Drawing.Point(16, 12)
@@ -74,19 +77,20 @@ function Show-SetupDialog($current) {
     @{ Key = 'benutzer'; Label = 'Benutzer'; Value = '' },
     @{ Key = 'passwort'; Label = 'Passwort'; Value = ''; Secret = $true },
     @{ Key = 'ordner'; Label = 'Zielordner'; Value = '' },
-    @{ Key = 'adresse'; Label = 'Adresse der Seite'; Value = '' }
+    @{ Key = 'adresse'; Label = 'Adresse der Seite'; Value = '' },
+    @{ Key = 'ips'; Label = 'IP-Adressen der Kanzlei'; Value = '' }
   )
   $boxes = @{}
   $y = 80
   foreach ($row in $rows) {
     $label = New-Object System.Windows.Forms.Label
     $label.Location = New-Object System.Drawing.Point(16, ($y + 3))
-    $label.Size = New-Object System.Drawing.Size(150, 24)
+    $label.Size = New-Object System.Drawing.Size(160, 24)
     $label.Text = $row.Label
     $form.Controls.Add($label)
     $box = New-Object System.Windows.Forms.TextBox
-    $box.Location = New-Object System.Drawing.Point(170, $y)
-    $box.Size = New-Object System.Drawing.Size(374, 26)
+    $box.Location = New-Object System.Drawing.Point(180, $y)
+    $box.Size = New-Object System.Drawing.Size(364, 26)
     if ($row.Secret) { $box.UseSystemPasswordChar = $true }
     if ($current -and $row.Key -ne 'passwort' -and $current.($row.Key)) { $box.Text = [string]$current.($row.Key) }
     elseif (-not $row.Secret) { $box.Text = $row.Value }
@@ -97,23 +101,25 @@ function Show-SetupDialog($current) {
 
   $hint = New-Object System.Windows.Forms.Label
   $hint.Location = New-Object System.Drawing.Point(16, $y)
-  $hint.Size = New-Object System.Drawing.Size(528, 44)
+  $hint.Size = New-Object System.Drawing.Size(528, 84)
   $hint.ForeColor = [System.Drawing.Color]::DimGray
   $hint.Text = 'Zielordner: der Ordner der Subdomain, z. B. /fragebogen. Adresse: https://… – damit prüft das ' +
-    'Werkzeug nach dem Upload, ob die Seite genau die hochgeladene Datei ausliefert.'
+    'Werkzeug nach dem Upload, ob die Seite genau die hochgeladene Datei ausliefert. IP-Adressen: die ' +
+    'festen Internet-Adressen der Kanzlei, mit Leerzeichen getrennt; nur von dort sind Kanzlei- und ' +
+    'Testordner erreichbar.'
   if ($current) { $hint.Text += ' Passwort leer lassen = bisheriges behalten.' }
   $form.Controls.Add($hint)
 
   $ok = New-Object System.Windows.Forms.Button
   $ok.Text = 'Speichern'
-  $ok.Location = New-Object System.Drawing.Point(330, 352)
+  $ok.Location = New-Object System.Drawing.Point(330, 432)
   $ok.Size = New-Object System.Drawing.Size(100, 32)
   $ok.DialogResult = [System.Windows.Forms.DialogResult]::OK
   $form.Controls.Add($ok)
   $form.AcceptButton = $ok
   $cancel = New-Object System.Windows.Forms.Button
   $cancel.Text = 'Abbrechen'
-  $cancel.Location = New-Object System.Drawing.Point(444, 352)
+  $cancel.Location = New-Object System.Drawing.Point(444, 432)
   $cancel.Size = New-Object System.Drawing.Size(100, 32)
   $cancel.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
   $form.Controls.Add($cancel)
@@ -126,6 +132,10 @@ function Show-SetupDialog($current) {
   return $result
 }
 
+function Split-Ips([string]$text) {
+  return @($text -split '[\s,;]+' | Where-Object { $_ })
+}
+
 function Test-SetupInput($entry, [bool]$hasPassword) {
   $problems = @()
   if (-not $entry.server) { $problems += 'Server fehlt.' }
@@ -135,6 +145,9 @@ function Test-SetupInput($entry, [bool]$hasPassword) {
   if (-not $entry.passwort -and -not $hasPassword) { $problems += 'Passwort fehlt.' }
   if ($entry.ordner -match '["\r\n]') { $problems += 'Der Zielordner darf keine Anführungszeichen enthalten.' }
   if ($entry.adresse -and $entry.adresse -notmatch '^https://[^\s"]+$') { $problems += 'Die Adresse muss mit https:// beginnen.' }
+  foreach ($ip in (Split-Ips $entry.ips)) {
+    if ($ip -notmatch '^[0-9a-fA-F:./]+$') { $problems += ('„' + $ip + '“ ist keine IP-Adresse.') }
+  }
   return $problems
 }
 
@@ -160,6 +173,7 @@ function Get-HostKeys([string]$server, [int]$port) {
 
 function Invoke-Setup($current) {
   $hasPassword = Test-Path $passwordPath
+  if ($current -and $current.ips) { $current.ips = (@($current.ips) -join ' ') }
   while ($true) {
     $entry = Show-SetupDialog $current
     if (-not $entry) { return $null }
@@ -168,6 +182,7 @@ function Invoke-Setup($current) {
     Show-Message ($problems -join "`n") 'OK' 'Warning' | Out-Null
     $current = [pscustomobject]$entry
   }
+  New-Item -ItemType Directory -Force $localDir | Out-Null
   $keys = Get-HostKeys $entry.server ([int]$entry.port)
   $list = ($keys | ForEach-Object { "$($_.Typ)   $($_.Fingerabdruck)" }) -join "`n"
   $answer = Show-Message ("Der Server hat sich mit diesem Schlüssel gemeldet:`n`n$list`n`n" +
@@ -175,13 +190,13 @@ function Invoke-Setup($current) {
     'sich der Server später mit einem anderen Schlüssel, bricht der Upload ab.') 'YesNo' 'Question'
   if ($answer -ne 'Yes') { return $null }
 
-  New-Item -ItemType Directory -Force $localDir | Out-Null
   $settings = [ordered]@{
     server = $entry.server
     port = [int]$entry.port
     benutzer = $entry.benutzer
     ordner = $entry.ordner
     adresse = $entry.adresse.TrimEnd('/')
+    ips = Split-Ips $entry.ips
     hostkeys = @($keys | ForEach-Object { $_.Fingerabdruck })
     eingerichtet = (Get-Date -Format 's')
   }
@@ -194,7 +209,8 @@ function Invoke-Setup($current) {
 }
 
 # Runs psftp with the decrypted password in a short-lived file (never on a command line).
-function Invoke-Psftp($settings, [string]$batch) {
+# -IgnoreErrors (psftp -be) only for creating folders, which fails when they exist.
+function Invoke-Psftp($settings, [string]$batch, [switch]$IgnoreErrors) {
   $psftp = Find-Psftp
   $batchFile = Join-Path $localDir 'batch.tmp'
   $passwordFile = Join-Path $localDir 'pw.tmp'
@@ -206,6 +222,7 @@ function Invoke-Psftp($settings, [string]$batch) {
     [IO.File]::WriteAllText($passwordFile, [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr), $utf8)
     [IO.File]::WriteAllText($batchFile, $batch, $utf8)
     $psftpArgs = @('-batch', '-P', [string]$settings.port, '-l', $settings.benutzer, '-pwfile', $passwordFile, '-b', $batchFile)
+    if ($IgnoreErrors) { $psftpArgs += '-be' }
     foreach ($key in $settings.hostkeys) { $psftpArgs += @('-hostkey', $key) }
     $psftpArgs += $settings.server
     $output = Invoke-Native { & $psftp @psftpArgs 2>&1 | ForEach-Object { "$_" } }
@@ -239,7 +256,6 @@ try {
 
   $spec = Get-Content -Raw -Encoding UTF8 (Join-Path $PSScriptRoot 'upload.json') | ConvertFrom-Json
   $target = $spec.targets.$Ziel
-  # PowerShell reads „ and “ as quote marks: German quotes only inside single-quoted strings.
   if (-not $target) { throw ('Unbekanntes Ziel „' + $Ziel + '“.') }
   if ($target.build -and -not $OhneBuild -and -not $Probelauf) {
     Write-Host "Baue die App (npm run $($target.build)) …"
@@ -247,28 +263,33 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Der Build ist fehlgeschlagen (npm run $($target.build))." }
   }
 
-  $planJson = Invoke-Native { & node.exe (Join-Path $PSScriptRoot 'uploadPlan.ts') $Ziel --remote $settings.ordner 2>$null }
+  $ips = @($settings.ips) -join ','
+  $planJson = Invoke-Native { & node.exe (Join-Path $PSScriptRoot 'uploadPlan.ts') $Ziel --remote $settings.ordner --ips $ips 2>$null }
   $plan = ($planJson -join "`n") | ConvertFrom-Json
   if (-not $plan.ok) { throw ("Nicht hochgeladen:`n" + ($plan.problems -join "`n")) }
 
+  $place = (@($settings.ordner, $plan.folder) | Where-Object { $_ }) -join '/'
   $commit = (Invoke-Native { & git.exe -C $root rev-parse --short HEAD }) -join ''
   $dirty = [bool](Invoke-Native { & git.exe -C $root status --porcelain })
-  $fileList = ($plan.files | ForEach-Object { "  $($_.to)  ($([math]::Round($_.bytes / 1KB)) KB, SHA-256 $($_.sha256.Substring(0, 12))…)" }) -join "`n"
+  $fileList = (@($plan.generated | ForEach-Object { "  $($_.to)  (Zugriffsregeln, erzeugt)" }) +
+    @($plan.files | ForEach-Object { "  $($_.to)  ($([math]::Round($_.bytes / 1KB)) KB, SHA-256 $($_.sha256.Substring(0, 12))…)" })) -join "`n"
+  $notes = if ($plan.notes) { "`n`n" + ($plan.notes -join "`n") } else { '' }
 
   if ($Probelauf) {
-    $cd = ($plan.batch -split "`n") | Where-Object { $_ -like 'cd *' }
+    $cd = ($plan.batch -split "`n") | Select-Object -First 1 | Where-Object { $_ -like 'cd *' -and $settings.ordner }
     $result = Invoke-Psftp $settings ((@($cd) + 'pwd', 'ls') -join "`n")
     if (-not $result.Ok) { throw "Verbindung fehlgeschlagen:`n$($result.Output)" }
     Write-Host $result.Output
-    Show-Message ("Verbindung in Ordnung. Hochgeladen würden nach $($settings.server):$($settings.ordner):`n`n$fileList`n`n" +
+    Show-Message ("Verbindung in Ordnung. Hochgeladen würden nach $($settings.server):$place`n`n$fileList$notes`n`n" +
       'Der Inhalt des Zielordners steht im Terminal.') | Out-Null
     exit 0
   }
 
   $warning = if ($dirty) { "`n`nAchtung: Es gibt nicht committete Änderungen – hochgeladen wird der Stand auf der Festplatte." } else { '' }
-  $answer = Show-Message ("$($plan.description)`nnach $($settings.server):$($settings.ordner)`nStand $commit$warning`n`n$fileList`n`nJetzt hochladen?") 'YesNo' 'Question'
+  $answer = Show-Message ("$($plan.description)`nnach $($settings.server):$place`nStand $commit$warning`n`n$fileList$notes`n`nJetzt hochladen?") 'YesNo' 'Question'
   if ($answer -ne 'Yes') { exit 1 }
 
+  if ($plan.prepare) { Invoke-Psftp $settings $plan.prepare -IgnoreErrors | Out-Null }
   $result = Invoke-Psftp $settings $plan.batch
   if (-not $result.Ok) {
     Write-Log "FEHLER  Ziel=$Ziel  Stand=$commit  $($result.Output -replace "`n", ' | ')"
@@ -278,8 +299,9 @@ try {
   $checks = @()
   if ($settings.adresse) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $base = (@($settings.adresse, $plan.folder) | Where-Object { $_ }) -join '/'
     foreach ($file in ($plan.files | Where-Object { $_.verify })) {
-      $url = "$($settings.adresse)/$($file.to)?pruefung=$([guid]::NewGuid().ToString('N'))"
+      $url = "$base/$($file.to)?pruefung=$([guid]::NewGuid().ToString('N'))"
       try {
         $response = Invoke-WebRequest -Uri $url -UseBasicParsing -Headers @{ 'Cache-Control' = 'no-cache' }
         $hosted = Get-Sha256 $response.RawContentStream.ToArray()
@@ -295,7 +317,7 @@ try {
   Write-Log ("OK  Ziel=$Ziel  Stand=$commit$(if ($dirty) { '+lokal' })  " +
     (($plan.files | ForEach-Object { "$($_.to)=$($_.sha256)" }) -join '  ') + '  ' + ($checks -join '; '))
   $icon = if ($checks -match 'ABWEICHUNG|fehlgeschlagen') { 'Warning' } else { 'Information' }
-  Show-Message ("Hochgeladen (Stand $commit):`n`n$fileList`n`n" + ($checks -join "`n")) 'OK' $icon | Out-Null
+  Show-Message ("Hochgeladen nach $place (Stand $commit):`n`n$fileList`n`n" + ($checks -join "`n")) 'OK' $icon | Out-Null
   exit 0
 } catch {
   Show-Message $_.Exception.Message 'OK' 'Error' | Out-Null

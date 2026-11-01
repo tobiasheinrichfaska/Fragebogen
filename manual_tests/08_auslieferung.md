@@ -53,6 +53,28 @@ installiert.
 - _Nicht offensichtlich:_ Ein anderer Windows-Benutzer (oder ein anderer PC) kann die Datei nicht
   entschlüsseln; dort fragt das Werkzeug neu.
 
+## MT-83: Test- und Kanzlei-Ordner nur von den IP-Adressen der Kanzlei
+
+**Voraussetzungen:** MT-82 erledigt; im Einrichtungsfenster sind die IP-Adressen der Kanzlei
+eingetragen (`deploy\upload.ps1 -Einrichten`).
+
+**Schritte:**
+
+1. `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei`, Rückfrage mit „Ja“.
+2. Dasselbe mit `-Ziel test`.
+3. Im Büro `…/kanzlei/` und `…/test/` im Browser öffnen.
+4. Am Handy **ohne WLAN** (Mobilfunk) dieselben Adressen öffnen.
+
+**Erwartet:**
+
+- Schritt 1: Die Rückfrage nennt zuerst `.htaccess (Zugriffsregeln, erzeugt)`, dann `index.html`.
+  Danach „index.html: online identisch“.
+- Schritt 2: Zusätzlich der Hinweis, dass andere Adressen die Anmeldung erst mit der
+  Testerverwaltung bekommen.
+- Schritt 3: Kanzlei-App bzw. „Fragebogen-Test“ mit dem gelben Hinweis auf Formular-Entwürfe.
+- Schritt 4: **„Forbidden“** bei beiden. _Nicht offensichtlich:_ Die öffentliche App unter der
+  Hauptadresse geht weiter für alle.
+
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 
 **Voraussetzungen:** `docs/hilfe/` (aus `npm run catalogue`) lokal geöffnet oder auf der Homepage unter

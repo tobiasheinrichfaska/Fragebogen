@@ -14,8 +14,12 @@ import {
 
 const files = import.meta.glob<unknown>('../../forms/*/*.json', { eager: true, import: 'default' });
 
-/** Review preview with the form drafts — never real data. */
-export const DRAFT_PREVIEW = import.meta.env.MODE === 'drafts';
+/**
+ * Review preview with the form drafts — never real data. `drafts` (local, with the payroll mapping)
+ * and `testbereich` (the hosted test folder, without it).
+ */
+export const DRAFT_PREVIEW =
+  import.meta.env.MODE === 'drafts' || import.meta.env.MODE === 'testbereich';
 
 const draftFiles: Record<string, unknown> = DRAFT_PREVIEW
   ? import.meta.glob<unknown>('../../form-drafts/*/*.json', { eager: true, import: 'default' })

@@ -26,18 +26,21 @@ function asciiReplacementChar(): Plugin {
   };
 }
 
-/** The review preview (--mode drafts) carries its own name, so it is never mistaken for the app. */
+/** Builds with drafts carry their own name, so they are never mistaken for the app. */
+const PREVIEW_TITLES: Readonly<Record<string, string>> = {
+  drafts: 'Fragebogen-Vorschau',
+  testbereich: 'Fragebogen-Test',
+};
+
 function previewTitle(): Plugin {
-  let preview = false;
+  let title: string | undefined;
   return {
     name: 'preview-title',
     configResolved: (config) => {
-      preview = config.mode === 'drafts';
+      title = PREVIEW_TITLES[config.mode];
     },
     transformIndexHtml: (html) =>
-      preview
-        ? html.replace('<title>Fragebogen</title>', '<title>Fragebogen-Vorschau</title>')
-        : html,
+      title ? html.replace('<title>Fragebogen</title>', `<title>${title}</title>`) : html,
   };
 }
 

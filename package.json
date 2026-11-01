@@ -14,6 +14,7 @@
     "build": "tsc --noEmit && vite build",
     "build:preview": "tsc --noEmit && vite build --mode drafts --outDir dist-preview",
     "build:kanzlei": "tsc --noEmit && vite build --mode kanzlei --outDir dist-kanzlei",
+    "build:test": "tsc --noEmit && vite build --mode testbereich --outDir dist-test",
     "preview": "vite preview --port 5178 --strictPort",
     "test": "vitest run",
     "test:watch": "vitest",

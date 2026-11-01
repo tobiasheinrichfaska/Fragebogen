@@ -12,16 +12,29 @@ keine Daten: Er liefert nur die Datei aus, die App sendet nichts.
 | `.htaccess`       | diese Vorlage, `deploy/.htaccess` (unverändert)                                         |
 | `hilfe/` (später) | die Hilfeseiten „Wo finde ich …?“ aus `docs/hilfe/`                                     |
 
-**Nie hochladen:** `dist-kanzlei/` oder `dist-preview/` (enthalten die lokale Zuordnung zum Lohnprogramm),
-`config/*.local.json`, `import/`, `.tmp/`.
+**Nie hochladen:** `dist-preview/` (Entwürfe **und** Zuordnung), `config/*.local.json`, `import/`,
+`.tmp/`. `dist-kanzlei/` (mit der lokalen Zuordnung zum Lohnprogramm) nur in den Kanzlei-Ordner, der
+allein von den IP-Adressen der Kanzlei erreichbar ist – das Upload-Werkzeug lässt es nirgends sonst zu.
 
 ## Hochladen mit dem Upload-Werkzeug (SFTP)
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf   # erst prüfen, nichts hochladen
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1              # bauen, prüfen, hochladen
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten  # Zugang ändern
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf     # erst prüfen, nichts hochladen
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1                # öffentliche App
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test     # Testordner
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei  # Kanzlei-Ordner
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten    # Zugang oder IPs ändern
 ```
+
+| Ziel          | Ordner     | Inhalt                                                      | Wer darf zugreifen                                         |
+| ------------- | ---------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| `oeffentlich` | Subdomain  | App (`npm run build`) und diese `.htaccess`                 | alle                                                       |
+| `test`        | `test/`    | App mit Formular-Entwürfen, **ohne** Lohnprogramm-Zuordnung | IP-Adressen der Kanzlei; Tester-Anmeldung für andere folgt |
+| `kanzlei`     | `kanzlei/` | Kanzlei-App mit Übergabe an Lohn und Gehalt                 | **nur** IP-Adressen der Kanzlei                            |
+
+Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen im Einrichtungsfenster
+und lädt sie **vor** der App hoch – der Ordner ist also nie offen. Die IP-Adressen stehen nur in
+`deploy/.local/`.
 
 - **Beim ersten Aufruf** fragt ein Fenster Server, Port, Benutzer, Passwort, Zielordner und die Adresse
   der Seite ab (IONOS-Kundenbereich, SFTP-Zugang des Hosting-Pakets). Danach zeigt es den Schlüssel des

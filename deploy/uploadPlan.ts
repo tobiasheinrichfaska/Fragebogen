@@ -1,10 +1,19 @@
 // Upload plan for the SFTP upload (deploy/upload.ps1): which files go where, checked before anything
-// leaves the PC. Pure functions plus a small CLI (`node deploy/uploadPlan.ts <target> [--remote dir]`,
-// JSON on stdout); the PowerShell script only asks, decrypts the password and runs psftp.
+// leaves the PC. Pure functions plus a small CLI
+// (`node deploy/uploadPlan.ts <target> [--remote dir] [--ips a,b]`, JSON on stdout); the PowerShell
+// script only asks, decrypts the password and runs psftp.
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+/**
+ * Who may open a target's folder (Tobias 2026-11-01): everyone; only the Kanzlei's IP addresses;
+ * the Kanzlei's IPs or a tester login (the login follows with the tester management — until then
+ * only the IPs).
+ */
+export const ACCESS = ['public', 'ip', 'ipOrLogin'] as const;
+export type Access = (typeof ACCESS)[number];
 
 export interface UploadFile {
   from: string;
@@ -17,6 +26,11 @@ export interface UploadTarget {
   description: string;
   /** npm script that builds the files first (e.g. "build"). */
   build?: string;
+  /** Subfolder below the subdomain folder; "" = the subdomain folder itself. */
+  folder: string;
+  access: Access;
+  /** Only a target reachable from the Kanzlei's IPs alone may carry the payroll mapping. */
+  allowMapping?: boolean;
   files: UploadFile[];
 }
 
@@ -31,14 +45,37 @@ export interface PlannedFile extends UploadFile {
   sha256: string;
 }
 
+/** A file the plan writes itself (the folder's access rules), uploaded before the others. */
+export interface GeneratedFile {
+  to: string;
+  content: string;
+}
+
 export type Plan =
-  | { ok: true; target: string; description: string; build?: string; files: PlannedFile[] }
+  | {
+      ok: true;
+      target: string;
+      description: string;
+      build?: string;
+      folder: string;
+      access: Access;
+      files: PlannedFile[];
+      generated: GeneratedFile[];
+      notes: string[];
+    }
   | { ok: false; problems: string[] };
 
 type Parsed = { ok: true; spec: UploadSpec } | { ok: false; problems: string[] };
 
 // Relative, forward slashes, no "..", no quotes — safe inside a psftp batch line.
 const SAFE_PATH = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._\-/]+$/;
+
+const OCTET = '(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)';
+const IPV4 = new RegExp(`^${OCTET}(?:\\.${OCTET}){3}(?:/(?:3[0-2]|[12]?\\d))?$`);
+const IPV6 = /^(?=.*:.*:)[0-9a-fA-F:]{2,39}(?:\/(?:12[0-8]|1[01]\d|[1-9]?\d))?$/;
+
+/** A full IPv4 or IPv6 address, optionally with a prefix length (as Apache's `Require ip`). */
+export const isIpAddress = (text: string): boolean => IPV4.test(text) || IPV6.test(text);
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -55,13 +92,22 @@ export function parseUploadSpec(raw: unknown): Parsed {
     if (
       !isObject(target) ||
       typeof target.description !== 'string' ||
+      typeof target.folder !== 'string' ||
       !Array.isArray(target.files)
     ) {
-      problems.push(`Ziel „${name}“ braucht "description" und "files".`);
+      problems.push(`Ziel „${name}“ braucht "description", "folder" und "files".`);
       continue;
+    }
+    const access = ACCESS.find((a) => a === target.access);
+    if (!access) problems.push(`Ziel „${name}“: "access" ist eins von ${ACCESS.join(', ')}.`);
+    if (target.folder !== '' && !SAFE_PATH.test(target.folder)) {
+      problems.push(`Ziel „${name}“: „${target.folder}“ ist kein erlaubter Ordner.`);
     }
     if (target.build !== undefined && typeof target.build !== 'string') {
       problems.push(`Ziel „${name}“: "build" ist kein Text.`);
+    }
+    if (target.allowMapping === true && access !== 'ip') {
+      problems.push(`Ziel „${name}“: Die Zuordnung zum Lohnprogramm nur mit "access": "ip".`);
     }
     const files: UploadFile[] = [];
     for (const file of target.files) {
@@ -85,13 +131,16 @@ export function parseUploadSpec(raw: unknown): Parsed {
     targets[name] = {
       description: target.description,
       ...(typeof target.build === 'string' ? { build: target.build } : {}),
+      folder: target.folder,
+      access: access ?? 'ip',
+      ...(target.allowMapping === true ? { allowMapping: true } : {}),
       files,
     };
   }
   return problems.length > 0 ? { ok: false, problems } : { ok: true, spec: { targets, forbidden } };
 }
 
-/** The masks a local payroll mapping names (config/export.local.json); none may be uploaded. */
+/** The masks a local payroll mapping names (config/export.local.json). */
 export function mappingMarkers(raw: unknown): string[] {
   if (!Array.isArray(raw)) return [];
   return raw.flatMap((mapping) =>
@@ -103,11 +152,25 @@ export function mappingMarkers(raw: unknown): string[] {
   );
 }
 
+/** The `.htaccess` of a protected folder; the security headers come from the subdomain's one. */
+export function accessRules(access: Access, ips: readonly string[]): string {
+  return [
+    '# Generated by deploy/upload.ps1 from the local list of the Kanzlei IP addresses.',
+    '# Do not edit on the server; the next upload replaces it.',
+    ...(access === 'ipOrLogin'
+      ? ['# A tester login for other addresses follows with the tester management.']
+      : []),
+    `Require ip ${ips.join(' ')}`,
+    '',
+  ].join('\n');
+}
+
 export function planUpload(
   spec: UploadSpec,
   targetName: string,
   read: (path: string) => Uint8Array | undefined,
   markers: readonly string[],
+  ips: readonly string[] = [],
 ): Plan {
   const target = spec.targets[targetName];
   if (!target) {
@@ -115,6 +178,18 @@ export function planUpload(
     return { ok: false, problems: [`Unbekanntes Ziel „${targetName}“ (vorhanden: ${known}).`] };
   }
   const problems: string[] = [];
+  const protectedFolder = target.access !== 'public';
+  if (protectedFolder && target.folder === '') {
+    problems.push(`Ziel „${targetName}“: Ein geschützter Bereich braucht einen eigenen Ordner.`);
+  }
+  if (protectedFolder && ips.length === 0) {
+    problems.push(
+      `Für „${targetName}“ fehlen die IP-Adressen der Kanzlei (deploy\\upload.ps1 -Einrichten).`,
+    );
+  }
+  for (const ip of ips.filter((candidate) => !isIpAddress(candidate))) {
+    problems.push(`„${ip}“ ist keine IP-Adresse.`);
+  }
   const files: PlannedFile[] = [];
   for (const file of target.files) {
     if (spec.forbidden.some((prefix) => file.from.startsWith(prefix))) {
@@ -128,11 +203,11 @@ export function planUpload(
       );
       continue;
     }
-    if (file.from.endsWith('.html')) {
+    if (file.from.endsWith('.html') && !target.allowMapping) {
       const text = new TextDecoder().decode(bytes);
       if (markers.some((marker) => text.includes(marker))) {
         problems.push(
-          `„${file.from}“ enthält die Zuordnung zum Lohnprogramm (Kanzlei-Fassung) – nie öffentlich hochladen.`,
+          `„${file.from}“ enthält die Zuordnung zum Lohnprogramm – nur in den Kanzlei-Ordner (nur eure IPs).`,
         );
         continue;
       }
@@ -149,24 +224,54 @@ export function planUpload(
     target: targetName,
     description: target.description,
     ...(target.build ? { build: target.build } : {}),
+    folder: target.folder,
+    access: target.access,
     files,
+    generated: protectedFolder
+      ? [{ to: '.htaccess', content: accessRules(target.access, ips) }]
+      : [],
+    notes:
+      target.access === 'ipOrLogin'
+        ? [
+            'Andere Adressen bekommen die Anmeldung erst mit der Testerverwaltung – bis dahin nur eure IPs.',
+          ]
+        : [],
   };
 }
 
-/** psftp batch: change to the remote folder, then put every file (psftp stops at the first error). */
-export function psftpBatch(root: string, remoteDir: string, files: readonly UploadFile[]): string {
-  if (/["\r\n]/.test(remoteDir))
-    throw new Error('Zielordner mit Anführungszeichen oder Zeilenumbruch');
-  const lines = remoteDir === '' ? [] : [`cd "${remoteDir}"`];
-  for (const file of files) lines.push(`put "${join(root, file.from)}" "${file.to}"`);
+function quoted(text: string): string {
+  if (/["\r\n]/.test(text)) throw new Error('Pfad mit Anführungszeichen oder Zeilenumbruch');
+  return `"${text}"`;
+}
+
+/** psftp batch: into the folder, then put every file (psftp stops at the first error). */
+export function psftpBatch(
+  remoteDir: string,
+  folder: string,
+  puts: readonly { local: string; to: string }[],
+): string {
+  const lines = [remoteDir, folder].filter((dir) => dir !== '').map((dir) => `cd ${quoted(dir)}`);
+  for (const put of puts) lines.push(`put ${quoted(put.local)} ${quoted(put.to)}`);
   return `${lines.join('\n')}\n`;
+}
+
+/** Creates the target's folder; run with psftp -be, because it fails when the folder exists. */
+export function prepareBatch(remoteDir: string, folder: string): string | undefined {
+  if (folder === '') return undefined;
+  const cd = remoteDir === '' ? [] : [`cd ${quoted(remoteDir)}`];
+  return `${[...cd, `mkdir ${quoted(folder)}`].join('\n')}\n`;
+}
+
+function option(args: readonly string[], name: string): string | undefined {
+  const at = args.indexOf(name);
+  return at >= 0 ? (args[at + 1] ?? '') : undefined;
 }
 
 function cli(args: readonly string[]): unknown {
   const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
   const targetName = args[0] ?? '';
-  const at = args.indexOf('--remote');
-  const remote = at >= 0 ? (args[at + 1] ?? '') : undefined;
+  const remote = option(args, '--remote');
+  const ips = (option(args, '--ips') ?? '').split(/[\s,;]+/).filter(Boolean);
   const parsed = parseUploadSpec(
     JSON.parse(readFileSync(join(root, 'deploy/upload.json'), 'utf8')),
   );
@@ -177,9 +282,24 @@ function cli(args: readonly string[]): unknown {
     const full = join(root, path);
     return existsSync(full) ? readFileSync(full) : undefined;
   };
-  const plan = planUpload(parsed.spec, targetName, read, markers);
+  const plan = planUpload(parsed.spec, targetName, read, markers, ips);
   if (!plan.ok || remote === undefined) return plan;
-  return { ...plan, batch: psftpBatch(root, remote, plan.files) };
+  // Generated files go to deploy/.local/ (gitignored) and up first, so a protected folder is never
+  // open, not even for a moment.
+  const generatedDir = join(root, 'deploy/.local/erzeugt', targetName);
+  mkdirSync(generatedDir, { recursive: true });
+  const puts = plan.generated.map((file) => {
+    const path = join(generatedDir, file.to);
+    writeFileSync(path, file.content);
+    return { local: path, to: file.to };
+  });
+  puts.push(...plan.files.map((file) => ({ local: join(root, file.from), to: file.to })));
+  const prepare = prepareBatch(remote, plan.folder);
+  return {
+    ...plan,
+    batch: psftpBatch(remote, plan.folder, puts),
+    ...(prepare ? { prepare } : {}),
+  };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

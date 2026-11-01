@@ -3,11 +3,28 @@
     "oeffentlich": {
       "description": "Öffentliche App im Hauptordner der Subdomain",
       "build": "build",
+      "folder": "",
+      "access": "public",
       "files": [
         { "from": "dist/index.html", "to": "index.html", "verify": true },
         { "from": "deploy/.htaccess", "to": ".htaccess" }
       ]
+    },
+    "test": {
+      "description": "Testbereich: Formular-Entwürfe, ohne Zuordnung zum Lohnprogramm",
+      "build": "build:test",
+      "folder": "test",
+      "access": "ipOrLogin",
+      "files": [{ "from": "dist-test/index.html", "to": "index.html", "verify": true }]
+    },
+    "kanzlei": {
+      "description": "Kanzlei-App mit Übergabe an das Lohnprogramm (nur von den IP-Adressen der Kanzlei)",
+      "build": "build:kanzlei",
+      "folder": "kanzlei",
+      "access": "ip",
+      "allowMapping": true,
+      "files": [{ "from": "dist-kanzlei/index.html", "to": "index.html", "verify": true }]
     }
   },
-  "forbidden": ["dist-kanzlei/", "dist-preview/", "config/", "import/", ".tmp/", "deploy/.local/"]
+  "forbidden": ["dist-preview/", "config/", "import/", ".tmp/", "deploy/.local/"]
 }

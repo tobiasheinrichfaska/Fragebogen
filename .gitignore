@@ -3,6 +3,7 @@ node_modules/
 dist/
 dist-preview/
 dist-kanzlei/
+dist-test/
 coverage/
 
 # Test runners
