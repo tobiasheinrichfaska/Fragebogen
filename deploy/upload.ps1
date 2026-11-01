@@ -29,8 +29,23 @@ $logPath = Join-Path $localDir 'upload-protokoll.txt'
 $title = 'Fragebogen – Upload'
 
 # PowerShell reads „ and “ as quote marks: German quotes only inside single-quoted strings.
+# Messages come to the front (a hidden topmost owner) and also go to the terminal.
 function Show-Message([string]$text, [string]$buttons = 'OK', [string]$icon = 'Information') {
-  return [System.Windows.Forms.MessageBox]::Show($text, $title, $buttons, $icon)
+  Write-Host $text
+  $owner = New-Object System.Windows.Forms.Form
+  $owner.TopMost = $true
+  try { return [System.Windows.Forms.MessageBox]::Show($owner, $text, $title, $buttons, $icon) }
+  finally { $owner.Dispose() }
+}
+
+# "sftp://host:2222/pfad" → host, port and path: only the host name belongs into "Server"; a path
+# typed there becomes the target folder when that is empty.
+function Split-Server([string]$text) {
+  $rest = $text.Trim() -replace '^[a-zA-Z][a-zA-Z0-9+.-]*://', ''
+  $path = if ($rest -match '(/.*)$') { $Matches[1].TrimEnd('/') } else { '' }
+  $server = $rest -replace '/.*$', ''
+  if ($server -match '^([^:]+):(\d{1,5})$') { return @($Matches[1], $Matches[2], $path) }
+  return @($server, $null, $path)
 }
 
 # Native tools write progress to stderr; under 'Stop' Windows PowerShell 5.1 would turn that into an
@@ -61,6 +76,7 @@ function Show-SetupDialog($current) {
   $form.FormBorderStyle = 'FixedDialog'
   $form.MaximizeBox = $false
   $form.MinimizeBox = $false
+  $form.TopMost = $true
   $form.Font = New-Object System.Drawing.Font('Segoe UI', 10)
   $form.ClientSize = New-Object System.Drawing.Size(560, 480)
 
@@ -72,7 +88,7 @@ function Show-SetupDialog($current) {
   $form.Controls.Add($intro)
 
   $rows = @(
-    @{ Key = 'server'; Label = 'Server'; Value = '' },
+    @{ Key = 'server'; Label = 'Server (nur Name)'; Value = '' },
     @{ Key = 'port'; Label = 'Port'; Value = '22' },
     @{ Key = 'benutzer'; Label = 'Benutzer'; Value = '' },
     @{ Key = 'passwort'; Label = 'Passwort'; Value = ''; Secret = $true },
@@ -176,7 +192,11 @@ function Invoke-Setup($current) {
   if ($current -and $current.ips) { $current.ips = (@($current.ips) -join ' ') }
   while ($true) {
     $entry = Show-SetupDialog $current
-    if (-not $entry) { return $null }
+    if (-not $entry) { Write-Host 'Einrichtung abgebrochen.'; return $null }
+    $server, $port, $path = Split-Server $entry.server
+    $entry.server = $server
+    if ($port) { $entry.port = $port }
+    if ($path -and -not $entry.ordner) { $entry.ordner = $path }
     $problems = Test-SetupInput $entry $hasPassword
     if ($problems.Count -eq 0) { break }
     Show-Message ($problems -join "`n") 'OK' 'Warning' | Out-Null
@@ -188,7 +208,7 @@ function Invoke-Setup($current) {
   $answer = Show-Message ("Der Server hat sich mit diesem Schlüssel gemeldet:`n`n$list`n`n" +
     'Vergleichen Sie ihn, wenn möglich, mit der Angabe von IONOS. Mit „Ja“ wird er gemerkt; meldet ' +
     'sich der Server später mit einem anderen Schlüssel, bricht der Upload ab.') 'YesNo' 'Question'
-  if ($answer -ne 'Yes') { return $null }
+  if ($answer -ne 'Yes') { Write-Host 'Schlüssel des Servers nicht bestätigt – nichts gespeichert.'; return $null }
 
   $settings = [ordered]@{
     server = $entry.server
