@@ -311,7 +311,10 @@ try {
     if (-not $result.ok) { throw ("Nicht hochgeladen:`n" + ($result.problems -join "`n")) }
     return $result
   }
-  $plan = Get-Plan
+  # With a known server path the login is part of the plan already for the question "Jetzt
+  # hochladen?" (before, it showed "bis dahin nur eure IPs" and uploaded the login anyway).
+  $known = if ($settings.serverpfad -and $target.access -eq 'ipOrLogin') { @("--pfad=$($settings.serverpfad.TrimEnd('/'))/$($target.folder)") } else { @() }
+  $plan = Get-Plan $known
 
   $place = (@($settings.ordner, $plan.folder) | Where-Object { $_ }) -join '/'
   $commit = (Invoke-Native { & git.exe -C $root rev-parse --short HEAD }) -join ''
