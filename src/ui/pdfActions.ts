@@ -132,7 +132,7 @@ export async function createSheetPdf(
 /** The tester's report of the test page (test folder build only). */
 export async function createTestReportPdf(
   run: TestRun,
-  cases: readonly { id: string; title: string; area: string }[],
+  cases: readonly { id: string; title: string; area: string; version?: string }[],
 ): Promise<BannerMessage> {
   try {
     const now = deviceNow();

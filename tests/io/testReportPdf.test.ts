@@ -27,7 +27,7 @@ let run = { ...emptyRun(), tester: 'Erika Mustermann', comment: 'Gut verständli
 run = setResult(startTest(run, 'MT-13', T0), 'MT-13', 'teilweise', '2026-11-01T10:07:30.000+01:00');
 run = correctDuration(run, 'MT-13', 5);
 run = setComment(run, 'MT-13', 'Text zu lang.');
-run = setResult(run, 'MT-14', 'bestanden', '2026-11-01T10:10:00.000+01:00');
+run = setResult(run, 'MT-14', 'bestanden', '2026-11-01T10:10:00.000+01:00', 'aaaaaaaaaaaa');
 run = setComment(run, 'MT-15', 'Nicht geschafft, Datei nicht gefunden.');
 const CASES = [
   {
@@ -35,7 +35,7 @@ const CASES = [
     title: 'Hinweise und „Vorerst überspringen“ (Person)',
     area: 'Ausfüllen (Interview)',
   },
-  { id: 'MT-14', title: 'Folgefragen', area: 'Ausfüllen (Interview)' },
+  { id: 'MT-14', title: 'Folgefragen', area: 'Ausfüllen (Interview)', version: 'bbbbbbbbbbbb' },
   { id: 'MT-15', title: 'Zwischenstand speichern', area: 'Ausfüllen (Interview)' },
   { id: 'MT-16', title: 'Nicht bearbeitet', area: 'Ausfüllen (Interview)' },
 ];
@@ -69,6 +69,7 @@ describe('test report as PDF', () => {
       'Ergebnis: teilweise · Beginn 10:00 Uhr · Ende 10:07 Uhr · gemessen 8 Min. · korrigiert 5 Min. (gezählt 5 Min.)',
       'Kommentar: Text zu lang.',
       'Ergebnis: bestanden · Beginn 10:10 Uhr · Ende 10:10 Uhr · gemessen 1 Min.',
+      'Hinweis: Der Test wurde nach diesem Ergebnis geändert.',
       'Ergebnis: nicht abgeschlossen',
       'Kommentar: Nicht geschafft, Datei nicht gefunden.',
       'Gesamteindruck',

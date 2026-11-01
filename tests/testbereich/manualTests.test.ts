@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   blocksOf,
+  caseVersion,
   inlineMarkdown,
   parseManualTests,
   testAreaOf,
@@ -156,6 +157,24 @@ describe('manual_tests/ as the catalogue', () => {
     expect(mt11?.kind === 'text' && mt11.text).toContain(
       'einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“',
     );
+  });
+});
+
+describe('caseVersion', () => {
+  const testCase = {
+    title: 'Interview',
+    parts: [{ label: 'Schritte', blocks: [{ kind: 'text' as const, text: 'Eins' }] }],
+  };
+
+  it('is 12 hex digits and the same for the same text', () => {
+    expect(caseVersion(testCase)).toMatch(/^[0-9a-f]{12}$/);
+    expect(caseVersion(structuredClone(testCase))).toBe(caseVersion(testCase));
+  });
+
+  it('changes when the title or a step changes', () => {
+    expect(caseVersion({ ...testCase, title: 'Interview neu' })).not.toBe(caseVersion(testCase));
+    const step = { label: 'Schritte', blocks: [{ kind: 'text' as const, text: 'Zwei' }] };
+    expect(caseVersion({ ...testCase, parts: [step] })).not.toBe(caseVersion(testCase));
   });
 });
 

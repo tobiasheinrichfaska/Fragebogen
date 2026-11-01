@@ -3,6 +3,9 @@
 // ("**Schritte:**", "**Erwartet:**", …) as paragraphs, lists and code. Inline Markdown stays in the
 // strings; inlineMarkdown() splits it for a renderer that never uses HTML.
 
+import { sha256Hex } from './hash';
+import { canonicalize } from './jcs';
+
 export type Block =
   | { kind: 'text'; text: string }
   | { kind: 'list'; ordered: boolean; items: string[] }
@@ -136,6 +139,14 @@ export function parseManualTests(markdown: string, source: string): ManualTestFi
     intro: blocksOf(intro),
     cases: cases.map((c) => ({ id: c.id, title: c.title, parts: partsOf(c.lines) })),
   };
+}
+
+/**
+ * A fingerprint of what the tester reads (title and parts, 12 hex digits): a result keeps it, so the
+ * test page can say "geändert seit Ihrem Test" when the manual test is rewritten later.
+ */
+export function caseVersion(testCase: Pick<ManualTestCase, 'title' | 'parts'>): string {
+  return sha256Hex(canonicalize({ title: testCase.title, parts: testCase.parts })).slice(0, 12);
 }
 
 export type InlineToken =

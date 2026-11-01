@@ -7,6 +7,7 @@ import { testReportFileName } from '../logic/fileNames';
 import { formatLocalDateTime, isLocalTime } from '../logic/time';
 import {
   RESULT_LABELS,
+  changedSince,
   countedMinutes,
   measuredMinutes,
   totalsOf,
@@ -16,7 +17,8 @@ import { Layout, MARGIN, MUTED, printable, type PdfFonts } from './pdfWriter';
 
 export interface TestReportInput {
   run: TestRun;
-  cases: readonly { id: string; title: string; area: string }[];
+  /** `version`: the current caseVersion — a result given for an older text is marked. */
+  cases: readonly { id: string; title: string; area: string; version?: string }[];
   appVersion: string;
   /** Device time of creation. */
   created: { local: string; utc: string };
@@ -76,6 +78,12 @@ export async function writeTestReportPdf(
           : ` · korrigiert ${entry.correctedMinutes} Min. (gezählt ${countedMinutes(entry)} Min.)`),
       { size: 9 },
     );
+    if (testCase.version !== undefined && changedSince(entry, testCase.version)) {
+      layout.text('Hinweis: Der Test wurde nach diesem Ergebnis geändert.', {
+        ...small,
+        size: 8.5,
+      });
+    }
     if (entry.comment.trim() !== '') layout.text(`Kommentar: ${entry.comment.trim()}`, { size: 9 });
   }
 

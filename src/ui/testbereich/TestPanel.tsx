@@ -3,10 +3,11 @@
 // All rules live in logic/testRun.ts and logic/manualTests.ts; this only renders and dispatches.
 import { useEffect, useState } from 'react';
 import { deviceNow } from '../../io/environment';
-import { inlineMarkdown, testAreaOf } from '../../logic/manualTests';
+import { caseVersion, inlineMarkdown, testAreaOf } from '../../logic/manualTests';
 import {
   RESULTS,
   RESULT_LABELS,
+  changedSince,
   correctDuration,
   measuredMinutes,
   resetTest,
@@ -59,7 +60,12 @@ export function TestPanel({ onRestartApp }: { onRestartApp: () => void }) {
     setBanner(
       await createTestReportPdf(
         run,
-        TEST_CASES.map((c) => ({ id: c.id, title: plain(c.title), area: c.area })),
+        TEST_CASES.map((c) => ({
+          id: c.id,
+          title: plain(c.title),
+          area: c.area,
+          version: caseVersion(c),
+        })),
       ),
     );
   };
@@ -133,6 +139,9 @@ export function TestPanel({ onRestartApp }: { onRestartApp: () => void }) {
                     <span>
                       <strong>{c.id}</strong> <Inline text={c.title} />
                       {result && <span className="muted"> – {RESULT_LABELS[result]}</span>}
+                      {changedSince(run.entries[c.id], caseVersion(c)) && (
+                        <span className="test-changed"> – geändert seit Ihrem Test</span>
+                      )}
                       {!testAreaOf(c).offered && (
                         <span className="muted"> – nicht im Testbereich</span>
                       )}
@@ -208,6 +217,14 @@ function TestCaseView({
         {testCase.id}: <Inline text={testCase.title} />
       </h2>
       <p className="muted">{testCase.area}</p>
+      {changedSince(entry, caseVersion(testCase)) && (
+        <Banner
+          message={{
+            tone: 'warning',
+            text: 'Dieser Test wurde geändert, seit Sie ihn bewertet haben. Bitte gehen Sie ihn noch einmal durch und bewerten Sie ihn neu.',
+          }}
+        />
+      )}
       {area.note === undefined ? (
         !testCase.parts.some((part) => part.label === 'Einstieg') && (
           <p className="muted">
@@ -257,7 +274,9 @@ function TestCaseView({
               role="radio"
               aria-checked={entry.result === result}
               className={entry.result === result ? 'choice chosen' : 'choice'}
-              onClick={() => onRun(setResult(run, testCase.id, result, now()))}
+              onClick={() =>
+                onRun(setResult(run, testCase.id, result, now(), caseVersion(testCase)))
+              }
             >
               {RESULT_LABELS[result]}
             </button>

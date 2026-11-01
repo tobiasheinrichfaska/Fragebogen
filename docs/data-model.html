@@ -737,12 +737,14 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
   <tr><td><code>TestEntry.result</code></td><td><code>bestanden</code> | <code>teilweise</code> | <code>nichtBestanden</code></td><td>nein</td><td>Setzt das Ende</td></tr>
   <tr><td><code>TestEntry.comment</code></td><td>string (≤ 4000)</td><td>ja</td><td>Bleibt beim Zurücksetzen</td></tr>
   <tr><td><code>TestEntry.correctedMinutes</code></td><td>ganze Zahl 0–600</td><td>nein</td><td>Vom Tester korrigierte Dauer; zählt statt der gemessenen</td></tr>
+  <tr><td><code>TestEntry.version</code></td><td>12 Hex-Zeichen</td><td>nein</td><td><code>caseVersion</code> des Testtexts, für den das Ergebnis gilt; weicht der heutige Text ab, zeigt die Testseite „geändert seit Ihrem Test“ (seit 01.11.2026; ältere Ergebnisse haben keine)</td></tr>
 </table>
 <h3>Methoden</h3>
 <table>
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
   <tr><td><code>parseManualTests</code> · <code>blocksOf</code></td><td><code>(markdown, source) =&gt; ManualTestFile</code> · <code>(lines) =&gt; Block[]</code></td><td>Handtest-Datei bzw. Zeilen in Daten zerlegen</td></tr>
   <tr><td><code>testAreaOf</code></td><td><code>(testCase) =&gt; { offered, note? }</code></td><td>Abschnitt „Testbereich“: beginnt er mit „nein“, geht der Test dort nicht (ausgegraut mit Grund); sonst ein Hinweis</td></tr>
+  <tr><td><code>caseVersion</code> · <code>changedSince</code></td><td><code>(testCase) =&gt; string</code> · <code>(entry, current) =&gt; boolean</code></td><td>Fingerabdruck des Testtexts (Titel und Abschnitte, SHA-256 über JCS, 12 Zeichen); ob ein Ergebnis zu einem älteren Text gehört</td></tr>
   <tr><td><code>inlineMarkdown</code></td><td><code>(text) =&gt; InlineToken[]</code></td><td>Fett, Code, kursiv, Links (nur https bleiben Links), Verweise auf Tests (<code>ref</code>, auf der Testseite anklickbar)</td></tr>
   <tr><td><code>startTest</code> · <code>setResult</code> · <code>setComment</code> · <code>correctDuration</code> · <code>resetTest</code></td><td><code>(run, id, …) =&gt; TestRun</code></td><td>Zustandsübergänge eines Tests</td></tr>
   <tr><td><code>measuredMinutes</code> · <code>countedMinutes</code> · <code>totalsOf</code></td><td><code>(entry) =&gt; number | undefined</code> · <code>(run) =&gt; RunTotals</code></td><td>Gemessene Minuten (aufgerundet, mindestens 1), gezählte (Korrektur vor Messung), Summen</td></tr>

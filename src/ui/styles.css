@@ -841,3 +841,8 @@ table.sheet tr.sheet-mask th {
     display: none;
   }
 }
+
+.test-changed {
+  color: var(--danger);
+  font-weight: 600;
+}

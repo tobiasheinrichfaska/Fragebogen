@@ -1,5 +1,6 @@
 // A tester's run (Tobias 2026-11-01): result, comment and time per test, totals for the PDF.
 import {
+  changedSince,
   correctDuration,
   countedMinutes,
   decodeRun,
@@ -88,5 +89,38 @@ describe('decodeRun', () => {
       }),
     ).toEqual({ tester: '', entries: { 'MT-1': { comment: '' } }, comment: '' });
     expect(decodeRun('kaputt')).toEqual(emptyRun());
+  });
+});
+
+// Tobias 2026-11-01: "bekommen die Tester Hinweise, welche Tests … geändert wurden?"
+describe('a test rewritten after the result', () => {
+  it('keeps the version of the text the result was given for', () => {
+    const run = setResult(emptyRun(), 'MT-13', 'bestanden', T0, 'aaaaaaaaaaaa');
+    expect(run.entries['MT-13']?.version).toBe('aaaaaaaaaaaa');
+    expect(changedSince(run.entries['MT-13'], 'aaaaaaaaaaaa')).toBe(false);
+    expect(changedSince(run.entries['MT-13'], 'bbbbbbbbbbbb')).toBe(true);
+    // A new result for the new text clears the mark; a reset drops the version.
+    const again = setResult(run, 'MT-13', 'teilweise', at(5), 'bbbbbbbbbbbb');
+    expect(changedSince(again.entries['MT-13'], 'bbbbbbbbbbbb')).toBe(false);
+    expect(resetTest(again, 'MT-13').entries['MT-13']).not.toHaveProperty('version');
+  });
+
+  it('cannot tell for results without a version, and for tests without a result', () => {
+    expect(changedSince(setResult(emptyRun(), 'MT-1', 'bestanden', T0).entries['MT-1'], 'x')).toBe(
+      false,
+    );
+    expect(changedSince(startTest(emptyRun(), 'MT-1', T0).entries['MT-1'], 'x')).toBe(false);
+    expect(changedSince(undefined, 'x')).toBe(false);
+  });
+
+  it('reads a stored version back and drops a malformed one', () => {
+    const stored = decodeRun({
+      entries: {
+        'MT-1': { result: 'bestanden', version: 'abcdef012345', comment: '' },
+        'MT-2': { result: 'bestanden', version: '<script>', comment: '' },
+      },
+    });
+    expect(stored.entries['MT-1']?.version).toBe('abcdef012345');
+    expect(stored.entries['MT-2']).not.toHaveProperty('version');
   });
 });

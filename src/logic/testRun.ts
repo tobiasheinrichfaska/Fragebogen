@@ -19,6 +19,8 @@ export interface TestEntry {
   comment: string;
   /** The tester's own duration in minutes, when the measured one is wrong (a break, a phone call). */
   correctedMinutes?: number;
+  /** caseVersion of the test text the result was given for (12 hex digits). */
+  version?: string;
 }
 
 export interface TestRun {
@@ -43,9 +45,31 @@ export function startTest(run: TestRun, id: string, now: string): TestRun {
 }
 
 /** A result stops the clock (started now if the tester never pressed "beginnen"). */
-export function setResult(run: TestRun, id: string, result: TestResult, now: string): TestRun {
+export function setResult(
+  run: TestRun,
+  id: string,
+  result: TestResult,
+  now: string,
+  version?: string,
+): TestRun {
   const entry = entryOf(run, id);
-  return withEntry(run, id, { ...entry, started: entry.started ?? now, ended: now, result });
+  const rest: TestEntry = { ...entry };
+  delete rest.version;
+  return withEntry(run, id, {
+    ...rest,
+    started: entry.started ?? now,
+    ended: now,
+    result,
+    ...(version === undefined ? {} : { version }),
+  });
+}
+
+/**
+ * The test was rewritten after the tester's result: the result belongs to an older text. A result
+ * without a version (given before 2026-11-01) cannot tell.
+ */
+export function changedSince(entry: TestEntry | undefined, current: string): boolean {
+  return entry?.result !== undefined && entry.version !== undefined && entry.version !== current;
 }
 
 export function setComment(run: TestRun, id: string, comment: string): TestRun {
@@ -122,6 +146,9 @@ export function decodeRun(raw: unknown): TestRun {
         ...(isTime(value.started) ? { started: value.started } : {}),
         ...(isTime(value.ended) ? { ended: value.ended } : {}),
         ...(result ? { result } : {}),
+        ...(typeof value.version === 'string' && /^[0-9a-f]{12}$/.test(value.version)
+          ? { version: value.version }
+          : {}),
         ...(typeof minutes === 'number' &&
         Number.isInteger(minutes) &&
         minutes >= 0 &&

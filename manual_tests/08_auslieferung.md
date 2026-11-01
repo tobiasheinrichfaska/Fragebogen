@@ -146,6 +146,9 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 6 (Liste): MT-10 öffnet sich. MT-01 zeigt oben „Nicht im Testbereich: …“ mit Grund und steht
   in der Liste mit „– nicht im Testbereich“.
 - Schritt 7: Die App zeigt wieder ihre Startseite; die Ergebnisse links sind noch da.
+- _Nicht offensichtlich:_ Wird ein Test geändert, nachdem Sie ihn bewertet haben (z. B. nach einem
+  neuen Upload des Testordners), steht er in der Liste mit „– geändert seit Ihrem Test“ und im Test
+  mit der Bitte, ihn neu zu bewerten; der Testbericht vermerkt es ebenfalls.
 
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 

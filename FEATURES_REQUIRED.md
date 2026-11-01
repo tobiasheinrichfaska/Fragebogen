@@ -57,7 +57,7 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 
 - [ ] **Help pages "Wo finde ich …?"** — per data item the documents to pick, a watermarked sample zooming to the spot with source, "Nichts davon" with how to get it; no script, nothing external; every `explainer` path leads to a page
 
-- [ ] **Test page in the test folder** — the manual tests (and local `L-` tests) next to the app; per test start, result, comment and correctable time; the run survives a reload; the report PDF lists results, times and comments; "App neu starten" returns the app to its start page; tests that cannot run there are marked with the reason; references to other tests open them; never in the public build
+- [ ] **Test page in the test folder** — the manual tests (and local `L-` tests) next to the app; per test start, result, comment and correctable time; the run survives a reload; the report PDF lists results, times and comments; "App neu starten" returns the app to its start page; tests that cannot run there are marked with the reason; references to other tests open them; a test rewritten after the tester's result says "geändert seit Ihrem Test" (list, test, report); never in the public build
 
 ## Documentation
 
