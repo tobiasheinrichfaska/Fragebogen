@@ -3,6 +3,7 @@ import {
   DEFAULT_ROUNDS,
   TESTER_NAME,
   changeTesters,
+  passwordFromStdin,
   htpasswd,
   newPassword,
   parseTesters,
@@ -89,6 +90,40 @@ describe('changeTesters', () => {
     if (!result.ok) throw new Error(result.message);
     return result;
   };
+
+  // Regression 2026-11-01: PowerShell 5.1 pipes "\u{FEFF}…\r\n" even with UTF-8 "without BOM".
+  it('reads a password from stdin without the BOM and line end PowerShell adds', () => {
+    expect(passwordFromStdin('\u{FEFF}Abc-Prüf-2026\r\n')).toBe('Abc-Prüf-2026');
+    expect(passwordFromStdin('Abc-Prüf-2026\n')).toBe('Abc-Prüf-2026');
+    expect(passwordFromStdin(' mit Leerzeichen \r\n')).toBe(' mit Leerzeichen ');
+  });
+
+  // Tobias 2026-11-01: "Passwort gebe ich in einen Dialog ein".
+  it('takes a password typed by hand, keeps only its hash and does not show it again', () => {
+    const result = changeTesters([], 'neu', 'tanja', today, counting(), 'Sommer-Test-2026');
+    if (!result.ok) throw new Error(result.message);
+    expect(result).not.toHaveProperty('password');
+    const hash = result.testers[0]?.hash ?? '';
+    expect(sha512Crypt('Sommer-Test-2026', hash.split('$')[3] ?? '', DEFAULT_ROUNDS)).toBe(hash);
+    const reset = changeTesters(
+      result.testers,
+      'passwort',
+      'tanja',
+      today,
+      counting(50),
+      'Winter-Test-2026',
+    );
+    expect(reset.ok && reset.testers[0]?.hash).not.toBe(hash);
+  });
+
+  it.each([
+    ['too short', 'kurz123', 'mindestens 10 Zeichen'],
+    ['with a space at the end', 'Sommer-Test-2026 ', 'Leerzeichen'],
+    ['with a line break', 'Sommer\nTest-2026', 'Zeilenumbruch'],
+  ])('refuses a typed password %s', (_label, password, message) => {
+    const result = changeTesters([], 'neu', 'tanja', today, counting(), password);
+    expect(result.ok ? '' : result.message).toContain(message);
+  });
 
   it('adds a tester with a hash only and shows the password once', () => {
     const result = add([], 'erika.m');

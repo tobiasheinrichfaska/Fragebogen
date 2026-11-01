@@ -556,11 +556,13 @@ Key design decisions (details in `docs/plan.md`):
   data; MT-82). During an upload the decrypted password sits for seconds in `deploy/.local/pw.tmp`
   (deleted in `finally`); `index.html` is overwritten in place, so a visitor during the upload may get
   a half-written page (reload helps). **Tester login** (`deploy/tester.ps1`, Basic Auth, no PHP):
-  untested on IONOS — whether its Apache accepts SHA-512-crypt (`$6$`, checked through crypt(3) on
-  Linux) and the `pwd` path as `AuthUserFile` is MT-84; fallback would be bcrypt with a library.
-  Basic Auth is remembered by the browser's password manager, not by a cookie. The test page
-  (instructions next to the app, results PDF with time measurement) does not exist yet. Apache's
-  `Require ip` sees the connecting address: a changing office IP must be updated with `-Einrichten`.
+  probed on IONOS 2026-11-01 with throw-away folders — SHA-512-crypt (`$6$`) and `{SHA}` are
+  accepted; the SFTP user is locked into its folder (`pwd` = `/`), so its real path is the local
+  setting `serverpfad` (a wrong `AuthUserFile` answers 500, a missing `htdocs` was the cause).
+  A password may be typed in the window (≥ 10 characters, sent on stdin; PowerShell 5.1 adds a BOM
+  and CRLF there, stripped by `passwordFromStdin`). Basic Auth is remembered by the browser's
+  password manager, not by a cookie. Apache's `Require ip` sees the connecting address: a changing
+  office IP must be updated with `-Einrichten`.
 - **The published Sofortmeldung 0.1.0 is frozen with the old order** (postcode before "Ausland?", no
   postcode check) and its help text still says „Weiß ich gerade nicht“; fixed in the 0.2.0 draft —
   publishing 0.2.0 replaces it (test versions may be removed, Tobias 2026-10-31).

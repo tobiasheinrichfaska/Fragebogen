@@ -1,7 +1,8 @@
 ﻿# Tester management for the hosted test folder (Tobias 2026-11-01: "wer kann testen", no PHP).
-# A window on the Kanzlei PC: add a tester, give a new password, lock, delete; "Testordner
-# aktualisieren" uploads the test folder with its .htpasswd (deploy\upload.ps1 -Ziel test). The
-# logic and the local list (hashes only) live in deploy/testers.ts and deploy/.local/tester.json.
+# A window on the Kanzlei PC: add a tester (password typed or made), give a new password, lock,
+# delete; "Testordner aktualisieren" uploads the test folder with its .htpasswd
+# (deploy\upload.ps1 -Ziel test). The logic and the local list (hashes only) live in
+# deploy/testers.ts and deploy/.local/tester.json.
 #
 #   powershell -ExecutionPolicy Bypass -File deploy\tester.ps1
 $ErrorActionPreference = 'Stop'
@@ -12,59 +13,105 @@ $title = 'Fragebogen – Tester'
 
 # PowerShell reads „ and “ as quote marks: German quotes only inside single-quoted strings.
 function Show-Message([string]$text, [string]$buttons = 'OK', [string]$icon = 'Information') {
-  return [System.Windows.Forms.MessageBox]::Show($text, $title, $buttons, $icon)
+  $owner = New-Object System.Windows.Forms.Form
+  $owner.TopMost = $true
+  try { return [System.Windows.Forms.MessageBox]::Show($owner, $text, $title, $buttons, $icon) }
+  finally { $owner.Dispose() }
 }
 
-function Invoke-Testers([string[]]$arguments) {
+# A typed password goes to node on stdin (UTF-8), never on a command line.
+function Invoke-Testers([string[]]$arguments, [string]$password = $null) {
   $old = $ErrorActionPreference
   $ErrorActionPreference = 'Continue'
-  try { $json = & node.exe (Join-Path $PSScriptRoot 'testers.ts') @arguments 2>$null }
-  finally { $ErrorActionPreference = $old }
+  $oldEncoding = $OutputEncoding
+  try {
+    $script = Join-Path $PSScriptRoot 'testers.ts'
+    if ($password) {
+      $OutputEncoding = New-Object System.Text.UTF8Encoding $false
+      $json = $password | & node.exe $script @arguments --passwort-stdin 2>$null
+    } else {
+      $json = & node.exe $script @arguments 2>$null
+    }
+  } finally {
+    $ErrorActionPreference = $old
+    $OutputEncoding = $oldEncoding
+  }
   if (-not $json) { throw 'Die Testerliste ließ sich nicht lesen (Node.js installiert?).' }
   return ($json -join "`n") | ConvertFrom-Json
 }
 
-function Read-Name {
+function Add-Row($form, [string]$label, [int]$y, [bool]$secret) {
+  $text = New-Object System.Windows.Forms.Label
+  $text.Location = New-Object System.Drawing.Point(16, ($y + 3))
+  $text.Size = New-Object System.Drawing.Size(170, 24)
+  $text.Text = $label
+  $form.Controls.Add($text)
+  $box = New-Object System.Windows.Forms.TextBox
+  $box.Location = New-Object System.Drawing.Point(190, $y)
+  $box.Size = New-Object System.Drawing.Size(250, 26)
+  if ($secret) { $box.UseSystemPasswordChar = $true }
+  $form.Controls.Add($box)
+  return $box
+}
+
+# Name (for a new tester) and an optional password typed twice; $null when cancelled.
+function Read-TesterInput([string]$heading, [bool]$withName) {
   $form = New-Object System.Windows.Forms.Form
-  $form.Text = 'Neuer Tester'
-  $form.StartPosition = 'CenterParent'
+  $form.Text = $heading
+  $form.StartPosition = 'CenterScreen'
+  $form.TopMost = $true
   $form.FormBorderStyle = 'FixedDialog'
   $form.MaximizeBox = $false
   $form.MinimizeBox = $false
   $form.Font = New-Object System.Drawing.Font('Segoe UI', 10)
-  $form.ClientSize = New-Object System.Drawing.Size(420, 150)
-  $label = New-Object System.Windows.Forms.Label
-  $label.Location = New-Object System.Drawing.Point(16, 12)
-  $label.Size = New-Object System.Drawing.Size(388, 44)
-  $label.Text = 'Anmeldename, z. B. „erika.m“ – 2 bis 32 Zeichen: Buchstaben, Ziffern, Punkt, Binde- oder Unterstrich.'
-  $form.Controls.Add($label)
-  $box = New-Object System.Windows.Forms.TextBox
-  $box.Location = New-Object System.Drawing.Point(16, 62)
-  $box.Size = New-Object System.Drawing.Size(388, 26)
-  $form.Controls.Add($box)
+  $form.ClientSize = New-Object System.Drawing.Size(456, 270)
+  $y = 16
+  $name = $null
+  if ($withName) {
+    $name = Add-Row $form 'Anmeldename' $y $false
+    $y += 40
+  }
+  $first = Add-Row $form 'Passwort' $y $true
+  $second = Add-Row $form 'Passwort wiederholen' ($y + 40) $true
+  $hint = New-Object System.Windows.Forms.Label
+  $hint.Location = New-Object System.Drawing.Point(16, ($y + 84))
+  $hint.Size = New-Object System.Drawing.Size(424, 76)
+  $hint.ForeColor = [System.Drawing.Color]::DimGray
+  $hint.Text = 'Passwort leer lassen: das Werkzeug erzeugt eins und zeigt es einmal an. Eigenes Passwort: ' +
+    'mindestens 10 Zeichen. Gespeichert wird nur ein Hash.' +
+    $(if ($withName) { ' Anmeldename z. B. „tanja“: 2 bis 32 Zeichen, Buchstaben, Ziffern, . _ -' } else { '' })
+  $form.Controls.Add($hint)
   $ok = New-Object System.Windows.Forms.Button
-  $ok.Text = 'Anlegen'
-  $ok.Location = New-Object System.Drawing.Point(196, 104)
+  $ok.Text = 'OK'
+  $ok.Location = New-Object System.Drawing.Point(232, 224)
   $ok.Size = New-Object System.Drawing.Size(100, 32)
   $ok.DialogResult = [System.Windows.Forms.DialogResult]::OK
   $form.Controls.Add($ok)
   $form.AcceptButton = $ok
   $cancel = New-Object System.Windows.Forms.Button
   $cancel.Text = 'Abbrechen'
-  $cancel.Location = New-Object System.Drawing.Point(304, 104)
+  $cancel.Location = New-Object System.Drawing.Point(340, 224)
   $cancel.Size = New-Object System.Drawing.Size(100, 32)
   $cancel.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
   $form.Controls.Add($cancel)
   $form.CancelButton = $cancel
-  $name = if ($form.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $box.Text.Trim() } else { '' }
-  $form.Dispose()
-  return $name
+  while ($true) {
+    if ($form.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { $form.Dispose(); return $null }
+    if ($first.Text -ne $second.Text) {
+      Show-Message 'Die beiden Passwörter stimmen nicht überein.' 'OK' 'Warning' | Out-Null
+      continue
+    }
+    $result = @{ name = $(if ($name) { $name.Text.Trim() } else { '' }); password = $first.Text }
+    $form.Dispose()
+    return $result
+  }
 }
 
 function Show-Password([string]$name, [string]$password) {
   $form = New-Object System.Windows.Forms.Form
   $form.Text = 'Passwort – nur jetzt sichtbar'
-  $form.StartPosition = 'CenterParent'
+  $form.StartPosition = 'CenterScreen'
+  $form.TopMost = $true
   $form.FormBorderStyle = 'FixedDialog'
   $form.MaximizeBox = $false
   $form.MinimizeBox = $false
@@ -103,6 +150,7 @@ function Show-Password([string]$name, [string]$password) {
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'Fragebogen – Tester des Testordners'
 $form.StartPosition = 'CenterScreen'
+$form.TopMost = $true
 $form.Font = New-Object System.Drawing.Font('Segoe UI', 10)
 $form.ClientSize = New-Object System.Drawing.Size(640, 420)
 $form.MinimumSize = New-Object System.Drawing.Size(560, 360)
@@ -137,19 +185,23 @@ function Get-Selected {
   return $list.SelectedItems[0]
 }
 
-function Invoke-Change([string]$action, [string]$name) {
-  $result = Invoke-Testers @($action, $name)
+function Invoke-Change([string]$action, [string]$name, [string]$password = $null) {
+  $result = Invoke-Testers @($action, $name) $password
   if (-not $result.ok) { Show-Message $result.message 'OK' 'Warning' | Out-Null; return }
   Update-List
   if ($result.password) { Show-Password $name $result.password }
+  elseif ($password) { Show-Message ($result.message + ' Das eingegebene Passwort gilt nach „Testordner aktualisieren“.') | Out-Null }
 }
 
 $buttons = @(
-  @{ Text = 'Neuer Tester …'; Action = { $name = Read-Name; if ($name) { Invoke-Change 'neu' $name } } },
-  @{ Text = 'Neues Passwort'; Action = {
+  @{ Text = 'Neuer Tester …'; Action = {
+      $entry = Read-TesterInput 'Neuer Tester' $true
+      if ($entry -and $entry.name) { Invoke-Change 'neu' $entry.name $entry.password } } },
+  @{ Text = 'Neues Passwort …'; Action = {
       $item = Get-Selected
-      if ($item -and (Show-Message ('Neues Passwort für „' + $item.Text + '“? Das alte gilt nach dem Aktualisieren nicht mehr.') 'YesNo' 'Question') -eq 'Yes') {
-        Invoke-Change 'passwort' $item.Text
+      if ($item) {
+        $entry = Read-TesterInput ('Neues Passwort für „' + $item.Text + '“') $false
+        if ($entry) { Invoke-Change 'passwort' $item.Text $entry.password }
       } } },
   @{ Text = 'Sperren / Freigeben'; Action = {
       $item = Get-Selected

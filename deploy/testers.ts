@@ -137,6 +137,28 @@ export function htpasswd(testers: readonly Tester[]): string {
     .join('');
 }
 
+export const MIN_OWN_PASSWORD = 10;
+
+/** Why a password chosen by hand cannot be used; undefined when it can. */
+export function ownPasswordProblem(password: string): string | undefined {
+  if (/[\r\n]/.test(password)) return 'Das Passwort darf keinen Zeilenumbruch enthalten.';
+  if (password.trim() !== password)
+    return 'Das Passwort darf nicht mit Leerzeichen beginnen oder enden.';
+  if ([...password].length < MIN_OWN_PASSWORD) {
+    return `Das Passwort braucht mindestens ${MIN_OWN_PASSWORD} Zeichen.`;
+  }
+  return undefined;
+}
+
+/**
+ * The password as it arrives on stdin. Regression 2026-11-01: Windows PowerShell 5.1 sends a byte
+ * order mark (U+FEFF) first and CRLF last, even with a UTF-8 encoding "without BOM" — the password
+ * was refused as "beginning with a space".
+ */
+export function passwordFromStdin(text: string): string {
+  return text.replace(/^\u{FEFF}/u, '').replace(/\r?\n$/, '');
+}
+
 export type Change =
   | { ok: true; testers: Tester[]; password?: string; message: string }
   | { ok: false; message: string };
@@ -148,13 +170,20 @@ export function changeTesters(
   name: string,
   today: string,
   random: (n: number) => Uint8Array = randomBytes,
+  /** A password typed by the Kanzlei; without one a new password is made (and shown once). */
+  ownPassword?: string,
 ): Change {
   const known = testers.find((tester) => tester.name.toLowerCase() === name.toLowerCase());
   const others = testers.filter((tester) => tester !== known);
   const hashed = () => {
-    const password = newPassword(random);
+    const password = ownPassword ?? newPassword(random);
     return { password, hash: sha512Crypt(password, newSalt(random), DEFAULT_ROUNDS) };
   };
+  const problem = ownPassword === undefined ? undefined : ownPasswordProblem(ownPassword);
+  if (problem && (action === 'neu' || action === 'passwort'))
+    return { ok: false, message: problem };
+  // A password typed by hand is not shown again — the one who typed it knows it.
+  const shown = (password: string) => (ownPassword === undefined ? { password } : {});
   switch (action) {
     case 'neu': {
       if (!TESTER_NAME.test(name)) {
@@ -168,7 +197,7 @@ export function changeTesters(
       return {
         ok: true,
         testers: [...testers, { name, hash, created: today }],
-        password,
+        ...shown(password),
         message: `„${name}“ angelegt.`,
       };
     }
@@ -178,7 +207,7 @@ export function changeTesters(
       return {
         ok: true,
         testers: testers.map((tester) => (tester === known ? { ...tester, hash } : tester)),
-        password,
+        ...shown(password),
         message: `Neues Passwort für „${known.name}“.`,
       };
     }
@@ -207,14 +236,25 @@ export function changeTesters(
 export const TESTERS_FILE = 'deploy/.local/tester.json';
 
 function cli(args: readonly string[]): unknown {
+  // "--passwort-stdin": the password typed in the window comes on stdin, never on a command line.
+  const own = args.includes('--passwort-stdin')
+    ? passwordFromStdin(readFileSync(0, 'utf8'))
+    : undefined;
   const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
   const path = join(root, TESTERS_FILE);
   const testers = existsSync(path) ? parseTesters(JSON.parse(readFileSync(path, 'utf8'))) : [];
-  const [action = 'liste', name = ''] = args;
+  const [action = 'liste', name = ''] = args.filter((arg) => arg !== '--passwort-stdin');
   const list = (all: readonly Tester[]) =>
     all.map(({ name: n, created, locked }) => ({ name: n, created, locked: locked === true }));
   if (action === 'liste') return { ok: true, testers: list(testers) };
-  const change = changeTesters(testers, action, name, new Date().toISOString().slice(0, 10));
+  const change = changeTesters(
+    testers,
+    action,
+    name,
+    new Date().toISOString().slice(0, 10),
+    randomBytes,
+    own,
+  );
   if (!change.ok) return change;
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, `${JSON.stringify(change.testers, null, 2)}\n`);

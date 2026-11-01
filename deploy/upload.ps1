@@ -78,7 +78,7 @@ function Show-SetupDialog($current) {
   $form.MinimizeBox = $false
   $form.TopMost = $true
   $form.Font = New-Object System.Drawing.Font('Segoe UI', 10)
-  $form.ClientSize = New-Object System.Drawing.Size(560, 480)
+  $form.ClientSize = New-Object System.Drawing.Size(560, 580)
 
   $intro = New-Object System.Windows.Forms.Label
   $intro.Location = New-Object System.Drawing.Point(16, 12)
@@ -94,7 +94,8 @@ function Show-SetupDialog($current) {
     @{ Key = 'passwort'; Label = 'Passwort'; Value = ''; Secret = $true },
     @{ Key = 'ordner'; Label = 'Zielordner'; Value = '' },
     @{ Key = 'adresse'; Label = 'Adresse der Seite'; Value = '' },
-    @{ Key = 'ips'; Label = 'IP-Adressen der Kanzlei'; Value = '' }
+    @{ Key = 'ips'; Label = 'IP-Adressen der Kanzlei'; Value = '' },
+    @{ Key = 'serverpfad'; Label = 'Serverpfad (Tester)'; Value = '' }
   )
   $boxes = @{}
   $y = 80
@@ -117,25 +118,26 @@ function Show-SetupDialog($current) {
 
   $hint = New-Object System.Windows.Forms.Label
   $hint.Location = New-Object System.Drawing.Point(16, $y)
-  $hint.Size = New-Object System.Drawing.Size(528, 84)
+  $hint.Size = New-Object System.Drawing.Size(528, 120)
   $hint.ForeColor = [System.Drawing.Color]::DimGray
   $hint.Text = 'Zielordner: der Ordner der Subdomain, z. B. /fragebogen. Adresse: https://… – damit prüft das ' +
     'Werkzeug nach dem Upload, ob die Seite genau die hochgeladene Datei ausliefert. IP-Adressen: die ' +
     'festen Internet-Adressen der Kanzlei, mit Leerzeichen getrennt; nur von dort sind Kanzlei- und ' +
-    'Testordner erreichbar.'
+    'Testordner erreichbar. Serverpfad: der volle Pfad dieses Ordners auf dem Server, nur für die ' +
+    'Tester-Anmeldung (IONOS z. B. /kunden/homepages/…/htdocs/fragebogen).'
   if ($current) { $hint.Text += ' Passwort leer lassen = bisheriges behalten.' }
   $form.Controls.Add($hint)
 
   $ok = New-Object System.Windows.Forms.Button
   $ok.Text = 'Speichern'
-  $ok.Location = New-Object System.Drawing.Point(330, 432)
+  $ok.Location = New-Object System.Drawing.Point(330, 532)
   $ok.Size = New-Object System.Drawing.Size(100, 32)
   $ok.DialogResult = [System.Windows.Forms.DialogResult]::OK
   $form.Controls.Add($ok)
   $form.AcceptButton = $ok
   $cancel = New-Object System.Windows.Forms.Button
   $cancel.Text = 'Abbrechen'
-  $cancel.Location = New-Object System.Drawing.Point(444, 432)
+  $cancel.Location = New-Object System.Drawing.Point(444, 532)
   $cancel.Size = New-Object System.Drawing.Size(100, 32)
   $cancel.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
   $form.Controls.Add($cancel)
@@ -161,6 +163,7 @@ function Test-SetupInput($entry, [bool]$hasPassword) {
   if (-not $entry.passwort -and -not $hasPassword) { $problems += 'Passwort fehlt.' }
   if ($entry.ordner -match '["\r\n]') { $problems += 'Der Zielordner darf keine Anführungszeichen enthalten.' }
   if ($entry.adresse -and $entry.adresse -notmatch '^https://[^\s"]+$') { $problems += 'Die Adresse muss mit https:// beginnen.' }
+  if ($entry.serverpfad -and $entry.serverpfad -notmatch '^/[A-Za-z0-9._/-]+$') { $problems += 'Der Serverpfad beginnt mit / und enthält nur Buchstaben, Ziffern, . _ - /.' }
   foreach ($ip in (Split-Ips $entry.ips)) {
     if ($ip -notmatch '^[0-9a-fA-F:./]+$') { $problems += ('„' + $ip + '“ ist keine IP-Adresse.') }
   }
@@ -233,6 +236,7 @@ function Invoke-Setup($current) {
     ordner = $entry.ordner
     adresse = $entry.adresse.TrimEnd('/')
     ips = Split-Ips $entry.ips
+    serverpfad = $entry.serverpfad.TrimEnd('/')
     hostkeys = @($keys | ForEach-Object { $_.Fingerabdruck })
     eingerichtet = (Get-Date -Format 's')
   }
@@ -337,9 +341,14 @@ try {
     if ($plan.access -eq 'ipOrLogin') {
       $found = [regex]::Matches($prepared.Output, '(?m)^Remote directory is (/\S*)\s*$')
       # An SFTP user locked into its folder sees that folder as "/": its paths are not the server's,
-      # and a wrong AuthUserFile would answer every request with an error 500.
+      # and a wrong AuthUserFile would answer every request with an error 500. Then the setting
+      # "serverpfad" (the real path of that folder, found by a probe on 2026-11-01) is the base.
       if ($prepared.Output -match '(?m)^Remote working directory is /\s*$') {
-        $checks += 'Der SFTP-Zugang sieht nur seinen eigenen Ordner; den echten Serverpfad für die Tester-Anmeldung kennt das Werkzeug so nicht – der Testordner bleibt nur für eure IPs.'
+        if ($settings.serverpfad) {
+          $plan = Get-Plan @("--pfad=$($settings.serverpfad.TrimEnd('/'))/$($plan.folder)")
+        } else {
+          $checks += 'Der SFTP-Zugang sieht nur seinen eigenen Ordner; ohne den Serverpfad (-Einrichten) bleibt der Testordner nur für eure IPs.'
+        }
       } elseif ($found.Count -gt 0) { $plan = Get-Plan @("--pfad=$($found[$found.Count - 1].Groups[1].Value)") }
       else { $checks += 'Pfad auf dem Server nicht ermittelt – der Testordner bleibt nur für eure IPs.' }
     }
