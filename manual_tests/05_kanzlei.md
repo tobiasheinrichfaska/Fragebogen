@@ -290,3 +290,31 @@ Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen dersel
 
 **Erwartet:** Die Zahl geht 0,5 → 1 → 1,5 → 1; „4,3“ wird abgelehnt („Bitte eine Zahl in halben Schritten
 eingeben …“), „4,5“ wird angenommen. Unter 0 geht es nicht.
+
+---
+
+## MT-88: Vorschläge ziehen die richtigen Schlüsse (mehrere Minijobs, berufsmäßige Aushilfe)
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station (Karte „Kanzlei“).
+
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen), Beginn 02.11.2026.
+
+**Schritte:**
+
+1. Person: „Haben Sie zurzeit noch eine andere Beschäftigung?“ **„Ja“**, eine Zeile „Minijob“, seit
+   01.01.2025, 300 € im Monat. Arbeitgeber: „Minijob“, Monatsentgelt 450 €. Beide Teile abschließen,
+   in der Kanzlei-Station einlesen.
+2. Neuer Bogen: Person „arbeitslos oder arbeitsuchend gemeldet“, Arbeitslosengeld. Arbeitgeber:
+   „kurzfristige Aushilfe“, Monatsentgelt 1.500 €. Einlesen.
+3. Wie Schritt 2, aber Monatsentgelt 500 €.
+
+**Erwartet:**
+
+- Schritt 1: Vorschlag Personengruppe **101** mit „bitte prüfen“, Beitragsgruppen **1111**,
+  Kennzeichen Übergangsbereich 1 – die beiden Minijobs liegen zusammen über 603 € und werden
+  zusammengerechnet (nicht 109).
+- Schritt 2: Personengruppe **101** mit „bitte prüfen“ statt 110 – wer arbeitsuchend gemeldet ist, ist
+  berufsmäßig beschäftigt; über der Geringfügigkeitsgrenze ist die Aushilfe nicht kurzfristig.
+- Schritt 3: wieder **110** / **0000** – bis zur Grenze kommt es auf die Berufsmäßigkeit nicht an.
+- _Nicht offensichtlich:_ Die Begründung des Vorschlags nennt jeweils die Rechnung (Minijobs zusammen …
+  bzw. Berufsmäßigkeit); alle Varianten stehen auch in `docs/sv-varianten/`.

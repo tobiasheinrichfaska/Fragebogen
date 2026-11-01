@@ -194,6 +194,32 @@ const PERSONS: Record<string, Person> = {
       ...GKV,
     },
   },
+  hauptjobUndMinijob: {
+    label: 'Hauptbeschäftigung und schon ein anderer Minijob',
+    answers: {
+      geburtsdatum: '1990-05-17',
+      status: 'arbeitnehmer',
+      weitereBeschaeftigung: true,
+      weitereJobs: [
+        {
+          rowId: 'r1',
+          jobArbeitgeber: 'Hauptarbeitgeber GmbH',
+          jobArt: 'svpflichtig',
+          jobSeit: '2020-01-01',
+          jobEntgeltMonat: '3.000,00',
+        },
+        {
+          rowId: 'r2',
+          jobArbeitgeber: 'Anderer Arbeitgeber',
+          jobArt: 'minijob',
+          jobSeit: '2025-01-01',
+          jobEntgeltMonat: '300,00',
+          jobRvBefreit: 'nein',
+        },
+      ],
+      ...GKV,
+    },
+  },
   teilrente: {
     label: 'Altersteilrente vor der Regelaltersgrenze',
     answers: {
@@ -260,6 +286,7 @@ const azubi = (betrag: string, art = 'ausbildung'): Answers => ({
 });
 const ALL = Object.keys(PERSONS).filter((id) => !['dienst', 'vorruhestand'].includes(id));
 const MINIJOB = ALL.filter((id) => id !== 'teilrente');
+const EINFACH = ALL.filter((id) => id !== 'hauptjobUndMinijob');
 const MOSTLY = [
   'arbeitnehmer',
   'arbeitnehmerPkv',
@@ -282,13 +309,13 @@ const JOBS: Job[] = [
     label: 'sv-pflichtig, 1.500 € (Übergangsbereich)',
     art: 'festeStelle',
     employer: pay('1.500,00', 'svpflichtig'),
-    persons: ALL,
+    persons: EINFACH,
   },
   {
     label: 'sv-pflichtig, 3.000 €',
     art: 'festeStelle',
     employer: pay('3.000,00', 'svpflichtig'),
-    persons: ALL,
+    persons: EINFACH,
   },
   {
     label: 'sv-pflichtig, 7.500 € (über der JAEG), Firmenzahler',
@@ -329,6 +356,12 @@ const JOBS: Job[] = [
     art: 'minijob',
     employer: pay('650,00', 'minijob'),
     persons: ['arbeitnehmer'],
+  },
+  {
+    label: 'kurzfristige Aushilfe, 500 €',
+    art: 'aushilfe',
+    employer: pay('500,00', 'kurzfristig'),
+    persons: ['arbeitnehmer', 'arbeitslos'],
   },
   {
     label: 'kurzfristige Aushilfe, 1.500 €',
@@ -545,13 +578,7 @@ describe('impact analysis', () => {
 
 // Findings of the quality check of 2026-11-01, open for Tobias' decision. Each line is a variant
 // that breaks a rule below; fixing the definition must remove it from here.
-const KNOWN_FINDINGS: readonly string[] = [
-  // F1: Beihilfe + statutory (voluntary) insurance gives KV 0 but PV 2; PV follows KV.
-  'sv-pflichtig, 1.500 € (Übergangsbereich) · Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig): PV 2 bei KV 0',
-  'sv-pflichtig, 3.000 € · Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig): PV 2 bei KV 0',
-  // F2: a student in a voluntary internship gets 101 without the Werkstudent check.
-  'freiwilliges Praktikum, 900 € · Student/in: Personengruppe 101 ohne Prüfung des Werkstudentenprivilegs',
-];
+const KNOWN_FINDINGS: readonly string[] = [];
 
 const variantName = (v: Variant) =>
   `${v.job.label} · ${PERSONS[v.person]?.label ?? v.person}${v.rvBefreiung ? ` · RV-Befreiung ${v.rvBefreiung}` : ''}`;
@@ -574,6 +601,83 @@ function findingsOf(v: Variant): string[] {
   }
   return found.map((text) => `${variantName(v)}: ${text}`);
 }
+
+const variant = (jobLabel: string, person: string, rv?: string) => {
+  const found = VARIANTS.find(
+    (v) => v.job.label.startsWith(jobLabel) && v.person === person && v.rvBefreiung === rv,
+  );
+  if (!found) throw new Error(`no variant ${jobLabel} · ${person}`);
+  return found;
+};
+const proposal = (v: Variant) => ({ pgr: v.pgr?.value, pgrCheck: v.pgr?.check, bgr: v.bgr?.value });
+
+// Tobias' decisions on the findings of 2026-11-01 ("es sollen am Ende die korrekten Schlüsse
+// gezogen werden").
+describe('the decided findings stay decided', () => {
+  it('F1: Beihilfe frees KV and with it PV, also with voluntary statutory insurance', () => {
+    expect(variant('sv-pflichtig, 3.000', 'beamterGkv').bgr?.value).toBe('0110');
+  });
+
+  it('F2: a student in a voluntary internship is judged as a Werkstudent, with a check', () => {
+    expect(proposal(variant('freiwilliges Praktikum', 'student'))).toEqual({
+      pgr: '106',
+      pgrCheck: true,
+      bgr: '0100',
+    });
+  });
+
+  it('F3: Minijobs are added up – without a main job together, next to one from the second', () => {
+    expect(proposal(variant('Minijob, 450', 'zweiterMinijob', 'nein'))).toMatchObject({
+      pgr: '101',
+      pgrCheck: true,
+      bgr: '1111',
+    });
+    // The first Minijob next to a main job stays free …
+    expect(proposal(variant('Minijob, 450', 'hauptjob', 'nein'))).toMatchObject({
+      pgr: '109',
+      bgr: '6100',
+    });
+    // … a second one is added to the main job: KV, RV, PV, but free in the AV.
+    expect(proposal(variant('Minijob, 450', 'hauptjobUndMinijob', 'nein'))).toMatchObject({
+      pgr: '101',
+      pgrCheck: true,
+      bgr: '1101',
+    });
+  });
+
+  it('F4: berufsmäßig above the limit is not short-term; within the limit it stays short-term', () => {
+    expect(proposal(variant('kurzfristige Aushilfe, 1.500', 'arbeitslos'))).toMatchObject({
+      pgr: '101',
+      pgrCheck: true,
+    });
+    expect(variant('kurzfristige Aushilfe, 1.500', 'arbeitslos').bgr?.value).not.toBe('0000');
+    expect(proposal(variant('kurzfristige Aushilfe, 500', 'arbeitslos'))).toMatchObject({
+      pgr: '110',
+      bgr: '0000',
+    });
+    expect(proposal(variant('kurzfristige Aushilfe, 1.500', 'arbeitnehmer'))).toMatchObject({
+      pgr: '110',
+      bgr: '0000',
+    });
+  });
+
+  it('F5: "sv-pflichtig" with Minijob pay is judged as a Minijob, with a check', () => {
+    expect(proposal(variant('sv-pflichtig, 300', 'arbeitnehmer'))).toEqual({
+      pgr: '109',
+      pgrCheck: true,
+      bgr: '6100',
+    });
+  });
+
+  it('F6: who is already free in the RV is not asked about the Minijob exemption', () => {
+    for (const person of ['vollrenteNachRag', 'vollrenteVerzicht', 'ragOhneRente', 'pensionaer']) {
+      expect(variant('Minijob, 450', person, 'ja').skipped).toContain('rvBefreiungWunsch');
+    }
+    expect(variant('Minijob, 450', 'vollrenteVorRag', 'ja').skipped).not.toContain(
+      'rvBefreiungWunsch',
+    );
+  });
+});
 
 describe('every variant keeps the rules of the SV proposals', () => {
   const cases = VARIANTS.map((v) => [variantName(v), v] as const);

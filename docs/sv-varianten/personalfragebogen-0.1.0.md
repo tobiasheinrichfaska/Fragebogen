@@ -6,13 +6,13 @@
 > Der Vorschlag braucht einen Blick der lohnabrechnenden Stelle. „nicht gefragt“: Angaben des
 > Profils, die der Fragebogen in diesem Fall gar nicht stellt.
 
-100 Varianten.
+104 Varianten.
 
 ## sv-pflichtig, 300 €
 
 | Person | RV-Befreiung | Personengruppe | Beitragsgruppen | Übergangsbereich | nicht gefragt |
 | --- | --- | --- | --- | --- | --- |
-| Arbeitnehmer/in, gesetzlich | – | 101 | 1111 | 0 | – |
+| Arbeitnehmer/in, gesetzlich | – | 109 (prüfen) | 6100 | 0 | – |
 
 ## sv-pflichtig, 1.500 € (Übergangsbereich)
 
@@ -34,7 +34,7 @@
 | mit einem anderen Minijob (300 €) | – | 101 | 1111 | 1 (prüfen) | – |
 | Altersteilrente vor der Regelaltersgrenze | – | 101 | 1111 | 1 | – |
 | Regelaltersgrenze 2026 erreicht, „weiß ich nicht“ angegeben | – | 101 | 1121 (prüfen) | 1 | – |
-| Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig) | – | 101 | 0112 | 1 | – |
+| Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig) | – | 101 | 0110 | 1 | – |
 
 ## sv-pflichtig, 3.000 €
 
@@ -56,7 +56,7 @@
 | mit einem anderen Minijob (300 €) | – | 101 | 1111 | 0 | – |
 | Altersteilrente vor der Regelaltersgrenze | – | 101 | 1111 | 0 | – |
 | Regelaltersgrenze 2026 erreicht, „weiß ich nicht“ angegeben | – | 101 | 1121 (prüfen) | 0 | – |
-| Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig) | – | 101 | 0112 | 0 | – |
+| Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig) | – | 101 | 0110 | 0 | – |
 
 ## sv-pflichtig, 7.500 € (über der JAEG), Firmenzahler
 
@@ -86,22 +86,24 @@
 | Student/in | ja | 109 | 6500 | 0 | – |
 | Altersvollrente vor der Regelaltersgrenze | nein | 109 | 6100 | 0 | – |
 | Altersvollrente vor der Regelaltersgrenze | ja | 109 | 6500 | 0 | – |
-| Altersvollrente nach der Regelaltersgrenze | nein | 109 | 6500 | 0 | – |
-| Altersvollrente nach der Regelaltersgrenze | ja | 109 | 6500 | 0 | – |
-| Altersvollrente nach der Regelaltersgrenze, Verzicht auf RV-Freiheit | nein | 109 | 6100 | 0 | – |
-| Altersvollrente nach der Regelaltersgrenze, Verzicht auf RV-Freiheit | ja | 109 | 6500 | 0 | – |
-| Regelaltersgrenze erreicht, nie rentenversichert | nein | 109 | 6500 | 0 | – |
-| Regelaltersgrenze erreicht, nie rentenversichert | ja | 109 | 6500 | 0 | – |
+| Altersvollrente nach der Regelaltersgrenze | nein | 109 | 6500 | 0 | rvBefreiungWunsch |
+| Altersvollrente nach der Regelaltersgrenze | ja | 109 | 6500 | 0 | rvBefreiungWunsch |
+| Altersvollrente nach der Regelaltersgrenze, Verzicht auf RV-Freiheit | nein | 109 | 6100 | 0 | rvBefreiungWunsch |
+| Altersvollrente nach der Regelaltersgrenze, Verzicht auf RV-Freiheit | ja | 109 | 6100 | 0 | rvBefreiungWunsch |
+| Regelaltersgrenze erreicht, nie rentenversichert | nein | 109 | 6500 | 0 | rvBefreiungWunsch |
+| Regelaltersgrenze erreicht, nie rentenversichert | ja | 109 | 6500 | 0 | rvBefreiungWunsch |
 | Rente wegen voller Erwerbsminderung | nein | 109 | 6100 | 0 | – |
 | Rente wegen voller Erwerbsminderung | ja | 109 | 6500 | 0 | – |
 | Beamter/Beamtin mit Beihilfe, privat | nein | 109 | 0100 | 0 | – |
 | Beamter/Beamtin mit Beihilfe, privat | ja | 109 | 0500 | 0 | – |
-| Pensionär/in wegen Alters mit Beihilfe, privat | nein | 109 | 0500 | 0 | – |
-| Pensionär/in wegen Alters mit Beihilfe, privat | ja | 109 | 0500 | 0 | – |
+| Pensionär/in wegen Alters mit Beihilfe, privat | nein | 109 | 0500 | 0 | rvBefreiungWunsch |
+| Pensionär/in wegen Alters mit Beihilfe, privat | ja | 109 | 0500 | 0 | rvBefreiungWunsch |
 | arbeitslos mit Arbeitslosengeld | nein | 109 | 6100 | 0 | – |
 | arbeitslos mit Arbeitslosengeld | ja | 109 | 6500 | 0 | – |
-| mit einem anderen Minijob (300 €) | nein | 109 (prüfen) | 6100 (prüfen) | 0 | – |
-| mit einem anderen Minijob (300 €) | ja | 109 (prüfen) | 6500 (prüfen) | 0 | – |
+| mit einem anderen Minijob (300 €) | nein | 101 (prüfen) | 1111 | 1 (prüfen) | – |
+| mit einem anderen Minijob (300 €) | ja | 101 (prüfen) | 1111 | 1 (prüfen) | – |
+| Hauptbeschäftigung und schon ein anderer Minijob | nein | 101 (prüfen) | 1101 (prüfen) | 0 | – |
+| Hauptbeschäftigung und schon ein anderer Minijob | ja | 101 (prüfen) | 1101 (prüfen) | 0 | – |
 | Regelaltersgrenze 2026 erreicht, „weiß ich nicht“ angegeben | nein | 109 | 6100 | 0 | – |
 | Regelaltersgrenze 2026 erreicht, „weiß ich nicht“ angegeben | ja | 109 | 6500 | 0 | – |
 | Beamter/Beamtin mit Beihilfe, gesetzlich (freiwillig) | nein | 109 | 6100 | 0 | – |
@@ -130,6 +132,13 @@
 | Arbeitnehmer/in, gesetzlich | nein | 101 (prüfen) | 1111 | 1 | – |
 | Arbeitnehmer/in, gesetzlich | ja | 101 (prüfen) | 1111 | 1 | – |
 
+## kurzfristige Aushilfe, 500 €
+
+| Person | RV-Befreiung | Personengruppe | Beitragsgruppen | Übergangsbereich | nicht gefragt |
+| --- | --- | --- | --- | --- | --- |
+| Arbeitnehmer/in, gesetzlich | – | 110 | 0000 | 0 | – |
+| arbeitslos mit Arbeitslosengeld | – | 110 | 0000 | 0 | – |
+
 ## kurzfristige Aushilfe, 1.500 €
 
 | Person | RV-Befreiung | Personengruppe | Beitragsgruppen | Übergangsbereich | nicht gefragt |
@@ -140,7 +149,7 @@
 | Student/in | – | 110 | 0000 | 0 | – |
 | Altersvollrente vor der Regelaltersgrenze | – | 110 | 0000 | 0 | – |
 | Altersvollrente nach der Regelaltersgrenze | – | 110 | 0000 | 0 | – |
-| arbeitslos mit Arbeitslosengeld | – | 110 | 0000 | 0 | – |
+| arbeitslos mit Arbeitslosengeld | – | 101 (prüfen) | 1101 (prüfen) | 1 | – |
 | Beamter/Beamtin mit Beihilfe, privat | – | 110 | 0000 | 0 | – |
 
 ## Ausbildung, 300 € (Geringverdiener)
@@ -184,7 +193,7 @@
 
 | Person | RV-Befreiung | Personengruppe | Beitragsgruppen | Übergangsbereich | nicht gefragt |
 | --- | --- | --- | --- | --- | --- |
-| Student/in | – | 101 | 1111 | 1 | – |
+| Student/in | – | 106 (prüfen) | 0100 | 1 | – |
 | Arbeitnehmer/in, gesetzlich | – | 101 | 1111 | 1 | – |
 
 ## Werkstudent/in, 1.200 €

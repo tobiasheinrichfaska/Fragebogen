@@ -2200,10 +2200,52 @@
           "required": true,
           "purpose": "Befreiung von der Rentenversicherungspflicht (§ 6 Abs. 1b SGB VI); Eingangstag beim Arbeitgeber (§ 8 Abs. 2 Nr. 4a BVV)",
           "showIf": {
-            "field": "artLautVereinbarung",
-            "in": ["minijob", "unbekannt"]
+            "all": [
+              {
+                "field": "artLautVereinbarung",
+                "in": ["minijob", "unbekannt"]
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "all": [
+                        {
+                          "any": [
+                            {
+                              "field": "geburtsdatum",
+                              "onOrBefore": "1959-11-02"
+                            },
+                            {
+                              "field": "ragErreicht",
+                              "equals": "ja"
+                            }
+                          ]
+                        },
+                        {
+                          "field": "rentenart",
+                          "equals": "altersvoll"
+                        }
+                      ]
+                    },
+                    {
+                      "field": "pensionArt",
+                      "equals": "alter"
+                    },
+                    {
+                      "field": "rentenart",
+                      "equals": "versorgungswerkAlter"
+                    },
+                    {
+                      "field": "rvNieVersichert",
+                      "in": ["nieVersichert", "erstattung"]
+                    }
+                  ]
+                }
+              }
+            ]
           },
-          "because": "Nur im Minijob kann man sich von der Rentenversicherungspflicht befreien lassen (§ 6 Abs. 1b SGB VI); bei „Weiß ich nicht.“ wird vorsorglich gefragt.",
+          "because": "Nur im Minijob kann man sich von der Rentenversicherungspflicht befreien lassen (§ 6 Abs. 1b SGB VI); bei „Weiß ich nicht.“ wird vorsorglich gefragt. Wer nach der Regelaltersgrenze mit Vollrente, mit Versorgung wegen Alters oder ohne frühere Versicherung schon rentenversicherungsfrei ist, braucht keine Befreiung; wer auf die Freiheit verzichtet, will Beiträge zahlen.",
           "options": [
             {
               "id": "nein",
@@ -6642,10 +6684,86 @@
         {
           "value": "110",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "kurzfristig"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "reason": "Kurzfristige Aushilfe laut Arbeitgeber; Zeitgrenzen und Berufsmäßigkeit stehen in den Prüfhinweisen."
+        },
+        {
+          "value": "110",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
+              }
+            ]
+          },
+          "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
         },
         {
           "value": "109",
@@ -6664,13 +6782,16 @@
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze."
@@ -6681,7 +6802,63 @@
             "all": [
               {
                 "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "equals": "svpflichtig"
+              },
+              {
+                "not": {
+                  "field": "agArbeitszeitmodell",
+                  "equals": "altersteilzeit"
+                }
+              },
+              {
+                "not": {
+                  "field": "weitereBeschaeftigung",
+                  "equals": true
+                }
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
+            ]
+          },
+          "check": true,
+          "reason": "Als versicherungspflichtig vorgesehen, aber das Entgelt liegt im Jahr nicht über der Geringfügigkeitsgrenze: ein Minijob (§ 8 Abs. 1 Nr. 1 SGB IV)."
+        },
+        {
+          "value": "109",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "field": "weitereBeschaeftigung",
@@ -6691,13 +6868,16 @@
           },
           "check": true,
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV)."
@@ -6710,6 +6890,54 @@
           },
           "check": true,
           "reason": "Als Minijob vorgesehen, aber das Entgelt übersteigt die Geringfügigkeitsgrenze oder fehlt: dann versicherungspflichtig."
+        },
+        {
+          "value": "101",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "svpflichtig"
+              },
+              {
+                "field": "weitereBeschaeftigung",
+                "equals": true
+              }
+            ]
+          },
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          },
+          "check": true,
+          "reason": "Entgelt bis zur Geringfügigkeitsgrenze, aber mit den anderen Beschäftigungen zusammengerechnet versicherungspflichtig (§ 8 Abs. 2 SGB IV)."
+        },
+        {
+          "value": "106",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "check": true,
+          "reason": "Freiwilliges Praktikum während des Studiums: Es gilt die Werkstudentenregel (höchstens 20 Wochenstunden oder in den Semesterferien) – bitte die Arbeitszeit prüfen."
         },
         {
           "value": "106",
@@ -6871,6 +7099,15 @@
         },
         {
           "value": "101",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "check": true,
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber berufsmäßig (z. B. arbeitsuchend gemeldet, Leistungsbezug, Elternzeit, zwischen Schule und Ausbildung) und mit einem Entgelt über der Geringfügigkeitsgrenze: versicherungspflichtig (§ 8 Abs. 1 Nr. 2 SGB IV, Geringfügigkeits-Richtlinien B 2.3)."
+        },
+        {
+          "value": "101",
           "reason": "Versicherungspflichtig ohne besondere Merkmale."
         }
       ]
@@ -6897,10 +7134,86 @@
         {
           "value": "0",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "kurzfristig"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
+              }
+            ]
+          },
+          "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
         },
         {
           "value": "0",
@@ -6927,12 +7240,50 @@
           }
         },
         {
-          "value": "6",
+          "value": "0",
           "when": {
             "all": [
               {
                 "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten: wie Werkstudenten frei, bei höchstens 20 Wochenstunden oder in den Semesterferien (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)."
+        },
+        {
+          "value": "6",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "all": [
@@ -6949,13 +7300,16 @@
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob neben weiteren Beschäftigungen, gesetzlich versichert: Pauschalbeitrag (§ 249b SGB V), wenn die Zusammenrechnung nichts anderes ergibt.",
@@ -6966,8 +7320,26 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "field": "krankenversicherung",
@@ -6976,13 +7348,16 @@
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob, gesetzlich versichert: Pauschalbeitrag des Arbeitgebers (§ 249b SGB V)."
@@ -6992,19 +7367,40 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob ohne gesetzliche Krankenversicherung: kein Pauschalbeitrag (§ 249b SGB V gilt nur für Versicherte)."
@@ -7337,10 +7733,86 @@
         {
           "value": "0",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "kurzfristig"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
+              }
+            ]
+          },
+          "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
         },
         {
           "value": "0",
@@ -7363,8 +7835,26 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "any": [
@@ -7433,13 +7923,16 @@
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob, von der Rentenversicherungspflicht befreit oder rentenversicherungsfrei: Pauschalbeitrag des Arbeitgebers (§ 6 Abs. 1b, § 172 Abs. 3 SGB VI)."
@@ -7449,19 +7942,40 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob ohne Befreiung: rentenversicherungspflichtig, mit Eigenanteil der Person (§ 6 Abs. 1b SGB VI: Befreiung nur auf Antrag)."
@@ -7672,10 +8186,86 @@
         {
           "value": "0",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "kurzfristig"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
+              }
+            ]
+          },
+          "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
         },
         {
           "value": "0",
@@ -7707,21 +8297,110 @@
             "all": [
               {
                 "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten: wie Werkstudenten frei, bei höchstens 20 Wochenstunden oder in den Semesterferien (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob: arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "weitereBeschaeftigung",
+                "equals": true
+              }
+            ]
+          },
+          "test": {
+            "fn": "minijobNebenHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
+            ]
+          },
+          "check": true,
+          "reason": "Minijob neben einer Hauptbeschäftigung: auch wenn er mit ihr zusammengerechnet wird, bleibt er in der Arbeitslosenversicherung frei (§ 27 Abs. 2 SGB III)."
         },
         {
           "value": "0",
@@ -7796,10 +8475,86 @@
         {
           "value": "0",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "kurzfristig"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
+              }
+            ]
+          },
+          "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
+          "test": {
+            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn"
+            ]
+          }
         },
         {
           "value": "0",
@@ -7831,18 +8586,59 @@
             "all": [
               {
                 "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten: wie Werkstudenten frei, bei höchstens 20 Wochenstunden oder in den Semesterferien (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "geringfuegigEntlohnt",
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob: keine Beiträge zur Pflegeversicherung (DEÜV Anlage 1, Fußnote 2)."
@@ -8001,8 +8797,8 @@
           "check": true
         },
         {
-          "value": "2",
-          "reason": "Mit Anspruch auf Beihilfe in der sozialen Pflegeversicherung: halber Beitragssatz (§ 28 Abs. 2, § 55 Abs. 1 S. 3 SGB XI).",
+          "value": "0",
+          "reason": "Mit Anspruch auf Beihilfe ist die Beschäftigung krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2, 6 SGB V); auch bei freiwilliger gesetzlicher Versicherung fallen aus ihr keine Beiträge zur Pflegeversicherung an.",
           "when": {
             "all": [
               {
@@ -8062,8 +8858,38 @@
           "when": {
             "any": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "kurzfristig"
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "kurzfristig"
+                  },
+                  {
+                    "not": {
+                      "any": [
+                        {
+                          "field": "status",
+                          "equals": "arbeitslos"
+                        },
+                        {
+                          "field": "grundsicherung",
+                          "equals": true
+                        },
+                        {
+                          "field": "leistungArbeitslos",
+                          "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                        },
+                        {
+                          "field": "elternzeitAnderswo",
+                          "equals": true
+                        },
+                        {
+                          "field": "planNachSchule",
+                          "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                        }
+                      ]
+                    }
+                  }
+                ]
               },
               {
                 "all": [
@@ -8082,11 +8908,36 @@
         },
         {
           "value": "0",
+          "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
           "when": {
             "all": [
               {
                 "field": "agBeschaeftigungsart",
-                "equals": "minijob"
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
               }
             ]
           },
@@ -8098,6 +8949,48 @@
               "ezBetrag",
               "ezAnspruch",
               "agBeschaeftigungsbeginn"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "reason": "Minijob: kein Übergangsbereich (§ 20 Abs. 2 SGB IV gilt erst über der Geringfügigkeitsgrenze)."

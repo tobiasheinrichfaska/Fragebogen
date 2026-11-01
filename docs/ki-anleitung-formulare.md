@@ -205,7 +205,7 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   Ja/Nein, Datum: festes Monatsentgelt, erwarteter Monatsverdienst – es zählt der beantwortete –,
   Spalte der Einmalzahlungen und Spalte „Anspruch“ derselben Tabelle, Stichtag; zwölf Monate plus
   Einmalzahlungen mit Anspruch höchstens bzw. mehr als das Zwölffache der Minijob-Grenze des
-  Jahres); `hoechstensGeringverdienergrenze` (Betrag: bis 325 €, bei einer Tabellenspalte die erste
+  Jahres); `geringfuegigEntlohnt` (wie `hoechstensGeringfuegigkeitsgrenze`, dazu die Spalten Art, Monatsentgelt und Beginn der weiteren Beschäftigungen: neben einer Hauptbeschäftigung bleibt nur der zuerst aufgenommene Minijob frei, ohne sie zählen alle Minijobs zusammen, § 8 Abs. 2 SGB IV); `minijobNebenHauptbeschaeftigung` (dieselben Felder: Entgelt bis zur Grenze und eine Hauptbeschäftigung – arbeitslosenversicherungsfrei auch als zweiter Minijob); `hoechstensGeringverdienergrenze` (Betrag: bis 325 €, bei einer Tabellenspalte die erste
   Zeile); `ueberBeitragsbemessungsgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
   weiterer Beschäftigungen – darf eine Tabellenspalte sein, sie wird summiert – und der Stichtag,
   dessen Jahr die Rechengrößen bestimmt); `ueberMassgeblicheJahresarbeitsentgeltgrenze` (Betrag,

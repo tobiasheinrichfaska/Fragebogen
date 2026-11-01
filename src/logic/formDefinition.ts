@@ -1151,6 +1151,14 @@ function placeholders({ definition, report }: CheckContext): void {
 }
 
 /** Typed fields (an input box), the only ones with quick-answer buttons. */
+/** Column types a named test may read as the list of the column's values. */
+const COLUMN_ARGUMENT_TYPES: ReadonlySet<FieldType> = new Set([
+  'money',
+  'boolean',
+  'choice',
+  'date',
+]);
+
 const QUICK_ANSWER_TYPES: readonly FieldType[] = [
   'text',
   'date',
@@ -1319,11 +1327,11 @@ function hintListRules(
       });
     }
     if (hint.test) {
-      // A test may name a money or yes/no table column: it stands for the column's values per row.
+      // A test may name a money, yes/no, choice or date table column (e.g. the kind and start of the
+      // other jobs for the Minijob test): it stands for the column's values per row.
       const problem = hintTestProblem(hint.test, (id) => {
         const target = fields.get(id);
-        return target &&
-          (!target.isColumn || target.field.type === 'money' || target.field.type === 'boolean')
+        return target && (!target.isColumn || COLUMN_ARGUMENT_TYPES.has(target.field.type))
           ? target.field
           : undefined;
       });

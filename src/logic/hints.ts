@@ -284,7 +284,124 @@ const uebergangsbereich: HintTest = {
   },
 };
 
+/** Kinds of other jobs that count as a main employment next to a Minijob (§ 8 Abs. 2 SGB IV). */
+const HAUPTBESCHAEFTIGUNG = new Set(['svpflichtig', 'ausbildung']);
+
+interface OtherJobs {
+  /** Index rows of the table of other jobs: kind, monthly pay in cents, start. */
+  rows: { art: string; cents: number | undefined; seit: string | undefined }[];
+  haupt: boolean;
+}
+
+function otherJobs(arts: FieldValue, pays: FieldValue, starts: FieldValue): OtherJobs {
+  const kinds = Array.isArray(arts) ? arts : [];
+  const amounts = Array.isArray(pays) ? pays : [];
+  const since = Array.isArray(starts) ? starts : [];
+  const rows = kinds.map((art, i) => {
+    const seit = since[i];
+    return {
+      art: typeof art === 'string' ? art : '',
+      cents: cents(amounts[i] ?? null),
+      seit: typeof seit === 'string' && isIsoDate(seit) ? seit : undefined,
+    };
+  });
+  return { rows, haupt: rows.some((row) => HAUPTBESCHAEFTIGUNG.has(row.art)) };
+}
+
+const MINIJOB_ARGS: readonly FieldType[] = [
+  'money',
+  'money',
+  'money',
+  'boolean',
+  'date',
+  'choice',
+  'money',
+  'date',
+];
+
+/**
+ * Whether this job is a Minijob once the other jobs are counted (Tobias 2026-11-01: "es sollen am
+ * Ende die korrekten Schlüsse gezogen werden"; § 8 Abs. 2 SGB IV, Geringfügigkeits-Richtlinien B
+ * 2.2): its own pay in the yearly view within the limit, and — next to a main employment — it is
+ * the first Minijob taken up (the others are added to the main employment), or — without one — all
+ * Minijobs together stay within the limit. Unknown pay or start of another job: uncertain.
+ */
+const geringfuegigEntlohnt: HintTest = {
+  args: MINIJOB_ARGS,
+  describe: ([
+    fixed = '',
+    expected = '',
+    oneOff = '',
+    entitled = '',
+    on = '',
+    art = '',
+    pay = '',
+  ]) =>
+    `zwölfmal „${fixed}“ bzw. „${expected}“ mit „${oneOff}“ (nur bei „${entitled}“) höchstens das Zwölffache der Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt und – laut „${art}“ und „${pay}“ – neben einer Hauptbeschäftigung kein anderer Minijob früher begann bzw. ohne Hauptbeschäftigung alle Minijobs zusammen die Grenze einhalten`,
+  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts]) => {
+    const own = geringfuegigkeit(true).run(
+      [fixed, expected, oneOff, entitled, on].map((value) => value ?? null),
+    );
+    if (!own || !own.holds || own.uncertain) return own;
+    const jobs = otherJobs(arts ?? null, pays ?? null, starts ?? null);
+    const minijobs = jobs.rows.filter((row) => row.art === 'minijob');
+    if (minijobs.length === 0) return own;
+    const start = typeof on === 'string' ? on : '';
+    if (jobs.haupt) {
+      const unknown = minijobs.some((row) => row.seit === undefined);
+      const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
+      return {
+        holds: !earlier,
+        uncertain: unknown,
+        detail: [
+          ...own.detail,
+          earlier
+            ? 'Neben der Hauptbeschäftigung begann ein anderer Minijob früher; nur der zuerst aufgenommene bleibt frei, dieser wird mit der Hauptbeschäftigung zusammengerechnet (§ 8 Abs. 2 SGB IV).'
+            : 'Neben der Hauptbeschäftigung ist dies der zuerst aufgenommene Minijob; er bleibt frei.',
+        ],
+      };
+    }
+    const amount = ownPay(fixed, expected) ?? 0;
+    const unknown = minijobs.some((row) => row.cents === undefined);
+    const together = amount + minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
+    const limit =
+      cents(RECHENGROESSEN[start.slice(0, 4)]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0;
+    return {
+      holds: together <= limit,
+      uncertain: unknown,
+      detail: [
+        ...own.detail,
+        `Minijobs zusammen ${euro(together)} im Monat; ${together <= limit ? 'innerhalb' : 'über'} der Geringfügigkeitsgrenze von ${euro(limit)} – sie werden zusammengerechnet (§ 8 Abs. 2 SGB IV).`,
+      ],
+    };
+  },
+};
+
+/**
+ * A Minijob next to a main employment: free in the unemployment insurance even when it is added to
+ * the main employment in the other branches (§ 27 Abs. 2 SGB III).
+ */
+const minijobNebenHauptbeschaeftigung: HintTest = {
+  args: MINIJOB_ARGS,
+  describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
+    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ eine Hauptbeschäftigung besteht`,
+  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts]) => {
+    const own = geringfuegigkeit(true).run(
+      [fixed, expected, oneOff, entitled, on].map((value) => value ?? null),
+    );
+    if (!own) return undefined;
+    const { haupt } = otherJobs(arts ?? null, pays ?? null, starts ?? null);
+    return {
+      holds: own.holds && haupt,
+      ...(own.uncertain ? { uncertain: true } : {}),
+      detail: own.detail,
+    };
+  },
+};
+
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
+  geringfuegigEntlohnt,
+  minijobNebenHauptbeschaeftigung,
   hoechstensGeringfuegigkeitsgrenze: geringfuegigkeit(true),
   ueberGeringfuegigkeitsgrenze: geringfuegigkeit(false),
   imUebergangsbereich: uebergangsbereich,

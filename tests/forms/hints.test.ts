@@ -206,12 +206,14 @@ describe('check hints — definition rules', () => {
   it('knows the tests the forms use', () => {
     expect(Object.keys(HINT_TESTS).sort()).toEqual([
       'ab55Jahren',
+      'geringfuegigEntlohnt',
       'hoechstensGeringfuegigkeitsgrenze',
       'hoechstensGeringverdienergrenze',
       'hoechstensZehnWochen',
       'imUebergangsbereich',
       'kuerzerAlsEineWoche',
       'listeneintragNichtGueltig',
+      'minijobNebenHauptbeschaeftigung',
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',
       'regelaltersgrenzeNichtErreicht',
@@ -250,5 +252,68 @@ describe('pension insurance declarations on paper (Tobias 2026-10-30)', () => {
         ),
       ),
     ).toContain('befreiungsantragOhneWunsch');
+  });
+});
+
+// Tobias 2026-11-01 (F3): Minijobs are judged together with the other jobs.
+describe('the Minijob test with other jobs', () => {
+  const run = (arts: unknown[], pays: unknown[], starts: unknown[], own = '450.00') =>
+    HINT_TESTS.geringfuegigEntlohnt?.run([
+      own,
+      null,
+      null,
+      null,
+      '2026-11-02',
+      arts as never,
+      pays as never,
+      starts as never,
+    ]);
+
+  it('is a Minijob alone or next to short-term jobs only', () => {
+    expect(run([], [], [])?.holds).toBe(true);
+    expect(run(['kurzfristig'], ['2000.00'], ['2026-01-01'])?.holds).toBe(true);
+  });
+
+  it('adds the Minijobs up without a main job', () => {
+    expect(run(['minijob'], ['150.00'], ['2025-01-01'])?.holds).toBe(true);
+    expect(run(['minijob'], ['154.00'], ['2025-01-01'])?.holds).toBe(false);
+    expect(run(['minijob'], [null], ['2025-01-01'])?.uncertain).toBe(true);
+  });
+
+  it('keeps only the first Minijob next to a main job (also a training) free', () => {
+    expect(run(['svpflichtig'], ['3000.00'], ['2020-01-01'])?.holds).toBe(true);
+    expect(
+      run(['ausbildung', 'minijob'], ['900.00', '100.00'], ['2024-08-01', '2025-01-01'])?.holds,
+    ).toBe(false);
+    expect(
+      run(['svpflichtig', 'minijob'], ['3000.00', '100.00'], ['2020-01-01', '2027-01-01'])?.holds,
+    ).toBe(true);
+    // Started the same day: not earlier, this one counts as the first.
+    expect(
+      run(['svpflichtig', 'minijob'], ['3000.00', '100.00'], ['2020-01-01', '2026-11-02'])?.holds,
+    ).toBe(true);
+    expect(
+      run(['svpflichtig', 'minijob'], ['3000.00', '100.00'], ['2020-01-01', null])?.uncertain,
+    ).toBe(true);
+  });
+
+  it('is no Minijob when its own pay is above the limit', () => {
+    expect(run([], [], [], '650.00')?.holds).toBe(false);
+  });
+
+  it('frees a Minijob next to a main job from the unemployment insurance', () => {
+    const next = (arts: unknown[]) =>
+      HINT_TESTS.minijobNebenHauptbeschaeftigung?.run([
+        '450.00',
+        null,
+        null,
+        null,
+        '2026-11-02',
+        arts as never,
+        [] as never,
+        [] as never,
+      ])?.holds;
+    expect(next(['svpflichtig', 'minijob'])).toBe(true);
+    expect(next(['minijob'])).toBe(false);
   });
 });

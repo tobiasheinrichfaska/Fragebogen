@@ -553,18 +553,24 @@ Key design decisions (details in `docs/plan.md`):
 - **Children without names:** birth date plus "Mehrlinge: Anzahl Kinder" (data minimisation); no
   Probezeit (no payroll effect, no LuG import field).
 - **Quality check of the SV proposals** (`tests/forms/svQualitaet.test.ts`, `docs/sv-wirkung/`,
-  `docs/sv-varianten/`): 100 variants keep Anlage 16, "PV follows KV" and the Übergangsbereich rules,
-  except the open findings awaiting Tobias' decision — **F1** Beihilfe + statutory (voluntary)
-  insurance gives KV 0 / PV 2 (PV should follow KV → 0); **F2** a student in a voluntary internship
-  gets 101/1111 without the Werkstudent check; **F3** two Minijobs together above 603 € stay 109
-  (with "prüfen") instead of 101; **F4** a short-term job of an unemployed person shows 110 without
-  "prüfen" (only the hint); **F5** "sv-pflichtig" with 300 € shows 101 without "prüfen"; **F6** a
-  pensioner may tick the RV waiver and the Minijob exemption at once (no hint).
+  `docs/sv-varianten/`): every variant keeps Anlage 16, "PV follows KV" and the Übergangsbereich
+  rules; `KNOWN_FINDINGS` is empty. **Decided (Tobias: "es sollen am Ende die korrekten Schlüsse
+  gezogen werden"):** F1 Beihilfe frees KV and PV (0110) also with voluntary statutory insurance;
+  F2 a student in a voluntary internship → 106 (prüfen) / 0100; F3 Minijobs are added up
+  (`geringfuegigEntlohnt`: next to a main job only the first stays free, without one all together;
+  a second Minijob next to a main job → 101 / 1101, AV free via `minijobNebenHauptbeschaeftigung`);
+  F4 a short-term job of someone berufsmäßig (job-seeking, benefits, parental leave, between school
+  and training) above the limit → 101 (prüfen), within the limit still 110; F5 "sv-pflichtig" with
+  Minijob pay → 109 (prüfen) except Altersteilzeit; F6 who is already RV-free (or waived) is not
+  asked about the Minijob exemption. Test columns of kind choice and date may feed named tests.
 
 ---
 
 ## Known Limitations
 
+- **WebKit full-flow E2E can time out under heavy load** (2026-11-01: one run 14/15 after 3.1 min,
+  the 180 s test timeout hit in `flow.spec.ts:139`; the immediate rerun 15/15 in 58 s). Rerun before
+  suspecting the code; a repeat failure on an idle machine is a real finding.
 - **E2E covers the release build only** (`npm run test:e2e`, Chromium, Firefox and WebKit under
   `file://`): Sofortmeldung employer → person signs with the mouse → PDF → reopened → Kanzlei →
   PDF for the personnel file, with the no-network / CSP / console / storage guards. The drafts
