@@ -29,6 +29,58 @@ describe('German postcode (textFormat postleitzahlDe)', () => {
     expect(normalizeFieldValue(plz, raw)).toEqual({ ok: false, issue: 'plz.format' });
   });
 
+  // Tobias 2026-11-01: "Telefonnummer muss auf Stimmigkeit geprüft werden, ebenso Mailadresse".
+  it.each([
+    ['0721 123456', '0721 123456'],
+    ['+49 721 123456', '+49 721 123456'],
+    ['+49 (0) 721 / 12 34-56', '+49 (0) 721 / 12 34-56'],
+    ['(0721) 123456', '(0721) 123456'],
+    ['0151.23456789', '0151.23456789'],
+  ])('phone %j is kept as written', (raw, stored) => {
+    const phone: FieldDefinition = { ...plain, textFormat: 'telefon' };
+    expect(normalizeFieldValue(phone, raw)).toEqual({ ok: true, value: stored, warnings: [] });
+    expect(normalizeFieldValue(phone, stored)).toEqual({ ok: true, value: stored, warnings: [] });
+  });
+
+  it.each([
+    '12345',
+    '721 123456',
+    '0721 12 34 56 78 90 12',
+    '+0 721 123456',
+    '0721-HALLO',
+    '07+21',
+  ])('phone %j is refused', (raw) => {
+    const phone: FieldDefinition = { ...plain, textFormat: 'telefon' };
+    expect(normalizeFieldValue(phone, raw)).toEqual({ ok: false, issue: 'telefon.format' });
+  });
+
+  it.each([
+    ['erika.musterfrau@beispiel.de', 'erika.musterfrau@beispiel.de'],
+    ['Erika.Muster@Beispiel.DE', 'Erika.Muster@beispiel.de'],
+    [' erika@mail.beispiel-firma.com ', 'erika@mail.beispiel-firma.com'],
+    ['jörg@müller.de', 'jörg@müller.de'],
+  ])('e-mail %j → %s', (raw, stored) => {
+    const mail: FieldDefinition = { ...plain, textFormat: 'email' };
+    expect(normalizeFieldValue(mail, raw)).toEqual({ ok: true, value: stored, warnings: [] });
+    expect(normalizeFieldValue(mail, stored)).toEqual({ ok: true, value: stored, warnings: [] });
+  });
+
+  it.each([
+    'erika.beispiel.de',
+    'erika@beispiel',
+    '@beispiel.de',
+    'erika@.de',
+    'erika..m@beispiel.de',
+    '.erika@beispiel.de',
+    'erika@beispiel.d',
+    'erika@-beispiel.de',
+    'eri(ka)@beispiel.de',
+    'erika@beispiel.de1',
+  ])('e-mail %j is refused', (raw) => {
+    const mail: FieldDefinition = { ...plain, textFormat: 'email' };
+    expect(normalizeFieldValue(mail, raw)).toEqual({ ok: false, issue: 'email.format' });
+  });
+
   it('takes counts in half steps (Kinderfreibetragszähler) and stores them with a comma', () => {
     const half: FieldDefinition = { ...plain, textFormat: 'halbeSchritte' };
     for (const [raw, stored] of [

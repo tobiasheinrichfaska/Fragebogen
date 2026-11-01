@@ -1,5 +1,6 @@
 // How stored values read for people — on screen and in the PDF. Values are already normalised
 // (canon 1); this only formats them by German conventions and never changes data.
+import { describeCalendar } from './calendar';
 import { formatGermanDate, isIsoDate, isIsoMonth, MONTH_NAMES } from './dates';
 import type { FieldDefinition, FieldType, FieldValue } from './model';
 import { optionsOf } from './options';
@@ -83,6 +84,7 @@ const FORMATTERS: Readonly<
       ? `${germanNumber(value)}${field.unit === undefined ? '' : ` ${field.unit}`}`
       : String(value),
   month: (value) => (typeof value === 'string' ? germanMonth(value) : String(value)),
+  calendar: (value, field) => describeCalendar(value, field.options ?? []),
 };
 
 // `{fieldId}` in a question or help text: an earlier answer of the same role, e.g. "Ist Ihr

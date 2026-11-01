@@ -1,6 +1,7 @@
 // Input normalisation, canon version 1. Values are normalised once when entered and stored in that
 // form; verification hashes the stored values as they are. A later change of these rules can then
 // never flip an old verdict — it requires a new CANON_VERSION instead.
+import { normalizeCalendar } from './calendar';
 import { isIsoMonth, parseIsoDate } from './dates';
 import { accept, reject, type Checked, type IssueCode } from './issues';
 import { isPlainObject, isWellFormed } from './jcs';
@@ -154,6 +155,29 @@ const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<
     const compact = text.replace(/\s/g, '');
     return /^(?!00)\d{5}$/.test(compact) ? accept(compact) : reject('plz.format');
   },
+  // Phone number as written (Tobias 2026-11-01: "auf Stimmigkeit prüfen"): starts with 0 or + (a
+  // "(0)" after the country code is common), only digits and the usual separators, 6 to 15 digits
+  // (E.164 has at most 15).
+  telefon: (text) => {
+    const digits = text.replace(/\D/g, '').length;
+    const shape = /^(?:\+[1-9]|\(?0)[\d ()/.-]*$/.test(text);
+    return shape && digits >= 6 && digits <= 15 ? accept(text) : reject('telefon.format');
+  },
+  // E-mail address: one @, a local part without spaces or brackets, a domain with at least one dot
+  // and a top-level domain of letters; the domain is stored in small letters (it is case-blind).
+  email: (text) => {
+    const compact = text.replace(/\s/g, '');
+    const at = compact.lastIndexOf('@');
+    const local = compact.slice(0, at);
+    const domain = compact.slice(at + 1).toLocaleLowerCase('de-DE');
+    const localOk = /^[^\s@"(),:;<>[\]\\]+$/.test(local) && !/^\.|\.$|\.\./.test(local);
+    const domainOk = /^(?:[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?\.)+\p{L}{2,63}$/u.test(
+      domain,
+    );
+    return at > 0 && localOk && domainOk && compact.length <= 254
+      ? accept(`${local}@${domain}`)
+      : reject('email.format');
+  },
   // A count in half steps such as the Kinderfreibetragszähler: "4", "4,5" (stored with a comma).
   halbeSchritte: (text) => {
     const match = /^(\d{1,2})(?:[,.]([05])0?)?$/.exec(text.replace(/\s/g, ''));
@@ -257,6 +281,7 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
     return rows.ok ? accept(rows.value, rows.warnings) : reject(rows.issue);
   },
   file: () => reject('type.unsupported'),
+  calendar: (raw, field) => normalizeCalendar(raw, field.options ?? []),
 };
 
 /** Row ids of a table: "r1", "r2", … — a new row takes the next free number, ids never shift. */

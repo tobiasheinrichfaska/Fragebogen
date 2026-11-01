@@ -94,7 +94,8 @@ describe('Beitragsgruppen per scenario', () => {
     [
       'Minijob, privately insured, exempt from RV',
       monatlich('520,00', 'minijob'),
-      { ...PKV, artLautVereinbarung: 'minijob', rvBefreiungWunsch: 'ja', pkvBestand2002: 'nein' },
+      // No 2002 question in a Minijob any more (Tobias 2026-11-01): it decides nothing there.
+      { ...PKV, artLautVereinbarung: 'minijob', rvBefreiungWunsch: 'ja' },
       '109',
       '0500',
       false,

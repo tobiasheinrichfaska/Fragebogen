@@ -87,6 +87,7 @@ const KIND: Readonly<Record<FieldDefinition['type'], string>> = {
   file: 'Datei',
   number: 'Zahl',
   month: 'Monat',
+  calendar: 'Kalender',
 };
 
 function leaves(condition: Condition | undefined): FieldId[] {

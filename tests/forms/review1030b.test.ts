@@ -205,20 +205,24 @@ describe('check hints of the review', () => {
   it('names the status marker, a missing exemption and a missing A1 certificate', () => {
     const q = filled(
       'arbeitgeber',
-      { ...employer, agBeziehung: 'ehegatte' },
+      {
+        ...employer,
+        agBeziehung: 'ehegatte',
+        agAuslandSvBetrieb: true,
+        agSvAusland: true,
+        agSvAuslandStaat: 'Österreich',
+        agSvAuslandA1: false,
+      },
       filled('person', {
         versorgungswerk: 'offen',
         versorgungswerkName: 'Versorgungswerk der Steuerberater',
-        svAusland: true,
-        svAuslandStaat: 'Österreich',
-        svAuslandA1: false,
       }),
     );
     expect(ids(q)).toEqual(
       expect.arrayContaining([
         'statusfeststellung',
         'versorgungswerkOhneBefreiung',
-        'svAuslandOhneA1',
+        'agSvAuslandOhneA1',
       ]),
     );
   });
@@ -326,5 +330,68 @@ describe('validity of a form version (Tobias 2026-10-30)', () => {
           }),
       ),
     ).toEqual(['$.validity.until lies before "from"']);
+  });
+});
+
+// Tobias 2026-11-01 (review of the test version).
+describe('A1 certificate decided by the employer', () => {
+  it('never asks the person', () => {
+    const person = definition.sections
+      .flatMap((section) => section.fields)
+      .filter((field) => field.role === 'person')
+      .map((field) => field.id);
+    expect(person.filter((id) => /ausland|a1/i.test(id) && id.startsWith('sv'))).toEqual([]);
+  });
+
+  it('asks the employer once per business (bookmark link), then per person', () => {
+    const firm = definition.sections
+      .flatMap((section) => section.fields)
+      .find((field) => field.id === 'agAuslandSvBetrieb');
+    expect(firm?.masterData).toBe('auslandSv');
+    expect(shown('arbeitgeber', { agAuslandSvBetrieb: false })).not.toContain('agSvAusland');
+    expect(shown('arbeitgeber', { agAuslandSvBetrieb: true })).toContain('agSvAusland');
+    expect(shown('arbeitgeber', { agAuslandSvBetrieb: true, agSvAusland: true })).toEqual(
+      expect.arrayContaining(['agSvAuslandStaat', 'agSvAuslandA1']),
+    );
+  });
+});
+
+describe('health insurance follow-ups only where they matter', () => {
+  const FOLLOW_UPS = [
+    'pkvLetzteKrankenkasse',
+    'pkvBescheinigung',
+    'pkvAusland',
+    'pkvAngehoerigeEigene',
+    'pkvWiderspruch',
+    'pkvBestand2002',
+    'gkvLetzte5Jahre',
+    'kvBefreiung',
+  ];
+
+  it.each(['minijob', 'aushilfe'])(
+    'asks none of them in a %s (no subsidy, no compulsory insurance)',
+    (art) => {
+      const ids = shown('person', { artLautVereinbarung: art, krankenversicherung: 'privat' });
+      expect(ids).toContain('krankenversicherung');
+      expect(ids.filter((id) => FOLLOW_UPS.includes(id))).toEqual([]);
+    },
+  );
+
+  it.each(['festeStelle', 'unbekannt'])(
+    'asks them for privately insured persons in a %s',
+    (art) => {
+      const ids = shown('person', { artLautVereinbarung: art, krankenversicherung: 'privat' });
+      expect(FOLLOW_UPS.filter((id) => !ids.includes(id))).toEqual([]);
+    },
+  );
+});
+
+describe('contact data are checked', () => {
+  it('refuses an implausible phone number or e-mail address', () => {
+    const q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
+    expect(setValue(q, form, 'person', 'telefon', '12345')).toMatchObject({ ok: false });
+    expect(setValue(q, form, 'person', 'email', 'erika.beispiel.de')).toMatchObject({ ok: false });
+    expect(setValue(q, form, 'person', 'telefon', '0721 123456')).toMatchObject({ ok: true });
+    expect(setValue(q, form, 'person', 'email', 'erika@beispiel.de')).toMatchObject({ ok: true });
   });
 });

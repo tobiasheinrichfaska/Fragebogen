@@ -409,7 +409,8 @@
           "help": "Freiwillig, nur für Rückfragen zu Ihren Angaben und zur Lohnabrechnung.",
           "required": false,
           "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung",
-          "voluntary": true
+          "voluntary": true,
+          "textFormat": "telefon"
         },
         {
           "id": "email",
@@ -420,7 +421,8 @@
           "help": "Freiwillig, nur für Rückfragen zu Ihren Angaben und zur Lohnabrechnung.",
           "required": false,
           "purpose": "Rückfragen zu Ihren Angaben und zur Lohnabrechnung",
-          "voluntary": true
+          "voluntary": true,
+          "textFormat": "email"
         }
       ]
     },
@@ -1277,45 +1279,6 @@
             "contains": "sonstiges"
           },
           "because": "„Etwas anderes“ braucht eine Beschreibung, damit die lohnabrechnende Stelle die Versicherungspflicht beurteilen kann."
-        },
-        {
-          "id": "svAusland",
-          "role": "person",
-          "type": "boolean",
-          "label": "Sozialversicherung in einem anderen Staat",
-          "question": "Sind Sie für diese Beschäftigung in einem anderen Staat sozialversichert, zum Beispiel mit einer A1-Bescheinigung?",
-          "help": "Das betrifft vor allem Saisonkräfte und Beschäftigte, die in einem anderen Staat der EU, des EWR oder in der Schweiz wohnen oder dort zugleich arbeiten. Die A1-Bescheinigung stellt der Träger dieses Staats aus.",
-          "required": true,
-          "initial": false,
-          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004); A1-Bescheinigung als Nachweis (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
-        },
-        {
-          "id": "svAuslandStaat",
-          "role": "person",
-          "type": "text",
-          "label": "Staat der Sozialversicherung",
-          "question": "In welchem Staat sind Sie sozialversichert?",
-          "required": true,
-          "showIf": {
-            "field": "svAusland",
-            "equals": true
-          },
-          "because": "Nur wer in einem anderen Staat versichert ist, nennt ihn; dann gelten unter Umständen dessen Rechtsvorschriften statt der deutschen (Art. 11 ff. VO (EG) Nr. 883/2004).",
-          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004)"
-        },
-        {
-          "id": "svAuslandA1",
-          "role": "person",
-          "type": "boolean",
-          "label": "A1-Bescheinigung liegt vor",
-          "question": "Haben Sie für diese Beschäftigung eine A1-Bescheinigung?",
-          "required": true,
-          "showIf": {
-            "field": "svAusland",
-            "equals": true
-          },
-          "because": "Die A1-Bescheinigung belegt, welche Rechtsvorschriften gelten; ohne sie prüft die lohnabrechnende Stelle die Zuständigkeit selbst.",
-          "purpose": "Nachweis der anzuwendenden Rechtsvorschriften (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
         }
       ]
     },
@@ -1735,10 +1698,20 @@
           "required": false,
           "purpose": "Bestimmung der Einzugsstelle für die Beiträge zur Renten- und Arbeitslosenversicherung (§ 28i SGB IV)",
           "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Bei privat Versicherten gehen die Beiträge zur Renten- und Arbeitslosenversicherung an die zuletzt zuständige gesetzliche Krankenkasse (§ 28i SGB IV).",
+          "because": "Bei privat Versicherten gehen die Beiträge zur Renten- und Arbeitslosenversicherung an die zuletzt zuständige gesetzliche Krankenkasse (§ 28i SGB IV). Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Die Beiträge gehen dort an die Minijob-Zentrale oder fallen nicht an.",
           "suggestionsFrom": "gkvKrankenkassen202610"
         },
         {
@@ -1751,10 +1724,20 @@
           "required": true,
           "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
           "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben.",
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben. Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss.",
           "options": [
             {
               "id": "liegtBei",
@@ -1780,10 +1763,20 @@
           "required": true,
           "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
           "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben. Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss."
         },
         {
           "id": "pkvAngehoerigeEigene",
@@ -1795,10 +1788,20 @@
           "required": false,
           "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
           "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben. Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss."
         },
         {
           "id": "pkvWiderspruch",
@@ -1810,10 +1813,20 @@
           "required": false,
           "purpose": "Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) und seine Steuerfreiheit (§ 3 Nr. 62, § 39 Abs. 4 Nr. 4 EStG)",
           "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben."
+          "because": "Den Beitragszuschuss zur privaten Kranken- und Pflegeversicherung (§ 257 SGB V, § 61 SGB XI) bekommen nur privat Versicherte; nur dann braucht der Arbeitgeber diese Angaben. Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss."
         },
         {
           "id": "pkvBestand2002",
@@ -1825,10 +1838,20 @@
           "required": true,
           "purpose": "Besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)",
           "showIf": {
-            "field": "krankenversicherung",
-            "equals": "privat"
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Die niedrigere Jahresarbeitsentgeltgrenze gilt nur für Personen, die am 31.12.2002 privat versichert waren (§ 6 Abs. 7 SGB V).",
+          "because": "Die niedrigere Jahresarbeitsentgeltgrenze gilt nur für Personen, die am 31.12.2002 privat versichert waren (§ 6 Abs. 7 SGB V). Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss.",
           "options": [
             {
               "id": "nein",
@@ -1853,10 +1876,20 @@
           "required": true,
           "purpose": "Versicherungsfreiheit ab 55 Jahren (§ 6 Abs. 3a SGB V)",
           "showIf": {
-            "field": "krankenversicherung",
-            "in": ["privat", "anderweitig"]
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Ab 55 Jahren kann versicherungsfrei sein, wer in den letzten fünf Jahren nicht gesetzlich versichert war (§ 6 Abs. 3a SGB V); das ist nur bei privat oder anderweitig Versicherten offen.",
+          "because": "Ab 55 Jahren kann versicherungsfrei sein, wer in den letzten fünf Jahren nicht gesetzlich versichert war (§ 6 Abs. 3a SGB V); das ist nur bei privat oder anderweitig Versicherten offen. Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss.",
           "options": [
             {
               "id": "ja",
@@ -1882,10 +1915,20 @@
           "required": true,
           "purpose": "Befreiung von der Versicherungspflicht (§ 8 SGB V); befreite Personen bleiben versicherungsfrei (§ 6 Abs. 3 SGB V)",
           "showIf": {
-            "field": "krankenversicherung",
-            "in": ["privat", "anderweitig"]
+            "all": [
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "not": {
+                  "field": "artLautVereinbarung",
+                  "in": ["minijob", "aushilfe"]
+                }
+              }
+            ]
           },
-          "because": "Eine frühere Befreiung kann nur fortwirken, wenn die Person heute nicht gesetzlich versichert ist (§ 6 Abs. 3, § 8 SGB V).",
+          "because": "Eine frühere Befreiung kann nur fortwirken, wenn die Person heute nicht gesetzlich versichert ist (§ 6 Abs. 3, § 8 SGB V). Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss.",
           "options": [
             {
               "id": "nein",
@@ -3045,6 +3088,18 @@
           "purpose": "Vorfrage: Beschäftigung an Bord von Seeschiffen deckt der Fragebogen nicht ab (Personengruppen 140 bis 150, § 13 SGB IV)"
         },
         {
+          "id": "agAuslandSvBetrieb",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Beschäftigte mit Sozialversicherung in einem anderen Staat",
+          "question": "Beschäftigt Ihr Betrieb Personen, die für ihre Arbeit in einem anderen Staat sozialversichert sind, zum Beispiel mit einer A1-Bescheinigung?",
+          "help": "Gilt für den ganzen Betrieb; steht im Stammdaten-Link, wenn Sie ihn einmal angelegt haben. Das betrifft vor allem Saisonkräfte und Beschäftigte, die in einem anderen Staat der EU, des EWR oder in der Schweiz wohnen oder dort zugleich arbeiten.",
+          "required": true,
+          "initial": false,
+          "masterData": "auslandSv",
+          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004); A1-Bescheinigung als Nachweis (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
+        },
+        {
           "id": "agBetriebsart",
           "role": "arbeitgeber",
           "type": "choice",
@@ -3164,6 +3219,49 @@
               "label": "Anspruch auf Fortzahlung der Bezüge und Beihilfe bei Krankheit nach beamtenrechtlichen Grundsätzen (z. B. Lehrkraft an einer privaten Ersatzschule)"
             }
           ]
+        },
+        {
+          "id": "agSvAusland",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Sozialversicherung in einem anderen Staat",
+          "question": "Ist die Person für diese Beschäftigung in einem anderen Staat sozialversichert?",
+          "help": "Die A1-Bescheinigung stellt der Träger dieses Staats aus.",
+          "required": true,
+          "showIf": {
+            "field": "agAuslandSvBetrieb",
+            "equals": true
+          },
+          "because": "Nur in einem Betrieb, der solche Beschäftigte hat, kommt es bei der einzelnen Person darauf an (Art. 11 ff. VO (EG) Nr. 883/2004).",
+          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004); A1-Bescheinigung als Nachweis (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
+        },
+        {
+          "id": "agSvAuslandStaat",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Staat der Sozialversicherung",
+          "question": "In welchem Staat ist die Person sozialversichert?",
+          "required": true,
+          "showIf": {
+            "field": "agSvAusland",
+            "equals": true
+          },
+          "because": "Nur wer in einem anderen Staat versichert ist, braucht ihn; dann gelten unter Umständen dessen Rechtsvorschriften statt der deutschen (Art. 11 ff. VO (EG) Nr. 883/2004).",
+          "purpose": "Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004)"
+        },
+        {
+          "id": "agSvAuslandA1",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "A1-Bescheinigung liegt vor",
+          "question": "Liegt Ihnen für diese Beschäftigung eine A1-Bescheinigung vor?",
+          "required": true,
+          "showIf": {
+            "field": "agSvAusland",
+            "equals": true
+          },
+          "because": "Die A1-Bescheinigung belegt, welche Rechtsvorschriften gelten; ohne sie prüft die lohnabrechnende Stelle die Zuständigkeit selbst.",
+          "purpose": "Nachweis der anzuwendenden Rechtsvorschriften (Art. 19 Abs. 2 VO (EG) Nr. 987/2009)"
         }
       ]
     },
@@ -5966,15 +6064,15 @@
       "source": "§ 6 Abs. 1 S. 1 Nr. 1, Abs. 4 SGB VI"
     },
     {
-      "id": "svAuslandOhneA1",
+      "id": "agSvAuslandOhneA1",
       "when": {
         "all": [
           {
-            "field": "svAusland",
+            "field": "agSvAusland",
             "equals": true
           },
           {
-            "field": "svAuslandA1",
+            "field": "agSvAuslandA1",
             "equals": false
           }
         ]

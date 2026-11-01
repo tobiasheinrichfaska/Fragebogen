@@ -6,7 +6,8 @@
 // and are only dropped at signing; the summary lists them so this never happens unseen.
 import { fieldDependencies } from './dependencies';
 import { describeFieldRules, fieldStates, infoBlocksOfRole, type PartData } from './form';
-import type { FieldId, FormDefinition, Part, RoleId } from './model';
+import { isPlainObject } from './jcs';
+import type { FieldDefinition, FieldId, FieldValue, FormDefinition, Part, RoleId } from './model';
 import { describeValidity, outsideValidity } from './validity';
 
 export type QuestionState = 'answered' | 'deferred' | 'open';
@@ -22,6 +23,8 @@ export type InterviewStep =
       level: number;
       required: boolean;
       state: QuestionState;
+      /** A further page of a table (`FieldDefinition.pages`); the first page has none. */
+      page?: string;
     }
   | { kind: 'summary'; key: 'summary' };
 
@@ -54,17 +57,65 @@ export function interviewSteps(
         (field) =>
           field.role === role && states.get(field.id)?.visible === true && !fixed.has(field.id),
       )
-      .map((field) => ({
-        kind: 'question' as const,
-        key: `question:${field.id}`,
-        fieldId: field.id,
-        sectionId: section.id,
-        level: dependencies.get(field.id)?.level ?? 0,
-        required: states.get(field.id)?.required === true,
-        state: questionState(draft, deferred, field.id),
-      })),
+      .flatMap((field): InterviewStep[] => {
+        const level = dependencies.get(field.id)?.level ?? 0;
+        return [
+          {
+            kind: 'question',
+            key: `question:${field.id}`,
+            fieldId: field.id,
+            sectionId: section.id,
+            level,
+            required: states.get(field.id)?.required === true,
+            state: questionState(draft, deferred, field.id),
+          },
+          ...pageSteps(field, draft.data[field.id], section.id, level),
+        ];
+      }),
   );
   return [...notices, ...questions, { kind: 'summary', key: 'summary' }];
+}
+
+/** The rows of a table answer; anything else has none. */
+export function tableRows(value: FieldValue | undefined): Record<string, FieldValue>[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((row) => (isPlainObject(row) ? [row as Record<string, FieldValue>] : []));
+}
+
+/** Steps of a table's further pages — only once the first page has rows. */
+function pageSteps(
+  field: FieldDefinition,
+  value: FieldValue | undefined,
+  sectionId: string,
+  level: number,
+): InterviewStep[] {
+  const rows = tableRows(value);
+  if (rows.length === 0) return [];
+  return (field.pages ?? []).map((page) => {
+    const columns = (field.columns ?? []).filter((column) => page.columns.includes(column.id));
+    const filled = rows.some((row) => columns.some((column) => (row[column.id] ?? null) !== null));
+    return {
+      kind: 'question',
+      key: `question:${field.id}:${page.id}`,
+      fieldId: field.id,
+      sectionId,
+      level,
+      required: columns.some((column) => column.required),
+      state: filled ? 'answered' : 'open',
+      page: page.id,
+    };
+  });
+}
+
+/** The columns asked on a page of a table; without a page, those of the first page. */
+export function pageColumns(field: FieldDefinition, page?: string): FieldDefinition[] {
+  const columns = field.columns ?? [];
+  if (page !== undefined) {
+    const named = field.pages?.find((candidate) => candidate.id === page)?.columns ?? [];
+    return columns.filter((column) => named.includes(column.id));
+  }
+  const elsewhere = new Set((field.pages ?? []).flatMap((candidate) => candidate.columns));
+  return columns.filter((column) => !elsewhere.has(column.id));
 }
 
 function questionState(

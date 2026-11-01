@@ -38,6 +38,7 @@ export const FIELD_TYPE_LABELS: Readonly<Record<FieldType, string>> = {
   file: 'Datei',
   number: 'Zahl',
   month: 'Monat',
+  calendar: 'Kalender',
 };
 
 export const SIGNATURE_POLICY_LABELS: Readonly<Record<SignaturePolicy, string>> = {

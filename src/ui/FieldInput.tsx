@@ -186,11 +186,21 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit 
       {...common}
       type="text"
       inputMode={
-        field.type === 'number' && field.signed ? 'text' : (INPUT_MODE[field.type] ?? 'text')
+        field.textFormat === 'telefon'
+          ? 'tel'
+          : field.textFormat === 'email'
+            ? 'email'
+            : field.type === 'number' && field.signed
+              ? 'text'
+              : (INPUT_MODE[field.type] ?? 'text')
       }
       placeholder={field.type === 'number' ? numberPlaceholder(field) : PLACEHOLDER[field.type]}
       autoCapitalize={
-        field.type === 'iban' || field.type === 'svNumber' ? 'characters' : 'sentences'
+        field.type === 'iban' || field.type === 'svNumber'
+          ? 'characters'
+          : field.textFormat === 'email'
+            ? 'none'
+            : 'sentences'
       }
       onKeyDown={(event) => {
         if (event.key === 'Enter') onSubmit();

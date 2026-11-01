@@ -19,6 +19,8 @@ export type IssueCode =
   | 'plz.format'
   | 'kldb.format'
   | 'halbeSchritte.format'
+  | 'telefon.format'
+  | 'email.format'
   | 'validity.outside'
   | 'iban.format'
   | 'iban.length'
@@ -37,6 +39,8 @@ export type IssueCode =
   | 'rows.tooMany'
   | 'rows.rowId'
   | 'rows.unknownColumn'
+  | 'calendar.format'
+  | 'calendar.duplicate'
   | 'signature.nameMismatch';
 
 export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
@@ -59,6 +63,9 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'plz.format': 'Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.',
   'kldb.format': 'Die Berufskennziffer nach der Klassifikation der Berufe 2010 hat 5 Ziffern.',
   'halbeSchritte.format': 'Bitte eine Zahl in halben Schritten eingeben, zum Beispiel 4 oder 4,5.',
+  'telefon.format':
+    'Bitte eine Telefonnummer mit Vorwahl eingeben, zum Beispiel 0721 123456 oder +49 721 123456.',
+  'email.format': 'Bitte eine E-Mail-Adresse wie name@beispiel.de eingeben.',
   'validity.outside':
     'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung. Unterschreiben und weitergeben lässt sich der Fragebogen so nicht; bitte die Fassung verwenden, die für dieses Datum gilt.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
@@ -82,6 +89,8 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'rows.tooMany': 'Die Tabelle hat zu viele Zeilen (höchstens 30).',
   'rows.rowId': 'Eine Tabellenzeile ist fehlerhaft gekennzeichnet.',
   'rows.unknownColumn': 'Eine Tabellenzeile enthält eine unbekannte Spalte.',
+  'calendar.format': 'Ein Kalendertag ist fehlerhaft eingetragen.',
+  'calendar.duplicate': 'Ein Kalendertag ist doppelt eingetragen.',
   'signature.nameMismatch': 'Der getippte Name weicht vom angegebenen Namen ab. Bitte prüfen.',
 };
 

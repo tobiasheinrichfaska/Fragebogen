@@ -36,6 +36,11 @@ function roleAt(d: FormDefinition, index: number): RoleDefinition {
   return role;
 }
 
+const MARKS = [
+  { id: 'urlaub', label: 'Urlaub' },
+  { id: 'krank', label: 'krank' },
+];
+
 const textField = (id: string): FieldDefinition => ({
   id,
   role: 'person',
@@ -356,6 +361,60 @@ describe('checkFormDefinition — references', () => {
       },
       '$.sections[0].fields[1].carryOver',
       'only for month fields',
+    ],
+    [
+      'calendar without marks',
+      (d) => {
+        Object.assign(fieldAt(d, 0, 5), { type: 'calendar', monthFrom: 'monat' });
+        delete fieldAt(d, 0, 5).multiline;
+        fieldAt(d, 0, 0).type = 'month';
+        fieldAt(d, 0, 0).id = 'monat';
+      },
+      '$.sections[0].fields[5]',
+      'needs options (its marks)',
+    ],
+    [
+      'calendar without monthFrom',
+      (d) => {
+        Object.assign(fieldAt(d, 0, 5), { type: 'calendar', options: MARKS });
+        delete fieldAt(d, 0, 5).multiline;
+      },
+      '$.sections[0].fields[5]',
+      'needs monthFrom',
+    ],
+    [
+      'calendar showing the month of a date field',
+      (d) => {
+        Object.assign(fieldAt(d, 0, 5), {
+          type: 'calendar',
+          options: MARKS,
+          monthFrom: 'geburtsdatum',
+        });
+        delete fieldAt(d, 0, 5).multiline;
+      },
+      '$.sections[0].fields[5].monthFrom',
+      'top-level month field of the same role',
+    ],
+    [
+      'calendar marks with the same first letter',
+      (d) => {
+        Object.assign(fieldAt(d, 0, 5), {
+          type: 'calendar',
+          options: [...MARKS, { id: 'kindKrank', label: 'Kind krank' }],
+          monthFrom: 'geburtsdatum',
+        });
+        delete fieldAt(d, 0, 5).multiline;
+      },
+      '$.sections[0].fields[5].options[2].label',
+      'different letters ("K")',
+    ],
+    [
+      'monthFrom on a text field',
+      (d) => {
+        fieldAt(d, 0, 0).monthFrom = 'geburtsdatum';
+      },
+      '$.sections[0].fields[0].monthFrom',
+      'only calendars',
     ],
     [
       'showIf on an unknown field',
@@ -1011,5 +1070,25 @@ describe('explainer video paths', () => {
     expect(parseFormDefinition(rawWith(['sections', 0, 'fields', 0, 'explainer'], path)).ok).toBe(
       false,
     );
+  });
+});
+
+describe('calendar fields', () => {
+  it('accepts a calendar showing a month field of the same role', () => {
+    const d = definition();
+    d.sections[0]?.fields.push(
+      { id: 'monat', role: 'person', type: 'month', label: 'Monat', required: true, purpose: 'T' },
+      {
+        id: 'fehltage',
+        role: 'person',
+        type: 'calendar',
+        label: 'Urlaub und Krankheit',
+        required: false,
+        purpose: 'T',
+        options: MARKS,
+        monthFrom: 'monat',
+      },
+    );
+    expect(checkFormDefinition(d)).toEqual([]);
   });
 });

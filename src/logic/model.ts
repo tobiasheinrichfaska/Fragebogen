@@ -63,6 +63,7 @@ export const FIELD_TYPES = [
   'file',
   'number',
   'month',
+  'calendar',
 ] as const;
 export type FieldType = (typeof FIELD_TYPES)[number];
 
@@ -71,7 +72,13 @@ export interface QuickAnswer {
   value: string | null;
 }
 
-export const TEXT_FORMATS = ['postleitzahlDe', 'kldb2010', 'halbeSchritte'] as const;
+export const TEXT_FORMATS = [
+  'postleitzahlDe',
+  'kldb2010',
+  'halbeSchritte',
+  'telefon',
+  'email',
+] as const;
 export type TextFormat = (typeof TEXT_FORMATS)[number];
 
 export interface ChoiceOption {
@@ -150,6 +157,17 @@ export interface FieldDefinition {
   /** Tables only: what one row is called on screen, e.g. "Kind" → "Kind 1", "Kind 2". */
   rowLabel?: string;
   /**
+   * Tables only: columns whose answers name the row on screen, e.g. the name → "Mitarbeiter/in 1:
+   * Muster, Anna".
+   */
+  rowTitle?: FieldId[];
+  /**
+   * Tables only: further pages of the same table, each its own interview step for the rows entered
+   * on the first page (Tobias 2026-11-01: Urlaub and Krankheit as a block per person). A page
+   * cannot add or remove rows; the columns it names are asked only there.
+   */
+  pages?: TablePage[];
+  /**
    * How the answer is taken over from another questionnaire (prefill.ts). Default: as it is, when
    * the other form has the same field id and type. `false`: not at all (e.g. the hours of last
    * month's payroll report). `nextMonth` (`month` fields only): one month later.
@@ -173,6 +191,12 @@ export interface FieldDefinition {
   decimals?: number;
   /** `number` only: negative values allowed (e.g. a working-time account). */
   signed?: boolean;
+  /**
+   * `calendar` only (required): the top-level `month` field of the same role whose month the
+   * calendar shows, e.g. the reporting month. The calendar's `options` are its marks (e.g. Urlaub,
+   * krank) in the order a tap cycles through them.
+   */
+  monthFrom?: FieldId;
   /** Derived value: name of a pure function in the logic layer, never code in data. */
   computed?: { fn: string; args: FieldId[] };
   /**
@@ -186,6 +210,16 @@ export interface FieldDefinition {
    * reuse in every form with the same key. Only for the station's own data, never the person's.
    */
   masterData?: string;
+}
+
+/** A further page of a table (`FieldDefinition.pages`). */
+export interface TablePage {
+  /** Short id, unique within the table; part of the step key. */
+  id: string;
+  /** Heading of the step, e.g. "Urlaub und Krankheit". */
+  question: string;
+  help?: string;
+  columns: FieldId[];
 }
 
 export interface SectionDefinition {

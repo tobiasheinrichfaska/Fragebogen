@@ -21,7 +21,8 @@ bestätigt, Familienname und Vornamen eingegeben.
 4. Die Art der Rente wählen und „Rente seit“ eingeben, **„Weiter“**.
 5. Bei „Krankenversicherung“ auf **„ändern“**, „privat“ wählen und die Folgefragen beantworten, bis
    die Frage nach Beiträgen für Angehörige mit eigenem privatem Vertrag kommt. Dort **„Ja“** tippen,
-   dann **„Zurück“**.
+   dann **„Zurück“**. (Diese Folgefragen gibt es nur, wenn bei „Vereinbarte Art der Beschäftigung“
+   weder Minijob noch Aushilfe gewählt ist – siehe MT-86.)
 6. **„Auswahl aufheben“** tippen.
 
 **Erwartet:**
@@ -230,3 +231,33 @@ Projekt.
 - Der Link enthält `landwirtschaft=ja` und `betriebsart=werkstatt`.
 - Im neuen Fragebogen sind beide Antworten schon gesetzt (die Vorbelegung „Nein“ wird ersetzt),
   und die passenden Vorfragen je Person (Familienangehörige, Werkstattbeschäftigte) erscheinen.
+
+---
+
+## MT-86: Kontaktdaten, A1 beim Arbeitgeber, Krankenversicherung im Minijob
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.
+
+**Schritte:**
+
+1. Bei „Telefonnummer“ `12345` eingeben und **„Weiter“** tippen; dann `0721 123456`.
+2. Bei „E-Mail-Adresse“ `erika.beispiel.de` eingeben und **„Weiter“** tippen; dann
+   `Erika@Beispiel.DE`.
+3. Bis „Vereinbarte Art der Beschäftigung“ weitergehen und „einen Minijob“ wählen; bei
+   „Krankenversicherung“ „privat“ wählen.
+4. Über „App neu starten“ einen neuen Personalfragebogen als **„Arbeitgeber“** beginnen und die
+   Fragen bis „Besondere Fälle“ durchgehen.
+
+**Erwartet:**
+
+- Schritt 1–2: Die falschen Eingaben werden mit einem Hinweis abgelehnt (Telefonnummer mit Vorwahl,
+  E-Mail wie name@beispiel.de); die richtigen gehen weiter. _Nicht offensichtlich:_ Die E-Mail wird
+  als `Erika@beispiel.de` gespeichert – der Teil nach dem @ in Kleinbuchstaben, der Teil davor wie
+  eingegeben.
+- Schritt 3: Nach „privat“ folgt nur die Frage nach dem Versicherungsunternehmen. Bescheinigung für den
+  Zuschuss, Stand 2002, die letzten fünf Jahre, frühere Befreiung und letzte gesetzliche Krankenkasse
+  kommen im Minijob **nicht** (kein Zuschuss, keine Versicherungspflicht).
+- Die beschäftigte Person wird nirgends nach einer A1-Bescheinigung gefragt.
+- Schritt 4: Der Arbeitgeber wird einmal gefragt, ob sein Betrieb Beschäftigte mit Sozialversicherung
+  in einem anderen Staat hat (vorbelegt „Nein“; steht danach im Stammdaten-Link als `auslandSv`).
+  Erst bei „Ja“ kommen je Person die Fragen nach dem anderen Staat und der A1-Bescheinigung.

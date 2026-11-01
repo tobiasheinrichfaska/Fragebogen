@@ -28,6 +28,7 @@ import {
   type RoleDefinition,
   type RoleId,
   type SectionDefinition,
+  type TablePage,
   TEXT_FORMATS,
 } from './model';
 
@@ -366,7 +367,21 @@ export const FIELD_KEYS = [
   'signed',
   'because',
   'fromRole',
+  'monthFrom',
+  'rowTitle',
+  'pages',
 ] as const;
+
+function decodePage(d: Decoder, raw: unknown, path: string): TablePage | undefined {
+  const o = d.object(raw, path, ['id', 'question', 'help', 'columns']);
+  if (!o) return undefined;
+  const id = d.string(o.id, `${path}.id`, ID);
+  const question = d.string(o.question, `${path}.question`);
+  const help = o.help === undefined ? undefined : d.string(o.help, `${path}.help`);
+  const columns = d.array(o.columns, `${path}.columns`, (v, p) => d.string(v, p, ID), 1);
+  if (id === undefined || question === undefined || columns === undefined) return undefined;
+  return { id, question, ...(help === undefined ? {} : { help }), columns };
+}
 
 function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | undefined {
   const o = d.object(raw, path, FIELD_KEYS);
@@ -449,6 +464,16 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const signed = o.signed === undefined ? undefined : d.boolean(o.signed, `${path}.signed`);
   const because = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
   const fromRole = o.fromRole === undefined ? undefined : decodeFromRole(d, o.fromRole, path);
+  const monthFrom =
+    o.monthFrom === undefined ? undefined : d.string(o.monthFrom, `${path}.monthFrom`, ID);
+  const rowTitle =
+    o.rowTitle === undefined
+      ? undefined
+      : d.array(o.rowTitle, `${path}.rowTitle`, (v, p) => d.string(v, p, ID), 1);
+  const pages =
+    o.pages === undefined
+      ? undefined
+      : d.array(o.pages, `${path}.pages`, (v, p) => decodePage(d, v, p), 1);
   if (
     id === undefined ||
     role === undefined ||
@@ -490,6 +515,9 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(signed === undefined ? {} : { signed }),
     ...(because === undefined ? {} : { because }),
     ...(fromRole === undefined ? {} : { fromRole }),
+    ...(monthFrom === undefined ? {} : { monthFrom }),
+    ...(rowTitle === undefined ? {} : { rowTitle }),
+    ...(pages === undefined ? {} : { pages }),
   };
 }
 
@@ -727,6 +755,72 @@ function uniqueIds({ definition, report }: CheckContext): void {
   }
 }
 
+function calendarShape(
+  field: FieldDefinition,
+  path: string,
+  fields: CheckContext['fields'],
+  report: CheckContext['report'],
+): void {
+  if (field.type !== 'calendar') {
+    if (field.monthFrom !== undefined) report(`${path}.monthFrom`, 'only calendars have monthFrom');
+    return;
+  }
+  if (!field.options) report(path, 'a calendar needs options (its marks)');
+  // The day cell shows the first letter of the mark, so the letters must tell the marks apart.
+  const letters = new Set<string>();
+  field.options?.forEach((mark, i) => {
+    const letter = mark.label.trim().charAt(0).toLocaleUpperCase('de-DE');
+    if (letters.has(letter)) {
+      report(
+        `${path}.options[${i}].label`,
+        `marks must start with different letters ("${letter}")`,
+      );
+    }
+    letters.add(letter);
+  });
+  if (field.monthFrom === undefined) {
+    report(path, 'a calendar needs monthFrom');
+    return;
+  }
+  const month = fields.get(field.monthFrom);
+  if (!month) report(`${path}.monthFrom`, `unknown field "${field.monthFrom}"`);
+  else if (month.field.type !== 'month' || month.isColumn || month.field.role !== field.role) {
+    report(`${path}.monthFrom`, 'monthFrom must name a top-level month field of the same role');
+  }
+}
+
+/** Row titles and further pages of a table name its own columns; every column on one page at most. */
+function tablePages(field: FieldDefinition, path: string, report: CheckContext['report']): void {
+  if (field.type !== 'repeatGroup') {
+    if (field.rowTitle) report(`${path}.rowTitle`, 'only tables have a row title');
+    if (field.pages) report(`${path}.pages`, 'only tables have pages');
+    return;
+  }
+  const columns = new Set((field.columns ?? []).map((column) => column.id));
+  field.rowTitle?.forEach((id, i) => {
+    if (!columns.has(id)) report(`${path}.rowTitle[${i}]`, `"${id}" is not a column of this table`);
+  });
+  const onPage = new Map<string, string>();
+  const pageIds = new Set<string>();
+  field.pages?.forEach((page, p) => {
+    const at = `${path}.pages[${p}]`;
+    if (pageIds.has(page.id)) report(`${at}.id`, `duplicate page id "${page.id}"`);
+    pageIds.add(page.id);
+    page.columns.forEach((id, c) => {
+      if (!columns.has(id)) report(`${at}.columns[${c}]`, `"${id}" is not a column of this table`);
+      else if (onPage.has(id)) {
+        report(`${at}.columns[${c}]`, `"${id}" is already on page "${onPage.get(id) ?? ''}"`);
+      } else if (field.rowTitle?.includes(id)) {
+        report(`${at}.columns[${c}]`, `"${id}" names the row and belongs on the first page`);
+      }
+      onPage.set(id, page.id);
+    });
+  });
+  if (field.pages && (field.columns ?? []).every((column) => onPage.has(column.id))) {
+    report(`${path}.pages`, 'the first page needs at least one column');
+  }
+}
+
 function fieldShapes({ fields, roleIds, report }: CheckContext): void {
   for (const { field, path, isColumn } of fields.values()) {
     if (!roleIds.has(field.role)) report(`${path}.role`, `unknown role "${field.role}"`);
@@ -734,7 +828,11 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     if (isChoice && !field.options && !field.optionsFrom) {
       report(path, `${field.type} field needs options`);
     }
-    if (!isChoice && field.options) report(`${path}.options`, `only choice fields have options`);
+    if (!isChoice && field.type !== 'calendar' && field.options) {
+      report(`${path}.options`, `only choice fields and calendars have options`);
+    }
+    calendarShape(field, path, fields, report);
+    tablePages(field, path, report);
     if (field.optionsFrom !== undefined) {
       const at = `${path}.optionsFrom`;
       if (field.type !== 'choice') report(at, 'only choice fields take options from a list');
