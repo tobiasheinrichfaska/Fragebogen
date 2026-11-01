@@ -123,6 +123,10 @@ describe('normalizeDate', () => {
     [' 01.02.2026 ', '2026-02-01'],
     ['2026-10-29', '2026-10-29'],
     ['29.02.2028', '2028-02-29'],
+    // iPhone test report 2026-11-01: the numeric keypad has no dot — digits only, or commas.
+    ['17051990', '1990-05-17'],
+    ['17,05,1990', '1990-05-17'],
+    ['1,2,2026', '2026-02-01'],
   ])('%j → %s', (raw, expected) => {
     expect(normalizeDate(raw)).toEqual({ ok: true, value: expected, warnings: [] });
   });
@@ -134,6 +138,8 @@ describe('normalizeDate', () => {
     ['29.10.26', 'date.format'],
     ['29/10/2026', 'date.format'],
     ['2026-1-5', 'date.format'],
+    ['1705199', 'date.format'],
+    ['31022026', 'date.invalid'],
     ['', 'date.format'],
     ['morgen', 'date.format'],
   ])('%j → %s', (raw, issue) => {

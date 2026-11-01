@@ -11,17 +11,8 @@ import {
   suggestionsOf,
   validityNote,
 } from '../logic/options';
-import { isTextLike } from './fieldKinds';
+import { INPUT_MODE, isTextLike } from './fieldKinds';
 import { SearchSelect } from './SearchSelect';
-
-const INPUT_MODE: Partial<Record<FieldType, 'numeric' | 'decimal' | 'text'>> = {
-  date: 'numeric',
-  taxId: 'numeric',
-  betriebsnummer: 'numeric',
-  money: 'decimal',
-  number: 'decimal',
-  month: 'decimal',
-};
 
 const PLACEHOLDER: Partial<Record<FieldType, string>> = {
   date: 'TT.MM.JJJJ',

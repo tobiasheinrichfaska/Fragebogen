@@ -47,13 +47,16 @@ function collapse(text: string): string {
   return text.replace(/\s+/g, ' ').trim();
 }
 
-const GERMAN_DATE = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/;
+// Dots, or commas from the German iPhone keypad; or eight digits without any separator — the
+// numeric keypad of iOS has no dot (iPhone test report, 2026-11-01).
+const GERMAN_DATE = /^(\d{1,2})[.,](\d{1,2})[.,](\d{4})$/;
+const DIGITS_DATE = /^(\d{2})(\d{2})(\d{4})$/;
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 
 /** Date: `TT.MM.JJJJ` (also `T.M.JJJJ`) or `YYYY-MM-DD` → `YYYY-MM-DD`. Two-digit years are refused. */
 export function normalizeDate(raw: string): Checked<IsoDate> {
   const text = raw.trim();
-  const german = GERMAN_DATE.exec(text);
+  const german = GERMAN_DATE.exec(text) ?? DIGITS_DATE.exec(text);
   let iso = text;
   if (german) {
     const [, day = '', month = '', year = ''] = german;
@@ -126,13 +129,15 @@ export function normalizeNumber(raw: string, field: FieldDefinition): Checked<st
   return reject('number.format');
 }
 
-const GERMAN_MONTH = /^(\d{1,2})[./](\d{4})$/;
+const GERMAN_MONTH = /^(\d{1,2})[./,](\d{4})$|^(\d{2})(\d{4})$/;
 
 /** Month: `MM.JJJJ`, `M/JJJJ` or `YYYY-MM` → `YYYY-MM`. */
 export function normalizeMonth(raw: string): Checked<string> {
   const text = raw.replace(/\s/g, '');
   const german = GERMAN_MONTH.exec(text);
-  const iso = german ? `${german[2] ?? ''}-${(german[1] ?? '').padStart(2, '0')}` : text;
+  const month = german?.[1] ?? german?.[3] ?? '';
+  const year = german?.[2] ?? german?.[4] ?? '';
+  const iso = german ? `${year}-${month.padStart(2, '0')}` : text;
   if (!/^\d{4}-\d{2}$/.test(iso)) return reject('month.format');
   return isIsoMonth(iso) ? accept(iso) : reject('month.invalid');
 }

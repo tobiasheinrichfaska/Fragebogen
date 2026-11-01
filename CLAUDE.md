@@ -543,6 +543,10 @@ Key design decisions (details in `docs/plan.md`):
   First report (2026-11-01): MT-11 asked for "1234 5678" but did not say the space is the point —
   reworded; MT-01/02/03 assumed the downloaded file — MT-01 marked "nicht im Testbereich",
   MT-02/03 rewritten for both; entry points and "App neu starten" added.
+- **iPhone test report** (2026-11-01, previous version): the numeric keypad of iOS has no dot, so
+  no date could be typed — dates accept `17051990` and `17,05,1990`, months `032026` and `3,2026`;
+  date fields open the keypad with a separator (`INPUT_MODE`, `src/ui/fieldKinds.ts`). MT-02 needs
+  a PC (F12), MT-01 the downloaded file.
 - **Entry of every manual test** (Tobias 2026-11-01: "sollte die Anleitung beginnen mit: Sie starten
   einen neuen Fragebogen …"): a `**Einstieg:**` line right under the heading names the questionnaire
   to start (all forms are offered in the test area) or the test it builds on; guarded by a test.

@@ -62,6 +62,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 1. Geben Sie als Betriebsnummer „1234567“ ein (nur 7 Ziffern) und klicken Sie **„Weiter“**.
 2. Geben Sie als Tag der Beschäftigungsaufnahme „31.02.2026“ ein und klicken Sie **„Weiter“**.
+3. Am Handy: Geben Sie das Datum nur mit Ziffern ein, „02112026“, und klicken Sie **„Weiter“**.
 
 **Erwartet:**
 
@@ -69,6 +70,9 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
   stehen.
 - Beim Datum steht **„Dieses Datum gibt es nicht.“**
 - Nach einer korrekten Eingabe geht es mit „Weiter“ normal weiter.
+- Schritt 3: Angenommen; in der Zusammenfassung steht „02.11.2026“. _Nicht offensichtlich:_ Die
+  Tastatur am Handy zeigt Ziffern mit einem Komma; auch „02,11,2026“ geht (iPhone-Testbericht vom
+  01.11.2026: vorher ließ sich dort kein Datum eingeben).
 
 ---
 

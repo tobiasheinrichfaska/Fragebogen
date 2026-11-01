@@ -43,7 +43,8 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'text.illFormed': 'Der Text enthält ein ungültiges Zeichen.',
   'value.type': 'Der Wert hat ein unerwartetes Format.',
   'type.unsupported': 'Dieser Feldtyp wird noch nicht unterstützt.',
-  'date.format': 'Bitte das Datum als TT.MM.JJJJ eingeben.',
+  'date.format':
+    'Bitte das Datum als TT.MM.JJJJ eingeben (am Handy genügen die Ziffern, z. B. 17051990).',
   'date.invalid': 'Dieses Datum gibt es nicht.',
   'money.format': 'Bitte einen Betrag wie 1.234,56 eingeben.',
   'money.decimals': 'Bitte höchstens zwei Nachkommastellen angeben.',
@@ -52,7 +53,8 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'number.decimals': 'Bitte nicht so viele Nachkommastellen angeben.',
   'number.negative': 'Hier ist keine negative Zahl möglich.',
   'number.tooLarge': 'Die Zahl ist zu groß.',
-  'month.format': 'Bitte einen Monat wie 03.2026 eingeben.',
+  'month.format':
+    'Bitte einen Monat wie 03.2026 eingeben (am Handy genügen die Ziffern, z. B. 032026).',
   'month.invalid': 'Diesen Monat gibt es nicht.',
   'plz.format': 'Bitte eine deutsche Postleitzahl mit 5 Ziffern eingeben.',
   'kldb.format': 'Die Berufskennziffer nach der Klassifikation der Berufe 2010 hat 5 Ziffern.',

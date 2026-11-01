@@ -92,6 +92,9 @@ describe('normalizeMonth', () => {
     ['12.2026', '2026-12'],
     ['2026-03', '2026-03'],
     [' 03 . 2026 ', '2026-03'],
+    // iPhone test report 2026-11-01: digits only, or the comma of the German keypad.
+    ['032026', '2026-03'],
+    ['3,2026', '2026-03'],
   ])('%j → %s', (raw, expected) => {
     expect(normalizeMonth(raw)).toEqual({ ok: true, value: expected, warnings: [] });
   });

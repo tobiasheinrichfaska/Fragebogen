@@ -28,6 +28,9 @@ Server (Einstieg dort: die Startseite der App rechts neben dem Testbereich).
 
 **Einstieg:** Startseite der App (im Testbereich: „App neu starten“); ab Schritt 2 ein neuer Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“.
 
+**Testbereich:** nur am PC – die Entwicklerwerkzeuge (F12) gibt es auf Handy und Tablet nicht
+(iPhone-Testbericht vom 01.11.2026).
+
 _Automatisch geprüft mit `npm run test:e2e` (Chromium, Firefox, WebKit): Die Datei verbietet per
 Sicherheitsrichtlinie (CSP) jede Verbindung; der Test meldet jede Anfrage, die das Gerät verlässt.
 Dieser Handtest bleibt für echte Geräte und Browser._
