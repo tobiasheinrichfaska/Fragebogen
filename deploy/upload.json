@@ -18,10 +18,10 @@
       "allowMapping": true,
       "files": [{ "from": "dist-test/index.html", "to": "index.html", "verify": true }]
     },
-    "kanzlei": {
-      "description": "Kanzlei-App mit Übergabe an das Lohnprogramm (nur von den IP-Adressen der Kanzlei)",
+    "mehrfachbearbeitung": {
+      "description": "Mehrfachbearbeitung: Kanzlei-Fassung mit Übergabe an das Lohnprogramm (nur von den IP-Adressen der Kanzlei; vorerst nicht hochgeladen)",
       "build": "build:kanzlei",
-      "folder": "kanzlei",
+      "folder": "mehrfachbearbeitung",
       "access": "ip",
       "allowMapping": true,
       "files": [{ "from": "dist-kanzlei/index.html", "to": "index.html", "verify": true }]

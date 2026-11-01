@@ -81,7 +81,7 @@ describe('deploy/upload.json', () => {
     const withMapping = Object.entries(committed.targets).filter(([, t]) => t.allowMapping);
     expect(withMapping.map(([name, t]) => [name, t.folder, t.access])).toEqual([
       ['test', 'test', 'ipOrLogin'],
-      ['kanzlei', 'kanzlei', 'ip'],
+      ['mehrfachbearbeitung', 'mehrfachbearbeitung', 'ip'],
     ]);
     expect(committed.targets.test).toMatchObject({ folder: 'test', access: 'ipOrLogin' });
     expect(committed.targets.test?.files[0]?.from).toBe('dist-test/index.html');

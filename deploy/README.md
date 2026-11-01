@@ -22,15 +22,15 @@ allein von den IP-Adressen der Kanzlei erreichbar ist – das Upload-Werkzeug l�
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf     # erst prüfen, nichts hochladen
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1                # öffentliche App
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test     # Testordner
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei  # Kanzlei-Ordner
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung  # später
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten    # Zugang oder IPs ändern
 ```
 
-| Ziel          | Ordner     | Inhalt                                                     | Wer darf zugreifen                                             |
-| ------------- | ---------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
-| `oeffentlich` | Subdomain  | App (`npm run build`) und diese `.htaccess`                | alle                                                           |
-| `test`        | `test/`    | App mit Formular-Entwürfen und Übergabe an Lohn und Gehalt | IP-Adressen der Kanzlei; sonst Tester-Anmeldung (`tester.ps1`) |
-| `kanzlei`     | `kanzlei/` | Kanzlei-App mit Übergabe an Lohn und Gehalt                | **nur** IP-Adressen der Kanzlei                                |
+| Ziel                  | Ordner                 | Inhalt                                                                                                                  | Wer darf zugreifen                                             |
+| --------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `oeffentlich`         | Subdomain              | App (`npm run build`) und diese `.htaccess`                                                                             | alle                                                           |
+| `test`                | `test/`                | App mit Formular-Entwürfen und Übergabe an Lohn und Gehalt                                                              | IP-Adressen der Kanzlei; sonst Tester-Anmeldung (`tester.ps1`) |
+| `mehrfachbearbeitung` | `mehrfachbearbeitung/` | Kanzlei-Fassung mit Übergabe an Lohn und Gehalt – **vorerst nicht hochgeladen** (der Testordner deckt die Testphase ab) | **nur** IP-Adressen der Kanzlei                                |
 
 Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen im Einrichtungsfenster
 und lädt sie **vor** der App hoch – der Ordner ist also nie offen. Die IP-Adressen stehen nur in

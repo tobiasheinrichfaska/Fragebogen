@@ -120,6 +120,7 @@ describe('questionnaire PDF', () => {
     expect(checked).toBeGreaterThan(2);
   });
 
+  // Three PDF reads and two saves: under a full parallel run this passed 5 s once (2026-11-01).
   it('survives re-saving with another program, and says it was re-saved', async () => {
     const doc = await PDFDocument.load(written.bytes);
     for (const useObjectStreams of [true, false]) {
@@ -130,7 +131,7 @@ describe('questionnaire PDF', () => {
     }
     const { text } = await readBack(written.bytes);
     expect(editClues(written.bytes, text.producer)).toEqual([]);
-  });
+  }, 60_000);
 
   it('detects an update appended after the app wrote the file', () => {
     const appended = new Uint8Array([

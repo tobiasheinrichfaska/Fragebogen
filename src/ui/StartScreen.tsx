@@ -1,9 +1,18 @@
 // Start: new questionnaire (latest published version of each form), open a file, delete all data.
 import { useRef } from 'react';
+import { APP_CONFIG } from '../config';
 import { isTestVersion, type FormRegistry, type RegisteredForm } from '../logic/formRegistry';
 import { DRAFT_HASHES } from '../io/bundledForms';
 import { describeValidity } from '../logic/validity';
 import { Card } from './common';
+import { TEST_AREA } from './testbereich/catalogue';
+
+// Only on the hosted app: in a downloaded file a relative link would lead nowhere, and the test
+// folder build does not link to itself.
+const testLink =
+  APP_CONFIG.testAddress !== undefined && !TEST_AREA && location.protocol === 'https:'
+    ? APP_CONFIG.testAddress
+    : undefined;
 
 interface Props {
   registry: FormRegistry;
@@ -83,6 +92,11 @@ export function StartScreen({ registry, onNew, onOpen, onKanzlei, onClearAll }: 
           Alle Daten auf diesem Gerät löschen
         </button>
       </Card>
+      {testLink && (
+        <p className="muted">
+          <a href={testLink}>Testbereich (für Tester)</a>
+        </p>
+      )}
     </>
   );
 }

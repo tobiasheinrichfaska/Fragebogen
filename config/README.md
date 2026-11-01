@@ -9,7 +9,8 @@ ausgeschlossen.
 {
   "kanzleiName": "Musterkanzlei",
   "appAddress": "https://fragebogen.example.org/",
-  "explainerBase": "https://www.example.org/erklaervideos"
+  "explainerBase": "https://www.example.org/erklaervideos",
+  "testAddress": "test/"
 }
 ```
 
@@ -19,6 +20,9 @@ ausgeschlossen.
 - `appAddress` wird in jede PDF gedruckt und verlinkt.
 - `explainerBase` und der im Formular eingefrorene Pfad ergeben den Link zum Erklärvideo, zum
   Beispiel `…/erklaervideos/sofortmeldung/versicherungsnummer`.
+- `testAddress` setzt auf der Startseite den Link „Testbereich (für Tester)“: ein einfacher relativer
+  Pfad wie `test/` (Buchstaben, Ziffern, `-`, `_`, `/`) oder eine `https://`-Adresse. Er erscheint nur,
+  wenn die App über https läuft – in einer heruntergeladenen Datei führte er ins Leere.
 
 ## Lokale Tests der Testseite (`tests.local.md`)
 

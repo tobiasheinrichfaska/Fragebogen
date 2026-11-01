@@ -10,7 +10,15 @@ export interface AppConfig {
   appAddress?: string;
   /** Base address of the explainer videos on the Kanzlei homepage. */
   explainerBase?: string;
+  /**
+   * The test folder, linked on the start page of the hosted app (Tobias 2026-11-01) — a plain
+   * relative path such as "test/" or an https address.
+   */
+  testAddress?: string;
 }
+
+// Letters, digits, "-", "_" and "/" only: never "..", a scheme or a query.
+const RELATIVE_PATH = /^(?!.*\.\.)[a-z0-9][a-z0-9_\-/]*$/i;
 
 export const NEUTRAL_CONFIG: AppConfig = {};
 
@@ -34,7 +42,7 @@ export function parseAppConfig(
   raw: unknown,
 ): { ok: true; config: AppConfig } | { ok: false; issues: DecodeIssue[] } {
   const d = new Decoder();
-  const o = d.object(raw, '$', ['kanzleiName', 'appAddress', 'explainerBase']);
+  const o = d.object(raw, '$', ['kanzleiName', 'appAddress', 'explainerBase', 'testAddress']);
   if (!o) return { ok: false, issues: d.issues };
   const kanzleiName =
     o.kanzleiName === undefined ? undefined : d.string(o.kanzleiName, '$.kanzleiName');
@@ -42,6 +50,12 @@ export function parseAppConfig(
     o.appAddress === undefined ? undefined : httpsAddress(d, o.appAddress, '$.appAddress');
   const explainerBase =
     o.explainerBase === undefined ? undefined : httpsAddress(d, o.explainerBase, '$.explainerBase');
+  const testAddress =
+    o.testAddress === undefined
+      ? undefined
+      : typeof o.testAddress === 'string' && RELATIVE_PATH.test(o.testAddress)
+        ? o.testAddress
+        : httpsAddress(d, o.testAddress, '$.testAddress');
   if (d.issues.length > 0) return { ok: false, issues: d.issues };
   return {
     ok: true,
@@ -49,6 +63,7 @@ export function parseAppConfig(
       ...(kanzleiName === undefined ? {} : { kanzleiName }),
       ...(appAddress === undefined ? {} : { appAddress }),
       ...(explainerBase === undefined ? {} : { explainerBase }),
+      ...(testAddress === undefined ? {} : { testAddress }),
     },
   };
 }

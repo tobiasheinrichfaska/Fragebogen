@@ -6,7 +6,7 @@
 #
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1                   # public app
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test        # test folder
-#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei     # Kanzlei folder
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung  # Kanzlei build
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf        # check + connection test
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten       # change the access data
 [CmdletBinding()]

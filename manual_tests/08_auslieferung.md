@@ -60,9 +60,10 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 
 **Schritte:**
 
-1. `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel kanzlei`, Rückfrage mit „Ja“.
+1. Später, wenn die Mehrfachbearbeitung hochgeladen wird:
+   `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung`, Rückfrage mit „Ja“.
 2. Dasselbe mit `-Ziel test`.
-3. Im Büro `…/kanzlei/` und `…/test/` im Browser öffnen.
+3. Im Büro `…/mehrfachbearbeitung/` und `…/test/` im Browser öffnen.
 4. Am Handy **ohne WLAN** (Mobilfunk) dieselben Adressen öffnen.
 
 **Erwartet:**
