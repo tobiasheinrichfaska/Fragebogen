@@ -7,6 +7,8 @@ lokal `npm run build:preview`, Datei `dist-preview/index.html`. Nur erfundene Da
 
 ## MT-50: Angaben nachträglich ändern (vor der Unterschrift)
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.
+
 **Voraussetzungen:** Personalfragebogen (Entwurf), Rolle „Beschäftigte Person“, Datenschutzhinweis
 bestätigt, Familienname und Vornamen eingegeben.
 
@@ -41,6 +43,8 @@ bestätigt, Familienname und Vornamen eingegeben.
 
 ## MT-53: Überarbeiten – „Weiter“ oder „Zur nächsten fehlenden Angabe“
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und spielen MT-50 durch – oder Sie machen direkt nach MT-50 weiter.
+
 **Voraussetzungen:** wie MT-50; einige Fragen beantwortet, das Geburtsdatum noch nicht.
 
 **Schritte:**
@@ -63,6 +67,8 @@ bestätigt, Familienname und Vornamen eingegeben.
 ---
 
 ## MT-51: Minijob – der Arbeitgeber legt die Lohnsteuer fest
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 **Voraussetzungen:** Personalfragebogen (Entwurf).
 
@@ -120,6 +126,8 @@ Projekt.
 
 ## MT-54: Gültigkeit der Formularfassung
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – die Zeile darunter auf der Startseite gehört schon zum Test.
+
 **Voraussetzungen:** Personalfragebogen (Entwurf), Rolle „Arbeitgeber“.
 
 **Schritte:**
@@ -142,6 +150,8 @@ Projekt.
 
 ## MT-55: Was der Fragebogen nicht abdeckt
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
+
 **Schritte:**
 
 1. Einen Personalfragebogen beginnen und auf „Wer füllt jetzt aus?“ die Karte „Gültigkeit und
@@ -159,6 +169,8 @@ Projekt.
 ---
 
 ## MT-56: Mehrere Beschäftigungen über der Beitragsbemessungsgrenze
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 **Voraussetzungen:** Personalfragebogen (Entwurf).
 
@@ -181,6 +193,8 @@ Projekt.
 
 ## MT-57: Sonderfall sperrt den Fragebogen
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
 **Voraussetzungen:** Personalfragebogen (Entwurf), Rolle „Arbeitgeber“.
 
 **Schritte:**
@@ -201,6 +215,8 @@ Projekt.
 ---
 
 ## MT-58: Betriebsmerkmale im Stammdaten-Link
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
 
 **Schritte:**
 

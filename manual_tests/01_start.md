@@ -26,6 +26,8 @@ Server (Einstieg dort: die Startseite der App rechts neben dem Testbereich).
 
 ## MT-02: Keine Verbindung ins Internet
 
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); ab Schritt 2 ein neuer Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“.
+
 _Automatisch geprüft mit `npm run test:e2e` (Chromium, Firefox, WebKit): Die Datei verbietet per
 Sicherheitsrichtlinie (CSP) jede Verbindung; der Test meldet jede Anfrage, die das Gerät verlässt.
 Dieser Handtest bleibt für echte Geräte und Browser._
@@ -53,6 +55,8 @@ Dieser Handtest bleibt für echte Geräte und Browser._
 ---
 
 ## MT-03: Darstellung im dunklen Modus
+
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“).
 
 **Voraussetzungen:** Das Betriebssystem steht auf dunkles Design (Windows: Einstellungen →
 Personalisierung → Farben → „Dunkel“; iPhone: Einstellungen → Anzeige & Helligkeit → „Dunkel“).

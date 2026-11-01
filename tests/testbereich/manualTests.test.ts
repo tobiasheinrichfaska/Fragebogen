@@ -145,6 +145,18 @@ describe('manual_tests/ as the catalogue', () => {
     const pre = mt10?.parts.find((part) => part.label === 'Voraussetzungen')?.blocks[0];
     expect(pre?.kind === 'text' && pre.text).toContain('App neu starten');
   });
+
+  // Tobias 2026-11-01: "sollte die Anleitung beginnen mit: Sie starten einen neuen Fragebogen …".
+  it('starts every test of the test area with its entry, right under the heading', () => {
+    const withoutEntry = cases
+      .filter((c) => testAreaOf(c).offered && c.parts[0]?.label !== 'Einstieg')
+      .map((c) => c.id);
+    expect(withoutEntry).toEqual([]);
+    const mt11 = cases.find((c) => c.id === 'MT-11')?.parts[0]?.blocks[0];
+    expect(mt11?.kind === 'text' && mt11.text).toContain(
+      'einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“',
+    );
+  });
 });
 
 describe('inlineMarkdown', () => {

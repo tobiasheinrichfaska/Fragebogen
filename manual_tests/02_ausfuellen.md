@@ -4,6 +4,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-10: Neuer Fragebogen und Rollenwahl
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ – genau das ist Schritt 1.
+
 **Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ im Testbereich links; als Datei: MT-01).
 
 **Schritte:**
@@ -23,6 +25,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 ---
 
 ## MT-11: Interview des Arbeitgebers
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-10 durch – oder Sie machen direkt nach MT-10 weiter.
 
 **Voraussetzungen:** MT-10.
 
@@ -50,6 +54,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-12: Ungültige Eingaben
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-10 durch – oder Sie machen direkt nach MT-10 weiter (Rolle „Arbeitgeber“).
+
 **Voraussetzungen:** MT-10, Rolle „Arbeitgeber“ begonnen.
 
 **Schritte:**
@@ -67,6 +73,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 ---
 
 ## MT-13: Hinweise und „Vorerst überspringen“ (Person)
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-10 durch – oder Sie machen direkt nach MT-10 weiter.
 
 **Voraussetzungen:** MT-10.
 
@@ -105,6 +113,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-14: Folgefragen und Antworten, die erhalten bleiben
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-13 durch – oder Sie machen direkt nach MT-13 weiter (Interview der beschäftigten Person).
+
 **Voraussetzungen:** MT-13, Interview der Person läuft.
 
 **Schritte:**
@@ -131,6 +141,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-15: Zwischenstand speichern und wieder öffnen
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und beantworten einige Fragen, ohne abzuschließen.
+
 **Voraussetzungen:** Ein Interview ist begonnen, aber nicht abgeschlossen.
 
 **Schritte:**
@@ -155,6 +167,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-16: Warnung beim Schließen
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und beantworten einige Fragen.
+
 **Voraussetzungen:** Ein Interview ist begonnen, seit dem letzten Speichern wurde etwas geändert.
 
 **Schritte:**
@@ -169,6 +183,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 ---
 
 ## MT-17: Alle Daten löschen
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und beantworten eine Frage.
 
 **Voraussetzungen:** Ein Fragebogen ist geöffnet.
 
@@ -190,6 +206,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 ---
 
 ## MT-18: Angaben aus einer anderen Datei übernehmen
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“; dazu brauchen Sie die vollständige PDF aus MT-30.
 
 **Voraussetzungen:** Eine vollständige PDF einer Sofortmeldung liegt vor (z. B. aus MT-30).
 
@@ -224,6 +242,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-19: Schnellantworten, sofortiges Weiter und Postleitzahl
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ (im Testbereich ist das die neue Fassung 0.2.0).
+
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Sofortmeldung 0.2.0 (Entwurf).
 
 **Schritte:**
@@ -253,6 +273,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-26: Geburtsland und Staatsangehörigkeit außerhalb Deutschlands
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ (oder „Personalfragebogen: Angaben für die Sofortmeldung“) als „Beschäftigte Person“.
+
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Personalfragebogen oder Sofortmeldung
 0.2.0 (Entwurf), Rolle „Beschäftigte Person“.
 
@@ -276,6 +298,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 ---
 
 ## MT-27: Fragebogen verwerfen
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und beantworten einige Fragen.
 
 **Voraussetzungen:** Ein Fragebogen ist geöffnet, einige Angaben sind gemacht.
 

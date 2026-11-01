@@ -2,6 +2,8 @@
 
 ## MT-80: App auf der Subdomain mit `.htaccess`
 
+**Einstieg:** Die öffentliche Adresse der App im Browser (nicht der Testbereich).
+
 **Voraussetzungen:**
 
 - Subdomain bei IONOS mit eigenem Ordner; HTTPS-Zertifikat aktiv.
@@ -113,6 +115,8 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 
 ## MT-85: Testseite im Testordner
 
+**Einstieg:** Der Testbereich selbst – Sie sind schon da.
+
 **Voraussetzungen:** Testordner hochgeladen (MT-83/84), oder lokal `npm run build:test` und
 `dist-test/index.html` öffnen.
 
@@ -144,6 +148,8 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 7: Die App zeigt wieder ihre Startseite; die Ergebnisse links sind noch da.
 
 ## MT-81: Hilfeseiten „Wo finde ich …?“
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“ und tippen bei der Steuer-Identifikationsnummer auf „Wo finde ich das?“.
 
 **Voraussetzungen:** `docs/hilfe/` (aus `npm run catalogue`) lokal geöffnet oder auf der Homepage unter
 dem Pfad, den die Kanzlei-Konfiguration als `explainerBase` nennt.

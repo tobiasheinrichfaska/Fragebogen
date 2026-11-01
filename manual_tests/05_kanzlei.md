@@ -4,6 +4,8 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 
 ## MT-40: Mehrere Dateien auf einmal einlesen
 
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen die PDFs aus MT-30 und MT-31.
+
 **Voraussetzungen:** Eine vollständige PDF (MT-30) und die PDF des Arbeitgebers zur Weitergabe
 (MT-31) desselben Fragebogens liegen vor.
 
@@ -30,6 +32,8 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 
 ## MT-41: Formular ansehen und PDF für die Personalakte
 
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; direkt nach MT-40.
+
 **Voraussetzungen:** MT-40 durchgeführt.
 
 **Schritte:**
@@ -53,6 +57,8 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 ---
 
 ## MT-42: Zwei Fassungen, die nicht aufeinander aufbauen
+
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen zwei vollständige PDFs desselben Fragebogens (siehe Voraussetzungen).
 
 **Voraussetzungen:** Zwei vollständige PDFs **desselben** Fragebogens, bei denen die Person zweimal
 unabhängig unterschrieben hat (dieselbe PDF des Arbeitgebers zweimal ausfüllen lassen, einmal mit
@@ -79,6 +85,8 @@ anderem Vornamen).
 
 ## MT-43: Fragebögen ohne gemeinsame ID
 
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen zwei PDFs aus zwei verschiedenen neuen Fragebögen „Personalfragebogen: Angaben für die Sofortmeldung“.
+
 **Voraussetzungen:** Die Person und der Arbeitgeber haben **jeweils einen eigenen** neuen Fragebogen
 begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abgeschlossen.
 
@@ -100,6 +108,8 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 ---
 
 ## MT-44: Prüfhinweise bei der Zusammenführung
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Personalfragebogen-Entwurf.
 
@@ -123,6 +133,8 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 
 ## MT-45: Vorschlag Personengruppe
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station (Karte „Kanzlei“).
+
 **Voraussetzungen:** Vorschau-Fassung; ein Personalfragebogen, in dem der Arbeitgeber „Minijob“ mit
 festem Monatsentgelt **520,00 €** angegeben hat und die Person „keine weitere Beschäftigung“; beide
 Teile abgeschlossen, PDF erstellt.
@@ -145,6 +157,8 @@ Teile abgeschlossen, PDF erstellt.
 ---
 
 ## MT-68: Übergabe an Lohn und Gehalt (nur Kanzlei-Build mit Zuordnung)
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ bzw. „Personalfragebogen: Angaben für die Lohnabrechnung“; danach die Kanzlei-Station (Karte „Kanzlei“).
 
 **Testbereich:** Die App-Schritte gehen auch dort; das Einspielen in Lohn und Gehalt nur in der
 Kanzlei (Testmandant).
@@ -187,6 +201,8 @@ Kanzlei (Testmandant).
 
 ## MT-69: Erfassungsblatt als PDF für die Personalakte
 
+**Einstieg:** Direkt nach MT-68 (Schritt 3 erledigt).
+
 **Voraussetzungen:** wie MT-68, Schritt 3 erledigt.
 
 **Schritte:**
@@ -205,6 +221,8 @@ Kanzlei (Testmandant).
   Importdatei: …“). Es ist eine eigene Datei, keine Seite der Fragebogen-PDF (eine Unterlage je Datei).
 
 ## MT-70: Sofortmeldung zuerst, Personalfragebogen später zum selben Mitarbeiter
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“, danach einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ für dieselbe Person.
 
 **Testbereich:** nur in der Kanzlei – braucht einen Testmandanten in Lohn und Gehalt.
 
@@ -236,6 +254,8 @@ Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen dersel
 
 ## MT-71: Krankenkasse aus der Liste, frei eingegeben, und die Sicherheitsfrage
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.
+
 **Voraussetzungen:** Vorschau- oder Kanzlei-Build mit Zuordnung; ein Personalfragebogen, in dem die Person
 „gesetzlich“ gewählt hat.
 
@@ -261,6 +281,8 @@ Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen dersel
   Feld „Im Fragebogen nicht angegeben – bitte eintragen.“
 
 ## MT-72: Kinderfreibeträge mit − und +
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.
 
 **Schritte:** Als Person bei „Kinderfreibeträge“ dreimal „+“, einmal „−“ drücken; dann „4,3“ tippen und
 „Weiter“.

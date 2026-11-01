@@ -2,6 +2,8 @@
 
 ## MT-30: PDF erstellen (vollständig)
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-21 durch – oder Sie machen direkt nach MT-21 weiter (beide Teile abgeschlossen).
+
 **Voraussetzungen:** MT-21 bestanden: Arbeitgeber abgeschlossen, Person unterschrieben, im Kasten
 „Stand“ steht „Vollständig“.
 
@@ -28,6 +30,8 @@
 
 ## MT-31: PDF zur Weitergabe (noch nicht vollständig)
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-20 durch – oder Sie machen direkt nach MT-20 weiter (nur der Arbeitgeber hat abgeschlossen).
+
 **Voraussetzungen:** Neuer Fragebogen; nur der Arbeitgeber hat abgeschlossen (MT-20).
 
 **Schritte:**
@@ -46,6 +50,8 @@
 ---
 
 ## MT-32: Die eigene PDF wieder öffnen
+
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 oder MT-31.
 
 **Voraussetzungen:** Eine PDF aus MT-30 oder MT-31.
 
@@ -67,6 +73,8 @@
 
 ## MT-33: PDF in einem anderen Programm neu gespeichert
 
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 und ein PDF-Programm.
+
 **Voraussetzungen:** Eine PDF aus MT-30; Acrobat oder ein anderes PDF-Programm.
 
 **Schritte:**
@@ -84,6 +92,8 @@
 ---
 
 ## MT-34: Ausdruck scannen (Papierweg)
+
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30, einen Drucker und einen Scanner.
 
 **Voraussetzungen:** Eine PDF aus MT-30, ein Drucker und ein Scanner (oder ein Kopierer mit
 Scan-to-PDF).
@@ -108,6 +118,8 @@ Scan-to-PDF).
 
 ## MT-35: QR-Codes mit dem Handy fotografieren
 
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen den Ausdruck aus MT-34 und ein Handy.
+
 **Voraussetzungen:** Ausdruck der QR-Seite aus MT-34; Handy oder Tablet mit der gehosteten App
 (oder die Fotos per Mail an den PC).
 
@@ -129,6 +141,8 @@ Scan-to-PDF).
 ---
 
 ## MT-36: Link zur App in der PDF
+
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie erstellen eine PDF wie in MT-30 oder MT-31.
 
 **Voraussetzungen:** Eine App-Fassung, in der die Kanzlei ihre Adresse konfiguriert hat
 (`config/kanzlei.local.json`, siehe `config/README.md`).

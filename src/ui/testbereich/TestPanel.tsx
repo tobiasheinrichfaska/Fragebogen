@@ -209,9 +209,11 @@ function TestCaseView({
       </h2>
       <p className="muted">{testCase.area}</p>
       {area.note === undefined ? (
-        <p className="muted">
-          Einstieg, wenn nicht anders angegeben: die Startseite der App („App neu starten“ oben).
-        </p>
+        !testCase.parts.some((part) => part.label === 'Einstieg') && (
+          <p className="muted">
+            Einstieg, wenn nicht anders angegeben: die Startseite der App („App neu starten“ oben).
+          </p>
+        )
       ) : (
         <Banner
           message={{

@@ -12,6 +12,8 @@ Bildschirm sichtbar ist.
 
 ## MT-60: Verdienst vor der Art der Beschäftigung
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
 **Voraussetzungen:** Neuer Personalfragebogen, Rolle „Arbeitgeber“.
 
 **Schritte:**
@@ -33,6 +35,8 @@ Bildschirm sichtbar ist.
 ---
 
 ## MT-61: Azubi mit 550 € ist kein Minijob
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station.
 
 **Voraussetzungen:** Personalfragebogen, beide Teile (Person und Arbeitgeber) ausgefüllt und
 abgeschlossen; Station „Kanzlei“.
@@ -56,6 +60,8 @@ abgeschlossen; Station „Kanzlei“.
 
 ## MT-62: Minijob mit Weihnachtsgeld über der Jahresgrenze
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
 **Schritte:**
 
 1. Arbeitgeber: festes Monatsentgelt 600,00 €; Einmalzahlung „Weihnachtsgeld“ 300,00 €, November,
@@ -73,6 +79,8 @@ abgeschlossen; Station „Kanzlei“.
 
 ## MT-63: Besonderer Personenkreis sperrt
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
 **Schritte:**
 
 1. Arbeitgeber: bei „Gehört die Person bei Ihnen zu einem dieser Personenkreise?“ „Mitglied des
@@ -89,6 +97,8 @@ abgeschlossen; Station „Kanzlei“.
 ---
 
 ## MT-64: Privat Versicherte – Befreiung und Stichtag 31.12.2002
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.
 
 **Voraussetzungen:** Rolle „Person“.
 
@@ -109,6 +119,8 @@ abgeschlossen; Station „Kanzlei“.
 ---
 
 ## MT-65: Auswahl aus den amtlichen Listen
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ (oder „Personalfragebogen: Angaben für die Sofortmeldung“) als „Beschäftigte Person“.
 
 **Voraussetzungen:** Personalfragebogen oder Sofortmeldung 0.2.0 (Entwurf), Rolle „Person“.
 
@@ -135,6 +147,8 @@ abgeschlossen; Station „Kanzlei“.
 
 ## MT-66: Beitragsgruppen, Übergangsbereich und Tätigkeitsschlüssel in der Kanzlei
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station.
+
 **Voraussetzungen:** Personalfragebogen mit beiden Teilen, Station „Kanzlei“.
 
 **Schritte:**
@@ -157,6 +171,8 @@ abgeschlossen; Station „Kanzlei“.
 ---
 
 ## MT-67: Firmenzahler beim Arbeitgeber
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
 
 **Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; die Person ist gesetzlich versichert.
 

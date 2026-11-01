@@ -2,6 +2,8 @@
 
 ## MT-20: Arbeitgeber schließt ohne Unterschrift ab
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-11 durch – oder Sie machen direkt nach MT-11 weiter (Arbeitgeber bis zur Zusammenfassung).
+
 **Voraussetzungen:** MT-11 bis zur Zusammenfassung.
 
 **Schritte:**
@@ -20,6 +22,8 @@
 ---
 
 ## MT-21: Person unterschreibt mit Finger, Stift oder Maus
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-20 durch – oder Sie machen direkt nach MT-20 weiter.
 
 **Voraussetzungen:** MT-20; dann **„Gerät weitergeben – zur Übersicht“**, **„Ich bin:
 Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
@@ -50,6 +54,8 @@ Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
 
 ## MT-22: Getippter Name statt Zeichnung
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-21 durch – oder Sie machen direkt nach MT-21 weiter (bis Schritt 2).
+
 **Voraussetzungen:** Wie MT-21 bis Schritt 2.
 
 **Schritte:**
@@ -67,6 +73,8 @@ Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
 ---
 
 ## MT-23: Minderjährige Person braucht die gesetzliche Vertretung
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Beschäftigte Person“.
 
 **Voraussetzungen:** Neuer Fragebogen.
 
@@ -91,6 +99,8 @@ Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
 
 ## MT-24: Unterschrift zurücknehmen und neue Fassung
 
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-21 durch – oder Sie machen direkt nach MT-21 weiter (die Person hat unterschrieben).
+
 **Voraussetzungen:** Die Person hat unterschrieben, der Arbeitgeber noch nicht.
 
 **Schritte:**
@@ -113,6 +123,8 @@ Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
 ---
 
 ## MT-25: Stammdaten-Link des Arbeitgebers
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-11 durch – oder Sie machen direkt nach MT-11 weiter (Arbeitgeber bis zur Zusammenfassung).
 
 **Voraussetzungen:** MT-11 bis zur Zusammenfassung.
 

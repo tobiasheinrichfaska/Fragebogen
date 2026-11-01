@@ -543,6 +543,9 @@ Key design decisions (details in `docs/plan.md`):
   First report (2026-11-01): MT-11 asked for "1234 5678" but did not say the space is the point —
   reworded; MT-01/02/03 assumed the downloaded file — MT-01 marked "nicht im Testbereich",
   MT-02/03 rewritten for both; entry points and "App neu starten" added.
+- **Entry of every manual test** (Tobias 2026-11-01: "sollte die Anleitung beginnen mit: Sie starten
+  einen neuen Fragebogen …"): a `**Einstieg:**` line right under the heading names the questionnaire
+  to start (all forms are offered in the test area) or the test it builds on; guarded by a test.
 - **Second test report** (2026-11-01, archived `import/archiv/2026-11-01/…_1424.pdf`): a notice
   still to confirm is reachable from the summary ("ansehen und bestätigen"); catching up from the
   summary offers "Zur nächsten fehlenden Angabe" (wherever it is) and stays a summary edit;

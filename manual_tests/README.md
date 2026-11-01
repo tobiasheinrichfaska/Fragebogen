@@ -40,7 +40,8 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Im Testbereich
 
-- **Einstieg:** Wenn ein Test nichts anderes sagt, beginnt er auf der **Startseite der App**. Dorthin
+- **Einstieg:** Jeder Test sagt in der ersten Zeile, welchen Fragebogen Sie auf der **Startseite der
+  App** neu starten. Dorthin
   kommen Sie jederzeit mit **„App neu starten (Startseite)“** oben im Testbereich – Ihre
   Testergebnisse bleiben, nur die Eingaben in der App sind dann weg.
 - **Aufeinander aufbauende Tests:** Steht bei „Voraussetzungen“ ein anderer Test (z. B. „MT-10“),
@@ -62,6 +63,8 @@ angepasst. Das gehört zur Definition of Done.
 
 - Geht ein Test im Testbereich nicht, bekommt er direkt unter der Überschrift
   `**Testbereich:** nein – <Grund>`; jeder andere Text dort erscheint als Hinweis.
-- Jeder Test nennt seinen Einstieg (Startseite, oder den Test, auf dem er aufbaut).
+- Jeder Test beginnt direkt unter der Überschrift mit `**Einstieg:**` – welchen Fragebogen man auf
+  der Startseite neu startet (im Testbereich stehen alle Fragebögen zur Wahl), oder auf welchem Test
+  er aufbaut. Ein automatischer Test prüft das.
 - Eingegangene Testberichte liegen in `import/` (nicht im Repo). Nach der Bearbeitung kommen sie
   nach `import/archiv/<JJJJ-MM-TT>/` (Tag der Bearbeitung).
