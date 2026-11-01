@@ -140,7 +140,37 @@ export function parseManualTests(markdown: string, source: string): ManualTestFi
 
 export type InlineToken =
   | { kind: 'text' | 'strong' | 'em' | 'code'; text: string }
-  | { kind: 'link'; text: string; href: string };
+  | { kind: 'link'; text: string; href: string }
+  /** A reference to another test ("MT-10", "MT-83/84" gives two), clickable on the test page. */
+  | { kind: 'ref'; text: string; id: string };
+
+const REF = /\b((?:MT|L)-\d+[a-z]?)\b/g;
+
+/** Plain text with its test references split out. */
+function withRefs(text: string): InlineToken[] {
+  const tokens: InlineToken[] = [];
+  let at = 0;
+  for (const match of text.matchAll(REF)) {
+    if (match.index > at) tokens.push({ kind: 'text', text: text.slice(at, match.index) });
+    tokens.push({ kind: 'ref', text: match[0], id: match[1] ?? match[0] });
+    at = match.index + match[0].length;
+  }
+  if (at < text.length) tokens.push({ kind: 'text', text: text.slice(at) });
+  return tokens;
+}
+
+/**
+ * Whether a case can be run in the hosted test area (Tobias 2026-11-01): a part "Testbereich"
+ * starting with "nein" says it cannot (e.g. a double-click on the downloaded file); any other text
+ * there is a hint for the tester.
+ */
+export function testAreaOf(testCase: ManualTestCase): { offered: boolean; note?: string } {
+  const part = testCase.parts.find((p) => p.label === 'Testbereich');
+  const first = part?.blocks[0];
+  const note = first && first.kind !== 'list' ? first.text : undefined;
+  if (note === undefined) return { offered: true };
+  return { offered: !/^nein\b/i.test(note), note };
+}
 
 const INLINE =
   /\*\*(.+?)\*\*|`([^`]+)`|(?<![A-Za-z0-9])_(.+?)_(?![A-Za-z0-9])|\[([^\]]+)\]\(([^)\s]+)\)/g;
@@ -154,7 +184,7 @@ export function inlineMarkdown(text: string): InlineToken[] {
   let at = 0;
   for (const match of text.matchAll(INLINE)) {
     const index = match.index;
-    if (index > at) tokens.push({ kind: 'text', text: text.slice(at, index) });
+    if (index > at) tokens.push(...withRefs(text.slice(at, index)));
     const [, strong, code, em, linkText, href] = match;
     if (strong !== undefined) tokens.push({ kind: 'strong', text: strong });
     else if (code !== undefined) tokens.push({ kind: 'code', text: code });
@@ -168,6 +198,6 @@ export function inlineMarkdown(text: string): InlineToken[] {
     }
     at = index + match[0].length;
   }
-  if (at < text.length) tokens.push({ kind: 'text', text: text.slice(at) });
+  if (at < text.length) tokens.push(...withRefs(text.slice(at)));
   return tokens;
 }

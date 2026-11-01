@@ -5,7 +5,7 @@ Reihenfolge erfragt und die Vorschläge und Prüfhinweise passen. Alle Fälle si
 automatische Tests abgesichert (`tests/forms/svSzenarien.test.ts`). Die Handtests prüfen, was nur am
 Bildschirm sichtbar ist.
 
-**Umgebung:** Vorschau-Build mit den Entwürfen (`npm run build:preview`,
+**Umgebung:** Fassung mit den Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`,
 `dist-preview/index.html`), fiktive Daten, Beschäftigungsbeginn im Jahr 2026.
 
 ---

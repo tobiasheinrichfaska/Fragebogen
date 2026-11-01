@@ -4,7 +4,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-10: Neuer Fragebogen und Rollenwahl
 
-**Voraussetzungen:** MT-01 ist bestanden.
+**Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ im Testbereich links; als Datei: MT-01).
 
 **Schritte:**
 
@@ -29,9 +29,10 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 **Schritte:**
 
 1. Klicken Sie auf **„Ich bin: Arbeitgeber“**.
-2. Beantworten Sie jede Frage und klicken Sie jeweils **„Weiter“**: Firma „Beispiel Bau GmbH“,
-   Betriebsnummer „1234 5678“, Familienname „Musterfrau“, Vornamen „Erika“, Personalnummer leer
-   lassen, Tag der Beschäftigungsaufnahme „02.11.2026“.
+2. Beantworten Sie jede Frage und klicken Sie jeweils **„Weiter“**. Geben Sie **genau diese
+   Werte** ein: Firma „Beispiel Bau GmbH“, Betriebsnummer **„1234 5678“ mit dem Leerzeichen in der
+   Mitte** (geprüft wird, dass die App es entfernt), Familienname „Musterfrau“, Vornamen „Erika“,
+   Personalnummer leer lassen, Tag der Beschäftigungsaufnahme „02.11.2026“.
 
 **Erwartet:**
 
@@ -41,8 +42,9 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
   (freiwillig) geht „Weiter“ auch ohne Antwort.
 - Nach der letzten Frage erscheint die **Zusammenfassung** mit allen Antworten und je einem Link
   **„ändern“**.
-- _Nicht offensichtlich:_ Die Betriebsnummer steht dort als „12345678“, das Leerzeichen ist weg. Das
-  Datum steht als „02.11.2026“.
+- _Nicht offensichtlich:_ Die eingegebene Betriebsnummer „1234 5678“ steht dort als „12345678“ – das
+  Leerzeichen ist weg. Haben Sie eine andere Nummer eingegeben, steht dort Ihre Nummer, ebenfalls
+  ohne Leerzeichen. Das Datum steht als „02.11.2026“.
 
 ---
 
@@ -131,7 +133,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 **Schritte:**
 
 1. Klicken Sie in der Zusammenfassung auf **„Zwischenstand speichern“**.
-2. Schließen Sie den Browser-Tab und öffnen Sie `index.html` neu.
+2. Schließen Sie den Browser-Tab und öffnen Sie die App neu (im Testbereich: die Adresse des
+   Testbereichs; als Datei: `index.html` per Doppelklick).
 3. Klicken Sie **„Datei öffnen …“** und wählen Sie die heruntergeladene Datei
    `Sofortmeldung_xxxxxxxx_Zwischenstand.json`.
 4. Klicken Sie bei Ihrer Rolle auf **„Weitermachen“**.
@@ -214,7 +217,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-19: Schnellantworten, sofortiges Weiter und Postleitzahl
 
-**Voraussetzungen:** Vorschau-Fassung (`npm run build:preview`), Sofortmeldung 0.2.0 (Entwurf).
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Sofortmeldung 0.2.0 (Entwurf).
 
 **Schritte:**
 
@@ -243,7 +246,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-26: Geburtsland und Staatsangehörigkeit außerhalb Deutschlands
 
-**Voraussetzungen:** Vorschau-Fassung (`npm run build:preview`), Personalfragebogen oder Sofortmeldung
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Personalfragebogen oder Sofortmeldung
 0.2.0 (Entwurf), Rolle „Beschäftigte Person“.
 
 **Schritte:**

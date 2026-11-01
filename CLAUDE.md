@@ -538,6 +538,11 @@ Key design decisions (details in `docs/plan.md`):
   note with reason ("Korrekturvermerk") is planned later (Tobias 2026-11-01: e.g. a free entry
   „Duetschland“ signed by the person, „Deutschland“ signed by the Kanzlei, both visible in the
   document). A wrong value goes back to the station.
+- **Test reports and the import folder** (Tobias 2026-11-01): reports arrive in `import/`
+  (gitignored); after processing they move to `import/archiv/<YYYY-MM-DD>/` (day of processing).
+  First report (2026-11-01): MT-11 asked for "1234 5678" but did not say the space is the point —
+  reworded; MT-01/02/03 assumed the downloaded file — MT-01 marked "nicht im Testbereich",
+  MT-02/03 rewritten for both; entry points and "App neu starten" added.
 - **Test page**: the catalogue holds all 65 manual tests, including those only the Kanzlei can run
   (upload, PDF counter-checks); a tester picks by area. Times come from the device clock; a run lives
   in one browser only (no sync between devices) until the report PDF is sent.

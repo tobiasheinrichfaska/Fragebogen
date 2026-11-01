@@ -1,7 +1,13 @@
 // Renders the test texts (inline Markdown, paragraphs, lists, code) as React elements — never HTML.
+// A reference to another test ("MT-10") becomes a button that opens it, when the page knows it.
 import { inlineMarkdown, type Block } from '../../logic/manualTests';
 
-export function Inline({ text }: { text: string }) {
+export interface RefHandler {
+  open: (id: string) => void;
+  knows: (id: string) => boolean;
+}
+
+export function Inline({ text, refs }: { text: string; refs?: RefHandler }) {
   return (
     <>
       {inlineMarkdown(text).map((token, i) => {
@@ -18,6 +24,14 @@ export function Inline({ text }: { text: string }) {
                 {token.text}
               </a>
             );
+          case 'ref':
+            return refs?.knows(token.id) ? (
+              <button key={i} type="button" className="link" onClick={() => refs.open(token.id)}>
+                {token.text}
+              </button>
+            ) : (
+              <span key={i}>{token.text}</span>
+            );
           default:
             return <span key={i}>{token.text}</span>;
         }
@@ -26,7 +40,7 @@ export function Inline({ text }: { text: string }) {
   );
 }
 
-export function Blocks({ blocks }: { blocks: readonly Block[] }) {
+export function Blocks({ blocks, refs }: { blocks: readonly Block[]; refs?: RefHandler }) {
   return (
     <>
       {blocks.map((block, i) => {
@@ -40,13 +54,13 @@ export function Blocks({ blocks }: { blocks: readonly Block[] }) {
         if (block.kind === 'text') {
           return (
             <p key={i}>
-              <Inline text={block.text} />
+              <Inline text={block.text} {...(refs ? { refs } : {})} />
             </p>
           );
         }
         const items = block.items.map((item, j) => (
           <li key={j}>
-            <Inline text={item} />
+            <Inline text={item} {...(refs ? { refs } : {})} />
           </li>
         ));
         return block.ordered ? <ol key={i}>{items}</ol> : <ul key={i}>{items}</ul>;

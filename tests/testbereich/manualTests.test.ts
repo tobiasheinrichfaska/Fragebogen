@@ -2,7 +2,12 @@
 // readable, every case keeps its steps and expectations.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { blocksOf, inlineMarkdown, parseManualTests } from '../../src/logic/manualTests';
+import {
+  blocksOf,
+  inlineMarkdown,
+  parseManualTests,
+  testAreaOf,
+} from '../../src/logic/manualTests';
 
 const DIR = join(__dirname, '..', '..', 'manual_tests');
 const files = readdirSync(DIR)
@@ -121,9 +126,39 @@ describe('manual_tests/ as the catalogue', () => {
       .map((c) => c.id);
     expect(incomplete).toEqual([]);
   });
+
+  // Tobias 2026-11-01 (first test report): tests that cannot run in the hosted test area say so.
+  it('marks the tests that cannot run in the test area, with the reason', () => {
+    const notOffered = cases.filter((c) => !testAreaOf(c).offered).map((c) => c.id);
+    expect(notOffered).toEqual(['MT-01', 'MT-52', 'MT-82', 'MT-83', 'MT-84']);
+    const byId = (id: string) => {
+      const found = cases.find((c) => c.id === id);
+      if (!found) throw new Error(`${id} missing`);
+      return found;
+    };
+    expect(testAreaOf(byId('MT-01')).note).toContain('heruntergeladenen Datei');
+    expect(testAreaOf(byId('MT-10'))).toEqual({ offered: true });
+  });
+
+  it('tells where a test starts when it builds on another one', () => {
+    const mt10 = cases.find((c) => c.id === 'MT-10');
+    const pre = mt10?.parts.find((part) => part.label === 'Voraussetzungen')?.blocks[0];
+    expect(pre?.kind === 'text' && pre.text).toContain('App neu starten');
+  });
 });
 
 describe('inlineMarkdown', () => {
+  it('makes references to other tests clickable tokens', () => {
+    expect(inlineMarkdown('wie MT-68, danach L-01; nicht MTX-1')).toEqual([
+      { kind: 'text', text: 'wie ' },
+      { kind: 'ref', text: 'MT-68', id: 'MT-68' },
+      { kind: 'text', text: ', danach ' },
+      { kind: 'ref', text: 'L-01', id: 'L-01' },
+      { kind: 'text', text: '; nicht MTX-1' },
+    ]);
+    expect(inlineMarkdown('**MT-10** bestanden')[0]).toEqual({ kind: 'strong', text: 'MT-10' });
+  });
+
   it('splits bold, code, italics and https links', () => {
     expect(
       inlineMarkdown(

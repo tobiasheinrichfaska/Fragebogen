@@ -30,6 +30,8 @@
 
 ## MT-82: Hochladen mit dem Upload-Werkzeug
 
+**Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
+
 **Voraussetzungen:** SFTP-Zugang bei IONOS (Server, Benutzer, Passwort), Ordner der Subdomain; PuTTY
 installiert.
 
@@ -55,6 +57,8 @@ installiert.
 
 ## MT-83: Test- und Kanzlei-Ordner nur von den IP-Adressen der Kanzlei
 
+**Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
+
 **Voraussetzungen:** MT-82 erledigt; im Einrichtungsfenster sind die IP-Adressen der Kanzlei
 eingetragen (`deploy\upload.ps1 -Einrichten`).
 
@@ -78,6 +82,8 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
   Hauptadresse geht weiter für alle.
 
 ## MT-84: Tester anlegen und von außen anmelden
+
+**Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
 
 **Voraussetzungen:** MT-83 erledigt.
 
@@ -118,7 +124,10 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
    bei „Dauer korrigieren“ eine Minutenzahl eintragen.
 4. Die Seite neu laden.
 5. **„Testbericht als PDF“**.
-6. Am Handy dasselbe; oben zwischen **„Testanleitung“** und **„App“** wechseln.
+6. MT-11 öffnen und bei „Voraussetzungen“ auf **„MT-10“** klicken; dann MT-01 öffnen.
+7. In der App einen Fragebogen beginnen, dann links **„App neu starten (Startseite)“** und die
+   Rückfrage bestätigen.
+8. Am Handy dasselbe; oben zwischen **„Testanleitung“** und **„App“** wechseln.
 
 **Erwartet:**
 
@@ -130,6 +139,9 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 5: Eine PDF „Testbericht_<Name>_<Datum>.pdf“ mit Ergebnis, Beginn, Ende, gemessener und
   korrigierter Dauer, Kommentar und Summen; nicht bearbeitete Tests fehlen darin.
 - Schritt 6: Der Wechsel zur App und zurück verliert keine Eingaben in der App.
+- Schritt 6 (Liste): MT-10 öffnet sich. MT-01 zeigt oben „Nicht im Testbereich: …“ mit Grund und steht
+  in der Liste mit „– nicht im Testbereich“.
+- Schritt 7: Die App zeigt wieder ihre Startseite; die Ergebnisse links sind noch da.
 
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 

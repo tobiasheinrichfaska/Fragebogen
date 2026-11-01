@@ -1,7 +1,7 @@
 # 06 – Angaben ändern, Minijob-Steuer und Ablaufplan
 
-Voraussetzung für alle Fälle: die **Vorschau-Fassung** mit den Formular-Entwürfen
-(`npm run build:preview`, Datei `dist-preview/index.html`). Nur erfundene Daten verwenden.
+Voraussetzung für alle Fälle: die **Fassung mit den Formular-Entwürfen** – im Testbereich schon geladen;
+lokal `npm run build:preview`, Datei `dist-preview/index.html`. Nur erfundene Daten verwenden.
 
 ---
 
@@ -91,6 +91,9 @@ bestätigt, Familienname und Vornamen eingegeben.
 ---
 
 ## MT-52: Ablaufplan lesen
+
+**Testbereich:** nein – die Datei `docs/ablaufplan.html` liegt nur im
+Projekt.
 
 **Voraussetzungen:** die Datei `docs/ablaufplan.html` (im Browser per Doppelklick öffnen).
 

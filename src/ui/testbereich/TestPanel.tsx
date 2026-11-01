@@ -3,7 +3,7 @@
 // All rules live in logic/testRun.ts and logic/manualTests.ts; this only renders and dispatches.
 import { useEffect, useState } from 'react';
 import { deviceNow } from '../../io/environment';
-import { inlineMarkdown } from '../../logic/manualTests';
+import { inlineMarkdown, testAreaOf } from '../../logic/manualTests';
 import {
   RESULTS,
   RESULT_LABELS,
@@ -20,7 +20,7 @@ import {
 import { Banner, type BannerMessage } from '../common';
 import { createTestReportPdf } from '../pdfActions';
 import { TEST_CASES, TEST_FILES } from './catalogue';
-import { Blocks, Inline } from './Markdown';
+import { Blocks, Inline, type RefHandler } from './Markdown';
 import { loadRun, saveRun } from './storage';
 
 const SYMBOL: Readonly<Record<string, string>> = {
@@ -36,7 +36,7 @@ const plain = (text: string) =>
 
 const clock = (local: string | undefined) => (local ? `${local.slice(11, 16)} Uhr` : '–');
 
-export function TestPanel() {
+export function TestPanel({ onRestartApp }: { onRestartApp: () => void }) {
   const [run, setRun] = useState<TestRun>(loadRun);
   const [stored, setStored] = useState(true);
   const [area, setArea] = useState('');
@@ -50,6 +50,10 @@ export function TestPanel() {
   const current = TEST_CASES.find((c) => c.id === selected);
   const totals = totalsOf(run);
   const intro = TEST_FILES.find((file) => file.area === area)?.intro ?? [];
+  const refs: RefHandler = {
+    open: (id) => setSelected(id),
+    knows: (id) => TEST_CASES.some((c) => c.id === id),
+  };
 
   const report = async () => {
     setBanner(
@@ -63,6 +67,11 @@ export function TestPanel() {
   return (
     <div className="test-panel-inner">
       <h1>Testbereich</h1>
+      <p className="test-restart">
+        <button type="button" onClick={onRestartApp}>
+          App neu starten (Startseite)
+        </button>
+      </p>
       {!stored && (
         <Banner
           message={{
@@ -78,6 +87,7 @@ export function TestPanel() {
           testCase={current}
           entry={run.entries[current.id] ?? { comment: '' }}
           run={run}
+          refs={refs}
           onRun={update}
           onBack={() => setSelected(undefined)}
           onNext={() => {
@@ -123,6 +133,9 @@ export function TestPanel() {
                     <span>
                       <strong>{c.id}</strong> <Inline text={c.title} />
                       {result && <span className="muted"> – {RESULT_LABELS[result]}</span>}
+                      {!testAreaOf(c).offered && (
+                        <span className="muted"> – nicht im Testbereich</span>
+                      )}
                     </span>
                   </button>
                 </li>
@@ -161,6 +174,7 @@ function TestCaseView({
   testCase,
   entry,
   run,
+  refs,
   onRun,
   onBack,
   onNext,
@@ -168,6 +182,7 @@ function TestCaseView({
   testCase: (typeof TEST_CASES)[number];
   entry: TestEntry;
   run: TestRun;
+  refs: RefHandler;
   onRun: (run: TestRun) => void;
   onBack: () => void;
   onNext: () => void;
@@ -182,6 +197,7 @@ function TestCaseView({
   const now = () => deviceNow().local;
   const measured = measuredMinutes(entry);
   const elapsed = running ? measuredMinutes({ ...entry, ended: now() }) : undefined;
+  const area = testAreaOf(testCase);
 
   return (
     <article className="test-case">
@@ -192,12 +208,26 @@ function TestCaseView({
         {testCase.id}: <Inline text={testCase.title} />
       </h2>
       <p className="muted">{testCase.area}</p>
-      {testCase.parts.map((part, i) => (
-        <section key={`${part.label}-${i}`}>
-          {part.label && <h3>{part.label}</h3>}
-          <Blocks blocks={part.blocks} />
-        </section>
-      ))}
+      {area.note === undefined ? (
+        <p className="muted">
+          Einstieg, wenn nicht anders angegeben: die Startseite der App („App neu starten“ oben).
+        </p>
+      ) : (
+        <Banner
+          message={{
+            tone: area.offered ? 'info' : 'warning',
+            text: `${area.offered ? 'Im Testbereich' : 'Nicht im Testbereich'}: ${plain(area.note).replace(/^nein\s*[–-]\s*/i, '')}`,
+          }}
+        />
+      )}
+      {testCase.parts
+        .filter((part) => part.label !== 'Testbereich')
+        .map((part, i) => (
+          <section key={`${part.label}-${i}`}>
+            {part.label && <h3>{part.label}</h3>}
+            <Blocks blocks={part.blocks} refs={refs} />
+          </section>
+        ))}
 
       <div className="test-controls">
         {entry.started === undefined ? (

@@ -9,8 +9,10 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 - Einen Windows-PC oder Mac mit einem aktuellen Browser (Edge, Chrome, Firefox oder Safari).
 - Für spätere Tests: ein Tablet oder Smartphone (iPad/iPhone nur über die gehostete Fassung).
-- Die Datei `index.html` aus dem Ordner `dist/`. Sie entsteht mit `npm run build`; alternativ
-  bekommen Sie sie zugeschickt.
+- **Am einfachsten: den Testbereich** auf der Homepage (Adresse von der Kanzlei; von außerhalb mit
+  Anmeldung). Dort stehen diese Tests links, die App rechts – am Handy über die Reiter
+  „Testanleitung“ und „App“.
+- Oder die Datei `index.html` aus dem Ordner `dist/` (`npm run build`), z. B. zugeschickt.
 - Erfundene Testdaten. **Bitte nie echte Personendaten verwenden.**
 
 ## So gehen Sie vor
@@ -36,6 +38,19 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 | [`08_auslieferung.md`](08_auslieferung.md)             | Auslieferung auf der Homepage: `.htaccess`, HTTPS, Header (MT-80); Hilfeseiten (MT-81); Hochladen, Ordner, Tester, Testseite (MT-82–85)  |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md)       | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                 |
 
+## Im Testbereich
+
+- **Einstieg:** Wenn ein Test nichts anderes sagt, beginnt er auf der **Startseite der App**. Dorthin
+  kommen Sie jederzeit mit **„App neu starten (Startseite)“** oben im Testbereich – Ihre
+  Testergebnisse bleiben, nur die Eingaben in der App sind dann weg.
+- **Aufeinander aufbauende Tests:** Steht bei „Voraussetzungen“ ein anderer Test (z. B. „MT-10“),
+  ist die Nummer anklickbar; machen Sie diesen Test zuerst oder direkt davor.
+- **„Nicht im Testbereich“:** Manche Tests gehen nur mit der heruntergeladenen Datei oder nur am
+  Kanzlei-PC (z. B. MT-01, MT-82–84). Sie stehen ausgegraut in der Liste, mit Begründung.
+- **„Fassung mit Entwürfen“** ist im Testbereich schon geladen; der Hinweis auf
+  `npm run build:preview` gilt nur für Entwickler.
+- Am Ende **„Testbericht als PDF“** und per E-Mail an die Kanzlei.
+
 ## Bitte nicht als Fehler melden
 
 - „Testfassung“ beim Formular: Version 0.x ist gewollt, solange die App vor ihrem ersten Release steht.
@@ -44,3 +59,9 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 Ändert sich ein Ablauf, den Nutzer sehen, wird der passende Testfall in derselben Sitzung
 angepasst. Das gehört zur Definition of Done.
+
+- Geht ein Test im Testbereich nicht, bekommt er direkt unter der Überschrift
+  `**Testbereich:** nein – <Grund>`; jeder andere Text dort erscheint als Hinweis.
+- Jeder Test nennt seinen Einstieg (Startseite, oder den Test, auf dem er aufbaut).
+- Eingegangene Testberichte liegen in `import/` (nicht im Repo). Nach der Bearbeitung kommen sie
+  nach `import/archiv/<JJJJ-MM-TT>/` (Tag der Bearbeitung).

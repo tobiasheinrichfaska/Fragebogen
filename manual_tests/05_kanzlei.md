@@ -101,7 +101,7 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 
 ## MT-44: Prüfhinweise bei der Zusammenführung
 
-**Voraussetzungen:** Vorschau-Fassung (`npm run build:preview`), Personalfragebogen-Entwurf.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Personalfragebogen-Entwurf.
 
 **Schritte:**
 
@@ -145,6 +145,9 @@ Teile abgeschlossen, PDF erstellt.
 ---
 
 ## MT-68: Übergabe an Lohn und Gehalt (nur Kanzlei-Build mit Zuordnung)
+
+**Testbereich:** Die App-Schritte gehen auch dort; das Einspielen in Lohn und Gehalt nur in der
+Kanzlei (Testmandant).
 
 **Voraussetzungen:**
 
@@ -203,7 +206,9 @@ Teile abgeschlossen, PDF erstellt.
 
 ## MT-70: Sofortmeldung zuerst, Personalfragebogen später zum selben Mitarbeiter
 
-**Voraussetzungen:** Vorschau-Build mit Zuordnung (`npm run build:preview`), Testmandant; eine
+**Testbereich:** nur in der Kanzlei – braucht einen Testmandanten in Lohn und Gehalt.
+
+**Voraussetzungen:** Fassung mit Entwürfen und Zuordnung (im Testbereich schon geladen; lokal `npm run build:preview`), Testmandant; eine
 Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen derselben Person
 („Angaben übernehmen“ aus der Sofortmeldung).
 
