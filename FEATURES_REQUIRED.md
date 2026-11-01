@@ -57,6 +57,8 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 
 - [ ] **Help pages "Wo finde ich …?"** — per data item the documents to pick, a watermarked sample zooming to the spot with source, "Nichts davon" with how to get it; no script, nothing external; every `explainer` path leads to a page
 
+- [ ] **Test page in the test folder** — the manual tests (and local `L-` tests) next to the app; per test start, result, comment and correctable time; the run survives a reload; the report PDF lists results, times and comments; never in the public build
+
 ## Documentation
 
 - [ ] **Flow plan of every form** (`docs/ablaufplan.html`, `npm run catalogue`) — stations and their order, questions in interview order, decision points, and why each condition applies; every condition in a draft is explained

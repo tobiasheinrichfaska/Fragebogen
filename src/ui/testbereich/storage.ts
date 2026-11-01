@@ -1,0 +1,25 @@
+// The tester's run survives a reload or a closed tab: kept in this browser's storage, test folder
+// only (no personal data — results, times, comments and the tester's name). The questionnaire app
+// itself still stores nothing.
+import { decodeRun, emptyRun, type TestRun } from '../../logic/testRun';
+
+const KEY = 'fragebogen-testlauf';
+
+export function loadRun(): TestRun {
+  try {
+    const text = localStorage.getItem(KEY);
+    return text ? decodeRun(JSON.parse(text)) : emptyRun();
+  } catch {
+    return emptyRun();
+  }
+}
+
+/** false when the browser refuses (private window, blocked storage) — the page says so. */
+export function saveRun(run: TestRun): boolean {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(run));
+    return true;
+  } catch {
+    return false;
+  }
+}

@@ -5,6 +5,7 @@
 import boldUrl from '../../assets/fonts/NotoSans-SemiBold.subset.ttf?inline';
 import sansUrl from '../../assets/fonts/NotoSans-Regular.subset.ttf?inline';
 import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
+import { APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
 import { deviceNow, type DeviceNow } from '../io/environment';
 import { downloadFile, readFileBytes } from '../io/files';
@@ -18,6 +19,7 @@ import {
 } from '../io/pdfReader';
 import { writeQuestionnairePdf } from '../io/pdfWriter';
 import { writeSheetPdf, type SheetPdfInput } from '../io/sheetPdf';
+import { writeTestReportPdf } from '../io/testReportPdf';
 import { readQrCodes } from '../io/qr';
 import { decodePackage, ORIGIN_MESSAGES } from '../logic/dataPackage';
 import { DATA_LINES_MESSAGES, decodeDataLines } from '../logic/dataPages';
@@ -26,6 +28,7 @@ import { sha256Hex } from '../logic/hash';
 import { assembleQrPayloads, QR_MESSAGES } from '../logic/qrParts';
 import { BLOCKER_MESSAGES, transmissionBlockers } from '../logic/requirements';
 import { markSaved, sessionFromFile, type Arrival, type Session } from '../logic/session';
+import type { TestRun } from '../logic/testRun';
 import { FINDING_MESSAGES, verifyQuestionnaire } from '../logic/verify';
 import type { BannerMessage } from './common';
 
@@ -121,6 +124,31 @@ export async function createSheetPdf(
     return {
       tone: 'error',
       text: 'Das Erfassungsblatt ließ sich nicht als PDF erstellen.',
+      detail: [String(error)],
+    };
+  }
+}
+
+/** The tester's report of the test page (test folder build only). */
+export async function createTestReportPdf(
+  run: TestRun,
+  cases: readonly { id: string; title: string; area: string }[],
+): Promise<BannerMessage> {
+  try {
+    const now = deviceNow();
+    const result = await writeTestReportPdf(
+      { run, cases, appVersion: APP_VERSION, created: { local: now.local, utc: now.utc } },
+      { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
+    );
+    downloadFile(result.fileName, result.bytes, 'application/pdf');
+    return {
+      tone: 'success',
+      text: `Testbericht „${result.fileName}“ erstellt (${result.pages} Seiten). Bitte per E-Mail an die Kanzlei schicken.`,
+    };
+  } catch (error) {
+    return {
+      tone: 'error',
+      text: 'Der Testbericht ließ sich nicht als PDF erstellen.',
       detail: [String(error)],
     };
   }

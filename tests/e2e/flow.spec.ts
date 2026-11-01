@@ -206,6 +206,13 @@ test('the built file carries the policy and loads nothing from outside', () => {
   expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+rel="stylesheet"/);
 });
 
+test('the hosted build carries no test page (test folder build only)', () => {
+  const html = readFileSync(APP, 'utf8');
+  for (const marker of ['Testbericht', 'Testbereich', 'fragebogen-testlauf']) {
+    expect(html.includes(marker), marker).toBe(false);
+  }
+});
+
 test('the hosted build carries no mapping to a payroll program (Kanzlei build only)', () => {
   // A mapping names the program's fields (config/export.local.json, gitignored); only `--mode
   // kanzlei` and the review preview bundle it. The markers come from the local file itself, so this

@@ -20,6 +20,14 @@ ausgeschlossen.
 - `explainerBase` und der im Formular eingefrorene Pfad ergeben den Link zum Erklärvideo, zum
   Beispiel `…/erklaervideos/sofortmeldung/versicherungsnummer`.
 
+## Lokale Tests der Testseite (`tests.local.md`)
+
+Tests, die DATEV-Lohnarten oder Felder von Lohn und Gehalt nennen, stehen in
+`config/tests.local.md` (per `.gitignore` ausgeschlossen) und erscheinen nur auf der Testseite des
+Testordners (`npm run build:test`). Format wie `manual_tests/`: Überschrift `# Bereich`, je Test
+`## L-01: Titel`, darunter **Voraussetzungen:**, **Schritte:** (nummeriert) und **Erwartet:**
+(Aufzählung). Nie echte Berater- oder Mandantennummern – nur erfundene.
+
 ## Übergabe an das Lohnprogramm (`export.local.json`)
 
 Die Zuordnung „Antwort im Fragebogen → Maske und Feld im Lohnprogramm“ nennt die Felder des

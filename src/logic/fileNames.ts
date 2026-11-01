@@ -80,3 +80,8 @@ export function sheetFileName(
   ];
   return `${safeFileName(parts)}.pdf`;
 }
+
+/** Report of a tester's run, e.g. "Testbericht_Erika_M_2026-11-01.pdf". */
+export function testReportFileName(tester: string, day: string): string {
+  return `${safeFileName(['Testbericht', tester.trim() || 'Tester', day])}.pdf`;
+}

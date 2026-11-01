@@ -104,6 +104,32 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 5: Die Anmeldung gelingt nicht mehr.
 - Schritt 6: Ohne Anmeldung.
 
+## MT-85: Testseite im Testordner
+
+**Voraussetzungen:** Testordner hochgeladen (MT-83/84), oder lokal `npm run build:test` und
+`dist-test/index.html` öffnen.
+
+**Schritte:**
+
+1. Den Testordner öffnen; links den eigenen Namen eintragen, einen Bereich wählen.
+2. Einen Test anklicken, **„Test beginnen (Zeit läuft)“**, rechts in der App den Schritten folgen.
+3. Ein Ergebnis wählen („bestanden“, „teilweise“ oder „nicht bestanden“), einen Kommentar schreiben,
+   bei „Dauer korrigieren“ eine Minutenzahl eintragen.
+4. Die Seite neu laden.
+5. **„Testbericht als PDF“**.
+6. Am Handy dasselbe; oben zwischen **„Testanleitung“** und **„App“** wechseln.
+
+**Erwartet:**
+
+- Schritt 1: Die Tests sind dieselben wie in `manual_tests/` (Kennung MT-…); lokale Tests (L-…)
+  stehen am Ende.
+- Schritt 3: In der Liste steht beim Test das Zeichen des Ergebnisses.
+- Schritt 4: Name, Ergebnisse und Kommentare sind noch da. _Nicht offensichtlich:_ In einem privaten
+  Fenster warnt die Seite, dass sie nichts speichern kann.
+- Schritt 5: Eine PDF „Testbericht_<Name>_<Datum>.pdf“ mit Ergebnis, Beginn, Ende, gemessener und
+  korrigierter Dauer, Kommentar und Summen; nicht bearbeitete Tests fehlen darin.
+- Schritt 6: Der Wechsel zur App und zurück verliert keine Eingaben in der App.
+
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 
 **Voraussetzungen:** `docs/hilfe/` (aus `npm run catalogue`) lokal geöffnet oder auf der Homepage unter

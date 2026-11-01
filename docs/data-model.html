@@ -714,6 +714,38 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
   <tr><td><code>definitionHash</code> · <code>compareVersions</code> · <code>parsePublishedList</code></td><td>–</td><td>Hash einer Definition; numerischer Versionsvergleich; strikte Prüfung der veröffentlichten Liste</td></tr>
 </table>
 
+<h2 id="testbereich">Testbereich (nur Test-Fassung)</h2>
+<p>Nur im Build <code>--mode testbereich</code> (Testordner): die Handtests als Katalog und der Testlauf eines Testers. Der Lauf liegt im Browserspeicher der Testseite (Schlüssel <code>fragebogen-testlauf</code>), nie in einem Fragebogen.</p>
+<h3>ManualTestFile · ManualTestCase · CasePart · Block</h3>
+<table>
+  <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
+  <tr><td><code>ManualTestFile.area</code> · <code>source</code> · <code>intro</code> · <code>cases</code></td><td>string · string · Block[] · ManualTestCase[]</td><td>ja</td><td>Bereich (Überschrift ohne Nummer), Dateiname, Vorspann (z. B. „Umgebung“), Testfälle</td></tr>
+  <tr><td><code>ManualTestCase.id</code> · <code>title</code> · <code>parts</code></td><td><code>MT-…</code>/<code>L-…</code> · string · CasePart[]</td><td>ja</td><td><code>MT</code> aus <code>manual_tests/</code>, <code>L</code> aus der lokalen Datei</td></tr>
+  <tr><td><code>CasePart.label</code> · <code>blocks</code></td><td>string · Block[]</td><td>ja</td><td>„Voraussetzungen“, „Schritte“, „Erwartet“ …; Text ohne Überschrift hat <code>""</code></td></tr>
+  <tr><td><code>Block</code></td><td><code>{ kind: 'text', text }</code> | <code>{ kind: 'list', ordered, items }</code> | <code>{ kind: 'code', text }</code></td><td>ja</td><td>Absatz, Liste (eingerückte Zeilen setzen einen Punkt fort), Codeblock</td></tr>
+</table>
+<h3>TestRun · TestEntry</h3>
+<table>
+  <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
+  <tr><td><code>TestRun.tester</code></td><td>string (≤ 80)</td><td>ja</td><td>Name, den der Tester selbst einträgt; steht im Bericht und im Dateinamen</td></tr>
+  <tr><td><code>TestRun.entries</code></td><td>Record&lt;Test-ID, TestEntry&gt;</td><td>ja</td><td>Je Test der Stand</td></tr>
+  <tr><td><code>TestRun.comment</code></td><td>string (≤ 8000)</td><td>ja</td><td>Gesamteindruck</td></tr>
+  <tr><td><code>TestEntry.started</code> · <code>ended</code></td><td>ISO-Zeit (Gerät)</td><td>nein</td><td>„Test beginnen“ bzw. Ergebnis; ein zweites „beginnen“ ändert den Beginn nicht</td></tr>
+  <tr><td><code>TestEntry.result</code></td><td><code>bestanden</code> | <code>teilweise</code> | <code>nichtBestanden</code></td><td>nein</td><td>Setzt das Ende</td></tr>
+  <tr><td><code>TestEntry.comment</code></td><td>string (≤ 4000)</td><td>ja</td><td>Bleibt beim Zurücksetzen</td></tr>
+  <tr><td><code>TestEntry.correctedMinutes</code></td><td>ganze Zahl 0–600</td><td>nein</td><td>Vom Tester korrigierte Dauer; zählt statt der gemessenen</td></tr>
+</table>
+<h3>Methoden</h3>
+<table>
+  <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
+  <tr><td><code>parseManualTests</code> · <code>blocksOf</code></td><td><code>(markdown, source) =&gt; ManualTestFile</code> · <code>(lines) =&gt; Block[]</code></td><td>Handtest-Datei bzw. Zeilen in Daten zerlegen</td></tr>
+  <tr><td><code>inlineMarkdown</code></td><td><code>(text) =&gt; InlineToken[]</code></td><td>Fett, Code, kursiv, Links (nur https bleiben Links)</td></tr>
+  <tr><td><code>startTest</code> · <code>setResult</code> · <code>setComment</code> · <code>correctDuration</code> · <code>resetTest</code></td><td><code>(run, id, …) =&gt; TestRun</code></td><td>Zustandsübergänge eines Tests</td></tr>
+  <tr><td><code>measuredMinutes</code> · <code>countedMinutes</code> · <code>totalsOf</code></td><td><code>(entry) =&gt; number | undefined</code> · <code>(run) =&gt; RunTotals</code></td><td>Gemessene Minuten (aufgerundet, mindestens 1), gezählte (Korrektur vor Messung), Summen</td></tr>
+  <tr><td><code>decodeRun</code></td><td><code>(raw: unknown) =&gt; TestRun</code></td><td>Gespeicherten Lauf lesen; Ungültiges wird verworfen</td></tr>
+  <tr><td><code>writeTestReportPdf</code> (io)</td><td><code>(input, fonts) =&gt; { bytes, fileName, pages }</code></td><td>Testbericht als PDF/A-2u (<code>testReportFileName</code>)</td></tr>
+</table>
+
 <h2 id="werkseinstellungen">Werkseinstellungen</h2>
 <table>
   <tr><th>Was</th><th>Wann</th><th>Änderbar?</th></tr>
