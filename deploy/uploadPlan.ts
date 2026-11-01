@@ -315,9 +315,18 @@ export function remoteDirectoryOf(output: string): string | undefined {
   return found?.[1];
 }
 
-function option(args: readonly string[], name: string): string | undefined {
+/**
+ * A command-line option as `--name=value` or `--name value`. Regression 2026-11-01: Windows
+ * PowerShell 5.1 drops an empty argument, so `--remote "" --ips …` arrived as `--remote --ips …`
+ * and "--ips" became the folder — a following option is never taken as a value.
+ */
+export function option(args: readonly string[], name: string): string | undefined {
+  const joined = args.find((arg) => arg.startsWith(`${name}=`));
+  if (joined !== undefined) return joined.slice(name.length + 1);
   const at = args.indexOf(name);
-  return at >= 0 ? (args[at + 1] ?? '') : undefined;
+  if (at < 0) return undefined;
+  const next = args[at + 1];
+  return next === undefined || next.startsWith('--') ? '' : next;
 }
 
 function cli(args: readonly string[]): unknown {

@@ -12,6 +12,7 @@ import {
   parseUploadSpec,
   planUpload,
   prepareBatch,
+  option,
   psftpBatch,
   remoteDirectoryOf,
   type UploadSpec,
@@ -290,6 +291,34 @@ describe('parseUploadSpec', () => {
   it('refuses an unknown kind of access', () => {
     const parsed = parseUploadSpec(target({ access: 'alle' }));
     expect(parsed.ok ? [] : parsed.problems.join(' ')).toContain('"access" ist eins von');
+  });
+});
+
+// Regression 2026-11-01: Windows PowerShell 5.1 drops an empty argument — with an empty target
+// folder `--remote "" --ips …` arrived as `--remote --ips …` and psftp tried `cd "--ips"`.
+describe('command-line options', () => {
+  it('never takes the next option as a value', () => {
+    const args = ['oeffentlich', '--remote', '--ips', '203.0.113.7'];
+    expect(option(args, '--remote')).toBe('');
+    expect(option(args, '--ips')).toBe('203.0.113.7');
+    expect(option(['test', '--remote'], '--remote')).toBe('');
+    expect(option(['test'], '--remote')).toBeUndefined();
+  });
+
+  it('reads "--name=value", also with an empty value', () => {
+    const args = ['test', '--remote=', '--ips=203.0.113.7,2001:db8::1', '--pfad=/home/www/test'];
+    expect(option(args, '--remote')).toBe('');
+    expect(option(args, '--ips')).toBe('203.0.113.7,2001:db8::1');
+    expect(option(args, '--pfad')).toBe('/home/www/test');
+  });
+});
+
+describe('the upload script passes options as one argument each', () => {
+  const script = readFileSync(join(ROOT, 'deploy/upload.ps1'), 'utf8');
+  it('uses --remote=…, --ips=… and --pfad=…', () => {
+    expect(script).toContain('"--remote=$($settings.ordner)"');
+    expect(script).toContain('"--ips=$ips"');
+    expect(script).not.toMatch(/--remote \$settings/);
   });
 });
 

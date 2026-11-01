@@ -301,7 +301,8 @@ try {
 
   $ips = @($settings.ips) -join ','
   function Get-Plan([string[]]$extra = @()) {
-    $json = Invoke-Native { & node.exe (Join-Path $PSScriptRoot 'uploadPlan.ts') $Ziel --remote $settings.ordner --ips $ips @extra 2>$null }
+    # Name and value as one argument: Windows PowerShell 5.1 drops an empty argument.
+    $json = Invoke-Native { & node.exe (Join-Path $PSScriptRoot 'uploadPlan.ts') $Ziel "--remote=$($settings.ordner)" "--ips=$ips" @extra 2>$null }
     $result = ($json -join "`n") | ConvertFrom-Json
     if (-not $result.ok) { throw ("Nicht hochgeladen:`n" + ($result.problems -join "`n")) }
     return $result
@@ -335,7 +336,11 @@ try {
     $prepared = Invoke-Psftp $settings $plan.prepare -IgnoreErrors
     if ($plan.access -eq 'ipOrLogin') {
       $found = [regex]::Matches($prepared.Output, '(?m)^Remote directory is (/\S*)\s*$')
-      if ($found.Count -gt 0) { $plan = Get-Plan @('--pfad', $found[$found.Count - 1].Groups[1].Value) }
+      # An SFTP user locked into its folder sees that folder as "/": its paths are not the server's,
+      # and a wrong AuthUserFile would answer every request with an error 500.
+      if ($prepared.Output -match '(?m)^Remote working directory is /\s*$') {
+        $checks += 'Der SFTP-Zugang sieht nur seinen eigenen Ordner; den echten Serverpfad für die Tester-Anmeldung kennt das Werkzeug so nicht – der Testordner bleibt nur für eure IPs.'
+      } elseif ($found.Count -gt 0) { $plan = Get-Plan @("--pfad=$($found[$found.Count - 1].Groups[1].Value)") }
       else { $checks += 'Pfad auf dem Server nicht ermittelt – der Testordner bleibt nur für eure IPs.' }
     }
   }
