@@ -532,22 +532,26 @@
       "title": "Ihre Situation",
       "fields": [
         {
-          "id": "situation",
+          "id": "status",
           "role": "person",
-          "type": "multiChoice",
-          "label": "Situation zu Beginn der Beschäftigung",
-          "question": "Was trifft zu Beginn dieser Beschäftigung auf Sie zu? Wählen Sie alles, was passt.",
-          "help": "Davon hängt ab, ob und wie Sie in dieser Beschäftigung versichert sind. Trifft nichts Besonderes zu, wählen Sie „nichts davon (Arbeitnehmerin oder Arbeitnehmer)“. Die Regelaltersgrenze liegt bei 67 Jahren; wer vor 1964 geboren ist, erreicht sie früher (zum Beispiel Jahrgang 1960 mit 66 Jahren und 4 Monaten). Sie gilt auch, wenn Sie keine Rente beziehen.",
+          "type": "choice",
+          "label": "Status zu Beginn der Beschäftigung",
+          "question": "Was machen Sie hauptsächlich, wenn diese Beschäftigung beginnt?",
+          "help": "Wählen Sie das, was am meisten zutrifft. Eine Rente, Grundsicherungsgeld oder Elternzeit fragen wir gleich danach gesondert.",
           "required": true,
           "purpose": "Beurteilung der Versicherungspflicht und der Personengruppe (§§ 5 ff. SGB V, §§ 5 f. SGB VI, §§ 25 ff. SGB III, § 8 SGB IV); Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "options": [
+            {
+              "id": "arbeitnehmer",
+              "label": "Arbeitnehmerin oder Arbeitnehmer (bei einem anderen Arbeitgeber oder nur hier)"
+            },
             {
               "id": "schueler",
               "label": "Schülerin oder Schüler"
             },
             {
               "id": "schulende",
-              "label": "Schule gerade beendet"
+              "label": "Schule gerade beendet, der nächste Schritt steht noch an"
             },
             {
               "id": "student",
@@ -566,28 +570,8 @@
               "label": "Beamtin oder Beamter"
             },
             {
-              "id": "pensionaer",
-              "label": "Pensionärin oder Pensionär"
-            },
-            {
-              "id": "rente",
-              "label": "Ich beziehe eine Rente."
-            },
-            {
-              "id": "regelaltersgrenze",
-              "label": "Ich habe die Regelaltersgrenze für die Altersrente erreicht (je nach Geburtsjahr 66 bis 67 Jahre)."
-            },
-            {
-              "id": "arbeitslos",
-              "label": "arbeitslos oder arbeitsuchend gemeldet"
-            },
-            {
-              "id": "grundsicherung",
-              "label": "Grundsicherungsgeld (früher Bürgergeld)"
-            },
-            {
-              "id": "elternzeit",
-              "label": "in Elternzeit bei einem anderen Arbeitgeber"
+              "id": "ruhestand",
+              "label": "im Ruhestand (Rente oder Pension)"
             },
             {
               "id": "dienst",
@@ -602,18 +586,128 @@
               "label": "Haushaltsführung oder Familienarbeit"
             },
             {
-              "id": "arbeitnehmer",
-              "label": "nichts davon (Arbeitnehmerin oder Arbeitnehmer)"
-            },
-            {
-              "id": "feleg",
-              "label": "Ausgleichsgeld nach dem FELEG (früher in der Landwirtschaft)"
+              "id": "arbeitslos",
+              "label": "arbeitslos oder arbeitsuchend gemeldet"
             },
             {
               "id": "sonstiges",
               "label": "etwas anderes"
             }
           ]
+        },
+        {
+          "id": "bezugRente",
+          "role": "person",
+          "type": "boolean",
+          "label": "Rente",
+          "question": "Beziehen Sie eine Rente?",
+          "help": "Jede Rente zählt: Altersrente, Erwerbsminderungsrente, Hinterbliebenenrente (auch Waisenrente), eine Rente aus dem Ausland oder eines berufsständischen Versorgungswerks.",
+          "required": true,
+          "initial": false,
+          "purpose": "Versicherungsfreiheit und Personengruppe bei Rentenbezug (§ 5 Abs. 4 SGB VI, § 6 Abs. 1 SGB VI, § 27 SGB III); Hinzuverdienst bei Erwerbsminderungsrente"
+        },
+        {
+          "id": "bezugPension",
+          "role": "person",
+          "type": "boolean",
+          "label": "Pension",
+          "question": "Beziehen Sie eine Pension (Ruhegehalt als frühere Beamtin oder früherer Beamter)?",
+          "required": true,
+          "showIf": {
+            "field": "status",
+            "equals": "ruhestand"
+          },
+          "because": "Eine Pension gibt es nur im Ruhestand; wer Versorgung nach beamtenrechtlichen Grundsätzen wegen Alters bezieht, ist rentenversicherungsfrei (§ 5 Abs. 4 SGB VI).",
+          "purpose": "Versicherungsfreiheit bei Versorgung nach beamtenrechtlichen Grundsätzen (§ 5 Abs. 4 SGB VI, § 6 Abs. 1 SGB V)"
+        },
+        {
+          "id": "ragErreicht",
+          "role": "person",
+          "type": "choice",
+          "label": "Regelaltersgrenze erreicht",
+          "question": "Haben Sie zu Beginn dieser Beschäftigung die Regelaltersgrenze für die Altersrente erreicht?",
+          "help": "Für den Jahrgang 1959 liegt sie bei 66 Jahren und 2 Monaten, für den Jahrgang 1960 bei 66 Jahren und 4 Monaten. Sie gilt auch, wenn Sie keine Rente beziehen.",
+          "required": true,
+          "showIf": {
+            "all": [
+              {
+                "not": {
+                  "field": "geburtsdatum",
+                  "onOrBefore": "1959-11-02"
+                }
+              },
+              {
+                "field": "geburtsdatum",
+                "onOrBefore": "1960-09-01"
+              }
+            ]
+          },
+          "because": "Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.09.1960 hängt es vom Beginn der Beschäftigung im Jahr 2026 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).",
+          "purpose": "Aktivrente (§ 3 Nr. 21 EStG), Versicherungsfreiheit in der Arbeitslosenversicherung (§ 28 Abs. 1 Nr. 1 SGB III) und Rentenversicherung (§ 5 Abs. 4 SGB VI)",
+          "options": [
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "grundsicherung",
+          "role": "person",
+          "type": "boolean",
+          "label": "Grundsicherungsgeld",
+          "question": "Beziehen Sie Grundsicherungsgeld (früher Bürgergeld)?",
+          "required": true,
+          "showIf": {
+            "field": "status",
+            "in": [
+              "arbeitnehmer",
+              "schulende",
+              "ausbildungAnderswo",
+              "selbstaendig",
+              "haushalt",
+              "arbeitslos",
+              "sonstiges"
+            ]
+          },
+          "because": "Grundsicherungsgeld macht eine kurzfristige Beschäftigung berufsmäßig (Geringfügigkeits-Richtlinien). Bei Schülerinnen, Schülern, Studierenden, Studienbewerbern, im Freiwilligen- oder Wehrdienst, bei Beamten und im Ruhestand ändert es die Beurteilung nicht oder kommt nicht vor.",
+          "purpose": "Berufsmäßigkeit einer kurzfristigen Beschäftigung (§ 8 Abs. 1 Nr. 2 SGB IV, Geringfügigkeits-Richtlinien); Anrechnung von Einkommen"
+        },
+        {
+          "id": "elternzeitAnderswo",
+          "role": "person",
+          "type": "boolean",
+          "label": "Elternzeit bei einem anderen Arbeitgeber",
+          "question": "Sind Sie zurzeit in Elternzeit bei einem anderen Arbeitgeber?",
+          "required": true,
+          "showIf": {
+            "field": "status",
+            "in": ["arbeitnehmer", "beamter"]
+          },
+          "because": "Elternzeit gibt es nur aus einem bestehenden Arbeits- oder Dienstverhältnis.",
+          "purpose": "Berufsmäßigkeit einer kurzfristigen Beschäftigung; Zustimmung des Arbeitgebers zur Teilzeit in der Elternzeit (§ 15 Abs. 4 BEEG)"
+        },
+        {
+          "id": "felegBezug",
+          "role": "person",
+          "type": "boolean",
+          "label": "Ausgleichsgeld nach dem FELEG",
+          "question": "Beziehen Sie Ausgleichsgeld nach dem FELEG (früher in der Landwirtschaft tätig)?",
+          "required": true,
+          "showIf": {
+            "field": "status",
+            "in": ["ruhestand", "sonstiges"]
+          },
+          "because": "Ausgleichsgeld nach dem FELEG beziehen frühere Landwirte bis zur Rente; dann gilt ein Sonderfall, den der Fragebogen nicht abdeckt.",
+          "purpose": "Vorfrage: Bezieher von Ausgleichsgeld nach dem FELEG (Personengruppe 116) deckt der Fragebogen nicht ab"
         },
         {
           "id": "schulart",
@@ -624,8 +718,8 @@
           "required": true,
           "purpose": "Versicherungsfreiheit in der Arbeitslosenversicherung nur für Schüler allgemeinbildender Schulen (§ 27 Abs. 4 Nr. 1 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "schueler"
+            "field": "status",
+            "equals": "schueler"
           },
           "because": "Nur Schülerinnen und Schüler allgemeinbildender Schulen sind in der Arbeitslosenversicherung frei (§ 27 Abs. 4 Nr. 1 SGB III); die Schulart zählt deshalb nur bei ihnen.",
           "options": [
@@ -652,8 +746,8 @@
           "required": true,
           "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "showIf": {
-            "field": "situation",
-            "contains": "schulende"
+            "field": "status",
+            "equals": "schulende"
           },
           "because": "Zwischen Schule und Ausbildung, Studium oder Dienst kann eine Aushilfe berufsmäßig sein; das Ende der Schulzeit ist dafür der Ausgangspunkt (Geringfügigkeits-Richtlinien B 2.3.3)."
         },
@@ -666,8 +760,8 @@
           "required": true,
           "purpose": "Berufsmäßigkeit bei kurzfristiger Beschäftigung (Geringfügigkeits-Richtlinien B 2.3.3)",
           "showIf": {
-            "field": "situation",
-            "contains": "schulende"
+            "field": "status",
+            "equals": "schulende"
           },
           "because": "Ob eine Aushilfe nach der Schule berufsmäßig ist, hängt davon ab, was danach kommt: vor einem Studium nicht, vor einer Ausbildung oder einem Dienst schon (Geringfügigkeits-Richtlinien B 2.3.3).",
           "options": [
@@ -706,8 +800,8 @@
           "required": true,
           "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "student"
+            "field": "status",
+            "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt.",
           "options": [
@@ -739,8 +833,8 @@
           "required": true,
           "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "student"
+            "field": "status",
+            "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
@@ -753,8 +847,8 @@
           "required": true,
           "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "student"
+            "field": "status",
+            "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
@@ -767,8 +861,8 @@
           "required": true,
           "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "student"
+            "field": "status",
+            "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt.",
           "decimals": 0
@@ -783,8 +877,8 @@
           "required": false,
           "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "student"
+            "field": "status",
+            "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
@@ -798,8 +892,8 @@
           "required": true,
           "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
           "showIf": {
-            "field": "situation",
-            "contains": "student"
+            "field": "status",
+            "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt."
         },
@@ -871,8 +965,8 @@
           "required": true,
           "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "showIf": {
-            "field": "situation",
-            "contains": "studienbewerber"
+            "field": "status",
+            "equals": "studienbewerber"
           },
           "because": "Bei Studienbewerbern hängt die Berufsmäßigkeit einer Aushilfe davon ab, ob das Studium bald beginnt (Geringfügigkeits-Richtlinien)."
         },
@@ -887,12 +981,12 @@
           "showIf": {
             "any": [
               {
-                "field": "situation",
-                "contains": "beamter"
+                "field": "status",
+                "equals": "beamter"
               },
               {
-                "field": "situation",
-                "contains": "pensionaer"
+                "field": "bezugPension",
+                "equals": true
               }
             ]
           },
@@ -907,8 +1001,8 @@
           "required": true,
           "purpose": "Versicherungsfreiheit in der Rentenversicherung nur bei Pension wegen Alters (§ 5 Abs. 4 Nr. 2 SGB VI)",
           "showIf": {
-            "field": "situation",
-            "contains": "pensionaer"
+            "field": "bezugPension",
+            "equals": true
           },
           "because": "Nur eine Pension wegen Alters macht in der Rentenversicherung frei (§ 5 Abs. 4 Nr. 2 SGB VI); deshalb wird der Grund nur bei Pensionären gefragt.",
           "options": [
@@ -932,8 +1026,8 @@
           "required": true,
           "purpose": "Versicherungsfreiheit und Arbeitgeberanteile in Renten- und Arbeitslosenversicherung; Hinzuverdienst bei Erwerbsminderung",
           "showIf": {
-            "field": "situation",
-            "contains": "rente"
+            "field": "bezugRente",
+            "equals": true
           },
           "because": "Ob eine Rente frei macht oder Arbeitgeberanteile auslöst, hängt von ihrer Art ab; das ist nur bei Rentenbeziehern zu klären.",
           "options": [
@@ -980,8 +1074,8 @@
           "required": true,
           "purpose": "Beginn der Versicherungsfreiheit oder der Arbeitgeberanteile",
           "showIf": {
-            "field": "situation",
-            "contains": "rente"
+            "field": "bezugRente",
+            "equals": true
           },
           "because": "Bei Rentenbeziehern beginnen Versicherungsfreiheit oder Arbeitgeberanteile mit der Rente."
         },
@@ -1012,8 +1106,16 @@
           "showIf": {
             "all": [
               {
-                "field": "situation",
-                "contains": "regelaltersgrenze"
+                "any": [
+                  {
+                    "field": "geburtsdatum",
+                    "onOrBefore": "1959-11-02"
+                  },
+                  {
+                    "field": "ragErreicht",
+                    "equals": "ja"
+                  }
+                ]
               },
               {
                 "not": {
@@ -1021,8 +1123,16 @@
                     {
                       "all": [
                         {
-                          "field": "situation",
-                          "contains": "regelaltersgrenze"
+                          "any": [
+                            {
+                              "field": "geburtsdatum",
+                              "onOrBefore": "1959-11-02"
+                            },
+                            {
+                              "field": "ragErreicht",
+                              "equals": "ja"
+                            }
+                          ]
                         },
                         {
                           "field": "rentenart",
@@ -1077,8 +1187,16 @@
               {
                 "all": [
                   {
-                    "field": "situation",
-                    "contains": "regelaltersgrenze"
+                    "any": [
+                      {
+                        "field": "geburtsdatum",
+                        "onOrBefore": "1959-11-02"
+                      },
+                      {
+                        "field": "ragErreicht",
+                        "equals": "ja"
+                      }
+                    ]
                   },
                   {
                     "field": "rentenart",
@@ -1127,12 +1245,12 @@
           "showIf": {
             "any": [
               {
-                "field": "situation",
-                "contains": "arbeitslos"
+                "field": "status",
+                "equals": "arbeitslos"
               },
               {
-                "field": "situation",
-                "contains": "grundsicherung"
+                "field": "grundsicherung",
+                "equals": true
               }
             ]
           },
@@ -1161,8 +1279,8 @@
           "required": true,
           "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "showIf": {
-            "field": "situation",
-            "contains": "arbeitslos"
+            "field": "status",
+            "equals": "arbeitslos"
           },
           "because": "Bei arbeitslos oder arbeitsuchend Gemeldeten ist eine Aushilfe berufsmäßig, wenn das Entgelt die Geringfügigkeitsgrenze übersteigt; dafür zählt die Meldung."
         },
@@ -1175,8 +1293,8 @@
           "required": true,
           "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "showIf": {
-            "field": "situation",
-            "contains": "elternzeit"
+            "field": "elternzeitAnderswo",
+            "equals": true
           },
           "because": "Neben einer Elternzeit kann eine Aushilfe berufsmäßig sein; ihr Ende zeigt, wie lange das gilt (Geringfügigkeits-Richtlinien B 2.3.3)."
         },
@@ -1189,8 +1307,8 @@
           "required": true,
           "purpose": "Teilzeit während der Elternzeit bei einem anderen Arbeitgeber bedarf der Zustimmung (§ 15 Abs. 4 BEEG)",
           "showIf": {
-            "field": "situation",
-            "contains": "elternzeit"
+            "field": "elternzeitAnderswo",
+            "equals": true
           },
           "because": "Wer in der Elternzeit bei einem anderen Arbeitgeber arbeitet, braucht die Zustimmung des eigenen Arbeitgebers (§ 15 Abs. 4 BEEG).",
           "options": [
@@ -1217,8 +1335,8 @@
           "required": true,
           "purpose": "Prüfung einer kurzfristigen oder geringfügigen Beschäftigung (§ 8 SGB IV, Geringfügigkeits-Richtlinien)",
           "showIf": {
-            "field": "situation",
-            "contains": "dienst"
+            "field": "status",
+            "equals": "dienst"
           },
           "because": "Während eines Freiwilligen- oder Wehrdienstes kann eine Aushilfe berufsmäßig sein; das Ende des Dienstes zeigt, wie lange."
         },
@@ -1231,8 +1349,8 @@
           "required": true,
           "purpose": "Hauptberuflich Selbständige sind nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V)",
           "showIf": {
-            "field": "situation",
-            "contains": "selbstaendig"
+            "field": "status",
+            "equals": "selbstaendig"
           },
           "because": "Hauptberuflich Selbständige sind in einer Beschäftigung nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); ob die Selbständigkeit hauptberuflich ist, zeigen Stunden und Einkommen.",
           "decimals": 2,
@@ -1247,8 +1365,8 @@
           "required": true,
           "purpose": "Hauptberuflich Selbständige sind nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V)",
           "showIf": {
-            "field": "situation",
-            "contains": "selbstaendig"
+            "field": "status",
+            "equals": "selbstaendig"
           },
           "because": "Hauptberuflich Selbständige sind in einer Beschäftigung nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); ob die Selbständigkeit hauptberuflich ist, zeigen Stunden und Einkommen."
         },
@@ -1260,8 +1378,8 @@
           "question": "Bewirtschaften Sie selbst einen landwirtschaftlichen Betrieb?",
           "required": true,
           "showIf": {
-            "field": "situation",
-            "contains": "selbstaendig"
+            "field": "status",
+            "equals": "selbstaendig"
           },
           "because": "Nebenerwerbslandwirte haben eigene Personengruppen (113, 114), die der Fragebogen nicht abdeckt; die Frage stellt sich nur bei einer Selbständigkeit.",
           "purpose": "Vorfrage: Nebenerwerbslandwirte deckt der Fragebogen nicht ab (Personengruppen 113, 114)"
@@ -1275,8 +1393,8 @@
           "required": true,
           "purpose": "Beurteilung der Versicherungspflicht und der Personengruppe (§§ 5 ff. SGB V, §§ 5 f. SGB VI, §§ 25 ff. SGB III, § 8 SGB IV)",
           "showIf": {
-            "field": "situation",
-            "contains": "sonstiges"
+            "field": "status",
+            "equals": "sonstiges"
           },
           "because": "„Etwas anderes“ braucht eine Beschreibung, damit die lohnabrechnende Stelle die Versicherungspflicht beurteilen kann."
         }
@@ -1665,7 +1783,7 @@
           "question": "Bei welcher gesetzlichen Krankenkasse sind Sie versichert?",
           "help": "Die Krankenkasse, bei der Sie versichert sind oder Mitglied werden – auch bei einer Familienversicherung. Tippen Sie den Namen und wählen Sie Ihre Kasse aus der Liste. Steht sie nicht darin, können Sie den Namen frei eingeben; das kann Rückfragen und Zusatzaufwand verursachen.",
           "required": true,
-          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV)",
+          "purpose": "Anmeldung bei der zuständigen Krankenkasse als Einzugsstelle (§ 28i SGB IV); Abruf der elektronischen Arbeitsunfähigkeitsbescheinigung bei der Krankenkasse (§ 109 SGB IV), auch im Minijob",
           "showIf": {
             "field": "krankenversicherung",
             "equals": "gesetzlich"
@@ -2352,8 +2470,16 @@
           "required": true,
           "purpose": "Steuerfreiheit nach § 3 Nr. 21 EStG (Aktivrente) nur einmal je Monat",
           "showIf": {
-            "field": "situation",
-            "contains": "regelaltersgrenze"
+            "any": [
+              {
+                "field": "geburtsdatum",
+                "onOrBefore": "1959-11-02"
+              },
+              {
+                "field": "ragErreicht",
+                "equals": "ja"
+              }
+            ]
           },
           "because": "Die Aktivrente (§ 3 Nr. 21 EStG) gibt es erst ab dem Monat nach Erreichen der Regelaltersgrenze und nur einmal je Monat.",
           "options": [
@@ -2386,8 +2512,16 @@
                 "equals": "weiteres"
               },
               {
-                "field": "situation",
-                "contains": "regelaltersgrenze"
+                "any": [
+                  {
+                    "field": "geburtsdatum",
+                    "onOrBefore": "1959-11-02"
+                  },
+                  {
+                    "field": "ragErreicht",
+                    "equals": "ja"
+                  }
+                ]
               }
             ]
           },
@@ -5682,8 +5816,8 @@
             "equals": "kurzfristig"
           },
           {
-            "field": "situation",
-            "contains": "arbeitslos"
+            "field": "status",
+            "equals": "arbeitslos"
           }
         ]
       },
@@ -5716,8 +5850,8 @@
             "equals": "kurzfristig"
           },
           {
-            "field": "situation",
-            "contains": "elternzeit"
+            "field": "elternzeitAnderswo",
+            "equals": true
           }
         ]
       },
@@ -5833,8 +5967,8 @@
             "any": [
               {
                 "not": {
-                  "field": "situation",
-                  "contains": "student"
+                  "field": "status",
+                  "equals": "student"
                 }
               },
               {
@@ -5859,18 +5993,8 @@
     {
       "id": "regelaltersgrenzeNichtAngegeben",
       "when": {
-        "all": [
-          {
-            "field": "situation",
-            "answered": true
-          },
-          {
-            "not": {
-              "field": "situation",
-              "contains": "regelaltersgrenze"
-            }
-          }
-        ]
+        "field": "ragErreicht",
+        "in": ["nein", "unbekannt"]
       },
       "test": {
         "fn": "regelaltersgrenzeErreicht",
@@ -5882,8 +6006,8 @@
     {
       "id": "regelaltersgrenzeFalschAngegeben",
       "when": {
-        "field": "situation",
-        "contains": "regelaltersgrenze"
+        "field": "ragErreicht",
+        "equals": "ja"
       },
       "test": {
         "fn": "regelaltersgrenzeNichtErreicht",
@@ -5906,8 +6030,16 @@
       "when": {
         "all": [
           {
-            "field": "situation",
-            "contains": "regelaltersgrenze"
+            "any": [
+              {
+                "field": "geburtsdatum",
+                "onOrBefore": "1959-11-02"
+              },
+              {
+                "field": "ragErreicht",
+                "equals": "ja"
+              }
+            ]
           },
           {
             "field": "agBeschaeftigungsart",
@@ -6317,8 +6449,8 @@
     {
       "id": "feleg",
       "when": {
-        "field": "situation",
-        "contains": "feleg"
+        "field": "felegBezug",
+        "equals": true
       },
       "message": "Bezug von Ausgleichsgeld nach dem FELEG (Personengruppe 116)."
     },
@@ -6613,8 +6745,16 @@
                   {
                     "all": [
                       {
-                        "field": "situation",
-                        "contains": "regelaltersgrenze"
+                        "any": [
+                          {
+                            "field": "geburtsdatum",
+                            "onOrBefore": "1959-11-02"
+                          },
+                          {
+                            "field": "ragErreicht",
+                            "equals": "ja"
+                          }
+                        ]
                       },
                       {
                         "field": "rentenart",
@@ -6649,8 +6789,16 @@
                   {
                     "all": [
                       {
-                        "field": "situation",
-                        "contains": "regelaltersgrenze"
+                        "any": [
+                          {
+                            "field": "geburtsdatum",
+                            "onOrBefore": "1959-11-02"
+                          },
+                          {
+                            "field": "ragErreicht",
+                            "equals": "ja"
+                          }
+                        ]
                       },
                       {
                         "field": "rentenart",
@@ -6684,8 +6832,16 @@
               {
                 "all": [
                   {
-                    "field": "situation",
-                    "contains": "regelaltersgrenze"
+                    "any": [
+                      {
+                        "field": "geburtsdatum",
+                        "onOrBefore": "1959-11-02"
+                      },
+                      {
+                        "field": "ragErreicht",
+                        "equals": "ja"
+                      }
+                    ]
                   },
                   {
                     "field": "rentenart",
@@ -6886,12 +7042,12 @@
               {
                 "any": [
                   {
-                    "field": "situation",
-                    "contains": "beamter"
+                    "field": "status",
+                    "equals": "beamter"
                   },
                   {
-                    "field": "situation",
-                    "contains": "pensionaer"
+                    "field": "bezugPension",
+                    "equals": true
                   }
                 ]
               },
@@ -7043,8 +7199,8 @@
                 "in": ["privat", "anderweitig"]
               },
               {
-                "field": "situation",
-                "contains": "selbstaendig"
+                "field": "status",
+                "equals": "selbstaendig"
               },
               {
                 "field": "selbstHauptberuf",
@@ -7223,8 +7379,16 @@
                           {
                             "all": [
                               {
-                                "field": "situation",
-                                "contains": "regelaltersgrenze"
+                                "any": [
+                                  {
+                                    "field": "geburtsdatum",
+                                    "onOrBefore": "1959-11-02"
+                                  },
+                                  {
+                                    "field": "ragErreicht",
+                                    "equals": "ja"
+                                  }
+                                ]
                               },
                               {
                                 "field": "rentenart",
@@ -7331,8 +7495,16 @@
                       {
                         "all": [
                           {
-                            "field": "situation",
-                            "contains": "regelaltersgrenze"
+                            "any": [
+                              {
+                                "field": "geburtsdatum",
+                                "onOrBefore": "1959-11-02"
+                              },
+                              {
+                                "field": "ragErreicht",
+                                "equals": "ja"
+                              }
+                            ]
                           },
                           {
                             "field": "rentenart",
@@ -7375,8 +7547,16 @@
                       {
                         "all": [
                           {
-                            "field": "situation",
-                            "contains": "regelaltersgrenze"
+                            "any": [
+                              {
+                                "field": "geburtsdatum",
+                                "onOrBefore": "1959-11-02"
+                              },
+                              {
+                                "field": "ragErreicht",
+                                "equals": "ja"
+                              }
+                            ]
                           },
                           {
                             "field": "rentenart",
@@ -7416,8 +7596,16 @@
               {
                 "all": [
                   {
-                    "field": "situation",
-                    "contains": "regelaltersgrenze"
+                    "any": [
+                      {
+                        "field": "geburtsdatum",
+                        "onOrBefore": "1959-11-02"
+                      },
+                      {
+                        "field": "ragErreicht",
+                        "equals": "ja"
+                      }
+                    ]
                   },
                   {
                     "field": "rentenart",
@@ -7567,8 +7755,8 @@
           "when": {
             "all": [
               {
-                "field": "situation",
-                "contains": "schueler"
+                "field": "status",
+                "equals": "schueler"
               },
               {
                 "field": "schulart",
@@ -7673,12 +7861,12 @@
                   {
                     "any": [
                       {
-                        "field": "situation",
-                        "contains": "beamter"
+                        "field": "status",
+                        "equals": "beamter"
                       },
                       {
-                        "field": "situation",
-                        "contains": "pensionaer"
+                        "field": "bezugPension",
+                        "equals": true
                       }
                     ]
                   },
@@ -7752,8 +7940,8 @@
                     "in": ["privat", "anderweitig"]
                   },
                   {
-                    "field": "situation",
-                    "contains": "selbstaendig"
+                    "field": "status",
+                    "equals": "selbstaendig"
                   },
                   {
                     "field": "selbstHauptberuf",
@@ -7822,12 +8010,12 @@
                   {
                     "any": [
                       {
-                        "field": "situation",
-                        "contains": "beamter"
+                        "field": "status",
+                        "equals": "beamter"
                       },
                       {
-                        "field": "situation",
-                        "contains": "pensionaer"
+                        "field": "bezugPension",
+                        "equals": true
                       }
                     ]
                   },

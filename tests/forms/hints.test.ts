@@ -6,6 +6,7 @@ import { checkFormDefinition } from '../../src/logic/formDefinition';
 import { checkHints, describeHint, HINT_TESTS } from '../../src/logic/hints';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
+import { regelaltersgrenze } from '../../src/logic/regelaltersgrenze';
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
@@ -33,7 +34,7 @@ const ids = (q: Questionnaire) => checkHints(q, form.definition).map((hint) => h
 describe('check hints of the Personalfragebogen draft', () => {
   it('flags a registered job seeker planned as short-term help', () => {
     const q = answers(
-      { situation: ['arbeitslos'], artLautVereinbarung: 'aushilfe' },
+      { status: 'arbeitslos', artLautVereinbarung: 'aushilfe' },
       { agBeschaeftigungsart: 'kurzfristig' },
     );
     expect(ids(q)).toContain('kurzfristigArbeitslos');
@@ -42,7 +43,7 @@ describe('check hints of the Personalfragebogen draft', () => {
   });
 
   it('waits for every part a hint names', () => {
-    const personOnly = answers({ situation: ['arbeitslos'], artLautVereinbarung: 'aushilfe' });
+    const personOnly = answers({ status: 'arbeitslos', artLautVereinbarung: 'aushilfe' });
     expect(ids(personOnly)).not.toContain('kurzfristigArbeitslos');
     expect(ids(personOnly)).not.toContain('artWeichtAb');
   });
@@ -63,8 +64,9 @@ describe('check hints of the Personalfragebogen draft', () => {
   });
 
   it('computes the Regelaltersgrenze from the birth date and the start of employment', () => {
+    // Born 15.03.1960: the Regelaltersgrenze falls inside 2026, so the person is asked.
     const notStated = answers(
-      { geburtsdatum: '15.03.1960', situation: ['arbeitnehmer'] },
+      { geburtsdatum: '15.03.1960', ragErreicht: 'nein' },
       { agBeschaeftigungsbeginn: '02.11.2026' },
     );
     const hint = checkHints(notStated, form.definition).find(
@@ -73,30 +75,68 @@ describe('check hints of the Personalfragebogen draft', () => {
     expect(hint?.detail).toEqual([
       'Regelaltersgrenze laut Geburtsdatum: 14.07.2026; Folgemonat: August 2026.',
     ]);
+    const unknown = answers(
+      { geburtsdatum: '15.03.1960', ragErreicht: 'unbekannt' },
+      { agBeschaeftigungsbeginn: '02.11.2026' },
+    );
+    expect(ids(unknown)).toContain('regelaltersgrenzeNichtAngegeben');
 
     const stated = answers(
-      { geburtsdatum: '15.03.1960', situation: ['regelaltersgrenze'] },
+      { geburtsdatum: '15.03.1960', ragErreicht: 'ja' },
       { agBeschaeftigungsbeginn: '02.11.2026' },
     );
     expect(ids(stated)).not.toContain('regelaltersgrenzeNichtAngegeben');
     expect(ids(stated)).not.toContain('regelaltersgrenzeFalschAngegeben');
 
-    const tooYoung = answers(
-      { geburtsdatum: '17.05.1990', situation: ['regelaltersgrenze'] },
-      { agBeschaeftigungsbeginn: '02.11.2026' },
+    const tooEarly = answers(
+      { geburtsdatum: '15.03.1960', ragErreicht: 'ja' },
+      { agBeschaeftigungsbeginn: '01.01.2026' },
     );
-    expect(ids(tooYoung)).toContain('regelaltersgrenzeFalschAngegeben');
+    expect(ids(tooEarly)).toContain('regelaltersgrenzeFalschAngegeben');
 
     const soon = answers(
-      { geburtsdatum: '15.03.1960', situation: ['arbeitnehmer'] },
+      { geburtsdatum: '15.03.1960', ragErreicht: 'nein' },
       { agBeschaeftigungsbeginn: '01.01.2026' },
     );
     expect(ids(soon)).toContain('regelaltersgrenzeBald');
     expect(ids(soon)).not.toContain('regelaltersgrenzeNichtAngegeben');
   });
 
+  // Tobias 2026-11-01: the Regelaltersgrenze follows from the birth date; only where the start in
+  // 2026 decides it, the person is asked.
+  it('asks about the Regelaltersgrenze only for birth dates where the start in 2026 decides it', () => {
+    const shownFor = (geburtsdatum: string) =>
+      visibleFields(form.definition, 'person', { geburtsdatum }).map((field) => field.id);
+    expect(shownFor('1959-11-02')).not.toContain('ragErreicht');
+    expect(shownFor('1959-11-02')).toContain('aktivrenteMonat');
+    expect(shownFor('1959-11-03')).toContain('ragErreicht');
+    expect(shownFor('1960-09-01')).toContain('ragErreicht');
+    expect(shownFor('1960-09-02')).not.toContain('ragErreicht');
+    expect(shownFor('1960-09-02')).not.toContain('aktivrenteMonat');
+  });
+
+  it('draws the limits of that range from the Regelaltersgrenze and the validity of the version', () => {
+    const { validity } = form.definition;
+    const ask = form.definition.sections
+      .flatMap((section) => section.fields)
+      .find((field) => field.id === 'ragErreicht')?.showIf;
+    const limits = JSON.stringify(ask).match(/\d{4}-\d{2}-\d{2}/g) ?? [];
+    const [sure = '', open = ''] = limits;
+    const dayAfter = (date: string) => {
+      const next = new Date(`${date}T12:00:00Z`);
+      next.setUTCDate(next.getUTCDate() + 1);
+      return next.toISOString().slice(0, 10);
+    };
+    expect(validity).toMatchObject({ from: '2026-01-01', until: '2026-12-31' });
+    const reached = (birth: string) => regelaltersgrenze(birth) ?? '';
+    expect(reached(sure) <= '2026-01-01').toBe(true);
+    expect(reached(dayAfter(sure)) > '2026-01-01').toBe(true);
+    expect(reached(open) <= '2026-12-31').toBe(true);
+    expect(reached(dayAfter(open)) > '2026-12-31').toBe(true);
+  });
+
   it('shows no age hint while the start of employment is missing', () => {
-    const q = answers({ geburtsdatum: '15.03.1960', situation: ['arbeitnehmer'] }, {});
+    const q = answers({ geburtsdatum: '15.03.1960', ragErreicht: 'nein' }, {});
     expect(ids(q).filter((id) => id.startsWith('regelaltersgrenze'))).toEqual([]);
   });
 
@@ -144,11 +184,11 @@ describe('check hints — definition rules', () => {
       problems((d) =>
         d.checkHints?.push({
           id: 'neu',
-          test: { fn: 'regelaltersgrenzeErreicht', args: ['geburtsdatum', 'situation'] },
+          test: { fn: 'regelaltersgrenzeErreicht', args: ['geburtsdatum', 'status'] },
           message: 'x',
         }),
       ),
-    ).toContain('"situation" must be a date field');
+    ).toContain('"status" must be a date field');
   });
 
   it('refuses a condition on a table column', () => {

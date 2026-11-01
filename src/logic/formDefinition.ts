@@ -588,6 +588,10 @@ export function decodeCondition(
       const startsWith = d.string(o.startsWith, `${path}.startsWith`);
       return field === undefined || startsWith === undefined ? undefined : { field, startsWith };
     }
+    case 'onOrBefore': {
+      const onOrBefore = d.string(o.onOrBefore, `${path}.onOrBefore`, ISO_DATE_SHAPE);
+      return field === undefined || onOrBefore === undefined ? undefined : { field, onOrBefore };
+    }
     default: {
       const answered = d.boolean(o.answered, `${path}.answered`);
       return field === undefined || answered === undefined ? undefined : { field, answered };

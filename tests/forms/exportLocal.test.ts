@@ -149,7 +149,7 @@ describe.skipIf(!existsSync(FILE))('local export mappings (config/export.local.j
   it('writes more than three child allowances, another church tax code and Personengruppe 120', () => {
     const q = questionnaire({
       ...PERSON,
-      situation: ['rente'],
+      bezugRente: true,
       rentenart: 'altersvoll',
       renteSeit: '01.01.2026',
       kinderfreibetraege: '4,5',

@@ -10,10 +10,18 @@ import {
   type FieldType,
   type FieldValue,
 } from './model';
+import { formatGermanDate, isIsoDate } from './dates';
 import { optionsOf } from './options';
 
 export type LeafCondition = Extract<Condition, { field: FieldId }>;
-export const CONDITION_OPERATORS = ['equals', 'in', 'contains', 'answered', 'startsWith'] as const;
+export const CONDITION_OPERATORS = [
+  'equals',
+  'in',
+  'contains',
+  'answered',
+  'startsWith',
+  'onOrBefore',
+] as const;
 export type ConditionOperator = (typeof CONDITION_OPERATORS)[number];
 type Operand = string | boolean | readonly string[];
 
@@ -85,6 +93,18 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
       typeof value === 'string' && typeof operand === 'string' && value.startsWith(operand),
     describe: (label, operand) => `„${label}“ mit „${String(operand)}“ beginnt`,
   },
+  // A date on or before a fixed day, e.g. born early enough to have reached the Regelaltersgrenze
+  // at every start date this form version allows. Stored dates are YYYY-MM-DD, so text order is
+  // date order; unanswered is never on or before anything.
+  onOrBefore: {
+    targets: ['date'],
+    checkOperand: (operand) =>
+      typeof operand === 'string' && isIsoDate(operand) ? undefined : 'expected a YYYY-MM-DD date',
+    evaluate: (value, operand) =>
+      typeof value === 'string' && typeof operand === 'string' && value <= operand,
+    describe: (label, operand) =>
+      `„${label}“ am oder vor dem ${typeof operand === 'string' && isIsoDate(operand) ? formatGermanDate(operand) : String(operand)} liegt`,
+  },
   answered: {
     targets: FIELD_TYPES,
     checkOperand: (operand) => (typeof operand === 'boolean' ? undefined : 'expected a boolean'),
@@ -101,6 +121,7 @@ export function leafOperator(leaf: LeafCondition): {
   if ('in' in leaf) return { operator: 'in', operand: leaf.in };
   if ('contains' in leaf) return { operator: 'contains', operand: leaf.contains };
   if ('startsWith' in leaf) return { operator: 'startsWith', operand: leaf.startsWith };
+  if ('onOrBefore' in leaf) return { operator: 'onOrBefore', operand: leaf.onOrBefore };
   return { operator: 'answered', operand: leaf.answered };
 }
 

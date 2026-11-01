@@ -16,8 +16,7 @@ bestätigt, Familienname und Vornamen eingegeben.
 
 1. Unten auf **„Zur Zusammenfassung – alle Angaben ansehen und ändern“** tippen.
 2. Bei „Vornamen“ auf **„ändern“** tippen, den Namen ändern, **„Weiter“**.
-3. Bei „Situation zu Beginn der Beschäftigung“ auf **„ändern“** tippen, „Ich beziehe eine Rente.“
-   ankreuzen, **„Weiter“**.
+3. Bei „Rente“ auf **„ändern“** tippen und **„Ja“** wählen.
 4. Die Art der Rente wählen und „Rente seit“ eingeben, **„Weiter“**.
 5. Bei „Krankenversicherung“ auf **„ändern“**, „privat“ wählen und die Folgefragen beantworten, bis
    die Frage nach Beiträgen für Angehörige mit eigenem privatem Vertrag kommt. Dort **„Ja“** tippen,
@@ -261,3 +260,31 @@ Projekt.
 - Schritt 4: Der Arbeitgeber wird einmal gefragt, ob sein Betrieb Beschäftigte mit Sozialversicherung
   in einem anderen Staat hat (vorbelegt „Nein“; steht danach im Stammdaten-Link als `auslandSv`).
   Erst bei „Ja“ kommen je Person die Fragen nach dem anderen Staat und der A1-Bescheinigung.
+
+---
+
+## MT-87: Hauptstatus und Zusätze statt Ankreuzliste
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.
+
+**Schritte:**
+
+1. Geburtsdatum `17.05.2005` eingeben; bei „Was machen Sie hauptsächlich …“ „Schülerin oder Schüler“
+   wählen und weitergehen.
+2. Über **„Zur Zusammenfassung“** den Status auf „im Ruhestand (Rente oder Pension)“ ändern und
+   weitergehen.
+3. Das Geburtsdatum nacheinander auf `01.06.1958`, `15.03.1960` und `01.01.1965` ändern und jeweils
+   die folgenden Fragen ansehen.
+4. Den Status auf „Arbeitnehmerin oder Arbeitnehmer …“ ändern.
+
+**Erwartet:**
+
+- Schritt 1: Man kann nur **einen** Status wählen. Danach kommen „Beziehen Sie eine Rente?“
+  (vorbelegt „Nein“) und die Schulart, aber keine Fragen nach Grundsicherungsgeld, Elternzeit oder
+  Pension.
+- Schritt 2: Jetzt kommt „Beziehen Sie eine Pension …?“; Grundsicherungsgeld wird nicht gefragt.
+- Schritt 3: Nur bei `15.03.1960` fragt der Fragebogen „Haben Sie zu Beginn dieser Beschäftigung die
+  Regelaltersgrenze … erreicht?“ (Ja / Nein / Weiß ich nicht). _Nicht offensichtlich:_ Bei
+  `01.06.1958` gilt sie als erreicht (es erscheinen die Fragen zur Aktivrente), bei `01.01.1965` als
+  nicht erreicht – ohne Rückfrage; die Grenzen hängen an der Fassung für einen Beginn im Jahr 2026.
+- Schritt 4: Jetzt kommen „Grundsicherungsgeld?“ und „Elternzeit bei einem anderen Arbeitgeber?“.

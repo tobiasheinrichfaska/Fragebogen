@@ -159,7 +159,8 @@ describe('Beitragsgruppen per scenario', () => {
       {
         ...GKV,
         geburtsdatum: '01.03.1958',
-        situation: ['rente', 'regelaltersgrenze'],
+        status: 'ruhestand',
+        bezugRente: true,
         rentenart: 'altersvoll',
         renteSeit: '01.04.2024',
         rvVerzicht: 'nein',
@@ -171,7 +172,7 @@ describe('Beitragsgruppen per scenario', () => {
     [
       'pupil of a general school with 700 €',
       monatlich('700,00'),
-      { ...GKV, situation: ['schueler'], schulart: 'allgemein' },
+      { ...GKV, status: 'schueler', schulart: 'allgemein' },
       '101',
       '1101',
       false,
@@ -179,7 +180,7 @@ describe('Beitragsgruppen per scenario', () => {
     [
       'civil servant with Beihilfe, privately insured, side job',
       monatlich('1.000,00'),
-      { ...PKV, situation: ['beamter'], beamtBeihilfe: true, pkvBestand2002: 'nein' },
+      { ...PKV, status: 'beamter', beamtBeihilfe: true, pkvBestand2002: 'nein' },
       '101',
       '0110',
       false,

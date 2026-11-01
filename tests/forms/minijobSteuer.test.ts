@@ -87,7 +87,7 @@ const questions = (session: Session) =>
   stepsFor(session).flatMap((step) => (step.kind === 'question' ? [step.fieldId] : []));
 
 const minijobber = (session: Session) =>
-  must(answer(must(answer(session, 'situation', ['student'])), 'artLautVereinbarung', 'minijob'));
+  must(answer(must(answer(session, 'status', 'student')), 'artLautVereinbarung', 'minijob'));
 
 describe('employer first: the person is not asked what the employer decided', () => {
   it('takes the flat-rate tax over and leaves out the questions on the tax class', () => {
@@ -124,7 +124,7 @@ describe('employer first: the person is not asked what the employer decided', ()
   it('replaces an earlier own answer when the person continues and says so', () => {
     let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
     for (const [id, raw] of Object.entries({
-      situation: ['student'],
+      status: 'student',
       artLautVereinbarung: 'minijob',
       steuerart: 'elstam',
     })) {
@@ -167,7 +167,7 @@ describe('a later change at the employer becomes a check hint', () => {
   function personSigned(steuerart: string): Questionnaire {
     let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
     for (const [id, raw] of Object.entries({
-      situation: ['student'],
+      status: 'student',
       artLautVereinbarung: 'minijob',
       steuerart,
     })) {

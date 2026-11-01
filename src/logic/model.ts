@@ -97,6 +97,7 @@ export type Condition =
   | { field: FieldId; contains: string }
   | { field: FieldId; answered: boolean }
   | { field: FieldId; startsWith: string }
+  | { field: FieldId; onOrBefore: IsoDate }
   | { not: Condition }
   | { all: Condition[] }
   | { any: Condition[] };

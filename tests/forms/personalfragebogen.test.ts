@@ -47,7 +47,7 @@ describe('Personalfragebogen draft — questions per variant', () => {
   it('asks a student in a Minijob the student questions and the Minijob pension question', () => {
     const ids = visible('person', {
       ...BASE_PERSON,
-      situation: ['student'],
+      status: 'student',
       artLautVereinbarung: 'minijob',
       ueber20hJahr: true,
     });
@@ -68,7 +68,7 @@ describe('Personalfragebogen draft — questions per variant', () => {
   it('asks a temporary helper who is registered unemployed about earlier jobs and benefits', () => {
     const ids = visible('person', {
       ...BASE_PERSON,
-      situation: ['arbeitslos'],
+      status: 'arbeitslos',
       artLautVereinbarung: 'aushilfe',
       vorbeschJahr: true,
     });
@@ -86,7 +86,9 @@ describe('Personalfragebogen draft — questions per variant', () => {
   it('asks a pensioner past the Regelaltersgrenze with a second job about waiver and Aktivrente', () => {
     const ids = visible('person', {
       ...BASE_PERSON,
-      situation: ['rente', 'regelaltersgrenze'],
+      status: 'ruhestand',
+      bezugRente: true,
+      geburtsdatum: '1958-01-01',
       rentenart: 'altersvoll',
       dienstverhaeltnis: 'weiteres',
       artLautVereinbarung: 'festeStelle',
@@ -106,13 +108,13 @@ describe('Personalfragebogen draft — questions per variant', () => {
   it('ties the Aktivrente to the Regelaltersgrenze, not to a pension', () => {
     const withoutPension = visible('person', {
       ...BASE_PERSON,
-      situation: ['regelaltersgrenze'],
+      geburtsdatum: '1958-01-01',
       artLautVereinbarung: 'festeStelle',
     });
     expect(withoutPension).toContain('aktivrenteMonat');
     const pensionBeforeLimit = visible('person', {
       ...BASE_PERSON,
-      situation: ['rente'],
+      bezugRente: true,
       rentenart: 'altersvoll',
       artLautVereinbarung: 'festeStelle',
     });
@@ -200,7 +202,7 @@ describe('Personalfragebogen draft — complete parts can be sealed', () => {
     const values: Record<string, unknown> = {
       ...BASE_PERSON,
       geburtsdatum: '17.05.2003',
-      situation: ['student'],
+      status: 'student',
       studienArt: 'vollzeit',
       hochschule: 'Beispiel-Hochschule',
       urlaubssemester: false,

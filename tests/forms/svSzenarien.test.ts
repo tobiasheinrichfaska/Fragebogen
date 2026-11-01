@@ -100,14 +100,14 @@ describe('Personengruppe per scenario', () => {
     [
       'old-age pension of a Versorgungswerk',
       monatlich('1.200,00', 'svpflichtig'),
-      { situation: ['rente'], rentenart: 'versorgungswerkAlter', rvVerzicht: 'nein' },
+      { bezugRente: true, rentenart: 'versorgungswerkAlter', rvVerzicht: 'nein' },
       '119',
       false,
     ],
     [
       'never insured until the Regelaltersgrenze: free, but not Personengruppe 119',
       monatlich('1.200,00', 'svpflichtig'),
-      { situation: ['regelaltersgrenze'], rvNieVersichert: 'nieVersichert', rvVerzicht: 'nein' },
+      { geburtsdatum: '1958-01-01', rvNieVersichert: 'nieVersichert', rvVerzicht: 'nein' },
       '101',
       false,
     ],
@@ -241,9 +241,9 @@ describe('special cases are excluded (Tobias: not covered → pre-question)', ()
 
 describe('questions that close the gaps of the SV assessment (2026-10-30)', () => {
   it('asks pensioners about Beihilfe as well (§ 6 Abs. 1 Nr. 6 SGB V)', () => {
-    expect(shown('person', { situation: ['pensionaer'] })).toContain('beamtBeihilfe');
-    expect(shown('person', { situation: ['beamter'] })).toContain('beamtBeihilfe');
-    expect(shown('person', { situation: ['arbeitnehmer'] })).not.toContain('beamtBeihilfe');
+    expect(shown('person', { status: 'ruhestand', bezugPension: true })).toContain('beamtBeihilfe');
+    expect(shown('person', { status: 'beamter' })).toContain('beamtBeihilfe');
+    expect(shown('person', { status: 'arbeitnehmer' })).not.toContain('beamtBeihilfe');
   });
 
   it('asks about a KV exemption and the lower JAEG only outside the statutory insurance', () => {
@@ -259,28 +259,38 @@ describe('questions that close the gaps of the SV assessment (2026-10-30)', () =
   });
 
   it('asks "never insured" only after the Regelaltersgrenze without old-age pension or Versorgung', () => {
-    expect(shown('person', { situation: ['regelaltersgrenze'] })).toContain('rvNieVersichert');
+    expect(shown('person', { geburtsdatum: '1958-01-01' })).toContain('rvNieVersichert');
     expect(
-      shown('person', { situation: ['regelaltersgrenze', 'rente'], rentenart: 'altersvoll' }),
+      shown('person', {
+        status: 'ruhestand',
+        bezugRente: true,
+        geburtsdatum: '1958-01-01',
+        rentenart: 'altersvoll',
+      }),
     ).not.toContain('rvNieVersichert');
-    expect(shown('person', { situation: ['arbeitnehmer'] })).not.toContain('rvNieVersichert');
+    expect(shown('person', { status: 'arbeitnehmer' })).not.toContain('rvNieVersichert');
   });
 
   it('offers the waiver to everyone free under § 5 Abs. 4 SGB VI', () => {
     for (const data of [
-      { situation: ['regelaltersgrenze'], rvNieVersichert: 'nieVersichert' },
-      { situation: ['regelaltersgrenze'], rvNieVersichert: 'erstattung' },
-      { situation: ['rente'], rentenart: 'versorgungswerkAlter' },
-      { situation: ['regelaltersgrenze', 'rente'], rentenart: 'altersvoll' },
+      { geburtsdatum: '1958-01-01', rvNieVersichert: 'nieVersichert' },
+      { geburtsdatum: '1958-01-01', rvNieVersichert: 'erstattung' },
+      { bezugRente: true, rentenart: 'versorgungswerkAlter' },
+      {
+        status: 'ruhestand',
+        bezugRente: true,
+        geburtsdatum: '1958-01-01',
+        rentenart: 'altersvoll',
+      },
     ]) {
       expect(shown('person', data)).toContain('rvVerzicht');
     }
-    expect(
-      shown('person', { situation: ['regelaltersgrenze'], rvNieVersichert: 'nein' }),
-    ).not.toContain('rvVerzicht');
-    expect(
-      shown('person', { situation: ['rente'], rentenart: 'versorgungswerkAndere' }),
-    ).not.toContain('rvVerzicht');
+    expect(shown('person', { geburtsdatum: '1958-01-01', rvNieVersichert: 'nein' })).not.toContain(
+      'rvVerzicht',
+    );
+    expect(shown('person', { bezugRente: true, rentenart: 'versorgungswerkAndere' })).not.toContain(
+      'rvVerzicht',
+    );
   });
 
   it('asks the seasonal-worker flag only for fixed-term jobs that are not Minijob or short-term', () => {

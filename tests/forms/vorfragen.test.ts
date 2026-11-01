@@ -111,10 +111,12 @@ describe('pre-questions and exclusions', () => {
   });
 
   it('excludes the person answers Nebenerwerbslandwirt and FELEG', () => {
-    let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
-    q = ok(setValue(q, form, 'person', 'situation', ['selbstaendig', 'feleg']));
+    const start = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
+    let q = ok(setValue(start, form, 'person', 'status', 'selbstaendig'));
     q = ok(setValue(q, form, 'person', 'selbstLandwirtschaft', true));
     expect(excluded(q).join(' ')).toContain('113, 114');
+    q = ok(setValue(start, form, 'person', 'status', 'sonstiges'));
+    q = ok(setValue(q, form, 'person', 'felegBezug', true));
     expect(excluded(q).join(' ')).toContain('116');
   });
 

@@ -55,7 +55,7 @@ function person(values: Readonly<Record<string, unknown>>): Session {
 const BASE = {
   familienname: 'Musterfrau',
   vorname: 'Erika',
-  situation: ['arbeitnehmer'],
+  status: 'arbeitnehmer',
   artLautVereinbarung: 'festeStelle',
   krankenversicherung: 'gesetzlich',
 };
@@ -71,7 +71,7 @@ describe('changing an answer from the summary', () => {
   });
 
   it('asks the follow-ups the change opened, then returns to the summary', () => {
-    let session = must(answer(editFromSummary(person(BASE), 'situation'), 'situation', ['rente']));
+    let session = must(answer(editFromSummary(person(BASE), 'bezugRente'), 'bezugRente', true));
     session = nextStep(session);
     expect(session.stepKey).toBe('question:rentenart');
     session = nextStep(must(answer(session, 'rentenart', 'altersvoll')));
@@ -81,8 +81,8 @@ describe('changing an answer from the summary', () => {
   });
 
   it('skips follow-ups that already have an answer', () => {
-    const answered = person({ ...BASE, situation: ['rente'], rentenart: 'altersvoll' });
-    const session = nextStep(editFromSummary(answered, 'situation'));
+    const answered = person({ ...BASE, bezugRente: true, rentenart: 'altersvoll' });
+    const session = nextStep(editFromSummary(answered, 'bezugRente'));
     expect(session.stepKey).toBe('question:renteSeit');
   });
 
@@ -159,7 +159,7 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
   it('says "Zurück zur Zusammenfassung" when a change from the summary opens nothing', () => {
     const editing = editFromSummary(person(BASE), 'vorname');
     expect(nextChoice(editing)).toMatchObject({ backToSummary: true });
-    const opened = must(answer(editFromSummary(person(BASE), 'situation'), 'situation', ['rente']));
+    const opened = must(answer(editFromSummary(person(BASE), 'bezugRente'), 'bezugRente', true));
     expect(nextChoice(opened)).toMatchObject({ backToSummary: false });
     expect(nextChoice(opened).next?.key).toBe('question:rentenart');
   });

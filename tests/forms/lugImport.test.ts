@@ -529,7 +529,7 @@ describe('child allowances, the first source that has a value, and notes', () =>
   it('writes Personengruppe 120 with its note, and lists the note to check', () => {
     const pensioner = questionnaire({
       ...PERSON,
-      situation: ['rente'],
+      bezugRente: true,
       rentenart: 'altersvoll',
       renteSeit: '01.01.2026',
     });

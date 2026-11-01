@@ -175,7 +175,8 @@ nennt seine Rolle.
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)                                     |
 | `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                                        |
-| `{ "field": "situation", "contains": "student" }`                       | die Mehrfachauswahl diese Option enthält (`contains`)                                     |
+| `{ "field": "kinderSonderfaelle", "contains": "stiefkind" }`            | die Mehrfachauswahl diese Option enthält (`contains`)                                     |
+| `{ "field": "geburtsdatum", "onOrBefore": "1959-11-02" }`               | das Datum am oder vor diesem Tag liegt (`onOrBefore`, nur Datumsfelder; leer: nie)        |
 | `{ "field": "iban", "startsWith": "DE" }`                               | der Text mit diesem Anfang beginnt (`startsWith`, nur Textfelder, IBAN in Großbuchstaben) |
 | `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`)                        |
 | `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                                         |

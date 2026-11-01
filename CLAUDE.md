@@ -526,6 +526,30 @@ Key design decisions (details in `docs/plan.md`):
 
 ---
 
+### Personalfragebogen review of 2026-11-01 (Tobias)
+
+- **Status tree instead of a tick list:** one main status (`status`, single choice like DATEV's
+  "Status bei Beginn"), then only fitting yes/no additions — `bezugRente` (everyone, preset "Nein"),
+  `bezugPension` (Ruhestand), `grundsicherung` (statuses where it makes a short-term job
+  berufsmäßig), `elternzeitAnderswo` (employees, civil servants), `felegBezug` (Ruhestand, other).
+  Impossible combinations (Schülerin + Schule beendet, Beamter + Pensionär, "nichts davon" + anything)
+  can no longer be entered.
+- **Regelaltersgrenze from the birth date:** condition leaf `onOrBefore` on dates. For this version
+  (start of work in 2026): born on or before 02.11.1959 → reached, after 01.09.1960 → not reached,
+  in between `ragErreicht` (Ja / Nein / Weiß ich nicht) is asked. A test derives both limits from
+  `regelaltersgrenze.ts` and the validity; **a version for 2027 needs new limits**.
+- **A1 is the employer's question:** firm attribute `agAuslandSvBetrieb` (link key `auslandSv`),
+  then per person `agSvAusland`, `agSvAuslandStaat`, `agSvAuslandA1`; the person is never asked.
+- **Health insurance:** the base question stays everywhere (Pauschalbeitrag only for statutory
+  insured, § 249b SGB V; KV status in the registration of short-term jobs, § 28a Abs. 9a SGB IV);
+  the insurer's name stays too (needed for the eAU); subsidy, 2002, 55+, earlier exemption and last
+  statutory insurer are skipped in a Minijob or short-term job.
+- **Contact data checked:** text formats `telefon` and `email`.
+- **Children without names:** birth date plus "Mehrlinge: Anzahl Kinder" (data minimisation); no
+  Probezeit (no payroll effect, no LuG import field).
+
+---
+
 ## Known Limitations
 
 - **E2E covers the release build only** (`npm run test:e2e`, Chromium, Firefox and WebKit under

@@ -115,8 +115,9 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 
 **Schritte:**
 
-1. Neuen Personalfragebogen beginnen. Als Person bei „Situation“ „arbeitslos oder arbeitsuchend
-   gemeldet“ wählen, Geburtsdatum 15.03.1960, sonst beliebig ausfüllen und unterschreiben.
+1. Neuen Personalfragebogen beginnen. Als Person Geburtsdatum 15.03.1960, bei „Was machen Sie
+   hauptsächlich …“ „arbeitslos oder arbeitsuchend gemeldet“ und bei „Regelaltersgrenze erreicht?“
+   **„Nein“** wählen, sonst beliebig ausfüllen und unterschreiben.
 2. Als Arbeitgeber „kurzfristige Aushilfe“ wählen, Tag der Beschäftigungsaufnahme 02.11.2026,
    abschließen, PDF erstellen.
 3. Die PDF unter „Eingänge zusammenführen …“ einlesen.
