@@ -543,6 +543,12 @@ Key design decisions (details in `docs/plan.md`):
   First report (2026-11-01): MT-11 asked for "1234 5678" but did not say the space is the point —
   reworded; MT-01/02/03 assumed the downloaded file — MT-01 marked "nicht im Testbereich",
   MT-02/03 rewritten for both; entry points and "App neu starten" added.
+- **Second test report** (2026-11-01, archived `import/archiv/2026-11-01/…_1424.pdf`): a notice
+  still to confirm is reachable from the summary ("ansehen und bestätigen"); catching up from the
+  summary offers "Zur nächsten fehlenden Angabe" (wherever it is) and stays a summary edit;
+  confirmed notices live in the draft (`Part.acknowledged`) and survive the interim state — the
+  former "re-confirm after loading" was an early implementation note, not a decision; "Alle Daten
+  auf diesem Gerät löschen" always asks.
 - **Test page**: the catalogue holds all 65 manual tests, including those only the Kanzlei can run
   (upload, PDF counter-checks); a tester picks by area. Times come from the device clock; a run lives
   in one browser only (no sync between devices) until the report PDF is sent.

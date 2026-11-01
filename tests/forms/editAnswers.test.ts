@@ -7,6 +7,7 @@ import { nextMissingStep, type InterviewStep } from '../../src/logic/interview';
 import type { FieldDefinition, FormDefinition } from '../../src/logic/model';
 import { createQuestionnaire } from '../../src/logic/questionnaire';
 import {
+  acknowledge,
   answer,
   defer,
   editFromSummary,
@@ -15,6 +16,7 @@ import {
   leaveRole,
   nextChoice,
   nextStep,
+  noticeFromSummary,
   previousStep,
   sessionFromFile,
   skipToMissing,
@@ -157,10 +159,55 @@ describe('revising: "Weiter" or straight to the next missing answer', () => {
   it('says "Zurück zur Zusammenfassung" when a change from the summary opens nothing', () => {
     const editing = editFromSummary(person(BASE), 'vorname');
     expect(nextChoice(editing)).toMatchObject({ backToSummary: true });
-    expect(nextChoice(editing).skip).toBeUndefined();
     const opened = must(answer(editFromSummary(person(BASE), 'situation'), 'situation', ['rente']));
     expect(nextChoice(opened)).toMatchObject({ backToSummary: false });
     expect(nextChoice(opened).next?.key).toBe('question:rentenart');
+  });
+
+  // Second test report (Tobias 2026-11-01): "beim Nachholen von Angaben fehlt 'Weiter zum nächsten
+  // fehlenden Feld'".
+  it('offers the next missing answer while catching up from the summary, and stays there', () => {
+    const skipped = must(defer(goTo(person(BASE), 'question:geburtsdatum'), 'geburtsdatum'));
+    const catchingUp = editFromSummary(goTo(skipped, 'summary'), 'geburtsdatum');
+    const choice = nextChoice(catchingUp);
+    expect(choice.backToSummary).toBe(true);
+    expect(choice.skip?.kind).toBe('question');
+    expect(choice.skip?.key).not.toBe('question:geburtsdatum');
+    const moved = skipToMissing(catchingUp);
+    expect(moved.stepKey).toBe(choice.skip?.key);
+    // Still a summary edit: that question offers the way back and the next missing one again.
+    expect(moved.editing).toBe(choice.skip?.kind === 'question' ? choice.skip.fieldId : '');
+    expect(nextChoice(moved).backToSummary).toBe(true);
+  });
+
+  // Second test report (MT-15): confirmations come back with the interim state.
+  it('keeps confirmed notices through saving and loading the interim state', () => {
+    const notice = form.definition.infoBlocks.find((block) => block.role === 'person');
+    if (!notice) throw new Error('the draft has no notice for the person');
+    const confirmed = acknowledge(person(BASE), notice.id, true);
+    expect(confirmed.dirty).toBe(true);
+    const reloaded = sessionFromFile(
+      {
+        questionnaire: JSON.parse(
+          JSON.stringify(confirmed.questionnaire),
+        ) as Session['questionnaire'],
+        form,
+        origin: 'published',
+      },
+      { local: at.local, utc: at.utc, source: 'file' },
+    );
+    expect(reloaded.acknowledged.person).toEqual([notice.id]);
+    const withdrawn = acknowledge(confirmed, notice.id, false);
+    expect(withdrawn.questionnaire.parts.person?.[0]).not.toHaveProperty('acknowledged');
+  });
+
+  it('leads from the summary to a notice that still needs a confirmation, and back', () => {
+    const notice = form.definition.infoBlocks.find((block) => block.role === 'person');
+    if (!notice) throw new Error('the draft has no notice for the person');
+    const atNotice = noticeFromSummary(person(BASE), notice.id);
+    expect(atNotice.stepKey).toBe(`notice:${notice.id}`);
+    expect(nextChoice(atNotice)).toMatchObject({ backToSummary: true });
+    expect(nextStep(atNotice).stepKey).toBe('summary');
   });
 });
 

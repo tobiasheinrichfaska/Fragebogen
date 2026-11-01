@@ -15,6 +15,7 @@ import {
   sealPart,
   setValue,
   startPart,
+  withAcknowledged,
 } from './questionnaire';
 import { decodeQuestionnaire } from './questionnaireFile';
 
@@ -155,5 +156,40 @@ describe('deferred questions in the interim file', () => {
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.issues.map((issue) => issue.message).join(' ')).toContain(message);
+  });
+});
+
+// Second test report (Tobias 2026-11-01, MT-15): "Warum müssen bestätigte Hinweise neu bestätigt
+// werden?" — the confirmations live in the draft, so the interim file keeps them.
+describe('confirmed notices in the interim file', () => {
+  it('stay in the draft, survive saving and loading, and are never sealed', () => {
+    let q = withAcknowledged(start(), 'person', ['datenschutz', 'datenschutz']);
+    expect(currentPart(q, 'person')?.acknowledged).toEqual(['datenschutz']);
+    const raw: unknown = JSON.parse(JSON.stringify(q));
+    const result = decodeQuestionnaire(raw);
+    expect(result.ok ? [] : result.issues).toEqual([]);
+    if (result.ok) expect(canonicalize(result.questionnaire)).toBe(canonicalize(raw));
+    q = Object.entries(PERSON_VALUES).reduce(
+      (acc, [id, value]) => ok(setValue(acc, form, 'person', id, value)),
+      q,
+    );
+    const sealed = currentPart(ok(sealPart(q, form, 'person', personSealInput())), 'person');
+    expect(sealed).not.toHaveProperty('acknowledged');
+    expect(withAcknowledged(start(), 'person', [])).toEqual(start());
+  });
+
+  it('are refused on a sealed part', () => {
+    const raw = JSON.parse(
+      JSON.stringify(withAcknowledged(start(), 'person', ['datenschutz'])),
+    ) as {
+      parts: { person: Record<string, unknown>[] };
+    };
+    const part = raw.parts.person[0];
+    if (!part) throw new Error('no part');
+    part.status = 'sealed';
+    const result = decodeQuestionnaire(raw);
+    expect(result.ok ? '' : result.issues.map((issue) => issue.message).join(' ')).toContain(
+      'only drafts hold confirmed notices',
+    );
   });
 });

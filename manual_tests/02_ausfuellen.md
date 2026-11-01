@@ -89,13 +89,16 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 - Nach „Vorerst überspringen“ springt das Interview zur nächsten Frage. _Nicht offensichtlich:_ Der
   Knopf fehlt, sobald die Frage eine Antwort hat – auch eine vorbelegte (z. B. „In Deutschland
   geboren? Ja“).
-- In der Zusammenfassung stehen zwei Kästen: **„Bitte bestätigen Sie noch diese Hinweise:
-  Hinweis: Ausweispapiere mitführen …“** und **„Übersprungen: …“** mit der Versicherungsnummer und den
-  Knöpfen **„beantworten“** und **„leer lassen“**. Bei einer Pflichtangabe steht „(Pflicht)“ und es
-  gibt nur „beantworten“.
+- In der Zusammenfassung stehen zwei Kästen: **„Bitte bestätigen Sie noch diese Hinweise:“** mit
+  „Hinweis: Ausweispapiere mitführen …“ und dem Knopf **„ansehen und bestätigen“** (er führt zum
+  Hinweis, „Zurück zur Zusammenfassung“ führt zurück), und **„Übersprungen: …“** mit der
+  Versicherungsnummer und den Knöpfen **„beantworten“** und **„leer lassen“**. Bei einer
+  Pflichtangabe steht „(Pflicht)“ und es gibt nur „beantworten“.
+- _Nicht offensichtlich:_ Fehlt beim Nachholen über „beantworten“ noch eine weitere Angabe, gibt es
+  neben „Zurück zur Zusammenfassung“ den Knopf **„Zur nächsten fehlenden Angabe“**.
 - Schritt 5: Die Versicherungsnummer verschwindet aus „Übersprungen“ und bleibt leer.
-- **„Weiter zum Abschluss“** ist ausgegraut, bis der Papierhinweis bestätigt ist (zurück zum
-  Hinweis über „Zurück“). Die zurückgestellte Versicherungsnummer verhindert den Abschluss
+- **„Weiter zum Abschluss“** ist ausgegraut, bis der Papierhinweis bestätigt ist (über „ansehen
+  und bestätigen“). Die zurückgestellte Versicherungsnummer verhindert den Abschluss
   **nicht**, sie ist freiwillig.
 
 ---
@@ -133,8 +136,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 **Schritte:**
 
 1. Klicken Sie in der Zusammenfassung auf **„Zwischenstand speichern“**.
-2. Schließen Sie den Browser-Tab und öffnen Sie die App neu (im Testbereich: die Adresse des
-   Testbereichs; als Datei: `index.html` per Doppelklick).
+2. Starten Sie die App neu: im Testbereich links **„App neu starten (Startseite)“** (oder die Seite
+   mit F5 neu laden, wie in MT-16); als Datei den Browser-Tab schließen und `index.html` neu öffnen.
 3. Klicken Sie **„Datei öffnen …“** und wählen Sie die heruntergeladene Datei
    `Sofortmeldung_xxxxxxxx_Zwischenstand.json`.
 4. Klicken Sie bei Ihrer Rolle auf **„Weitermachen“**.
@@ -145,8 +148,8 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 - Nach dem Öffnen erscheint die Rollenübersicht mit Ihrer Rolle „begonnen, nicht abgeschlossen“.
 - „Weitermachen“ springt zur **ersten noch offenen Frage**. Zurückgestellte Fragen bleiben
   zurückgestellt.
-- _Nicht offensichtlich:_ Bestätigte Hinweise müssen nach dem Öffnen **erneut** bestätigt werden.
-  Die Bestätigung gilt nur für die Sitzung, in der unterschrieben wird.
+- Bestätigte Hinweise sind nach dem Öffnen **weiterhin bestätigt** (seit 01.11.2026; vorher musste
+  man sie erneut bestätigen).
 
 ---
 
@@ -172,11 +175,15 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 **Schritte:**
 
 1. Klicken Sie **„Fragebogen schließen“** und bestätigen Sie die Rückfrage.
-2. Klicken Sie auf der Startseite **„Alle Daten auf diesem Gerät löschen“**.
+2. Klicken Sie auf der Startseite **„Alle Daten auf diesem Gerät löschen“** und bei der
+   Sicherheitsfrage zuerst **„Abbrechen“**.
+3. Noch einmal, jetzt **„OK“**.
 
 **Erwartet:**
 
-- Die Seite lädt neu und zeigt die leere Startseite.
+- Schritt 2: **Immer** eine Sicherheitsfrage („Alle Daten auf diesem Gerät löschen? … nicht
+  rückgängig …“), auch wenn gerade nichts geöffnet ist; nach „Abbrechen“ bleibt alles, wie es war.
+- Schritt 3: Die Seite lädt neu und zeigt die leere Startseite.
 - _Nicht offensichtlich:_ Ein Stammdaten-Link in der Adresszeile (alles hinter `#`) ist danach
   ebenfalls weg. Heruntergeladene Dateien bleiben im Download-Ordner; das ist normal.
 

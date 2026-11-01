@@ -316,6 +316,25 @@ export function adoptFromOtherRoles(
   return { questionnaire: withVersions(questionnaire, role, versions), adopted, replaced };
 }
 
+/**
+ * The role's confirmed notices in its draft (see Part.acknowledged); without a draft nothing
+ * changes — a sealed part carries its notices in the seal.
+ */
+export function withAcknowledged(
+  questionnaire: Questionnaire,
+  role: RoleId,
+  ids: readonly string[],
+): Questionnaire {
+  const draft = currentPart(questionnaire, role);
+  if (draft?.status !== 'draft') return questionnaire;
+  const copy: Part = { ...draft };
+  Reflect.deleteProperty(copy, 'acknowledged');
+  const sorted = [...new Set(ids)].sort();
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = sorted.length === 0 ? copy : { ...copy, acknowledged: sorted };
+  return withVersions(questionnaire, role, versions);
+}
+
 function withDeferred(part: Part, deferred: readonly FieldId[]): Part {
   const copy: Part = { ...part };
   Reflect.deleteProperty(copy, 'deferred');

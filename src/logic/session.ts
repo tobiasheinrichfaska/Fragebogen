@@ -10,6 +10,7 @@ import {
   interviewSteps,
   interviewSummary,
   resumeStep,
+  missingStepAround,
   nextMissingStep,
   stepAfter,
   stepAfterEdit,
@@ -37,6 +38,7 @@ import {
   currentPart,
   deferQuestion,
   fixedByOtherRoles,
+  withAcknowledged,
   leaveQuestionEmpty,
   latestSealed,
   receivedPartFor,
@@ -189,7 +191,13 @@ export function sessionFromFile(
   for (const versions of Object.values(loaded.questionnaire.parts)) {
     for (const part of versions) if (part.seal) arrivals[part.seal.contentHash] = arrival;
   }
-  return { ...loaded, acknowledged: {}, arrivals, dirty: false };
+  // Confirmed notices of open drafts come back from the file (Part.acknowledged).
+  const acknowledged: Record<RoleId, readonly string[]> = {};
+  for (const role of Object.keys(loaded.questionnaire.parts)) {
+    const part = currentPart(loaded.questionnaire, role);
+    if (part?.status === 'draft' && part.acknowledged) acknowledged[role] = [...part.acknowledged];
+  }
+  return { ...loaded, acknowledged, arrivals, dirty: false };
 }
 
 export type PartState = 'missing' | 'draft' | 'sealed' | 'signed';
@@ -390,15 +398,40 @@ export interface NextChoice {
 export function nextChoice(session: Session): NextChoice {
   const next = nextTarget(session);
   const backToSummary = session.editing !== undefined && next?.kind === 'summary';
+  if (backToSummary) {
+    // Catching up from the summary: on to the next missing answer, wherever it is.
+    const missing = missingStepAround(stepsFor(session), session.stepKey ?? '');
+    return {
+      ...(next ? { next } : {}),
+      backToSummary,
+      ...(missing.kind === 'question' ? { skip: missing } : {}),
+    };
+  }
   if (next?.kind !== 'question' || next.state !== 'answered') {
     return { ...(next ? { next } : {}), backToSummary };
   }
   return { next, backToSummary, skip: nextMissingStep(stepsFor(session), session.stepKey ?? '') };
 }
 
-/** "Zur nächsten fehlenden Angabe": past every answered question. */
+/**
+ * "Zur nächsten fehlenden Angabe": past every answered question. While catching up from the
+ * summary it stays a summary edit, so that question offers the way back and the next one again.
+ */
 export function skipToMissing(session: Session): Session {
-  return goTo(session, nextMissingStep(stepsFor(session), session.stepKey ?? '').key);
+  const steps = stepsFor(session);
+  const key = session.stepKey ?? '';
+  if (session.editing !== undefined) {
+    const target = missingStepAround(steps, key);
+    return target.kind === 'question'
+      ? editFromSummary(session, target.fieldId)
+      : goTo(session, target.key);
+  }
+  return goTo(session, nextMissingStep(steps, key).key);
+}
+
+/** "bestätigen" in the summary: to that notice, and from there back to the summary. */
+export function noticeFromSummary(session: Session, infoBlockId: string): Session {
+  return { ...session, stepKey: `notice:${infoBlockId}`, editing: infoBlockId };
 }
 
 export function previousStep(session: Session): Session {
@@ -438,7 +471,15 @@ export function acknowledge(session: Session, infoBlockId: string, confirmed: bo
   const current = new Set(session.acknowledged[role] ?? []);
   if (confirmed) current.add(infoBlockId);
   else current.delete(infoBlockId);
-  return { ...session, acknowledged: { ...session.acknowledged, [role]: [...current].sort() } };
+  const ids = [...current].sort();
+  // Also in the draft, so "Zwischenstand speichern" keeps the confirmations (Tobias 2026-11-01).
+  const questionnaire = withAcknowledged(session.questionnaire, role, ids);
+  return {
+    ...session,
+    questionnaire,
+    acknowledged: { ...session.acknowledged, [role]: ids },
+    dirty: session.dirty || questionnaire !== session.questionnaire,
+  };
 }
 
 export function summaryOf(session: Session): InterviewSummary | undefined {

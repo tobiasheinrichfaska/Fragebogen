@@ -108,7 +108,15 @@ function decodeFormReference(d: Decoder, raw: unknown, path: string): FormRefere
 }
 
 function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
-  const o = d.object(raw, path, ['role', 'status', 'data', 'signatureStrokes', 'seal', 'deferred']);
+  const o = d.object(raw, path, [
+    'role',
+    'status',
+    'data',
+    'signatureStrokes',
+    'seal',
+    'deferred',
+    'acknowledged',
+  ]);
   if (!o) return undefined;
   const role = d.string(o.role, `${path}.role`, ID);
   const status = d.literal(o.status, `${path}.status`, PART_STATUSES);
@@ -122,7 +130,17 @@ function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
     o.deferred === undefined
       ? undefined
       : d.array(o.deferred, `${path}.deferred`, (v, p) => d.string(v, p, ID), 1);
+  const acknowledged =
+    o.acknowledged === undefined
+      ? undefined
+      : d.array(o.acknowledged, `${path}.acknowledged`, (v, p) => d.string(v, p, ID), 1);
   if (role === undefined || status === undefined || data === undefined) return undefined;
+  if (acknowledged !== undefined && status !== 'draft') {
+    return d.report(`${path}.acknowledged`, 'only drafts hold confirmed notices');
+  }
+  if (acknowledged !== undefined && new Set(acknowledged).size !== acknowledged.length) {
+    return d.report(`${path}.acknowledged`, 'lists a notice twice');
+  }
   if (deferred !== undefined && status !== 'draft') {
     return d.report(`${path}.deferred`, 'only drafts hold deferred questions');
   }
@@ -136,6 +154,7 @@ function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
     ...(signatureStrokes === undefined ? {} : { signatureStrokes }),
     ...(seal === undefined ? {} : { seal }),
     ...(deferred === undefined ? {} : { deferred }),
+    ...(acknowledged === undefined ? {} : { acknowledged }),
   };
 }
 

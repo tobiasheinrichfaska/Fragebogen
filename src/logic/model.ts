@@ -426,6 +426,11 @@ export interface Part {
    * required one still has to be answered before signing.
    */
   deferred?: FieldId[];
+  /**
+   * Drafts only: the role's notices confirmed so far (info block ids, sorted), so an interim state
+   * keeps them (Tobias 2026-11-01). Never sealed — the seal records the notices by their hashes.
+   */
+  acknowledged?: string[];
 }
 
 /** Where a receipt time comes from: this app's clock or the DATEV filing date. */

@@ -205,9 +205,15 @@ function Workspace({ registry }: { registry: FormRegistry }) {
     setBanner(result.message);
   };
 
+  // Always asked (second test report, Tobias 2026-11-01: "hier kam keine Warnmeldung").
   const clearAll = () => {
-    if (session?.dirty && !confirm('Nicht gespeicherte Angaben gehen verloren. Alles löschen?'))
+    if (
+      !confirm(
+        'Alle Daten auf diesem Gerät löschen?\n\nDer geöffnete Fragebogen und alle Angaben verschwinden aus der App. Das lässt sich nicht rückgängig machen. Bereits gespeicherte Dateien bleiben erhalten.',
+      )
+    ) {
       return;
+    }
     setSession(undefined);
     // Drop the master-data fragment as well and start from a clean page.
     location.replace(location.pathname + location.search);

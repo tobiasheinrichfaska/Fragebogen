@@ -20,6 +20,7 @@ import {
   leaveEmpty,
   nextChoice,
   nextStep,
+  noticeFromSummary,
   outOfScopeOf,
   previousStep,
   skipToMissing,
@@ -373,15 +374,29 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
         />
       )}
       {summary.missingNotices.length > 0 && (
-        <Banner
-          message={{
-            tone: 'warning',
-            text: 'Bitte bestätigen Sie noch diese Hinweise:',
-            detail: summary.missingNotices.map(
-              (id) => definition.infoBlocks.find((b) => b.id === id)?.title ?? id,
-            ),
-          }}
-        />
+        <div
+          className="skipped notices-missing"
+          role="group"
+          aria-label="Hinweise ohne Bestätigung"
+        >
+          <p>
+            <strong>Bitte bestätigen Sie noch diese Hinweise:</strong>
+          </p>
+          <ul>
+            {summary.missingNotices.map((id) => (
+              <li key={id}>
+                <span>{definition.infoBlocks.find((b) => b.id === id)?.title ?? id}</span>
+                <button
+                  type="button"
+                  className="link"
+                  onClick={() => onSession(noticeFromSummary(session, id))}
+                >
+                  ansehen und bestätigen
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
       {summary.deferred.length > 0 && (
         <div className="skipped" role="group" aria-label="Übersprungene Fragen">
