@@ -2506,20 +2506,22 @@
           "rowLabel": "Kind",
           "columns": [
             {
-              "id": "kindVorname",
-              "role": "person",
-              "type": "text",
-              "label": "Vorname",
-              "required": false,
-              "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)"
-            },
-            {
               "id": "kindGeburtsdatum",
               "role": "person",
               "type": "date",
               "label": "Geburtsdatum",
               "required": true,
               "purpose": "Beitrag zur Pflegeversicherung nach Elterneigenschaft und Zahl der Kinder unter 25 (§ 55 Abs. 3, 3a SGB XI); Abgleich mit dem digitalen Abruf beim Bundeszentralamt für Steuern (§ 55a SGB XI)"
+            },
+            {
+              "id": "kindMehrlinge",
+              "role": "person",
+              "type": "number",
+              "label": "Mehrlinge: Anzahl Kinder",
+              "help": "Nur bei Zwillingen oder Mehrlingen: Wie viele Kinder sind an diesem Tag geboren? Sonst leer lassen.",
+              "required": false,
+              "purpose": "Zahl der Kinder unter 25 für den Beitrag zur Pflegeversicherung (§ 55 Abs. 3a SGB XI), ohne Namen der Kinder",
+              "decimals": 0
             },
             {
               "id": "kindVerhaeltnis",
@@ -2568,6 +2570,14 @@
                   "label": "Geburtsurkunde"
                 },
                 {
+                  "id": "vaterschaftsanerkennung",
+                  "label": "Vaterschaftsanerkennung"
+                },
+                {
+                  "id": "abstammungsurkunde",
+                  "label": "Abstammungsurkunde (ältere Urkunde)"
+                },
+                {
                   "id": "adoptionsurkunde",
                   "label": "Adoptionsurkunde"
                 },
@@ -2586,6 +2596,10 @@
                 {
                   "id": "steuerbescheid",
                   "label": "Einkommensteuerbescheid"
+                },
+                {
+                  "id": "lebensbescheinigung",
+                  "label": "steuerliche Lebensbescheinigung der Gemeinde (ältere Bescheinigung)"
                 },
                 {
                   "id": "anderer",
@@ -5138,7 +5152,7 @@
           "options": [
             {
               "id": "arbeitsvertrag",
-              "label": "Arbeitsvertrag oder Nachweis der Vertragsbedingungen"
+              "label": "Arbeits- oder Ausbildungsvertrag oder Nachweis der Vertragsbedingungen"
             },
             {
               "id": "lstbVorarbeitgeber",
