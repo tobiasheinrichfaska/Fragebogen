@@ -362,4 +362,13 @@ describe('deploy/upload.ps1', () => {
     expect(script).toContain('-hostkey');
     expect(script).toContain('ConvertTo-SecureString');
   });
+
+  // Regression 2026-11-01: Windows' ssh-keyscan 9.5 got no key from IONOS (OpenSSH 10 picks the key
+  // exchange sntrup761x25519, which that build offers but cannot do). PuTTY's plink reads it first.
+  it('reads the host key with PuTTY first, ssh-keyscan only as the fallback', () => {
+    const plink = script.indexOf("'plink.exe'");
+    const keyscan = script.indexOf('ssh-keyscan.exe -p');
+    expect(plink).toBeGreaterThan(0);
+    expect(keyscan).toBeGreaterThan(plink);
+  });
 });

@@ -167,13 +167,28 @@ function Test-SetupInput($entry, [bool]$hasPassword) {
   return $problems
 }
 
+# The key the server presents to PuTTY — the program that uploads later. plink -batch prints it and
+# stops before any login. (Windows' ssh-keyscan 9.5 fails on IONOS: the server picks the key exchange
+# sntrup761x25519, which that build offers but cannot do — 2026-11-01. It stays the fallback, e.g.
+# when PuTTY already has the key cached and prints nothing.)
 function Get-HostKeys([string]$server, [int]$port) {
+  $plink = Join-Path (Split-Path -Parent (Find-Psftp)) 'plink.exe'
+  $keys = @()
+  if (Test-Path $plink) {
+    $lines = Invoke-Native { & $plink -batch -ssh -P $port $server exit 2>&1 | ForEach-Object { "$_" } }
+    foreach ($line in $lines) {
+      # "  ssh-ed25519 255 SHA256:abc…"
+      if ($line -match '^\s*((?:ssh|ecdsa|rsa)-\S+)\s+\d+\s+(SHA256:\S+)\s*$') {
+        $keys += [pscustomobject]@{ Typ = $Matches[1]; Fingerabdruck = $Matches[2] }
+      }
+    }
+  }
+  if ($keys.Count -gt 0) { return $keys }
   $scanFile = Join-Path $localDir 'hostkeys.tmp'
   try {
     $scan = Invoke-Native { & ssh-keyscan.exe -p $port -T 15 $server 2>$null }
-    if (-not $scan) { throw "Der Server $server (Port $port) antwortet nicht." }
+    if (-not $scan) { throw "Vom Server $server (Port $port) kam kein Schlüssel. Stimmen Name und Port?" }
     Set-Content -Path $scanFile -Value $scan -Encoding ascii
-    $keys = @()
     foreach ($line in (Invoke-Native { & ssh-keygen.exe -lf $scanFile 2>$null })) {
       # "256 SHA256:abc… host (ED25519)"
       if ($line -match '^\d+\s+(SHA256:\S+)\s.*\((\S+)\)\s*$') {
@@ -206,8 +221,9 @@ function Invoke-Setup($current) {
   $keys = Get-HostKeys $entry.server ([int]$entry.port)
   $list = ($keys | ForEach-Object { "$($_.Typ)   $($_.Fingerabdruck)" }) -join "`n"
   $answer = Show-Message ("Der Server hat sich mit diesem Schlüssel gemeldet:`n`n$list`n`n" +
-    'Vergleichen Sie ihn, wenn möglich, mit der Angabe von IONOS. Mit „Ja“ wird er gemerkt; meldet ' +
-    'sich der Server später mit einem anderen Schlüssel, bricht der Upload ab.') 'YesNo' 'Question'
+    'Vergleichen Sie ihn, z. B. in WinSCP (verbunden: Sitzung › Server-/Protokollinformationen › ' +
+    'Fingerabdruck des Serverschlüssels, SHA-256). Mit „Ja“ wird er gemerkt; meldet sich der Server ' +
+    'später mit einem anderen Schlüssel, bricht der Upload ab.') 'YesNo' 'Question'
   if ($answer -ne 'Yes') { Write-Host 'Schlüssel des Servers nicht bestätigt – nichts gespeichert.'; return $null }
 
   $settings = [ordered]@{
