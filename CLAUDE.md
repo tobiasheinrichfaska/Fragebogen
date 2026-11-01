@@ -537,6 +537,12 @@ Key design decisions (details in `docs/plan.md`):
 - **Test page**: the catalogue holds all 65 manual tests, including those only the Kanzlei can run
   (upload, PDF counter-checks); a tester picks by area. Times come from the device clock; a run lives
   in one browser only (no sync between devices) until the report PDF is sent.
+- **No integrity watcher for the hosted files yet** (deferred by Tobias 2026-11-01): only the upload
+  tool compares the hosted file's SHA-256 once after each upload. The `.htaccess` protects visitors
+  (HTTPS, no framing, …) and the protected folders, not against replaced files — that rests on the
+  SFTP/IONOS access (strong password, 2FA, ideally an SFTP user limited to the subdomain folder). A
+  self-check inside the app would not help (a replaced app checks itself); options when resumed: a
+  scheduled hash check on the Kanzlei PC and a readable build code published on the homepage.
 - **SFTP upload** (`deploy/upload.ps1`): not yet run against the real server (needs Tobias's access
   data; MT-82). During an upload the decrypted password sits for seconds in `deploy/.local/pw.tmp`
   (deleted in `finally`); `index.html` is overwritten in place, so a visitor during the upload may get
