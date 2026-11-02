@@ -1237,6 +1237,7 @@ const COLUMN_ARGUMENT_TYPES: ReadonlySet<FieldType> = new Set([
   'boolean',
   'choice',
   'date',
+  'number',
 ]);
 
 const QUICK_ANSWER_TYPES: readonly FieldType[] = [

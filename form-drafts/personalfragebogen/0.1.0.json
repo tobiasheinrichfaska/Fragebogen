@@ -6717,7 +6717,30 @@
               }
             ]
           },
-          "reason": "Kurzfristige Aushilfe laut Arbeitgeber; Zeitgrenzen und Berufsmäßigkeit stehen in den Prüfhinweisen."
+          "reason": "Kurzfristige Aushilfe laut Arbeitgeber; Zeitgrenzen und Berufsmäßigkeit stehen in den Prüfhinweisen.",
+          "test": {
+            "fn": "kurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
         },
         {
           "value": "110",
@@ -6755,15 +6778,60 @@
           },
           "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "kurzfristigGegebenBisGeringfuegigkeitsgrenze",
             "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
             ]
           }
+        },
+        {
+          "value": "109",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): mit diesem Entgelt ein Minijob.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          },
+          "check": true
         },
         {
           "value": "109",
@@ -7104,7 +7172,7 @@
             "equals": "kurzfristig"
           },
           "check": true,
-          "reason": "Als kurzfristige Aushilfe vorgesehen, aber berufsmäßig (z. B. arbeitsuchend gemeldet, Leistungsbezug, Elternzeit, zwischen Schule und Ausbildung) und mit einem Entgelt über der Geringfügigkeitsgrenze: versicherungspflichtig (§ 8 Abs. 1 Nr. 2 SGB IV, Geringfügigkeits-Richtlinien B 2.3)."
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3) und mit einem Entgelt über der Geringfügigkeitsgrenze: versicherungspflichtig."
         },
         {
           "value": "101",
@@ -7167,7 +7235,30 @@
               }
             ]
           },
-          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16).",
+          "test": {
+            "fn": "kurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
         },
         {
           "value": "0",
@@ -7205,13 +7296,96 @@
           },
           "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "kurzfristigGegebenBisGeringfuegigkeitsgrenze",
             "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "6",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, gesetzlich versichert – Pauschalbeitrag (§ 249b SGB V).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, nicht gesetzlich versichert – kein Pauschalbeitrag.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
             ]
           }
         },
@@ -7798,7 +7972,30 @@
               }
             ]
           },
-          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16).",
+          "test": {
+            "fn": "kurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
         },
         {
           "value": "0",
@@ -7836,13 +8033,26 @@
           },
           "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "kurzfristigGegebenBisGeringfuegigkeitsgrenze",
             "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
             ]
           }
         },
@@ -7882,6 +8092,132 @@
             "args": ["agRvBefreiungEingang", "agBeschaeftigungsbeginn"]
           },
           "check": true
+        },
+        {
+          "value": "5",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, rentenversicherungsfrei – Pauschalbeitrag des Arbeitgebers (§ 172 Abs. 3 SGB VI).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "all": [
+                      {
+                        "any": [
+                          {
+                            "all": [
+                              {
+                                "any": [
+                                  {
+                                    "field": "geburtsdatum",
+                                    "onOrBefore": "1959-11-02"
+                                  },
+                                  {
+                                    "field": "ragErreicht",
+                                    "equals": "ja"
+                                  }
+                                ]
+                              },
+                              {
+                                "field": "rentenart",
+                                "equals": "altersvoll"
+                              }
+                            ]
+                          },
+                          {
+                            "field": "pensionArt",
+                            "equals": "alter"
+                          },
+                          {
+                            "field": "rentenart",
+                            "equals": "versorgungswerkAlter"
+                          }
+                        ]
+                      },
+                      {
+                        "not": {
+                          "field": "rvVerzicht",
+                          "equals": "ja"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "rvNieVersichert",
+                        "in": ["nieVersichert", "erstattung"]
+                      },
+                      {
+                        "not": {
+                          "field": "rvVerzicht",
+                          "equals": "ja"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, rentenversicherungspflichtig; eine Befreiung ist nur auf Antrag möglich (§ 6 Abs. 1b SGB VI).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
         },
         {
           "value": "5",
@@ -8264,7 +8600,30 @@
               }
             ]
           },
-          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16).",
+          "test": {
+            "fn": "kurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
         },
         {
           "value": "0",
@@ -8302,13 +8661,57 @@
           },
           "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "kurzfristigGegebenBisGeringfuegigkeitsgrenze",
             "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
             ]
           }
         },
@@ -8553,7 +8956,30 @@
               }
             ]
           },
-          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16)."
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei (Personengruppe 110 nur mit 0000, DEÜV Anlage 16).",
+          "test": {
+            "fn": "kurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
         },
         {
           "value": "0",
@@ -8591,13 +9017,57 @@
           },
           "reason": "Kurzfristige Aushilfe: berufsmäßig, aber mit einem Entgelt bis zur Geringfügigkeitsgrenze – dann kommt es auf die Berufsmäßigkeit nicht an (Geringfügigkeits-Richtlinien B 2.3).",
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "kurzfristigGegebenBisGeringfuegigkeitsgrenze",
             "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, keine Pflegeversicherung aus dieser Beschäftigung.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
             ]
           }
         },
@@ -8931,54 +9401,77 @@
         },
         {
           "value": "0",
-          "reason": "Keine versicherungspflichtige Beschäftigung.",
+          "reason": "Kurzfristige Beschäftigung: versicherungsfrei, kein Übergangsbereich.",
           "when": {
-            "any": [
+            "all": [
               {
-                "all": [
-                  {
-                    "field": "agBeschaeftigungsart",
-                    "equals": "kurzfristig"
-                  },
-                  {
-                    "not": {
-                      "any": [
-                        {
-                          "field": "status",
-                          "equals": "arbeitslos"
-                        },
-                        {
-                          "field": "grundsicherung",
-                          "equals": true
-                        },
-                        {
-                          "field": "leistungArbeitslos",
-                          "in": ["arbeitslosengeld", "grundsicherungsgeld"]
-                        },
-                        {
-                          "field": "elternzeitAnderswo",
-                          "equals": true
-                        },
-                        {
-                          "field": "planNachSchule",
-                          "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
-                        }
-                      ]
-                    }
-                  }
-                ]
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
               },
               {
-                "all": [
-                  {
-                    "field": "agBeschaeftigungsart",
-                    "equals": "praktikum"
-                  },
-                  {
-                    "field": "agPraktikumArt",
-                    "equals": "pflichtStudium"
-                  }
-                ]
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Keine versicherungspflichtige Beschäftigung.",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtStudium"
               }
             ]
           }
@@ -9019,13 +9512,57 @@
             ]
           },
           "test": {
-            "fn": "hoechstensGeringfuegigkeitsgrenze",
+            "fn": "kurzfristigGegebenBisGeringfuegigkeitsgrenze",
             "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
               "agMonatsentgelt",
               "agErwartetMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): Minijob, kein Übergangsbereich.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "kurzfristig"
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis"
             ]
           }
         },

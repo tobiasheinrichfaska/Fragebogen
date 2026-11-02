@@ -284,6 +284,12 @@ const azubi = (betrag: string, art = 'ausbildung'): Answers => ({
   agBeschaeftigungsart: art,
   ...(art === 'ausbildung' ? { agAusserbetrieblich: false } : {}),
 });
+// Two months, 40 working days: within the time limit (Geringfügigkeits-Richtlinien B 2.3).
+const AUSHILFE: Answers = {
+  agKurzfristigBis: '31.12.2026',
+  agKurzfristigArbeitstage: '40',
+  agRahmenvereinbarung: false,
+};
 const ALL = Object.keys(PERSONS).filter((id) => !['dienst', 'vorruhestand'].includes(id));
 const MINIJOB = ALL.filter((id) => id !== 'teilrente');
 const EINFACH = ALL.filter((id) => id !== 'hauptjobUndMinijob');
@@ -360,13 +366,13 @@ const JOBS: Job[] = [
   {
     label: 'kurzfristige Aushilfe, 500 €',
     art: 'aushilfe',
-    employer: pay('500,00', 'kurzfristig'),
+    employer: pay('500,00', 'kurzfristig', AUSHILFE),
     persons: ['arbeitnehmer', 'arbeitslos'],
   },
   {
     label: 'kurzfristige Aushilfe, 1.500 €',
     art: 'aushilfe',
-    employer: pay('1.500,00', 'kurzfristig'),
+    employer: pay('1.500,00', 'kurzfristig', AUSHILFE),
     persons: MOSTLY,
   },
   {

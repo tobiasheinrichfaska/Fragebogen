@@ -119,6 +119,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/forms/vorfragen.test.ts`                          | Pre-questions and exclusions: firm attributes in the link (yes/no, choice), per-person questions, each special case blocks signing and passing on, fixed term under a week, Vorruhestandsgeld without work questions, Werkstudent semester break                                                                                                                                                                                                                                                                                                                                |
 | `tests/forms/review1030b.test.ts`                        | Review of 2026-10-30: payment way and BIC (`startsWith`), preliminary tax data, hints (multiple jobs over BBG/JAEG, fixed term, status marker, Versorgungswerk, A1, missing year), Sozialkasse, validity (warning, refused seal, blocker, rules)                                                                                                                                                                                                                                                                                                                                |
 | `src/logic/regelaltersgrenze.ts`                         | Regelaltersgrenze by birth year (§ 235 Abs. 2 SGB VI), day it is reached (§§ 187, 188 BGB), `monthAfter`                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `src/logic/kurzfristig.ts`                               | Short-term employment after the Geringfügigkeits-Richtlinien 2026 B 2.3: `zeitgrenze` (three months or 70 working days, with earlier short-term jobs of the year 90 calendar days), `kalendertage` (full months 30 days, a time month 30), `endOfMonths` (§§ 187, 188 BGB), `regelmaessig` (framework agreement without end or over a year), `berufsmaessigNachVorbeschaeftigungen` (B 2.3.3.3), `entgeltImSelbenMonat` (B 2.3.3, example 4c)                                                                                                                                   |
+| `src/logic/kurzfristig.test.ts`                          | The time limits and day counts of the examples (48: 143 days), regularity, Berufsmäßigkeit from earlier jobs, pay in the same month                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `src/logic/consistency.ts`                               | `contradictions` from the form's `consistencyRules` (text compared case-insensitively)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `src/logic/provenance.ts`                                | `signatureLayout`: one numbered signature line per sealed version, per field the covering lines and a footnote when changed in a later version                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `src/logic/catalogue.ts`                                 | `formCatalogue`: readable German field catalogue (Markdown) of a definition for the expert review — roles, fields with owner/kind/availability/requirement/purpose, notices, rules, legal notes, `definitionHash`                                                                                                                                                                                                                                                                                                                                                               |
@@ -606,18 +608,30 @@ Key design decisions (details in `docs/plan.md`):
   I — RV exemption request received after the month the job began: RV 1 (check) at the start, the
   note names the month from which 5 applies (`inSpaeteremMonat`; GfR B 2.2.4.1 and example 36 checked in
   the text).
+  A, B — short-term jobs (`kurzfristig.ts`, GfR B 2.3–2.3.3.5 checked in the text): the employer's
+  "kurzfristig" holds only within three months or 70 working days (added up with the earlier short-term
+  jobs of the year: 90 calendar days or 70 working days), if not regular (framework agreement without
+  end or over a year) and not berufsmäßig with pay above the limit — berufsmäßig by status as before,
+  or from earlier jobs (B 2.3.3.3); for that limit the pay of short-term jobs running at the same time
+  or in the same month counts (B 2.3.3). Otherwise the proposal becomes the Minijob (109) or 101, with a
+  check. Number columns may now feed named tests. GFR-40B: the derived Übergangsbereich of the research
+  (1) was wrong — next to the main job both pays count (3.050 €), corrected to 0.
 
 ---
 
 ## Known Limitations
 
-- **SV proposals differ from 18 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
-  short-term jobs ignore time limits, regularity and earlier jobs (A) and other short-term pay (B);
+- **SV proposals differ from 10 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
   Werkstudent rules come before 109/110 and ignore the 20 hours (C); JAEG counts the first Minijob,
   second Minijob next to a JAEG-free main job (E); Entgeltumwandlung (G). Four examples cannot be
   expressed (two periods, tax-free allowances, change at the turn of the year, household Minijob =
   excluded). One proposal per job at its start: a later change (e.g. RV exemption from the month the
-  request came in) is named in the check note, not as a second proposal.
+  request came in, a short-term job becoming short-term again when a parallel one ends) is named in the
+  check note, not as a second proposal.
+- **Short-term jobs:** Berufsmäßigkeit from earlier jobs counts every earlier job of the calendar year;
+  for people who left working life (full old-age pension, household) or students only the time after
+  that should count (GfR B 2.3.3.3) — the questionnaire does not ask when, so such a case needs the
+  lohnabrechnende Stelle's look.
 - **WebKit full-flow E2E was load-sensitive** (2026-11-01: twice the 180 s timeout with four
   parallel workers, alone 41 s): `playwright.config.ts` now runs two workers (two consecutive full
   runs 15/15). A timeout again on an idle machine is a real finding.

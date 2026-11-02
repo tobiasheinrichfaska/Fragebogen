@@ -2199,7 +2199,7 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1",
+        "uebergangsbereich": "0",
         "unsicher": ["kv"]
       },
       "person": {
@@ -2252,7 +2252,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-20"
       },
-      "hinweis": "KV laut Beispiel 1; die Beschäftigung ist auf 51 Tage befristet, nach der Zehn-Wochen-Regel (ermäßigter Beitrag) wäre KV 3 denkbar – GfR uneinheitlich (vgl. Beispiele 4a, 4b). KV in Tests nicht hart prüfen."
+      "hinweis": "KV laut Beispiel 1; die Beschäftigung ist auf 51 Tage befristet, nach der Zehn-Wochen-Regel (ermäßigter Beitrag) wäre KV 3 denkbar – GfR uneinheitlich (vgl. Beispiele 4a, 4b). KV in Tests nicht hart prüfen. Übergangsbereich am 02.11.2026 berichtigt (war abgeleitet 1): neben der versicherungspflichtigen Hauptbeschäftigung A (2.200 €) werden nach RS Übergangsbereich Tz. 4.2.2 die Entgelte beider versicherungspflichtiger Beschäftigungen zusammengerechnet (3.050 €) – über 2.000 €, kein Übergangsbereich."
     },
     {
       "id": "GFR-41",

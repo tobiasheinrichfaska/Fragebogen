@@ -91,17 +91,9 @@ const GROUPS = {
 } as const;
 
 const KNOWN_DEVIATIONS: Record<string, Deviation> = {
-  'GFR-03b2': { gruppe: 'A', app: { pgr: '110', bgr: '0000' } },
-  'GFR-04c': { gruppe: 'B', app: { pgr: '110', bgr: '0000' } },
-  'GFR-04dB': { gruppe: 'B', app: { pgr: '110', bgr: '0000' } },
   'GFR-14': { gruppe: 'G', app: { pgr: '101', bgr: '1111', uebergang: '1' } },
   'GFR-25C': { gruppe: 'E', app: { bgr: '9101' } },
   'GFR-26C': { gruppe: 'E', app: { bgr: '9101' } },
-  'GFR-37': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
-  'GFR-40B': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
-  'GFR-42': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
-  'GFR-45B': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
-  'GFR-48': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
   'ST-01': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-02A': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-04': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
@@ -440,7 +432,61 @@ const befreiungEingang = (eingang: string): Answers => ({
   agRvBefreiungEingang: eingang,
 });
 
+const aushilfe = (bis: string, tage: string): Answers => ({
+  agBeschaeftigungsbeginn: '2026-06-01',
+  agKurzfristigBis: bis,
+  agKurzfristigArbeitstage: tage,
+  agRahmenvereinbarung: false,
+  agBefristet: true,
+  agBefristetBis: bis,
+});
+
 const LIMITS: Limit[] = [
+  {
+    label: 'Aushilfe 01.06.–31.08. (genau drei Monate), 78 Arbeitstage, 1.500 €',
+    source: '§ 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, 2.3.1',
+    person: person('aushilfe'),
+    employer: employer('kurzfristig', monthly('1500.00'), aushilfe('2026-08-31', '78')),
+    pgr: '110',
+    bgr: '0000',
+    uebergang: '0',
+  },
+  {
+    label: 'Aushilfe 01.06.–01.09. (drei Monate und ein Tag), 79 Arbeitstage, 1.500 €',
+    source: '§ 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, Bsp. 37',
+    person: person('aushilfe'),
+    employer: employer('kurzfristig', monthly('1500.00'), aushilfe('2026-09-01', '79')),
+    pgr: '101',
+    bgr: '1111',
+    uebergang: '1',
+  },
+  {
+    label: 'Aushilfe 01.06.–30.09., genau 70 Arbeitstage, 1.500 €',
+    source: 'GfR 2026 B 2.3.1 (gleichwertige Alternativen), Bsp. 3b',
+    person: person('aushilfe'),
+    employer: employer('kurzfristig', monthly('1500.00'), aushilfe('2026-09-30', '70')),
+    pgr: '110',
+    bgr: '0000',
+    uebergang: '0',
+  },
+  {
+    label: 'Aushilfe 01.06.–30.09., 71 Arbeitstage, 1.500 €',
+    source: 'GfR 2026 B 2.3.1',
+    person: person('aushilfe'),
+    employer: employer('kurzfristig', monthly('1500.00'), aushilfe('2026-09-30', '71')),
+    pgr: '101',
+    bgr: '1111',
+    uebergang: '1',
+  },
+  {
+    label: 'Aushilfe 01.06.–30.09., 71 Arbeitstage, 500 € (dann ein Minijob)',
+    source: 'GfR 2026 B 2.3 („zu prüfen, ob eine geringfügig entlohnte Beschäftigung vorliegt“)',
+    person: person('aushilfe'),
+    employer: employer('kurzfristig', monthly('500.00'), aushilfe('2026-09-30', '71')),
+    pgr: '109',
+    bgr: '6100',
+    uebergang: '0',
+  },
   {
     label: 'Minijob ab 03.05., Befreiungsantrag am 05.05. eingegangen',
     source: '§ 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36a',

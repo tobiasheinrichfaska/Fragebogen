@@ -7,6 +7,13 @@ import { ageOn, dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './da
 import { displayValue } from './display';
 import { fieldsById, ownerOfField, roleOf, visibility } from './form';
 import { canonicalize } from './jcs';
+import {
+  berufsmaessigNachVorbeschaeftigungen,
+  entgeltImSelbenMonat,
+  regelmaessig,
+  zeitgrenze,
+  type ShortTermJob,
+} from './kurzfristig';
 import { optionsOf, validityByName, validityNote, validOn } from './options';
 import type {
   CheckHint,
@@ -457,6 +464,177 @@ const uebergangsbereich: HintTest = {
   },
 };
 
+/**
+ * Arguments of the short-term tests: the employer's start, end, working days, framework agreement
+ * and fixed term; the person's earlier jobs (kind, from, until, working days, monthly pay); the pay
+ * (fixed, expected, one-off amounts and entitlement); the other current jobs (kind, monthly pay,
+ * start, fixed until).
+ */
+const KURZFRISTIG_ARGS: readonly FieldType[] = [
+  'date',
+  'date',
+  'number',
+  'boolean',
+  'boolean',
+  'choice',
+  'date',
+  'date',
+  'number',
+  'money',
+  'money',
+  'money',
+  'money',
+  'boolean',
+  'choice',
+  'money',
+  'date',
+  'date',
+];
+
+const isoOrUndefined = (value: FieldValue | undefined) =>
+  typeof value === 'string' && isIsoDate(value) ? value : undefined;
+const numberOrUndefined = (value: FieldValue | undefined) =>
+  typeof value === 'string' && /^\d+(\.\d+)?$/.test(value) ? Number(value) : undefined;
+const column = (value: FieldValue | undefined): readonly FieldValue[] =>
+  Array.isArray(value) ? value : [];
+
+interface ShortTermFacts {
+  job: ShortTermJob;
+  limit: number;
+  /** This job's regular monthly pay (yearly view / 12), undefined when not answered. */
+  own: number | undefined;
+  /** Pay of other short-term jobs running at the same time (B 2.3.3). */
+  parallel: number;
+  facts: string;
+}
+
+function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear' | undefined {
+  const [beginn, bis, tage, rahmen, befristet, vbArt, vbVon, vbBis, vbTage, vbEntgelt] = values;
+  const [fixed, expected, oneOff, entitled, jobArt, jobEntgelt, jobSeit, jobBis] = values.slice(10);
+  const start = isoOrUndefined(beginn);
+  if (start === undefined) return undefined;
+  const limitValue = RECHENGROESSEN[start.slice(0, 4)]?.geringfuegigkeitsgrenzeMonat;
+  if (limitValue === undefined) return 'noYear';
+  const job: ShortTermJob = {
+    beginn: start,
+    bis: isoOrUndefined(bis),
+    arbeitstage: numberOrUndefined(tage),
+    rahmenvereinbarung: typeof rahmen === 'boolean' ? rahmen : undefined,
+    befristet: typeof befristet === 'boolean' ? befristet : undefined,
+    frueher: column(vbArt).map((art, i) => ({
+      art: typeof art === 'string' ? art : '',
+      von: isoOrUndefined(column(vbVon)[i]),
+      bis: isoOrUndefined(column(vbBis)[i]),
+      arbeitstage: numberOrUndefined(column(vbTage)[i]),
+      entgelt: cents(column(vbEntgelt)[i] ?? null),
+    })),
+  };
+  const mine = ownPay(fixed, expected);
+  const yearly = mine === undefined ? undefined : yearlyPay(mine, oneOff ?? null, entitled ?? null);
+  const end = job.bis ?? start;
+  const parallel = column(jobArt).reduce<number>((sum, art, i) => {
+    const seit = isoOrUndefined(column(jobSeit)[i]);
+    const until = isoOrUndefined(column(jobBis)[i]);
+    const running = (seit === undefined || seit <= end) && (until === undefined || until >= start);
+    return art === 'kurzfristig' && running
+      ? sum + (cents(column(jobEntgelt)[i] ?? null) ?? 0)
+      : sum;
+  }, 0);
+  return {
+    job,
+    limit: cents(limitValue) ?? 0,
+    own: yearly === undefined ? undefined : Math.round(yearly.yearly / 12),
+    parallel,
+    facts: yearly?.facts ?? '',
+  };
+}
+
+/**
+ * Whether the job chosen as short-term is one (Geringfügigkeits-Richtlinien 2026 B 2.3): within the
+ * time limit, not regular and — where Berufsmäßigkeit matters — not above the pay limit counting the
+ * short-term jobs running at the same time or in the same month (B 2.3.3, examples 4c, 4d).
+ * `gegeben`: for a person who is not berufsmäßig by status — berufsmäßig only from earlier jobs
+ * (B 2.3.3.3). `bisGrenze`: for a person berufsmäßig by status — only within the pay limit. Open
+ * facts: holds, uncertain (the employer's choice stands, with a check).
+ */
+function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze'): HintTest {
+  return {
+    args: KURZFRISTIG_ARGS,
+    describe: ([beginn = '', bis = '', tage = '', rahmen = '', , vbArt = '']) =>
+      `die Aushilfe von „${beginn}“ bis „${bis}“ (mit „${tage}“, „${rahmen}“ und den früheren Beschäftigungen laut „${vbArt}“) die Zeitgrenze von drei Monaten oder 70 Arbeitstagen einhält, nicht regelmäßig ist und ${mode === 'gegeben' ? 'nicht nach den früheren Beschäftigungen berufsmäßig mit einem Entgelt über der Geringfügigkeitsgrenze ist' : 'mit den gleichzeitigen oder im selben Monat liegenden Aushilfen höchstens die Geringfügigkeitsgrenze erreicht'}`,
+    run: (values) => {
+      const facts = shortTermFacts(values);
+      if (facts === undefined) return undefined;
+      if (facts === 'noYear') {
+        return {
+          holds: true,
+          uncertain: true,
+          detail: ['Für dieses Jahr ist die Geringfügigkeitsgrenze in der App nicht hinterlegt.'],
+        };
+      }
+      const { job, limit, own, parallel } = facts;
+      const time = zeitgrenze(job);
+      const regular = regelmaessig(job);
+      const total = own === undefined ? undefined : own + parallel + entgeltImSelbenMonat(job);
+      const payOver = total !== undefined && total > limit;
+      const detail = [...time.detail];
+      if (regular) {
+        detail.push(
+          'Rahmenvereinbarung ohne Befristung oder über mehr als ein Jahr: regelmäßig, keine kurzfristige Beschäftigung (Geringfügigkeits-Richtlinien B 2.3).',
+        );
+      }
+      if (total !== undefined && own !== undefined && total !== own) {
+        detail.push(
+          `Mit den gleichzeitig laufenden oder im selben Monat liegenden Aushilfen ${euro(total)} im Monat (Geringfügigkeits-Richtlinien B 2.3.3).`,
+        );
+      }
+      let notShortTerm = time.status === 'ueberschritten' || regular;
+      let uncertain = time.status === 'offen';
+      if (mode === 'gegeben') {
+        const earlier = berufsmaessigNachVorbeschaeftigungen(job, limit);
+        if (payOver || own === undefined) detail.push(...earlier.detail);
+        if (earlier.holds && payOver) notShortTerm = true;
+        if (earlier.holds && own === undefined) uncertain = true;
+        if (earlier.uncertain && payOver) uncertain = true;
+      } else {
+        if (payOver) notShortTerm = true;
+        if (own === undefined) uncertain = true;
+      }
+      return { holds: !notShortTerm, ...(uncertain ? { uncertain: true } : {}), detail };
+    },
+  };
+}
+
+/**
+ * A job chosen as short-term that is not one, but a Minijob: its pay with the other short-term
+ * jobs running at the same time within the limit (B 2.3.3, example 4d) and a Minijob next to the
+ * other jobs (`geringfuegigEntlohnt`).
+ */
+const geringfuegigNebenKurzfristigen: HintTest = {
+  args: KURZFRISTIG_ARGS,
+  describe: ([beginn = '']) =>
+    `das Entgelt mit den gleichzeitig laufenden Aushilfen die Geringfügigkeitsgrenze des Jahres von „${beginn}“ einhält und die Beschäftigung neben den anderen ein Minijob ist`,
+  run: (values) => {
+    const facts = shortTermFacts(values);
+    if (facts === undefined || facts === 'noYear' || facts.own === undefined) return undefined;
+    const [beginn] = values;
+    const [fixed, expected, oneOff, entitled, jobArt, jobEntgelt, jobSeit] = values.slice(10);
+    if (facts.own + facts.parallel > facts.limit) {
+      return {
+        holds: false,
+        detail: [
+          `Mit den gleichzeitig laufenden Aushilfen ${euro(facts.own + facts.parallel)} im Monat: über der Geringfügigkeitsgrenze, kein Minijob (Geringfügigkeits-Richtlinien B 2.3.3, Beispiel 4d).`,
+        ],
+      };
+    }
+    return geringfuegigEntlohnt.run(
+      [fixed, expected, oneOff, entitled, beginn, jobArt, jobEntgelt, jobSeit].map(
+        (value) => value ?? null,
+      ),
+    );
+  },
+};
+
 /** Another job is a vocational training (Rundschreiben Übergangsbereich Tz. 4.3.6.1). */
 const andereBeschaeftigungAusbildung: HintTest = {
   args: ['choice'],
@@ -470,6 +648,9 @@ const andereBeschaeftigungAusbildung: HintTest = {
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   andereBeschaeftigungAusbildung,
   geringfuegigEntlohnt,
+  geringfuegigNebenKurzfristigen,
+  kurzfristigGegeben: kurzfristigkeit('gegeben'),
+  kurzfristigGegebenBisGeringfuegigkeitsgrenze: kurzfristigkeit('bisGrenze'),
   minijobNebenHauptbeschaeftigung,
   hoechstensGeringfuegigkeitsgrenze: geringfuegigkeit(true),
   ueberGeringfuegigkeitsgrenze: geringfuegigkeit(false),

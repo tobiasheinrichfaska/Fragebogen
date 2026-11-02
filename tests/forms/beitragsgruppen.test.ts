@@ -101,7 +101,19 @@ describe('Beitragsgruppen per scenario', () => {
       '1111',
       false,
     ],
-    ['short-term job', { agBeschaeftigungsart: 'kurzfristig' }, GKV, '110', '0000', false],
+    [
+      'short-term job',
+      {
+        agBeschaeftigungsart: 'kurzfristig',
+        agKurzfristigBis: '31.12.2026',
+        agKurzfristigArbeitstage: '40',
+        agRahmenvereinbarung: false,
+      },
+      GKV,
+      '110',
+      '0000',
+      false,
+    ],
     [
       'mandatory internship during the studies',
       { agBeschaeftigungsart: 'praktikum', agPraktikumArt: 'pflichtStudium' },

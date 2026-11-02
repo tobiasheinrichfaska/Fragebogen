@@ -192,3 +192,31 @@ abgeschlossen; Station „Kanzlei“.
   Beitragsgruppen 0111 ohne „bitte prüfen“.
 - _Nicht offensichtlich:_ Die Vorbelegung „Nein“ ist absichtlich. Ein vergessenes „Ja“ fällt
   über den Prüfhinweis auf.
+
+---
+
+## MT-96: Aushilfe über drei Monate und 70 Arbeitstage
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
+**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.06.2026, festes
+Monatsentgelt 1.500,00 €. Die Person füllt danach ihren Teil aus (Status „Arbeitnehmerin oder
+Arbeitnehmer“, keine früheren Beschäftigungen im Kalenderjahr).
+
+**Schritte:**
+
+1. Als Art der Beschäftigung „kurzfristige Aushilfe (höchstens 3 Monate oder 70 Arbeitstage)“ wählen,
+   „Ende der Aushilfe“ `31.08.2026` und „Arbeitstage der Aushilfe“ `78` eingeben, bis zur Kanzlei gehen
+   und die Vorschläge ansehen.
+2. „Ende der Aushilfe“ auf `01.09.2026` und die Arbeitstage auf `79` ändern.
+3. Das Monatsentgelt auf 500,00 € ändern.
+
+**Erwartet:**
+
+- Schritt 1: Personengruppe 110, Beitragsgruppen 0000 – genau drei Monate sind noch kurzfristig.
+- Schritt 2: Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 1111; die Begründung nennt die
+  Zeitgrenze („Von vornherein länger als drei Monate … und mehr als 70 Arbeitstage“).
+- Schritt 3: Personengruppe 109 mit „bitte prüfen“, Beitragsgruppen 6100 – die Beschäftigung ist dann
+  ein Minijob.
+- _Nicht offensichtlich:_ Über drei Monate mit höchstens 70 Arbeitstagen (z. B. 30.09. mit 70 Tagen)
+  bleibt es eine kurzfristige Beschäftigung (110) – beide Grenzen sind gleichwertig.

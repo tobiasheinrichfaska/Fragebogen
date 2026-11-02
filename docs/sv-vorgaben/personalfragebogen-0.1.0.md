@@ -6,19 +6,19 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 58 gleich, 18 abweichend. 99 abgeleitete Varianten, 23 Grenzfälle.
+80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 66 gleich, 10 abweichend. 101 abgeleitete Varianten, 28 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
 | GFR-02a | GfR 2026, Bsp. 2 | Minijob 600 €, familienversichert, ohne RV-Befreiung | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
 | GFR-02b | GfR 2026, Bsp. 2 | Minijob 600 €, familienversichert, mit RV-Befreiung | 109 · 6500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6500 · ÜB 0 | gleich |
 | GFR-03b1 | GfR 2026, Bsp. 3b | Abiturientin mit Studienabsicht, 70 Arbeitstage | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
-| GFR-03b2 | GfR 2026, Bsp. 3b | Dieselbe Person im Dezember: wegen Vorbeschäftigung nicht kurzfristig | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
+| GFR-03b2 | GfR 2026, Bsp. 3b | Dieselbe Person im Dezember: wegen Vorbeschäftigung nicht kurzfristig | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 · ÜB 0 | gleich |
 | GFR-04a | GfR 2026, Bsp. 4a | Bezieher von Arbeitslosengeld, Aushilfe 800 € unter 15 Std. | 101 · 3101 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 3101 (p) · ÜB 1 | gleich |
 | GFR-04b | GfR 2026, Bsp. 4b | Aushilfe in der Elternzeit, Durchschnitt 765 € | 101 · 3111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
-| GFR-04c | GfR 2026, Bsp. 4c | Ausbildungsuchender Schulentlassener, zwei Aushilfen im selben Monat | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (B) |
+| GFR-04c | GfR 2026, Bsp. 4c | Ausbildungsuchender Schulentlassener, zwei Aushilfen im selben Monat | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 · ÜB 0 | gleich |
 | GFR-04dA | GfR 2026, Bsp. 4d | ALG-Bezieher, Aushilfe 600 € einmal wöchentlich | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
-| GFR-04dB | GfR 2026, Bsp. 4d | Zweite Aushilfe neben laufender Aushilfe: Entgelte zusammen über der Grenze | 101 · 1101; ab 16.10.2026: 110 · 0000 | S O, PGR O, BGR O | 110 · 0000 · ÜB 0 | abweichend (B) |
+| GFR-04dB | GfR 2026, Bsp. 4d | Zweite Aushilfe neben laufender Aushilfe: Entgelte zusammen über der Grenze | 101 · 1101; ab 16.10.2026: 110 · 0000 | S O, PGR O, BGR O | 101 (p) · 1101 (p) · ÜB 0 | gleich |
 | GFR-06 | GfR 2026, Bsp. 6 | 600 € plus vertragliches Weihnachtsgeld | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
 | GFR-07a | GfR 2026, Bsp. 7a | Mindestlohn, schwankende Stunden, Jahresprognose bis zur Grenze | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
 | GFR-07c | GfR 2026, Bsp. 7c | Erheblich schwankendes Entgelt: zwei Zeiträume | 101 · 1111; ab 01.09.2026: 109 · 6100 | S O, PGR O, BGR O | 109 (p) · 6100 · ÜB 0 | nicht abbildbar |
@@ -49,13 +49,13 @@
 | GFR-33 | GfR 2026, Bsp. 33 | Rechtsanwalt im Kanzlei-Minijob, Versorgungswerk-befreit | 109 · 6000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6000 · ÜB 0 | gleich |
 | GFR-34 | GfR 2026, Bsp. 34 | Rechtsanwalt im Kanzlei-Minijob, Befreiung nach § 6 Abs. 1b | 109 · 6500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6500 · ÜB 0 | gleich |
 | GFR-36b | GfR 2026, Bsp. 36b | Befreiungsantrag geht im Folgemonat ein | 109 · 6100 · ÜB 0; ab 01.06.2026: 109 · 6500 | S O, PGR O, BGR O, ÜB A | 109 · 6100 (p) · ÜB 0 | gleich |
-| GFR-37 | GfR 2026, Bsp. 37 | „Aushilfe“ über vier Monate (88 Arbeitstage) | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
+| GFR-37 | GfR 2026, Bsp. 37 | „Aushilfe“ über vier Monate (88 Arbeitstage) | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
 | GFR-39B | GfR 2026, Bsp. 39 | Aushilfe neben Dauerbeschäftigung | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
-| GFR-40B | GfR 2026, Bsp. 40 | Aushilfe, mit früheren Aushilfen über drei Monate | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
+| GFR-40B | GfR 2026, Bsp. 40 | Aushilfe, mit früheren Aushilfen über drei Monate | 101 · 1111 · ÜB 0; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 0 | gleich |
 | GFR-41 | GfR 2026, Bsp. 41 | Rentner springt gelegentlich ein | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
-| GFR-42 | GfR 2026, Bsp. 42 | Regelmäßige Einsätze an fünf Tagen im Monat | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
-| GFR-45B | GfR 2026, Bsp. 45 | Zweite Aushilfe im Jahr über drei Monate, über der Grenze | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
-| GFR-48 | GfR 2026, Bsp. 48 | Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
+| GFR-42 | GfR 2026, Bsp. 42 | Regelmäßige Einsätze an fünf Tagen im Monat | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| GFR-45B | GfR 2026, Bsp. 45 | Zweite Aushilfe im Jahr über drei Monate, über der Grenze | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| GFR-48 | GfR 2026, Bsp. 48 | Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
 | ST-01 | RS Studenten, Bsp. 1 | Student 25 Std./Woche unbefristet | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 1 | abweichend (C) |
 | ST-02A | RS Studenten, Bsp. 2 | Werkstudentenjob 18 Std. neben Minijob 7 Std.: zusammen über 20 Std. | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 1 (p) | abweichend (C) |
 | ST-02B | RS Studenten, Bsp. 2 | Student, Minijob 300 € neben (versicherungspflichtig gewordener) Beschäftigung | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
@@ -93,8 +93,6 @@
 
 ## Abweichungen
 
-- **A – Kurzfristige Aushilfe: Zeitgrenzen, Regelmäßigkeit und Vorbeschäftigungen wirken nicht auf den Vorschlag:** GFR-03b2, GFR-37, GFR-40B, GFR-42, GFR-45B, GFR-48
-- **B – Berufsmäßigkeit: Entgelte anderer kurzfristiger Beschäftigungen werden nicht mitgerechnet:** GFR-04c, GFR-04dB
 - **C – Werkstudenten und freiwillige Praktika: 20-Stunden-Grenze und Vorrang von 109/110 fehlen:** ST-01, ST-02A, ST-04, ST-KF, ST-WSMJ, ST-FZPMJ
 - **E – JAEG bei mehreren Beschäftigungen: erster Minijob wird mitgezählt, KV im zweiten Minijob:** GFR-25C, GFR-26C, D-JAEGMJ
 - **G – Entgeltumwandlung senkt das Entgelt für die Minijob-Grenze nicht:** GFR-14
@@ -110,6 +108,11 @@
 
 | Fall | Grundlage | Erwartet | App |
 | --- | --- | --- | --- |
+| Aushilfe 01.06.–31.08. (genau drei Monate), 78 Arbeitstage, 1.500 € | § 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, 2.3.1 | 110 · 0000 · ÜB 0 | 110 · 0000 · ÜB 0 |
+| Aushilfe 01.06.–01.09. (drei Monate und ein Tag), 79 Arbeitstage, 1.500 € | § 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, Bsp. 37 | 101 · 1111 · ÜB 1 | 101 (p) · 1111 · ÜB 1 |
+| Aushilfe 01.06.–30.09., genau 70 Arbeitstage, 1.500 € | GfR 2026 B 2.3.1 (gleichwertige Alternativen), Bsp. 3b | 110 · 0000 · ÜB 0 | 110 · 0000 · ÜB 0 |
+| Aushilfe 01.06.–30.09., 71 Arbeitstage, 1.500 € | GfR 2026 B 2.3.1 | 101 · 1111 · ÜB 1 | 101 (p) · 1111 · ÜB 1 |
+| Aushilfe 01.06.–30.09., 71 Arbeitstage, 500 € (dann ein Minijob) | GfR 2026 B 2.3 („zu prüfen, ob eine geringfügig entlohnte Beschäftigung vorliegt“) | 109 · 6100 · ÜB 0 | 109 (p) · 6100 · ÜB 0 |
 | Minijob ab 03.05., Befreiungsantrag am 05.05. eingegangen | § 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36a | 109 · 6500 · ÜB 0 | 109 · 6500 · ÜB 0 |
 | Minijob ab 03.05., Befreiungsantrag am 31.05. eingegangen | § 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1 | 109 · 6500 · ÜB 0 | 109 · 6500 · ÜB 0 |
 | Minijob ab 03.05., Befreiungsantrag am 01.06. eingegangen (erst ab Juni befreit) | § 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36b | 109 · 6100 · ÜB 0 | 109 · 6100 (p) · ÜB 0 |

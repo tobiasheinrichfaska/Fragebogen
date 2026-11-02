@@ -59,7 +59,18 @@ describe('Personengruppe proposed from the answers', () => {
       '109',
       false,
     ],
-    ['a short-term job', { agBeschaeftigungsart: 'kurzfristig' }, {}, '110', false],
+    [
+      'a short-term job',
+      {
+        agBeschaeftigungsart: 'kurzfristig',
+        agKurzfristigBis: '31.12.2026',
+        agKurzfristigArbeitstage: '40',
+        agRahmenvereinbarung: false,
+      },
+      {},
+      '110',
+      false,
+    ],
     [
       'a trainee up to 325 €',
       {

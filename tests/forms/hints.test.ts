@@ -208,6 +208,7 @@ describe('check hints — definition rules', () => {
       'ab55Jahren',
       'andereBeschaeftigungAusbildung',
       'geringfuegigEntlohnt',
+      'geringfuegigNebenKurzfristigen',
       'hoechstensGeringfuegigkeitsgrenze',
       'hoechstensGeringverdienergrenze',
       'hoechstensZehnWochen',
@@ -215,6 +216,8 @@ describe('check hints — definition rules', () => {
       'inSpaeteremMonat',
       'keinArbeitsentgelt',
       'kuerzerAlsEineWoche',
+      'kurzfristigGegeben',
+      'kurzfristigGegebenBisGeringfuegigkeitsgrenze',
       'listeneintragNichtGueltig',
       'minijobNebenHauptbeschaeftigung',
       'regelaltersgrenzeErreicht',
@@ -482,5 +485,107 @@ describe('a later calendar month', () => {
     });
     expect(later('2027-01-02', '2026-12-31')?.holds).toBe(true);
     expect(later(null, '2026-05-03')).toBeUndefined();
+  });
+});
+
+// 2026-11-02, Geringfügigkeits-Richtlinien 2026 B 2.3 (official examples GFR-03b2, -04c, -04dB, -37,
+// -40B, -42, -45B, -48). Arguments as in the definition: start, end, working days, framework agreement,
+// fixed term, earlier jobs (kind, from, until, days, pay), pay, other current jobs.
+describe('the short-term tests', () => {
+  interface Facts {
+    bis?: string;
+    tage?: string;
+    rahmen?: boolean;
+    befristet?: boolean;
+    frueher?: [string, string, string, string | null, string | null][];
+    pay?: string;
+    jobs?: [string, string, string, string | null][];
+  }
+  const args = (f: Facts) => {
+    const vb = f.frueher ?? [];
+    const jobs = f.jobs ?? [];
+    return [
+      '2026-04-16',
+      f.bis ?? '2026-04-30',
+      f.tage ?? '11',
+      f.rahmen ?? false,
+      f.befristet ?? true,
+      vb.map((r) => r[0]),
+      vb.map((r) => r[1]),
+      vb.map((r) => r[2]),
+      vb.map((r) => r[3]),
+      vb.map((r) => r[4]),
+      f.pay ?? '380.00',
+      null,
+      null,
+      null,
+      jobs.map((r) => r[0]),
+      jobs.map((r) => r[1]),
+      jobs.map((r) => r[2]),
+      jobs.map((r) => r[3]),
+    ] as never[];
+  };
+  const run = (fn: string, f: Facts) => {
+    const result = HINT_TESTS[fn]?.run(args(f));
+    return { holds: result?.holds, uncertain: result?.uncertain === true };
+  };
+  const yes = { holds: true, uncertain: false };
+  const no = { holds: false, uncertain: false };
+
+  it('keeps a short-term job within the limits', () => {
+    expect(run('kurzfristigGegeben', {})).toEqual(yes);
+    expect(run('kurzfristigGegebenBisGeringfuegigkeitsgrenze', {})).toEqual(yes);
+  });
+
+  it('is no short-term job above both time limits or with a framework agreement without end', () => {
+    expect(run('kurzfristigGegeben', { bis: '2026-09-30', tage: '71' })).toEqual(no);
+    expect(run('kurzfristigGegeben', { rahmen: true, befristet: false })).toEqual(no);
+  });
+
+  it('adds the pay of a short-term job in the same month for a person berufsmäßig by status (4c)', () => {
+    const april: Facts = { frueher: [['kurzfristig', '2026-04-01', '2026-04-15', '11', '320.00']] };
+    expect(run('kurzfristigGegebenBisGeringfuegigkeitsgrenze', april)).toEqual(no);
+    // Not berufsmäßig by status and not by earlier jobs: still short-term.
+    expect(run('kurzfristigGegeben', april)).toEqual(yes);
+  });
+
+  it('adds the pay of a short-term job running at the same time (4d)', () => {
+    const parallel: Facts = {
+      bis: '2026-12-18',
+      tage: '24',
+      pay: '440.00',
+      jobs: [['kurzfristig', '600.00', '2026-04-16', '2026-10-15']],
+    };
+    expect(run('kurzfristigGegebenBisGeringfuegigkeitsgrenze', parallel)).toEqual(no);
+    expect(run('geringfuegigNebenKurzfristigen', parallel)).toEqual(no);
+    // Ended before this one began: it does not count.
+    const ended: Facts = {
+      ...parallel,
+      jobs: [['kurzfristig', '600.00', '2026-01-01', '2026-03-31']],
+    };
+    expect(run('kurzfristigGegebenBisGeringfuegigkeitsgrenze', ended)).toEqual(yes);
+  });
+
+  it('is berufsmäßig from earlier jobs only with pay above the limit (example 48)', () => {
+    const earlier: Facts = {
+      bis: '2026-05-25',
+      tage: '27',
+      frueher: [['mehr', '2026-01-02', '2026-04-15', '75', null]],
+    };
+    expect(run('kurzfristigGegeben', { ...earlier, pay: '1400.00' })).toEqual(no);
+    expect(run('kurzfristigGegeben', { ...earlier, pay: '500.00' })).toEqual(yes);
+  });
+
+  it('leaves the employer’s choice standing, with a check, when the end and days are missing', () => {
+    const open = HINT_TESTS.kurzfristigGegeben?.run(
+      args({}).map((value, i) => (i === 1 || i === 2 ? null : value)) as never[],
+    );
+    expect(open).toMatchObject({ holds: true, uncertain: true });
+    expect(open?.detail.join(' ')).toContain('Ende oder Arbeitstage der Aushilfe fehlen');
+  });
+
+  it('is a Minijob when no longer short-term and the pay is within the limit (4c)', () => {
+    expect(run('geringfuegigNebenKurzfristigen', {})).toEqual(yes);
+    expect(run('geringfuegigNebenKurzfristigen', { pay: '1400.00' })).toEqual(no);
   });
 });
