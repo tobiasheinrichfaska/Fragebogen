@@ -206,15 +206,17 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   Ja/Nein, Datum: festes Monatsentgelt, erwarteter Monatsverdienst – es zählt der beantwortete –,
   Spalte der Einmalzahlungen und Spalte „Anspruch“ derselben Tabelle, Stichtag; zwölf Monate plus
   Einmalzahlungen mit Anspruch höchstens bzw. mehr als das Zwölffache der Minijob-Grenze des
-  Jahres); `geringfuegigEntlohnt` (wie `hoechstensGeringfuegigkeitsgrenze`, dazu die Spalten Art, Monatsentgelt und Beginn der weiteren Beschäftigungen: neben einer Hauptbeschäftigung bleibt nur der zuerst aufgenommene Minijob frei, ohne sie zählen alle Minijobs zusammen, § 8 Abs. 2 SGB IV); `minijobNebenHauptbeschaeftigung` (dieselben Felder: Entgelt bis zur Grenze und eine Hauptbeschäftigung – arbeitslosenversicherungsfrei auch als zweiter Minijob); `hoechstensGeringverdienergrenze` (Betrag: bis 325 €, bei einer Tabellenspalte die erste
-  Zeile); `ueberBeitragsbemessungsgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
+  Jahres); `geringfuegigEntlohnt` (wie `hoechstensGeringfuegigkeitsgrenze`, dazu die Spalten Art, Monatsentgelt und Beginn der weiteren Beschäftigungen: neben einer Hauptbeschäftigung bleibt nur der zuerst aufgenommene Minijob frei, ohne sie zählen alle Minijobs zusammen, § 8 Abs. 2 SGB IV); `minijobNebenHauptbeschaeftigung` (dieselben Felder: Entgelt bis zur Grenze und eine Hauptbeschäftigung – arbeitslosenversicherungsfrei auch als zweiter Minijob); `hoechstensGeringverdienergrenze` (Betrag: über 0 € und bis 325 €, bei einer Tabellenspalte die
+  erste Zeile); `keinArbeitsentgelt` (Betrag, Betrag: der erste beantwortete ist 0 €); `ueberBeitragsbemessungsgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
   weiterer Beschäftigungen – darf eine Tabellenspalte sein, sie wird summiert – und der Stichtag,
   dessen Jahr die Rechengrößen bestimmt); `ueberMassgeblicheJahresarbeitsentgeltgrenze` (Betrag,
   Betrag, Betrag, Betrag, Ja/Nein, Auswahl, Datum: festes bzw. erwartetes Monatsentgelt, Entgelte
   weiterer Beschäftigungen, Einmalzahlungen mit Anspruch; die besondere Grenze nach § 6 Abs. 7
-  SGB V, wenn die Auswahl „ja“ ist); `imUebergangsbereich` (Betrag, Betrag, Betrag, Betrag,
-  Ja/Nein, Datum: alle Beschäftigungen zusammen im Monat über der Minijob-Grenze und höchstens
-  2.000 €); `ab55Jahren` (Geburtsdatum, Stichtag); `listeneintragNichtGueltig` (Textfeld mit Vorschlagsliste, Datum: der gewählte Listeneintrag gilt an diesem Tag nicht, z. B. eine Krankenkasse nach einer Fusion); `hoechstensZehnWochen` (Datum, Datum: höchstens
+  SGB V, wenn die Auswahl „ja“ ist); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
+  Einmalzahlungen und nur die Entgelte versicherungspflichtiger weiterer Beschäftigungen – ohne Beamtenbezüge,
+  kurzfristige Beschäftigungen und den zuerst aufgenommenen Minijob neben einer Hauptbeschäftigung – im Monat
+  über der Minijob-Grenze und höchstens 2.000 €); `andereBeschaeftigungAusbildung` (Auswahl-Spalte: eine
+  weitere Beschäftigung ist eine Ausbildung); `ab55Jahren` (Geburtsdatum, Stichtag); `listeneintragNichtGueltig` (Textfeld mit Vorschlagsliste, Datum: der gewählte Listeneintrag gilt an diesem Tag nicht, z. B. eine Krankenkasse nach einer Fusion); `hoechstensZehnWochen` (Datum, Datum: höchstens
   70 Tage einschließlich).
 
 ## Regeln, die die App zusätzlich prüft

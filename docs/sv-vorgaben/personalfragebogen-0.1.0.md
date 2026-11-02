@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 45 gleich, 31 abweichend. 97 abgeleitete Varianten, 15 Grenzfälle.
+80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 57 gleich, 19 abweichend. 99 abgeleitete Varianten, 19 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -27,13 +27,13 @@
 | GFR-14 | GfR 2026, Bsp. 14 | Entgeltumwandlung senkt 720 € auf 600 € | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | abweichend (G) |
 | GFR-15a | GfR 2026, Bsp. 15a | Zwei Minijobs (280 € + 320 €), privat versichert | 109 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 0100 · ÜB 0 | gleich |
 | GFR-16B | GfR 2026, Bsp. 16 | Minijob 600 € neben gleichzeitiger kurzfristiger Beschäftigung | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
-| GFR-19A | GfR 2026, Bsp. 19 | Hauptbeschäftigung 1.800 € neben einem Minijob | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 0 | abweichend (F) |
+| GFR-19A | GfR 2026, Bsp. 19 | Hauptbeschäftigung 1.800 € neben einem Minijob | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
 | GFR-19B | GfR 2026, Bsp. 19 | Minijob 600 € neben Hauptbeschäftigung | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
 | GFR-20B | GfR 2026, Bsp. 20 | Erster Minijob neben Hauptbeschäftigung, befreit | 109 · 6500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6500 (p) · ÜB 0 | gleich |
 | GFR-20C | GfR 2026, Bsp. 20 | Zweiter Minijob neben Hauptbeschäftigung | 101 · 1101 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1101 (p) · ÜB 1 (p) | gleich |
-| GFR-21 | GfR 2026, Bsp. 21 | Beamter mit zwei Minijobs über der Grenze | 101 · 0110 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 0110 · ÜB 0 | abweichend (F) |
+| GFR-21 | GfR 2026, Bsp. 21 | Beamter mit zwei Minijobs über der Grenze | 101 · 0110 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 0110 · ÜB 1 (p) | gleich |
 | GFR-22 | GfR 2026, Bsp. 22 | Freiwillig GKV-versicherter Beamter, zwei Minijobs zusammen 600 €, befreit | 109 · 6500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6500 (p) · ÜB 0 | gleich |
-| GFR-23B | GfR 2026, Bsp. 23 | Beamter, Nebenbeschäftigung 800 € | 101 · 0110 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 0110 · ÜB 0 | abweichend (F) |
+| GFR-23B | GfR 2026, Bsp. 23 | Beamter, Nebenbeschäftigung 800 € | 101 · 0110 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 0110 · ÜB 1 (p) | gleich |
 | GFR-23C | GfR 2026, Bsp. 23 | Beamter, erster Minijob neben versicherungspflichtiger Nebenbeschäftigung | 109 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 0100 · ÜB 0 | gleich |
 | GFR-24C | GfR 2026, Bsp. 24 | wie GFR-23C, mit RV-Befreiung | 109 · 0500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 0500 · ÜB 0 | gleich |
 | GFR-25A | GfR 2026, Bsp. 25 | Über der JAEG, freiwillig GKV, Firmenzahler | 101 · 9111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 9111 · ÜB 0 | gleich |
@@ -44,9 +44,9 @@
 | GFR-28 | GfR 2026, Bsp. 28 | Minijob 600 €, privat versichert, ohne Befreiung | 109 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 0100 · ÜB 0 | gleich |
 | GFR-29 | GfR 2026, Bsp. 29 | Haushaltshilfe im Privathaushalt (Haushaltsscheck) | 209 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | – · – · ÜB – | nicht abbildbar |
 | GFR-31A | GfR 2026, Bsp. 31 | Apotheker, Versorgungswerk-befreit | 101 · 1011 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 1011 · ÜB 0 | gleich |
-| GFR-31B | GfR 2026, Bsp. 31 | Apotheker-Minijob, befreit zugunsten des Versorgungswerks | 109 · 6000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | abweichend (D) |
+| GFR-31B | GfR 2026, Bsp. 31 | Apotheker-Minijob, befreit zugunsten des Versorgungswerks | 109 · 6000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6000 (p) · ÜB 0 | gleich |
 | GFR-32B | GfR 2026, Bsp. 32 | Architekt, berufsfremder Minijob | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
-| GFR-33 | GfR 2026, Bsp. 33 | Rechtsanwalt im Kanzlei-Minijob, Versorgungswerk-befreit | 109 · 6000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | abweichend (D) |
+| GFR-33 | GfR 2026, Bsp. 33 | Rechtsanwalt im Kanzlei-Minijob, Versorgungswerk-befreit | 109 · 6000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6000 · ÜB 0 | gleich |
 | GFR-34 | GfR 2026, Bsp. 34 | Rechtsanwalt im Kanzlei-Minijob, Befreiung nach § 6 Abs. 1b | 109 · 6500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6500 · ÜB 0 | gleich |
 | GFR-36b | GfR 2026, Bsp. 36b | Befreiungsantrag geht im Folgemonat ein | 109 · 6100 · ÜB 0; ab 01.06.2026: 109 · 6500 | S O, PGR O, BGR O, ÜB A | 109 · 6500 · ÜB 0 | abweichend (I) |
 | GFR-37 | GfR 2026, Bsp. 37 | „Aushilfe“ über vier Monate (88 Arbeitstage) | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
@@ -66,19 +66,19 @@
 | ST-WSMJ | RS Studenten, C 1 | Werkstudent mit Minijob-Verdienst | 109 · 6100 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 106 (p) · 0100 · ÜB 0 | abweichend (C) |
 | ST-ZP | RS Studenten, C 3 | Vorgeschriebenes Zwischenpraktikum | 190 · 0000 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 190 · 0000 · ÜB 0 | gleich |
 | ST-VP | RS Studenten, C 3 | Vorgeschriebenes Vorpraktikum mit Entgelt | 105 · 1111 · ÜB 0 | S O, PGR O, BGR A, ÜB O | 105 · 1111 · ÜB 0 | gleich |
-| ST-VP0 | RS Studenten, C 3 | Vorgeschriebenes Vorpraktikum ohne Entgelt | 105 · 0110 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 121 · 1111 · ÜB 0 | abweichend (H) |
+| ST-VP0 | RS Studenten, C 3 | Vorgeschriebenes Vorpraktikum ohne Entgelt | 105 · 0110 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 105 · 0110 · ÜB 0 | gleich |
 | ST-FZPMJ | RS Studenten, A 3.5 / GfR C 3.3.2 | Freiwilliges Praktikum im Studium mit Minijob-Verdienst | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 0 | abweichend (C) |
 | ST-SCH | RS Studenten, A 4.1 | Schülerin einer allgemeinbildenden Schule, 800 € | 101 · 1101 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1101 · ÜB 1 | gleich |
 | UEB-02 | RS Übergangsbereich, Bsp. 2 | Zwei Beschäftigungen zusammen über 2.000 € | 101 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 0 | gleich |
-| UEB-03 | RS Übergangsbereich, Bsp. 3 | Hauptbeschäftigung 1.700 € neben erstem Minijob | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 0 | abweichend (F) |
+| UEB-03 | RS Übergangsbereich, Bsp. 3 | Hauptbeschäftigung 1.700 € neben erstem Minijob | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 1 (p) | gleich |
 | UEB-15 | RS Übergangsbereich, Bsp. 15 | Zwei Minijobs zusammen 720 € | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 (p) · 1111 · ÜB 1 (p) | gleich |
-| UEB-AZNEBEN | RS Übergangsbereich, 4.3.6.1 | Versicherungspflichtiger Nebenjob neben einer Ausbildung | 101 · 1111 · ÜB 0 | S A, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 1 (p) | abweichend (F) |
-| UEB-KF | RS Übergangsbereich, 4.2.2 | Hauptbeschäftigung 1.500 € neben kurzfristiger Beschäftigung | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 0 | abweichend (F) |
-| UEB-VR | RS Übergangsbereich, 4.3.6.3 | Vorruhestandsgeld 1.500 € | 108 · 3101 · ÜB 1 | S A, PGR O, BGR A, ÜB O | 108 · 3101 (p) · ÜB 0 (p) | abweichend (F) |
-| UEB-FSJ | RS Übergangsbereich, 4.3.6.1 | FSJ mit Taschengeld und Sachbezügen 650 € | 123 · 1111 · ÜB 0 | S A, PGR O, BGR A, ÜB O | 123 · 1111 · ÜB 1 | abweichend (F) |
+| UEB-AZNEBEN | RS Übergangsbereich, 4.3.6.1 | Versicherungspflichtiger Nebenjob neben einer Ausbildung | 101 · 1111 · ÜB 0 | S A, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 0 | gleich |
+| UEB-KF | RS Übergangsbereich, 4.2.2 | Hauptbeschäftigung 1.500 € neben kurzfristiger Beschäftigung | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
+| UEB-VR | RS Übergangsbereich, 4.3.6.3 | Vorruhestandsgeld 1.500 € | 108 · 3101 · ÜB 1 | S A, PGR O, BGR A, ÜB O | 108 · 3101 (p) · ÜB 1 | gleich |
+| UEB-FSJ | RS Übergangsbereich, 4.3.6.1 | FSJ mit Taschengeld und Sachbezügen 650 € | 123 · 1111 · ÜB 0 | S A, PGR O, BGR A, ÜB O | 123 · 1111 · ÜB 0 | gleich |
 | UEB-2000 | § 20 Abs. 2 SGB IV | Grenzfall: genau 2.000,00 € | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
 | D-121EZ | DEÜV Anlage 2 (121) | Auszubildender 300 € mit Urlaubsgeld | 121 · 1111 · ÜB 0 | S A, PGR O, BGR A, ÜB O | 121 · 1111 · ÜB 0 | gleich |
-| D-102-0 | DEÜV Anlage 2 / RS Studenten C 2 | Duales Studium ohne Arbeitsentgelt | 102 · 0110 · ÜB 0 | S A, PGR O, BGR A, ÜB O | 121 · 1111 · ÜB 0 | abweichend (H) |
+| D-102-0 | DEÜV Anlage 2 / RS Studenten C 2 | Duales Studium ohne Arbeitsentgelt | 102 · 0110 · ÜB 0 | S A, PGR O, BGR A, ÜB O | 102 · 0110 · ÜB 0 | gleich |
 | D-119 | DEÜV Anlage 2 (119) | Altersvollrentner nach der Regelaltersgrenze, 1.500 €, kein Verzicht | 119 · 3321 · ÜB 1 | S A, PGR O, BGR A, ÜB A | 119 · 3321 (p) · ÜB 1 | gleich |
 | D-120V | DEÜV Anlage 2 (120) | Altersvollrentner nach der Regelaltersgrenze mit Verzicht | 120 · 3121 · ÜB 1 | S A, PGR O, BGR A, ÜB A | 120 · 3121 (p) · ÜB 1 | gleich |
 | D-120VOR | DEÜV Anlage 2 (120) | Altersvollrente vor der Regelaltersgrenze | 120 · 3111 · ÜB 1 | S A, PGR O, BGR A, ÜB A | 120 · 3111 · ÜB 1 | gleich |
@@ -96,11 +96,8 @@
 - **A – Kurzfristige Aushilfe: Zeitgrenzen, Regelmäßigkeit und Vorbeschäftigungen wirken nicht auf den Vorschlag:** GFR-03b2, GFR-37, GFR-40B, GFR-42, GFR-45B, GFR-48
 - **B – Berufsmäßigkeit: Entgelte anderer kurzfristiger Beschäftigungen werden nicht mitgerechnet:** GFR-04c, GFR-04dB
 - **C – Werkstudenten und freiwillige Praktika: 20-Stunden-Grenze und Vorrang von 109/110 fehlen:** ST-01, ST-02A, ST-04, ST-KF, ST-WSMJ, ST-FZPMJ
-- **D – Versorgungswerk im Minijob: Minijob-Regel der RV steht vor der Versorgungswerk-Regel:** GFR-31B, GFR-33
 - **E – JAEG bei mehreren Beschäftigungen: erster Minijob wird mitgezählt, KV im zweiten Minijob:** GFR-25C, GFR-26C, D-JAEGMJ
-- **F – Summe für den Übergangsbereich: zählt nicht nur versicherungspflichtige Entgelte, Ausschlüsse fehlen:** GFR-19A, GFR-21, GFR-23B, UEB-03, UEB-AZNEBEN, UEB-KF, UEB-VR, UEB-FSJ
 - **G – Entgeltumwandlung senkt das Entgelt für die Minijob-Grenze nicht:** GFR-14
-- **H – Ausbildung oder Praktikum ohne Arbeitsentgelt: keine Antwort „ohne Entgelt“:** ST-VP0, D-102-0
 - **I – Eingang des Befreiungsantrags nach dem Beginnmonat verschiebt die Befreiung nicht:** GFR-36b
 
 ## Nicht abbildbar
@@ -126,6 +123,10 @@
 | Minijob 600 € und eine freiwillige Prämie von 100 € ohne Rechtsanspruch | § 8 Abs. 1a SGB IV: regelmäßiges Arbeitsentgelt; abgeleitet aus GfR 2026 Bsp. 6, das ein vertraglich zugesagtes Weihnachtsgeld einrechnet | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
 | Auszubildende mit genau 325,00 € | § 20 Abs. 3 S. 1 Nr. 1 SGB IV; DEÜV Anlage 2 (121) | 121 · 1111 · ÜB 0 | 121 · 1111 · ÜB 0 |
 | Auszubildende mit 325,01 € | § 20 Abs. 3 S. 1 Nr. 1, Abs. 2a SGB IV; DEÜV Anlage 2 (102) | 102 · 1111 · ÜB 0 | 102 · 1111 · ÜB 0 |
+| Auszubildende mit 0,01 € | § 20 Abs. 3 S. 1 Nr. 1 SGB IV; DEÜV Anlage 2 (121) | 121 · 1111 · ÜB 0 | 121 · 1111 · ÜB 0 |
+| Auszubildende ohne Vergütung (0,00 €) | DEÜV Anlage 2 (121: „gilt nicht für Auszubildende ohne Arbeitsentgelt“, 102); § 5 Abs. 1 Nr. 10 SGB V | 102 · 0110 · ÜB 0 | 102 · 0110 · ÜB 0 |
+| vorgeschriebenes Vorpraktikum mit 0,01 € | DEÜV Anlage 2 (105, 121); RS Studenten und Praktikanten 2016, Teil C | 121 · 1111 · ÜB 0 | 121 · 1111 · ÜB 0 |
+| vorgeschriebenes Vorpraktikum mit 325,01 € | DEÜV Anlage 2 (105); § 20 Abs. 2a SGB IV (kein Übergangsbereich) | 105 · 1111 · ÜB 0 | 105 · 1111 · ÜB 0 |
 | versicherungspflichtig mit genau 6.450,00 € (Jahr = JAEG 77.400 €) | § 6 Abs. 1 Nr. 1, Abs. 6 SGB V („übersteigt“) | 101 · 1111 · ÜB 0 | 101 · 1111 · ÜB 0 |
 | 6.450,01 € (über der JAEG), freiwillig gesetzlich, Firmenzahler | § 6 Abs. 1 Nr. 1 SGB V; GfR 2026 Bsp. 25 | 101 · 9111 · ÜB 0 | 101 · 9111 · ÜB 0 |
 | 6.450,01 € (über der JAEG), freiwillig gesetzlich, Selbstzahler | § 6 Abs. 1 Nr. 1 SGB V; GfR 2026 Bsp. 26 | 101 · 0111 · ÜB 0 | 101 · 0111 · ÜB 0 |

@@ -159,6 +159,10 @@ const UEBERGANGSBEREICH_OBERGRENZE_CENT = cents(UEBERGANGSBEREICH_OBERGRENZE) ??
 const ownPay = (fixed: FieldValue | undefined, expected: FieldValue | undefined) =>
   cents(fixed ?? null) ?? cents(expected ?? null);
 
+/** An amount, or the first row of a table column. */
+const firstAmount = (pay: FieldValue | undefined) =>
+  cents(Array.isArray(pay) ? (pay[0] ?? null) : (pay ?? null));
+
 const yearOf = (on: FieldValue | undefined) =>
   typeof on === 'string' && isIsoDate(on) ? on.slice(0, 4) : undefined;
 
@@ -246,43 +250,6 @@ function geringfuegigkeit(within: boolean): HintTest {
     },
   };
 }
-
-/**
- * Übergangsbereich (§ 20 Abs. 2 SGB IV): the regular monthly pay of all jobs together — yearly view
- * divided by twelve — above the Minijob limit and at most 2.000 €. A year without data holds, uncertain.
- */
-const uebergangsbereich: HintTest = {
-  args: ['money', 'money', 'money', 'money', 'boolean', 'date'],
-  describe: ([fixed = '', expected = '', others = '', oneOff = '', entitled = '', on = '']) =>
-    `„${fixed}“ bzw. „${expected}“ und „${others}“ mit „${oneOff}“ (nur bei „${entitled}“) im Monat über der Geringfügigkeitsgrenze des Jahres von „${on}“ und höchstens bei 2.000 € liegen`,
-  run: ([fixed, expected, others, oneOff, entitled, on]) => {
-    const mine = ownPay(fixed, expected);
-    const year = yearOf(on);
-    if (mine === undefined || year === undefined) return undefined;
-    const { yearly, facts } = yearlyPay(
-      mine + (cents(others ?? null) ?? 0),
-      oneOff ?? null,
-      entitled ?? null,
-    );
-    const lower = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
-    if (lower === undefined) {
-      return {
-        holds: true,
-        uncertain: true,
-        detail: [
-          `${facts}. Für ${year} ist die Geringfügigkeitsgrenze in der App nicht hinterlegt – bitte selbst prüfen.`,
-        ],
-      };
-    }
-    const monthly = yearly / 12;
-    return {
-      holds: monthly > (cents(lower) ?? 0) && monthly <= UEBERGANGSBEREICH_OBERGRENZE_CENT,
-      detail: [
-        `${facts}, im Monat ${euro(Math.round(monthly))}; Übergangsbereich ${year}: über ${euro(cents(lower) ?? 0)} bis ${euro(UEBERGANGSBEREICH_OBERGRENZE_CENT)}.`,
-      ],
-    };
-  },
-};
 
 /** Kinds of other jobs that count as a main employment next to a Minijob (§ 8 Abs. 2 SGB IV). */
 const HAUPTBESCHAEFTIGUNG = new Set(['svpflichtig', 'ausbildung']);
@@ -399,7 +366,109 @@ const minijobNebenHauptbeschaeftigung: HintTest = {
   },
 };
 
+/**
+ * The monthly pay of the other jobs that is added to this one, itself subject to insurance, for the
+ * Übergangsbereich (Rundschreiben Übergangsbereich 20.12.2022, Tz. 4.2.2): only jobs subject to
+ * insurance — not a civil servant's, not a short-term job, not the Minijob taken up first next to a
+ * main employment (§ 20 Abs. 2a S. 1 SGB IV); Minijobs that are added up count. This job is a main
+ * employment unless its own pay is within the Minijob limit. A job abroad or a missing amount or
+ * start leaves the sum uncertain.
+ */
+function insuredOtherPay(own: number, limit: number, jobs: OtherJobs) {
+  const haupt = own > limit || jobs.haupt;
+  const minijobs = jobs.rows.filter((row) => row.art === 'minijob');
+  const first = haupt
+    ? [...minijobs].sort((a, b) => (a.seit ?? '').localeCompare(b.seit ?? ''))[0]
+    : undefined;
+  let sum = 0;
+  let uncertain = first !== undefined && minijobs.some((row) => row.seit === undefined);
+  const left: string[] = [];
+  for (const row of jobs.rows) {
+    if (row.art === 'svpflichtig' || (row.art === 'minijob' && row !== first)) {
+      if (row.cents === undefined) uncertain = true;
+      else sum += row.cents;
+    } else if (row.art === 'ausland') {
+      uncertain = true;
+      left.push('Beschäftigung im Ausland (bitte prüfen)');
+    } else if (row.art === 'minijob') {
+      left.push('der zuerst aufgenommene Minijob neben der Hauptbeschäftigung');
+    } else if (row.art === 'beamter') {
+      left.push('Bezüge als Beamtin oder Beamter');
+    } else if (row.art === 'kurzfristig') {
+      left.push('kurzfristige Beschäftigung');
+    }
+  }
+  const notes =
+    jobs.rows.length === 0
+      ? []
+      : [
+          `Mitgerechnet aus anderen Beschäftigungen: ${euro(sum)} im Monat${left.length > 0 ? `; nicht mitgerechnet: ${[...new Set(left)].join(', ')}` : ''} (Rundschreiben Übergangsbereich Tz. 4.2.2).`,
+        ];
+  return { cents: sum, uncertain, notes };
+}
+
+/**
+ * Übergangsbereich (§ 20 Abs. 2 SGB IV): the regular monthly pay — yearly view divided by twelve —
+ * with the pay of the other jobs subject to insurance (`insuredOtherPay`) above the Minijob limit
+ * and at most 2.000 €. A year without data holds, uncertain.
+ */
+const uebergangsbereich: HintTest = {
+  args: MINIJOB_ARGS,
+  describe: ([
+    fixed = '',
+    expected = '',
+    oneOff = '',
+    entitled = '',
+    on = '',
+    art = '',
+    pay = '',
+  ]) =>
+    `„${fixed}“ bzw. „${expected}“ mit „${oneOff}“ (nur bei „${entitled}“) und „${pay}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen im Monat über der Geringfügigkeitsgrenze des Jahres von „${on}“ und höchstens bei 2.000 € liegen`,
+  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts]) => {
+    const mine = ownPay(fixed, expected);
+    const year = yearOf(on);
+    if (mine === undefined || year === undefined) return undefined;
+    const lower = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
+    if (lower === undefined) {
+      return {
+        holds: true,
+        uncertain: true,
+        detail: [
+          `Für ${year} ist die Geringfügigkeitsgrenze in der App nicht hinterlegt – bitte selbst prüfen.`,
+        ],
+      };
+    }
+    const limit = cents(lower) ?? 0;
+    const others = insuredOtherPay(
+      mine,
+      limit,
+      otherJobs(arts ?? null, pays ?? null, starts ?? null),
+    );
+    const { yearly, facts } = yearlyPay(mine + others.cents, oneOff ?? null, entitled ?? null);
+    const monthly = yearly / 12;
+    return {
+      holds: monthly > limit && monthly <= UEBERGANGSBEREICH_OBERGRENZE_CENT,
+      ...(others.uncertain ? { uncertain: true } : {}),
+      detail: [
+        `${facts}, im Monat ${euro(Math.round(monthly))}; Übergangsbereich ${year}: über ${euro(limit)} bis ${euro(UEBERGANGSBEREICH_OBERGRENZE_CENT)}.`,
+        ...others.notes,
+      ],
+    };
+  },
+};
+
+/** Another job is a vocational training (Rundschreiben Übergangsbereich Tz. 4.3.6.1). */
+const andereBeschaeftigungAusbildung: HintTest = {
+  args: ['choice'],
+  describe: ([art = '']) => `laut „${art}“ eine andere Beschäftigung eine Ausbildung ist`,
+  run: ([arts]) => {
+    const kinds = Array.isArray(arts) ? arts : [];
+    return { holds: kinds.includes('ausbildung'), detail: [] };
+  },
+};
+
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
+  andereBeschaeftigungAusbildung,
   geringfuegigEntlohnt,
   minijobNebenHauptbeschaeftigung,
   hoechstensGeringfuegigkeitsgrenze: geringfuegigkeit(true),
@@ -443,18 +512,31 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
           }
         : undefined,
   },
+  // Not without pay: DEÜV Anlage 2 (121) "Dies gilt nicht für Auszubildende ohne Arbeitsentgelt".
   hoechstensGeringverdienergrenze: {
     args: ['money'],
     describe: ([pay = '']) =>
-      `„${pay}“ (bei einer Tabelle die erste Zeile) höchstens 325 € im Monat beträgt`,
+      `„${pay}“ (bei einer Tabelle die erste Zeile) über 0 € und höchstens 325 € im Monat beträgt`,
     run: ([pay]) => {
-      const amount = cents(Array.isArray(pay) ? (pay[0] ?? null) : (pay ?? null));
+      const amount = firstAmount(pay);
       if (amount === undefined) return undefined;
       const max = cents(GERINGVERDIENERGRENZE) ?? 0;
       return {
-        holds: amount <= max,
+        holds: amount > 0 && amount <= max,
         detail: [`${euro(amount)} im Monat; Geringverdienergrenze: ${euro(max)}.`],
       };
+    },
+  },
+  // Training or a prescribed internship without pay (DEÜV Anlage 2: 102/105; Rundschreiben
+  // Studenten und Praktikanten, Teil C: 0-1-1-0).
+  keinArbeitsentgelt: {
+    args: ['money', 'money'],
+    describe: ([fixed = '', expected = '']) =>
+      `„${fixed}“ bzw. „${expected}“ (bei einer Tabelle die erste Zeile) 0 € beträgt`,
+    run: ([fixed, expected]) => {
+      const amount = firstAmount(fixed) ?? firstAmount(expected);
+      if (amount === undefined) return undefined;
+      return { holds: amount === 0, detail: amount === 0 ? ['Kein Arbeitsentgelt.'] : [] };
     },
   },
   kuerzerAlsEineWoche: {

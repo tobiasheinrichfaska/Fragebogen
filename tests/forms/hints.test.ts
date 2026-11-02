@@ -206,11 +206,13 @@ describe('check hints — definition rules', () => {
   it('knows the tests the forms use', () => {
     expect(Object.keys(HINT_TESTS).sort()).toEqual([
       'ab55Jahren',
+      'andereBeschaeftigungAusbildung',
       'geringfuegigEntlohnt',
       'hoechstensGeringfuegigkeitsgrenze',
       'hoechstensGeringverdienergrenze',
       'hoechstensZehnWochen',
       'imUebergangsbereich',
+      'keinArbeitsentgelt',
       'kuerzerAlsEineWoche',
       'listeneintragNichtGueltig',
       'minijobNebenHauptbeschaeftigung',
@@ -315,5 +317,152 @@ describe('the Minijob test with other jobs', () => {
       ])?.holds;
     expect(next(['svpflichtig', 'minijob'])).toBe(true);
     expect(next(['minijob'])).toBe(false);
+  });
+});
+
+// 2026-11-02, Rundschreiben Übergangsbereich 20.12.2022 Tz. 4.2.2 (official examples GFR-19A, GFR-21,
+// GFR-23B, UEB-03, UEB-KF): only the pay of other jobs subject to insurance counts.
+describe('the Übergangsbereich test with other jobs', () => {
+  type Row = [string, string | null, string | null];
+  const run = (own: string, rows: Row[]) => {
+    const result = HINT_TESTS.imUebergangsbereich?.run([
+      own,
+      null,
+      null,
+      null,
+      '2026-03-01',
+      rows.map((r) => r[0]) as never,
+      rows.map((r) => r[1]) as never,
+      rows.map((r) => r[2]) as never,
+    ]);
+    return { holds: result?.holds, uncertain: result?.uncertain === true };
+  };
+  const inside = { holds: true, uncertain: false };
+  const outside = { holds: false, uncertain: false };
+
+  it.each<[string, string, Row[], { holds: boolean; uncertain: boolean }]>([
+    ['alone at 1.500 €', '1500.00', [], inside],
+    ['alone at 2.000,01 €', '2000.01', [], outside],
+    [
+      'main job 1.800 € with the first Minijob 600 €',
+      '1800.00',
+      [['minijob', '600.00', '2025-01-01']],
+      inside,
+    ],
+    [
+      'main job 1.800 € with a first and a second Minijob (the second counts)',
+      '1800.00',
+      [
+        ['minijob', '600.00', '2025-01-01'],
+        ['minijob', '300.00', '2025-06-01'],
+      ],
+      outside,
+    ],
+    [
+      '1.500 € next to a short-term job of 800 €',
+      '1500.00',
+      [['kurzfristig', '800.00', '2026-03-01']],
+      inside,
+    ],
+    [
+      '800 € next to a civil servant’s pay',
+      '800.00',
+      [['beamter', '4000.00', '2010-01-01']],
+      inside,
+    ],
+    [
+      '1.500 € next to another job subject to insurance of 800 €',
+      '1500.00',
+      [['svpflichtig', '800.00', '2020-01-01']],
+      outside,
+    ],
+    [
+      'a Minijob 400 € added to another one without a main job (civil servant)',
+      '400.00',
+      [
+        ['beamter', '4000.00', '2010-01-01'],
+        ['minijob', '300.00', '2025-01-01'],
+      ],
+      inside,
+    ],
+    [
+      'a second Minijob 310 € next to a main job 1.200 € and the first Minijob 400 €',
+      '310.00',
+      [
+        ['svpflichtig', '1200.00', '2015-01-01'],
+        ['minijob', '400.00', '2026-01-01'],
+      ],
+      inside,
+    ],
+    [
+      'a job abroad is left out, uncertain',
+      '1500.00',
+      [['ausland', '800.00', '2020-01-01']],
+      { holds: true, uncertain: true },
+    ],
+    [
+      'a Minijob without start next to the main job, uncertain',
+      '1800.00',
+      [['minijob', '600.00', null]],
+      { holds: true, uncertain: true },
+    ],
+    [
+      'another job without pay, uncertain',
+      '1500.00',
+      [['svpflichtig', null, '2020-01-01']],
+      { holds: true, uncertain: true },
+    ],
+  ])('%s', (_label, own, rows, expected) => {
+    expect(run(own, rows)).toEqual(expected);
+  });
+
+  it('names what it counts and what not', () => {
+    const detail = HINT_TESTS.imUebergangsbereich?.run([
+      '1500.00',
+      null,
+      null,
+      null,
+      '2026-03-01',
+      ['kurzfristig', 'beamter'] as never,
+      ['800.00', '4000.00'] as never,
+      ['2026-03-01', '2010-01-01'] as never,
+    ])?.detail;
+    expect(detail?.join(' ')).toContain(
+      'nicht mitgerechnet: kurzfristige Beschäftigung, Bezüge als Beamtin oder Beamter',
+    );
+  });
+
+  it('finds a training among the other jobs', () => {
+    const run2 = (arts: string[]) =>
+      HINT_TESTS.andereBeschaeftigungAusbildung?.run([arts as never])?.holds;
+    expect(run2(['svpflichtig', 'ausbildung'])).toBe(true);
+    expect(run2(['svpflichtig', 'minijob'])).toBe(false);
+    expect(run2([])).toBe(false);
+  });
+});
+
+// 2026-11-02, DEÜV Anlage 2 (121: "Dies gilt nicht für Auszubildende ohne Arbeitsentgelt") and
+// RS Studenten und Praktikanten Teil C (official examples ST-VP0, D-102-0).
+describe('training without pay', () => {
+  const low = (pay: unknown) => HINT_TESTS.hoechstensGeringverdienergrenze?.run([pay as never]);
+  const none = (fixed: unknown, expected: unknown = null) =>
+    HINT_TESTS.keinArbeitsentgelt?.run([fixed as never, expected as never]);
+
+  it('is no low earner (121) at 0 €, from 0,01 € to 325 € it is', () => {
+    expect(low('0.00')?.holds).toBe(false);
+    expect(low(['0.00'])?.holds).toBe(false);
+    expect(low('0.01')?.holds).toBe(true);
+    expect(low(['325.00', '400.00'])?.holds).toBe(true);
+    expect(low('325.01')?.holds).toBe(false);
+    expect(low(null)).toBeUndefined();
+  });
+
+  it('finds no pay in the amount, the first row of a table or the expected month', () => {
+    expect(none('0.00')?.holds).toBe(true);
+    expect(none(['0.00', '300.00'])?.holds).toBe(true);
+    expect(none(null, '0.00')?.holds).toBe(true);
+    expect(none('0.01')?.holds).toBe(false);
+    expect(none(['300.00'])?.holds).toBe(false);
+    expect(none(null, null)).toBeUndefined();
   });
 });

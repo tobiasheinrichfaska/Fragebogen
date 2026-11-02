@@ -592,18 +592,28 @@ Key design decisions (details in `docs/plan.md`):
   Anlage 2/16; the ITSG test tasks for payroll software are not published. 80 cases in
   `tests/fixtures/sv-vorgaben/faelle.json` (76 mappable): 45 match, 31 deviate in nine cause groups
   (`KNOWN_DEVIATIONS`, report `docs/sv-vorgaben/`); 97 variations, 15 limits of 2026 all match.
+  **Fixed the same day:** D — a Minijob freed for a Versorgungswerk pays no RV (6000; GfR Bsp. 31, 33):
+  the Versorgungswerk rule comes before the Minijob rules; F — the Übergangsbereich sums only jobs
+  subject to insurance (`imUebergangsbereich` with the other-jobs columns: no civil servant's pay, no
+  short-term job, not the first Minijob next to a main job; RS Übergangsbereich Tz. 4.2.2, checked in
+  the text) and is excluded for a Freiwilligendienst and next to a training or Freiwilligendienst
+  (Tz. 4.3.6.1; status "Freiwilligendienst oder Wehrdienst" → 0 with a check, Wehrdienst is not
+  excluded); Vorruhestandsgeld within the range is in it (Tz. 4.3.6.3).
+  H — training or a prescribed internship without pay: no 121 at 0 € (`hoechstensGeringverdienergrenze`
+  now "over 0 €", DEÜV Anlage 2 checked in the text: "gilt nicht für Auszubildende ohne Arbeitsentgelt"),
+  so 102/105, and KV/PV 0 via `keinArbeitsentgelt` (RS Studenten Teil C: "Ohne Arbeitsentgelt: 105;
+  0-1-1-0").
 
 ---
 
 ## Known Limitations
 
-- **SV proposals differ from 31 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
+- **SV proposals differ from 19 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
   short-term jobs ignore time limits, regularity and earlier jobs (A) and other short-term pay (B);
-  Werkstudent rules come before 109/110 and ignore the 20 hours (C); Versorgungswerk in a Minijob (D);
-  JAEG counts the first Minijob, second Minijob next to a JAEG-free main job (E); the Übergangsbereich
-  sum counts every other job and misses exclusions (F); Entgeltumwandlung (G); training or internship
-  without pay (H); a late RV exemption request (I). Four examples cannot be expressed (two periods,
-  tax-free allowances, change at the turn of the year, household Minijob = excluded).
+  Werkstudent rules come before 109/110 and ignore the 20 hours (C); JAEG counts the first Minijob,
+  second Minijob next to a JAEG-free main job (E); Entgeltumwandlung (G); a late RV exemption request
+  (I). Four examples cannot be expressed (two periods, tax-free allowances, change at the turn of the
+  year, household Minijob = excluded).
 - **WebKit full-flow E2E was load-sensitive** (2026-11-01: twice the 180 s timeout with four
   parallel workers, alone 41 s): `playwright.config.ts` now runs two workers (two consecutive full
   runs 15/15). A timeout again on an idle machine is a real finding.

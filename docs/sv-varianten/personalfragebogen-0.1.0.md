@@ -230,4 +230,4 @@
 
 | Person | RV-Befreiung | Personengruppe | Beitragsgruppen | Übergangsbereich | nicht gefragt |
 | --- | --- | --- | --- | --- | --- |
-| Vorruhestand (ohne Rente) | – | 108 | 3101 (prüfen) | 0 (prüfen) | agBefristet |
+| Vorruhestand (ohne Rente) | – | 108 | 3101 (prüfen) | 1 | agBefristet |

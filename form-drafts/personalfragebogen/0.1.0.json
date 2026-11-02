@@ -7233,6 +7233,38 @@
         },
         {
           "value": "0",
+          "reason": "Zur Berufsausbildung ohne Arbeitsentgelt beschäftigt: in der Kranken- und Pflegeversicherung nicht über die Beschäftigung versichert (§ 5 Abs. 1 Nr. 10 SGB V, eine Familienversicherung geht vor; Rundschreiben Studenten und Praktikanten vom 23.11.2016, Teil C: 0-1-1-0).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "in": ["ausbildung", "dualesStudium"]
+          },
+          "test": {
+            "fn": "keinArbeitsentgelt",
+            "args": ["avBetrag", "avBetrag"]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Zur Berufsausbildung ohne Arbeitsentgelt beschäftigt: in der Kranken- und Pflegeversicherung nicht über die Beschäftigung versichert (§ 5 Abs. 1 Nr. 10 SGB V, eine Familienversicherung geht vor; Rundschreiben Studenten und Praktikanten vom 23.11.2016, Teil C: 0-1-1-0).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtVorNach"
+              }
+            ]
+          },
+          "test": {
+            "fn": "keinArbeitsentgelt",
+            "args": ["agMonatsentgelt", "agErwartetMonat"]
+          }
+        },
+        {
+          "value": "0",
           "reason": "Werkstudent: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 3 SGB V).",
           "when": {
             "field": "agBeschaeftigungsart",
@@ -7831,6 +7863,14 @@
           "reason": "Vorgeschriebenes Praktikum während des Studiums: nur unfallversichert (Personengruppe 190 nur mit 0000)."
         },
         {
+          "value": "0",
+          "reason": "Für diese Beschäftigung zugunsten des Versorgungswerks befreit (§ 6 Abs. 1 S. 1 Nr. 1 SGB VI) – auch im Minijob: kein Pauschalbeitrag zur Rentenversicherung (Geringfügigkeits-Richtlinien B 2.2.4.3, Beispiele 31 und 33).",
+          "when": {
+            "field": "versorgungswerk",
+            "equals": "befreit"
+          }
+        },
+        {
           "value": "5",
           "when": {
             "all": [
@@ -7979,14 +8019,6 @@
             ]
           },
           "reason": "Minijob ohne Befreiung: rentenversicherungspflichtig, mit Eigenanteil der Person (§ 6 Abs. 1b SGB VI: Befreiung nur auf Antrag)."
-        },
-        {
-          "value": "0",
-          "reason": "Für diese Beschäftigung zugunsten des Versorgungswerks befreit (§ 6 Abs. 1 S. 1 Nr. 1 SGB VI).",
-          "when": {
-            "field": "versorgungswerk",
-            "equals": "befreit"
-          }
         },
         {
           "value": "1",
@@ -8574,6 +8606,38 @@
         },
         {
           "value": "0",
+          "reason": "Zur Berufsausbildung ohne Arbeitsentgelt beschäftigt: in der Kranken- und Pflegeversicherung nicht über die Beschäftigung versichert (§ 5 Abs. 1 Nr. 10 SGB V, eine Familienversicherung geht vor; Rundschreiben Studenten und Praktikanten vom 23.11.2016, Teil C: 0-1-1-0).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "in": ["ausbildung", "dualesStudium"]
+          },
+          "test": {
+            "fn": "keinArbeitsentgelt",
+            "args": ["avBetrag", "avBetrag"]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Zur Berufsausbildung ohne Arbeitsentgelt beschäftigt: in der Kranken- und Pflegeversicherung nicht über die Beschäftigung versichert (§ 5 Abs. 1 Nr. 10 SGB V, eine Familienversicherung geht vor; Rundschreiben Studenten und Praktikanten vom 23.11.2016, Teil C: 0-1-1-0).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "equals": "pflichtVorNach"
+              }
+            ]
+          },
+          "test": {
+            "fn": "keinArbeitsentgelt",
+            "args": ["agMonatsentgelt", "agErwartetMonat"]
+          }
+        },
+        {
+          "value": "0",
           "reason": "Werkstudent: Personengruppe 106 kennt in der PV nur 0 (DEÜV Anlage 16).",
           "when": {
             "field": "agBeschaeftigungsart",
@@ -9021,16 +9085,73 @@
         },
         {
           "value": "0",
-          "reason": "Vorruhestandsgeld ist kein Arbeitsentgelt aus einer Beschäftigung.",
+          "reason": "Freiwilligendienst: keine Regeln des Übergangsbereichs, der Arbeitgeber trägt die Beiträge allein (Rundschreiben Übergangsbereich vom 20.12.2022, Tz. 4.3.6.1).",
           "when": {
             "field": "agBeschaeftigungsart",
-            "equals": "vorruhestand"
+            "equals": "freiwilligendienst"
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Neben einer Beschäftigung zur Berufsausbildung: keine Regeln des Übergangsbereichs, auch nicht für diese Beschäftigung (Rundschreiben Übergangsbereich, Tz. 4.3.6.1).",
+          "when": {
+            "field": "status",
+            "equals": "ausbildungAnderswo"
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Neben einer Beschäftigung zur Berufsausbildung: keine Regeln des Übergangsbereichs, auch nicht für diese Beschäftigung (Rundschreiben Übergangsbereich, Tz. 4.3.6.1).",
+          "when": {
+            "field": "weitereBeschaeftigung",
+            "equals": true
+          },
+          "test": {
+            "fn": "andereBeschaeftigungAusbildung",
+            "args": ["jobArt"]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Neben einem Freiwilligendienst: keine Regeln des Übergangsbereichs (Rundschreiben Übergangsbereich, Tz. 4.3.6.1); neben dem Wehrdienst gilt dieser Ausschluss nicht – bitte prüfen.",
+          "when": {
+            "field": "status",
+            "equals": "dienst"
           },
           "check": true
         },
         {
           "value": "1",
-          "reason": "Arbeitsentgelt aller Beschäftigungen im Übergangsbereich (§ 20 Abs. 2 SGB IV) – mit den weiteren Beschäftigungen zusammengerechnet; prüfen.",
+          "reason": "Vorruhestandsgeld im Übergangsbereich: die Regeln gelten auch hierfür (Rundschreiben Übergangsbereich, Tz. 4.3.6.3; BSG vom 15.08.2018).",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          },
+          "test": {
+            "fn": "imUebergangsbereich",
+            "args": [
+              "agVorruhestandBetrag",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Vorruhestandsgeld außerhalb des Übergangsbereichs.",
+          "when": {
+            "field": "agBeschaeftigungsart",
+            "equals": "vorruhestand"
+          }
+        },
+        {
+          "value": "1",
+          "reason": "Arbeitsentgelt im Übergangsbereich (§ 20 Abs. 2 SGB IV), mit den versicherungspflichtigen weiteren Beschäftigungen zusammengerechnet (Rundschreiben Übergangsbereich, Tz. 4.2.2); prüfen.",
           "when": {
             "field": "weitereBeschaeftigung",
             "equals": true
@@ -9040,10 +9161,12 @@
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
-              "jobEntgeltMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           },
           "check": true
@@ -9056,10 +9179,12 @@
             "args": [
               "agMonatsentgelt",
               "agErwartetMonat",
-              "jobEntgeltMonat",
               "ezBetrag",
               "ezAnspruch",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit"
             ]
           }
         },
