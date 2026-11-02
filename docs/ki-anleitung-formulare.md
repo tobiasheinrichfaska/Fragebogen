@@ -229,6 +229,14 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   weitere Beschäftigung ist eine Ausbildung); `ab55Jahren` (Geburtsdatum, Stichtag); `listeneintragNichtGueltig` (Textfeld mit Vorschlagsliste, Datum: der gewählte Listeneintrag gilt an diesem Tag nicht, z. B. eine Krankenkasse nach einer Fusion); `hoechstensZehnWochen` (Datum, Datum: höchstens
   70 Tage einschließlich).
 
+  Die Entgelt-Tests (`hoechstensGeringfuegigkeitsgrenze`, `ueberGeringfuegigkeitsgrenze`,
+  `geringfuegigEntlohnt`, `minijobNebenHauptbeschaeftigung`, `imUebergangsbereich`,
+  `ueberMassgeblicheJahresarbeitsentgeltgrenze`, die drei Aushilfe-Tests und die beiden Tests zum
+  weiteren Minijob) nehmen zusätzlich – bei `weitererMinijob…` vor der Auswahl zum 31.12.2002, sonst am
+  Ende – die Art der betrieblichen Altersversorgung und die Spalten Beitrag und Zuschuss ihrer Verträge:
+  eine Entgeltumwandlung (Beitrag minus Zuschuss, höchstens 4 % der Beitragsbemessungsgrenze der
+  Rentenversicherung) mindert das Entgelt.
+
 ## Regeln, die die App zusätzlich prüft
 
 - Kennungen eindeutig (Felder formularweit, Spalten eingeschlossen); Optionen nur bei Auswahlfeldern.

@@ -91,7 +91,6 @@ const GROUPS = {
 } as const;
 
 const KNOWN_DEVIATIONS: Record<string, Deviation> = {
-  'GFR-14': { gruppe: 'G', app: { pgr: '101', bgr: '1111', uebergang: '1' } },
   'ST-01': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-02A': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-04': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
@@ -438,7 +437,59 @@ const aushilfe = (bis: string, tage: string): Answers => ({
   agBefristetBis: bis,
 });
 
+const bav = (art: string, beitrag: string, zuschuss: string): Answers => ({
+  agBav: art,
+  agBavVertraege: [
+    { rowId: 'r1', bavWeg: 'direktversicherung', bavBeitrag: beitrag, bavZuschuss: zuschuss },
+  ],
+});
+
 const LIMITS: Limit[] = [
+  {
+    label: 'Minijob 720 € brutto, davon 120 € Entgeltumwandlung (GfR Bsp. 14)',
+    source: '§ 14 Abs. 1 S. 2 SGB IV; § 1 Abs. 1 S. 1 Nr. 9 SvEV; GfR 2026 Bsp. 14',
+    person: person('minijob'),
+    employer: employer('minijob', monthly('720.00'), bav('umwandlung', '120.00', '0.00')),
+    pgr: '109',
+    bgr: '6100',
+    uebergang: '0',
+  },
+  {
+    label: 'Minijob 720 €, Beitrag 140 € davon 20 € Zuschuss des Arbeitgebers (120 € umgewandelt)',
+    source: '§ 14 Abs. 1 S. 2 SGB IV; GfR 2026 Bsp. 14',
+    person: person('minijob'),
+    employer: employer('minijob', monthly('720.00'), bav('beides', '140.00', '20.00')),
+    pgr: '109',
+    bgr: '6100',
+    uebergang: '0',
+  },
+  {
+    label: '„Minijob“ 720 €, die 120 € zahlt der Arbeitgeber zusätzlich (keine Umwandlung)',
+    source: '§ 8 Abs. 1 Nr. 1 SGB IV (die Zuwendung mindert das Entgelt nicht)',
+    person: person('minijob'),
+    employer: employer('minijob', monthly('720.00'), bav('arbeitgeber', '120.00', '120.00')),
+    pgr: '101',
+    bgr: '1111',
+    uebergang: '1',
+  },
+  {
+    label: '950 € mit 400 € Umwandlung: beitragsfrei nur 338 € (4 % der BBG RV) – 612 € bleiben',
+    source: '§ 14 Abs. 1 S. 2 SGB IV, § 1 Abs. 1 S. 1 Nr. 9 SvEV (BBG RV 2026: 8.450 € im Monat)',
+    person: person('festeStelle'),
+    employer: employer('svpflichtig', monthly('950.00'), bav('umwandlung', '400.00', '0.00')),
+    pgr: '101',
+    bgr: '1111',
+    uebergang: '1',
+  },
+  {
+    label: '940 € mit 338 € Umwandlung: genau 602 € – ein Minijob',
+    source: '§ 14 Abs. 1 S. 2 SGB IV; § 8 Abs. 1 Nr. 1 SGB IV',
+    person: person('festeStelle'),
+    employer: employer('svpflichtig', monthly('940.00'), bav('umwandlung', '338.00', '0.00')),
+    pgr: '109',
+    bgr: '6100',
+    uebergang: '0',
+  },
   {
     label: 'Aushilfe 01.06.–31.08. (genau drei Monate), 78 Arbeitstage, 1.500 €',
     source: '§ 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, 2.3.1',

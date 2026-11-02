@@ -621,14 +621,18 @@ Key design decisions (details in `docs/plan.md`):
   as the Übergangsbereich); a further Minijob next to a main job above the JAEG is not added in the KV
   (KV 0; PV 0 while the Minijobs together stay within the limit, then the check note names the report
   101 · 6000 to the Minijob-Zentrale; examples 25, 26).
+  G — Entgeltumwandlung (Tobias: "Abziehen"): every pay test takes the kind of bAV and the contracts'
+  contribution and subsidy; the converted pay (contribution minus subsidy, at most 4 % of the BBG RV,
+  2026: 338 € a month; § 14 Abs. 1 S. 2 SGB IV, § 1 Abs. 1 S. 1 Nr. 9 SvEV) lowers the pay for the
+  Minijob limit, the Übergangsbereich and the JAEG; the gross for the payroll program is unchanged.
 
 ---
 
 ## Known Limitations
 
-- **SV proposals differ from 7 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
-  Werkstudent rules come before 109/110 and ignore the 20 hours (C, six cases); Entgeltumwandlung (G).
-  Four examples cannot be expressed (two periods, tax-free allowances, change at the turn of the year,
+- **SV proposals differ from 6 official examples** (2026-11-02, `docs/sv-vorgaben/`): Werkstudent rules
+  come before 109/110 and ignore the 20 hours (C) — decided "Stunden fragen + Regeln", in progress. Four
+  examples cannot be expressed (two periods, tax-free allowances, change at the turn of the year,
   household Minijob = excluded). One proposal per job at its start: a later change (e.g. RV exemption
   from the month the request came in, a short-term job becoming short-term again when a parallel one
   ends) and a second report (Minijob-Zentrale 101 · 6000 next to the Krankenkasse) are named in the

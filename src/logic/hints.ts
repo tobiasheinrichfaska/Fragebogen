@@ -166,6 +166,69 @@ const UEBERGANGSBEREICH_OBERGRENZE_CENT = cents(UEBERGANGSBEREICH_OBERGRENZE) ??
 const ownPay = (fixed: FieldValue | undefined, expected: FieldValue | undefined) =>
   cents(fixed ?? null) ?? cents(expected ?? null);
 
+/** Trailing arguments of the pay tests: kind of bAV, the contracts' contribution and subsidy. */
+const UMWANDLUNG_ARGS: readonly FieldType[] = ['choice', 'money', 'money'];
+
+/**
+ * Entgeltumwandlung (Geringfügigkeits-Richtlinien 2026, example 14): the converted pay — the
+ * contribution minus the employer's subsidy — is no Arbeitsentgelt up to 4 % of the BBG RV
+ * (§ 14 Abs. 1 S. 2 SGB IV, § 1 Abs. 1 S. 1 Nr. 9 SvEV) and lowers the pay for the Minijob limit, the
+ * Übergangsbereich and the JAEG. Contributions above the 4 % (shared with the employer-financed
+ * ones) or a missing amount: uncertain.
+ */
+function umwandlung(
+  kind: FieldValue | undefined,
+  beitrag: FieldValue | undefined,
+  zuschuss: FieldValue | undefined,
+  on: FieldValue | undefined,
+): { cents: number; uncertain: boolean; notes: string[] } {
+  if (kind !== 'umwandlung' && kind !== 'beides') return { cents: 0, uncertain: false, notes: [] };
+  const amounts = Array.isArray(beitrag) ? beitrag : [];
+  const subsidies = Array.isArray(zuschuss) ? zuschuss : [];
+  let converted = 0;
+  let total = 0;
+  let uncertain = false;
+  amounts.forEach((value, i) => {
+    const amount = cents(value ?? null);
+    if (amount === undefined) {
+      uncertain = true;
+      return;
+    }
+    total += amount;
+    converted += Math.max(0, amount - (cents(subsidies[i] ?? null) ?? 0));
+  });
+  const year = yearOf(on);
+  const bbg = year === undefined ? undefined : cents(RECHENGROESSEN[year]?.bbgRvMonat ?? '');
+  if (bbg === undefined) return { cents: 0, uncertain: true, notes: [] };
+  const cap = Math.round(bbg * 0.04);
+  const deducted = Math.min(converted, cap);
+  return {
+    cents: deducted,
+    uncertain: uncertain || total > cap,
+    notes:
+      deducted === 0
+        ? []
+        : [
+            `Entgeltumwandlung ${euro(deducted)} im Monat abgezogen: kein Arbeitsentgelt bis 4 % der Beitragsbemessungsgrenze der Rentenversicherung (${euro(cap)}; § 14 Abs. 1 S. 2 SGB IV, § 1 Abs. 1 S. 1 Nr. 9 SvEV; Geringfügigkeits-Richtlinien Beispiel 14).`,
+          ],
+  };
+}
+
+/** The monthly pay after an Entgeltumwandlung, with its note. */
+function payOf(
+  fixed: FieldValue | undefined,
+  expected: FieldValue | undefined,
+  kind: FieldValue | undefined,
+  beitrag: FieldValue | undefined,
+  zuschuss: FieldValue | undefined,
+  on: FieldValue | undefined,
+): { cents: number | undefined; uncertain: boolean; notes: string[] } {
+  const gross = ownPay(fixed, expected);
+  if (gross === undefined) return { cents: undefined, uncertain: false, notes: [] };
+  const off = umwandlung(kind, beitrag, zuschuss, on);
+  return { cents: Math.max(0, gross - off.cents), uncertain: off.uncertain, notes: off.notes };
+}
+
 /** An amount, or the first row of a table column. */
 const firstAmount = (pay: FieldValue | undefined) =>
   cents(Array.isArray(pay) ? (pay[0] ?? null) : (pay ?? null));
@@ -180,7 +243,18 @@ const yearOf = (on: FieldValue | undefined) =>
  * year holds and says so.
  */
 const massgeblicheJaeg: HintTest = {
-  args: ['money', 'money', 'money', 'money', 'boolean', 'choice', 'date', 'choice', 'date'],
+  args: [
+    'money',
+    'money',
+    'money',
+    'money',
+    'boolean',
+    'choice',
+    'date',
+    'choice',
+    'date',
+    ...UMWANDLUNG_ARGS,
+  ],
   describe: ([
     fixed = '',
     expected = '',
@@ -192,8 +266,22 @@ const massgeblicheJaeg: HintTest = {
     art = '',
   ]) =>
     `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist`,
-  run: ([fixed, expected, others, oneOff, entitled, y2002, on, arts, starts]) => {
-    const mine = ownPay(fixed, expected);
+  run: ([
+    fixed,
+    expected,
+    others,
+    oneOff,
+    entitled,
+    y2002,
+    on,
+    arts,
+    starts,
+    kind,
+    beitrag,
+    zuschuss,
+  ]) => {
+    const pay = payOf(fixed, expected, kind, beitrag, zuschuss, on);
+    const mine = pay.cents;
     const year = yearOf(on);
     if (mine === undefined || year === undefined) return undefined;
     // The first Minijob next to a main job does not count (GfR B 2.2.2.8: only a "zweite oder
@@ -222,9 +310,10 @@ const massgeblicheJaeg: HintTest = {
     }
     return {
       holds: yearly > limit,
-      ...(insured.uncertain ? { uncertain: true } : {}),
+      ...(insured.uncertain || pay.uncertain ? { uncertain: true } : {}),
       detail: [
         `Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(limit)}.`,
+        ...pay.notes,
         ...insured.notes,
       ],
     };
@@ -238,11 +327,12 @@ const massgeblicheJaeg: HintTest = {
  */
 function geringfuegigkeit(within: boolean): HintTest {
   return {
-    args: ['money', 'money', 'money', 'boolean', 'date'],
-    describe: ([fixed = '', expected = '', oneOff = '', entitled = '', on = '']) =>
-      `zwölfmal „${fixed}“ bzw. „${expected}“ mit „${oneOff}“ (nur bei „${entitled}“) ${within ? 'höchstens das Zwölffache der' : 'mehr als das Zwölffache der'} Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt`,
-    run: ([fixed, expected, oneOff, entitled, on]) => {
-      const amount = ownPay(fixed, expected);
+    args: ['money', 'money', 'money', 'boolean', 'date', ...UMWANDLUNG_ARGS],
+    describe: ([fixed = '', expected = '', oneOff = '', entitled = '', on = '', kind = '']) =>
+      `zwölfmal „${fixed}“ bzw. „${expected}“ (nach Abzug einer Entgeltumwandlung laut „${kind}“) mit „${oneOff}“ (nur bei „${entitled}“) ${within ? 'höchstens das Zwölffache der' : 'mehr als das Zwölffache der'} Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt`,
+    run: ([fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss]) => {
+      const pay = payOf(fixed, expected, kind, beitrag, zuschuss, on);
+      const amount = pay.cents;
       const year = yearOf(on);
       if (amount === undefined || year === undefined) return undefined;
       const { yearly, facts } = yearlyPay(amount, oneOff ?? null, entitled ?? null);
@@ -259,8 +349,10 @@ function geringfuegigkeit(within: boolean): HintTest {
       const max = (cents(limit) ?? 0) * 12;
       return {
         holds: within ? yearly <= max : yearly > max,
+        ...(pay.uncertain ? { uncertain: true } : {}),
         detail: [
           `${facts}; Geringfügigkeitsgrenze ${year}: 12 × ${euro(max / 12)} = ${euro(max)}.`,
+          ...pay.notes,
         ],
       };
     },
@@ -300,6 +392,7 @@ const MINIJOB_ARGS: readonly FieldType[] = [
   'choice',
   'money',
   'date',
+  ...UMWANDLUNG_ARGS,
 ];
 
 /**
@@ -321,9 +414,11 @@ const geringfuegigEntlohnt: HintTest = {
     pay = '',
   ]) =>
     `zwölfmal „${fixed}“ bzw. „${expected}“ mit „${oneOff}“ (nur bei „${entitled}“) höchstens das Zwölffache der Geringfügigkeitsgrenze des Jahres von „${on}“ beträgt und – laut „${art}“ und „${pay}“ – neben einer Hauptbeschäftigung kein anderer Minijob früher begann bzw. ohne Hauptbeschäftigung alle Minijobs zusammen die Grenze einhalten`,
-  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts]) => {
+  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts, kind, beitrag, zuschuss]) => {
     const own = geringfuegigkeit(true).run(
-      [fixed, expected, oneOff, entitled, on].map((value) => value ?? null),
+      [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
+        (value) => value ?? null,
+      ),
     );
     if (!own || !own.holds || own.uncertain) return own;
     const jobs = otherJobs(arts ?? null, pays ?? null, starts ?? null);
@@ -344,7 +439,7 @@ const geringfuegigEntlohnt: HintTest = {
         ],
       };
     }
-    const amount = ownPay(fixed, expected) ?? 0;
+    const amount = payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0;
     const unknown = minijobs.some((row) => row.cents === undefined);
     const together = amount + minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
     const limit =
@@ -368,9 +463,11 @@ const minijobNebenHauptbeschaeftigung: HintTest = {
   args: MINIJOB_ARGS,
   describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
     `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ eine Hauptbeschäftigung besteht`,
-  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts]) => {
+  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts, kind, beitrag, zuschuss]) => {
     const own = geringfuegigkeit(true).run(
-      [fixed, expected, oneOff, entitled, on].map((value) => value ?? null),
+      [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
+        (value) => value ?? null,
+      ),
     );
     if (!own) return undefined;
     const { haupt } = otherJobs(arts ?? null, pays ?? null, starts ?? null);
@@ -445,8 +542,9 @@ const uebergangsbereich: HintTest = {
     pay = '',
   ]) =>
     `„${fixed}“ bzw. „${expected}“ mit „${oneOff}“ (nur bei „${entitled}“) und „${pay}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen im Monat über der Geringfügigkeitsgrenze des Jahres von „${on}“ und höchstens bei 2.000 € liegen`,
-  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts]) => {
-    const mine = ownPay(fixed, expected);
+  run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts, kind, beitrag, zuschuss]) => {
+    const pay = payOf(fixed, expected, kind, beitrag, zuschuss, on);
+    const mine = pay.cents;
     const year = yearOf(on);
     if (mine === undefined || year === undefined) return undefined;
     const lower = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
@@ -469,9 +567,10 @@ const uebergangsbereich: HintTest = {
     const monthly = yearly / 12;
     return {
       holds: monthly > limit && monthly <= UEBERGANGSBEREICH_OBERGRENZE_CENT,
-      ...(others.uncertain ? { uncertain: true } : {}),
+      ...(others.uncertain || pay.uncertain ? { uncertain: true } : {}),
       detail: [
         `${facts}, im Monat ${euro(Math.round(monthly))}; Übergangsbereich ${year}: über ${euro(limit)} bis ${euro(UEBERGANGSBEREICH_OBERGRENZE_CENT)}.`,
+        ...pay.notes,
         ...others.notes,
       ],
     };
@@ -503,6 +602,7 @@ const KURZFRISTIG_ARGS: readonly FieldType[] = [
   'money',
   'date',
   'date',
+  ...UMWANDLUNG_ARGS,
 ];
 
 const isoOrUndefined = (value: FieldValue | undefined) =>
@@ -524,7 +624,19 @@ interface ShortTermFacts {
 
 function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear' | undefined {
   const [beginn, bis, tage, rahmen, befristet, vbArt, vbVon, vbBis, vbTage, vbEntgelt] = values;
-  const [fixed, expected, oneOff, entitled, jobArt, jobEntgelt, jobSeit, jobBis] = values.slice(10);
+  const [
+    fixed,
+    expected,
+    oneOff,
+    entitled,
+    jobArt,
+    jobEntgelt,
+    jobSeit,
+    jobBis,
+    kind,
+    beitrag,
+    zuschuss,
+  ] = values.slice(10);
   const start = isoOrUndefined(beginn);
   if (start === undefined) return undefined;
   const limitValue = RECHENGROESSEN[start.slice(0, 4)]?.geringfuegigkeitsgrenzeMonat;
@@ -543,7 +655,7 @@ function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear
       entgelt: cents(column(vbEntgelt)[i] ?? null),
     })),
   };
-  const mine = ownPay(fixed, expected);
+  const mine = payOf(fixed, expected, kind, beitrag, zuschuss, beginn).cents;
   const yearly = mine === undefined ? undefined : yearlyPay(mine, oneOff ?? null, entitled ?? null);
   const end = job.bis ?? start;
   const parallel = column(jobArt).reduce<number>((sum, art, i) => {
@@ -632,7 +744,19 @@ const geringfuegigNebenKurzfristigen: HintTest = {
     const facts = shortTermFacts(values);
     if (facts === undefined || facts === 'noYear' || facts.own === undefined) return undefined;
     const [beginn] = values;
-    const [fixed, expected, oneOff, entitled, jobArt, jobEntgelt, jobSeit] = values.slice(10);
+    const [
+      fixed,
+      expected,
+      oneOff,
+      entitled,
+      jobArt,
+      jobEntgelt,
+      jobSeit,
+      ,
+      kind,
+      beitrag,
+      zuschuss,
+    ] = values.slice(10);
     if (facts.own + facts.parallel > facts.limit) {
       return {
         holds: false,
@@ -642,9 +766,19 @@ const geringfuegigNebenKurzfristigen: HintTest = {
       };
     }
     return geringfuegigEntlohnt.run(
-      [fixed, expected, oneOff, entitled, beginn, jobArt, jobEntgelt, jobSeit].map(
-        (value) => value ?? null,
-      ),
+      [
+        fixed,
+        expected,
+        oneOff,
+        entitled,
+        beginn,
+        jobArt,
+        jobEntgelt,
+        jobSeit,
+        kind,
+        beitrag,
+        zuschuss,
+      ].map((value) => value ?? null),
     );
   },
 };
@@ -662,9 +796,24 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
     args: [...MINIJOB_ARGS, 'choice'],
     describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
       `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze besteht${bisGrenze ? ' und die Minijobs zusammen die Geringfügigkeitsgrenze einhalten' : ''}`,
-    run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts, y2002]) => {
+    run: ([
+      fixed,
+      expected,
+      oneOff,
+      entitled,
+      on,
+      arts,
+      pays,
+      starts,
+      kind,
+      beitrag,
+      zuschuss,
+      y2002,
+    ]) => {
       const own = geringfuegigkeit(true).run(
-        [fixed, expected, oneOff, entitled, on].map((value) => value ?? null),
+        [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
+          (value) => value ?? null,
+        ),
       );
       if (!own || !own.holds) return own;
       const year = yearOf(on);
@@ -683,7 +832,8 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       if (!unknown && main <= (jaeg ?? 0)) return { holds: false, detail: [] };
       const limit = cents(RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0;
       const together =
-        (ownPay(fixed, expected) ?? 0) + minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
+        (payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0) +
+        minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
       const within = together <= limit;
       if (bisGrenze && !within) return { holds: false, detail: [] };
       return {

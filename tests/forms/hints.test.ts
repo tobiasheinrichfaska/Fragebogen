@@ -663,3 +663,52 @@ describe('Minijobs next to a main job above the JAEG', () => {
     expect(jaeg(['450.00'], ['svpflichtig'], ['2025-01-01'])).toBe(true);
   });
 });
+
+// 2026-11-02, Geringfügigkeits-Richtlinien 2026 example 14 (GFR-14): Entgeltumwandlung up to 4 % of
+// the BBG RV (2026: 338,00 € a month) is no Arbeitsentgelt.
+describe('Entgeltumwandlung in the pay tests', () => {
+  const within = (pay: string, kind: string | null, beitrag: string[], zuschuss: string[]) =>
+    HINT_TESTS.hoechstensGeringfuegigkeitsgrenze?.run([
+      pay,
+      null,
+      null,
+      null,
+      '2026-06-01',
+      kind as never,
+      beitrag as never,
+      zuschuss as never,
+    ]);
+
+  it('lowers the pay by the converted amount (example 14: 720 € − 120 €)', () => {
+    const result = within('720.00', 'umwandlung', ['120.00'], ['0.00']);
+    expect(result?.holds).toBe(true);
+    expect(result?.detail.join(' ')).toContain('Entgeltumwandlung 120,00 € im Monat abgezogen');
+  });
+
+  it('takes off only the contribution minus the employer subsidy', () => {
+    expect(within('720.00', 'beides', ['140.00'], ['20.00'])?.holds).toBe(true);
+    expect(within('720.00', 'beides', ['140.00'], ['30.00'])?.holds).toBe(false);
+  });
+
+  it('takes off nothing for an employer-financed bAV or none', () => {
+    expect(within('720.00', 'arbeitgeber', ['120.00'], ['120.00'])?.holds).toBe(false);
+    expect(within('720.00', 'keine', [], [])?.holds).toBe(false);
+    expect(within('600.00', null, [], [])?.holds).toBe(true);
+  });
+
+  it('caps the free part at 4 % of the BBG RV and marks more as uncertain', () => {
+    const capped = within('940.00', 'umwandlung', ['400.00'], ['0.00']);
+    // 940 € − 338 € = 602 €: within; the 62 € above the cap stay Arbeitsentgelt.
+    expect(capped).toMatchObject({ holds: true, uncertain: true });
+    expect(within('942.00', 'umwandlung', ['400.00'], ['0.00'])?.holds).toBe(false);
+  });
+
+  it('is uncertain when a contribution is missing', () => {
+    expect(
+      within('720.00', 'umwandlung', [null as never, '120.00'], ['0.00', '0.00']),
+    ).toMatchObject({
+      holds: true,
+      uncertain: true,
+    });
+  });
+});

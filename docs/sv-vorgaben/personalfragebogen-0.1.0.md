@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 69 gleich, 7 abweichend. 101 abgeleitete Varianten, 28 Grenzfälle.
+80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 70 gleich, 6 abweichend. 103 abgeleitete Varianten, 33 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -24,7 +24,7 @@
 | GFR-07c | GfR 2026, Bsp. 7c | Erheblich schwankendes Entgelt: zwei Zeiträume | 101 · 1111; ab 01.09.2026: 109 · 6100 | S O, PGR O, BGR O | 109 (p) · 6100 · ÜB 0 | nicht abbildbar |
 | GFR-10 | GfR 2026, Bsp. 10 | 1.000 €, davon 400 € ins Wertguthaben | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 | gleich |
 | GFR-11 | GfR 2026, Bsp. 11 | Übungsleiterpauschale en bloc | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 | nicht abbildbar |
-| GFR-14 | GfR 2026, Bsp. 14 | Entgeltumwandlung senkt 720 € auf 600 € | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | abweichend (G) |
+| GFR-14 | GfR 2026, Bsp. 14 | Entgeltumwandlung senkt 720 € auf 600 € | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
 | GFR-15a | GfR 2026, Bsp. 15a | Zwei Minijobs (280 € + 320 €), privat versichert | 109 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 0100 · ÜB 0 | gleich |
 | GFR-16B | GfR 2026, Bsp. 16 | Minijob 600 € neben gleichzeitiger kurzfristiger Beschäftigung | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
 | GFR-19A | GfR 2026, Bsp. 19 | Hauptbeschäftigung 1.800 € neben einem Minijob | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
@@ -94,7 +94,6 @@
 ## Abweichungen
 
 - **C – Werkstudenten und freiwillige Praktika: 20-Stunden-Grenze und Vorrang von 109/110 fehlen:** ST-01, ST-02A, ST-04, ST-KF, ST-WSMJ, ST-FZPMJ
-- **G – Entgeltumwandlung senkt das Entgelt für die Minijob-Grenze nicht:** GFR-14
 
 ## Nicht abbildbar
 
@@ -107,6 +106,11 @@
 
 | Fall | Grundlage | Erwartet | App |
 | --- | --- | --- | --- |
+| Minijob 720 € brutto, davon 120 € Entgeltumwandlung (GfR Bsp. 14) | § 14 Abs. 1 S. 2 SGB IV; § 1 Abs. 1 S. 1 Nr. 9 SvEV; GfR 2026 Bsp. 14 | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
+| Minijob 720 €, Beitrag 140 € davon 20 € Zuschuss des Arbeitgebers (120 € umgewandelt) | § 14 Abs. 1 S. 2 SGB IV; GfR 2026 Bsp. 14 | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
+| „Minijob“ 720 €, die 120 € zahlt der Arbeitgeber zusätzlich (keine Umwandlung) | § 8 Abs. 1 Nr. 1 SGB IV (die Zuwendung mindert das Entgelt nicht) | 101 · 1111 · ÜB 1 | 101 (p) · 1111 · ÜB 1 |
+| 950 € mit 400 € Umwandlung: beitragsfrei nur 338 € (4 % der BBG RV) – 612 € bleiben | § 14 Abs. 1 S. 2 SGB IV, § 1 Abs. 1 S. 1 Nr. 9 SvEV (BBG RV 2026: 8.450 € im Monat) | 101 · 1111 · ÜB 1 | 101 · 1111 · ÜB 1 (p) |
+| 940 € mit 338 € Umwandlung: genau 602 € – ein Minijob | § 14 Abs. 1 S. 2 SGB IV; § 8 Abs. 1 Nr. 1 SGB IV | 109 · 6100 · ÜB 0 | 109 (p) · 6100 · ÜB 0 |
 | Aushilfe 01.06.–31.08. (genau drei Monate), 78 Arbeitstage, 1.500 € | § 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, 2.3.1 | 110 · 0000 · ÜB 0 | 110 · 0000 · ÜB 0 |
 | Aushilfe 01.06.–01.09. (drei Monate und ein Tag), 79 Arbeitstage, 1.500 € | § 8 Abs. 1 Nr. 2 SGB IV; GfR 2026 B 2.3, Bsp. 37 | 101 · 1111 · ÜB 1 | 101 (p) · 1111 · ÜB 1 |
 | Aushilfe 01.06.–30.09., genau 70 Arbeitstage, 1.500 € | GfR 2026 B 2.3.1 (gleichwertige Alternativen), Bsp. 3b | 110 · 0000 · ÜB 0 | 110 · 0000 · ÜB 0 |
