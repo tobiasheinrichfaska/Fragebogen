@@ -1,0 +1,4148 @@
+{
+  "titel": "SV-Beurteilung: Testfälle aus amtlichen Vorgaben (Personengruppe, Beitragsgruppen, Übergangsbereich)",
+  "hinweis": "Keine Rechtsberatung. Recherche vom 02.11.2026; Bezugsjahr 2026. Erfundene Personen; Sachverhalte in eigenen Worten nach den genannten Fundstellen.",
+  "stand": "2026-11-02",
+  "werte2026": {
+    "geringfuegigkeitsgrenzeMonat": "603.00",
+    "uebergangsbereichObergrenze": "2000.00",
+    "geringverdienergrenze": "325.00",
+    "jaeg": "77400.00",
+    "jaegBesondere": "69750.00",
+    "mindestlohnStunde": "13.90"
+  },
+  "lesehilfe": {
+    "erwartet": "pgr = Personengruppenschlüssel (DEÜV Anlage 2), bgr = Beitragsgruppen KV RV AV PV (DEÜV Anlage 1 Teil 2), kv/rv/av/pv = dieselbe Aussage in Worten; optional uebergangsbereich (Kennzeichen 0/1), spaeter (Wechsel im Lauf der Beschäftigung), zusatzmeldung (zweite Meldung an die Minijob-Zentrale), unsicher (Zweige, die ein Test nicht hart prüfen sollte).",
+    "pruefstatus": "je Aussage: „am Original geprüft“ = so in der Quelle gelesen; „abgeleitet“ = eigene Ableitung aus Quelle und DEÜV; „nicht verifiziert“ = nicht am Original geprüft.",
+    "person/arbeitgeber": "nur die für die Vorschläge wirksamen Angaben und die Antworten, von denen ihre Abfrage abhängt, in gespeicherter Form (Datum JJJJ-MM-TT, Geld \"1234.56\", Zahlen mit den Nachkommastellen des Felds, Ja/Nein als true/false, Auswahl als Options-ID, Tabellen als Zeilen mit rowId). Reihenfolge = Reihenfolge, in der ein Test sie setzen sollte. Andere Pflichtfelder fehlen absichtlich."
+  },
+  "faelle": [
+    {
+      "id": "GFR-02a",
+      "titel": "Minijob 600 €, familienversichert, ohne RV-Befreiung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 2 (zu B 2.2, B 2.2.4, C 2.1, C 3.1, C 3.2), S. 96",
+        "kurz": "GfR 2026, Bsp. 2"
+      },
+      "sachverhalt": "Familienversicherte Raumpflegerin, unbefristet, festes Monatsentgelt 600 €; kein Befreiungsantrag. Laut Beispiel: geringfügig entlohnt, KV und AV frei, PV nicht pflichtig, RV pflichtig; Arbeitgeber zahlt KV-Pauschalbeitrag und mit der Arbeitnehmerin RV-Pflichtbeiträge.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-02b",
+      "titel": "Minijob 600 €, familienversichert, mit RV-Befreiung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 2, zweiter Teil, S. 96",
+        "kurz": "GfR 2026, Bsp. 2"
+      },
+      "sachverhalt": "Wie GFR-02a, die Arbeitnehmerin beantragt schriftlich die Befreiung von der RV-Pflicht (§ 6 Abs. 1b SGB VI) wirksam ab Beschäftigungsbeginn; dann zahlt nur der Arbeitgeber den RV-Pauschalbeitrag.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-03b1",
+      "titel": "Abiturientin mit Studienabsicht, 70 Arbeitstage",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 3b, Zeitraum 01.06.–13.09., S. 96–97",
+        "kurz": "GfR 2026, Bsp. 3b"
+      },
+      "sachverhalt": "Familienversicherte Abiturientin mit Studienabsicht, Bürokraft 01.06.–13.09. an 70 Arbeitstagen (5-Tage-Woche), Entgelt 1.400 €. Kurzfristig, weil auf 70 Arbeitstage begrenzt und nicht berufsmäßig; dass sie länger als drei Monate dauert, ist unerheblich.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-04-10",
+        "status": "schulende",
+        "grundsicherung": false,
+        "schulendeDatum": "2026-05-20",
+        "planNachSchule": "studium",
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-13",
+        "agKurzfristigArbeitstage": "70",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-13"
+      },
+      "hinweis": "Das Beispiel nennt 1.400 € ohne „monatlich“; wegen fehlender Berufsmäßigkeit kommt es auf die Höhe nicht an. Die App prüft die Zeitgrenzen nicht – hier wäre sie mit den drei Monaten sonst überschritten."
+    },
+    {
+      "id": "GFR-03b2",
+      "titel": "Dieselbe Person im Dezember: wegen Vorbeschäftigung nicht kurzfristig",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 3b, Zeitraum 15.12.–23.12., S. 97",
+        "kurz": "GfR 2026, Bsp. 3b"
+      },
+      "sachverhalt": "Dieselbe Person – jetzt Studentin – arbeitet beim selben Arbeitgeber 15.12.–23.12. für 600 €. Mit der Vorbeschäftigung (70 Arbeitstage) mehr als drei Monate bzw. 70 Arbeitstage im Kalenderjahr → nicht kurzfristig, aber geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-04-10",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "1",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "derselbe Arbeitgeber",
+            "vbVon": "2026-06-01",
+            "vbBis": "2026-09-13",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "70",
+            "vbEntgeltMonat": "1400.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-12-15",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-12-23",
+        "agKurzfristigArbeitstage": "7",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-23",
+        "agFrueherBeschaeftigt": true,
+        "agErsteintritt": "2026-06-01"
+      }
+    },
+    {
+      "id": "GFR-04a",
+      "titel": "Bezieher von Arbeitslosengeld, Aushilfe 800 € unter 15 Std.",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 4a (zu B 2.3.3.5, B 4), S. 97",
+        "kurz": "GfR 2026, Bsp. 4a"
+      },
+      "sachverhalt": "Bezieher von Arbeitslosengeld, Kellner 01.08.–20.08., Arbeitsentgelt 800 €, 14 Wochenstunden. Berufsmäßig und über der Grenze → keine geringfügige Beschäftigung; KV, RV, PV pflichtig; AV frei wegen des Anspruchs auf Arbeitslosengeld (unter 15 Std.).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3101",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1985-01-01",
+        "status": "arbeitslos",
+        "grundsicherung": false,
+        "leistungArbeitslos": "arbeitslosengeld",
+        "arbeitsuchendSeit": "2026-03-01",
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-20",
+        "agKurzfristigArbeitstage": "10",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-20",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "14.00"
+      },
+      "hinweis": "KV 3 im Beispiel: ermäßigter Beitrag bei Befristung bis zehn Wochen (kein Krankengeldanspruch). Die App gibt KV 3 nur, wenn „befristet“ mit Ende angegeben ist."
+    },
+    {
+      "id": "GFR-04b",
+      "titel": "Aushilfe in der Elternzeit, Durchschnitt 765 €",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 4b (zu B 2.3.3, B 2.3.3.4), S. 97–98",
+        "kurz": "GfR 2026, Bsp. 4b"
+      },
+      "sachverhalt": "Krankenschwester übernimmt während der Elternzeit 20.08.–22.09. eine Aushilfe im Pflegedienst: 530 € im August, 1.000 € im September (Durchschnitt 765 €). Berufsmäßig, über der Grenze → KV, RV, AV, PV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1992-02-02",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "elternzeitBis": "2027-03-31",
+        "elternzeitZustimmung": "ja",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-20",
+        "agEntgeltArt": "stundenlohn",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-22",
+        "agKurzfristigArbeitstage": "24",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-22",
+        "agStundenlohn": "20.00",
+        "agErwartetMonat": "765.00"
+      },
+      "hinweis": "Die App fragt nur nach Elternzeit bei einem anderen Arbeitgeber; laut GfR B 2.3.3.4 ist der Arbeitgeber gleichgültig. Elternzeit beim selben Arbeitgeber ist nicht abbildbar."
+    },
+    {
+      "id": "GFR-04c",
+      "titel": "Ausbildungsuchender Schulentlassener, zwei Aushilfen im selben Monat",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 4c (zu B 2.2.2.1, B 2.3.3, B 2.3.3.5), S. 98",
+        "kurz": "GfR 2026, Bsp. 4c"
+      },
+      "sachverhalt": "Gesetzlich versicherter Schulentlassener, ausbildungsuchend gemeldet; Inventuraushilfe 16.04.–30.04. für 380 €; unmittelbar zuvor 01.04.–15.04. kurzfristig bei einem anderen Arbeitgeber für 320 €. Berufsmäßig; das Aprilentgelt beider Beschäftigungen (700 €) übersteigt die Grenze → nicht kurzfristig; die Beschäftigung ist aber geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2009-01-20",
+        "status": "schulende",
+        "grundsicherung": false,
+        "schulendeDatum": "2026-03-31",
+        "planNachSchule": "ausbildung",
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "anderer Arbeitgeber",
+            "vbVon": "2026-04-01",
+            "vbBis": "2026-04-15",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "11",
+            "vbEntgeltMonat": "320.00"
+          }
+        ],
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-16",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "380.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-04-30",
+        "agKurzfristigArbeitstage": "11",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-04-30"
+      }
+    },
+    {
+      "id": "GFR-04dA",
+      "titel": "ALG-Bezieher, Aushilfe 600 € einmal wöchentlich",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 4d, Arbeitgeber A ab 16.04., S. 98–99",
+        "kurz": "GfR 2026, Bsp. 4d"
+      },
+      "sachverhalt": "Bezieher von Arbeitslosengeld arbeitet bei A 16.04.–15.10. einmal wöchentlich (insgesamt 26 Arbeitstage) für 600 €/Monat; eine weitere Beschäftigung ist bei Beginn nicht absehbar. Berufsmäßig, aber Entgelt bis zur Grenze → kurzfristig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1985-01-01",
+        "status": "arbeitslos",
+        "grundsicherung": false,
+        "leistungArbeitslos": "arbeitslosengeld",
+        "arbeitsuchendSeit": "2026-03-01",
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-16",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-10-15",
+        "agKurzfristigArbeitstage": "26",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-10-15"
+      }
+    },
+    {
+      "id": "GFR-04dB",
+      "titel": "Zweite Aushilfe neben laufender Aushilfe: Entgelte zusammen über der Grenze",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 4d, Arbeitgeber A und B ab 10.07., S. 98–99",
+        "kurz": "GfR 2026, Bsp. 4d"
+      },
+      "sachverhalt": "Derselbe ALG-Bezieher nimmt am 10.07. bei B (bis 18.12., einmal wöchentlich, 24 Arbeitstage) 440 €/Monat auf, A läuft bis 15.10. weiter. Zusammen 1.040 € → berufsmäßig, beide Beschäftigungen nicht geringfügig: KV, RV, PV pflichtig, AV frei (ALG, unter 15 Std.). Ab 16.10. ist B allein wieder kurzfristig (110/0000).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "spaeter": [
+          {
+            "ab": "2026-10-16",
+            "pgr": "110",
+            "bgr": "0000"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1985-01-01",
+        "status": "arbeitslos",
+        "grundsicherung": false,
+        "leistungArbeitslos": "arbeitslosengeld",
+        "arbeitsuchendSeit": "2026-03-01",
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "kurzfristig",
+            "jobSeit": "2026-04-16",
+            "jobBefristetBis": "2026-10-15",
+            "jobEntgeltMonat": "600.00",
+            "jobStundenWoche": "8.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-10",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "440.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-12-18",
+        "agKurzfristigArbeitstage": "24",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-18"
+      }
+    },
+    {
+      "id": "GFR-06",
+      "titel": "600 € plus vertragliches Weihnachtsgeld",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 6 (zu B 2.2.1.1), S. 99–100",
+        "kurz": "GfR 2026, Bsp. 6"
+      },
+      "sachverhalt": "Raumpflegerin, 600 €/Monat, dazu vertraglich zugesichertes Weihnachtsgeld 600 € im Dezember → Jahr 7.800 €, ein Zwölftel 650 € → mehr als geringfügig, in allen Zweigen pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1975-06-06",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "600.00",
+            "ezMonat": "12",
+            "ezAnspruch": true
+          }
+        ]
+      },
+      "hinweis": "Die Person ist im Beispiel nicht als familienversichert bezeichnet; KV 1 setzt gesetzliche Versicherung voraus."
+    },
+    {
+      "id": "GFR-07a",
+      "titel": "Mindestlohn, schwankende Stunden, Jahresprognose bis zur Grenze",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 7a (zu B 2.2.1.2), S. 100",
+        "kurz": "GfR 2026, Bsp. 7a"
+      },
+      "sachverhalt": "Familienversicherte Raumpflegerin zum Mindestlohn (2026: 13,90 €), 8–12 Std./Woche, Einsätze nicht fest; der Arbeitgeber prognostiziert ein Jahresentgelt bis zum Zwölffachen der Geringfügigkeitsgrenze → geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "stundenlohn",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agStundenlohn": "13.90",
+        "agErwartetMonat": "600.00",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "10.00"
+      },
+      "hinweis": "Erwarteter Monatsverdienst 600 € als Prognose angenommen (das Beispiel nennt keinen Betrag)."
+    },
+    {
+      "id": "GFR-07c",
+      "titel": "Erheblich schwankendes Entgelt: zwei Zeiträume",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 7c (zu B 2.2.1, B 2.2.1.2, B 2.3), S. 101",
+        "kurz": "GfR 2026, Bsp. 7c"
+      },
+      "sachverhalt": "Gesetzlich versicherter Abiturient vor dem Studium, Kellner 01.06.–31.12. (mehr als 70 Arbeitstage); Juni–August 970 €/Monat, September–Dezember 60 €/Monat. Nicht kurzfristig; wegen erheblicher Schwankung bis 31.08. versicherungspflichtig, ab 01.09. geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "spaeter": [
+          {
+            "ab": "2026-09-01",
+            "pgr": "109",
+            "bgr": "6100"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "2007-02-02",
+        "status": "schulende",
+        "grundsicherung": false,
+        "schulendeDatum": "2026-05-15",
+        "planNachSchule": "studium",
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "stundenlohn",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": true,
+        "agStundenlohn": "13.90",
+        "agErwartetMonat": "450.00",
+        "agBefristetBis": "2026-12-31"
+      },
+      "nichtAbbildbar": "Der Fragebogen beurteilt eine Beschäftigung mit einem Monats- bzw. Durchschnittsentgelt zum Beginn; zwei Zeiträume mit verschiedenem Status (erheblich schwankendes Entgelt, GfR B 2.2.1.2) kann er nicht ausdrücken. Mit dem Durchschnitt (rund 450 €) schlägt er 109/6100 (prüfen) vor."
+    },
+    {
+      "id": "GFR-10",
+      "titel": "1.000 €, davon 400 € ins Wertguthaben",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 10 (zu B 2.2.1.4, B 5.2), S. 103–104",
+        "kurz": "GfR 2026, Bsp. 10"
+      },
+      "sachverhalt": "Verkäuferin, 1.000 €/Monat; im Lauf der Beschäftigung verzichtet sie per Wertguthabenvereinbarung auf monatlich 400 €. Die Umwandlung in eine versicherungsfreie Beschäftigung ist unzulässig; Beitragspflicht aus 1.000 €, versicherungspflichtig in allen Zweigen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false,
+        "agWertguthaben": true
+      }
+    },
+    {
+      "id": "GFR-11",
+      "titel": "Übungsleiterpauschale en bloc",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 11 (zu B 2.2.1.6), S. 104–105",
+        "kurz": "GfR 2026, Bsp. 11"
+      },
+      "sachverhalt": "Familienversicherte Hausfrau, nebenberufliche Lehrtätigkeit ab 01.04. für 920 €/Monat; Übungsleiterpauschale 3.300 € en bloc → SV-Entgelt 01.04.–31.12. im Schnitt 553,33 €/Monat → geringfügig entlohnt, zu melden ab 18.07. (erster Tag mit SV-Entgelt). Ab dem Folgejahr 645 €/Monat → versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "920.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "nichtAbbildbar": "Steuerfreie Aufwandsentschädigungen (§ 3 Nr. 26/26a EStG) und ihre Verteilung (en bloc / pro rata) fragt der Fragebogen nicht ab; mit 920 € ergibt sich 101/1111 (Übergangsbereich 1)."
+    },
+    {
+      "id": "GFR-14",
+      "titel": "Entgeltumwandlung senkt 720 € auf 600 €",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 14 (zu B 2.2.1.7), S. 106",
+        "kurz": "GfR 2026, Bsp. 14"
+      },
+      "sachverhalt": "Gesetzlich versicherte Bürohilfe, Bruttoanspruch 720 €; ab Beginn (Juni) werden 120 € für eine betriebliche Altersversorgung umgewandelt → regelmäßiges Entgelt 600 € → geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "720.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agBav": "umwandlung",
+        "agBavVertraege": [
+          {
+            "rowId": "r1",
+            "bavWeg": "direktversicherung",
+            "bavBeitrag": "120.00"
+          }
+        ]
+      },
+      "hinweis": "Trägt der Arbeitgeber 600 € ein (nach Umwandlung), stimmt der Vorschlag; die Frage lautet aber „Monatsentgelt (brutto)“."
+    },
+    {
+      "id": "GFR-15a",
+      "titel": "Zwei Minijobs (280 € + 320 €), privat versichert",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 15a (zu B 2.2.2.1), S. 106",
+        "kurz": "GfR 2026, Bsp. 15a"
+      },
+      "sachverhalt": "Privat versicherte Raumpflegerin, bei A (Privathaushalt) 280 €, bei B 320 €; zusammen 600 € → beide geringfügig entlohnt; kein KV-Pauschalbeitrag (privat), RV pflichtig. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Privathaushalt A",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "280.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "320.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-16B",
+      "titel": "Minijob 600 € neben gleichzeitiger kurzfristiger Beschäftigung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 16, Arbeitgeber B, S. 107–108",
+        "kurz": "GfR 2026, Bsp. 16"
+      },
+      "sachverhalt": "Familienversicherte Raumpflegerin, bei B 02.05.–03.08. (79 Arbeitstage, also nicht kurzfristig) 600 €/Monat; daneben bei A 02.05.–28.06. kurzfristig für 1.200 €. Kurzfristige und geringfügig entlohnte Beschäftigung werden nicht zusammengerechnet → B geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "kurzfristig",
+            "jobSeit": "2026-05-02",
+            "jobBefristetBis": "2026-06-28",
+            "jobEntgeltMonat": "1200.00"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-02",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-03"
+      }
+    },
+    {
+      "id": "GFR-19A",
+      "titel": "Hauptbeschäftigung 1.800 € neben einem Minijob",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 19, Arbeitgeber A, S. 110; Übergangsbereich: RS Übergangsbereich Tz. 4.2.2 und Beispiel 3",
+        "kurz": "GfR 2026, Bsp. 19"
+      },
+      "sachverhalt": "Gesetzlich versicherte Verkäuferin, Hauptbeschäftigung bei A 1.800 €, daneben Minijob bei B 600 €; keine Zusammenrechnung des (ersten) Minijobs mit der Hauptbeschäftigung. Beurteilt wird A.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "600.00",
+            "jobRvBefreit": "nein"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-19B",
+      "titel": "Minijob 600 € neben Hauptbeschäftigung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 19, Arbeitgeber B, S. 110",
+        "kurz": "GfR 2026, Bsp. 19"
+      },
+      "sachverhalt": "Wie GFR-19A, beurteilt wird der Minijob bei B (600 €): geringfügig entlohnt, KV/AV frei, PV nicht pflichtig, RV pflichtig (Befreiung möglich).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "1800.00"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-20B",
+      "titel": "Erster Minijob neben Hauptbeschäftigung, befreit",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 20, Arbeitgeber B, S. 110–111",
+        "kurz": "GfR 2026, Bsp. 20"
+      },
+      "sachverhalt": "Gesetzlich versicherte Raumpflegerin, seit Jahren bei A 1.200 €; seit 01.01. Minijob bei B 400 € mit Befreiungsantrag ab Beginn → zuerst aufgenommener Minijob bleibt frei, RV befreit, Pauschalbeiträge KV und RV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2015-01-01",
+            "jobEntgeltMonat": "1200.00"
+          }
+        ],
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-20C",
+      "titel": "Zweiter Minijob neben Hauptbeschäftigung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 20, Arbeitgeber C, S. 110–111",
+        "kurz": "GfR 2026, Bsp. 20"
+      },
+      "sachverhalt": "Dieselbe Person nimmt am 01.10. bei C einen weiteren Minijob für 310 € auf → wird mit A zusammengerechnet: KV, RV, PV pflichtig; AV frei (Minijobs werden in der AV nie mit der Hauptbeschäftigung zusammengerechnet).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2015-01-01",
+            "jobEntgeltMonat": "1200.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-01-01",
+            "jobEntgeltMonat": "400.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "rvBefreiungWunsch": "schonBefreit"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-10-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "310.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Übergangsbereich abgeleitet: A + C = 1.510 € (B zählt nicht). Die App kommt mit 1.910 € (B mitgezählt) zufällig ebenfalls auf 1."
+    },
+    {
+      "id": "GFR-21",
+      "titel": "Beamter mit zwei Minijobs über der Grenze",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 21 (zu B 2.2.2.2, C 2.1), S. 111; Übergangsbereich: RS Übergangsbereich Tz. 4.2.2",
+        "kurz": "GfR 2026, Bsp. 21"
+      },
+      "sachverhalt": "Privat versicherter Beamter, daneben bei B 400 € (Programmierer) und bei C 300 € (Buchhalter). Das Beamtenverhältnis ist keine versicherungspflichtige Hauptbeschäftigung → B und C werden zusammengerechnet (700 €) → mehr als geringfügig; KV frei (Beamter), PV nicht pflichtig, RV und AV pflichtig. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1980-01-01",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Dienstherr (Beamtenverhältnis)",
+            "jobArt": "beamter",
+            "jobSeit": "2010-01-01",
+            "jobEntgeltMonat": "4000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber C",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Besoldung von 4.000 € ist angenommen; die Tabelle verlangt einen Verdienst je Zeile."
+    },
+    {
+      "id": "GFR-22",
+      "titel": "Freiwillig GKV-versicherter Beamter, zwei Minijobs zusammen 600 €, befreit",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 22 (zu B 2.2.2.2, C 2.2, C 3.1), S. 111–112",
+        "kurz": "GfR 2026, Bsp. 22"
+      },
+      "sachverhalt": "Freiwillig gesetzlich versicherter Beamter, seit 01.02. bei B 310 € und bei C 290 €; Befreiungsantrag ab 01.02. → zusammen 600 €, geringfügig entlohnt; KV-Pauschalbeitrag (gesetzlich versichert), RV befreit. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-01-01",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Dienstherr (Beamtenverhältnis)",
+            "jobArt": "beamter",
+            "jobSeit": "2010-01-01",
+            "jobEntgeltMonat": "4000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber C",
+            "jobArt": "minijob",
+            "jobSeit": "2026-02-01",
+            "jobEntgeltMonat": "290.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "310.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-23B",
+      "titel": "Beamter, Nebenbeschäftigung 800 €",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 23, Arbeitgeber B, S. 112; Übergangsbereich: RS Übergangsbereich Tz. 4.2.2",
+        "kurz": "GfR 2026, Bsp. 23"
+      },
+      "sachverhalt": "Privat versicherter Beamter, Buchhalter bei B für 800 € (C kommt erst am 01.03. hinzu) → B mehr als geringfügig: KV frei, PV nicht pflichtig, RV und AV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1980-01-01",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "festeStelle",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Dienstherr (Beamtenverhältnis)",
+            "jobArt": "beamter",
+            "jobSeit": "2010-01-01",
+            "jobEntgeltMonat": "4000.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-23C",
+      "titel": "Beamter, erster Minijob neben versicherungspflichtiger Nebenbeschäftigung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 23, Arbeitgeber C, S. 112",
+        "kurz": "GfR 2026, Bsp. 23"
+      },
+      "sachverhalt": "Derselbe Beamte fährt ab 01.03. bei C Taxi für 600 € → erster Minijob neben der versicherungspflichtigen Beschäftigung B: KV frei (privat, kein Pauschalbeitrag), AV frei, PV nicht pflichtig, RV pflichtig (Befreiung möglich).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-01-01",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Dienstherr (Beamtenverhältnis)",
+            "jobArt": "beamter",
+            "jobSeit": "2010-01-01",
+            "jobEntgeltMonat": "4000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "800.00"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-24C",
+      "titel": "wie GFR-23C, mit RV-Befreiung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 24, Arbeitgeber C, S. 112–113",
+        "kurz": "GfR 2026, Bsp. 24"
+      },
+      "sachverhalt": "Wie GFR-23C; der Beamte beantragt bei C die Befreiung ab Beginn → RV-Pauschalbeitrag, kein KV-Pauschalbeitrag (privat).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0500",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-01-01",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Dienstherr (Beamtenverhältnis)",
+            "jobArt": "beamter",
+            "jobSeit": "2010-01-01",
+            "jobEntgeltMonat": "4000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "800.00"
+          }
+        ],
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-25A",
+      "titel": "Über der JAEG, freiwillig GKV, Firmenzahler",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 25, Arbeitgeber A, S. 113–114",
+        "kurz": "GfR 2026, Bsp. 25"
+      },
+      "sachverhalt": "Programmierer bei A, 7.000 €/Monat; wegen Überschreitens der JAEG krankenversicherungsfrei, freiwillig gesetzlich versichert; der Arbeitgeber überweist die Beiträge (Firmenzahler). RV und AV pflichtig, PV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "9111",
+        "kv": "frei, freiwillig gesetzlich versichert (Firmenzahler)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1985-07-07",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false,
+        "agFirmenzahler": "firmenzahler"
+      }
+    },
+    {
+      "id": "GFR-25C",
+      "titel": "Zweiter Minijob neben JAEG-freier Hauptbeschäftigung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 25, Arbeitgeber C, S. 113–114",
+        "kurz": "GfR 2026, Bsp. 25"
+      },
+      "sachverhalt": "Derselbe Programmierer: seit 01.07. Minijob B 300 €, ab 01.09. zweiter Minijob C 300 €. C wird in der RV mit A zusammengerechnet (pflichtig); in KV/PV nicht, weil A keine KV-Pflicht begründet – B und C zusammen bis zur Grenze → KV-Pauschalbeitrag; AV frei. Meldungen für C: an die Krankenkasse 101/0100, an die Minijob-Zentrale 101/6000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0100",
+        "kv": "frei; Pauschalbeitrag an die Minijob-Zentrale (gesonderte Meldung 101/6000)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "zusatzmeldung": {
+          "an": "Minijob-Zentrale",
+          "pgr": "101",
+          "bgr": "6000"
+        }
+      },
+      "person": {
+        "geburtsdatum": "1985-07-07",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "7000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-07-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-26A",
+      "titel": "Über der JAEG, freiwillig GKV, Selbstzahler",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 26, Arbeitgeber A, S. 114–115",
+        "kurz": "GfR 2026, Bsp. 26"
+      },
+      "sachverhalt": "Programmierer bei A, 7.000 €/Monat, krankenversicherungsfrei, freiwillig gesetzlich versichert als Selbstzahler; RV, AV und PV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0111",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1985-07-07",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false,
+        "agFirmenzahler": "selbstzahler"
+      },
+      "hinweis": "Das Beispiel nennt den Schlüssel für A „ab 01.09.“; vor Aufnahme der Minijobs gilt für A nach dem Sachverhalt dasselbe."
+    },
+    {
+      "id": "GFR-26C",
+      "titel": "Zweiter Minijob neben JAEG-freier Hauptbeschäftigung, Minijobs über der Grenze",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 26, Arbeitgeber C, S. 114–115",
+        "kurz": "GfR 2026, Bsp. 26"
+      },
+      "sachverhalt": "Derselbe Selbstzahler: seit 01.07. Minijob B 600 €, ab 01.09. C 500 €. C in der RV mit A zusammengerechnet (pflichtig); KV: B + C über der Grenze → keine Pauschalbeiträge, freiwillig versichert, PV pflichtig (anteilige Beitragszuschüsse); AV frei.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0101",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1985-07-07",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "7000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-07-01",
+            "jobEntgeltMonat": "600.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-27",
+      "titel": "JAEG-Überschreitung durch Zusammenrechnung zum Jahreswechsel",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 27 (zu B 2.2.2.8), S. 115–116",
+        "kurz": "GfR 2026, Bsp. 27"
+      },
+      "sachverhalt": "Programmierer bei A 6.000 €, ab 01.06.2025 Minijob B 550 € (befreit), ab 01.10.2025 C 500 € (mit A zusammengerechnet). A + C übersteigen die JAEG → ab 01.01.2026 KV-frei. Ab 01.01.2026: A 101/0111, B 109/6500, C 101/0101 (bis 31.12.2025: A 101/1111, C 101/1101).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0101",
+        "kv": "frei ab 01.01.2026 (freiwillig versichert, Selbstzahler)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)"
+      },
+      "person": {
+        "geburtsdatum": "1985-07-07",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "6000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-06-01",
+            "jobEntgeltMonat": "550.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "rvBefreiungWunsch": "schonBefreit"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2025-10-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "nichtAbbildbar": "Beginn 2025 liegt außerhalb der Gültigkeit des Fragebogens (Beschäftigungsbeginn 2026); der Statuswechsel zum Jahreswechsel (JAEG des Folgejahres) wird nicht beurteilt. Erwartet ist hier die Lage ab 01.01.2026 für C."
+    },
+    {
+      "id": "GFR-28",
+      "titel": "Minijob 600 €, privat versichert, ohne Befreiung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 28 (zu C 2.1, C 3.2, C 3.2.2), S. 116",
+        "kurz": "GfR 2026, Bsp. 28"
+      },
+      "sachverhalt": "Privat versicherte Raumpflegerin, Beginn 01.07., 600 €/Monat; kein Befreiungsantrag → kein KV-Pauschalbeitrag, RV pflichtig (AG 15 %, AN 3,6 %).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-29",
+      "titel": "Haushaltshilfe im Privathaushalt (Haushaltsscheck)",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 29 (zu C 3.2.1, C 3.2.2), S. 117",
+        "kurz": "GfR 2026, Bsp. 29"
+      },
+      "sachverhalt": "Privat versicherte Haushaltshilfe in einem Privathaushalt, 150 €/Monat, RV-pflichtig; Ende 20.06. (Mindestbeitragsberechnung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "209",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "150.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agPrivathaushalt": true
+      },
+      "nichtAbbildbar": "Minijobs im Privathaushalt laufen über das Haushaltsscheckverfahren (Personengruppe 209); der Fragebogen schließt sie bewusst aus (Ausschluss „haushaltsscheck“). Test: Ausschluss greift, kein Vorschlag."
+    },
+    {
+      "id": "GFR-31A",
+      "titel": "Apotheker, Versorgungswerk-befreit",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 31, Arbeitgeber A, S. 117–118",
+        "kurz": "GfR 2026, Bsp. 31"
+      },
+      "sachverhalt": "Apotheker bei A, 5.200 €/Monat, als Mitglied einer berufsständischen Versorgungseinrichtung von der RV befreit; KV, AV, PV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1011",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle",
+        "versorgungswerk": "befreit"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "5200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-31B",
+      "titel": "Apotheker-Minijob, befreit zugunsten des Versorgungswerks",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 31, Arbeitgeber B, S. 117–118",
+        "kurz": "GfR 2026, Bsp. 31"
+      },
+      "sachverhalt": "Derselbe Apotheker nimmt am 01.09. bei B eine Apotheker-Beschäftigung für 600 € auf und wird für B nach § 6 Abs. 1 S. 1 Nr. 1 SGB VI befreit → KV-Pauschalbeitrag; RV-Beiträge gehen an das Versorgungswerk, nicht an die DRV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6000",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "befreit zugunsten des Versorgungswerks (kein DRV-Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "5200.00"
+          }
+        ],
+        "versorgungswerk": "befreit",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-32B",
+      "titel": "Architekt, berufsfremder Minijob",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 32, Arbeitgeber B, S. 118",
+        "kurz": "GfR 2026, Bsp. 32"
+      },
+      "sachverhalt": "Architekt (A 5.200 €, Versorgungswerk-befreit) nimmt am 01.07. bei B eine Buchhalter-Beschäftigung für 600 € auf. Die Befreiung gilt nur für A → in B RV-pflichtig (Befreiung nach § 6 Abs. 1b möglich, dann 6500).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "5200.00"
+          }
+        ],
+        "versorgungswerk": "offen",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Für die berufsfremde Beschäftigung passt keine Antwort zum Versorgungswerk genau („offen“ = Befreiung noch nicht beantragt)."
+    },
+    {
+      "id": "GFR-33",
+      "titel": "Rechtsanwalt im Kanzlei-Minijob, Versorgungswerk-befreit",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 33 (B 2.2.4.3, C 3.2.2), S. 119",
+        "kurz": "GfR 2026, Bsp. 33"
+      },
+      "sachverhalt": "Familienversicherter Rechtsanwalt, Minijob 600 € in einer Kanzlei, Pflichtmitglied im Versorgungswerk, ab Beginn nach § 6 Abs. 1 S. 1 Nr. 1 SGB VI befreit → KV-Pauschalbeitrag, RV-Beiträge an das Versorgungswerk.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6000",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "befreit zugunsten des Versorgungswerks (kein DRV-Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1994-09-09",
+        "status": "sonstiges",
+        "grundsicherung": false,
+        "situationSonstiges": "zugelassener Rechtsanwalt ohne weitere Tätigkeit",
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "versorgungswerk": "befreit",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-34",
+      "titel": "Rechtsanwalt im Kanzlei-Minijob, Befreiung nach § 6 Abs. 1b",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 34 (zu B 2.2.4, B 2.2.4.3), S. 119",
+        "kurz": "GfR 2026, Bsp. 34"
+      },
+      "sachverhalt": "Wie GFR-33, der Rechtsanwalt beantragt aber die Befreiung nach § 6 Abs. 1b SGB VI → Pauschalbeiträge KV und RV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1994-09-09",
+        "status": "sonstiges",
+        "grundsicherung": false,
+        "situationSonstiges": "zugelassener Rechtsanwalt ohne weitere Tätigkeit",
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "versorgungswerk": "offen",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "GFR-36b",
+      "titel": "Befreiungsantrag geht im Folgemonat ein",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 36 b (zu B 2.2.4, B 2.2.4.1, D 2), S. 120–121",
+        "kurz": "GfR 2026, Bsp. 36b"
+      },
+      "sachverhalt": "Familienversicherter Pförtner, Minijob ab 03.05., 600 €; der Befreiungsantrag geht am 02.06. beim Arbeitgeber ein → Befreiung wirkt ab 01.06. (Beginn des Eingangsmonats); bis 31.05. RV-pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-06-01",
+            "pgr": "109",
+            "bgr": "6500"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1970-10-10",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-03",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agUnterlagen": ["rvBefreiung"],
+        "agRvBefreiungEingang": "2026-06-02"
+      }
+    },
+    {
+      "id": "GFR-37",
+      "titel": "„Aushilfe“ über vier Monate (88 Arbeitstage)",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 37 (zu B 2.3), S. 121",
+        "kurz": "GfR 2026, Bsp. 37"
+      },
+      "sachverhalt": "Verkäuferin, 15.11. bis 15.03. des Folgejahres befristet (88 Arbeitstage), 1.500 €/Monat → von vornherein mehr als drei Monate bzw. 70 Arbeitstage → nicht kurzfristig; versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-11-15",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2027-03-15",
+        "agKurzfristigArbeitstage": "88",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2027-03-15"
+      }
+    },
+    {
+      "id": "GFR-39B",
+      "titel": "Aushilfe neben Dauerbeschäftigung",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 39, Arbeitgeber B, S. 122",
+        "kurz": "GfR 2026, Bsp. 39"
+      },
+      "sachverhalt": "Kraftfahrer mit Dauerbeschäftigung bei A (2.300 €); bei B Kellner 01.07.–30.09., 800 €/Monat; neben einer Hauptbeschäftigung nicht berufsmäßig → kurzfristig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2018-01-01",
+            "jobEntgeltMonat": "2300.00"
+          }
+        ],
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-30",
+        "agKurzfristigArbeitstage": "39",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      }
+    },
+    {
+      "id": "GFR-40B",
+      "titel": "Aushilfe, mit früheren Aushilfen über drei Monate",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 40, Arbeitgeber B, S. 123",
+        "kurz": "GfR 2026, Bsp. 40"
+      },
+      "sachverhalt": "Verkäufer (A 2.200 €), bei B Taxifahrer 01.08.–20.09. (42 Arbeitstage), 850 €/Monat; im Kalenderjahr schon kurzfristig 10.01.–31.01. (18 Arbeitstage) und 01.04.–30.04. (25 Arbeitstage) → zusammen 102 Kalendertage > drei Monate → nicht kurzfristig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2018-01-01",
+            "jobEntgeltMonat": "2200.00"
+          }
+        ],
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-01-10",
+            "vbBis": "2026-01-31",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "18"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-04-01",
+            "vbBis": "2026-04-30",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "25"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "850.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-20",
+        "agKurzfristigArbeitstage": "42",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-20"
+      },
+      "hinweis": "KV laut Beispiel 1; die Beschäftigung ist auf 51 Tage befristet, nach der Zehn-Wochen-Regel (ermäßigter Beitrag) wäre KV 3 denkbar – GfR uneinheitlich (vgl. Beispiele 4a, 4b). KV in Tests nicht hart prüfen."
+    },
+    {
+      "id": "GFR-41",
+      "titel": "Rentner springt gelegentlich ein",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 41 (zu B 2.3), S. 123–124",
+        "kurz": "GfR 2026, Bsp. 41"
+      },
+      "sachverhalt": "Rentner erklärt unbefristet die Bereitschaft, bei unerwarteten Personalausfällen als Aushilfskellner einzuspringen; keine Absprache über Einsätze oder Rufbereitschaft; Betrieb nicht auf Aushilfen ausgerichtet → gelegentlich, kurzfristig, solange höchstens 70 Arbeitstage im Kalenderjahr.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-01-15",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-02-01",
+        "rvVerzicht": "nein",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-15",
+        "agEntgeltArt": "pauschale",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-12-31",
+        "agKurzfristigArbeitstage": "20",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-31",
+        "agPauschale": "100.00",
+        "agErwartetMonat": "300.00"
+      },
+      "hinweis": "Entgelt, Ende (Kalenderjahr) und 20 Arbeitstage sind angenommen; die App hat keine eigene Antwort „gelegentlich ohne Abrufvereinbarung“."
+    },
+    {
+      "id": "GFR-42",
+      "titel": "Regelmäßige Einsätze an fünf Tagen im Monat",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 42 (zu B 2.3), S. 124",
+        "kurz": "GfR 2026, Bsp. 42"
+      },
+      "sachverhalt": "Hausfrau, Bankkauffrau unbefristet jeweils an den letzten fünf Arbeitstagen im Monat, 1.200 €/Monat → regelmäßige Beschäftigung, nicht kurzfristig (auch wenn unter 70 Arbeitstagen); über der Grenze → versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-26",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-12-31",
+        "agKurzfristigArbeitstage": "60",
+        "agRahmenvereinbarung": true,
+        "agBefristet": false
+      },
+      "hinweis": "Abbildung: Arbeitgeber wählt „kurzfristige Aushilfe“, unbefristet, mit Rahmenvereinbarung; das Ende 31.12. ist nur eingetragen, weil die Frage Pflicht ist."
+    },
+    {
+      "id": "GFR-45B",
+      "titel": "Zweite Aushilfe im Jahr über drei Monate, über der Grenze",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 45, Arbeitgeber B, S. 126–127",
+        "kurz": "GfR 2026, Bsp. 45"
+      },
+      "sachverhalt": "Verkäuferin (bis 02.08. familienversichert): bei A 02.05.–28.06. kurzfristig für 600 €; bei B 03.08.–30.09. (50 Arbeitstage) für 1.350 € → zusammen mehr als drei Monate bzw. 70 Arbeitstage → nicht kurzfristig; über der Grenze → versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Arbeitgeber A",
+            "vbVon": "2026-05-02",
+            "vbBis": "2026-06-28",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "49",
+            "vbEntgeltMonat": "600.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-03",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1350.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-30",
+        "agKurzfristigArbeitstage": "50",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 59 Tage – siehe Zehn-Wochen-Frage bei GFR-40B."
+    },
+    {
+      "id": "GFR-48",
+      "titel": "Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 48 (zu B 2.3.2, B 2.3.3.3), S. 128",
+        "kurz": "GfR 2026, Bsp. 48"
+      },
+      "sachverhalt": "Hausfrau, Aushilfsverkäuferin 13.08.–20.09. (27 Arbeitstage), 1.400 €/Monat; im Jahr schon 02.03.–15.06. mehr als geringfügig beschäftigt (75 Arbeitstage). Zeiten werden für die Berufsmäßigkeit zusammengerechnet (143 Kalendertage) → berufsmäßig → versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-03-02",
+            "vbBis": "2026-06-15",
+            "vbArt": "mehr",
+            "vbArbeitstage": "75"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-13",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-20",
+        "agKurzfristigArbeitstage": "27",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-20"
+      },
+      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 39 Tage – siehe GFR-40B."
+    },
+    {
+      "id": "ST-01",
+      "titel": "Student 25 Std./Woche unbefristet",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 a, Beispiel 1, S. 15",
+        "kurz": "RS Studenten, Bsp. 1"
+      },
+      "sachverhalt": "Student, ab 01.04. unbefristet 25 Std./Woche, davon 7 Std. am Wochenende; absehbar mehr als 26 Wochen über 20 Std. → kein Werkstudentenprivileg; KV, PV, RV, AV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "stundenlohn",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agStundenlohn": "14.00",
+        "agErwartetMonat": "1500.00",
+        "agNurSemesterferien": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "25.00"
+      },
+      "hinweis": "Das Rundschreiben nennt nur „versicherungspflichtig in KV, PV, RV, AV“; PGR/BGR daraus abgeleitet. Entgelt (1.500 €) angenommen."
+    },
+    {
+      "id": "ST-02A",
+      "titel": "Werkstudentenjob 18 Std. neben Minijob 7 Std.: zusammen über 20 Std.",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 a, Beispiel 2, S. 16 (abgeleitete Abwandlung)",
+        "kurz": "RS Studenten, Bsp. 2"
+      },
+      "sachverhalt": "Abwandlung von Beispiel 2 (Reihenfolge vertauscht, damit der Fall beim Beginn sichtbar wird): Student übt schon B (7 Std., 300 €, Minijob) aus und nimmt A (18 Std., 780 €) auf → zusammen 25 Std. > 20 → kein Werkstudentenprivileg; A versicherungspflichtig in allen Zweigen.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-03-01",
+            "jobEntgeltMonat": "300.00",
+            "jobStundenWoche": "7.00",
+            "jobRvBefreit": "nein"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "780.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agNurSemesterferien": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "18.00"
+      },
+      "hinweis": "Im Original (A seit 01.03., B ab 01.08.) entfällt das Privileg für A ab 01.08.; die App beurteilt nur den Beginn."
+    },
+    {
+      "id": "ST-02B",
+      "titel": "Student, Minijob 300 € neben (versicherungspflichtig gewordener) Beschäftigung",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 a, Beispiel 2, S. 16",
+        "kurz": "RS Studenten, Bsp. 2"
+      },
+      "sachverhalt": "Student mit Beschäftigung A (18 Std., 780 €) nimmt am 01.08. bei B einen Minijob (7 Std., 300 €) auf; A wird dadurch versicherungspflichtig. B ist erste geringfügig entlohnte Beschäftigung neben einer Hauptbeschäftigung: KV, PV, AV frei, RV pflichtig (ohne Befreiung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2026-03-01",
+            "jobEntgeltMonat": "780.00",
+            "jobStundenWoche": "18.00"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Für A passt als „Art“ in weitereJobs nur „svpflichtig“ – eine Antwort „Werkstudent“ gibt es nicht. Wählt die Person „Minijob“, rechnet die App A und B zusammen (1.080 €) und kommt auf 101."
+    },
+    {
+      "id": "ST-04",
+      "titel": "Student 25 Std. befristet, mit Vorbeschäftigungen",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 d, Beispiel 4, S. 19",
+        "kurz": "RS Studenten, Bsp. 4"
+      },
+      "sachverhalt": "Student, 01.12.–31.01. befristet 25 Std./Woche (nicht am Wochenende/abends); in den letzten 12 Monaten 01.02.–31.03. 25 Std. und 01.07.–15.09. 18 Std. → nicht kurzfristig (im Kalenderjahr zu lang), mehr als 20 Std. → kein Werkstudentenprivileg; versicherungspflichtig in allen Zweigen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": true,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent",
+        "ueber20hZeiten": [
+          {
+            "rowId": "r1",
+            "ueber20hVon": "2026-02-01",
+            "ueber20hBis": "2026-03-31",
+            "ueber20hStunden": "25.00",
+            "ueber20hFerien": false
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-12-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": true,
+        "agNurSemesterferien": false,
+        "agBefristetBis": "2027-01-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "25.00"
+      },
+      "hinweis": "Entgelt (1.500 €) angenommen."
+    },
+    {
+      "id": "ST-SF",
+      "titel": "Student, Einsätze nur in der vorlesungsfreien Zeit",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 b, S. 16; Tz. C 1, S. 45; DEÜV Anlage 2 (106)",
+        "kurz": "RS Studenten, A 1.2.4 b"
+      },
+      "sachverhalt": "Student, unbefristetes Arbeitsverhältnis, gearbeitet wird ausschließlich in der vorlesungsfreien Zeit (dann Vollzeit), Durchschnitt 900 €/Monat → Werkstudentenprivileg unabhängig von Stunden und Entgelt: KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "stundenlohn",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agStundenlohn": "15.00",
+        "agErwartetMonat": "900.00",
+        "agNurSemesterferien": true
+      },
+      "hinweis": "Übergangsbereich bei Werkstudenten nicht in den Quellen geklärt – nicht prüfen."
+    },
+    {
+      "id": "ST-KF",
+      "titel": "Student, Ferienjob zwei Monate Vollzeit: kurzfristig",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 c, S. 17; Tz. C 1, S. 45",
+        "kurz": "RS Studenten, C 1"
+      },
+      "sachverhalt": "Student, 01.08.–30.09. befristet, 40 Std./Woche in den Semesterferien, 2.400 €/Monat. Die Beschäftigung erfüllt zugleich die Merkmale einer kurzfristigen Beschäftigung → zu melden mit Personengruppe 110 (RS C 1), alle Zweige frei.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": true,
+        "agNurSemesterferien": true,
+        "agBefristetBis": "2026-09-30"
+      }
+    },
+    {
+      "id": "ST-WS",
+      "titel": "Werkstudent 15 Std./Woche",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 1.2.4 a, S. 14; Tz. C 1, S. 45; DEÜV Anlage 2 (106)",
+        "kurz": "RS Studenten, A 1.2.4 a"
+      },
+      "sachverhalt": "Student, unbefristet 15 Std./Woche in der Vorlesungszeit, 1.200 €/Monat → Werkstudentenprivileg: KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agNurSemesterferien": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "15.00"
+      }
+    },
+    {
+      "id": "ST-WSMJ",
+      "titel": "Werkstudent mit Minijob-Verdienst",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. C 1, S. 45 (PGR 109); GfR 2026 C 2.2 (KV-Pauschalbeitrag auch für Werkstudenten)",
+        "kurz": "RS Studenten, C 1"
+      },
+      "sachverhalt": "Student, unbefristet 10 Std./Woche, 450 €/Monat, gesetzlich (familien-)versichert. Weist die Beschäftigung die Merkmale einer geringfügig entlohnten Beschäftigung auf, ist 109 zu melden; KV-Pauschalbeitrag (GfR C 2.2), RV pflichtig (ohne Befreiung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "450.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agNurSemesterferien": false
+      }
+    },
+    {
+      "id": "ST-ZP",
+      "titel": "Vorgeschriebenes Zwischenpraktikum",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 3.3, S. 30; Tz. C 3, S. 47",
+        "kurz": "RS Studenten, C 3"
+      },
+      "sachverhalt": "Student, in der Studienordnung vorgeschriebenes Praktikum während des Studiums, 900 €/Monat → KV, PV, AV und RV frei (unabhängig von Dauer, Stunden, Entgelt); Meldung nur zur Unfallversicherung mit 190.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "190",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-01",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtStudium",
+        "agPraktikumBis": "2026-08-31"
+      }
+    },
+    {
+      "id": "ST-VP",
+      "titel": "Vorgeschriebenes Vorpraktikum mit Entgelt",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 3.4.1, A 3.4.2, S. 31–32; Tz. C 3, S. 47; RS Übergangsbereich Tz. 4.3.6.1",
+        "kurz": "RS Studenten, C 3"
+      },
+      "sachverhalt": "Nicht immatrikulierte Person, in der Studienordnung vorgeschriebenes Vorpraktikum, 900 €/Monat → als zur Berufsausbildung Beschäftigte in KV, PV, RV, AV pflichtig; Personengruppe 105; Regeln des Übergangsbereichs gelten nicht.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "105",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2006-06-06",
+        "status": "schulende",
+        "grundsicherung": false,
+        "schulendeDatum": "2026-06-30",
+        "planNachSchule": "studium",
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30"
+      }
+    },
+    {
+      "id": "ST-VP0",
+      "titel": "Vorgeschriebenes Vorpraktikum ohne Entgelt",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. C 3, S. 47–48; DEÜV Anlage 2 (105, 121)",
+        "kurz": "RS Studenten, C 3"
+      },
+      "sachverhalt": "Wie ST-VP, aber ohne Arbeitsentgelt → Meldung mit 105 (nicht 121); in KV und PV keine Beschäftigtenversicherung (Versicherungspflicht nach § 5 Abs. 1 Nr. 10 SGB V bzw. Familienversicherung, Meldung nach SKV-MV); RV und AV als zur Berufsausbildung Beschäftigte.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "105",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2006-06-06",
+        "status": "schulende",
+        "grundsicherung": false,
+        "schulendeDatum": "2026-06-30",
+        "planNachSchule": "studium",
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "0.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30"
+      }
+    },
+    {
+      "id": "ST-FZPMJ",
+      "titel": "Freiwilliges Praktikum im Studium mit Minijob-Verdienst",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 3.5, S. 32; GfR 2026 C 2.5, C 3.3.2, S. 67, 73–74; § 172 Abs. 3 S. 2 SGB VI",
+        "kurz": "RS Studenten, A 3.5 / GfR C 3.3.2"
+      },
+      "sachverhalt": "Studentin, nicht vorgeschriebenes Praktikum während des Studiums, 6 Monate, 15 Std./Woche, 500 €/Monat, gesetzlich versichert. Für nicht vorgeschriebene Praktika gelten keine Besonderheiten: geringfügig entlohnt → KV-Pauschalbeitrag, RV-Pflichtbeiträge. Bei RV-Befreiung entfiele hier auch der RV-Pauschalbeitrag (§ 172 Abs. 3 S. 2 SGB VI) → 6000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2002-02-02",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-08-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "15.00"
+      }
+    },
+    {
+      "id": "ST-SCH",
+      "titel": "Schülerin einer allgemeinbildenden Schule, 800 €",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Versicherungsrechtliche Beurteilung von beschäftigten Studenten, Praktikanten und ähnlichen Personen“ (GKV-Spitzenverband, DRV Bund, BA), Stand 23.11.2016",
+        "fundstelle": "Tz. A 4.1, S. 36–37",
+        "kurz": "RS Studenten, A 4.1"
+      },
+      "sachverhalt": "Schülerin eines Gymnasiums, unbefristet, 800 €/Monat → wie Arbeitnehmer: KV, PV, RV pflichtig; AV frei (§ 27 Abs. 4 S. 1 Nr. 1 SGB III).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2009-03-01",
+        "status": "schueler",
+        "schulart": "allgemein",
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "UEB-02",
+      "titel": "Zwei Beschäftigungen zusammen über 2.000 €",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 7, Beispiel 2, S. 41",
+        "kurz": "RS Übergangsbereich, Bsp. 2"
+      },
+      "sachverhalt": "Zwei versicherungspflichtige Beschäftigungen: A 780 €, B 1.300 € → jede für sich im Übergangsbereich, zusammen 2.080 € > 2.000 € → keine Anwendung. Beurteilt wird A.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "1300.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "780.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "UEB-03",
+      "titel": "Hauptbeschäftigung 1.700 € neben erstem Minijob",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 7, Beispiel 3, S. 41; Tz. 4.2.2",
+        "kurz": "RS Übergangsbereich, Bsp. 3"
+      },
+      "sachverhalt": "A 1.700 €, daneben erster Minijob B 420 € → keine Zusammenrechnung (auch nicht in der RV); A liegt im Übergangsbereich. Beurteilt wird A.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "420.00",
+            "jobRvBefreit": "nein"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1700.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "UEB-15",
+      "titel": "Zwei Minijobs zusammen 720 €",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 7, Beispiel 15, S. 48; Tz. 4.2.2",
+        "kurz": "RS Übergangsbereich, Bsp. 15"
+      },
+      "sachverhalt": "Zwei für sich geringfügig entlohnte Beschäftigungen ohne Hauptbeschäftigung: A 350 €, B 370 € → zusammen 720 € → versicherungspflichtig, Anwendungsfall Übergangsbereich. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "350.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "370.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "UEB-AZNEBEN",
+      "titel": "Versicherungspflichtiger Nebenjob neben einer Ausbildung",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 4.3.6.1, dritter Absatz, S. 34",
+        "kurz": "RS Übergangsbereich, 4.3.6.1"
+      },
+      "sachverhalt": "Auszubildende bei einem anderen Betrieb (900 €), daneben bei diesem Arbeitgeber 800 € versicherungspflichtig → die Regeln des Übergangsbereichs sind für eine mehr als geringfügige Beschäftigung neben einer Ausbildung ausgeschlossen.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2005-05-05",
+        "status": "ausbildungAnderswo",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Ausbildungsbetrieb",
+            "jobArt": "ausbildung",
+            "jobSeit": "2025-09-01",
+            "jobEntgeltMonat": "900.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "UEB-KF",
+      "titel": "Hauptbeschäftigung 1.500 € neben kurzfristiger Beschäftigung",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 4.2.2, S. 17 (dritter Satz zu kurzfristigen Beschäftigungen)",
+        "kurz": "RS Übergangsbereich, 4.2.2"
+      },
+      "sachverhalt": "Versicherungspflichtige Beschäftigung 1.500 €; daneben eine kurzfristige Beschäftigung (800 €, befristet) bei einem anderen Arbeitgeber → Entgelte aus kurzfristigen Beschäftigungen zählen für den Übergangsbereich nicht.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber K",
+            "jobArt": "kurzfristig",
+            "jobSeit": "2026-03-01",
+            "jobBefristetBis": "2026-05-31",
+            "jobEntgeltMonat": "800.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Seitenangabe der Tz. 4.2.2 ist nicht geprüft; der Wortlaut („Arbeitsentgelte aus kurzfristigen Beschäftigungen sind ebenfalls nicht anzurechnen“) schon."
+    },
+    {
+      "id": "UEB-VR",
+      "titel": "Vorruhestandsgeld 1.500 €",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 4.3.6.3, letzter Absatz, S. 35; DEÜV Anlage 2 (108), Anlage 16; § 50 Abs. 1 S. 1 Nr. 3, § 243 SGB V",
+        "kurz": "RS Übergangsbereich, 4.3.6.3"
+      },
+      "sachverhalt": "Vorruhestandsgeld 1.500 €/Monat nach einer Vorruhestandsvereinbarung, gesetzlich versichert. Personengruppe 108; KV ermäßigt (kein Krankengeld), RV pflichtig, AV kein Beitrag (108 nur mit 0), PV pflichtig; die Regeln des Übergangsbereichs gelten, wenn das Vorruhestandsgeld im Übergangsbereich liegt.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "108",
+        "bgr": "3101",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1964-01-01",
+        "status": "ruhestand",
+        "bezugRente": false,
+        "bezugPension": false,
+        "artLautVereinbarung": "vorruhestand",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "keines",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "vorruhestand",
+        "agVorruhestandBis": "2028-12-31",
+        "agVorruhestandBetrag": "1500.00"
+      }
+    },
+    {
+      "id": "UEB-FSJ",
+      "titel": "FSJ mit Taschengeld und Sachbezügen 650 €",
+      "quelle": {
+        "dokument": "Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022",
+        "fundstelle": "Tz. 4.3.6.1, zweiter Absatz, S. 34; DEÜV Anlage 2 (123)",
+        "kurz": "RS Übergangsbereich, 4.3.6.1"
+      },
+      "sachverhalt": "Freiwilliges Soziales Jahr, Taschengeld und Sachbezüge (Unterkunft, Verpflegung) zusammen 650 €/Monat; der Arbeitgeber trägt die Beiträge allein (§ 20 Abs. 3 S. 1 Nr. 2 SGB IV) → Regeln des Übergangsbereichs gelten nicht.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "123",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-07-07",
+        "status": "dienst",
+        "dienstBis": "2027-08-31",
+        "bezugRente": false,
+        "artLautVereinbarung": "freiwilligendienst",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "650.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "freiwilligendienst",
+        "agBefristet": false
+      },
+      "hinweis": "Abbildung: Monatsentgelt = Taschengeld einschließlich Sachbezügen. Trägt der Arbeitgeber nur das Taschengeld (höchstens rund 507 €) ein, ergibt sich zufällig 0."
+    },
+    {
+      "id": "UEB-2000",
+      "titel": "Grenzfall: genau 2.000,00 €",
+      "quelle": {
+        "dokument": "Gesetzestexte (gesetze-im-internet.de, Fassung vom 29.10.2026) mit DEÜV Anlagen 1, 2, 16",
+        "fundstelle": "§ 20 Abs. 2 SGB IV („regelmäßig 2 000 Euro im Monat nicht übersteigen“)",
+        "kurz": "§ 20 Abs. 2 SGB IV"
+      },
+      "sachverhalt": "Versicherungspflichtige Beschäftigung, festes Monatsentgelt 2.000,00 € → Übergangsbereich (Obergrenze eingeschlossen).",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-121EZ",
+      "titel": "Auszubildender 300 € mit Urlaubsgeld",
+      "quelle": {
+        "dokument": "DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026",
+        "fundstelle": "Anlage 2, Personengruppe 121, S. 6",
+        "kurz": "DEÜV Anlage 2 (121)"
+      },
+      "sachverhalt": "Auszubildender, Ausbildungsvergütung 300 €/Monat, vertraglich Urlaubsgeld 200 € im Juni (der Monat übersteigt dann 325 €). 121 gilt auch, wenn die Geringverdienergrenze infolge einmalig gezahlten Entgelts überschritten wird.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "121",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2009-08-08",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "ausbildung"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "300.00",
+            "avGueltigAb": "2026-08-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "ausbildung",
+        "agAusserbetrieblich": false,
+        "agBefristet": false,
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "urlaubsgeld",
+            "ezBetrag": "200.00",
+            "ezMonat": "06",
+            "ezAnspruch": true
+          }
+        ]
+      },
+      "hinweis": "Übergangsbereich 0 wegen § 20 Abs. 2a S. 9 SGB IV (zur Berufsausbildung Beschäftigte). Eine eigene Status-Antwort für eine Ausbildung bei diesem Arbeitgeber gibt es nicht; „Arbeitnehmerin oder Arbeitnehmer … oder nur hier“ ist ohne Wirkung auf die Regeln."
+    },
+    {
+      "id": "D-102-0",
+      "titel": "Duales Studium ohne Arbeitsentgelt",
+      "quelle": {
+        "dokument": "DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026",
+        "fundstelle": "Anlage 2, Personengruppe 102 und 121 (Satz zu Auszubildenden ohne Arbeitsentgelt); RS Studenten Tz. C 2, S. 46",
+        "kurz": "DEÜV Anlage 2 / RS Studenten C 2"
+      },
+      "sachverhalt": "Teilnehmerin an einem praxisintegrierten dualen Studium ohne Arbeitsentgelt → 102 (121 gilt nicht für Auszubildende ohne Arbeitsentgelt); RV und AV als zur Berufsausbildung Beschäftigte über den Arbeitgeber; KV/PV nach § 5 Abs. 1 Nr. 10 SGB V (Meldung nach SKV-MV), nicht über die Beschäftigung.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "102",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-01-01",
+        "status": "student",
+        "studienArt": "dual",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "ausbildung"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-10-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "0.00",
+            "avGueltigAb": "2026-10-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "dualesStudium",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-119",
+      "titel": "Altersvollrentner nach der Regelaltersgrenze, 1.500 €, kein Verzicht",
+      "quelle": {
+        "dokument": "DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026",
+        "fundstelle": "Anlage 2 (119); § 5 Abs. 4 S. 1 Nr. 1, § 172 Abs. 1 S. 1 Nr. 1 SGB VI; § 28 Abs. 1 Nr. 1, § 346 Abs. 3 SGB III; § 50, § 243 SGB V; RS Übergangsbereich Tz. 4.3.3.6",
+        "kurz": "DEÜV Anlage 2 (119)"
+      },
+      "sachverhalt": "Altersvollrentner, geboren 1958 (Regelaltersgrenze erreicht), Teilzeit 1.500 €/Monat, gesetzlich versichert, kein Verzicht auf die RV-Freiheit → RV frei (AG-Anteil), AV frei (AG-Anteil), KV ermäßigt (kein Krankengeld bei Vollrente), PV pflichtig; Arbeitgeberanteil RV auch im Übergangsbereich.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "3321",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1958-01-15",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-02-01",
+        "rvVerzicht": "nein",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-120V",
+      "titel": "Altersvollrentner nach der Regelaltersgrenze mit Verzicht",
+      "quelle": {
+        "dokument": "DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026",
+        "fundstelle": "Anlage 2 (120, zweiter Spiegelstrich); § 5 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.2",
+        "kurz": "DEÜV Anlage 2 (120)"
+      },
+      "sachverhalt": "Wie D-119, die Person verzichtet schriftlich auf die RV-Freiheit (§ 5 Abs. 4 S. 2 SGB VI) → RV voller Beitrag.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3121",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1958-01-15",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-02-01",
+        "rvVerzicht": "ja",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-120VOR",
+      "titel": "Altersvollrente vor der Regelaltersgrenze",
+      "quelle": {
+        "dokument": "DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026",
+        "fundstelle": "Anlage 2 (120, erster Spiegelstrich); § 50 SGB V",
+        "kurz": "DEÜV Anlage 2 (120)"
+      },
+      "sachverhalt": "Altersvollrentnerin, geboren 1962 (Regelaltersgrenze noch nicht erreicht), Teilzeit 1.500 €/Monat, gesetzlich versichert → RV und AV pflichtig, KV ermäßigt (Vollrente: kein Krankengeld).",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1962-02-01",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-03-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-119P",
+      "titel": "Pensionär wegen Altersgrenze, jünger als die Regelaltersgrenze",
+      "quelle": {
+        "dokument": "DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026",
+        "fundstelle": "Anlage 2 (119); § 6 Abs. 1 Nr. 6 SGB V; § 5 Abs. 4 S. 1 Nr. 2, § 172 Abs. 1 S. 1 Nr. 2 SGB VI; § 28 Abs. 1 Nr. 1 SGB III",
+        "kurz": "DEÜV Anlage 2 (119)"
+      },
+      "sachverhalt": "Ruhestandsbeamter wegen Erreichens einer besonderen Altersgrenze, geboren 1964 (Regelaltersgrenze noch nicht erreicht), Beihilfe, privat versichert, Teilzeit 1.500 €/Monat → KV frei, PV privat, RV frei mit AG-Anteil, AV pflichtig (AV-Freiheit erst ab der Regelaltersgrenze).",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "0310",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1964-04-04",
+        "status": "ruhestand",
+        "bezugRente": false,
+        "bezugPension": true,
+        "beamtBeihilfe": true,
+        "pensionArt": "alter",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "ja",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Variante „Pensionär/in wegen Alters“ im Varianten-Raster ist 1958 geboren (dort AV 2)."
+    },
+    {
+      "id": "D-EMV",
+      "titel": "Rente wegen voller Erwerbsminderung, Teilzeit 900 €",
+      "quelle": {
+        "dokument": "Gesetzestexte (gesetze-im-internet.de, Fassung vom 29.10.2026) mit DEÜV Anlagen 1, 2, 16",
+        "fundstelle": "§ 50 Abs. 1 S. 1 Nr. 1, § 243 SGB V; § 28 Abs. 1 Nr. 2, Abs. 2 SGB III",
+        "kurz": "SGB V / SGB III"
+      },
+      "sachverhalt": "Bezieher einer Rente wegen voller Erwerbsminderung, geboren 1975, Teilzeit 900 €/Monat (unter 3 Std. täglich), gesetzlich versichert → KV ermäßigt (kein Krankengeld), AV frei, RV und PV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3101",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1975-06-01",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": true,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rentenart": "emVoll",
+        "renteSeit": "2023-01-01",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-RAGNV",
+      "titel": "Regelaltersgrenze erreicht, nie rentenversichert",
+      "quelle": {
+        "dokument": "Gesetzestexte (gesetze-im-internet.de, Fassung vom 29.10.2026) mit DEÜV Anlagen 1, 2, 16",
+        "fundstelle": "§ 5 Abs. 4 S. 1 Nr. 3, § 172 Abs. 1 S. 1 Nr. 3 SGB VI; DEÜV Anlage 2 (119 nur für Nr. 1, 2)",
+        "kurz": "SGB VI / Anlage 2"
+      },
+      "sachverhalt": "Geboren 1958, Regelaltersgrenze erreicht, keine Rente, bis zur Regelaltersgrenze nie rentenversichert; 1.500 €/Monat, gesetzlich versichert → RV frei mit AG-Anteil, AV frei mit AG-Anteil, KV und PV pflichtig; Personengruppe 101, weil 119 nur Vollrente und Versorgung erfasst.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1321",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1958-01-15",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvNieVersichert": "nieVersichert",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-JAEG02",
+      "titel": "Seit vor 2003 privat versichert, 72.000 € im Jahr",
+      "quelle": {
+        "dokument": "Gesetzestexte (gesetze-im-internet.de, Fassung vom 29.10.2026) mit DEÜV Anlagen 1, 2, 16",
+        "fundstelle": "§ 6 Abs. 1 Nr. 1, Abs. 7 SGB V; SVBezGrV 2026 § 2 Abs. 2 (69.750 €)",
+        "kurz": "SGB V § 6 Abs. 7"
+      },
+      "sachverhalt": "Seit vor dem 31.12.2002 privat versichert, 6.000 €/Monat (72.000 € > besondere JAEG 69.750 €, aber < 77.400 €) → KV frei, PV privat, RV und AV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1975-05-05",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "artLautVereinbarung": "festeStelle",
+        "pkvBestand2002": "ja",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "6000.00",
+        "agUeberJaeg": true,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false,
+        "agFirmenzahler": "nichtFreiwillig"
+      }
+    },
+    {
+      "id": "D-JAEGMJ",
+      "titel": "Hauptbeschäftigung knapp unter der JAEG neben erstem Minijob",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil B 2.2.2.8, S. 33 (nur zweite und weitere Minijobs zählen zur JAEG)",
+        "kurz": "GfR 2026, B 2.2.2.8"
+      },
+      "sachverhalt": "Gesetzlich versichert, versicherungspflichtige Hauptbeschäftigung bei diesem Arbeitgeber 6.100 €/Monat (73.200 € ≤ 77.400 €), daneben seit 2025 ein (erster) Minijob 450 € → der erste Minijob wird nicht zusammengerechnet → KV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": true,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle",
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber M",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "450.00",
+            "jobRvBefreit": "nein"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "6100.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-MJRAG",
+      "titel": "Altersvollrentner nach der Regelaltersgrenze im Minijob",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil B 2.2.4.2, S. 35–36; C 2.1, C 3.1, S. 64, 69",
+        "kurz": "GfR 2026, B 2.2.4.2"
+      },
+      "sachverhalt": "Altersvollrentner, geboren 1958, Minijob 450 €, gesetzlich versichert, kein Verzicht → RV frei (keine Befreiung nötig), Arbeitgeber zahlt RV-Pauschalbeitrag (§ 172 Abs. 3 SGB VI) und KV-Pauschalbeitrag.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-01-15",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-02-01",
+        "rvVerzicht": "nein",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "450.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-603",
+      "titel": "Grenzfall: „Minijob“ mit 603,01 €",
+      "quelle": {
+        "dokument": "Gesetzestexte (gesetze-im-internet.de, Fassung vom 29.10.2026) mit DEÜV Anlagen 1, 2, 16",
+        "fundstelle": "§ 8 Abs. 1 Nr. 1, Abs. 1a SGB IV; GfR 2026 (Geringfügigkeitsgrenze 603 €); § 20 Abs. 2 SGB IV",
+        "kurz": "SGB IV § 8"
+      },
+      "sachverhalt": "Als Minijob vereinbart, festes Monatsentgelt 603,01 € (Jahr 7.236,12 € > 7.236 €) → mehr als geringfügig, versicherungspflichtig, Übergangsbereich.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-05-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "603.01",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "D-KFAZ",
+      "titel": "Aushilfe zwischen Schule und Ausbildung, über der Grenze",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil B 2.3.3.2, S. 46",
+        "kurz": "GfR 2026, B 2.3.3.2"
+      },
+      "sachverhalt": "Schulabgänger mit Ausbildungsplatz ab 01.09., Aushilfe 01.06.–31.08. für 1.500 €/Monat → Beschäftigung zwischen Schule und betrieblicher Ausbildung ist berufsmäßig; über der Grenze → nicht kurzfristig, versicherungspflichtig (Befristung über zehn Wochen: KV 1).",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2008-08-08",
+        "status": "schulende",
+        "grundsicherung": false,
+        "schulendeDatum": "2026-05-31",
+        "planNachSchule": "ausbildung",
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-31",
+        "agKurzfristigArbeitstage": "65",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      }
+    }
+  ]
+}
