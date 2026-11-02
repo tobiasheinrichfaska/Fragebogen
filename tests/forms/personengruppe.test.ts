@@ -5,10 +5,10 @@ import { derive } from '../../src/logic/derivations';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 
 function filled(role: string, values: Record<string, unknown>, base: Questionnaire): Questionnaire {
   let q = ok(startPart(base, form, role));

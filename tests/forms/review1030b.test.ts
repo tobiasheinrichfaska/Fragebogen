@@ -10,10 +10,10 @@ import { createQuestionnaire, sealPart, setValue, startPart } from '../../src/lo
 import { transmissionBlockers } from '../../src/logic/requirements';
 import { interviewSummary } from '../../src/logic/interview';
 import { describeValidity, withinValidity } from '../../src/logic/validity';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 const { definition } = form;
 const SEALABLE_EMPLOYER = {
   agFirma: 'Beispiel Bau GmbH',

@@ -15,11 +15,10 @@ Server (Einstieg dort: die Startseite der App rechts neben dem Testbereich).
 **Erwartet:**
 
 - Die Überschrift **„Fragebogen“** erscheint, darunter drei Kästen: **„Neuer Fragebogen“** mit
-  den Knöpfen **„Personalfragebogen: Angaben für die Sofortmeldung“** (Version 0.2.0 · Testfassung)
-  und **„Personalfragebogen: Angaben für die Lohnabrechnung“** (Version 0.1.0 · Testfassung),
+  dem Knopf **„Personalfragebogen: Angaben für die Sofortmeldung“** (Version 0.2.0 · Testfassung),
   **„Weiterbearbeiten oder prüfen“** und **„Ihre Daten bleiben auf diesem Gerät“**.
-- _Nicht offensichtlich:_ Die Monatsmeldung, die Steuerfreigabe und die Dienstwagen-Überlassung
-  fehlen hier – sie sind noch Entwürfe und stehen nur im Testbereich.
+- _Nicht offensichtlich:_ Der Personalfragebogen, die Monatsmeldung, die Steuerfreigabe und die
+  Dienstwagen-Überlassung fehlen hier – sie sind Entwürfe und stehen nur im Testbereich.
 - Ganz unten steht **„Fragebogen 0.1.0 · läuft vollständig auf diesem Gerät“** (oder eine höhere
   Version).
 - _Nicht offensichtlich:_ In der Adresszeile steht `file:///…` statt einer Internetadresse. Das ist

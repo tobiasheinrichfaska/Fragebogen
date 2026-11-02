@@ -3,10 +3,5 @@
     "id": "sofortmeldung",
     "version": "0.2.0",
     "definitionHash": "0afae3b2a475456214cbaa08bbe181db4fa14b7bcb3d7d36c0c1213383949538"
-  },
-  {
-    "id": "personalfragebogen",
-    "version": "0.1.0",
-    "definitionHash": "3dcf31e2ea75f74d0f60db5544ea7563a6bec6d25dca11f4a29cee98fb23d645"
   }
 ]

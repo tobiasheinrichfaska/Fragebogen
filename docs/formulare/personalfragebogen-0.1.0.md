@@ -6,7 +6,7 @@
 | Angabe | Wert |
 | --- | --- |
 | Formular | personalfragebogen, Version 0.1.0 |
-| Status | Eingefrorene Testfassung (0.x): darf vor dem ersten Release gelöscht werden, solange kein echter Fragebogen damit ausgefüllt wurde |
+| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026 |
 | Definition (SHA-256) | 3dcf31e2ea75f74d0f60db5544ea7563a6bec6d25dca11f4a29cee98fb23d645 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |

@@ -12,7 +12,7 @@ import { parseExportMappings } from '../../src/logic/exportMapping';
 import { buildLugImport, neededInputs } from '../../src/logic/lugImport';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const font = (name: string) =>
@@ -22,7 +22,7 @@ const FONTS: PdfFonts = {
   bold: font('NotoSans-SemiBold.subset.ttf'),
   mono: font('NotoSansMono-Regular.subset.ttf'),
 };
-const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 const parsed = parseExportMappings(structuredClone(mappingsRaw));
 if (!parsed.ok || !parsed.mappings[0]) throw new Error('fixture mapping does not decode');
 const mapping = parsed.mappings[0];

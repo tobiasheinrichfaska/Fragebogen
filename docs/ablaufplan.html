@@ -62,14 +62,195 @@ wird aber nicht mit unterschrieben.</p>
 <li><span class="swatch" style="background:var(--taken);border-color:var(--taken-line)"></span>Legt eine andere Station fest</li>
 </ul>
 <ol>
-<li><a href="#personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
 <li><a href="#sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung 0.2.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
 <li><a href="#dienstwagen-0.1.0">Dienstwagen: Überlassung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
+<li><a href="#personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 </ol>
+<h2 id="sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">0.2.0</span></h2>
+<p class="meta">Veröffentlicht (Testfassung) · Definition <code>0afae3b2a475456214cbaa08bbe181db4fa14b7bcb3d7d36c0c1213383949538</code></p>
+<p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
+<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
+<li>Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.</li>
+<li>Der Hinweis auf die Mitführungspflicht wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die Aushändigung.</li>
+<li>Er fragt nur, was die Sofortmeldung braucht; die übrigen Angaben für die Lohnabrechnung folgen im Personalfragebogen.</li>
+</ul></div>
+<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
+<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
+<li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+<li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
+</ul></div>
+<section class="station" id="sofortmeldung-0.2.0-person">
+<h3>Station: Beschäftigte Person</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)“.</p>
+<h4>Angaben der beschäftigten Person</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">3</span> <span class="q">Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?</span><div class="meta">Titel, Vorsatzwort oder Namenszusatz · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4, Nr. 5, Nr. 6 ab.</div><div class="meta">Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.</div></li>
+<li class="step level-1"><span class="num">4</span> <span class="q">Welchen akademischen Grad oder Titel führen Sie im Namen?</span><div class="meta">Titel · Text · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
+<li class="step level-1"><span class="num">5</span> <span class="q">Wie lautet das Vorsatzwort Ihres Namens?</span><div class="meta">Vorsatzwort · Auswahl: aus der Liste „Vorsatzworte“ (188 Einträge; DEÜV-Rundschreiben, Anlage 6 (Stand 18.03.2026, mit den Schreibweisen vom 08.08.2007)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
+<li class="step level-1"><span class="num">6</span> <span class="q">Wie lautet der Namenszusatz?</span><div class="meta">Namenszusatz · Auswahl: aus der Liste „Namenszusätze“ (70 Einträge; DEÜV-Rundschreiben, Anlage 7 (Stand 04.05.2006)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
+<li class="step level-0 decision"><span class="num">7</span> <span class="q">Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?</span><div class="meta">Ist Ihr Geburtsname gleich Ihrem Familiennamen? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div><div class="meta">Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.</div></li>
+<li class="step level-1"><span class="num">8</span> <span class="q">Wie lautet Ihr Geburtsname?</span><div class="meta">Geburtsname · Text · Pflicht</div><div class="when">Gefragt erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 7).</div><div class="why">Warum: Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest.</div></li>
+<li class="step level-0"><span class="num">9</span> <span class="q">Wann sind Sie geboren?</span><div class="meta">Geburtsdatum · Datum · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">10</span> <span class="q">Sind Sie in Deutschland geboren?</span><div class="meta">In Deutschland geboren? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 11 ab.</div><div class="meta">Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel in der DDR geboren ist, antwortet mit Ja.</div></li>
+<li class="step level-1"><span class="num">11</span> <span class="q">In welchem Staat sind Sie geboren?</span><div class="meta">Geburtsland · Text: Vorschläge aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „In Deutschland geboren?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 10).</div><div class="why">Warum: Wer in Deutschland geboren ist, braucht kein Geburtsland anzugeben; es steht dann fest.</div></li>
+<li class="step level-0"><span class="num">12</span> <span class="q">In welcher Stadt oder Gemeinde sind Sie geboren?</span><div class="meta">Geburtsort (Stadt oder Gemeinde) · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">13</span> <span class="q">Welches Geschlecht ist bei Ihnen eingetragen?</span><div class="meta">Geschlecht · Auswahl: männlich · weiblich · divers · unbestimmt · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">14</span> <span class="q">Haben Sie die deutsche Staatsangehörigkeit?</span><div class="meta">Deutsche Staatsangehörigkeit? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 15 ab.</div><div class="meta">Auch wenn Sie daneben noch eine andere haben: Dann antworten Sie mit Ja.</div></li>
+<li class="step level-1"><span class="num">15</span> <span class="q">Welche Staatsangehörigkeit haben Sie?</span><div class="meta">Staatsangehörigkeit · Text: Vorschläge aus der Liste „Staatsangehörigkeiten außer der deutschen“ (203 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „Deutsche Staatsangehörigkeit?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 14).</div><div class="why">Warum: Wer die deutsche Staatsangehörigkeit hat, gibt nur diese an; sie geht bei den Meldungen vor.</div></li>
+<li class="step level-0"><span class="num">16</span> <span class="q">Wie lautet Ihre Versicherungsnummer der Rentenversicherung?</span><div class="meta">Versicherungsnummer der Rentenversicherung (falls bekannt) · Versicherungsnummer · optional</div></li>
+</ol>
+<h4>Anschrift</h4>
+<ol class="flow">
+<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht.</div></li>
+<li class="step level-1"><span class="num">18</span> <span class="q">In welchem Staat liegt Ihre Anschrift?</span><div class="meta">Staat · Auswahl: aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.</div></li>
+<li class="step level-0"><span class="num">19</span> <span class="q">In welcher Straße wohnen Sie?</span><div class="meta">Straße · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">20</span> <span class="q">Welche Hausnummer hat die Anschrift?</span><div class="meta">Hausnummer · Text · optional</div></li>
+<li class="step level-0"><span class="num">21</span> <span class="q">Gibt es einen Zusatz zur Anschrift?</span><div class="meta">Anschriftenzusatz · Text · optional</div></li>
+<li class="step level-1"><span class="num">22</span> <span class="q">Wie lautet Ihre Postleitzahl?</span><div class="meta">Postleitzahl · Text · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.</div></li>
+<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen.</div></li>
+<li class="step level-0"><span class="num">24</span> <span class="q">In welchem Ort wohnen Sie?</span><div class="meta">Wohnort · Text · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="sofortmeldung-0.2.0-vertretung">
+<h3>Station: Gesetzliche Vertretung</h3>
+<p class="meta">Wird gebraucht: nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist · unterschreibt</p>
+<p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.</p>
+<h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="sofortmeldung-0.2.0-arbeitgeber">
+<h3>Station: Arbeitgeber</h3>
+<p class="meta">Wird gebraucht: immer · schließt ab, Unterschrift freiwillig</p>
+<h4>Angaben des Arbeitgebers</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet die Firma des Arbeitgebers?</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lautet die Betriebsnummer?</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
+<li class="step level-0"><span class="num">3</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
+<li class="step level-0"><span class="num">6</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<h2 id="dienstwagen-0.1.0">Dienstwagen: Überlassung <span class="muted">0.1.0</span></h2>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b</code></p>
+<p><strong>Diese Fassung gilt für „Überlassen ab“ ab 01.01.2026.</strong></p>
+<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
+<li>Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.</li>
+<li>Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.</li>
+<li>Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung.</li>
+</ul></div>
+<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
+<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
+<li>Arbeitgeber und Beschäftigte Person: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+</ul></div>
+<section class="station" id="dienstwagen-0.1.0-arbeitgeber">
+<h3>Station: Arbeitgeber</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<h4>Arbeitgeber und beschäftigte Person</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Familienname der beschäftigten Person</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">3</span> <span class="q">Vornamen der beschäftigten Person</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Personalnummer</span><div class="meta">Personalnummer · Text · optional</div></li>
+</ol>
+<h4>Fahrzeug</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">5</span> <span class="q">Amtliches Kennzeichen</span><div class="meta">Amtliches Kennzeichen · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">6</span> <span class="q">Marke und Modell</span><div class="meta">Marke und Modell · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">7</span> <span class="q">Datum der Erstzulassung</span><div class="meta">Datum der Erstzulassung · Datum · Pflicht</div></li>
+<li class="step level-0"><span class="num">8</span> <span class="q">Kauf- oder Leasingbeginn beim Arbeitgeber</span><div class="meta">Kauf- oder Leasingbeginn beim Arbeitgeber · Datum · Pflicht</div></li>
+<li class="step level-0"><span class="num">9</span> <span class="q">Inländischer Listenpreis bei Erstzulassung</span><div class="meta">Inländischer Listenpreis bei Erstzulassung · Betrag · Pflicht</div></li>
+<li class="step level-0"><span class="num">10</span> <span class="q">Werkseitige Sonderausstattung</span><div class="meta">Werkseitige Sonderausstattung · Betrag · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">11</span> <span class="q">Antrieb</span><div class="meta">Antrieb · Auswahl: Verbrennungsmotor · Hybrid ohne Stecker · Plug-in-Hybrid (extern aufladbar) · reines Elektrofahrzeug · Brennstoffzelle (Wasserstoff) · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 12, Nr. 13, Nr. 14 ab.</div><div class="meta">Zulassungsbescheinigung Teil I, Feld 10.</div></li>
+<li class="step level-1"><span class="num">12</span> <span class="q">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am</span><div class="meta">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „reines Elektrofahrzeug“ oder „Plug-in-Hybrid (extern aufladbar)“ oder „Brennstoffzelle (Wasserstoff)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der ersten Überlassung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
+<li class="step level-1"><span class="num">13</span> <span class="q">CO2-Emission</span><div class="meta">CO2-Emission · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
+<li class="step level-1"><span class="num">14</span> <span class="q">Elektrische Reichweite</span><div class="meta">Elektrische Reichweite · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
+</ol>
+<h4>Überlassung</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">15</span> <span class="q">Überlassen ab</span><div class="meta">Überlassen ab · Datum · Pflicht</div></li>
+<li class="step level-0"><span class="num">16</span> <span class="q">Überlassen bis</span><div class="meta">Überlassen bis · Datum · optional</div></li>
+<li class="step level-0 decision"><span class="num">17</span> <span class="q">Darf die Person das Fahrzeug privat nutzen?</span><div class="meta">Privatnutzung erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18 ab.</div><div class="meta">Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger).</div></li>
+<li class="step level-1"><span class="num">18</span> <span class="q">Regelung des Nutzungsverbots</span><div class="meta">Regelung des Nutzungsverbots · Auswahl: Arbeitsvertrag · Dienstwagenvereinbarung · Betriebsvereinbarung · schriftlicher Verzicht der Person (auf Papier) · Pflicht</div><div class="when">Gefragt erst wenn „Privatnutzung erlaubt“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht.</div></li>
+<li class="step level-0 decision"><span class="num">19</span> <span class="q">Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 20 ab.</div></li>
+<li class="step level-1"><span class="num">20</span> <span class="q">Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?</span><div class="meta">Pauschalierung mit 15 % · Ja/Nein · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt“ mit „Ja“ beantwortet ist (hängt ab von Nr. 19).</div><div class="why">Warum: Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG).</div></li>
+<li class="step level-0"><span class="num">21</span> <span class="q">Trifft einer dieser Sonderfälle zu?</span><div class="meta">Sonderfälle · Mehrfachauswahl: Fahrtenbuch statt 1-%-Regelung · Einzelbewertung der Fahrten (0,002 % je Fahrt) · weniger als 5 Arbeitstage pro Woche vor Ort (Homeoffice) · Zuzahlungen oder Kostenübernahme durch die Person · Familienheimfahrten (doppelte Haushaltsführung) · Fahrer wird gestellt · mehrere Personen nutzen das Fahrzeug privat · Erstattung von Ladestrom zu Hause · Überlassung durch Gehaltsumwandlung · keiner davon · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="dienstwagen-0.1.0-person">
+<h3>Station: Beschäftigte Person</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Was Ihre Angaben bewirken“.</p>
+<h4>Angaben der beschäftigten Person</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">3</span> <span class="q">Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 6 ab.</div></li>
+<li class="step level-0 decision"><span class="num">4</span> <span class="q">Fahren Sie von Ihrer Meldeanschrift aus?</span><div class="meta">Fahrten von der Meldeanschrift · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div></li>
+<li class="step level-1"><span class="num">5</span> <span class="q">Anschrift der Wohnung, von der Sie fahren</span><div class="meta">Anschrift der Wohnung, von der Sie fahren · Text · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist (hängt ab von Nr. 4).</div><div class="why">Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung.</div></li>
+<li class="step level-1"><span class="num">6</span> <span class="q">Entfernung Wohnung – erste Tätigkeitsstätte</span><div class="meta">Entfernung Wohnung – erste Tätigkeitsstätte · Zahl · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer zur ersten Tätigkeitsstätte fährt, braucht die Entfernung für die 0,03 % je Kilometer (§ 8 Abs. 2 Satz 3 EStG).</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<h2 id="lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten <span class="muted">0.1.0</span></h2>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>cccc2447d81b3c21edde7bda7407ca04a9820ca5e6d7280bba7b5c627c53b07b</code></p>
+<p><strong>Diese Fassung gilt für „Abrechnungsmonat“ ab 01.01.2026.</strong></p>
+<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
+<li>Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.</li>
+<li>Ein- und Austritte, Änderungen und Pfändungen nennt sie nur als Besonderheiten; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.</li>
+<li>Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung.</li>
+</ul></div>
+<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
+<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
+</ul></div>
+<section class="station" id="lohnmeldung-0.1.0-arbeitgeber">
+<h3>Station: Arbeitgeber</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p>Zuerst die Hinweise: „Bis wann die Meldung gebraucht wird“, „Arbeitszeit aufzeichnen“.</p>
+<h4>Meldung</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Abrechnungsmonat</span><div class="meta">Abrechnungsmonat · Monat · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">3</span> <span class="q">Betriebsnummer des Arbeitgebers</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Mandantennummer</span><div class="meta">Mandantennummer · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?</span><div class="meta">Abgabe bis zum … des Monats · Zahl · optional</div></li>
+<li class="step level-0"><span class="num">6</span> <span class="q">Wer gibt die Meldung ab und ist Ansprechperson für Rückfragen?</span><div class="meta">Meldende Person · Text · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">7</span> <span class="q">Telefon</span><div class="meta">Telefon · Text · Pflicht, wenn „E-Mail“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 8.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div></li>
+<li class="step level-0 decision"><span class="num">8</span> <span class="q">E-Mail</span><div class="meta">E-Mail · Text · Pflicht, wenn „Telefon“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 7.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 7 ab.</div></li>
+<li class="step level-0"><span class="num">9</span> <span class="q">Lohnarten Ihres Betriebs</span><div class="meta">Lohnarten Ihres Betriebs · Text · optional</div></li>
+</ol>
+<h4>Mitarbeitende</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">10</span> <span class="q">Wer war im Abrechnungsmonat beschäftigt?</span><div class="meta">Mitarbeitende · Tabelle mit den Spalten Familienname, Vorname · Personalnummer · Art der Vergütung · Stundenlohn bzw. Monatsentgelt (brutto) · Im Vormonat · Neue Vergütung gilt ab · scheidet in diesem Monat aus · Urlaub und Krankheit · Ausgefallene Stunden Urlaub · Ausgefallene Stunden Krankheit · Pflicht</div></li>
+</ol>
+<h4>Werte des Abrechnungsmonats</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">11</span> <span class="q">Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?</span><div class="meta">Werte für den Abrechnungsmonat · Tabelle mit den Spalten Person · Lohnart · Wert · Bemerkung · optional</div></li>
+</ol>
+<h4>Nachträge für den Vormonat</h4>
+<ol class="flow">
+<li class="step level-0 decision"><span class="num">12</span> <span class="q">Gibt es Werte, die noch für den Vormonat abgerechnet werden sollen, zum Beispiel Zuschläge?</span><div class="meta">Nachträge für den Vormonat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 13 ab.</div></li>
+<li class="step level-1"><span class="num">13</span> <span class="q">Welche Werte sollen noch für den Vormonat abgerechnet werden?</span><div class="meta">Werte für den Vormonat · Tabelle mit den Spalten Person · Lohnart · Wert · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Nachträge für den Vormonat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 12).</div><div class="why">Warum: Nur wenn es Nachträge für den Vormonat gibt, kommt diese Seite.</div></li>
+</ol>
+<h4>Besonderheiten</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">14</span> <span class="q">Gibt es Besonderheiten in diesem Monat?</span><div class="meta">Besonderheiten · Text · optional</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
 <h2 id="personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">0.1.0</span></h2>
-<p class="meta">Veröffentlicht (Testfassung) · Definition <code>3dcf31e2ea75f74d0f60db5544ea7563a6bec6d25dca11f4a29cee98fb23d645</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>3dcf31e2ea75f74d0f60db5544ea7563a6bec6d25dca11f4a29cee98fb23d645</code></p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.</li>
@@ -427,187 +608,6 @@ wird aber nicht mit unterschrieben.</p>
 <ol class="flow">
 <li class="step level-1"><span class="num">121</span> <span class="q">An welchem Tag ist der unterschriebene Befreiungsantrag bei Ihnen eingegangen?</span><div class="meta">Befreiungsantrag eingegangen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Arbeitspapiere, die vorliegen“ „Befreiungsantrag Rentenversicherung im Minijob (Papieroriginal)“ angekreuzt ist (hängt ab von Nr. 120).</div><div class="why">Warum: Erst wenn der Befreiungsantrag auf Papier vorliegt, gibt es ein Eingangsdatum; mit ihm beginnt die Befreiung (§ 6 Abs. 4 SGB VI, § 8 Abs. 2 Nr. 4a BVV).</div></li>
 <li class="step level-1"><span class="num">122</span> <span class="q">An welchem Tag ist die unterschriebene Verzichtserklärung bei Ihnen eingegangen?</span><div class="meta">Verzichtserklärung eingegangen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Arbeitspapiere, die vorliegen“ „Verzicht auf die Rentenversicherungsfreiheit (Papieroriginal)“ angekreuzt ist (hängt ab von Nr. 120).</div><div class="why">Warum: Erst wenn die Verzichtserklärung auf Papier vorliegt, gibt es ein Eingangsdatum; der Verzicht wirkt für die Zukunft (§ 5 Abs. 4 Satz 2 SGB VI).</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<h2 id="sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">0.2.0</span></h2>
-<p class="meta">Veröffentlicht (Testfassung) · Definition <code>0afae3b2a475456214cbaa08bbe181db4fa14b7bcb3d7d36c0c1213383949538</code></p>
-<p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
-<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.</li>
-<li>Der Hinweis auf die Mitführungspflicht wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die Aushändigung.</li>
-<li>Er fragt nur, was die Sofortmeldung braucht; die übrigen Angaben für die Lohnabrechnung folgen im Personalfragebogen.</li>
-</ul></div>
-<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
-<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
-<li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
-<li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
-</ul></div>
-<section class="station" id="sofortmeldung-0.2.0-person">
-<h3>Station: Beschäftigte Person</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)“.</p>
-<h4>Angaben der beschäftigten Person</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">3</span> <span class="q">Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?</span><div class="meta">Titel, Vorsatzwort oder Namenszusatz · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4, Nr. 5, Nr. 6 ab.</div><div class="meta">Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.</div></li>
-<li class="step level-1"><span class="num">4</span> <span class="q">Welchen akademischen Grad oder Titel führen Sie im Namen?</span><div class="meta">Titel · Text · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
-<li class="step level-1"><span class="num">5</span> <span class="q">Wie lautet das Vorsatzwort Ihres Namens?</span><div class="meta">Vorsatzwort · Auswahl: aus der Liste „Vorsatzworte“ (188 Einträge; DEÜV-Rundschreiben, Anlage 6 (Stand 18.03.2026, mit den Schreibweisen vom 08.08.2007)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
-<li class="step level-1"><span class="num">6</span> <span class="q">Wie lautet der Namenszusatz?</span><div class="meta">Namenszusatz · Auswahl: aus der Liste „Namenszusätze“ (70 Einträge; DEÜV-Rundschreiben, Anlage 7 (Stand 04.05.2006)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
-<li class="step level-0 decision"><span class="num">7</span> <span class="q">Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?</span><div class="meta">Ist Ihr Geburtsname gleich Ihrem Familiennamen? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div><div class="meta">Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.</div></li>
-<li class="step level-1"><span class="num">8</span> <span class="q">Wie lautet Ihr Geburtsname?</span><div class="meta">Geburtsname · Text · Pflicht</div><div class="when">Gefragt erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 7).</div><div class="why">Warum: Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest.</div></li>
-<li class="step level-0"><span class="num">9</span> <span class="q">Wann sind Sie geboren?</span><div class="meta">Geburtsdatum · Datum · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">10</span> <span class="q">Sind Sie in Deutschland geboren?</span><div class="meta">In Deutschland geboren? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 11 ab.</div><div class="meta">Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel in der DDR geboren ist, antwortet mit Ja.</div></li>
-<li class="step level-1"><span class="num">11</span> <span class="q">In welchem Staat sind Sie geboren?</span><div class="meta">Geburtsland · Text: Vorschläge aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „In Deutschland geboren?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 10).</div><div class="why">Warum: Wer in Deutschland geboren ist, braucht kein Geburtsland anzugeben; es steht dann fest.</div></li>
-<li class="step level-0"><span class="num">12</span> <span class="q">In welcher Stadt oder Gemeinde sind Sie geboren?</span><div class="meta">Geburtsort (Stadt oder Gemeinde) · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">13</span> <span class="q">Welches Geschlecht ist bei Ihnen eingetragen?</span><div class="meta">Geschlecht · Auswahl: männlich · weiblich · divers · unbestimmt · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">14</span> <span class="q">Haben Sie die deutsche Staatsangehörigkeit?</span><div class="meta">Deutsche Staatsangehörigkeit? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 15 ab.</div><div class="meta">Auch wenn Sie daneben noch eine andere haben: Dann antworten Sie mit Ja.</div></li>
-<li class="step level-1"><span class="num">15</span> <span class="q">Welche Staatsangehörigkeit haben Sie?</span><div class="meta">Staatsangehörigkeit · Text: Vorschläge aus der Liste „Staatsangehörigkeiten außer der deutschen“ (203 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „Deutsche Staatsangehörigkeit?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 14).</div><div class="why">Warum: Wer die deutsche Staatsangehörigkeit hat, gibt nur diese an; sie geht bei den Meldungen vor.</div></li>
-<li class="step level-0"><span class="num">16</span> <span class="q">Wie lautet Ihre Versicherungsnummer der Rentenversicherung?</span><div class="meta">Versicherungsnummer der Rentenversicherung (falls bekannt) · Versicherungsnummer · optional</div></li>
-</ol>
-<h4>Anschrift</h4>
-<ol class="flow">
-<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht.</div></li>
-<li class="step level-1"><span class="num">18</span> <span class="q">In welchem Staat liegt Ihre Anschrift?</span><div class="meta">Staat · Auswahl: aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.</div></li>
-<li class="step level-0"><span class="num">19</span> <span class="q">In welcher Straße wohnen Sie?</span><div class="meta">Straße · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">20</span> <span class="q">Welche Hausnummer hat die Anschrift?</span><div class="meta">Hausnummer · Text · optional</div></li>
-<li class="step level-0"><span class="num">21</span> <span class="q">Gibt es einen Zusatz zur Anschrift?</span><div class="meta">Anschriftenzusatz · Text · optional</div></li>
-<li class="step level-1"><span class="num">22</span> <span class="q">Wie lautet Ihre Postleitzahl?</span><div class="meta">Postleitzahl · Text · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.</div></li>
-<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen.</div></li>
-<li class="step level-0"><span class="num">24</span> <span class="q">In welchem Ort wohnen Sie?</span><div class="meta">Wohnort · Text · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<section class="station" id="sofortmeldung-0.2.0-vertretung">
-<h3>Station: Gesetzliche Vertretung</h3>
-<p class="meta">Wird gebraucht: nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist · unterschreibt</p>
-<p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.</p>
-<h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<section class="station" id="sofortmeldung-0.2.0-arbeitgeber">
-<h3>Station: Arbeitgeber</h3>
-<p class="meta">Wird gebraucht: immer · schließt ab, Unterschrift freiwillig</p>
-<h4>Angaben des Arbeitgebers</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet die Firma des Arbeitgebers?</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lautet die Betriebsnummer?</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
-<li class="step level-0"><span class="num">6</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<h2 id="dienstwagen-0.1.0">Dienstwagen: Überlassung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b</code></p>
-<p><strong>Diese Fassung gilt für „Überlassen ab“ ab 01.01.2026.</strong></p>
-<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.</li>
-<li>Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.</li>
-<li>Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung.</li>
-</ul></div>
-<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
-<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
-<li>Arbeitgeber und Beschäftigte Person: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
-</ul></div>
-<section class="station" id="dienstwagen-0.1.0-arbeitgeber">
-<h3>Station: Arbeitgeber</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<h4>Arbeitgeber und beschäftigte Person</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Familienname der beschäftigten Person</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Vornamen der beschäftigten Person</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Personalnummer</span><div class="meta">Personalnummer · Text · optional</div></li>
-</ol>
-<h4>Fahrzeug</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">5</span> <span class="q">Amtliches Kennzeichen</span><div class="meta">Amtliches Kennzeichen · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">6</span> <span class="q">Marke und Modell</span><div class="meta">Marke und Modell · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">7</span> <span class="q">Datum der Erstzulassung</span><div class="meta">Datum der Erstzulassung · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">8</span> <span class="q">Kauf- oder Leasingbeginn beim Arbeitgeber</span><div class="meta">Kauf- oder Leasingbeginn beim Arbeitgeber · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">9</span> <span class="q">Inländischer Listenpreis bei Erstzulassung</span><div class="meta">Inländischer Listenpreis bei Erstzulassung · Betrag · Pflicht</div></li>
-<li class="step level-0"><span class="num">10</span> <span class="q">Werkseitige Sonderausstattung</span><div class="meta">Werkseitige Sonderausstattung · Betrag · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">11</span> <span class="q">Antrieb</span><div class="meta">Antrieb · Auswahl: Verbrennungsmotor · Hybrid ohne Stecker · Plug-in-Hybrid (extern aufladbar) · reines Elektrofahrzeug · Brennstoffzelle (Wasserstoff) · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 12, Nr. 13, Nr. 14 ab.</div><div class="meta">Zulassungsbescheinigung Teil I, Feld 10.</div></li>
-<li class="step level-1"><span class="num">12</span> <span class="q">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am</span><div class="meta">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „reines Elektrofahrzeug“ oder „Plug-in-Hybrid (extern aufladbar)“ oder „Brennstoffzelle (Wasserstoff)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der ersten Überlassung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
-<li class="step level-1"><span class="num">13</span> <span class="q">CO2-Emission</span><div class="meta">CO2-Emission · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
-<li class="step level-1"><span class="num">14</span> <span class="q">Elektrische Reichweite</span><div class="meta">Elektrische Reichweite · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
-</ol>
-<h4>Überlassung</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">15</span> <span class="q">Überlassen ab</span><div class="meta">Überlassen ab · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">16</span> <span class="q">Überlassen bis</span><div class="meta">Überlassen bis · Datum · optional</div></li>
-<li class="step level-0 decision"><span class="num">17</span> <span class="q">Darf die Person das Fahrzeug privat nutzen?</span><div class="meta">Privatnutzung erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18 ab.</div><div class="meta">Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger).</div></li>
-<li class="step level-1"><span class="num">18</span> <span class="q">Regelung des Nutzungsverbots</span><div class="meta">Regelung des Nutzungsverbots · Auswahl: Arbeitsvertrag · Dienstwagenvereinbarung · Betriebsvereinbarung · schriftlicher Verzicht der Person (auf Papier) · Pflicht</div><div class="when">Gefragt erst wenn „Privatnutzung erlaubt“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht.</div></li>
-<li class="step level-0 decision"><span class="num">19</span> <span class="q">Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 20 ab.</div></li>
-<li class="step level-1"><span class="num">20</span> <span class="q">Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?</span><div class="meta">Pauschalierung mit 15 % · Ja/Nein · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt“ mit „Ja“ beantwortet ist (hängt ab von Nr. 19).</div><div class="why">Warum: Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG).</div></li>
-<li class="step level-0"><span class="num">21</span> <span class="q">Trifft einer dieser Sonderfälle zu?</span><div class="meta">Sonderfälle · Mehrfachauswahl: Fahrtenbuch statt 1-%-Regelung · Einzelbewertung der Fahrten (0,002 % je Fahrt) · weniger als 5 Arbeitstage pro Woche vor Ort (Homeoffice) · Zuzahlungen oder Kostenübernahme durch die Person · Familienheimfahrten (doppelte Haushaltsführung) · Fahrer wird gestellt · mehrere Personen nutzen das Fahrzeug privat · Erstattung von Ladestrom zu Hause · Überlassung durch Gehaltsumwandlung · keiner davon · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<section class="station" id="dienstwagen-0.1.0-person">
-<h3>Station: Beschäftigte Person</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Was Ihre Angaben bewirken“.</p>
-<h4>Angaben der beschäftigten Person</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">3</span> <span class="q">Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 6 ab.</div></li>
-<li class="step level-0 decision"><span class="num">4</span> <span class="q">Fahren Sie von Ihrer Meldeanschrift aus?</span><div class="meta">Fahrten von der Meldeanschrift · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div></li>
-<li class="step level-1"><span class="num">5</span> <span class="q">Anschrift der Wohnung, von der Sie fahren</span><div class="meta">Anschrift der Wohnung, von der Sie fahren · Text · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist (hängt ab von Nr. 4).</div><div class="why">Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung.</div></li>
-<li class="step level-1"><span class="num">6</span> <span class="q">Entfernung Wohnung – erste Tätigkeitsstätte</span><div class="meta">Entfernung Wohnung – erste Tätigkeitsstätte · Zahl · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer zur ersten Tätigkeitsstätte fährt, braucht die Entfernung für die 0,03 % je Kilometer (§ 8 Abs. 2 Satz 3 EStG).</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<h2 id="lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>cccc2447d81b3c21edde7bda7407ca04a9820ca5e6d7280bba7b5c627c53b07b</code></p>
-<p><strong>Diese Fassung gilt für „Abrechnungsmonat“ ab 01.01.2026.</strong></p>
-<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.</li>
-<li>Ein- und Austritte, Änderungen und Pfändungen nennt sie nur als Besonderheiten; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.</li>
-<li>Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung.</li>
-</ul></div>
-<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
-<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
-</ul></div>
-<section class="station" id="lohnmeldung-0.1.0-arbeitgeber">
-<h3>Station: Arbeitgeber</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Bis wann die Meldung gebraucht wird“, „Arbeitszeit aufzeichnen“.</p>
-<h4>Meldung</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Abrechnungsmonat</span><div class="meta">Abrechnungsmonat · Monat · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Betriebsnummer des Arbeitgebers</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Mandantennummer</span><div class="meta">Mandantennummer · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?</span><div class="meta">Abgabe bis zum … des Monats · Zahl · optional</div></li>
-<li class="step level-0"><span class="num">6</span> <span class="q">Wer gibt die Meldung ab und ist Ansprechperson für Rückfragen?</span><div class="meta">Meldende Person · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">7</span> <span class="q">Telefon</span><div class="meta">Telefon · Text · Pflicht, wenn „E-Mail“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 8.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div></li>
-<li class="step level-0 decision"><span class="num">8</span> <span class="q">E-Mail</span><div class="meta">E-Mail · Text · Pflicht, wenn „Telefon“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 7.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 7 ab.</div></li>
-<li class="step level-0"><span class="num">9</span> <span class="q">Lohnarten Ihres Betriebs</span><div class="meta">Lohnarten Ihres Betriebs · Text · optional</div></li>
-</ol>
-<h4>Mitarbeitende</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">10</span> <span class="q">Wer war im Abrechnungsmonat beschäftigt?</span><div class="meta">Mitarbeitende · Tabelle mit den Spalten Familienname, Vorname · Personalnummer · Art der Vergütung · Stundenlohn bzw. Monatsentgelt (brutto) · Im Vormonat · Neue Vergütung gilt ab · scheidet in diesem Monat aus · Urlaub und Krankheit · Ausgefallene Stunden Urlaub · Ausgefallene Stunden Krankheit · Pflicht</div></li>
-</ol>
-<h4>Werte des Abrechnungsmonats</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">11</span> <span class="q">Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?</span><div class="meta">Werte für den Abrechnungsmonat · Tabelle mit den Spalten Person · Lohnart · Wert · Bemerkung · optional</div></li>
-</ol>
-<h4>Nachträge für den Vormonat</h4>
-<ol class="flow">
-<li class="step level-0 decision"><span class="num">12</span> <span class="q">Gibt es Werte, die noch für den Vormonat abgerechnet werden sollen, zum Beispiel Zuschläge?</span><div class="meta">Nachträge für den Vormonat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 13 ab.</div></li>
-<li class="step level-1"><span class="num">13</span> <span class="q">Welche Werte sollen noch für den Vormonat abgerechnet werden?</span><div class="meta">Werte für den Vormonat · Tabelle mit den Spalten Person · Lohnart · Wert · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Nachträge für den Vormonat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 12).</div><div class="why">Warum: Nur wenn es Nachträge für den Vormonat gibt, kommt diese Seite.</div></li>
-</ol>
-<h4>Besonderheiten</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">14</span> <span class="q">Gibt es Besonderheiten in diesem Monat?</span><div class="meta">Besonderheiten · Text · optional</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>

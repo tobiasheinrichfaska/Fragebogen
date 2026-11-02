@@ -5,10 +5,10 @@ import { join } from 'node:path';
 import { visibleFields } from '../../src/logic/form';
 import { prefillFrom } from '../../src/logic/prefill';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const personal = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.2.0.json')));
 const COMPONENTS = ['titel', 'vorsatzwort', 'namenszusatz'];
 

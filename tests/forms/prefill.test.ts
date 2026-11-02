@@ -19,7 +19,7 @@ import {
 } from '../../src/logic/session';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { definitionHash } from '../../src/logic/formRegistry';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { NONCE_PERSON, ok, personSealInput, PERSON_VALUES, tableForm } from '../support/sample';
 import {
   completeSofortmeldung,
@@ -34,7 +34,7 @@ const must = (result: SessionResult) => {
 
 const OTHER_ID = '7c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f';
 const personalfragebogen = registeredFrom(
-  readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')),
+  readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')),
 );
 
 describe('prefillFrom — Sofortmeldung into the Personalfragebogen', () => {

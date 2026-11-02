@@ -7,10 +7,10 @@ import { visibleFields } from '../../src/logic/form';
 import { activeExclusions, checkHints } from '../../src/logic/hints';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 const { definition } = form;
 
 type Answers = Record<string, unknown>;

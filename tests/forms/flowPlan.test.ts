@@ -43,7 +43,7 @@ const entries = allVersions
       .map((other) => `${other.form.definition.version} (eingefroren)`),
   }));
 
-const personal = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
 
 function stepsOf(role: string): FlowStep[] {
   const station = flowPlan(personal).stations.find((s) => s.role.id === role);
