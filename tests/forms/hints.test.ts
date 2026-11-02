@@ -212,6 +212,7 @@ describe('check hints — definition rules', () => {
       'hoechstensGeringverdienergrenze',
       'hoechstensZehnWochen',
       'imUebergangsbereich',
+      'inSpaeteremMonat',
       'keinArbeitsentgelt',
       'kuerzerAlsEineWoche',
       'listeneintragNichtGueltig',
@@ -464,5 +465,22 @@ describe('training without pay', () => {
     expect(none('0.01')?.holds).toBe(false);
     expect(none(['300.00'])?.holds).toBe(false);
     expect(none(null, null)).toBeUndefined();
+  });
+});
+
+// 2026-11-02, GfR 2026 B 2.2.4.1 and example 36 (official example GFR-36b).
+describe('a later calendar month', () => {
+  const later = (a: unknown, b: unknown) =>
+    HINT_TESTS.inSpaeteremMonat?.run([a as never, b as never]);
+
+  it('compares months, not days, and names the start of the effect', () => {
+    expect(later('2026-05-31', '2026-05-03')?.holds).toBe(false);
+    expect(later('2026-04-20', '2026-05-03')?.holds).toBe(false);
+    expect(later('2026-06-01', '2026-05-31')).toEqual({
+      holds: true,
+      detail: ['Wirkt ab 01.06.2026.'],
+    });
+    expect(later('2027-01-02', '2026-12-31')?.holds).toBe(true);
+    expect(later(null, '2026-05-03')).toBeUndefined();
   });
 });

@@ -548,6 +548,21 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
         ? { holds: dayNumber(until) - dayNumber(from) + 1 < 7, detail: [] }
         : undefined,
   },
+  // E.g. the RV exemption request reaches the employer after the month the job began: it works from
+  // the start of that month (§ 6 Abs. 4 S. 2 SGB VI; Geringfügigkeits-Richtlinien B 2.2.4.1).
+  inSpaeteremMonat: {
+    args: ['date', 'date'],
+    describe: ([later = '', earlier = '']) =>
+      `„${later}“ in einem späteren Kalendermonat als „${earlier}“ liegt`,
+    run: ([later, earlier]) => {
+      if (typeof later !== 'string' || typeof earlier !== 'string') return undefined;
+      if (!isIsoDate(later) || !isIsoDate(earlier)) return undefined;
+      const month = later.slice(0, 7);
+      const holds = month > earlier.slice(0, 7);
+      const [year = '', mm = ''] = month.split('-');
+      return { holds, detail: holds ? [`Wirkt ab 01.${mm}.${year}.`] : [] };
+    },
+  },
   spaeterAls: {
     args: ['date', 'date'],
     describe: ([later = '', earlier = '']) => `„${later}“ nach „${earlier}“ liegt`,

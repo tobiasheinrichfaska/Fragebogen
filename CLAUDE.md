@@ -603,17 +603,21 @@ Key design decisions (details in `docs/plan.md`):
   now "over 0 €", DEÜV Anlage 2 checked in the text: "gilt nicht für Auszubildende ohne Arbeitsentgelt"),
   so 102/105, and KV/PV 0 via `keinArbeitsentgelt` (RS Studenten Teil C: "Ohne Arbeitsentgelt: 105;
   0-1-1-0").
+  I — RV exemption request received after the month the job began: RV 1 (check) at the start, the
+  note names the month from which 5 applies (`inSpaeteremMonat`; GfR B 2.2.4.1 and example 36 checked in
+  the text).
 
 ---
 
 ## Known Limitations
 
-- **SV proposals differ from 19 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
+- **SV proposals differ from 18 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
   short-term jobs ignore time limits, regularity and earlier jobs (A) and other short-term pay (B);
   Werkstudent rules come before 109/110 and ignore the 20 hours (C); JAEG counts the first Minijob,
-  second Minijob next to a JAEG-free main job (E); Entgeltumwandlung (G); a late RV exemption request
-  (I). Four examples cannot be expressed (two periods, tax-free allowances, change at the turn of the
-  year, household Minijob = excluded).
+  second Minijob next to a JAEG-free main job (E); Entgeltumwandlung (G). Four examples cannot be
+  expressed (two periods, tax-free allowances, change at the turn of the year, household Minijob =
+  excluded). One proposal per job at its start: a later change (e.g. RV exemption from the month the
+  request came in) is named in the check note, not as a second proposal.
 - **WebKit full-flow E2E was load-sensitive** (2026-11-01: twice the 180 s timeout with four
   parallel workers, alone 41 s): `playwright.config.ts` now runs two workers (two consecutive full
   runs 15/15). A timeout again on an idle machine is a real finding.

@@ -7871,6 +7871,19 @@
           }
         },
         {
+          "value": "1",
+          "reason": "Befreiungsantrag erst nach dem Monat des Beschäftigungsbeginns beim Arbeitgeber eingegangen: bis dahin rentenversicherungspflichtig; die Befreiung wirkt ab Beginn des Eingangsmonats, dann 5 melden (§ 6 Abs. 4 S. 2 SGB VI; Geringfügigkeits-Richtlinien B 2.2.4.1, Beispiel 36).",
+          "when": {
+            "field": "rvBefreiungWunsch",
+            "equals": "ja"
+          },
+          "test": {
+            "fn": "inSpaeteremMonat",
+            "args": ["agRvBefreiungEingang", "agBeschaeftigungsbeginn"]
+          },
+          "check": true
+        },
+        {
           "value": "5",
           "when": {
             "all": [

@@ -97,7 +97,6 @@ const KNOWN_DEVIATIONS: Record<string, Deviation> = {
   'GFR-14': { gruppe: 'G', app: { pgr: '101', bgr: '1111', uebergang: '1' } },
   'GFR-25C': { gruppe: 'E', app: { bgr: '9101' } },
   'GFR-26C': { gruppe: 'E', app: { bgr: '9101' } },
-  'GFR-36b': { gruppe: 'I', app: { bgr: '6500' } },
   'GFR-37': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
   'GFR-40B': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
   'GFR-42': { gruppe: 'A', app: { pgr: '110', bgr: '0000', uebergang: '0' } },
@@ -436,7 +435,60 @@ interface Limit {
   uebergang: string;
 }
 
+const befreiungEingang = (eingang: string): Answers => ({
+  agUnterlagen: ['rvBefreiung'],
+  agRvBefreiungEingang: eingang,
+});
+
 const LIMITS: Limit[] = [
+  {
+    label: 'Minijob ab 03.05., Befreiungsantrag am 05.05. eingegangen',
+    source: '§ 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36a',
+    person: person('minijob', { rvBefreiungWunsch: 'ja' }),
+    employer: employer('minijob', monthly('600.00'), {
+      agBeschaeftigungsbeginn: '2026-05-03',
+      ...befreiungEingang('2026-05-05'),
+    }),
+    pgr: '109',
+    bgr: '6500',
+    uebergang: '0',
+  },
+  {
+    label: 'Minijob ab 03.05., Befreiungsantrag am 31.05. eingegangen',
+    source: '§ 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1',
+    person: person('minijob', { rvBefreiungWunsch: 'ja' }),
+    employer: employer('minijob', monthly('600.00'), {
+      agBeschaeftigungsbeginn: '2026-05-03',
+      ...befreiungEingang('2026-05-31'),
+    }),
+    pgr: '109',
+    bgr: '6500',
+    uebergang: '0',
+  },
+  {
+    label: 'Minijob ab 03.05., Befreiungsantrag am 01.06. eingegangen (erst ab Juni befreit)',
+    source: '§ 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36b',
+    person: person('minijob', { rvBefreiungWunsch: 'ja' }),
+    employer: employer('minijob', monthly('600.00'), {
+      agBeschaeftigungsbeginn: '2026-05-03',
+      ...befreiungEingang('2026-06-01'),
+    }),
+    pgr: '109',
+    bgr: '6100',
+    uebergang: '0',
+  },
+  {
+    label: 'Minijob ab 03.05., Befreiungsantrag schon vor Beginn (20.04.) eingegangen',
+    source: '§ 6 Abs. 4 S. 2 SGB VI („frühestens ab Beschäftigungsbeginn“)',
+    person: person('minijob', { rvBefreiungWunsch: 'ja' }),
+    employer: employer('minijob', monthly('600.00'), {
+      agBeschaeftigungsbeginn: '2026-05-03',
+      ...befreiungEingang('2026-04-20'),
+    }),
+    pgr: '109',
+    bgr: '6500',
+    uebergang: '0',
+  },
   {
     label: 'Minijob mit genau 603,00 €',
     source: '§ 8 Abs. 1 Nr. 1, Abs. 1a SGB IV',

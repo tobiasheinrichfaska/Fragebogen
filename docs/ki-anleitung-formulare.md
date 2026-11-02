@@ -201,7 +201,8 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   Stelle, darf Felder verschiedener Rollen verbinden, blockiert nie. `test` ist eine benannte Prüfung
   mit festen Feldtypen: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
   `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
-  erste liegt nach dem zweiten); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
+  erste liegt nach dem zweiten); `inSpaeteremMonat` (Datum, Datum: das erste liegt in einem späteren
+  Kalendermonat); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
   weniger als sieben Tage); `hoechstensGeringfuegigkeitsgrenze` und `ueberGeringfuegigkeitsgrenze` (Betrag, Betrag, Betrag,
   Ja/Nein, Datum: festes Monatsentgelt, erwarteter Monatsverdienst – es zählt der beantwortete –,
   Spalte der Einmalzahlungen und Spalte „Anspruch“ derselben Tabelle, Stichtag; zwölf Monate plus

@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 57 gleich, 19 abweichend. 99 abgeleitete Varianten, 19 Grenzfälle.
+80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 58 gleich, 18 abweichend. 99 abgeleitete Varianten, 23 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -48,7 +48,7 @@
 | GFR-32B | GfR 2026, Bsp. 32 | Architekt, berufsfremder Minijob | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
 | GFR-33 | GfR 2026, Bsp. 33 | Rechtsanwalt im Kanzlei-Minijob, Versorgungswerk-befreit | 109 · 6000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6000 · ÜB 0 | gleich |
 | GFR-34 | GfR 2026, Bsp. 34 | Rechtsanwalt im Kanzlei-Minijob, Befreiung nach § 6 Abs. 1b | 109 · 6500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6500 · ÜB 0 | gleich |
-| GFR-36b | GfR 2026, Bsp. 36b | Befreiungsantrag geht im Folgemonat ein | 109 · 6100 · ÜB 0; ab 01.06.2026: 109 · 6500 | S O, PGR O, BGR O, ÜB A | 109 · 6500 · ÜB 0 | abweichend (I) |
+| GFR-36b | GfR 2026, Bsp. 36b | Befreiungsantrag geht im Folgemonat ein | 109 · 6100 · ÜB 0; ab 01.06.2026: 109 · 6500 | S O, PGR O, BGR O, ÜB A | 109 · 6100 (p) · ÜB 0 | gleich |
 | GFR-37 | GfR 2026, Bsp. 37 | „Aushilfe“ über vier Monate (88 Arbeitstage) | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
 | GFR-39B | GfR 2026, Bsp. 39 | Aushilfe neben Dauerbeschäftigung | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
 | GFR-40B | GfR 2026, Bsp. 40 | Aushilfe, mit früheren Aushilfen über drei Monate | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | abweichend (A) |
@@ -98,7 +98,6 @@
 - **C – Werkstudenten und freiwillige Praktika: 20-Stunden-Grenze und Vorrang von 109/110 fehlen:** ST-01, ST-02A, ST-04, ST-KF, ST-WSMJ, ST-FZPMJ
 - **E – JAEG bei mehreren Beschäftigungen: erster Minijob wird mitgezählt, KV im zweiten Minijob:** GFR-25C, GFR-26C, D-JAEGMJ
 - **G – Entgeltumwandlung senkt das Entgelt für die Minijob-Grenze nicht:** GFR-14
-- **I – Eingang des Befreiungsantrags nach dem Beginnmonat verschiebt die Befreiung nicht:** GFR-36b
 
 ## Nicht abbildbar
 
@@ -111,6 +110,10 @@
 
 | Fall | Grundlage | Erwartet | App |
 | --- | --- | --- | --- |
+| Minijob ab 03.05., Befreiungsantrag am 05.05. eingegangen | § 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36a | 109 · 6500 · ÜB 0 | 109 · 6500 · ÜB 0 |
+| Minijob ab 03.05., Befreiungsantrag am 31.05. eingegangen | § 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1 | 109 · 6500 · ÜB 0 | 109 · 6500 · ÜB 0 |
+| Minijob ab 03.05., Befreiungsantrag am 01.06. eingegangen (erst ab Juni befreit) | § 6 Abs. 4 S. 2 SGB VI; GfR 2026 B 2.2.4.1, Bsp. 36b | 109 · 6100 · ÜB 0 | 109 · 6100 (p) · ÜB 0 |
+| Minijob ab 03.05., Befreiungsantrag schon vor Beginn (20.04.) eingegangen | § 6 Abs. 4 S. 2 SGB VI („frühestens ab Beschäftigungsbeginn“) | 109 · 6500 · ÜB 0 | 109 · 6500 · ÜB 0 |
 | Minijob mit genau 603,00 € | § 8 Abs. 1 Nr. 1, Abs. 1a SGB IV | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
 | „Minijob“ mit 603,01 € | § 8 Abs. 1 Nr. 1 SGB IV, § 20 Abs. 2 SGB IV | 101 · 1111 · ÜB 1 | 101 (p) · 1111 · ÜB 1 |
 | versicherungspflichtig mit 603,01 € | § 20 Abs. 2 SGB IV | 101 · 1111 · ÜB 1 | 101 · 1111 · ÜB 1 |
