@@ -296,6 +296,7 @@ function QuestionStep({
           }}
           onChoose={choose}
           onSubmit={next}
+          context={{ definition: session.form.definition, data: part?.data ?? {} }}
         />
         {clearable && (
           <p className="clear-choice">

@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "title": "Monatsmeldung: Lohn- und Gehaltsdaten",
   "signaturePolicy": "electronic",
-  "recipient": {
-    "label": "Lohnabrechnende Stelle"
-  },
   "roles": [
     {
       "id": "arbeitgeber",
@@ -13,9 +10,12 @@
       "stationHeading": "Monatsmeldung des Arbeitgebers",
       "confirmationText": "Ich bestätige, dass diese Meldung für den Abrechnungsmonat vollständig und richtig ist.",
       "signature": "required",
-      "signerNameField": "unterzeichnerName"
+      "signerNameField": "ansprechpartner"
     }
   ],
+  "recipient": {
+    "label": "Lohnabrechnende Stelle"
+  },
   "sections": [
     {
       "id": "meldung",
@@ -26,29 +26,10 @@
           "role": "arbeitgeber",
           "type": "month",
           "label": "Abrechnungsmonat",
-          "help": "Der Monat, für den abgerechnet werden soll, zum Beispiel 11.2026.",
           "required": true,
           "purpose": "Lohnzahlungszeitraum (§ 4 Abs. 2 Nr. 1 LStDV)",
+          "help": "Der Monat, für den abgerechnet werden soll, zum Beispiel 11.2026. Haben Sie die Meldung des Vormonats eingelesen, ist er schon eingetragen.",
           "carryOver": "nextMonth"
-        },
-        {
-          "id": "leistungszeitraum",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Stunden und Zuschläge gelten für",
-          "help": "Viele Betriebe rechnen Stunden erst im Folgemonat ab. Bleiben Sie bei einer Variante und wechseln Sie nur nach Absprache.",
-          "required": true,
-          "purpose": "Zuordnung variabler Bezüge zum Abrechnungszeitraum",
-          "options": [
-            {
-              "id": "abrechnungsmonat",
-              "label": "den Abrechnungsmonat"
-            },
-            {
-              "id": "vormonat",
-              "label": "den Vormonat (Abrechnung einen Monat später)"
-            }
-          ]
         },
         {
           "id": "agFirma",
@@ -73,9 +54,9 @@
           "role": "arbeitgeber",
           "type": "text",
           "label": "Mandantennummer",
-          "help": "Steht auf Schreiben und Abrechnungen. Nicht zur Hand? Leer lassen.",
-          "required": false,
+          "required": true,
           "purpose": "Zuordnung bei der lohnabrechnenden Stelle",
+          "help": "Steht auf Schreiben und Abrechnungen Ihrer lohnabrechnenden Stelle und im Lesezeichen-Link.",
           "masterData": "mandantennummer"
         },
         {
@@ -83,10 +64,10 @@
           "role": "arbeitgeber",
           "type": "number",
           "label": "Abgabe bis zum … des Monats",
-          "question": "Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?",
-          "help": "Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen.",
           "required": false,
           "purpose": "Termin der lohnabrechnenden Stelle für die Monatsmeldung",
+          "question": "Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?",
+          "help": "Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen.",
           "masterData": "abgabetag",
           "decimals": 0
         },
@@ -94,9 +75,11 @@
           "id": "ansprechpartner",
           "role": "arbeitgeber",
           "type": "text",
-          "label": "Ansprechperson für Rückfragen",
+          "label": "Meldende Person",
           "required": true,
-          "purpose": "Rückfragen",
+          "purpose": "Rückfragen; Unterschrift mit Namen",
+          "question": "Wer gibt die Meldung ab und ist Ansprechperson für Rückfragen?",
+          "help": "Ihr Vor- und Familienname.",
           "masterData": "ansprechpartner"
         },
         {
@@ -110,7 +93,9 @@
             "field": "ansprechpartnerEmail",
             "answered": false
           },
-          "because": "Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht."
+          "because": "Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht.",
+          "textFormat": "telefon",
+          "masterData": "ansprechpartnerTelefon"
         },
         {
           "id": "ansprechpartnerEmail",
@@ -123,16 +108,20 @@
             "field": "ansprechpartnerTelefon",
             "answered": false
           },
-          "because": "Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht."
+          "because": "Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht.",
+          "textFormat": "email",
+          "masterData": "ansprechpartnerEmail"
         },
         {
-          "id": "unterzeichnerName",
+          "id": "lohnarten",
           "role": "arbeitgeber",
           "type": "text",
-          "label": "Name der Person, die die Meldung abgibt",
-          "help": "Ihr Vor- und Familienname.",
-          "required": true,
-          "purpose": "Unterschrift mit Namen"
+          "label": "Lohnarten Ihres Betriebs",
+          "required": false,
+          "purpose": "Vorschläge für die Monatswerte",
+          "help": "Gibt Ihre lohnabrechnende Stelle vor, eine je Zeile, zum Beispiel „1000 Stundenlohn“; steht im Lesezeichen-Link. Sie erscheinen als Vorschläge bei den Monatswerten.",
+          "multiline": true,
+          "masterData": "lohnarten"
         }
       ]
     },
@@ -145,11 +134,12 @@
           "role": "arbeitgeber",
           "type": "repeatGroup",
           "label": "Mitarbeitende",
-          "question": "Wer war im Abrechnungsmonat beschäftigt?",
-          "help": "Eine Zeile für jede Person, auch Neue und Ausscheidende. Die Zeilen werden in die nächste Meldung übernommen, außer bei Personen, die ausscheiden; Monatswerte bleiben dann leer.",
           "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "rowLabel": "Person",
+          "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+          "question": "Wer war im Abrechnungsmonat beschäftigt?",
+          "help": "Eine Zeile je Person, auch Neue und Ausscheidende. Mit der Meldung des Vormonats sind alle schon da; prüfen Sie die Vergütung. Personen, die ausscheiden, fehlen in der nächsten Meldung.",
+          "rowLabel": "Mitarbeiter/in",
+          "rowTitle": ["maName"],
           "carryRowsIf": {
             "not": {
               "field": "maScheidetAus",
@@ -158,29 +148,28 @@
           },
           "columns": [
             {
-              "id": "maPersonalnummer",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Personalnummer",
-              "help": "Wie auf der letzten Abrechnung; bei neuen Beschäftigten leer.",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
               "id": "maName",
               "role": "arbeitgeber",
               "type": "text",
               "label": "Familienname, Vorname",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)"
+            },
+            {
+              "id": "maPersonalnummer",
+              "role": "arbeitgeber",
+              "type": "text",
+              "label": "Personalnummer",
+              "required": false,
+              "purpose": "Zuordnung bei der lohnabrechnenden Stelle"
             },
             {
               "id": "maVerguetungsart",
               "role": "arbeitgeber",
               "type": "choice",
-              "label": "Vergütung",
+              "label": "Art der Vergütung",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
               "options": [
                 {
                   "id": "stundenlohn",
@@ -189,6 +178,10 @@
                 {
                   "id": "monatsentgelt",
                   "label": "festes Monatsentgelt"
+                },
+                {
+                  "id": "ausbildungsverguetung",
+                  "label": "Ausbildungsvergütung"
                 }
               ]
             },
@@ -196,74 +189,28 @@
               "id": "maVerguetung",
               "role": "arbeitgeber",
               "type": "money",
-              "label": "Stundenlohn bzw. Monatsentgelt brutto",
+              "label": "Stundenlohn bzw. Monatsentgelt (brutto)",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)"
             },
             {
-              "id": "maWochenstunden",
+              "id": "maVerguetungVormonat",
               "role": "arbeitgeber",
-              "type": "number",
-              "label": "Vereinbarte Wochenstunden",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "decimals": 2,
-              "unit": "Std."
+              "type": "money",
+              "label": "Im Vormonat",
+              "required": false,
+              "purpose": "Änderung der Vergütung gegenüber dem Vormonat erkennen",
+              "carryFrom": "maVerguetung"
             },
             {
               "id": "maAenderungAb",
               "role": "arbeitgeber",
               "type": "date",
-              "label": "Änderung bei Lohn oder Stunden gilt ab",
+              "label": "Neue Vergütung gilt ab",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+              "help": "Nur wenn sich die Vergütung gegenüber dem Vormonat ändert.",
               "carryOver": false
-            },
-            {
-              "id": "maArbeitsstunden",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "Gearbeitete Stunden",
-              "help": "Nur bei Stundenlohn: tatsächlich gearbeitete Stunden ohne Urlaub, Krankheit und Feiertage; 15 Minuten = 0,25.",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "carryOver": false,
-              "decimals": 2,
-              "unit": "Std."
-            },
-            {
-              "id": "maFeiertagsstunden",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "Wegen Feiertag ausgefallene Stunden",
-              "required": false,
-              "purpose": "Feiertagsvergütung (§ 2 EFZG)",
-              "carryOver": false,
-              "decimals": 2,
-              "unit": "Std."
-            },
-            {
-              "id": "maUeberstunden",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "Auszuzahlende Überstunden",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "carryOver": false,
-              "decimals": 2,
-              "unit": "Std."
-            },
-            {
-              "id": "maZeitkonto",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "Stand Arbeitszeitkonto am Monatsende",
-              "required": false,
-              "purpose": "Arbeitszeitkonto (§ 2 Abs. 2 MiLoG)",
-              "carryOver": false,
-              "signed": true,
-              "decimals": 2,
-              "unit": "Std."
             },
             {
               "id": "maScheidetAus",
@@ -271,798 +218,224 @@
               "type": "boolean",
               "label": "scheidet in diesem Monat aus",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "purpose": "Abmeldung und Endabrechnung",
               "carryOver": false
             },
             {
-              "id": "maBemerkung",
+              "id": "maFehltage",
               "role": "arbeitgeber",
-              "type": "text",
-              "label": "Bemerkung",
+              "type": "calendar",
+              "label": "Urlaub und Krankheit",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "carryOver": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "monat",
-      "title": "Was in diesem Monat war",
-      "fields": [
-        {
-          "id": "fragZuschlaege",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Zuschläge in diesem Monat",
-          "question": "Zahlen Sie in diesem Monat Zuschläge für Nacht-, Sonntags- oder Feiertagsarbeit oder für Überstunden?",
-          "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "carryOver": false
-        },
-        {
-          "id": "zuschlaege",
-          "role": "arbeitgeber",
-          "type": "repeatGroup",
-          "label": "Zuschläge",
-          "help": "Eine Zeile je Person und Art. Stunden, die zugleich Nacht- und Sonntagsstunden sind, in beiden Zeilen angeben.",
-          "required": true,
-          "purpose": "Steuerfreie Zuschläge (§ 3b EStG)",
-          "showIf": {
-            "field": "fragZuschlaege",
-            "equals": true
-          },
-          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
-          "carryOver": false,
-          "rowLabel": "Zuschlag",
-          "columns": [
-            {
-              "id": "zuPerson",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Person (Personalnummer oder Name)",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "zuschlagArt",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Art",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "nacht",
-                  "label": "Nachtarbeit 20 bis 6 Uhr"
-                },
-                {
-                  "id": "nacht0bis4",
-                  "label": "davon 0 bis 4 Uhr bei Beginn vor 0 Uhr"
-                },
-                {
-                  "id": "sonntag",
-                  "label": "Sonntagsarbeit"
-                },
-                {
-                  "id": "feiertag",
-                  "label": "Feiertagsarbeit (auch 31.12. ab 14 Uhr)"
-                },
-                {
-                  "id": "hochfeiertag",
-                  "label": "24.12. ab 14 Uhr, 25./26.12. und 1. Mai"
-                },
-                {
-                  "id": "ueberstunden",
-                  "label": "Überstundenzuschlag"
-                },
-                {
-                  "id": "sonstiger",
-                  "label": "sonstiger Zuschlag"
-                }
-              ]
-            },
-            {
-              "id": "zuStunden",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "Stunden",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "decimals": 2,
-              "unit": "Std."
-            },
-            {
-              "id": "zuBemerkung",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Bemerkung",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            }
-          ]
-        },
-        {
-          "id": "fragFehlzeiten",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Fehlzeiten in diesem Monat",
-          "question": "Gab es in diesem Monat Urlaub, Krankheit oder andere Fehlzeiten?",
-          "help": "Auch halbe Tage und Fehlzeiten, die schon im Vormonat begonnen haben.",
-          "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "carryOver": false
-        },
-        {
-          "id": "fehlzeiten",
-          "role": "arbeitgeber",
-          "type": "repeatGroup",
-          "label": "Fehlzeiten",
-          "help": "Bitte keine Diagnose und keinen Grund angeben, nur die Art. Fehlzeiten, die über das Monatsende andauern, werden in die nächste Meldung übernommen; tragen Sie dort das Ende nach.",
-          "required": true,
-          "purpose": "Entgeltfortzahlung (§ 3 EFZG), Lohnkonto (§ 41 EStG), Versicherungspflicht (§ 7 Abs. 3 SGB IV)",
-          "showIf": {
-            "field": "fragFehlzeiten",
-            "equals": true
-          },
-          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
-          "rowLabel": "Fehlzeit",
-          "carryRowsIf": {
-            "field": "fzDauertAn",
-            "equals": true
-          },
-          "columns": [
-            {
-              "id": "fzPerson",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Person (Personalnummer oder Name)",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "fzArt",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Art",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "purpose": "Urlaubskonto und Entgeltfortzahlung (§ 11 BUrlG, § 3 EFZG); nur die Art der Fehlzeit, keine Diagnose",
               "options": [
                 {
                   "id": "urlaub",
                   "label": "Urlaub"
                 },
                 {
+                  "id": "halberUrlaub",
+                  "label": "halber Urlaubstag"
+                },
+                {
                   "id": "krank",
-                  "label": "arbeitsunfähig (Krankheit)"
-                },
-                {
-                  "id": "unfall",
-                  "label": "arbeitsunfähig nach Arbeits- oder Wegeunfall"
-                },
-                {
-                  "id": "reha",
-                  "label": "stationäre Reha oder Kur"
-                },
-                {
-                  "id": "kindKrank",
-                  "label": "Kind krank"
-                },
-                {
-                  "id": "unbezahlt",
-                  "label": "unbezahlter Urlaub oder unbezahlte Freistellung"
-                },
-                {
-                  "id": "mutterschutz",
-                  "label": "Mutterschutz"
-                },
-                {
-                  "id": "beschaeftigungsverbot",
-                  "label": "Beschäftigungsverbot"
-                },
-                {
-                  "id": "elternzeit",
-                  "label": "Elternzeit"
-                },
-                {
-                  "id": "pflege",
-                  "label": "Pflegezeit"
-                },
-                {
-                  "id": "kurzarbeit",
-                  "label": "Kurzarbeit"
-                },
-                {
-                  "id": "bezahltFrei",
-                  "label": "bezahlte Freistellung"
-                },
-                {
-                  "id": "unentschuldigt",
-                  "label": "unentschuldigtes Fehlen"
-                },
-                {
-                  "id": "sonstiges",
-                  "label": "Sonstiges"
+                  "label": "krank"
                 }
-              ]
-            },
-            {
-              "id": "fzVon",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "von",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "fzBis",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "bis",
-              "help": "Leer lassen, wenn das Ende offen ist.",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              ],
+              "monthFrom": "abrechnungsmonat",
               "carryOver": false
             },
             {
-              "id": "fzDauertAn",
-              "role": "arbeitgeber",
-              "type": "boolean",
-              "label": "dauert über das Monatsende an",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "carryOver": false
-            },
-            {
-              "id": "fzArbeitstage",
+              "id": "maUrlaubStunden",
               "role": "arbeitgeber",
               "type": "number",
-              "label": "ausgefallene Arbeitstage in diesem Monat",
+              "label": "Ausgefallene Stunden Urlaub",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "carryOver": false,
-              "decimals": 1,
-              "unit": "Tage"
-            },
-            {
-              "id": "fzStunden",
-              "role": "arbeitgeber",
-              "type": "number",
-              "label": "ausgefallene Stunden",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "carryOver": false,
+              "purpose": "Urlaubsentgelt bei Stundenlohn (§ 11 BUrlG)",
+              "help": "Laut Dienstplan; nur bei Stundenlohn.",
+              "showIf": {
+                "field": "maVerguetungsart",
+                "equals": "stundenlohn"
+              },
+              "because": "Bei Stundenlohn rechnet die Lohnabrechnung mit den ausgefallenen Stunden; bei festem Entgelt genügen die Tage.",
               "decimals": 2,
-              "unit": "Std."
+              "unit": "Std.",
+              "carryOver": false
             },
             {
-              "id": "fzNachweis",
+              "id": "maKrankStunden",
               "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Nachweis",
+              "type": "number",
+              "label": "Ausgefallene Stunden Krankheit",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "eau",
-                  "label": "elektronische AU, wird bei der Krankenkasse abgerufen"
-                },
-                {
-                  "id": "papier",
-                  "label": "Bescheinigung auf Papier liegt vor"
-                },
-                {
-                  "id": "fehlt",
-                  "label": "Nachweis fehlt noch"
-                },
-                {
-                  "id": "unnoetig",
-                  "label": "nicht nötig"
-                }
-              ]
-            },
-            {
-              "id": "fzBemerkung",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Bemerkung",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
+              "purpose": "Entgeltfortzahlung bei Stundenlohn nach dem Lohnausfallprinzip (§ 4 Abs. 1 EFZG)",
+              "help": "Die Stunden, die laut Plan gearbeitet worden wären; nur bei Stundenlohn.",
+              "showIf": {
+                "field": "maVerguetungsart",
+                "equals": "stundenlohn"
+              },
+              "because": "Bei Stundenlohn wird die Entgeltfortzahlung nach den ausgefallenen Stunden berechnet; bei festem Entgelt genügen die Tage.",
+              "decimals": 2,
+              "unit": "Std.",
               "carryOver": false
             }
+          ],
+          "pages": [
+            {
+              "id": "fehltage",
+              "question": "Urlaub und Krankheit in diesem Monat",
+              "help": "Tippen Sie je Person auf die Tage: einmal für Urlaub (U), zweimal für einen halben Urlaubstag (H), dreimal für krank (K), viermal wieder leer. Nur die Art – nie eine Diagnose.",
+              "columns": ["maFehltage", "maUrlaubStunden", "maKrankStunden"]
+            }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "monatswerte",
+      "title": "Werte des Abrechnungsmonats",
+      "fields": [
         {
-          "id": "fragZahlungen",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Einmalige Zahlungen in diesem Monat",
-          "question": "Gibt es einmalige Zahlungen, Vorschüsse, Sachzuwendungen oder Erstattungen?",
-          "help": "Bitte früh melden: Für Einmalzahlungen darf nicht mit den Werten des Vormonats gerechnet werden (§ 23 Abs. 1 SGB IV).",
-          "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "carryOver": false
-        },
-        {
-          "id": "zahlungen",
+          "id": "monatWerte",
           "role": "arbeitgeber",
           "type": "repeatGroup",
-          "label": "Einmalige Zahlungen, Vorschüsse und Sachzuwendungen",
-          "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "showIf": {
-            "field": "fragZahlungen",
-            "equals": true
-          },
-          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
+          "label": "Werte für den Abrechnungsmonat",
+          "required": false,
+          "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+          "question": "Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?",
+          "help": "Eine Zeile je Person und Lohnart, zum Beispiel „1000 Stundenlohn“ mit 100 Stunden. Zuschläge (Nacht, Sonntag, Feiertag) ebenso; Überstunden bitte als eigene Zeile, nicht in den gearbeiteten Stunden.",
+          "rowLabel": "Zeile",
           "carryOver": false,
-          "rowLabel": "Zahlung",
           "columns": [
             {
-              "id": "zaPerson",
+              "id": "monatPerson",
               "role": "arbeitgeber",
               "type": "text",
-              "label": "Person (Personalnummer oder Name)",
+              "label": "Person",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+              "suggestionsFrom": "mitarbeitende"
             },
             {
-              "id": "zaArt",
+              "id": "monatLohnart",
               "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Art",
+              "type": "text",
+              "label": "Lohnart",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "praemie",
-                  "label": "Prämie, Bonus oder Provision"
-                },
-                {
-                  "id": "urlaubsgeld",
-                  "label": "Urlaubsgeld"
-                },
-                {
-                  "id": "weihnachtsgeld",
-                  "label": "Weihnachtsgeld oder 13. Monatsgehalt"
-                },
-                {
-                  "id": "abfindung",
-                  "label": "Abfindung"
-                },
-                {
-                  "id": "vorschuss",
-                  "label": "Vorschuss oder Abschlag (schon ausgezahlt)"
-                },
-                {
-                  "id": "sachzuwendung",
-                  "label": "einmalige Sachzuwendung"
-                },
-                {
-                  "id": "mahlzeiten",
-                  "label": "Mahlzeiten"
-                },
-                {
-                  "id": "reisekosten",
-                  "label": "Reisekostenerstattung"
-                },
-                {
-                  "id": "auslagen",
-                  "label": "Auslagenersatz"
-                },
-                {
-                  "id": "sonstiges",
-                  "label": "Sonstiges"
-                }
-              ]
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+              "suggestionsFrom": "lohnarten",
+              "help": "Aus der Liste wählen oder eintippen, zum Beispiel „1000 Stundenlohn“."
             },
             {
-              "id": "zaBetrag",
-              "role": "arbeitgeber",
-              "type": "money",
-              "label": "Betrag (brutto)",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "zaAnzahl",
+              "id": "monatWert",
               "role": "arbeitgeber",
               "type": "number",
-              "label": "Anzahl (nur Mahlzeiten)",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "decimals": 0
+              "label": "Wert",
+              "required": true,
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+              "help": "Stunden, Tage oder Betrag – die Einheit ergibt sich aus der Lohnart.",
+              "decimals": 2
             },
             {
-              "id": "zaDatum",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "ausgezahlt am",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "zaBemerkung",
+              "id": "monatBemerkung",
               "role": "arbeitgeber",
               "type": "text",
               "label": "Bemerkung",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "vormonat",
+      "title": "Nachträge für den Vormonat",
+      "fields": [
         {
-          "id": "laufendeLeistungen",
-          "role": "arbeitgeber",
-          "type": "repeatGroup",
-          "label": "Laufende Zusatzleistungen",
-          "question": "Welche laufenden Zusatzleistungen gibt es?",
-          "help": "Wird in die nächste Meldung übernommen. Leer lassen, wenn es keine gibt.",
-          "required": false,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "rowLabel": "Leistung",
-          "columns": [
-            {
-              "id": "llPerson",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Person (Personalnummer oder Name)",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "llArt",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Art",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "ticket",
-                  "label": "Jobticket oder Deutschlandticket"
-                },
-                {
-                  "id": "gutschein",
-                  "label": "monatlicher Gutschein oder Guthabenkarte"
-                },
-                {
-                  "id": "dienstwagen",
-                  "label": "Dienstwagen, auch privat nutzbar"
-                },
-                {
-                  "id": "fahrtkosten",
-                  "label": "Fahrtkostenzuschuss"
-                },
-                {
-                  "id": "vwl",
-                  "label": "vermögenswirksame Leistungen"
-                },
-                {
-                  "id": "bav",
-                  "label": "betriebliche Altersversorgung oder Entgeltumwandlung"
-                },
-                {
-                  "id": "kita",
-                  "label": "Zuschuss Kinderbetreuung"
-                },
-                {
-                  "id": "sonstiges",
-                  "label": "Sonstiges"
-                }
-              ]
-            },
-            {
-              "id": "llBetrag",
-              "role": "arbeitgeber",
-              "type": "money",
-              "label": "Betrag im Monat",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "llSeit",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "seit",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "llBis",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "endet am",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "llBemerkung",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Bemerkung",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            }
-          ]
-        },
-        {
-          "id": "fragEinAustritte",
+          "id": "fragVormonat",
           "role": "arbeitgeber",
           "type": "boolean",
-          "label": "Ein- und Austritte",
-          "question": "Hat jemand angefangen oder aufgehört, oder steht ein Austritt fest?",
-          "help": "Neue Beschäftigte brauchen zusätzlich den Personalfragebogen; in bestimmten Branchen muss die Sofortmeldung vor dem ersten Arbeitstag erstattet sein.",
+          "label": "Nachträge für den Vormonat",
           "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+          "question": "Gibt es Werte, die noch für den Vormonat abgerechnet werden sollen, zum Beispiel Zuschläge?",
+          "initial": false,
           "carryOver": false
         },
         {
-          "id": "einAustritte",
+          "id": "vormonatWerte",
           "role": "arbeitgeber",
           "type": "repeatGroup",
-          "label": "Ein- und Austritte",
+          "label": "Werte für den Vormonat",
           "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "showIf": {
-            "field": "fragEinAustritte",
-            "equals": true
-          },
-          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
+          "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)",
+          "question": "Welche Werte sollen noch für den Vormonat abgerechnet werden?",
+          "help": "Eine Zeile je Person und Lohnart, wie bei den Werten des Abrechnungsmonats.",
+          "rowLabel": "Zeile",
           "carryOver": false,
-          "rowLabel": "Ein- oder Austritt",
           "columns": [
             {
-              "id": "eaPerson",
+              "id": "vormonatPerson",
               "role": "arbeitgeber",
               "type": "text",
-              "label": "Person (Personalnummer oder Name)",
+              "label": "Person",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)",
+              "suggestionsFrom": "mitarbeitende"
             },
             {
-              "id": "eaArt",
+              "id": "vormonatLohnart",
               "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Eintritt oder Austritt",
+              "type": "text",
+              "label": "Lohnart",
               "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "eintritt",
-                  "label": "Eintritt"
-                },
-                {
-                  "id": "austritt",
-                  "label": "Austritt"
-                }
-              ]
+              "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)",
+              "suggestionsFrom": "lohnarten",
+              "help": "Aus der Liste wählen oder eintippen, zum Beispiel „1000 Stundenlohn“."
             },
             {
-              "id": "eaDatum",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "Datum",
-              "help": "Eintritt: erster Arbeitstag. Austritt: letzter Tag des Arbeitsverhältnisses.",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "eaGrund",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Grund des Austritts",
-              "required": false,
-              "purpose": "Arbeitsbescheinigung (§ 312 SGB III)",
-              "options": [
-                {
-                  "id": "kuendigungAg",
-                  "label": "Kündigung durch den Arbeitgeber"
-                },
-                {
-                  "id": "kuendigungAn",
-                  "label": "Kündigung durch die beschäftigte Person"
-                },
-                {
-                  "id": "aufhebung",
-                  "label": "Aufhebungsvertrag"
-                },
-                {
-                  "id": "befristung",
-                  "label": "Befristung endet"
-                },
-                {
-                  "id": "rente",
-                  "label": "Rente"
-                },
-                {
-                  "id": "tod",
-                  "label": "Tod"
-                },
-                {
-                  "id": "sonstiges",
-                  "label": "Sonstiges"
-                }
-              ]
-            },
-            {
-              "id": "eaResturlaub",
+              "id": "vormonatWert",
               "role": "arbeitgeber",
               "type": "number",
-              "label": "Resturlaub zum Auszahlen",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "decimals": 1,
-              "unit": "Tage"
+              "label": "Wert",
+              "required": true,
+              "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)",
+              "help": "Stunden, Tage oder Betrag – die Einheit ergibt sich aus der Lohnart.",
+              "decimals": 2
             },
             {
-              "id": "eaUnterlagen",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Unterlagen bei Eintritt",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "liegtVor",
-                  "label": "Personalfragebogen liegt vor"
-                },
-                {
-                  "id": "folgt",
-                  "label": "Personalfragebogen folgt"
-                }
-              ]
-            },
-            {
-              "id": "eaBemerkung",
+              "id": "vormonatBemerkung",
               "role": "arbeitgeber",
               "type": "text",
               "label": "Bemerkung",
               "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
+              "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)"
             }
-          ]
-        },
-        {
-          "id": "fragAenderungen",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Änderungen bei einer Person",
-          "question": "Hat sich bei einer Person etwas geändert (Anschrift, Krankenkasse, Name …)?",
-          "help": "Lohn und Wochenstunden ändern Sie direkt bei den Mitarbeitenden.",
-          "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "carryOver": false
-        },
-        {
-          "id": "aenderungen",
-          "role": "arbeitgeber",
-          "type": "repeatGroup",
-          "label": "Änderungen",
-          "help": "Steuerklasse, Kinder und Konfession bitte nicht melden – sie kommen elektronisch. Eine neue Bankverbindung nur nach schriftlicher Mitteilung der Person selbst: Anrufe oder E-Mails mit neuer Bankverbindung sind ein häufiger Betrugsversuch.",
-          "required": true,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
+          ],
           "showIf": {
-            "field": "fragAenderungen",
+            "field": "fragVormonat",
             "equals": true
           },
-          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
-          "carryOver": false,
-          "rowLabel": "Änderung",
-          "columns": [
-            {
-              "id": "aePerson",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Person (Personalnummer oder Name)",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "aeArt",
-              "role": "arbeitgeber",
-              "type": "choice",
-              "label": "Was hat sich geändert?",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats",
-              "options": [
-                {
-                  "id": "anschrift",
-                  "label": "Anschrift"
-                },
-                {
-                  "id": "bank",
-                  "label": "Bankverbindung"
-                },
-                {
-                  "id": "krankenkasse",
-                  "label": "Krankenkasse"
-                },
-                {
-                  "id": "name",
-                  "label": "Name"
-                },
-                {
-                  "id": "taetigkeit",
-                  "label": "Tätigkeit"
-                },
-                {
-                  "id": "befristung",
-                  "label": "Befristung oder Vertragsende"
-                },
-                {
-                  "id": "leistung",
-                  "label": "neue Zusatzleistung"
-                },
-                {
-                  "id": "sonstiges",
-                  "label": "Sonstiges"
-                }
-              ]
-            },
-            {
-              "id": "aeNeu",
-              "role": "arbeitgeber",
-              "type": "text",
-              "label": "Neue Angabe",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "aeGiltAb",
-              "role": "arbeitgeber",
-              "type": "date",
-              "label": "gilt ab",
-              "required": true,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            },
-            {
-              "id": "aeSchriftlich",
-              "role": "arbeitgeber",
-              "type": "boolean",
-              "label": "schriftliche Mitteilung der Person liegt vor",
-              "required": false,
-              "purpose": "Lohnabrechnung des Abrechnungsmonats"
-            }
-          ]
-        },
+          "because": "Nur wenn es Nachträge für den Vormonat gibt, kommt diese Seite."
+        }
+      ]
+    },
+    {
+      "id": "besonderheiten",
+      "title": "Besonderheiten",
+      "fields": [
         {
-          "id": "fragPfaendung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Pfändung oder Abtretung eingegangen",
-          "question": "Ist eine Pfändung, eine Vorpfändung oder eine Abtretung eingegangen?",
-          "help": "Bitte schicken Sie das Schreiben sofort, nicht erst mit der Monatsmeldung: Die Erklärung als Drittschuldner ist binnen zwei Wochen fällig.",
-          "required": true,
-          "purpose": "Drittschuldnererklärung binnen zwei Wochen (§ 840 ZPO)",
-          "carryOver": false
-        },
-        {
-          "id": "pfaendungAngaben",
+          "id": "besonderheiten",
           "role": "arbeitgeber",
           "type": "text",
-          "label": "Angaben zur Pfändung",
-          "help": "Wer ist betroffen, welche Art von Schreiben, an welchem Tag zugestellt?",
-          "required": true,
-          "purpose": "§ 840 ZPO",
-          "showIf": {
-            "field": "fragPfaendung",
-            "equals": true
-          },
-          "because": "Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.",
-          "carryOver": false,
-          "multiline": true
-        },
-        {
-          "id": "bemerkungen",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Weitere Hinweise",
+          "label": "Besonderheiten",
           "required": false,
-          "purpose": "Lohnabrechnung des Abrechnungsmonats",
-          "carryOver": false,
-          "multiline": true
+          "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
+          "question": "Gibt es Besonderheiten in diesem Monat?",
+          "help": "Zum Beispiel Ein- oder Austritte, eine neue Anschrift oder Bankverbindung, weitere Fehlzeiten (Kind krank, unbezahlter Urlaub, Mutterschutz, Elternzeit), Pfändungen, ein Arbeitsunfall, eine von Dritten verursachte Krankheit oder am ersten Krankheitstag noch gearbeitet. Bitte keine Diagnosen.",
+          "multiline": true,
+          "carryOver": false
         }
       ]
     }
@@ -1072,8 +445,8 @@
       "id": "abgabe",
       "role": "arbeitgeber",
       "title": "Bis wann die Meldung gebraucht wird",
-      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt (oben unter „Abgabe bis zum … des Monats“). Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.",
-      "asOf": "2026-10-30",
+      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt. Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.",
+      "asOf": "2026-11-01",
       "acknowledgement": "read"
     },
     {
@@ -1092,7 +465,7 @@
     "Die Monatsmeldung ist keine Arbeitszeitaufzeichnung nach § 17 MiLoG oder § 16 ArbZG; die Aufzeichnungen bleiben beim Arbeitgeber.",
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).",
     "Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).",
-    "Eine neue Meldung wird aus der des Vormonats übernommen: Der Abrechnungsmonat zählt weiter, die Mitarbeitenden (außer Ausscheidenden) und laufenden Leistungen bleiben, Fehlzeiten über das Monatsende werden mit Beginn übernommen, alle Monatswerte sind leer."
+    "Eine neue Meldung entsteht aus der des Vormonats: Der Abrechnungsmonat zählt weiter, Firma, Ansprechperson, Lohnarten und die Mitarbeitenden (außer Ausscheidenden) mit ihrer Vergütung bleiben, die Vergütung des Vormonats steht zum Vergleich daneben; Fehltage, Monatswerte und Besonderheiten sind leer. Hinweise, die schon bestätigt sind und deren Text gleich blieb, gelten als bestätigt."
   ],
   "signatureBasis": "Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat.",
   "validity": {
@@ -1101,7 +474,7 @@
   },
   "limits": [
     "Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.",
-    "Ein- und Austritte meldet sie an; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.",
-    "Pfändungen werden nur angezeigt; die Berechnung des pfändbaren Betrags übernimmt die Lohnabrechnung."
+    "Ein- und Austritte, Änderungen und Pfändungen nennt sie nur als Besonderheiten; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.",
+    "Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung."
   ]
 }

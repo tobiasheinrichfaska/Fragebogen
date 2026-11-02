@@ -186,14 +186,28 @@ describe('describePrefill and takeOver', () => {
   it('names counts per role, kept answers and every value not taken over with its reason', () => {
     const { lines, applied } = describePrefill(
       [
-        { role: 'person', applied: ['familienname'], kept: ['vorname'], skipped: [] },
+        {
+          role: 'person',
+          applied: ['familienname'],
+          kept: ['vorname'],
+          skipped: [],
+          notices: [],
+        },
         {
           role: 'arbeitgeber',
           applied: [],
           kept: [],
           skipped: [{ fieldId: 'agFirma', reason: 'Grund X' }],
+          notices: [],
         },
-        { role: 'gesetzlicherVertreter', applied: [], kept: [], skipped: [], untouched: 'fertig' },
+        {
+          role: 'gesetzlicherVertreter',
+          applied: [],
+          kept: [],
+          skipped: [],
+          notices: [],
+          untouched: 'fertig',
+        },
       ],
       sofortmeldung.definition,
     );

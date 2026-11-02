@@ -2,6 +2,8 @@
 // joint assessment), monthly payroll report (taken over from last month), company car (questions
 // per drive, both parts sealable). Fictitious data.
 import { join } from 'node:path';
+import { answerSuggestions } from '../../src/logic/answerSuggestions';
+import { displayValue } from '../../src/logic/display';
 import { missingRequired, visibleFields } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
@@ -126,158 +128,188 @@ describe('Steuerfreigabe draft', () => {
   });
 });
 
+// Tobias 2026-11-01: base = last month's report; a block per person with a calendar; Lohnart rows;
+// hours only for an hourly wage; a notice confirmed once stays confirmed while its text is the same.
 describe('Lohnmeldung draft — taken over from last month', () => {
   const form = draft('lohnmeldung');
-  const october = (fehlzeiten: Record<string, unknown>[] | null = null) =>
+  const october = (source: RegisteredForm = form) =>
     seal(
-      fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', {
+      fill(createQuestionnaire(QUESTIONNAIRE_ID, source), source, 'arbeitgeber', {
         abrechnungsmonat: '10.2026',
-        leistungszeitraum: 'abrechnungsmonat',
         agFirma: 'Beispiel Bau GmbH',
         agBetriebsnummer: '12345678',
+        mandantennummer: '99999',
         abgabetag: '15',
         ansprechpartner: 'Jürgen Beispiel',
         ansprechpartnerEmail: 'lohn@example.org',
-        unterzeichnerName: 'Jürgen Beispiel',
+        lohnarten: '1000 Stundenlohn\n2000 Nachtzuschlag 25 %',
         mitarbeitende: [
           {
             rowId: 'r1',
             maName: 'Musterfrau, Erika',
             maVerguetungsart: 'stundenlohn',
             maVerguetung: '14,50',
-            maWochenstunden: '9',
-            maArbeitsstunden: '38,5',
-            maZeitkonto: '-2,5',
+            maFehltage: ['2026-10-12:urlaub', '2026-10-13:halberUrlaub', '2026-10-27:krank'],
+            maUrlaubStunden: '6',
+            maKrankStunden: '8',
           },
           {
             rowId: 'r2',
             maName: 'Beispiel, Max',
             maVerguetungsart: 'monatsentgelt',
             maVerguetung: '2.400',
-            maWochenstunden: '40',
             maScheidetAus: true,
           },
         ],
-        fragZuschlaege: false,
-        fragFehlzeiten: fehlzeiten !== null,
-        ...(fehlzeiten === null ? {} : { fehlzeiten }),
-        fragZahlungen: false,
-        fragEinAustritte: false,
-        fragAenderungen: false,
-        fragPfaendung: false,
+        monatWerte: [
+          {
+            rowId: 'r1',
+            monatPerson: 'Musterfrau, Erika',
+            monatLohnart: '1000 Stundenlohn',
+            monatWert: '100',
+          },
+        ],
+        fragVormonat: false,
+        besonderheiten: 'Max Beispiel scheidet zum 31.10.2026 aus.',
       }),
-      form,
+      source,
       'arbeitgeber',
       0,
       { acknowledged: ['abgabe', 'arbeitszeit'] },
     );
-  const november = (source: Questionnaire) => {
+  const november = (source: Questionnaire, target: RegisteredForm = form) => {
     const { questionnaire, reports } = prefillFrom(
-      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', form),
-      form,
+      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', target),
+      target,
       source,
       form,
     );
-    return { data: currentPart(questionnaire, 'arbeitgeber')?.data ?? {}, report: reports[0] };
+    return { questionnaire, part: currentPart(questionnaire, 'arbeitgeber'), report: reports[0] };
   };
 
   it('can be completed and signed', () => {
     expect(transmissionBlockers(october(), form)).toEqual([]);
   });
 
-  it('moves the month on, keeps contacts and the deadline, drops leavers, empties monthly values', () => {
-    const { data } = november(october());
+  it('moves the month on, keeps the master data and the people, empties the monthly values', () => {
+    const { part } = november(october());
+    const data = part?.data ?? {};
     expect(data.abrechnungsmonat).toBe('2026-11');
-    expect(data.unterzeichnerName).toBe('Jürgen Beispiel');
-    expect(data.abgabetag).toBe('15');
+    expect(data.ansprechpartner).toBe('Jürgen Beispiel');
+    expect(data.mandantennummer).toBe('99999');
+    expect(data.lohnarten).toBe('1000 Stundenlohn\n2000 Nachtzuschlag 25 %');
     expect(data.mitarbeitende).toEqual([
       {
         rowId: 'r1',
-        maPersonalnummer: null,
         maName: 'Musterfrau, Erika',
+        maPersonalnummer: null,
         maVerguetungsart: 'stundenlohn',
         maVerguetung: '14.50',
-        maWochenstunden: '9.00',
+        maVerguetungVormonat: '14.50',
         maAenderungAb: null,
-        maArbeitsstunden: null,
-        maFeiertagsstunden: null,
-        maUeberstunden: null,
-        maZeitkonto: null,
         maScheidetAus: null,
-        maBemerkung: null,
+        maFehltage: null,
+        maUrlaubStunden: null,
+        maKrankStunden: null,
       },
     ]);
-    for (const id of ['fragFehlzeiten', 'fehlzeiten', 'fragZuschlaege', 'fragPfaendung']) {
+    for (const id of ['monatWerte', 'vormonatWerte', 'besonderheiten']) {
       expect(data[id] ?? null).toBeNull();
     }
-    expect(missingRequired(form.definition, 'arbeitgeber', data).sort()).toEqual(
-      [
-        'fragAenderungen',
-        'fragEinAustritte',
-        'fragFehlzeiten',
-        'fragPfaendung',
-        'fragZahlungen',
-        'fragZuschlaege',
-      ].sort(),
-    );
+    expect(data.fragVormonat).toBe(false);
+    expect(missingRequired(form.definition, 'arbeitgeber', data)).toEqual([]);
   });
 
-  it('takes over absences that continue, with their start, and answers the question opening them', () => {
-    const { data, report } = november(
-      october([
+  it('keeps the notices confirmed while their text is the same', () => {
+    const { part, report } = november(october());
+    expect(report?.notices).toEqual(['abgabe', 'arbeitszeit']);
+    expect(part?.acknowledged).toEqual(['abgabe', 'arbeitszeit']);
+  });
+
+  it('asks again for a notice whose text changed', () => {
+    const changed = structuredClone(readJson(join(DRAFTS_DIR, 'lohnmeldung', '0.1.0.json'))) as {
+      version: string;
+      infoBlocks: { id: string; text: string }[];
+    };
+    changed.version = '0.2.0';
+    const abgabe = changed.infoBlocks.find((block) => block.id === 'abgabe');
+    if (abgabe) abgabe.text += ' Neu: Abgabe auch per Datei.';
+    const { report } = november(october(), registeredFrom(changed));
+    expect(report?.notices).toEqual(['arbeitszeit']);
+  });
+
+  it('marks a pay that differs from last month', () => {
+    const { questionnaire } = november(october());
+    const rows = currentPart(questionnaire, 'arbeitgeber')?.data.mitarbeitende as Record<
+      string,
+      FieldValue
+    >[];
+    const raised = ok(
+      setValue(questionnaire, form, 'arbeitgeber', 'mitarbeitende', [
+        { ...rows[0], maVerguetung: '15,00', maAenderungAb: '01.11.2026' },
+      ]),
+    );
+    const table = form.definition.sections
+      .flatMap((s) => s.fields)
+      .find((f) => f.id === 'mitarbeitende');
+    if (!table) throw new Error('draft changed');
+    const shown = displayValue(table, currentPart(raised, 'arbeitgeber')?.data.mitarbeitende);
+    expect(shown).toContain('Im Vormonat: 14,50 € (geändert)');
+  });
+
+  it('asks the hours of absence only for an hourly wage', () => {
+    const q = fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', {
+      abrechnungsmonat: '11.2026',
+      mitarbeitende: [
         {
           rowId: 'r1',
-          fzPerson: 'Musterfrau, Erika',
-          fzArt: 'urlaub',
-          fzVon: '12.10.2026',
-          fzBis: '16.10.2026',
-          fzArbeitstage: '5',
+          maName: 'Beispiel, Max',
+          maVerguetungsart: 'monatsentgelt',
+          maVerguetung: '2.400',
+          maFehltage: ['2026-11-03:krank'],
+          maKrankStunden: '8',
         },
-        {
-          rowId: 'r2',
-          fzPerson: 'Beispiel, Max',
-          fzArt: 'krank',
-          fzVon: '27.10.2026',
-          fzDauertAn: true,
-          fzArbeitstage: '4',
-          fzNachweis: 'eau',
-        },
-      ]),
-    );
-    expect(data.fragFehlzeiten).toBe(true);
-    expect(data.fehlzeiten).toEqual([
-      {
-        rowId: 'r2',
-        fzPerson: 'Beispiel, Max',
-        fzArt: 'krank',
-        fzVon: '2026-10-27',
-        fzBis: null,
-        fzDauertAn: null,
-        fzArbeitstage: null,
-        fzStunden: null,
-        fzNachweis: 'eau',
-        fzBemerkung: null,
-      },
-    ]);
-    expect(report?.applied).toEqual(expect.arrayContaining(['fragFehlzeiten', 'fehlzeiten']));
-    expect(report?.skipped).toEqual([]);
+      ],
+    });
+    const row = (
+      currentPart(q, 'arbeitgeber')?.data.mitarbeitende as Record<string, FieldValue>[]
+    )[0];
+    expect(row?.maFehltage).toEqual(['2026-11-03:krank']);
+    expect(row?.maKrankStunden).toBeNull();
   });
 
-  it('opens nothing when no absence continues', () => {
-    const { data } = november(
-      october([
-        { rowId: 'r1', fzPerson: 'Musterfrau, Erika', fzArt: 'urlaub', fzVon: '12.10.2026' },
-      ]),
-    );
-    expect(data.fragFehlzeiten ?? null).toBeNull();
-    expect(data.fehlzeiten ?? null).toBeNull();
-  });
-
-  it('accepts the deadline as master data from the bookmark link', () => {
-    const field = form.definition.sections
+  it('offers the employees and the Lohnarten as suggestions in the monthly rows', () => {
+    const data = currentPart(october(), 'arbeitgeber')?.data ?? {};
+    const columns = form.definition.sections
       .flatMap((s) => s.fields)
-      .find((f) => f.id === 'abgabetag');
-    expect(field?.masterData).toBe('abgabetag');
+      .find((f) => f.id === 'monatWerte')?.columns;
+    const person = columns?.find((c) => c.id === 'monatPerson');
+    const lohnart = columns?.find((c) => c.id === 'monatLohnart');
+    if (!person || !lohnart) throw new Error('draft changed');
+    expect(answerSuggestions(form.definition, person, data)).toEqual([
+      'Musterfrau, Erika',
+      'Beispiel, Max',
+    ]);
+    expect(answerSuggestions(form.definition, lohnart, data)).toEqual([
+      '1000 Stundenlohn',
+      '2000 Nachtzuschlag 25 %',
+    ]);
+  });
+
+  it('takes Firma, Mandantennummer, contact and Lohnarten from the bookmark link', () => {
+    const keys = form.definition.sections
+      .flatMap((s) => s.fields)
+      .flatMap((f) => (f.masterData === undefined ? [] : [f.masterData]));
+    expect(keys).toEqual(
+      expect.arrayContaining([
+        'firma',
+        'betriebsnummer',
+        'mandantennummer',
+        'abgabetag',
+        'ansprechpartner',
+        'lohnarten',
+      ]),
+    );
   });
 });
 
@@ -292,17 +324,17 @@ describe('table row rule (carryRowsIf) — definition rules', () => {
 
   it('refuses a rule on a field that is no table, on a column of another table, or without takeover', () => {
     const notTable = raw();
-    table(notTable, 'bemerkungen').carryRowsIf = { field: 'fzDauertAn', equals: true };
+    table(notTable, 'besonderheiten').carryRowsIf = { field: 'maScheidetAus', equals: true };
     expect(checkFormDefinition(notTable).map((i) => i.message)).toEqual(
       expect.arrayContaining(['only tables have carryRowsIf']),
     );
     const foreign = raw();
-    table(foreign, 'zahlungen').carryRowsIf = { field: 'fzDauertAn', equals: true };
+    table(foreign, 'monatWerte').carryRowsIf = { field: 'maScheidetAus', equals: true };
     expect(checkFormDefinition(foreign).map((i) => i.message)).toEqual(
-      expect.arrayContaining(['"fzDauertAn" is not a column of this table']),
+      expect.arrayContaining(['"maScheidetAus" is not a column of this table']),
     );
     const notCarried = raw();
-    table(notCarried, 'fehlzeiten').carryOver = false;
+    table(notCarried, 'mitarbeitende').carryOver = false;
     expect(checkFormDefinition(notCarried).map((i) => i.message)).toEqual(
       expect.arrayContaining(['a table that is not taken over cannot filter its rows']),
     );

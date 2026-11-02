@@ -6,7 +6,7 @@
 // its condition holds, and every value that cannot be taken over is reported with its reason.
 import { evaluateCondition } from './conditions';
 import { addMonths, isIsoMonth } from './dates';
-import { fieldsById, fieldsOfRole } from './form';
+import { fieldsById, fieldsOfRole, infoBlocksOfRole, noticeHash } from './form';
 import type { RegisteredForm } from './formRegistry';
 import type {
   FieldDefinition,
@@ -23,6 +23,7 @@ import {
   setValue,
   startPart,
   TRANSITION_MESSAGES,
+  withAcknowledged,
 } from './questionnaire';
 import { isPlainObject } from './jcs';
 
@@ -34,6 +35,8 @@ export interface PrefillReport {
   kept: FieldId[];
   /** Values the form refused, with the German reason. */
   skipped: { fieldId: FieldId; reason: string }[];
+  /** Notices confirmed in the other file with the same text — confirmed here, too. */
+  notices: string[];
   /** Set when the role was not touched at all, e.g. because its part is already sealed. */
   untouched?: string;
 }
@@ -99,7 +102,13 @@ export function prefillFrom(
   for (const role of targetForm.definition.roles) {
     const from = latestSealed(source, role.id) ?? currentPart(source, role.id);
     if (!from) continue;
-    const report: PrefillReport = { role: role.id, applied: [], kept: [], skipped: [] };
+    const report: PrefillReport = {
+      role: role.id,
+      applied: [],
+      kept: [],
+      skipped: [],
+      notices: [],
+    };
     reports.push(report);
     const existing = currentPart(q, role.id);
     if (existing && existing.status !== 'draft') {
@@ -160,8 +169,22 @@ export function prefillFrom(
         report.skipped.push({ fieldId: field.id, reason: TRANSITION_MESSAGES[result.code] });
       }
     }
+    // A notice confirmed once stays confirmed while its text is the same (Tobias 2026-11-01: "ein
+    // einmaliges Bestätigen sollte dauerhaft wirken"): the seal names each confirmed text by hash.
+    const confirmed = new Set(
+      (from.seal?.payload.acknowledgements ?? []).map(
+        (ack) => `${ack.infoBlockId} ${ack.textHash}`,
+      ),
+    );
+    report.notices = infoBlocksOfRole(targetForm.definition, role.id)
+      .filter((block) => confirmed.has(`${block.id} ${noticeHash(block)}`))
+      .map((block) => block.id);
+    if (report.notices.length > 0) {
+      const draft = currentPart(q, role.id);
+      q = withAcknowledged(q, role.id, [...(draft?.acknowledged ?? []), ...report.notices]);
+    }
     // Nothing to take over: no empty draft is left behind for this role.
-    if (!existing && report.applied.length === 0) q = before;
+    if (!existing && report.applied.length === 0 && report.notices.length === 0) q = before;
   }
   return { questionnaire: q, reports };
 }
@@ -182,6 +205,11 @@ export function describePrefill(
     }
     const counts = [
       `${report.applied.length} ${report.applied.length === 1 ? 'Angabe' : 'Angaben'} übernommen`,
+      ...(report.notices.length > 0
+        ? [
+            `${report.notices.length} ${report.notices.length === 1 ? 'Hinweis' : 'Hinweise'} schon bestätigt`,
+          ]
+        : []),
       ...(report.kept.length > 0
         ? [`${report.kept.length} vorhandene behalten (${report.kept.map(label).join(', ')})`]
         : []),

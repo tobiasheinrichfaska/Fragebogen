@@ -174,9 +174,22 @@ export function takeOver(
     source.form,
   );
   const { applied, lines } = describePrefill(reports, session.form.definition);
+  // Notices confirmed in last month's file count as confirmed in this session, too.
+  const acknowledged: Record<RoleId, readonly string[]> = { ...session.acknowledged };
+  for (const report of reports) {
+    if (report.notices.length === 0) continue;
+    acknowledged[report.role] = [
+      ...new Set([...(acknowledged[report.role] ?? []), ...report.notices]),
+    ].sort();
+  }
   return {
     ok: true,
-    session: { ...session, questionnaire, dirty: session.dirty || applied > 0 },
+    session: {
+      ...session,
+      questionnaire,
+      acknowledged,
+      dirty: session.dirty || applied > 0,
+    },
     applied,
     lines,
   };

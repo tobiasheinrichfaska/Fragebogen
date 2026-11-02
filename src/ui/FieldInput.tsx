@@ -1,6 +1,8 @@
 // One input per field type. Text-like fields keep the typed text locally and hand it over on
 // "Weiter" (normalising every keystroke would fight the person); choices answer immediately.
-import type { FieldDefinition, FieldType, FieldValue } from '../logic/model';
+import { answerSuggestions } from '../logic/answerSuggestions';
+import type { PartData } from '../logic/form';
+import type { FieldDefinition, FieldType, FieldValue, FormDefinition } from '../logic/model';
 import { stepHalfSteps } from '../logic/normalize';
 import { ISSUE_MESSAGES } from '../logic/issues';
 import {
@@ -8,9 +10,11 @@ import {
   listValidityOf,
   optionsOf,
   searchWordsOf,
+  REFERENCE_LISTS,
   suggestionsOf,
   validityNote,
 } from '../logic/options';
+import { CalendarInput } from './CalendarInput';
 import { INPUT_MODE, isTextLike } from './fieldKinds';
 import { SearchSelect } from './SearchSelect';
 
@@ -34,9 +38,43 @@ interface Props {
   onText: (text: string) => void;
   onChoose: (raw: unknown) => void;
   onSubmit: () => void;
+  /** The form and the role's answers so far: a calendar's month, suggestions from answers. */
+  context?: { definition: FormDefinition; data: PartData };
 }
 
-export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit }: Props) {
+export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit, context }: Props) {
+  if (field.type === 'calendar') {
+    const month = field.monthFrom === undefined ? undefined : context?.data[field.monthFrom];
+    return (
+      <CalendarInput
+        field={field}
+        id={id}
+        value={value}
+        month={typeof month === 'string' ? month : undefined}
+        onChoose={onChoose}
+      />
+    );
+  }
+  if (
+    field.type === 'text' &&
+    field.suggestionsFrom !== undefined &&
+    !REFERENCE_LISTS[field.suggestionsFrom]
+  ) {
+    // Offered from earlier answers (e.g. the employees, the Lohnarten); any other text is fine.
+    const offered = context ? answerSuggestions(context.definition, field, context.data) : [];
+    return (
+      <SearchSelect
+        id={id}
+        options={offered.map((label) => ({ value: label, label }))}
+        text={text}
+        onText={onText}
+        onPick={(option) => onText(option.label)}
+        onSubmit={onSubmit}
+        placeholder="Tippen oder aus der Liste wählen"
+        labelledBy={`${id}-label`}
+      />
+    );
+  }
   if (field.type === 'boolean') {
     return (
       <div className="choices choices-inline" role="radiogroup" aria-labelledby={`${id}-label`}>

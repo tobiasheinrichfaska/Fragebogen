@@ -36,6 +36,7 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 | [`06_aendern_und_ablauf.md`](06_aendern_und_ablauf.md) | Angaben ändern, Minijob-Steuer, Ablaufplan, Gültigkeit, Grenzen, Mehrfachbeschäftigung                                                   |
 | [`07_sv_beurteilung.md`](07_sv_beurteilung.md)         | Verdienst zuerst, Azubi unter 600 €, Minijob mit Weihnachtsgeld, Sonderfälle, Befreiung, amtliche Listen                                 |
 | [`08_auslieferung.md`](08_auslieferung.md)             | Auslieferung auf der Homepage: `.htaccess`, HTTPS, Header (MT-80); Hilfeseiten (MT-81); Hochladen, Ordner, Tester, Testseite (MT-82–85)  |
+| [`09_monatsmeldung.md`](09_monatsmeldung.md)           | Monatsmeldung (Entwurf): Kalender je Person, Stunden nur bei Stundenlohn, Lohnart-Vorschläge, Vormonat einlesen (MT-94, MT-95)           |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md)       | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                 |
 
 ## Im Testbereich

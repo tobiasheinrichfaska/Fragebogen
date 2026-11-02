@@ -495,6 +495,76 @@ textarea {
   font-size: 0.95rem;
 }
 
+/* Month view of a calendar field: one row per week; a mark has a colour and its first letter. */
+.calendar table {
+  width: 100%;
+  max-width: 28rem;
+  border-collapse: separate;
+  border-spacing: 0.2rem;
+  table-layout: fixed;
+}
+
+.calendar caption {
+  padding-bottom: 0.25rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.calendar th {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.calendar .day {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 2.6rem;
+  padding: 0.15rem 0;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.calendar .day-number {
+  font-size: 0.95rem;
+}
+
+.calendar .day-mark {
+  min-height: 1em;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.calendar .mark-0 {
+  border-color: var(--success-border);
+  background: var(--success-bg);
+}
+
+.calendar .mark-1 {
+  border-color: var(--info-border);
+  background: var(--info-bg);
+}
+
+.calendar .mark-2 {
+  border-color: var(--error-border);
+  background: var(--error-bg);
+}
+
+.calendar .mark-3 {
+  border-color: var(--warning-border);
+  background: var(--warning-bg);
+}
+
+.calendar-summary {
+  margin: 0.25rem 0 0;
+}
+
 .take-over {
   margin-top: 1.25rem;
   padding-top: 1rem;

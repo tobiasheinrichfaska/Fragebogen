@@ -88,7 +88,7 @@ export function CalendarInput({ field, id, value, month, onChoose }: Props) {
         {summary === '' ? 'Keine Tage markiert.' : summary}
       </p>
       {outside.length > 0 && (
-        <div className="banner warning" role="alert">
+        <div className="banner banner-warning" role="alert">
           <p>
             {outside.length === 1
               ? 'Ein markierter Tag liegt'
