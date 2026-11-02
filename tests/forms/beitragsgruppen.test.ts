@@ -122,7 +122,18 @@ describe('Beitragsgruppen per scenario', () => {
       '0000',
       false,
     ],
-    ['Werkstudent with 1.200 €', monatlich('1.200,00', 'werkstudent'), GKV, '106', '0100', false],
+    [
+      'Werkstudent with 1.200 €, 15 hours',
+      {
+        ...monatlich('1.200,00', 'werkstudent'),
+        agNurSemesterferien: false,
+        agVorlesungszeitStunden: '15',
+      },
+      GKV,
+      '106',
+      '0100',
+      false,
+    ],
     [
       'privately insured above the JAEG (84.000 €)',
       monatlich('7.000,00'),

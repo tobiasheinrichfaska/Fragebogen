@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 70 gleich, 6 abweichend. 103 abgeleitete Varianten, 33 Grenzfälle.
+80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 76 gleich, 0 abweichend. 105 abgeleitete Varianten, 39 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -56,18 +56,18 @@
 | GFR-42 | GfR 2026, Bsp. 42 | Regelmäßige Einsätze an fünf Tagen im Monat | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
 | GFR-45B | GfR 2026, Bsp. 45 | Zweite Aushilfe im Jahr über drei Monate, über der Grenze | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
 | GFR-48 | GfR 2026, Bsp. 48 | Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
-| ST-01 | RS Studenten, Bsp. 1 | Student 25 Std./Woche unbefristet | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 1 | abweichend (C) |
-| ST-02A | RS Studenten, Bsp. 2 | Werkstudentenjob 18 Std. neben Minijob 7 Std.: zusammen über 20 Std. | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 1 (p) | abweichend (C) |
+| ST-01 | RS Studenten, Bsp. 1 | Student 25 Std./Woche unbefristet | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
+| ST-02A | RS Studenten, Bsp. 2 | Werkstudentenjob 18 Std. neben Minijob 7 Std.: zusammen über 20 Std. | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
 | ST-02B | RS Studenten, Bsp. 2 | Student, Minijob 300 € neben (versicherungspflichtig gewordener) Beschäftigung | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
-| ST-04 | RS Studenten, Bsp. 4 | Student 25 Std. befristet, mit Vorbeschäftigungen | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 1 | abweichend (C) |
+| ST-04 | RS Studenten, Bsp. 4 | Student 25 Std. befristet, mit Vorbeschäftigungen | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR A, BGR A, ÜB A | 101 · 3111 (p) · ÜB 1 | gleich |
 | ST-SF | RS Studenten, A 1.2.4 b | Student, Einsätze nur in der vorlesungsfreien Zeit | 106 · 0100 | S O, PGR A, BGR A | 106 · 0100 · ÜB 1 | gleich |
-| ST-KF | RS Studenten, C 1 | Student, Ferienjob zwei Monate Vollzeit: kurzfristig | 110 · 0000 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 106 · 0100 · ÜB 0 | abweichend (C) |
-| ST-WS | RS Studenten, A 1.2.4 a | Werkstudent 15 Std./Woche | 106 · 0100 | S O, PGR O, BGR A | 106 (p) · 0100 · ÜB 1 | gleich |
-| ST-WSMJ | RS Studenten, C 1 | Werkstudent mit Minijob-Verdienst | 109 · 6100 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 106 (p) · 0100 · ÜB 0 | abweichend (C) |
+| ST-KF | RS Studenten, C 1 | Student, Ferienjob zwei Monate Vollzeit: kurzfristig | 110 · 0000 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| ST-WS | RS Studenten, A 1.2.4 a | Werkstudent 15 Std./Woche | 106 · 0100 | S O, PGR O, BGR A | 106 · 0100 · ÜB 1 | gleich |
+| ST-WSMJ | RS Studenten, C 1 | Werkstudent mit Minijob-Verdienst | 109 · 6100 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 109 · 6100 (p) · ÜB 0 | gleich |
 | ST-ZP | RS Studenten, C 3 | Vorgeschriebenes Zwischenpraktikum | 190 · 0000 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 190 · 0000 · ÜB 0 | gleich |
 | ST-VP | RS Studenten, C 3 | Vorgeschriebenes Vorpraktikum mit Entgelt | 105 · 1111 · ÜB 0 | S O, PGR O, BGR A, ÜB O | 105 · 1111 · ÜB 0 | gleich |
 | ST-VP0 | RS Studenten, C 3 | Vorgeschriebenes Vorpraktikum ohne Entgelt | 105 · 0110 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 105 · 0110 · ÜB 0 | gleich |
-| ST-FZPMJ | RS Studenten, A 3.5 / GfR C 3.3.2 | Freiwilliges Praktikum im Studium mit Minijob-Verdienst | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 106 (p) · 0100 · ÜB 0 | abweichend (C) |
+| ST-FZPMJ | RS Studenten, A 3.5 / GfR C 3.3.2 | Freiwilliges Praktikum im Studium mit Minijob-Verdienst | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
 | ST-SCH | RS Studenten, A 4.1 | Schülerin einer allgemeinbildenden Schule, 800 € | 101 · 1101 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1101 · ÜB 1 | gleich |
 | UEB-02 | RS Übergangsbereich, Bsp. 2 | Zwei Beschäftigungen zusammen über 2.000 € | 101 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 0 | gleich |
 | UEB-03 | RS Übergangsbereich, Bsp. 3 | Hauptbeschäftigung 1.700 € neben erstem Minijob | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 1 (p) | gleich |
@@ -93,7 +93,7 @@
 
 ## Abweichungen
 
-- **C – Werkstudenten und freiwillige Praktika: 20-Stunden-Grenze und Vorrang von 109/110 fehlen:** ST-01, ST-02A, ST-04, ST-KF, ST-WSMJ, ST-FZPMJ
+Keine.
 
 ## Nicht abbildbar
 
@@ -106,6 +106,12 @@
 
 | Fall | Grundlage | Erwartet | App |
 | --- | --- | --- | --- |
+| Werkstudent(in) 1.200 €, genau 20 Wochenstunden | RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a; DEÜV Anlage 2 (106) | 106 · 0100 · ÜB 1 | 106 · 0100 · ÜB 1 |
+| Werkstudent(in) 1.200 €, 20,5 Wochenstunden, nicht am Wochenende oder abends | RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a, Beispiel 4 | 101 · 1111 · ÜB 1 | 101 · 1111 · ÜB 1 |
+| Werkstudent(in) 1.200 €, 25 Wochenstunden abends, 26 Wochen befristet | RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a | 106 · 0100 · ÜB 1 | 106 · 0100 · ÜB 1 |
+| Werkstudent(in) 1.200 €, 25 Wochenstunden abends, 26 Wochen und ein Tag | RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a, Beispiel 1 | 101 · 1111 · ÜB 1 | 101 · 1111 · ÜB 1 |
+| Werkstudent(in) 12 Wochenstunden für 600 € (Minijob geht vor) | RS Studenten und Praktikanten 2016, Tz. C 1; GfR 2026 C 2.2 | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
+| Werkstudent(in) in den Semesterferien, 01.08.–31.10. befristet (kurzfristig geht vor) | RS Studenten und Praktikanten 2016, Tz. A 1.2.4 c, C 1 | 110 · 0000 · ÜB 0 | 110 · 0000 · ÜB 0 |
 | Minijob 720 € brutto, davon 120 € Entgeltumwandlung (GfR Bsp. 14) | § 14 Abs. 1 S. 2 SGB IV; § 1 Abs. 1 S. 1 Nr. 9 SvEV; GfR 2026 Bsp. 14 | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
 | Minijob 720 €, Beitrag 140 € davon 20 € Zuschuss des Arbeitgebers (120 € umgewandelt) | § 14 Abs. 1 S. 2 SGB IV; GfR 2026 Bsp. 14 | 109 · 6100 · ÜB 0 | 109 · 6100 · ÜB 0 |
 | „Minijob“ 720 €, die 120 € zahlt der Arbeitgeber zusätzlich (keine Umwandlung) | § 8 Abs. 1 Nr. 1 SGB IV (die Zuwendung mindert das Entgelt nicht) | 101 · 1111 · ÜB 1 | 101 (p) · 1111 · ÜB 1 |

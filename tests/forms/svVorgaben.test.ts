@@ -90,14 +90,7 @@ const GROUPS = {
   I: 'Eingang des Befreiungsantrags nach dem Beginnmonat verschiebt die Befreiung nicht',
 } as const;
 
-const KNOWN_DEVIATIONS: Record<string, Deviation> = {
-  'ST-01': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-  'ST-02A': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-  'ST-04': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-  'ST-KF': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-  'ST-WSMJ': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-  'ST-FZPMJ': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-};
+const KNOWN_DEVIATIONS: Record<string, Deviation> = {};
 
 function actual(r: Assessment): Record<Aspect, string> {
   return {
@@ -444,7 +437,95 @@ const bav = (art: string, beitrag: string, zuschuss: string): Answers => ({
   ],
 });
 
+const STUDENT: Answers = {
+  geburtsdatum: '2003-03-01',
+  bezugRente: false,
+  weitereBeschaeftigung: false,
+  krankenversicherung: 'gesetzlich',
+  artLautVereinbarung: 'werkstudent',
+  status: 'student',
+  studienArt: 'vollzeit',
+  hochschule: 'Beispiel-Hochschule',
+  urlaubssemester: false,
+  fachsemester: '3',
+  ueber20hJahr: false,
+};
+const werkstudent = (stunden: string, more: Answers = {}): Answers =>
+  employer('werkstudent', monthly('1200.00'), {
+    agBeschaeftigungsbeginn: '2026-04-01',
+    agNurSemesterferien: false,
+    agVorlesungszeitStunden: stunden,
+    ...more,
+  });
+
 const LIMITS: Limit[] = [
+  {
+    label: 'Werkstudent(in) 1.200 €, genau 20 Wochenstunden',
+    source: 'RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a; DEÜV Anlage 2 (106)',
+    person: STUDENT,
+    employer: werkstudent('20'),
+    pgr: '106',
+    bgr: '0100',
+    uebergang: '1',
+  },
+  {
+    label: 'Werkstudent(in) 1.200 €, 20,5 Wochenstunden, nicht am Wochenende oder abends',
+    source: 'RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a, Beispiel 4',
+    person: STUDENT,
+    employer: werkstudent('20.5', { agRandzeiten: false }),
+    pgr: '101',
+    bgr: '1111',
+    uebergang: '1',
+  },
+  {
+    label: 'Werkstudent(in) 1.200 €, 25 Wochenstunden abends, 26 Wochen befristet',
+    source: 'RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a',
+    person: STUDENT,
+    employer: werkstudent('25', {
+      agRandzeiten: true,
+      agBefristet: true,
+      agBefristetBis: '2026-09-29',
+    }),
+    pgr: '106',
+    bgr: '0100',
+    uebergang: '1',
+  },
+  {
+    label: 'Werkstudent(in) 1.200 €, 25 Wochenstunden abends, 26 Wochen und ein Tag',
+    source: 'RS Studenten und Praktikanten 2016, Tz. A 1.2.4 a, Beispiel 1',
+    person: STUDENT,
+    employer: werkstudent('25', {
+      agRandzeiten: true,
+      agBefristet: true,
+      agBefristetBis: '2026-09-30',
+    }),
+    pgr: '101',
+    bgr: '1111',
+    uebergang: '1',
+  },
+  {
+    label: 'Werkstudent(in) 12 Wochenstunden für 600 € (Minijob geht vor)',
+    source: 'RS Studenten und Praktikanten 2016, Tz. C 1; GfR 2026 C 2.2',
+    person: STUDENT,
+    employer: { ...werkstudent('12'), agMonatsentgelt: '600.00' },
+    pgr: '109',
+    bgr: '6100',
+    uebergang: '0',
+  },
+  {
+    label: 'Werkstudent(in) in den Semesterferien, 01.08.–31.10. befristet (kurzfristig geht vor)',
+    source: 'RS Studenten und Praktikanten 2016, Tz. A 1.2.4 c, C 1',
+    person: STUDENT,
+    employer: employer('werkstudent', monthly('2400.00'), {
+      agBeschaeftigungsbeginn: '2026-08-01',
+      agNurSemesterferien: true,
+      agBefristet: true,
+      agBefristetBis: '2026-10-31',
+    }),
+    pgr: '110',
+    bgr: '0000',
+    uebergang: '0',
+  },
   {
     label: 'Minijob 720 € brutto, davon 120 € Entgeltumwandlung (GfR Bsp. 14)',
     source: '§ 14 Abs. 1 S. 2 SGB IV; § 1 Abs. 1 S. 1 Nr. 9 SvEV; GfR 2026 Bsp. 14',

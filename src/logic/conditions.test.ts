@@ -183,3 +183,43 @@ describe('describeCondition', () => {
     expect(describeCondition(condition, fields)).toBe(text);
   });
 });
+
+// 2026-11-02: "more than 20 hours a week" (Werkstudent, Rundschreiben Studenten Tz. A 1.2.4).
+describe('greaterThan on numbers and amounts', () => {
+  const stunden = {
+    id: 'stunden',
+    role: 'arbeitgeber',
+    type: 'number',
+    label: 'Stunden',
+    decimals: 2,
+  } as never;
+  const betrag = { id: 'betrag', role: 'arbeitgeber', type: 'money', label: 'Betrag' } as never;
+  const text = { id: 'name', role: 'person', type: 'text', label: 'Name' } as never;
+  const over = (value: FieldValue) =>
+    evaluateCondition({ field: 'stunden', greaterThan: '20' }, (id) =>
+      id === 'stunden' ? value : null,
+    );
+
+  it('compares the stored number, never an unanswered one', () => {
+    expect(over('20.01')).toBe(true);
+    expect(over('20.00')).toBe(false);
+    expect(over('7.50')).toBe(false);
+    expect(over('100.00')).toBe(true);
+    expect(over(null)).toBe(false);
+  });
+
+  it('fits number and money fields with a decimal operand only', () => {
+    expect(leafProblem({ field: 'stunden', greaterThan: '20' }, stunden)).toBeUndefined();
+    expect(leafProblem({ field: 'betrag', greaterThan: '603.00' }, betrag)).toBeUndefined();
+    expect(leafProblem({ field: 'name', greaterThan: '20' }, text)?.at).toBe('field');
+    expect(leafProblem({ field: 'stunden', greaterThan: 'zwanzig' }, stunden)?.message).toContain(
+      'number',
+    );
+  });
+
+  it('reads as German text', () => {
+    expect(
+      describeCondition({ field: 'stunden', greaterThan: '20.5' }, new Map([['stunden', stunden]])),
+    ).toBe('„Stunden“ über 20,5 liegt');
+  });
+});

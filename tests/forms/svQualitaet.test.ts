@@ -414,13 +414,19 @@ const JOBS: Job[] = [
   {
     label: 'freiwilliges Praktikum, 900 €',
     art: 'praktikum',
-    employer: pay('900,00', 'praktikum', { agPraktikumArt: 'freiwillig' }),
+    employer: pay('900,00', 'praktikum', {
+      agPraktikumArt: 'freiwillig',
+      agVorlesungszeitStunden: '15',
+    }),
     persons: ['student', 'arbeitnehmer'],
   },
   {
     label: 'Werkstudent/in, 1.200 €',
     art: 'werkstudent',
-    employer: pay('1.200,00', 'werkstudent', { agNurSemesterferien: false }),
+    employer: pay('1.200,00', 'werkstudent', {
+      agNurSemesterferien: false,
+      agVorlesungszeitStunden: '15',
+    }),
     persons: ['student'],
   },
   {

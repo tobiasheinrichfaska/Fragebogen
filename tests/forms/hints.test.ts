@@ -216,6 +216,7 @@ describe('check hints — definition rules', () => {
       'inSpaeteremMonat',
       'keinArbeitsentgelt',
       'kuerzerAlsEineWoche',
+      'kurzfristigBefristetBisDreiMonate',
       'kurzfristigGegeben',
       'kurzfristigGegebenBisGeringfuegigkeitsgrenze',
       'listeneintragNichtGueltig',
@@ -229,6 +230,7 @@ describe('check hints — definition rules', () => {
       'ueberMassgeblicheJahresarbeitsentgeltgrenze',
       'weitererMinijobNebenJaegFreierHauptbeschaeftigung',
       'weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze',
+      'werkstudentenprivileg',
     ]);
   });
 });
@@ -710,5 +712,103 @@ describe('Entgeltumwandlung in the pay tests', () => {
       holds: true,
       uncertain: true,
     });
+  });
+});
+
+// 2026-11-02, Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 and C 1 (ST-01, -02A, -04, -KF,
+// -WS, -WSMJ, -SF, -FZPMJ). Arguments: semester breaks only, hours, edges of the day, fixed term,
+// start, until, more than 20 hours in the last 12 months, hours of the other jobs.
+describe('the Werkstudent tests', () => {
+  const privileg = (
+    ferien: boolean | null,
+    stunden: string | null,
+    rand: boolean | null,
+    befristet: boolean | null,
+    bis: string | null,
+    ueber20: boolean | null = false,
+    andere: string[] = [],
+  ) => {
+    const result = HINT_TESTS.werkstudentenprivileg?.run([
+      ferien,
+      stunden,
+      rand,
+      befristet,
+      '2026-04-01',
+      bis,
+      ueber20,
+      andere as never,
+    ]);
+    return { holds: result?.holds, uncertain: result?.uncertain === true };
+  };
+  const yes = { holds: true, uncertain: false };
+  const no = { holds: false, uncertain: false };
+
+  it.each<[string, ReturnType<typeof privileg>, typeof yes]>([
+    ['only in the semester breaks, any hours', privileg(true, '40.00', null, false, null), yes],
+    ['exactly 20 hours', privileg(false, '20.00', null, false, null), yes],
+    [
+      '20,01 hours, not at the edges of the day (example 4)',
+      privileg(false, '20.01', false, true, '2026-05-31'),
+      no,
+    ],
+    [
+      '18 hours + 7 in a Minijob (example 2)',
+      privileg(false, '18.00', null, false, null, false, ['7.00']),
+      no,
+    ],
+    [
+      '25 hours at weekends, without end (example 1)',
+      privileg(false, '25.00', true, false, null),
+      no,
+    ],
+    [
+      '25 hours at weekends, 26 weeks exactly',
+      privileg(false, '25.00', true, true, '2026-09-29'),
+      yes,
+    ],
+    [
+      '25 hours at weekends, 26 weeks and a day',
+      privileg(false, '25.00', true, true, '2026-09-30'),
+      no,
+    ],
+    ['hours missing', privileg(false, null, null, false, null), { holds: true, uncertain: true }],
+    [
+      'at weekends within 26 weeks, but over 20 hours elsewhere this year',
+      privileg(false, '25.00', true, true, '2026-06-30', true),
+      { holds: true, uncertain: true },
+    ],
+  ])('%s', (_label, actual, expected) => {
+    expect(actual).toEqual(expected);
+  });
+
+  it('takes a Werkstudent job of at most three months as short-term (Tz. C 1)', () => {
+    const run = (bis: string | null, pay = '2400.00') =>
+      HINT_TESTS.kurzfristigBefristetBisDreiMonate?.run([
+        '2026-08-01',
+        bis,
+        null,
+        null,
+        true,
+        [] as never,
+        [] as never,
+        [] as never,
+        [] as never,
+        [] as never,
+        pay,
+        null,
+        null,
+        null,
+        [] as never,
+        [] as never,
+        [] as never,
+        [] as never,
+        null,
+        [] as never,
+        [] as never,
+      ])?.holds;
+    expect(run('2026-09-30')).toBe(true);
+    expect(run('2026-10-31')).toBe(true);
+    expect(run('2026-11-01')).toBe(false);
+    expect(run(null)).toBe(false);
   });
 });

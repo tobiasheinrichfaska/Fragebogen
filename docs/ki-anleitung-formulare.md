@@ -172,15 +172,16 @@ nennt seine Rolle.
 
 ### Bedingungen (`showIf`, `requiredIf`, `requiredIf.when`, `carryRowsIf`, `checkHints[].when`)
 
-| Form                                                                    | Gilt, wenn …                                                                              |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)                                     |
-| `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                                        |
-| `{ "field": "kinderSonderfaelle", "contains": "stiefkind" }`            | die Mehrfachauswahl diese Option enthält (`contains`)                                     |
-| `{ "field": "geburtsdatum", "onOrBefore": "1959-11-02" }`               | das Datum am oder vor diesem Tag liegt (`onOrBefore`, nur Datumsfelder; leer: nie)        |
-| `{ "field": "iban", "startsWith": "DE" }`                               | der Text mit diesem Anfang beginnt (`startsWith`, nur Textfelder, IBAN in Großbuchstaben) |
-| `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`)                        |
-| `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                                         |
+| Form                                                                    | Gilt, wenn …                                                                                |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)                                       |
+| `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                                          |
+| `{ "field": "kinderSonderfaelle", "contains": "stiefkind" }`            | die Mehrfachauswahl diese Option enthält (`contains`)                                       |
+| `{ "field": "geburtsdatum", "onOrBefore": "1959-11-02" }`               | das Datum am oder vor diesem Tag liegt (`onOrBefore`, nur Datumsfelder; leer: nie)          |
+| `{ "field": "agVorlesungszeitStunden", "greaterThan": "20" }`           | die Zahl oder der Betrag größer ist (`greaterThan`, nur Zahl- und Betragsfelder; leer: nie) |
+| `{ "field": "iban", "startsWith": "DE" }`                               | der Text mit diesem Anfang beginnt (`startsWith`, nur Textfelder, IBAN in Großbuchstaben)   |
+| `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`)                          |
+| `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                                           |
 
 Ein ausgeblendetes Feld zählt als unbeantwortet. Bedingungen in Feldern sehen nur Felder derselben
 Rolle; über Rollen hinweg gibt es `fromRole` (Antwort übernehmen), Rollen mit
@@ -202,7 +203,11 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   mit festen Feldtypen: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
   `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
   erste liegt nach dem zweiten); `inSpaeteremMonat` (Datum, Datum: das erste liegt in einem späteren
-  Kalendermonat); `kurzfristigGegeben`, `kurzfristigGegebenBisGeringfuegigkeitsgrenze` und
+  Kalendermonat); `werkstudentenprivileg` (Ja/Nein, Zahl, Ja/Nein, Ja/Nein, Datum, Datum, Ja/Nein,
+  Zahl-Spalte: nur Semesterferien, Wochenstunden der Vorlesungszeit, überwiegend Wochenende/abends/nachts,
+  befristet, Beginn, befristet bis, über 20 Stunden in den letzten 12 Monaten, Stunden der weiteren
+  Beschäftigungen – das Werkstudentenprivileg gilt); `kurzfristigBefristetBisDreiMonate` (wie die
+  Aushilfe-Tests, mit „befristet bis“ als Ende: höchstens drei Monate befristet und sonst kurzfristig); `kurzfristigGegeben`, `kurzfristigGegebenBisGeringfuegigkeitsgrenze` und
   `geringfuegigNebenKurzfristigen` (achtzehn Felder: Beginn, Ende, Arbeitstage, Rahmenvereinbarung,
   befristet; die Spalten Art, von, bis, Arbeitstage, Entgelt der früheren Beschäftigungen; festes und
   erwartetes Entgelt, Einmalzahlungen und Anspruch; die Spalten Art, Entgelt, seit, befristet bis der

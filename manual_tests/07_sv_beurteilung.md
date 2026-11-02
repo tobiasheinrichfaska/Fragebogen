@@ -220,3 +220,31 @@ Arbeitnehmer“, keine früheren Beschäftigungen im Kalenderjahr).
   ein Minijob.
 - _Nicht offensichtlich:_ Über drei Monate mit höchstens 70 Arbeitstagen (z. B. 30.09. mit 70 Tagen)
   bleibt es eine kurzfristige Beschäftigung (110) – beide Grenzen sind gleichwertig.
+
+---
+
+## MT-97: Werkstudent – Wochenstunden in der Vorlesungszeit
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
+**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.04.2026, festes
+Monatsentgelt 1.200,00 €, Art der Beschäftigung „Werkstudent“. Die Person füllt danach als Studentin
+ihren Teil aus.
+
+**Schritte:**
+
+1. Bei „Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?“ „Nein“ wählen.
+2. Bei „Wie viele Stunden pro Woche arbeitet die Person in der Vorlesungszeit?“ `20` eingeben, weiter bis
+   zur Kanzlei gehen und die Vorschläge ansehen.
+3. Die Stunden auf `25` ändern; bei der nun folgenden Frage „Liegt die Arbeitszeit überwiegend am
+   Wochenende, abends oder nachts?“ „Nein“ wählen.
+4. Das Monatsentgelt auf 600,00 € und die Stunden auf `12` ändern.
+
+**Erwartet:**
+
+- Schritt 2: Personengruppe 106, Beitragsgruppen 0100, ohne „bitte prüfen“. _Nicht offensichtlich:_ Die
+  Frage nach Wochenende, Abend oder Nacht erscheint bei 20 Stunden **nicht** – erst darüber.
+- Schritt 3: Personengruppe 101, Beitragsgruppen 1111; die Begründung nennt „mehr als 20 Wochenstunden“.
+- Schritt 4: Personengruppe 109, Beitragsgruppen 6100 – ein Minijob geht der Werkstudentenregel vor.
+- _Nicht offensichtlich:_ Bei „nur in der vorlesungsfreien Zeit: Ja“ fragt der Bogen keine Stunden; dann
+  bleibt es bei 106 unabhängig von der Stundenzahl.

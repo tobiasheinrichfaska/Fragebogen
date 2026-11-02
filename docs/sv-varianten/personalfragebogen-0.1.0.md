@@ -200,7 +200,7 @@
 
 | Person | RV-Befreiung | Personengruppe | Beitragsgruppen | Übergangsbereich | nicht gefragt |
 | --- | --- | --- | --- | --- | --- |
-| Student/in | – | 106 (prüfen) | 0100 | 1 | – |
+| Student/in | – | 106 | 0100 | 1 | – |
 
 ## Werkstudent/in nur in den Semesterferien, 1.200 €
 

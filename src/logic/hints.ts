@@ -11,6 +11,7 @@ import {
   berufsmaessigNachVorbeschaeftigungen,
   entgeltImSelbenMonat,
   regelmaessig,
+  endOfMonths,
   zeitgrenze,
   type ShortTermJob,
 } from './kurzfristig';
@@ -681,9 +682,12 @@ function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear
  * short-term jobs running at the same time or in the same month (B 2.3.3, examples 4c, 4d).
  * `gegeben`: for a person who is not berufsmäßig by status — berufsmäßig only from earlier jobs
  * (B 2.3.3.3). `bisGrenze`: for a person berufsmäßig by status — only within the pay limit. Open
- * facts: holds, uncertain (the employer's choice stands, with a check).
+ * facts: holds, uncertain (the employer's choice stands, with a check). `werkstudent`: a Werkstudent
+ * job with a fixed term of at most three months is also short-term and then reported as 110
+ * (Rundschreiben Studenten und Praktikanten Tz. C 1); the working days are not asked there, so only
+ * the three months count.
  */
-function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze'): HintTest {
+function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze' | 'werkstudent'): HintTest {
   return {
     args: KURZFRISTIG_ARGS,
     describe: ([beginn = '', bis = '', tage = '', rahmen = '', , vbArt = '']) =>
@@ -699,6 +703,12 @@ function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze'): HintTest {
         };
       }
       const { job, limit, own, parallel } = facts;
+      if (
+        mode === 'werkstudent' &&
+        (job.bis === undefined || job.bis > endOfMonths(job.beginn, 3))
+      ) {
+        return { holds: false, detail: [] };
+      }
       const time = zeitgrenze(job);
       const regular = regelmaessig(job);
       const total = own === undefined ? undefined : own + parallel + entgeltImSelbenMonat(job);
@@ -716,7 +726,7 @@ function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze'): HintTest {
       }
       let notShortTerm = time.status === 'ueberschritten' || regular;
       let uncertain = time.status === 'offen';
-      if (mode === 'gegeben') {
+      if (mode !== 'bisGrenze') {
         const earlier = berufsmaessigNachVorbeschaeftigungen(job, limit);
         if (payOver || own === undefined) detail.push(...earlier.detail);
         if (earlier.holds && payOver) notShortTerm = true;
@@ -730,6 +740,90 @@ function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze'): HintTest {
     },
   };
 }
+
+const WERKSTUDENT_STUNDEN = 20;
+const WERKSTUDENT_TAGE = 26 * 7;
+const hours = (value: number) => String(value).replace('.', ',');
+
+/**
+ * The Werkstudentenprivileg (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III; Rundschreiben
+ * Studenten und Praktikanten 23.11.2016, Tz. A 1.2.4, checked in the text 2026-11-02): only in the
+ * semester breaks, or at most 20 hours a week in the lecture period with the other jobs together;
+ * above that only mostly at weekends, evenings or nights and fixed to at most 26 weeks (examples 1, 2,
+ * 4). Missing hours or end, or more than 20 hours elsewhere in the last 12 months (the 26-week rule,
+ * Tz. A 1.2.4 d): holds, uncertain. Arguments: semester breaks only, hours, mostly at the edges of the
+ * day, fixed term, start, fixed until, more than 20 hours in the last 12 months, hours of the other
+ * jobs (column).
+ */
+const werkstudentenprivileg: HintTest = {
+  args: ['boolean', 'number', 'boolean', 'boolean', 'date', 'date', 'boolean', 'number'],
+  describe: ([ferien = '', stunden = '', randzeiten = '', , , , , andere = '']) =>
+    `nach „${ferien}“, „${stunden}“ (mit „${andere}“) und „${randzeiten}“ das Werkstudentenprivileg gilt`,
+  run: ([ferien, stunden, randzeiten, befristet, beginn, bis, ueber20, andere]) => {
+    if (ferien === true) {
+      return {
+        holds: true,
+        detail: [
+          'Nur in der vorlesungsfreien Zeit: Werkstudentenprivileg unabhängig von den Stunden (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 b).',
+        ],
+      };
+    }
+    const own = numberOrUndefined(stunden);
+    if (own === undefined) {
+      return {
+        holds: true,
+        uncertain: true,
+        detail: ['Die Wochenstunden in der Vorlesungszeit fehlen – bitte prüfen.'],
+      };
+    }
+    const others = column(andere).reduce<number>(
+      (sum, value) => sum + (numberOrUndefined(value) ?? 0),
+      0,
+    );
+    const total = own + others;
+    const sum =
+      others > 0
+        ? `${hours(own)} + ${hours(others)} Stunden anderer Beschäftigungen = ${hours(total)} Wochenstunden`
+        : `${hours(total)} Wochenstunden`;
+    if (total <= WERKSTUDENT_STUNDEN) {
+      return {
+        holds: true,
+        detail: [`${sum}: höchstens 20 (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a).`],
+      };
+    }
+    if (randzeiten !== true) {
+      return {
+        holds: false,
+        detail: [
+          `${sum} in der Vorlesungszeit, nicht überwiegend am Wochenende, abends oder nachts: kein Werkstudentenprivileg (Tz. A 1.2.4 a, Beispiele 2 und 4).`,
+        ],
+      };
+    }
+    const start = isoOrUndefined(beginn);
+    const end = isoOrUndefined(bis);
+    const tooLong =
+      befristet === false ||
+      (start !== undefined &&
+        end !== undefined &&
+        dayNumber(end) - dayNumber(start) + 1 > WERKSTUDENT_TAGE);
+    if (tooLong) {
+      return {
+        holds: false,
+        detail: [
+          `${sum}, unbefristet oder länger als 26 Wochen: kein Werkstudentenprivileg (Tz. A 1.2.4 a, Beispiel 1).`,
+        ],
+      };
+    }
+    const open = befristet !== true || start === undefined || end === undefined;
+    return {
+      holds: true,
+      ...(open || ueber20 === true ? { uncertain: true } : {}),
+      detail: [
+        `${sum}, überwiegend am Wochenende, abends oder nachts, höchstens 26 Wochen befristet: Werkstudentenprivileg (Tz. A 1.2.4 a)${ueber20 === true ? '; in den letzten 12 Monaten schon mehr als 20 Wochenstunden – mehr als 26 Wochen im Jahr beenden es (Tz. A 1.2.4 d), bitte prüfen' : ''}.`,
+      ],
+    };
+  },
+};
 
 /**
  * A job chosen as short-term that is not one, but a Minijob: its pay with the other short-term
@@ -862,10 +956,12 @@ const andereBeschaeftigungAusbildung: HintTest = {
 
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   andereBeschaeftigungAusbildung,
+  werkstudentenprivileg,
   geringfuegigEntlohnt,
   geringfuegigNebenKurzfristigen,
   weitererMinijobNebenJaegFreierHauptbeschaeftigung: weitererMinijobNebenJaegFrei(false),
   weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze: weitererMinijobNebenJaegFrei(true),
+  kurzfristigBefristetBisDreiMonate: kurzfristigkeit('werkstudent'),
   kurzfristigGegeben: kurzfristigkeit('gegeben'),
   kurzfristigGegebenBisGeringfuegigkeitsgrenze: kurzfristigkeit('bisGrenze'),
   minijobNebenHauptbeschaeftigung,

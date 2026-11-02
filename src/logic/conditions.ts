@@ -21,6 +21,7 @@ export const CONDITION_OPERATORS = [
   'answered',
   'startsWith',
   'onOrBefore',
+  'greaterThan',
 ] as const;
 export type ConditionOperator = (typeof CONDITION_OPERATORS)[number];
 type Operand = string | boolean | readonly string[];
@@ -40,6 +41,8 @@ function shown(target: FieldDefinition, operand: unknown): string {
   if (typeof operand === 'boolean') return operand ? 'Ja' : 'Nein';
   return optionsOf(target).find((option) => option.id === operand)?.label ?? String(operand);
 }
+
+const DECIMAL = /^-?\d+(\.\d+)?$/;
 
 const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
   equals: {
@@ -105,6 +108,22 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
     describe: (label, operand) =>
       `„${label}“ am oder vor dem ${typeof operand === 'string' && isIsoDate(operand) ? formatGermanDate(operand) : String(operand)} liegt`,
   },
+  // A number or amount above a fixed value, e.g. more than 20 hours a week. Stored numbers and
+  // amounts are plain decimal strings; unanswered is never above anything.
+  greaterThan: {
+    targets: ['number', 'money'],
+    checkOperand: (operand) =>
+      typeof operand === 'string' && DECIMAL.test(operand)
+        ? undefined
+        : 'expected a number like "20"',
+    evaluate: (value, operand) =>
+      typeof value === 'string' &&
+      typeof operand === 'string' &&
+      DECIMAL.test(value) &&
+      Number(value) > Number(operand),
+    describe: (label, operand) =>
+      `„${label}“ über ${typeof operand === 'string' ? operand.replace('.', ',') : String(operand)} liegt`,
+  },
   answered: {
     targets: FIELD_TYPES,
     checkOperand: (operand) => (typeof operand === 'boolean' ? undefined : 'expected a boolean'),
@@ -122,6 +141,7 @@ export function leafOperator(leaf: LeafCondition): {
   if ('contains' in leaf) return { operator: 'contains', operand: leaf.contains };
   if ('startsWith' in leaf) return { operator: 'startsWith', operand: leaf.startsWith };
   if ('onOrBefore' in leaf) return { operator: 'onOrBefore', operand: leaf.onOrBefore };
+  if ('greaterThan' in leaf) return { operator: 'greaterThan', operand: leaf.greaterThan };
   return { operator: 'answered', operand: leaf.answered };
 }
 

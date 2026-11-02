@@ -625,18 +625,25 @@ Key design decisions (details in `docs/plan.md`):
   contribution and subsidy; the converted pay (contribution minus subsidy, at most 4 % of the BBG RV,
   2026: 338 € a month; § 14 Abs. 1 S. 2 SGB IV, § 1 Abs. 1 S. 1 Nr. 9 SvEV) lowers the pay for the
   Minijob limit, the Übergangsbereich and the JAEG; the gross for the payroll program is unchanged.
+  C — Werkstudent (Tobias: "Stunden fragen + Regeln"; RS Studenten Tz. A 1.2.4 and C 1 checked in the
+  text): new employer questions `agVorlesungszeitStunden` (Werkstudent not only in the breaks, voluntary
+  internship) and, above 20, `agRandzeiten` (condition leaf `greaterThan`, number and money fields);
+  `vorbeschJahr` is asked for Werkstudenten too (short-term check, example 4). A short-term (fixed to at
+  most three months, `kurzfristigBefristetBisDreiMonate`) or Minijob Werkstudent job is reported as 110
+  or 109 first; 106 only with the privilege (`werkstudentenprivileg`: semester breaks, at most 20 hours
+  with the other jobs, above only at weekends/evenings/nights and at most 26 weeks), otherwise 101.
 
 ---
 
 ## Known Limitations
 
-- **SV proposals differ from 6 official examples** (2026-11-02, `docs/sv-vorgaben/`): Werkstudent rules
-  come before 109/110 and ignore the 20 hours (C) — decided "Stunden fragen + Regeln", in progress. Four
-  examples cannot be expressed (two periods, tax-free allowances, change at the turn of the year,
+- **No SV deviation from the 76 mappable official examples is left** (2026-11-02, `docs/sv-vorgaben/`).
+  Four examples cannot be expressed (two periods, tax-free allowances, change at the turn of the year,
   household Minijob = excluded). One proposal per job at its start: a later change (e.g. RV exemption
   from the month the request came in, a short-term job becoming short-term again when a parallel one
-  ends) and a second report (Minijob-Zentrale 101 · 6000 next to the Krankenkasse) are named in the
-  check note, not as a second proposal.
+  ends) and a second report (Minijob-Zentrale 101 · 6000 next to the Krankenkasse) are named in the check
+  note, not as a second proposal. KV 1 or 3 for a fixed term up to ten weeks stays open (sources
+  differ); such cases are not tested hard on the KV digit.
 - **Short-term jobs:** Berufsmäßigkeit from earlier jobs counts every earlier job of the calendar year;
   for people who left working life (full old-age pension, household) or students only the time after
   that should count (GfR B 2.3.3.3) — the questionnaire does not ask when, so such a case needs the

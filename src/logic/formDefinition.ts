@@ -596,6 +596,10 @@ export function decodeCondition(
       const onOrBefore = d.string(o.onOrBefore, `${path}.onOrBefore`, ISO_DATE_SHAPE);
       return field === undefined || onOrBefore === undefined ? undefined : { field, onOrBefore };
     }
+    case 'greaterThan': {
+      const greaterThan = d.string(o.greaterThan, `${path}.greaterThan`);
+      return field === undefined || greaterThan === undefined ? undefined : { field, greaterThan };
+    }
     default: {
       const answered = d.boolean(o.answered, `${path}.answered`);
       return field === undefined || answered === undefined ? undefined : { field, answered };

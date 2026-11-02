@@ -2519,9 +2519,11 @@
         "agErwartetMonat": "1500.00",
         "agNurSemesterferien": false,
         "agArbeitszeitmodell": "wechselnd",
-        "agWochenstunden": "25.00"
+        "agWochenstunden": "25.00",
+        "agVorlesungszeitStunden": "25.00",
+        "agRandzeiten": false
       },
-      "hinweis": "Das Rundschreiben nennt nur „versicherungspflichtig in KV, PV, RV, AV“; PGR/BGR daraus abgeleitet. Entgelt (1.500 €) angenommen."
+      "hinweis": "Das Rundschreiben nennt nur „versicherungspflichtig in KV, PV, RV, AV“; PGR/BGR daraus abgeleitet. Entgelt (1.500 €) angenommen. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit und die Lage der Arbeitszeit ergänzt (neue Fragen des Fragebogens)."
     },
     {
       "id": "ST-02A",
@@ -2580,9 +2582,10 @@
         "agBefristet": false,
         "agNurSemesterferien": false,
         "agArbeitszeitmodell": "wechselnd",
-        "agWochenstunden": "18.00"
+        "agWochenstunden": "18.00",
+        "agVorlesungszeitStunden": "18.00"
       },
-      "hinweis": "Im Original (A seit 01.03., B ab 01.08.) entfällt das Privileg für A ab 01.08.; die App beurteilt nur den Beginn."
+      "hinweis": "Im Original (A seit 01.03., B ab 01.08.) entfällt das Privileg für A ab 01.08.; die App beurteilt nur den Beginn. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit ergänzt (neue Fragen des Fragebogens)."
     },
     {
       "id": "ST-02B",
@@ -2664,7 +2667,8 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1"
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
       },
       "person": {
         "geburtsdatum": "2003-03-01",
@@ -2686,6 +2690,23 @@
             "ueber20hStunden": "25.00",
             "ueber20hFerien": false
           }
+        ],
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-02-01",
+            "vbBis": "2026-03-31",
+            "vbArt": "mehr"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-07-01",
+            "vbBis": "2026-09-15",
+            "vbArt": "mehr"
+          }
         ]
       },
       "arbeitgeber": {
@@ -2698,9 +2719,11 @@
         "agNurSemesterferien": false,
         "agBefristetBis": "2027-01-31",
         "agArbeitszeitmodell": "wechselnd",
-        "agWochenstunden": "25.00"
+        "agWochenstunden": "25.00",
+        "agVorlesungszeitStunden": "25.00",
+        "agRandzeiten": false
       },
-      "hinweis": "Entgelt (1.500 €) angenommen."
+      "hinweis": "Entgelt (1.500 €) angenommen. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit und die Lage der Arbeitszeit sowie die Vorbeschäftigungen des Kalenderjahres aus dem Sachverhalt ergänzt (neue Fragen des Fragebogens). KV-Ziffer nicht hart prüfen: auf neun Wochen befristet – nach der Zehn-Wochen-Regel (kein Krankengeldanspruch) wäre KV 3 denkbar; die Quellen sind uneinheitlich (vgl. GFR-40B)."
     },
     {
       "id": "ST-SF",
@@ -2841,8 +2864,10 @@
         "agBefristet": false,
         "agNurSemesterferien": false,
         "agArbeitszeitmodell": "wechselnd",
-        "agWochenstunden": "15.00"
-      }
+        "agWochenstunden": "15.00",
+        "agVorlesungszeitStunden": "15.00"
+      },
+      "hinweis": "Am 02.11.2026 um die Wochenstunden der Vorlesungszeit ergänzt (neue Fragen des Fragebogens)."
     },
     {
       "id": "ST-WSMJ",
@@ -3082,8 +3107,10 @@
         "agPraktikumArt": "freiwillig",
         "agPraktikumBis": "2026-08-31",
         "agArbeitszeitmodell": "wechselnd",
-        "agWochenstunden": "15.00"
-      }
+        "agWochenstunden": "15.00",
+        "agVorlesungszeitStunden": "15.00"
+      },
+      "hinweis": "Am 02.11.2026 um die Wochenstunden der Vorlesungszeit ergänzt (neue Fragen des Fragebogens)."
     },
     {
       "id": "ST-SCH",
