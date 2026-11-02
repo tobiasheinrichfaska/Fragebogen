@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 76 gleich, 0 abweichend. 105 abgeleitete Varianten, 39 Grenzfälle.
+157 Fälle aus 2 Datei(en): 151 abbildbar, 6 nicht abbildbar; 150 gleich, 1 abweichend. 203 abgeleitete Varianten, 39 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -90,10 +90,87 @@
 | D-MJRAG | GfR 2026, B 2.2.4.2 | Altersvollrentner nach der Regelaltersgrenze im Minijob | 109 · 6500 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
 | D-603 | SGB IV § 8 | Grenzfall: „Minijob“ mit 603,01 € | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
 | D-KFAZ | GfR 2026, B 2.3.3.2 | Aushilfe zwischen Schule und Ausbildung, über der Grenze | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| KK-TK-01 | TK FI Studierende 2026, Bsp. 3 | Werkstudent 19 Std./Woche, 1.500 €, unbefristet | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| KK-TK-02 | TK FI Studierende 2026, Bsp. 4 | Studierender 28 Std./Woche mit regelmäßiger Nachtarbeit, 2.350 € | 101 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 0 | gleich |
+| KK-TK-03 | TK FI Studierende 2026, Bsp. 5 | Zweite Studentenbeschäftigung: zusammen 22 Std./Woche | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
+| KK-TK-04 | TK FI Studierende 2026, Bsp. 6 | Zwei kleine Studentenjobs über der Minijob-Grenze, zusammen 12 Std./Woche | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 (p) | abweichend (K) |
+| KK-TK-05 | TK FI Studierende 2026, Bsp. 7 | Studierender 24 Std./Woche mit Nacht- und Wochenendeinsätzen, 1.800 € | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 | gleich |
+| KK-TK-06 | TK FI Studierende 2026, Zusatzbeispiel | Werkstudent genau 20 Std./Woche, in den Semesterferien 40 Std. | 106 · 0100; UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| KK-TK-07 | TK FI Studierende 2026, Bsp. 8 | Studentin, befristet 05.07.–15.10., 40 Std., nur 3 Tage in der Vorlesungszeit | 106 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 106 · 0100 · ÜB 0 | gleich |
+| KK-TK-08 | TK FI Studierende 2026, Bsp. 10 | Vorgeschriebenes Vorpraktikum ohne Entgelt, 37 Std./Woche | 105 · 0110 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 105 · 0110 · ÜB 0 | gleich |
+| KK-TK-09 | TK FI Studierende 2026, Bsp. 11 | Freiwilliges Praktikum im Studium, 3 Monate, 500 €: kurzfristig | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-TK-10 | TK FI Studierende 2026, Bsp. 12 | Praxisintegriertes duales Studium, 500 € | 102 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 102 · 1111 · ÜB 0 | gleich |
+| KK-TK-11 | TK FI Studierende 2026, Bsp. 2 | Student, dritte kurzfristige Beschäftigung: 126 Kalendertage, aber genau 70 Arbeitstage | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 (p) · 0000 (p) · ÜB 0 (p) | gleich |
+| KK-TK-12 | TK FI Minijobs 2026, Bsp. 1 | Befreiungsantrag im Beginnmonat: Befreiung ab Beschäftigungsbeginn | 109 · 6500 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
+| KK-TK-13 | TK FI Minijobs 2026, Bsp. 2 | Einmalige Aufhebung der RV-Befreiung ab 01.07.2026 (§ 6 Abs. 6 SGB VI) | 109 · 6500 · ÜB 0; ab 01.09.2026: 109 · 6100 | S O, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
+| KK-TK-14 | TK FI Minijobs 2026, Zusatzbeispiel 603 € | Minijob genau 603 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-15 | TK FI Minijobs 2026, Bsp. 5 | Befristeter Minijob Mai–September mit schwankendem Entgelt, Durchschnitt 600 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-16 | TK FI Minijobs 2026, Bsp. 6 | Minijob mit Gleitzeitkonto, 15 €/Std., fest 600 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-17 | TK FI Minijobs 2026, Bsp. 7 | 680 € mit 80 € Entgeltumwandlung (Direktversicherung) | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-18 | TK FI Minijobs 2026, Zusatzbeispiel Nachtzuschlag | 600 € Grundlohn plus 50 € steuerfreier Nachtzuschlag | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-19 | TK FI Minijobs 2026, Bsp. 11 | Zwei Minijobs je 300 €, gesetzlich versichert | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
+| KK-TK-20 | TK FI Minijobs 2026, Bsp. 13 | Zweiter Minijob 280 € neben Hauptbeschäftigung 800 € und erstem Minijob 320 € | 101 · 1101 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1101 (p) · ÜB 1 (p) | gleich |
+| KK-TK-21 | TK FI Minijobs 2026, Bsp. 15/16 | Hausfrau, Aushilfe 01.07.–30.09. für 1.500 €, später unvorhergesehen verlängert | 110 · 0000 · ÜB 0; ab 01.10.2026: 101 · 1111 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-TK-22 | TK FI Minijobs 2026, Bsp. 17 | Schüler, dritte befristete Aushilfe: 103 Kalendertage bzw. 72 Arbeitstage im Jahr | 101 · 3101 · ÜB 1; KV, AV unsicher | S O, PGR A, BGR A, ÜB A | 101 (p) · 3101 (p) · ÜB 1 | gleich |
+| KK-TK-23 | TK FI Minijobs 2026, Bsp. 18 | Aushilfe nach mehr als drei Monaten versicherungspflichtiger Vorbeschäftigung: berufsmäßig | 101 · 3111 · ÜB 1; KV unsicher | S O, PGR A, BGR A, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| KK-TK-24 | TK FI Minijobs 2026, Bsp. 19 | Altersrentnerin, kurzfristige Aushilfe nach dem Renteneintritt | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-TK-25 | TK FI Minijobs 2026, Zusatzbeispiel BFD | Abiturient vor dem Bundesfreiwilligendienst: berufsmäßig | 101 · 3111 · ÜB 1; KV unsicher | S O, PGR A, BGR A, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| KK-TK-26 | TK FI Minijobs 2026, Zusatzbeispiel 1.900 € | 1.900 € plus Weihnachtsgeld 1.900 €: über 2.000 € im Durchschnitt | 101 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 0 | gleich |
+| KK-TK-27 | TK FI Minijobs 2026, Zusatzbeispiel 700/800 | Zwei versicherungspflichtige Teilzeitjobs 700 € und 800 € | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
+| KK-TK-28 | TK Beratungsblatt Minijobs, Bsp. 2 | 580 € plus Weihnachtsgeld 350 €: 609,17 € im Durchschnitt | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| KK-TK-29 | TK Beratungsblatt Minijobs, Bsp. 3 | Drei Minijobs 200 €, 220 € und 180 €: zusammen 600 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
+| KK-TK-30 | TK Beratungsblatt Minijobs, Bsp. 4 | Drei Minijobs 260 €, 300 € und 560 €: zusammen 1.120 € | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 (p) | gleich |
+| KK-TK-31 | TK Beratungsblatt Minijobs, Bsp. 5 | Minijob 160 € neben einer Hauptbeschäftigung mit nur 610 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
+| KK-TK-32 | TK Beratungsblatt Minijobs, Bsp. 6 | Zweiter Minijob 140 € neben Hauptbeschäftigung 610 € und Minijob 160 € | 101 · 1101 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1101 (p) · ÜB 1 (p) | gleich |
+| KK-TK-33 | TK Beratungsblatt Minijobs, Bsp. 7 | Zweiter Minijob lässt Hauptbeschäftigung und Minijob über die JAEG steigen | 101 · 1101 · ÜB 0; ab 01.01.2027: 101 · 0101 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1101 (p) · ÜB 0 | gleich |
+| KK-TK-34 | TK Beratungsblatt Minijobs, Bsp. 8 | Zweiter Minijob neben Hauptbeschäftigung schon über der JAEG, privat versichert | 101 · 0100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 101 (p) · 0100 (p) · ÜB 0 | gleich |
+| KK-TK-35 | TK Beratungsblatt Minijobs, Bsp. 9 | Minijob 570 €, ab 01.09. Gehaltserhöhung auf 610 € | 109 · 6100 · ÜB 0; ab 01.09.2026: 101 · 1111 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-36 | TK Beratungsblatt Minijobs, Bsp. 11 | Schülerin, Ferienjob 01.07.–15.08. für 600 € | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-TK-37 | TK Beratungsblatt Minijobs, Bsp. 12 | Unbefristet eingestellte Aushilfe, nach einem Monat beendet | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| KK-TK-38 | TK Beratungsblatt Minijobs, Bsp. 19 | Abiturient vor dem Studium, Aushilfe 01.08.–25.09. für 750 € | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-TK-39 | TK Beratungsblatt Minijobs, Bsp. 20 | Abiturient vor der Berufsausbildung, Aushilfe 01.08.–25.09. für 750 € | 101 · 3111 · ÜB 1; KV unsicher | S O, PGR A, BGR A, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| KK-TK-40 | TK Beratungsblatt Übergangsbereich, Bsp. 2 | Zwei versicherungspflichtige Jobs 1.100 € und 1.000 €: zusammen über 2.000 € | 101 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 0 | gleich |
+| KK-TK-41 | TK Beratungsblatt Übergangsbereich, Bsp. 3 | Midijob 650 € neben Minijob 350 €: Minijob bleibt außen vor | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 1 (p) | gleich |
+| KK-TK-42 | TK Beratungsblatt Übergangsbereich, Bsp. 6 | 510 € plus Weihnachtsgeld 600 €: 2026 ein Minijob (Quelle rechnet mit alter Grenze) | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-43 | TK FI Rentner 2026, Folie 32 | Altersteilrente nach Erreichen der Regelaltersgrenze | 101 · 1121 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1121 (p) · ÜB 1 | gleich |
+| KK-TK-44 | TK FI Rentner 2026, Folie 33 | Vorgezogene Altersvollrente, Minijob ab 01.05.2026, Regelaltersgrenze im Oktober 2026 | 109 · 6100 · ÜB 0; ab 01.11.2026: 109 · 6500 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-TK-45 | TK FI Rentner 2026, Folie 34 | Regelaltersgrenze im April 2026 erreicht, ohne Rente in Vollzeit weiter | 101 · 1111 · ÜB 0; ab 01.05.2026: 101 · 1121 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 0 | gleich |
+| KK-TK-46 | TK FI Rentner 2026, Folie 26 | Pensionär nach der Regelaltersgrenze als Lehrkraft, 1.250 € | 119 · 0320; UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | 119 · 0320 (p) · ÜB 1 | gleich |
+| KK-TK-47 | TK Webinar-FAQ Rentner 2026 | Privat versicherter Altersvollrentner nach der Regelaltersgrenze | 119 · 0320 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 119 · 0320 (p) · ÜB 0 | gleich |
+| KK-TK-48 | TK FI Rentner 2026, Folie 17/18 | Rente wegen teilweiser Erwerbsminderung, 5 Std. täglich | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
+| KK-TK-49 | TK FI Rentner 2026, Bsp. 1 | Rentnerin (64) mit vorgezogener Vollrente im Minijob mit 603 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-BARMER-01 | BARMER Altersrentner 2026 | Neueinstellung neben vorgezogener Vollrente, Regelaltersgrenze am 10.09.2026 | 120 · 3111 · ÜB 0; ab 01.10.2026: 119 · 3321 | S O, PGR O, BGR A, ÜB A | 120 · 3111 · ÜB 0 | gleich |
+| KK-BARMER-02 | BARMER Altersrentner 2026 | Minijob neben vorgezogener Rente mit RV-Befreiung, Regelaltersgrenze im August | 109 · 6500 · ÜB 0; ab 01.09.2026: 109 · 6500 | S O, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
+| KK-BARMER-03 | BARMER Altersrentner 2026 | Minijob nach der Regelaltersgrenze mit Verzicht auf die RV-Freiheit | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-BARMER-04 | BARMER Altersrentner 2026 | Regelaltersgrenze im Juli 2026, Vollrente ab 01.08.2026 und Beschäftigung | 119 · 3321 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 119 · 3321 (p) · ÜB 0 | gleich |
+| KK-BARMER-05 | BARMER Schüler/Studierende 2026 | Abiturientin vor der Ausbildung, 12.07.–20.08. Vollzeit, 2.410 € | 101 · 3111 · ÜB 0; KV unsicher | S O, PGR A, BGR A, ÜB A | 101 (p) · 3111 (p) · ÜB 0 | gleich |
+| KK-BARMER-06 | BARMER Schüler/Studierende 2026 | Abiturient vor dem Studium, 14.06.–30.07. Vollzeit | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-BARMER-07 | BARMER Schüler/Studierende 2026 | Student 18 Std./Woche als Kellner, 1.100 € | 106 · 0100 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| KK-BARMER-08 | BARMER Schüler/Studierende 2026 | Student 22 Std./Woche unbefristet, 1.350 € | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
+| KK-BARMER-09 | BARMER Schüler/Studierende 2026 | Studentin 19 Std./Woche, in den Semesterferien 38 Std. | 106 · 0100; UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| KK-BARMER-10 | BARMER Schüler/Studierende 2026 | Minijob 245 € (4 Std.) neben Studentenjob 17 Std.: zusammen über 20 Std. | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
+| KK-BARMER-11 | BARMER Schüler/Studierende 2026 | Befristete Studentenbeschäftigung 25 Std., Vorbeschäftigungen zusammen 180 Kalendertage über 20 Std. | 106 · 0100 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 106 (p) · 0100 (p) · ÜB 1 | gleich |
+| KK-BARMER-12 | BARMER Schüler/Studierende 2026 | Vorgeschriebenes Zwischenpraktikum 25 Std., 1.550 € | 190 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 190 · 0000 · ÜB 0 | gleich |
+| KK-BARMER-13 | BARMER Schüler/Studierende 2026 | Vorgeschriebenes Vorpraktikum mit 300 €: Geringverdiener | 121 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 121 · 1111 · ÜB 0 | gleich |
+| KK-BARMER-14 | BARMER Schüler/Studierende 2026 | Vorgeschriebenes Nachpraktikum ohne Vergütung, 30 Std. | 105 · 0110 · ÜB 0 | S O, PGR A, BGR O, ÜB A | 105 · 0110 · ÜB 0 | gleich |
+| KK-BARMER-15 | BARMER Schüler/Studierende 2026 | Freiwilliges Zwischenpraktikum 4 Monate, 7,5 Std., 500 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| KK-MKK-01 | mkk Rentner 2025 | Altersvollrente vor der Regelaltersgrenze, 14 Std., 1.300 €; Regelaltersgrenze im September | 120 · 3111 · ÜB 1; ab 01.10.2026: 119 · 3321 | S O, PGR O, BGR O, ÜB A | 120 · 3111 · ÜB 1 | gleich |
+| KK-AOK-01 | AOK Mehrfachbeschäftigung 2026 | Zwei Minijobs 300 € und 330 €: zusammen 630 € | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 (p) | gleich |
+| KK-AOK-02 | AOK Mehrfachbeschäftigung 2026 | Kurzfristige Erntehilfe 650 € neben Minijob mit 603 € | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| MJZ-01 | MJZ-Magazin Berufsmäßigkeit 2026 | Vollzeitangestellter als Ordner an fünf Festival-Wochenenden, 600 € je Wochenende | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| MJZ-02 | MJZ-Magazin Hauptjob und Minijob 2026 | Zweiter Minijob 200 € neben Hauptjob und Minijob 300 € | 101 · 1101 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1101 (p) · ÜB 0 | gleich |
+| MJZ-03 | MJZ Mehrere Minijobs 2026 | Reinigungskraft: Minijob 250 € ab Januar und 350 € ab Juni | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
+| KK-IP-01 | Informationsportal Steckbrief Berufsmäßigkeit 2026 | Kurzfristige Nebenbeschäftigung neben dem Bundesfreiwilligendienst | 110 · 0000 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KK-IP-02 | Informationsportal Steckbrief Berufsmäßigkeit 2026 | Asylbewerber als kurzfristige Aushilfe über der Grenze: berufsmäßig | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | nicht abbildbar |
+| BE-01 | BE 21.05.2026 TOP 3 | Erntehelferin im landwirtschaftlichen Betrieb, 15 Wochen und 80 Arbeitstage | 110 · 0000 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| BE-02 | BE 21.05.2026 TOP 3 | Dieselbe Erntehilfe in einem Mischbetrieb mit überwiegend nicht landwirtschaftlichen Beschäftigten | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| BE-03 | BE 23.11.2016 TOP 3 | Pensionär mit Versorgung nach einer besonderen Altersgrenze verzichtet auf die RV-Freiheit | 120 · 0110 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 120 · 0110 · ÜB 1 | gleich |
+| BA-01 | BA FW § 27 SGB III (07/2026) | Visagistin am Theater, auf fünf Tage befristet: unständige Beschäftigung | 118 · 1101; KV, UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | – · – · ÜB – | nicht abbildbar |
+| BA-02 | BA FW § 27 SGB III (07/2026) | Zwei Saisonjobs in landwirtschaftlichen Betrieben: zusammen genau 105 Kalendertage | 110 · 0000 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
 
 ## Abweichungen
 
-Keine.
+- **K – Studierende in einer als Minijob oder versicherungspflichtig gewählten Beschäftigung: Werkstudentenprivileg nicht geprüft (Wochenstunden nur bei „Werkstudent“ gefragt):** KK-TK-04
 
 ## Nicht abbildbar
 
@@ -101,6 +178,8 @@ Keine.
 - **GFR-11** (GfR 2026, Bsp. 11): Steuerfreie Aufwandsentschädigungen (§ 3 Nr. 26/26a EStG) und ihre Verteilung (en bloc / pro rata) fragt der Fragebogen nicht ab; mit 920 € ergibt sich 101/1111 (Übergangsbereich 1).
 - **GFR-27** (GfR 2026, Bsp. 27): Beginn 2025 liegt außerhalb der Gültigkeit des Fragebogens (Beschäftigungsbeginn 2026); der Statuswechsel zum Jahreswechsel (JAEG des Folgejahres) wird nicht beurteilt. Erwartet ist hier die Lage ab 01.01.2026 für C.
 - **GFR-29** (GfR 2026, Bsp. 29): Minijobs im Privathaushalt laufen über das Haushaltsscheckverfahren (Personengruppe 209); der Fragebogen schließt sie bewusst aus (Ausschluss „haushaltsscheck“). Test: Ausschluss greift, kein Vorschlag.
+- **KK-IP-02** (Informationsportal Steckbrief Berufsmäßigkeit 2026): Der Fragebogen kennt den Status „Asylbewerber/Geduldet“ nicht als Antwort; er steht nur als Freitext unter „sonstiges“, den die Regeln nicht lesen. Erwartet ist 101/1111; ein Vorschlag 110 wäre falsch.
+- **BA-01** (BA FW § 27 SGB III (07/2026)): Unständig Beschäftigte (Personengruppe 118) schließt der Fragebogen über den Ausschluss „unstaendig“ aus (versicherungspflichtige Beschäftigung auf weniger als eine Woche befristet). Test: Ausschluss greift, kein Vorschlag. Personengruppe 118 steht nicht in tests/support/anlage16.ts; die Beitragsgruppe ist nicht geprüft.
 
 ## Grenzfälle 2026
 
@@ -153,3 +232,20 @@ Keine.
 - Gemeinsames Rundschreiben „Beschäftigungen im Übergangsbereich nach § 20 Abs. 2 SGB IV ab dem 01.01.2023“ (GKV-Spitzenverband, DRV Bund, BA), Stand 20.12.2022
 - Gesetzestexte (gesetze-im-internet.de, Fassung vom 29.10.2026) mit DEÜV Anlagen 1, 2, 16
 - DEÜV Anlage 2 – Schlüsselzahlen für Personengruppen, Stand 17.06.2026
+- Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026 – https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf
+- Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026 – https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf
+- Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026 – https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf
+- Techniker Krankenkasse: Beratungsblatt Beschäftigungen im Übergangs-/Midijobbereich (Firmenkunden), Stand 03/2026 – https://www.tk.de/resource/blob/2031420/c5924456e673ed942a4be369a4ad070f/beratungsblatt-beschaeftigung-im-uebergangs-midijobbereich-data.pdf
+- Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026 – https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf
+- Techniker Krankenkasse: Ihre Webinar-FAQs – TK-Fachwebinar „Rentner beschäftigen und richtig abrechnen“ (Webinar vom 09.04.2026) – https://webinare.tk.de/fileadmin/user_upload/20260409_FAQ_-_Rentner_beschaeftigen_und_richtig_abrechnen_V1.pdf
+- BARMER: Online-Seminar „Beschäftigung von Altersrentnerinnen und Altersrentnern 2026“, Seminarunterlagen vom 23.06.2026 – https://www.barmer.de/resource/blob/1240988/c540493d62551775403049318fbd7aef/seminarunterlagen-altersrentner-data.pdf
+- BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026) – https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf
+- mkk – meine krankenkasse (BKK), Arbeitgeberservice: Vortragsfolien „Beschäftigung von Rentnern“, 28.10.2025 – https://arbeitgeber.meine-krankenkasse.de/fileadmin/Dokumente/Infothek/Arbeitgeber/Rentner.pdf
+- AOK Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Mehrfachbeschäftigungen bei Minijobs“, zuletzt aktualisiert 01.01.2026 – https://www.aok.de/fk/bw/sozialversicherung/minijobs/mehrfachbeschaeftigungen-bei-minijobs/
+- Minijob-Zentrale, Magazin: „Kurzfristiger Minijob: So prüfen Arbeitgeber Berufsmäßigkeit“, veröffentlicht 09.04.2025, aktualisiert 12.02.2026 – https://magazin.minijob-zentrale.de/kurzfristiger-minijob-berufsmaessigkeit-pruefen/
+- Minijob-Zentrale, Magazin: „Hauptjob und Minijob kombinieren – so geht es richtig!“, veröffentlicht 21.08.2024, aktualisiert 13.02.2026 – https://magazin.minijob-zentrale.de/hauptjob-minijob-kombinieren/
+- Minijob-Zentrale: „Mehrere Minijobs gleichzeitig – geht das?“ (ohne Datum, Grenze 603 € ab 01.01.2026 genannt) – https://www.minijob-zentrale.de/DE/die-minijobs/mehrere-jobs/detailseite.html
+- Informationsportal für Arbeitgeber (Arbeitgeberportal mehrerer Krankenkassen): Steckbrief „Berufsmäßigkeit“, Stand 01.01.2026 – https://www.informationsportal.de/wp-content/uploads/Steckbrief-Berufsmaessigkeit.pdf
+- Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 21.05.2026 – https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2026/2026_05_21_download.zip?__blob=publicationFile&v=2
+- Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 23.11.2016 – https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2016/2016_11_23_download.zip?__blob=publicationFile
+- Bundesagentur für Arbeit: Fachliche Weisungen Arbeitslosenversicherung, § 27 SGB III Versicherungsfreie Beschäftigte, gültig ab 01.07.2026 (Stand 07/2026) – https://www.arbeitsagentur.de/datei/fw-sgb-iii-27_ba015174.pdf

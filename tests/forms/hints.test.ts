@@ -230,6 +230,7 @@ describe('check hints — definition rules', () => {
       'ueberMassgeblicheJahresarbeitsentgeltgrenze',
       'weitererMinijobNebenJaegFreierHauptbeschaeftigung',
       'weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze',
+      'weitererMinijobUeberJaeg',
       'werkstudentenprivileg',
     ]);
   });
@@ -810,5 +811,66 @@ describe('the Werkstudent tests', () => {
     expect(run('2026-10-31')).toBe(true);
     expect(run('2026-11-01')).toBe(false);
     expect(run(null)).toBe(false);
+  });
+});
+
+// 2026-11-02, TK Beratungsblatt Minijobs examples 7 and 12 (KK-TK-33, KK-TK-37).
+describe('found by the insurer cases', () => {
+  it('is no short-term job without a fixed term (GfR B 2.3, 2.4)', () => {
+    const run = (befristet: boolean) =>
+      HINT_TESTS.kurzfristigGegeben?.run([
+        '2026-07-01',
+        '2026-07-31',
+        '23',
+        false,
+        befristet,
+        [] as never,
+        [] as never,
+        [] as never,
+        [] as never,
+        [] as never,
+        '1500.00',
+        null,
+        null,
+        null,
+        [] as never,
+        [] as never,
+        [] as never,
+        [] as never,
+        null,
+        [] as never,
+        [] as never,
+        null,
+        null,
+        null,
+      ]);
+    expect(run(true)?.holds).toBe(true);
+    const open = run(false);
+    expect(open?.holds).toBe(false);
+    expect(open?.detail.join(' ')).toContain('Nicht im Voraus befristet');
+  });
+
+  it('keeps a further Minijob KV-pflichtig when only it lifts the main job above the JAEG (B 2.2.2.8)', () => {
+    const run = (main: string) =>
+      HINT_TESTS.weitererMinijobUeberJaeg?.run([
+        '400.00',
+        null,
+        null,
+        null,
+        '2026-07-01',
+        ['svpflichtig', 'minijob'] as never,
+        [main, '300.00'] as never,
+        ['2020-01-01', '2026-05-01'] as never,
+        null,
+        [] as never,
+        [] as never,
+        null,
+      ])?.holds;
+    // 76.800 € + 4.800 € = 81.600 € > 77.400 €; the first Minijob (300 €) does not count.
+    expect(run('6400.00')).toBe(true);
+    // 6.000 € a month: 72.000 + 4.800 = 76.800 €, still within.
+    expect(run('6000.00')).toBe(false);
+    // Above already without it: the other case (KV-free main job).
+    expect(run('7000.00')).toBe(false);
   });
 });

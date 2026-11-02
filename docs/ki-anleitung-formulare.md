@@ -204,7 +204,7 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
   erste liegt nach dem zweiten); `inSpaeteremMonat` (Datum, Datum: das erste liegt in einem späteren
   Kalendermonat); `werkstudentenprivileg` (Ja/Nein, Zahl, Ja/Nein, Ja/Nein, Datum, Datum, Ja/Nein,
-  Zahl-Spalte: nur Semesterferien, Wochenstunden der Vorlesungszeit, überwiegend Wochenende/abends/nachts,
+  Zahl-Spalte: nur Semesterferien, Wochenstunden der Vorlesungszeit, Stunden über 20 am Wochenende/abends/nachts,
   befristet, Beginn, befristet bis, über 20 Stunden in den letzten 12 Monaten, Stunden der weiteren
   Beschäftigungen – das Werkstudentenprivileg gilt); `kurzfristigBefristetBisDreiMonate` (wie die
   Aushilfe-Tests, mit „befristet bis“ als Ende: höchstens drei Monate befristet und sonst kurzfristig); `kurzfristigGegeben`, `kurzfristigGegebenBisGeringfuegigkeitsgrenze` und
@@ -227,7 +227,9 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   die besondere Grenze nach § 6 Abs. 7 SGB V, wenn die Auswahl „ja“ ist);
   `weitererMinijobNebenJaegFreierHauptbeschaeftigung` und `weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze` (wie `geringfuegigEntlohnt`,
   dazu die Auswahl zum 31.12.2002: weiterer Minijob neben einer Hauptbeschäftigung über der Grenze, bzw.
-  dazu die Minijobs zusammen in der Geringfügigkeitsgrenze); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
+  dazu die Minijobs zusammen in der Geringfügigkeitsgrenze); `weitererMinijobUeberJaeg` (dieselben
+  Felder: weiterer Minijob, der eine Hauptbeschäftigung unter der Grenze erst über die
+  Jahresarbeitsentgeltgrenze hebt – zunächst krankenversicherungspflichtig); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
   Einmalzahlungen und nur die Entgelte versicherungspflichtiger weiterer Beschäftigungen – ohne Beamtenbezüge,
   kurzfristige Beschäftigungen und den zuerst aufgenommenen Minijob neben einer Hauptbeschäftigung – im Monat
   über der Minijob-Grenze und höchstens 2.000 €); `andereBeschaeftigungAusbildung` (Auswahl-Spalte: eine

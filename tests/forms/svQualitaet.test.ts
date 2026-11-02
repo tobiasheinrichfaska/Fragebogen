@@ -289,6 +289,8 @@ const AUSHILFE: Answers = {
   agKurzfristigBis: '31.12.2026',
   agKurzfristigArbeitstage: '40',
   agRahmenvereinbarung: false,
+  agBefristet: true,
+  agBefristetBis: '31.12.2026',
 };
 const ALL = Object.keys(PERSONS).filter((id) => !['dienst', 'vorruhestand'].includes(id));
 const MINIJOB = ALL.filter((id) => id !== 'teilrente');
@@ -498,7 +500,11 @@ function run(job: Job, person: string, rvBefreiung?: string): Variant {
   q = filled(
     q,
     'arbeitgeber',
-    { agBeschaeftigungsbeginn: '02.11.2026', ...job.employer, agBefristet: false },
+    {
+      agBeschaeftigungsbeginn: '02.11.2026',
+      ...job.employer,
+      ...('agBefristet' in job.employer ? {} : { agBefristet: false }),
+    },
     skipped,
   );
   const results = new Map(derive(q, definition).map((d) => [d.id, d] as const));

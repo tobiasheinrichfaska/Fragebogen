@@ -25,7 +25,10 @@ interface Expected {
   pgr: string;
   bgr: string;
   uebergangsbereich?: string;
-  /** Digits a test must not check hard, e.g. KV 1 or 3 for a short fixed term. */
+  /**
+   * What a test must not check hard: a digit (kv, rv, av, pv — e.g. KV 1 or 3 for a short fixed term)
+   * or the Übergangsbereich.
+   */
   unsicher?: string[];
   spaeter?: { ab: string; pgr: string; bgr: string }[];
   zusatzmeldung?: { an: string; pgr: string; bgr: string };
@@ -88,9 +91,12 @@ const GROUPS = {
   G: 'Entgeltumwandlung senkt das Entgelt für die Minijob-Grenze nicht',
   H: 'Ausbildung oder Praktikum ohne Arbeitsentgelt: keine Antwort „ohne Entgelt“',
   I: 'Eingang des Befreiungsantrags nach dem Beginnmonat verschiebt die Befreiung nicht',
+  K: 'Studierende in einer als Minijob oder versicherungspflichtig gewählten Beschäftigung: Werkstudentenprivileg nicht geprüft (Wochenstunden nur bei „Werkstudent“ gefragt)',
 } as const;
 
-const KNOWN_DEVIATIONS: Record<string, Deviation> = {};
+const KNOWN_DEVIATIONS: Record<string, Deviation> = {
+  'KK-TK-04': { gruppe: 'K', app: { pgr: '101', bgr: '1111' } },
+};
 
 function actual(r: Assessment): Record<Aspect, string> {
   return {
@@ -104,7 +110,8 @@ function wanted(c: Case): Partial<Record<Aspect, string>> {
   return {
     pgr: c.erwartet.pgr,
     bgr: expectedBgr(c),
-    ...(c.erwartet.uebergangsbereich === undefined
+    ...(c.erwartet.uebergangsbereich === undefined ||
+    c.erwartet.unsicher?.includes('uebergangsbereich')
       ? {}
       : { uebergang: c.erwartet.uebergangsbereich }),
   };
@@ -149,10 +156,11 @@ describe('the official cases themselves', () => {
       expect(pgr).toMatch(/^\d{3}$/);
       expect(bgr).toMatch(/^\d{4}$/);
       if (uebergangsbereich !== undefined) expect(['0', '1']).toContain(uebergangsbereich);
-      for (const digit of unsicher) expect(DIGITS).toContain(digit);
-      // 209 (household Minijob) is not in the app's table; the case is not mappable anyway.
+      for (const item of unsicher) expect([...DIGITS, 'uebergangsbereich']).toContain(item);
+      // 209 (household Minijob) and 118 (unständig) are not in the app's table; such cases are
+      // excluded and not mappable anyway.
       for (const [gruppe, digits] of [[pgr, bgr], ...spaeter.map((s) => [s.pgr, s.bgr])]) {
-        if (gruppe === '209') continue;
+        if (c.nichtAbbildbar !== undefined && ANLAGE_16[gruppe ?? ''] === undefined) continue;
         const allowed = ANLAGE_16[gruppe ?? ''];
         expect(allowed, `Personengruppe ${gruppe ?? ''}`).toBeDefined();
         [...(digits ?? '')].forEach((digit, i) => {
@@ -182,8 +190,9 @@ describe('the official cases themselves', () => {
     expect(Object.keys(KNOWN_DEVIATIONS).filter((id) => !ids.has(id))).toEqual([]);
   });
 
-  it('GFR-29: a Minijob in a private household is excluded, not guessed', () => {
-    const c = CASES.find((x) => x.id === 'GFR-29');
+  // A household Minijob (GFR-29) and an unständige Beschäftigung (BA-01) are excluded, not guessed.
+  it.each(['GFR-29', 'BA-01'])('%s: a special case is excluded, not guessed', (id) => {
+    const c = CASES.find((x) => x.id === id);
     expect(c?.nichtAbbildbar).toBeDefined();
     if (!c) return;
     const r = resultOf(c);

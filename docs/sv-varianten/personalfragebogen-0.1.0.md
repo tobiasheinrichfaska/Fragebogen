@@ -149,7 +149,7 @@
 | Student/in | – | 110 | 0000 | 0 | – |
 | Altersvollrente vor der Regelaltersgrenze | – | 110 | 0000 | 0 | – |
 | Altersvollrente nach der Regelaltersgrenze | – | 110 | 0000 | 0 | – |
-| arbeitslos mit Arbeitslosengeld | – | 101 (prüfen) | 1101 (prüfen) | 1 | – |
+| arbeitslos mit Arbeitslosengeld | – | 101 (prüfen) | 3101 (prüfen) | 1 | – |
 | Beamter/Beamtin mit Beihilfe, privat | – | 110 | 0000 | 0 | – |
 
 ## Ausbildung, 300 € (Geringverdiener)

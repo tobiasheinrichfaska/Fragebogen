@@ -111,7 +111,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/support/anlage16.ts`                              | DEÜV Anlage 16: allowed Beitragsgruppen digits per Personengruppe (shared by the SV tests)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `tests/forms/svVorgaben.test.ts`                         | SV assessment against official examples (Tobias 2026-11-02): every case of `tests/fixtures/sv-vorgaben/*.json` checked in itself (source, proof status, keys allowed by Anlage 16) and through the engine (Personengruppe, Beitragsgruppen, Übergangsbereich; `KNOWN_DEVIATIONS` with cause group A–I until decided), variations the law fixes (RV exemption, private/statutory KV in a Minijob) or that must not matter (hourly wage), limits of 2026 to the cent, report `docs/sv-vorgaben/`                                                                                  |
 | `tests/support/svCase.ts`                                | `assess`: one case (answers of person and employer) through the Personalfragebogen draft → proposals; answers set in passes so their order does not matter, unavailable ones noted                                                                                                                                                                                                                                                                                                                                                                                              |
-| `tests/fixtures/sv-vorgaben/`                            | Test cases from official examples (`faelle.json`: Geringfügigkeits-Richtlinien 2026 Teil J, RS Studenten/Praktikanten 2016, RS Übergangsbereich 2022, DEÜV Anlage 2; research 2026-11-02), each with source, facts in own words, proof status per key, expectation and answers in stored form; more files may follow                                                                                                                                                                                                                                                            |
+| `tests/fixtures/sv-vorgaben/`                            | Test cases from official and published examples, each with source, facts in own words, proof status per key, expectation and answers in stored form: `faelle.json` (80: Geringfügigkeits-Richtlinien 2026 Teil J, RS Studenten/Praktikanten 2016, RS Übergangsbereich 2022, DEÜV Anlage 2), `kassen.json` (77: TK, BARMER, AOK, mkk, Minijob-Zentrale, BA, Besprechungsergebnisse, informationsportal; secondary sources, the official text wins); research 2026-11-02                                                                                                          |
 | `tests/forms/listenfelder.test.ts`                       | List fields in both drafts (name prefix/suffix, nationality key, states), street and house number apart, takeover Sofortmeldung 0.2.0 → Personalfragebogen                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `tests/forms/svSzenarien.test.ts`                        | SV assessment scenarios as tables: answers of person and employer → Personengruppe, check hints, exclusions (Azubi under 600 €, Minijob with Weihnachtsgeld, lower JAEG, KV exemption, Vorruhestand, special groups); the questions that closed the gaps of 2026-10-30; pay before the kind of employment                                                                                                                                                                                                                                                                       |
 | `docs/prompts/datev-lug-recherche.md`                    | Prompt for Claude in Chrome (DATEV login): LuG master-data import format and the field order of the LuG screens, answered as JSON into `.tmp/datev/` (German)                                                                                                                                                                                                                                                                                                                                                                                                                   |
@@ -631,19 +631,30 @@ Key design decisions (details in `docs/plan.md`):
   `vorbeschJahr` is asked for Werkstudenten too (short-term check, example 4). A short-term (fixed to at
   most three months, `kurzfristigBefristetBisDreiMonate`) or Minijob Werkstudent job is reported as 110
   or 109 first; 106 only with the privilege (`werkstudentenprivileg`: semester breaks, at most 20 hours
-  with the other jobs, above only at weekends/evenings/nights and at most 26 weeks), otherwise 101.
+  with the other jobs, above only with the hours beyond 20 at weekends/evenings/nights — example 1:
+  18 + 7 — and at most 26 weeks), otherwise 101. A voluntary internship fixed to at most three months is
+  110 first (TK, GfR B 2.4).
+  Insurer examples (research 2026-11-02, `kassen.json`; rules checked in the GfR text): a short-term job
+  needs a fixed term (GfR B 2.3, 2.4; TK: "unbefristet eingestellt" → 101); agricultural businesses 15
+  weeks / 105 calendar days or 90 working days (B 2.3.4, field `agLandwirtschaft`); with a full old-age
+  pension only the time from its start counts for Berufsmäßigkeit (B 2.3.3.3); a further Minijob that
+  lifts a main job below the JAEG above it is at first KV-pflichtig (`weitererMinijobUeberJaeg`, KV 1,
+  B 2.2.2.8). The Werkstudent question on the edges of the day was corrected: the hours beyond 20 at
+  weekends/evenings/nights (RS example 1: 18 + 7), not "mostly".
 
 ---
 
 ## Known Limitations
 
-- **No SV deviation from the 76 mappable official examples is left** (2026-11-02, `docs/sv-vorgaben/`).
-  Four examples cannot be expressed (two periods, tax-free allowances, change at the turn of the year,
-  household Minijob = excluded). One proposal per job at its start: a later change (e.g. RV exemption
-  from the month the request came in, a short-term job becoming short-term again when a parallel one
-  ends) and a second report (Minijob-Zentrale 101 · 6000 next to the Krankenkasse) are named in the check
-  note, not as a second proposal. KV 1 or 3 for a fixed term up to ten weeks stays open (sources
-  differ); such cases are not tested hard on the KV digit.
+- **SV proposals and the 157 examples** (2026-11-02, `docs/sv-vorgaben/`): all 76 mappable official
+  ones and 74 of 75 mappable insurer ones match. Open (K, for decision): a student in a job the employer
+  chose as Minijob or "sv-pflichtig" that is not a Minijob (e.g. two Minijobs together above the limit) —
+  the Werkstudentenprivileg is not checked, because the hours are asked only for "Werkstudent" (TK
+  example 6). Six examples cannot be expressed (two periods, tax-free allowances, change at the turn of
+  the year, household Minijob and unständige Beschäftigung = excluded, one more). One proposal per job at
+  its start: a later change and a second report (Minijob-Zentrale 101 · 6000) are named in the check
+  note. KV 1 or 3 for a fixed term up to ten weeks stays open (sources differ); such cases are not tested
+  hard on the KV digit.
 - **Short-term jobs:** Berufsmäßigkeit from earlier jobs counts every earlier job of the calendar year;
   for people who left working life (full old-age pension, household) or students only the time after
   that should count (GfR B 2.3.3.3) — the questionnaire does not ask when, so such a case needs the

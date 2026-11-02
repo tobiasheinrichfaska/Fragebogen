@@ -2521,9 +2521,9 @@
         "agArbeitszeitmodell": "wechselnd",
         "agWochenstunden": "25.00",
         "agVorlesungszeitStunden": "25.00",
-        "agRandzeiten": false
+        "agRandzeiten": true
       },
-      "hinweis": "Das Rundschreiben nennt nur „versicherungspflichtig in KV, PV, RV, AV“; PGR/BGR daraus abgeleitet. Entgelt (1.500 €) angenommen. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit und die Lage der Arbeitszeit ergänzt (neue Fragen des Fragebogens)."
+      "hinweis": "Das Rundschreiben nennt nur „versicherungspflichtig in KV, PV, RV, AV“; PGR/BGR daraus abgeleitet. Entgelt (1.500 €) angenommen. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit und die Lage der Arbeitszeit (18 Werktags-, 7 Wochenendstunden: die Stunden über 20 liegen am Wochenende) ergänzt (neue Fragen des Fragebogens)."
     },
     {
       "id": "ST-02A",

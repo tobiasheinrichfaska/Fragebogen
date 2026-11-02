@@ -1,8 +1,9 @@
 // Short-term employment (§ 8 Abs. 1 Nr. 2 SGB IV) after the Geringfügigkeits-Richtlinien 2026,
 // B 2.3 (checked in the text 2026-11-02): the time limits three months or 70 working days, adding
 // up earlier short-term jobs of the calendar year (90 calendar days), regularity (framework
-// agreement over more than a year) and berufsmäßig from earlier jobs (B 2.3.3.3). Pure date
-// arithmetic on `YYYY-MM-DD` strings; the pay limit is the caller's.
+// agreement over more than a year) and berufsmäßig from earlier jobs (B 2.3.3.3); in agricultural
+// businesses 15 weeks (105 calendar days) or 90 working days (B 2.3.4). Pure date arithmetic on
+// `YYYY-MM-DD` strings; the pay limit is the caller's.
 import { dayNumber, daysInMonth, formatGermanDate, parseIsoDate } from './dates';
 import type { IsoDate } from './model';
 
@@ -23,10 +24,42 @@ export interface ShortTermJob {
   rahmenvereinbarung: boolean | undefined;
   befristet: boolean | undefined;
   frueher: readonly EarlierJob[];
+  /** Agricultural business (GfR B 2.3.4): 15 weeks or 90 working days. */
+  landwirtschaft?: boolean;
+  /**
+   * The day the person left working life (start of a full old-age pension): earlier jobs count for
+   * Berufsmäßigkeit only from then on (B 2.3.3.3, example 49).
+   */
+  ausscheiden?: IsoDate | undefined;
 }
 
 export const KURZFRISTIG_ARBEITSTAGE = 70;
 export const KURZFRISTIG_KALENDERTAGE = 90;
+
+interface Limits {
+  /** Last day of the job on its own. */
+  ende: IsoDate;
+  tage: number;
+  arbeitstage: number;
+  text: string;
+}
+
+function limitsOf(job: ShortTermJob): Limits {
+  if (job.landwirtschaft === true) {
+    return {
+      ende: addDays(job.beginn, 15 * 7 - 1),
+      tage: 105,
+      arbeitstage: 90,
+      text: '15 Wochen (105 Kalendertage) oder 90 Arbeitstage im landwirtschaftlichen Betrieb (Geringfügigkeits-Richtlinien B 2.3.4)',
+    };
+  }
+  return {
+    ende: endOfMonths(job.beginn, 3),
+    tage: KURZFRISTIG_KALENDERTAGE,
+    arbeitstage: KURZFRISTIG_ARBEITSTAGE,
+    text: 'drei Monate (90 Kalendertage) oder 70 Arbeitstage',
+  };
+}
 
 const iso = (year: number, month: number, day: number): IsoDate =>
   `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -58,6 +91,26 @@ export function endOfMonths(start: IsoDate, count: number): IsoDate {
 }
 
 const between = (from: IsoDate, to: IsoDate) => dayNumber(to) - dayNumber(from) + 1;
+
+/** `start` plus `count` days. */
+export function addDays(start: IsoDate, count: number): IsoDate {
+  let { year, month, day } = parts(start);
+  let rest = count;
+  while (rest > 0) {
+    const last = daysInMonth(year, month);
+    const step = Math.min(rest, last - day + 1);
+    rest -= step;
+    day += step;
+    if (day > last) {
+      day = 1;
+      if (month === 12) {
+        month = 1;
+        year += 1;
+      } else month += 1;
+    }
+  }
+  return iso(year, month, day);
+}
 
 /**
  * Calendar days of a period for adding up (B 2.3.2): full calendar months count 30 days, part
@@ -131,10 +184,10 @@ const earlierInYear = (job: ShortTermJob, keep: (row: EarlierJob) => boolean) =>
   );
 
 /** Over both limits: more than 90 calendar days and more than 70 working days (B 2.3.1, 2.3.2). */
-function over(sum: Sum): Zeitgrenze {
-  if (sum.tage <= KURZFRISTIG_KALENDERTAGE) return 'eingehalten';
+function over(sum: Sum, limits: Limits): Zeitgrenze {
+  if (sum.tage <= limits.tage) return 'eingehalten';
   if (sum.arbeitstage === undefined) return 'offen';
-  return sum.arbeitstage > KURZFRISTIG_ARBEITSTAGE ? 'ueberschritten' : 'eingehalten';
+  return sum.arbeitstage > limits.arbeitstage ? 'ueberschritten' : 'eingehalten';
 }
 
 const sumText = (sum: Sum) =>
@@ -146,14 +199,15 @@ const sumText = (sum: Sum) =>
  * the calendar year, 90 calendar days or 70 working days. Missing answers leave it open.
  */
 export function zeitgrenze(job: ShortTermJob): { status: Zeitgrenze; detail: string[] } {
-  const threeMonths = job.bis === undefined ? undefined : job.bis <= endOfMonths(job.beginn, 3);
+  const limits = limitsOf(job);
+  const threeMonths = job.bis === undefined ? undefined : job.bis <= limits.ende;
   const seventyDays =
-    job.arbeitstage === undefined ? undefined : job.arbeitstage <= KURZFRISTIG_ARBEITSTAGE;
+    job.arbeitstage === undefined ? undefined : job.arbeitstage <= limits.arbeitstage;
   if (threeMonths === false && seventyDays === false) {
     return {
       status: 'ueberschritten',
       detail: [
-        `Von vornherein länger als drei Monate (bis ${formatGermanDate(endOfMonths(job.beginn, 3))}) und mehr als 70 Arbeitstage (Geringfügigkeits-Richtlinien B 2.3).`,
+        `Von vornherein länger als ${job.landwirtschaft === true ? '15 Wochen' : 'drei Monate'} (bis ${formatGermanDate(limits.ende)}) und mehr als ${limits.arbeitstage} Arbeitstage (Geringfügigkeits-Richtlinien B 2.3${job.landwirtschaft === true ? '.4' : ''}).`,
       ],
     };
   }
@@ -166,11 +220,11 @@ export function zeitgrenze(job: ShortTermJob): { status: Zeitgrenze; detail: str
   if (!sum) {
     return { status: 'offen', detail: ['Zeitraum einer früheren Aushilfe fehlt.'] };
   }
-  const status = over(sum);
+  const status = over(sum, limits);
   return {
     status,
     detail: [
-      `Mit den früheren Aushilfen im Kalenderjahr zusammen ${sumText(sum)}; Grenze 90 Kalendertage oder 70 Arbeitstage (Geringfügigkeits-Richtlinien B 2.3.2).`,
+      `Mit den früheren Aushilfen im Kalenderjahr zusammen ${sumText(sum)}; Grenze ${limits.text} (Geringfügigkeits-Richtlinien B 2.3.2).`,
     ],
   };
 }
@@ -194,14 +248,31 @@ export function berufsmaessigNachVorbeschaeftigungen(
   job: ShortTermJob,
   limit: number,
 ): { holds: boolean; uncertain: boolean; detail: string[] } {
+  const since = job.ausscheiden;
   const rows = earlierInYear(
     job,
     (row) =>
       row.art === 'mehr' ||
       row.art === 'ausland' ||
       (row.art === 'kurzfristig' && (row.entgelt === undefined || row.entgelt > limit)),
-  );
-  if (rows.length === 0) return { holds: false, uncertain: false, detail: [] };
+  ).flatMap((row) => {
+    // Out of working life: only the time from then on counts (B 2.3.3.3, example 49).
+    if (since === undefined || row.von === undefined || row.bis === undefined) return [row];
+    if (row.bis < since) return [];
+    return [row.von < since ? { ...row, von: since, arbeitstage: undefined } : row];
+  });
+  if (rows.length === 0) {
+    return {
+      holds: false,
+      uncertain: false,
+      detail:
+        since === undefined
+          ? []
+          : [
+              `Frühere Beschäftigungen vor dem Rentenbeginn am ${formatGermanDate(since)} zählen nicht für die Berufsmäßigkeit (Geringfügigkeits-Richtlinien B 2.3.3.3).`,
+            ],
+    };
+  }
   const sum = addedUp(job, rows);
   if (!sum)
     return {
@@ -209,7 +280,7 @@ export function berufsmaessigNachVorbeschaeftigungen(
       uncertain: true,
       detail: ['Zeitraum einer früheren Beschäftigung fehlt.'],
     };
-  const status = over(sum);
+  const status = over(sum, limitsOf(job));
   return {
     holds: status !== 'eingehalten',
     uncertain:

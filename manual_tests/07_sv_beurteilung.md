@@ -236,7 +236,7 @@ ihren Teil aus.
 1. Bei „Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?“ „Nein“ wählen.
 2. Bei „Wie viele Stunden pro Woche arbeitet die Person in der Vorlesungszeit?“ `20` eingeben, weiter bis
    zur Kanzlei gehen und die Vorschläge ansehen.
-3. Die Stunden auf `25` ändern; bei der nun folgenden Frage „Liegt die Arbeitszeit überwiegend am
+3. Die Stunden auf `25` ändern; bei der nun folgenden Frage „Liegen die Stunden über 20 hinaus am
    Wochenende, abends oder nachts?“ „Nein“ wählen.
 4. Das Monatsentgelt auf 600,00 € und die Stunden auf `12` ändern.
 

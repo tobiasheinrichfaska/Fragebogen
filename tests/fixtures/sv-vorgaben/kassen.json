@@ -1,0 +1,4347 @@
+{
+  "titel": "SV-Beurteilung: Testfälle aus Fachinformationen der Krankenkassen, der Minijob-Zentrale, der BA und aus Besprechungsergebnissen (Personengruppe, Beitragsgruppen, Übergangsbereich)",
+  "hinweis": "Keine Rechtsberatung. Recherche vom 02.11.2026; Bezugsjahr 2026. Ergänzt tests/fixtures/sv-vorgaben/faelle.json (Geringfügigkeits-Richtlinien, RS Studenten, RS Übergangsbereich). Erfundene bzw. neutrale Personen; Sachverhalte in eigenen Worten nach den genannten Fundstellen. Sekundärquellen (Kassen) sind keine verbindlichen Vorgaben; wo sie den amtlichen Texten widersprechen, ist das im Fall vermerkt.",
+  "stand": "2026-11-02",
+  "werte2026": {
+    "geringfuegigkeitsgrenzeMonat": "603.00",
+    "uebergangsbereichObergrenze": "2000.00",
+    "geringverdienergrenze": "325.00",
+    "jaeg": "77400.00",
+    "jaegBesondere": "69750.00",
+    "mindestlohnStunde": "13.90"
+  },
+  "lesehilfe": {
+    "erwartet": "pgr = Personengruppenschlüssel (DEÜV Anlage 2), bgr = Beitragsgruppen KV RV AV PV (DEÜV Anlage 1 Teil 2), kv/rv/av/pv = dieselbe Aussage in Worten; optional uebergangsbereich (Kennzeichen 0/1), spaeter (Wechsel im Lauf der Beschäftigung), unsicher (Zweige oder Angaben, die ein Test nicht hart prüfen sollte).",
+    "pruefstatus": "je Aussage: „am Original geprüft“ = so in der Quelle gelesen (bei pgr/bgr nur, wenn der Schlüssel wörtlich abgedruckt ist); „abgeleitet“ = eigene Ableitung aus Quelle und DEÜV; „nicht verifiziert“ = nicht am Original geprüft.",
+    "quelle": "dokument, fundstelle (Seite = gedruckte Seitenzahl, bei Foliensätzen ohne Seitenzahl die PDF-Seite), url, abgerufen, kurz.",
+    "angepasst": "nur bei Fällen, deren Daten gegenüber der Quelle verschoben oder ergänzt wurden – mit Grund.",
+    "nichtAbbildbar": "der Fragebogen kann den Sachverhalt nicht (maschinenlesbar) ausdrücken; der Fall dient dann nur als Ausschluss- oder Lückenbeleg.",
+    "person/arbeitgeber": "nur die für die Vorschläge wirksamen Angaben und die Antworten, von denen ihre Abfrage abhängt, in gespeicherter Form (Datum JJJJ-MM-TT, Geld \"1234.56\", Zahlen mit den Nachkommastellen des Felds, Ja/Nein als true/false, Auswahl als Options-ID, Tabellen als Zeilen mit rowId). Reihenfolge = Formularreihenfolge, in der ein Test sie setzen kann. Andere Pflichtfelder fehlen absichtlich. Vom Generator geprüft: Feld-IDs, Rollen, Options-IDs, Formate und dass jede Angabe nach den showIf-Bedingungen gefragt wird."
+  },
+  "faelle": [
+    {
+      "id": "KK-TK-01",
+      "titel": "Werkstudent 19 Std./Woche, 1.500 €, unbefristet",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.2 „20-Stunden-Grenze“, Beispiel 3 (Text S. 27, Folie 16 S. 28)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 3"
+      },
+      "sachverhalt": "Ordentlich Studierender, seit Januar unbefristet beschäftigt, 19 Stunden pro Woche, 1.500 € im Monat. 20-Stunden-Grenze eingehalten: KV, PV, AV frei, RV pflichtig; laut Quelle ist die Midijob-Regelung anzuwenden.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2004-02-02",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "19.00",
+        "agVorlesungszeitStunden": "19.00"
+      },
+      "hinweis": "Klärt den offenen Punkt „Übergangsbereich bei Werkstudenten“: Die TK wendet die Midijob-Regeln auch bei Personengruppe 106 an (Text: „Die Midijob-Regelung ist anzuwenden“); das Kennzeichen selbst ist nicht abgedruckt. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit)."
+    },
+    {
+      "id": "KK-TK-02",
+      "titel": "Studierender 28 Std./Woche mit regelmäßiger Nachtarbeit, 2.350 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.3 „Sonderfälle“, Beispiel 4 (Text S. 29, Folie 17 S. 28)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 4"
+      },
+      "sachverhalt": "Studierender nimmt ab Juli eine Dauerbeschäftigung mit 28 Wochenstunden (Mo–Do, Nachtarbeit) für 2.350 € auf. Die 20-Stunden-Grenze wird regelmäßig überschritten: in allen Zweigen versicherungspflichtig, kein Midijob.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-05-05",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2350.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "28.00",
+        "agVorlesungszeitStunden": "28.00",
+        "agRandzeiten": true
+      },
+      "hinweis": "Die Wochenstunden stehen nur in agWochenstunden; ob die App sie für die 20-Stunden-Grenze auswertet, prüft der Test (vgl. ST-01). Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit, Stunden über 20 am Wochenende, abends oder nachts: Ja)."
+    },
+    {
+      "id": "KK-TK-03",
+      "titel": "Zweite Studentenbeschäftigung: zusammen 22 Std./Woche",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.3 „Mehrere Werkstudenten-Beschäftigungen“, Beispiel 5 (Text S. 29, Folie 18 S. 28)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 5"
+      },
+      "sachverhalt": "Student mit Dauerbeschäftigung bei A seit Januar (12 Std., 950 €) nimmt ab März bei B eine Dauerbeschäftigung mit 10 Std. für 800 € auf. Zusammen 22 Std. > 20: ab März in beiden Beschäftigungen alle Zweige pflichtig, Midijob-Regelung (zusammen 1.750 €). Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-07-07",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2026-01-01",
+            "jobEntgeltMonat": "950.00",
+            "jobStundenWoche": "12.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "10.00",
+        "agVorlesungszeitStunden": "10.00"
+      },
+      "hinweis": "Laut Quelle bis 28.02. A mit 106/0100. Die Art „Werkstudent“ fehlt in weitereJobs; A ist als „svpflichtig“ (RV-pflichtig) eingetragen. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit)."
+    },
+    {
+      "id": "KK-TK-04",
+      "titel": "Zwei kleine Studentenjobs über der Minijob-Grenze, zusammen 12 Std./Woche",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.3 „Mehrere Minijobs“, Beispiel 6 (Text S. 31, Folie 19 S. 30)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 6"
+      },
+      "sachverhalt": "Student mit Dauerbeschäftigung bei C seit 2024 (7 Std., 500 €) nimmt ab 01.09. bei D eine Beschäftigung mit 5 Std. für 400 € auf. Zusammen 900 € > 603 € → kein Minijob mehr; 12 Std. ≤ 20 → Werkstudentenregelung: nur RV-Pflicht, Midijob-Regelung. Beurteilt wird D.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2002-09-09",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber C",
+            "jobArt": "minijob",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "500.00",
+            "jobStundenWoche": "7.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Der Arbeitgeber D wählt hier – wie in der Praxis zu erwarten – „Minijob“. Erwartet ist trotzdem 106: Nach dem Scheitern der Minijob-Prüfung ist die Werkstudentenregelung zu prüfen (Quelle, S. 31). Mit „Werkstudent“ als Art ergäbe sich derselbe Erwartungswert."
+    },
+    {
+      "id": "KK-TK-05",
+      "titel": "Studierender 24 Std./Woche mit Nacht- und Wochenendeinsätzen, 1.800 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.4, Beispiel 7 (Text S. 31, Folie 20 S. 30)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 7"
+      },
+      "sachverhalt": "Student wechselt zu einer neuen Dauerbeschäftigung mit 24 Wochenstunden (eine Nachtschicht, je ein Einsatz Sa und So), 1.800 €. Regelmäßig über 20 Std. als Dauerbeschäftigung: alle Zweige pflichtig, Midijob-Regelung.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-01-15",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "24.00",
+        "agVorlesungszeitStunden": "24.00",
+        "agRandzeiten": true
+      },
+      "hinweis": "Der Fließtext der Quelle sagt zugleich „nur in der vorlesungsfreien Zeit ausgeübt“ und „Dauerbeschäftigung → versicherungspflichtig“; die Folie nennt „Dauerbeschäftigung > 20-Stunden-Grenze und über 26 Wochen/Jahr“. Abgebildet ist die Folie (Einsätze auch in der Vorlesungszeit). Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit, Stunden über 20 am Wochenende, abends oder nachts: Ja)."
+    },
+    {
+      "id": "KK-TK-06",
+      "titel": "Werkstudent genau 20 Std./Woche, in den Semesterferien 40 Std.",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.4 „Beschäftigungen während vorlesungsfreier Zeit“, Zusatzbeispiel (ohne Folie), S. 31",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Zusatzbeispiel"
+      },
+      "sachverhalt": "Student seit Januar dauerhaft mit 20 Wochenstunden (1.500 €), in den Semesterferien 01.07.–30.09. 40 Stunden (3.000 €); keine Vorbeschäftigungen über 20 Std. 20-Stunden-Grenze nur in den Ferien überschritten, 26-Wochen-Grenze eingehalten: KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "unsicher": ["uebergangsbereich"]
+      },
+      "person": {
+        "geburtsdatum": "2004-04-04",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "20.00",
+        "agVorlesungszeitStunden": "20.00"
+      },
+      "hinweis": "Grenzwert: genau 20 Stunden gelten als eingehalten („höchstens 20“). Die Ausweitung in den Ferien (40 Std., 3.000 €) kann der Fragebogen nicht als eigene Phase erfassen; das Kennzeichen Übergangsbereich hängt vom Durchschnitt ab (9 × 1.500 + 3 × 3.000 = 22.500 € → 1.875 €/Monat) und ist nicht hart zu testen. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit)."
+    },
+    {
+      "id": "KK-TK-07",
+      "titel": "Studentin, befristet 05.07.–15.10., 40 Std., nur 3 Tage in der Vorlesungszeit",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.5.5, Beispiel 8 (Text S. 37, Folie 25 S. 36)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 8"
+      },
+      "sachverhalt": "Studentin, befristet 05.07.–15.10. (länger als drei Monate, also nicht kurzfristig), 40 Std. an fünf Tagen, 2.600 €; Semesterferien 01.07.–12.10., Überschneidung mit der Vorlesungszeit nur ausnahmsweise (3 Tage); keine Vorbeschäftigung über 20 Std. → KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2005-05-05",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-05",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": true,
+        "agBefristet": true,
+        "agBefristetBis": "2026-10-15",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "40.00"
+      },
+      "hinweis": "agNurSemesterferien ist ehrlich mit Nein beantwortet (3 Tage Vorlesungszeit). Erlaubt sind bis zu zwei Wochen Überschneidung (Quelle, Folie 24). „Nur in der vorlesungsfreien Zeit“ am 02.11.2026 auf Ja gesetzt: die Überschneidung mit der Vorlesungszeit ist nach dem Sachverhalt nur ausnahmsweise (3 Tage)."
+    },
+    {
+      "id": "KK-TK-08",
+      "titel": "Vorgeschriebenes Vorpraktikum ohne Entgelt, 37 Std./Woche",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.2, Beispiel 10 (Text S. 49, Folie 32 S. 48)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 10"
+      },
+      "sachverhalt": "Vorgeschriebenes Vorpraktikum 01.02.–31.08., 37 Wochenstunden, kein Arbeitsentgelt, kein Mindestlohnanspruch. KV/PV: Versicherung als Praktikantin (Familienversicherung vorrangig); RV/AV: pflichtig als zur Berufsausbildung Beschäftigte, Beiträge aus 1 % der Bezugsgröße (2026: 39,55 €), Arbeitgeber trägt sie allein.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "105",
+        "bgr": "0110",
+        "kv": "keine Beiträge aus der Beschäftigung (Versicherung als Praktikantin bzw. Familienversicherung)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "keine Beiträge aus der Beschäftigung (wie KV)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-03-03",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-01-31",
+        "planNachSchule": "studium",
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "0.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-08-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "37.00"
+      },
+      "hinweis": "Bestätigt ST-VP0 mit abgedruckten Schlüsseln (PGR 105, BGR 0110). Schulende-Datum angenommen."
+    },
+    {
+      "id": "KK-TK-09",
+      "titel": "Freiwilliges Praktikum im Studium, 3 Monate, 500 €: kurzfristig",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.3, Beispiel 11 (Text S. 51, Folie 34 S. 50)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 11"
+      },
+      "sachverhalt": "Studentin, nicht vorgeschriebenes Praktikum 01.03.–31.05., 35 Std. an fünf Tagen, 500 € (kein Mindestlohn bis drei Monate). Wegen Kurzfristigkeit in allen Zweigen frei (sofern keine Vorbeschäftigungen dagegenstehen).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2005-06-06",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "2",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "begleitend",
+        "agPraktikumBis": "2026-05-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "35.00",
+        "agVorlesungszeitStunden": "35.00"
+      },
+      "hinweis": "Der Arbeitgeber meldet die Art als Praktikum; erwartet ist trotzdem 110, weil die kurzfristige Beschäftigung vorgeht (TK S. 9: Reihenfolge 110 → 109 → 106). Vgl. Gruppe C der Abweichungen. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit, über 20 Stunden: Lage nicht angegeben)."
+    },
+    {
+      "id": "KK-TK-10",
+      "titel": "Praxisintegriertes duales Studium, 500 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 3.1, Beispiel 12 (Text S. 55, Folie 36 S. 54)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 12"
+      },
+      "sachverhalt": "Student schreibt sich ab 01.09. in einen praxisintegrierten Studiengang ein und schließt einen verbundenen Vertrag mit einem Pflegebetrieb; 500 € im Monat (> 325 €). Anmeldung als zur Berufsausbildung Beschäftigter.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "102",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-08-08",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "dual",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "1",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "ausbildung",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "500.00",
+            "avGueltigAb": "2026-09-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "dualesStudium",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "KK-TK-11",
+      "titel": "Student, dritte kurzfristige Beschäftigung: 126 Kalendertage, aber genau 70 Arbeitstage",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Studierenden und Praktikanten – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 1.4, Beispiel 2 (Text S. 19, Folie 10 S. 18)",
+        "url": "https://www.tk.de/resource/blob/2087696/af370920fdbb62a196d174837e9dfa8c/beschaeftigung-studierende-praktikanten---fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Studierende 2026, Bsp. 2"
+      },
+      "sachverhalt": "Student, Vier-Tage-Woche; Vorbeschäftigungen im Jahr: A 03.01.–02.02. (30 KT/17 AT), B 17.02.–05.05. (77 KT/43 AT); zu beurteilen C 06.06.–24.06. (19 KT/10 AT). Zusammen 126 KT (> 90), aber 70 AT (nicht mehr als 70) → C ist kurzfristig, wenn der Arbeitgeber die 70-Arbeitstage-Grenze ansetzt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2004-10-10",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Arbeitgeber A",
+            "vbVon": "2026-01-03",
+            "vbBis": "2026-02-02",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "17"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "Arbeitgeber B",
+            "vbVon": "2026-02-17",
+            "vbBis": "2026-05-05",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "43"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-06",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-06-24",
+        "agKurzfristigArbeitstage": "10",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-06-24"
+      },
+      "hinweis": "Grenzwert 70 Arbeitstage (Gleichwertigkeit der Grenzen drei Monate oder 70 Arbeitstage). Entgelt ist in der Quelle nicht genannt, 1.200 € angenommen (für das Ergebnis ohne Bedeutung, da der Student nicht berufsmäßig tätig ist)."
+    },
+    {
+      "id": "KK-TK-12",
+      "titel": "Befreiungsantrag im Beginnmonat: Befreiung ab Beschäftigungsbeginn",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.1, Beispiel 1 (Text S. 13, Folie 5 S. 14)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 1"
+      },
+      "sachverhalt": "Minijob ab 15.05.2026; Antrag auf Befreiung von der RV-Pflicht am 22.05.2026 beim Arbeitgeber; Meldung mit RV-Ziffer 5, kein Widerspruch der Minijob-Zentrale → befreit ab Beginn, Arbeitgeber zahlt 15 % Pauschalbeitrag.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1983-03-03",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-15",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agUnterlagen": ["rvBefreiung"],
+        "agRvBefreiungEingang": "2026-05-22"
+      },
+      "hinweis": "Gegenstück zu GFR-36b: Hier geht der Antrag im Beginnmonat ein, daher 6500 ab Beginn. In der Quelle ist nur die RV-Ziffer „5“ abgedruckt. Entgelt (500 €) und gesetzliche KV angenommen."
+    },
+    {
+      "id": "KK-TK-13",
+      "titel": "Einmalige Aufhebung der RV-Befreiung ab 01.07.2026 (§ 6 Abs. 6 SGB VI)",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.1 „Aufhebung der Befreiung von der RV-Pflicht“, Beispiel 2 (Text S. 15, Folien 6–7 S. 14–16)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 2"
+      },
+      "sachverhalt": "Minijobberin, seit Beginn von der RV-Pflicht befreit. Am 17.08.2026 beantragt sie die Aufhebung der Befreiung (seit 01.07.2026 einmalig möglich, nur für die Zukunft). Ende der Befreiung 31.08.2026, ab 01.09.2026 RV-pflichtig (AG 15 %, AN 3,6 %).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-09-01",
+            "pgr": "109",
+            "bgr": "6100"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1979-07-07",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "450.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agUnterlagen": ["rvBefreiung"],
+        "agRvBefreiungEingang": "2026-03-01"
+      },
+      "angepasst": "Beschäftigungsbeginn (01.03.2026) und Entgelt (450 €) angenommen; die Quelle nennt nur „bei Beginn befreit“.",
+      "hinweis": "Neue Regel 2026: Die Aufhebung wirkt ab dem Monat nach Antragseingang. Der Fragebogen kann den Aufhebungsantrag nicht ausdrücken; testbar ist nur der Zustand bei Beginn (6500)."
+    },
+    {
+      "id": "KK-TK-14",
+      "titel": "Minijob genau 603 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.2, Zusatzbeispiel (ohne Folie) „Verkäuferin 603 Euro“, S. 21",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Zusatzbeispiel 603 €"
+      },
+      "sachverhalt": "Verkäuferin, monatlich genau 603 €, keine weiteren Vergütungsbestandteile → geringfügig entlohnt; KV, PV, AV frei, RV pflichtig mit Befreiungsmöglichkeit.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1985-08-08",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "603.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Grenzwert genau an der Geringfügigkeitsgrenze (Gegenstück zu D-603 mit 603,01 €). Gesetzliche KV angenommen."
+    },
+    {
+      "id": "KK-TK-15",
+      "titel": "Befristeter Minijob Mai–September mit schwankendem Entgelt, Durchschnitt 600 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.2 „Schwankendes Entgelt“, Beispiel 5 (Text S. 25, Folie 17 S. 24)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 5"
+      },
+      "sachverhalt": "Verkäuferin befristet Mai–September; vereinbart 680 € (Mai, Juni, September) und 480 € (Juli, August) = 3.000 € → Durchschnitt 600 € → geringfügig entlohnt, RV pflichtig mit Befreiungsoption.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-01-20",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "13.90",
+        "agErwartetMonat": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Das schwankende Entgelt ist als Stundenlohn mit erwartetem Monatsdurchschnitt 600 € erfasst; der Stundenlohn (Mindestlohn) ist angenommen. Mit agMonatsentgelt 680 € (erster Monat) ergäbe sich nach den Regeltabellen fälschlich 101 (nicht ausgeführt)."
+    },
+    {
+      "id": "KK-TK-16",
+      "titel": "Minijob mit Gleitzeitkonto, 15 €/Std., fest 600 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.2 „Arbeitszeitkonto (Gleitzeit)“, Beispiel 6 (Text S. 27, Folie 18 S. 26)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 6"
+      },
+      "sachverhalt": "Buchhaltungsaushilfe ab 01.04., 15 €/Std., gleichbleibend 600 € ausgezahlt (40 Std.), Mehr- und Minderstunden über ein Gleitzeitkonto; im Zeitjahr höchstens 482 Std. → geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1976-04-04",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "15.00",
+        "agErwartetMonat": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "gleitzeit"
+      }
+    },
+    {
+      "id": "KK-TK-17",
+      "titel": "680 € mit 80 € Entgeltumwandlung (Direktversicherung)",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.2 „Betriebliche Altersversorgung/Entgeltumwandlung“, Beispiel 7 (Text S. 29, Folie 20 S. 28)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 7"
+      },
+      "sachverhalt": "Beschäftigung ab 01.04.2026, 680 € monatlich, 80 € werden in eine Direktversicherung umgewandelt (bis 4 % BBG RV beitragsfrei) → regelmäßiges Entgelt 600 € → geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1988-08-18",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "680.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agBav": "umwandlung",
+        "agBavVertraege": [
+          {
+            "rowId": "r1",
+            "bavWeg": "direktversicherung",
+            "bavBeitrag": "80.00"
+          }
+        ]
+      },
+      "hinweis": "Gleicher Regelweg wie GFR-14 mit anderen Beträgen (Gruppe G: bAV wirkt in der App nicht auf die Minijob-Prüfung)."
+    },
+    {
+      "id": "KK-TK-18",
+      "titel": "600 € Grundlohn plus 50 € steuerfreier Nachtzuschlag",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.2 „Steuerfreie Zuschläge“, Zusatzbeispiel (ohne Folie), S. 31",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Zusatzbeispiel Nachtzuschlag"
+      },
+      "sachverhalt": "30 Std./Monat zu 20 €/Std. = 600 €; zwei Nachtschichten mit 10 Std. und steuerfreiem Zuschlag 25 % = 50 €. Gesamt 650 €, steuerfreie Zuschläge zählen nicht → geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-09-19",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "20.00",
+        "agErwartetMonat": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agZuschlaege": [
+          {
+            "rowId": "r1",
+            "zuArt": "nacht",
+            "zuSatz": "25 %"
+          }
+        ]
+      },
+      "hinweis": "Der erwartete Monatsverdienst ist ohne den steuerfreien Zuschlag eingetragen. Trägt der Arbeitgeber 650 € ein, ergäbe sich nach den Regeltabellen fälschlich 101 (nicht ausgeführt) – die Frage nach dem erwarteten Verdienst sagt nicht, dass steuerfreie Zuschläge auszunehmen sind (Befund für die Fragetexte)."
+    },
+    {
+      "id": "KK-TK-19",
+      "titel": "Zwei Minijobs je 300 €, gesetzlich versichert",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.7, Beispiel 11 (Text S. 53, Folie 40 S. 52)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 11"
+      },
+      "sachverhalt": "Sekretärin mit zwei unbefristeten Teilzeitbeschäftigungen bei A und B je 300 €, gesetzlich versichert, keine RV-Befreiung (ginge nur einheitlich). Zusammen 600 € → beide geringfügig entlohnt: PGR 109, BGR 6100. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1984-04-14",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Gesetzlich versicherte Variante zu GFR-15a (dort privat, 0100); Schlüssel im Original abgedruckt."
+    },
+    {
+      "id": "KK-TK-20",
+      "titel": "Zweiter Minijob 280 € neben Hauptbeschäftigung 800 € und erstem Minijob 320 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.7, Beispiel 13 (Text S. 55, Folie 42 S. 54)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 13"
+      },
+      "sachverhalt": "Reinigungskraft, Hauptbeschäftigung A 800 €, Minijob B 320 € ab 01.06., Minijob C 280 € ab 01.09. B bleibt Minijob; C wird mit A zusammengerechnet → KV, PV, RV pflichtig, AV frei – auch wenn B und C zusammen 603 € nicht überschreiten. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1975-05-25",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2019-01-01",
+            "jobEntgeltMonat": "800.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-06-01",
+            "jobEntgeltMonat": "320.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "280.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Grenzfall: Die beiden Minijobs zusammen (600 €) liegen unter der Grenze; das ist ausdrücklich unerheblich. Übergangsbereich: A + C = 1.080 € (der erste Minijob B zählt nicht)."
+    },
+    {
+      "id": "KK-TK-21",
+      "titel": "Hausfrau, Aushilfe 01.07.–30.09. für 1.500 €, später unvorhergesehen verlängert",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 3, Beispiele 15 und 16 (Text S. 77, Folien 53–54 S. 76)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 15/16"
+      },
+      "sachverhalt": "Hausfrau ohne Vorbeschäftigung, befristet 01.07.–30.09., 1.500 €, Fünf-Tage-Woche → kurzfristig, nicht berufsmäßig, versicherungsfrei. Ab 01.10. unvorhergesehene Verlängerung als Krankheitsvertretung bis 31.12. → ab 01.10. in allen Zweigen pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-10-01",
+            "pgr": "101",
+            "bgr": "1111"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1981-11-11",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-30",
+        "agKurzfristigArbeitstage": "66",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Grenzwert: 01.07.–30.09. sind genau drei Zeitmonate. Arbeitstage (66) aus der Fünf-Tage-Woche angenommen."
+    },
+    {
+      "id": "KK-TK-22",
+      "titel": "Schüler, dritte befristete Aushilfe: 103 Kalendertage bzw. 72 Arbeitstage im Jahr",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 3, Beispiel 17 (Text S. 79, Folie 55 S. 78)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 17"
+      },
+      "sachverhalt": "Schüler, befristete Aushilfen A 04.01.–29.01. (26 KT/18 AT) und B 01.02.–25.02. (25 KT/17 AT), jetzt C 22.04.–13.06. (52 KT/37 AT), jeweils über 603 €. Zusammen 103 KT/72 AT → C ist nicht kurzfristig und von Beginn an versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3101",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv", "av"]
+      },
+      "person": {
+        "geburtsdatum": "2008-02-02",
+        "status": "schueler",
+        "bezugRente": false,
+        "schulart": "allgemein",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Arbeitgeber A",
+            "vbVon": "2026-01-04",
+            "vbBis": "2026-01-29",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "18"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "Arbeitgeber B",
+            "vbVon": "2026-02-01",
+            "vbBis": "2026-02-25",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "17"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-22",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-06-13",
+        "agKurzfristigArbeitstage": "37",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-06-13"
+      },
+      "hinweis": "Widerspruch: Die Quelle nennt Versicherungspflicht „in der Kranken-, Pflege-, Renten- und Arbeitslosenversicherung“; Schüler allgemeinbildender Schulen sind aber nach § 27 Abs. 4 S. 1 Nr. 1 SGB III arbeitslosenversicherungsfrei (so auch TK FI Studierende 2026, Kap. 3.5, S. 61). Schulart „allgemeinbildend“ und Entgelt 800 € sind angenommen. KV 3 wegen Befristung auf weniger als zehn Wochen (offener Punkt) – nicht hart testen."
+    },
+    {
+      "id": "KK-TK-23",
+      "titel": "Aushilfe nach mehr als drei Monaten versicherungspflichtiger Vorbeschäftigung: berufsmäßig",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 3, Beispiel 18 (Text S. 81, Folie 56 S. 80)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 18"
+      },
+      "sachverhalt": "Beschäftigung A 29.01.–09.07. (befristet, 1.200 €, versicherungspflichtig); jetzt B 01.09.–24.09., fünf Tage/Woche, 1.200 €. B wäre kurzfristig, ist aber wegen des Erwerbsverhaltens (über drei Monate bzw. 70 AT in Beschäftigungen über 603 €) berufsmäßig → versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "1986-06-16",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Arbeitgeber A",
+            "vbVon": "2026-01-29",
+            "vbBis": "2026-07-09",
+            "vbArt": "mehr",
+            "vbArbeitstage": "116",
+            "vbEntgeltMonat": "1200.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-24",
+        "agKurzfristigArbeitstage": "18",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-24"
+      },
+      "hinweis": "Status der Person ist in der Quelle nicht genannt („Der Arbeitnehmer“), hier Haushalt angenommen. KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen. Gleicher Regelweg wie GFR-48."
+    },
+    {
+      "id": "KK-TK-24",
+      "titel": "Altersrentnerin, kurzfristige Aushilfe nach dem Renteneintritt",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 3, Beispiel 19 (Text S. 81, Folie 57 S. 80)",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Bsp. 19"
+      },
+      "sachverhalt": "Arbeitnehmerin war seit Jahren bis 31.05. beschäftigt, seit 01.06. Altersrentnerin; befristete Aushilfe 01.–30.08., fünf Tage/Woche, 1.200 €. Kurzfristig; keine Berufsmäßigkeit, Zeiten vor Rentenbeginn zählen nicht.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1961-03-15",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-06-01",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-01-01",
+            "vbBis": "2026-05-31",
+            "vbArt": "mehr",
+            "vbArbeitstage": "104",
+            "vbEntgeltMonat": "2800.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-30",
+        "agKurzfristigArbeitstage": "21",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-30"
+      },
+      "hinweis": "Geburtsdatum (vorgezogene Altersrente mit 65) und Daten der Vorbeschäftigung angenommen. Ein Prüfhinweis zur Vorbeschäftigung ist zu erwarten, der Vorschlag 110 aber richtig."
+    },
+    {
+      "id": "KK-TK-25",
+      "titel": "Abiturient vor dem Bundesfreiwilligendienst: berufsmäßig",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 3 „Berufsmäßigkeit“, Zusatzbeispiel (ohne Folie) „Abitur … Bundesfreiwilligendienst“, S. 81",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Zusatzbeispiel BFD"
+      },
+      "sachverhalt": "Schulzeit endet 31.07., ab 01.10. Bundesfreiwilligendienst geplant; dazwischen befristet 02.08.–24.09., fünf Tage/Woche, 1.200 €. Zwar kurzfristig, aber berufsmäßig (Beschäftigung zwischen Schule und Freiwilligendienst) → alle Zweige pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "2007-05-05",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-07-31",
+        "planNachSchule": "freiwilligendienst",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-02",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-24",
+        "agKurzfristigArbeitstage": "39",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-24"
+      },
+      "hinweis": "Neuer Weg gegenüber D-KFAZ: Vorhaben „Freiwilligendienst“. KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen."
+    },
+    {
+      "id": "KK-TK-26",
+      "titel": "1.900 € plus Weihnachtsgeld 1.900 €: über 2.000 € im Durchschnitt",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 5, Zusatzbeispiel (ohne Folie) „1.900 Euro … Weihnachtsgeld“, S. 89",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Zusatzbeispiel 1.900 €"
+      },
+      "sachverhalt": "Monatsentgelt 1.900 €, im November Weihnachtsgeld 1.900 € → ein Zwölftel 2.058,33 € → regelmäßiges Entgelt über 2.000 €, kein Übergangsbereich (auch nicht in den Monaten mit 1.900 €).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1991-01-11",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1900.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "1900.00",
+            "ezMonat": "11",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Grenzfall Obergrenze: Einmalzahlung mit Rechtsanspruch hebt den Durchschnitt über 2.000 €."
+    },
+    {
+      "id": "KK-TK-27",
+      "titel": "Zwei versicherungspflichtige Teilzeitjobs 700 € und 800 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Geringfügige Beschäftigungen und Midijobs – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 5, Zusatzbeispiel (ohne Folie) „Arbeitgeber A … 700 Euro … B … 800 Euro“, S. 89",
+        "url": "https://www.tk.de/resource/blob/2087478/c537774be28e37d1acbe18913f833271/geringfuegige-beschaeftigungen-und-midijobs-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Minijobs 2026, Zusatzbeispiel 700/800"
+      },
+      "sachverhalt": "Arbeitnehmer mit A (700 €) und B (800 €) nebeneinander; Gesamtentgelt 1.500 € im Übergangsbereich → für beide Beschäftigungen gelten die Regeln des Übergangsbereichs. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1987-07-17",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "700.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "KK-TK-28",
+      "titel": "580 € plus Weihnachtsgeld 350 €: 609,17 € im Durchschnitt",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.4, Beispiel 2 „Weihnachtsgeld“, S. 3",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 2"
+      },
+      "sachverhalt": "Monatsentgelt 580 €, vertragliches Weihnachtsgeld 350 € → 7.310 € : 12 = 609,17 € → Geringfügigkeitsgrenze überschritten, in allen Zweigen pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1977-07-27",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "580.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "350.00",
+            "ezMonat": "11",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Knapp über der Grenze (Jahr 7.310 € > 7.236 €); der Arbeitgeber hat „Minijob“ gewählt."
+    },
+    {
+      "id": "KK-TK-29",
+      "titel": "Drei Minijobs 200 €, 220 € und 180 €: zusammen 600 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.8, Beispiel 3 „Mehrere Minijobs“, S. 4",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 3"
+      },
+      "sachverhalt": "Drei geringfügige Beschäftigungen A 200 €, B 220 €, C 180 € = 600 € → zusammen geringfügig entlohnt; KV, PV, AV frei, RV pflichtig. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1982-02-12",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "200.00",
+            "jobRvBefreit": "nein"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-06-01",
+            "jobEntgeltMonat": "220.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "180.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "KK-TK-30",
+      "titel": "Drei Minijobs 260 €, 300 € und 560 €: zusammen 1.120 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.8, Beispiel 4 „Grenze überschritten“, S. 4",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 4"
+      },
+      "sachverhalt": "Drei Beschäftigungen A 260 €, B 300 €, C 560 €, keine Hauptbeschäftigung; zusammen 1.120 € → alle nicht mehr geringfügig, in allen Zweigen pflichtig. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1983-03-13",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "260.00",
+            "jobRvBefreit": "nein"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-06-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "560.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Übergangsbereich: Gesamtentgelt der zusammengerechneten Beschäftigungen 1.120 € (vgl. UEB-15)."
+    },
+    {
+      "id": "KK-TK-31",
+      "titel": "Minijob 160 € neben einer Hauptbeschäftigung mit nur 610 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.8, Beispiel 5 „Ein Minijob neben Hauptbeschäftigung“, S. 4–5",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 5"
+      },
+      "sachverhalt": "Hauptbeschäftigung A 610 € (für sich versicherungspflichtig), daneben ein Minijob B 160 € → B wird nicht zusammengerechnet, bleibt geringfügig entlohnt: KV, PV, AV frei, RV pflichtig. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1993-03-23",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "610.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "160.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Grenzfall: Hauptbeschäftigung nur 7 € über der Geringfügigkeitsgrenze. Der Fließtext der Quelle sagt zunächst „versicherungsfrei in der Kranken-, Pflege-, Renten- und Arbeitslosenversicherung“, dann „In der Rentenversicherung besteht Versicherungspflicht“ – maßgeblich ist der zweite Satz."
+    },
+    {
+      "id": "KK-TK-32",
+      "titel": "Zweiter Minijob 140 € neben Hauptbeschäftigung 610 € und Minijob 160 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.8, Beispiel 6 „Zweiter Minijob neben Hauptbeschäftigung“, S. 5",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 6"
+      },
+      "sachverhalt": "Hauptbeschäftigung A 610 €, zuerst aufgenommener Minijob B 160 €, später Minijob C 140 €. C wird mit A zusammengerechnet → KV, PV, RV pflichtig, AV frei. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1993-03-23",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "610.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-04-01",
+            "jobEntgeltMonat": "160.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "140.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Übergangsbereich: A + C = 750 € (B zählt nicht)."
+    },
+    {
+      "id": "KK-TK-33",
+      "titel": "Zweiter Minijob lässt Hauptbeschäftigung und Minijob über die JAEG steigen",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.9, Beispiel 7 „Überschreiten der Jahresarbeitsentgeltgrenze“, S. 5",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 7"
+      },
+      "sachverhalt": "A 6.400 €/Monat (76.800 € ≤ JAEG 77.400 €), Minijob B 300 € ab 01.05. (bleibt unberücksichtigt), Minijob C 400 € ab 01.07. → A + C = 81.600 € > JAEG. C wird mit A zusammengerechnet und ist zunächst krankenversicherungspflichtig; KV-Freiheit erst, wenn die Grenze auch im Folgejahr überschritten wird. RV pflichtig, AV frei. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2027-01-01",
+            "pgr": "101",
+            "bgr": "0101"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1980-10-10",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "6400.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-05-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Prüft, dass die KV im Jahr des Überschreitens pflichtig bleibt (§ 6 Abs. 4 SGB V: Freiheit erst mit Ablauf des Kalenderjahres) und der erste Minijob nicht in die JAEG zählt. Die Zeile „später“ gilt nur, wenn die JAEG 2027 ebenfalls überschritten wird (bei Firmenzahler 9101). Entspricht dem AOK-Beispiel „JAEG durch Aufnahme von Minijob überschritten“ (dort 2025/2026)."
+    },
+    {
+      "id": "KK-TK-34",
+      "titel": "Zweiter Minijob neben Hauptbeschäftigung schon über der JAEG, privat versichert",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.9, Beispiel 8 „Bereits mit Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze“, S. 6",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 8"
+      },
+      "sachverhalt": "A 6.600 €/Monat (über der JAEG, KV-frei), Minijob B 300 € ab 01.05., Minijob C 400 € ab 01.07. C bleibt krankenversicherungsfrei; in der RV mit A zusammengerechnet (pflichtig), AV frei. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1979-09-09",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2018-01-01",
+            "jobEntgeltMonat": "6600.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-05-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "privat",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle nennt die Art der Krankenversicherung nicht; hier privat angenommen, damit KV und PV eindeutig 0 sind. Bei freiwilliger GKV vgl. GFR-25C/GFR-26C (zwei Meldungen)."
+    },
+    {
+      "id": "KK-TK-35",
+      "titel": "Minijob 570 €, ab 01.09. Gehaltserhöhung auf 610 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 1.10, Beispiel 9 „Gehaltserhöhung“, S. 7",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 9"
+      },
+      "sachverhalt": "Beschäftigung ab 01.06.2026 mit 570 € (geringfügig entlohnt), Erhöhung ab 01.09.2026 auf 610 € → ab dem Tag des Überschreitens versicherungspflichtig in allen Zweigen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-09-01",
+            "pgr": "101",
+            "bgr": "1111"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1989-12-12",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "570.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Ab 01.09. Übergangsbereich (610 €)."
+    },
+    {
+      "id": "KK-TK-36",
+      "titel": "Schülerin, Ferienjob 01.07.–15.08. für 600 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 2, Beispiel 11 „Befristete Ferienbeschäftigung“, S. 7",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 11"
+      },
+      "sachverhalt": "Schülerin, Ferienjob von vornherein 01.07.–15.08. befristet, 600 € → kurzfristig und versicherungsfrei.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2009-06-06",
+        "status": "schueler",
+        "bezugRente": false,
+        "schulart": "allgemein",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-15",
+        "agKurzfristigArbeitstage": "33",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-15"
+      },
+      "hinweis": "Entgelt zugleich unter der Minijob-Grenze; die kurzfristige Beschäftigung geht vor (110). Schulart und Arbeitstage angenommen."
+    },
+    {
+      "id": "KK-TK-37",
+      "titel": "Unbefristet eingestellte Aushilfe, nach einem Monat beendet",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 2, Beispiel 12 „Unbefristete Aushilfsbeschäftigung“, S. 7",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 12"
+      },
+      "sachverhalt": "Aushilfe ab 01.07. unbefristet eingestellt, beendet zum 31.07., 1.500 €. Weil die Beschäftigung nicht von vornherein befristet war, liegt keine kurzfristige Beschäftigung vor → in jedem Fall versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1984-08-28",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agRahmenvereinbarung": false,
+        "agBefristet": false
+      },
+      "hinweis": "Der Arbeitgeber hat hier (fälschlich) „kurzfristige Aushilfe“ gewählt, den Vertrag aber als unbefristet angegeben – der Test prüft, ob die fehlende Befristung erkannt wird (Gruppe A). Ende und Arbeitstage der kurzfristigen Aushilfe sind absichtlich nicht beantwortet."
+    },
+    {
+      "id": "KK-TK-38",
+      "titel": "Abiturient vor dem Studium, Aushilfe 01.08.–25.09. für 750 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 2, Beispiel 19 „Abitur – anschließendes Studium“, S. 10",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 19"
+      },
+      "sachverhalt": "Schulende (Abitur) 31.07., Studium ab 01.10.; befristete Beschäftigung 01.08.–25.09. für 750 € → kurzfristig, nicht berufsmäßig, versicherungsfrei.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-02-22",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-07-31",
+        "planNachSchule": "studium",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "750.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-25",
+        "agKurzfristigArbeitstage": "40",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-25"
+      }
+    },
+    {
+      "id": "KK-TK-39",
+      "titel": "Abiturient vor der Berufsausbildung, Aushilfe 01.08.–25.09. für 750 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Geringfügige Beschäftigungen (Firmenkunden), Stand 09/2026",
+        "fundstelle": "Kap. 2, Beispiel 20 „Abitur – anschließende Berufsausbildung“, S. 10",
+        "url": "https://www.tk.de/resource/blob/2031418/145cfb44038c3eb4b612a44254b07f42/beratungsblatt-geringfuegige-beschaeftigung-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Minijobs, Bsp. 20"
+      },
+      "sachverhalt": "Schulende 31.07., Berufsausbildung ab 01.10.; befristete Beschäftigung 01.08.–25.09. für 750 € → erfüllt die Zeitgrenzen, ist aber berufsmäßig → versicherungspflichtig in KV, PV, RV, AV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "2007-02-22",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-07-31",
+        "planNachSchule": "ausbildung",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "750.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-25",
+        "agKurzfristigArbeitstage": "40",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-25"
+      },
+      "hinweis": "KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen."
+    },
+    {
+      "id": "KK-TK-40",
+      "titel": "Zwei versicherungspflichtige Jobs 1.100 € und 1.000 €: zusammen über 2.000 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Beschäftigungen im Übergangs-/Midijobbereich (Firmenkunden), Stand 03/2026",
+        "fundstelle": "Kap. 2, Beispiel 2 „2 versicherungspflichtige Jobs – Grenze überschritten“, S. 2",
+        "url": "https://www.tk.de/resource/blob/2031420/c5924456e673ed942a4be369a4ad070f/beratungsblatt-beschaeftigung-im-uebergangs-midijobbereich-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Übergangsbereich, Bsp. 2"
+      },
+      "sachverhalt": "Arbeitnehmerin bei A mit 1.100 € und bei B mit 1.000 €; Gesamtentgelt 2.100 € > 2.000 € → Midijob-Regeln gelten nicht. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1986-06-06",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2023-01-01",
+            "jobEntgeltMonat": "1100.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Gleicher Regelweg wie UEB-02, andere Beträge (2.100 statt 2.080 €)."
+    },
+    {
+      "id": "KK-TK-41",
+      "titel": "Midijob 650 € neben Minijob 350 €: Minijob bleibt außen vor",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Beschäftigungen im Übergangs-/Midijobbereich (Firmenkunden), Stand 03/2026",
+        "fundstelle": "Kap. 2, Beispiel 3 „Midijob + Minijob – geringfügige Beschäftigung bleibt außen vor“, S. 2",
+        "url": "https://www.tk.de/resource/blob/2031420/c5924456e673ed942a4be369a4ad070f/beratungsblatt-beschaeftigung-im-uebergangs-midijobbereich-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Übergangsbereich, Bsp. 3"
+      },
+      "sachverhalt": "Arbeitnehmer bei C mit 650 € (versicherungspflichtig) und bei D mit 350 € (Minijob). Für den Übergangsbereich zählt nur C → Midijob-Regeln anwendbar. Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1992-02-02",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber D",
+            "jobArt": "minijob",
+            "jobSeit": "2025-03-01",
+            "jobEntgeltMonat": "350.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "650.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "C ist mit 650 € die versicherungspflichtige (Haupt-)Beschäftigung, neben der D als erster Minijob nicht zusammengerechnet wird. Nach den Regeltabellen (Summe aller Entgelte 1.000 €) ergäbe sich ebenfalls 1 (von Hand gelesen, nicht ausgeführt) – dieser Fall deckt den Summenfehler der Gruppe F also nicht auf."
+    },
+    {
+      "id": "KK-TK-42",
+      "titel": "510 € plus Weihnachtsgeld 600 €: 2026 ein Minijob (Quelle rechnet mit alter Grenze)",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beratungsblatt Beschäftigungen im Übergangs-/Midijobbereich (Firmenkunden), Stand 03/2026",
+        "fundstelle": "Kap. 3, Beispiel 6 „Entgelt unter 603,01 Euro – Faktor-F-Berechnung“, S. 4",
+        "url": "https://www.tk.de/resource/blob/2031420/c5924456e673ed942a4be369a4ad070f/beratungsblatt-beschaeftigung-im-uebergangs-midijobbereich-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Beratungsblatt Übergangsbereich, Bsp. 6"
+      },
+      "sachverhalt": "Herr S. erhält ab Januar 510 €/Monat und im November 600 € Weihnachtsgeld. Die Quelle sagt, das regelmäßige Entgelt liege im Übergangsbereich. Nachgerechnet: 510 × 12 + 600 = 6.720 € → 560 €/Monat ≤ 603 € (Jahresgrenze 7.236 €) → 2026 geringfügig entlohnt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-08-08",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "510.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "600.00",
+            "ezMonat": "11",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Widerspruch in der Quelle: Die Zahlen passen zur Grenze 520 € (bis 2023), nicht zu 603 €. Erwartung hier nach den Werten 2026 abgeleitet; die Aussage der Quelle („im Übergangsbereich“) wurde nicht übernommen."
+    },
+    {
+      "id": "KK-TK-43",
+      "titel": "Altersteilrente nach Erreichen der Regelaltersgrenze",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 6 Melderecht, Folie 32 (Beispiel 1), Zeitraum ab 01.05.2026 (Folie S. 66, Text S. 67–69)",
+        "url": "https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Rentner 2026, Folie 32"
+      },
+      "sachverhalt": "Rentner, Regelaltersgrenze mit Ablauf Dezember 2025 erreicht; ab 01.05.2026 bezieht er auf Wunsch eine Teilrente statt der Vollrente. Teilrente: volle KV-Beitragspflicht (Krankengeld), RV pflichtig, AV frei mit Arbeitgeberanteil → PGR 101, BGR 1121 (Meldung ab 01.05.2026, fiktives Entgelt 13.440 € für 8 Monate = 1.680 €/Monat).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1121",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1959-10-15",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersteil",
+        "renteSeit": "2026-05-01",
+        "rvNieVersichert": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1680.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "In der Quelle läuft die Beschäftigung seit 01.04.2025 mit mehreren Wechseln (120/3111 → 119/3321 → 120/3121 → 101/1121); abgebildet ist nur der Zustand ab 01.05.2026 als Beginn. Entgelt aus dem fiktiven Meldeentgelt zurückgerechnet.",
+      "hinweis": "Teilrentner sind auch nach der Regelaltersgrenze rentenversicherungspflichtig (§ 5 Abs. 4 S. 1 Nr. 1 SGB VI setzt eine Vollrente voraus). Übergangsbereich abgeleitet (1.680 €)."
+    },
+    {
+      "id": "KK-TK-44",
+      "titel": "Vorgezogene Altersvollrente, Minijob ab 01.05.2026, Regelaltersgrenze im Oktober 2026",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 6 Melderecht, Folie 33 (Beispiel 2) (Folie S. 68, Text S. 69–71)",
+        "url": "https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Rentner 2026, Folie 33"
+      },
+      "sachverhalt": "Vorgezogene Altersvollrente ab 01.04.2026 (KVdR); ab 01.05.2026 Minijob ohne RV-Befreiung; Regelaltersgrenze Ende Oktober 2026, kein Verzicht. 01.05.–31.10.: PGR 109, BGR 6100; ab 01.11.2026: PGR 109, BGR 6500 (Arbeitgeber zahlt weiter den Pauschalbeitrag).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-11-01",
+            "pgr": "109",
+            "bgr": "6500"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1960-06-20",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "ragErreicht": "nein",
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-04-01",
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "410.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Entgelt 410 € aus dem fiktiven Meldeentgelt (2.460 € für 6 Monate) zurückgerechnet; Geburtsdatum so gewählt, dass die Regelaltersgrenze am 19.10.2026 erreicht wird. Bestätigt: 109 hat Vorrang vor 120."
+    },
+    {
+      "id": "KK-TK-45",
+      "titel": "Regelaltersgrenze im April 2026 erreicht, ohne Rente in Vollzeit weiter",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 6 Melderecht, Folie 34 (Beispiel 3) (Folie S. 70, Text S. 71)",
+        "url": "https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Rentner 2026, Folie 34"
+      },
+      "sachverhalt": "Arbeitnehmer erreicht die Regelaltersgrenze im April 2026, beantragt keine Rente und arbeitet in Vollzeit weiter. Nur die AV-Pflicht endet (Arbeitgeberanteil bleibt); KV unverändert (Krankengeld bis zum Rentenbezug). 01.01.–30.04.2026: PGR 101, BGR 1111; ab 01.05.2026: PGR 101, BGR 1121.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-05-01",
+            "pgr": "101",
+            "bgr": "1121"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1960-01-01",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "ragErreicht": "nein",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "3800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "In der Quelle besteht die Beschäftigung schon vorher; hier als Beginn 01.01.2026 abgebildet. Geburtsdatum 01.01.1960 gewählt – nur damit fällt die Regelaltersgrenze (66 Jahre 4 Monate) in den April 2026 (30.04.2026). Entgelt 3.800 € angenommen.",
+      "hinweis": "Ohne Vollrente bleibt die RV-Pflicht auch nach der Regelaltersgrenze bestehen (vgl. D-RAGNV: nur bei „nie versichert“ RV-frei)."
+    },
+    {
+      "id": "KK-TK-46",
+      "titel": "Pensionär nach der Regelaltersgrenze als Lehrkraft, 1.250 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 4.3 „Pensionäre – Beamte im Ruhestand“, Beispiel (Folie 26) (Folie S. 54, Text S. 55)",
+        "url": "https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Rentner 2026, Folie 26"
+      },
+      "sachverhalt": "Oberstudienrat a. D. (67) mit Beamtenversorgung wegen Erreichens der Altersgrenze und Beihilfeanspruch; ab 01.04.2026 Lehrkraft bei einem privaten Bildungsträger, 1.250 €. In allen Zweigen versicherungsfrei; der Arbeitgeber zahlt seinen Anteil zur RV (9,3 %) und AV (1,3 %).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "0320",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "unsicher": ["uebergangsbereich"]
+      },
+      "person": {
+        "geburtsdatum": "1959-02-10",
+        "status": "ruhestand",
+        "bezugRente": false,
+        "bezugPension": true,
+        "beamtBeihilfe": true,
+        "pensionArt": "alter",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "ja",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1250.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Neue Kombination gegenüber D-119P (dort vor der Regelaltersgrenze, AV pflichtig): nach der Regelaltersgrenze AV-Arbeitgeberanteil (2). Private KV angenommen (Beihilfe). Ob das Kennzeichen Übergangsbereich bei einer in allen Zweigen versicherungsfreien Beschäftigung zu setzen ist, ist offen. Die Quelle (Folie 27) sagt: „Ist die Altersgrenze noch nicht erreicht, so besteht … Rentenversicherungspflicht in vollem Umfang“ – gemeint ist die beamtenrechtliche Altersgrenze der Versorgung, nicht die Regelaltersgrenze (vgl. § 5 Abs. 4 S. 1 Nr. 2 SGB VI)."
+    },
+    {
+      "id": "KK-TK-47",
+      "titel": "Privat versicherter Altersvollrentner nach der Regelaltersgrenze",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Ihre Webinar-FAQs – TK-Fachwebinar „Rentner beschäftigen und richtig abrechnen“ (Webinar vom 09.04.2026)",
+        "fundstelle": "Frage „Wie ist mit Altersvollrentnern umzugehen, die privat krankenversichert sind …?“, S. 3",
+        "url": "https://webinare.tk.de/fileadmin/user_upload/20260409_FAQ_-_Rentner_beschaeftigen_und_richtig_abrechnen_V1.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK Webinar-FAQ Rentner 2026"
+      },
+      "sachverhalt": "Altersvollrentner nach der Regelaltersgrenze (Aktivrente), privat krankenversichert → PGR 119, BGR 0320; der Zuschuss zur KV ist nach dem ermäßigten Beitragssatz zu berechnen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "0320",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-05-05",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-06-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "ja",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Geburtsdatum, Rentenbeginn und Entgelt angenommen. Dieselbe FAQ nennt für die Aktivrente: Vollrente 119/3321, mit Verzicht 120/3121, Teilrente oder keine Rente 101/1121 – die Aktivrente (Steuerfreibetrag) ändert die SV-Beurteilung nicht."
+    },
+    {
+      "id": "KK-TK-48",
+      "titel": "Rente wegen teilweiser Erwerbsminderung, 5 Std. täglich",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 4.1 „Erwerbsminderungsrentner“, Folien 17–18, Text S. 41",
+        "url": "https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Rentner 2026, Folie 17/18"
+      },
+      "sachverhalt": "Arbeitnehmerin (62) mit Rente wegen teilweiser Erwerbsminderung, arbeitet noch fünf Stunden täglich in der Buchhaltung. Bezieher einer Rente wegen teilweiser Erwerbsminderung sind in KV, PV, RV und AV voll versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1964-03-03",
+        "status": "arbeitnehmer",
+        "bezugRente": true,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "rentenart": "emTeil",
+        "renteSeit": "2025-01-01",
+        "artLautVereinbarung": "festeStelle",
+        "taeglichHoechstStunden": "5.00",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "In der Quelle läuft die Beschäftigung weiter; hier als Beginn 01.01.2026. Entgelt 1.400 € angenommen.",
+      "hinweis": "Gegenstück zu D-EMV (volle Erwerbsminderung: KV 3, AV 0). Bei teilweiser Erwerbsminderung allgemeiner KV-Beitrag und AV-Pflicht."
+    },
+    {
+      "id": "KK-TK-49",
+      "titel": "Rentnerin (64) mit vorgezogener Vollrente im Minijob mit 603 €",
+      "quelle": {
+        "dokument": "Techniker Krankenkasse: Beschäftigung von Rentnern – Fachinformation für Firmenkunden 2026, Stand April 2026",
+        "fundstelle": "Kap. 2.3, Beispiel 1 (Folie 6) „Ute B.“, S. 21",
+        "url": "https://www.tk.de/resource/blob/2122462/c633926ba9e73f6be198b01e2900c902/beschaeftigung-von-rentnern-i-fachinformation-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "TK FI Rentner 2026, Bsp. 1"
+      },
+      "sachverhalt": "Rentnerin (64), Altersrente seit 01.06.2026, arbeitet ab 15.09.2026 in Teilzeit 9 Std./Woche für 603 €. Geringfügig entlohnt: KV, PV, AV frei; RV pflichtig, weil die Regelaltersgrenze noch nicht erreicht ist (Befreiung möglich).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1962-02-02",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-06-01",
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-15",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "603.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "angepasst": "In der Quelle wird die bestehende Beschäftigung ab 15.09.2026 auf Teilzeit umgestellt; hier als Beginn abgebildet.",
+      "hinweis": "Prüft den Vorrang von 109 vor 120 (vorgezogene Vollrente) mit Entgelt genau an der Grenze."
+    },
+    {
+      "id": "KK-BARMER-01",
+      "titel": "Neueinstellung neben vorgezogener Vollrente, Regelaltersgrenze am 10.09.2026",
+      "quelle": {
+        "dokument": "BARMER: Online-Seminar „Beschäftigung von Altersrentnerinnen und Altersrentnern 2026“, Seminarunterlagen vom 23.06.2026",
+        "fundstelle": "Kap. 4 „Auswirkungen auf die Sozialversicherung – Rentenversicherung“, Beispiel und „Beispiel weiter“ (PDF-Seiten 27 und 29); BGR-Übersicht Kap. 6 (PDF-Seite 45)",
+        "url": "https://www.barmer.de/resource/blob/1240988/c540493d62551775403049318fbd7aef/seminarunterlagen-altersrentner-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Altersrentner 2026"
+      },
+      "sachverhalt": "Langjährig Versicherter mit vorgezogener Altersrente nimmt am 01.05.2026 eine Beschäftigung auf; Regelaltersgrenze am 10.09.2026. Anmeldung mit PGR 120, alle Zweige pflichtig (KV ermäßigt laut Übersicht 3111). Ab 01.10.2026 RV und AV frei: Ummeldung auf PGR 119 (3321); mit Verzicht bliebe es bei 120.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-10-01",
+            "pgr": "119",
+            "bgr": "3321"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1960-05-11",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "ragErreicht": "nein",
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-11-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "BGR aus der Übersicht der Quelle („Altersvollrentner vor Erreichen der Regelaltersgrenze: 3111; nach Erreichen: 3321; mit Verzicht: 3121“). Rentenbeginn und Entgelt angenommen."
+    },
+    {
+      "id": "KK-BARMER-02",
+      "titel": "Minijob neben vorgezogener Rente mit RV-Befreiung, Regelaltersgrenze im August",
+      "quelle": {
+        "dokument": "BARMER: Online-Seminar „Beschäftigung von Altersrentnerinnen und Altersrentnern 2026“, Seminarunterlagen vom 23.06.2026",
+        "fundstelle": "Kap. 4 „Geringfügige Beschäftigung – geringfügig entlohnte Beschäftigung“, Beispiel „vor Erreichen der Regelaltersgrenze“ (PDF-Seite 33)",
+        "url": "https://www.barmer.de/resource/blob/1240988/c540493d62551775403049318fbd7aef/seminarunterlagen-altersrentner-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Altersrentner 2026"
+      },
+      "sachverhalt": "Langjährig Versicherte mit vorgezogener Altersrente, Regelaltersgrenze am 13.08.2026, Minijob ab 01.06.2026 → RV-pflichtig, Befreiung möglich. Lässt sie sich befreien, kann sie nach Erreichen der Regelaltersgrenze nicht mehr auf die RV-Freiheit verzichten. Hier: Befreiung beantragt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-09-01",
+            "pgr": "109",
+            "bgr": "6500"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1960-04-14",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "ragErreicht": "nein",
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-01-01",
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agUnterlagen": ["rvBefreiung"],
+        "agRvBefreiungEingang": "2026-06-01"
+      },
+      "hinweis": "Die Befreiung bindet für die Dauer der Beschäftigung; nach der Regelaltersgrenze bleibt 6500, ein Verzicht ist ausgeschlossen (so auch Besprechungsergebnis 23.11.2016 TOP 3). Variante „mit Befreiung“ gewählt; Rentenbeginn und Entgelt angenommen."
+    },
+    {
+      "id": "KK-BARMER-03",
+      "titel": "Minijob nach der Regelaltersgrenze mit Verzicht auf die RV-Freiheit",
+      "quelle": {
+        "dokument": "BARMER: Online-Seminar „Beschäftigung von Altersrentnerinnen und Altersrentnern 2026“, Seminarunterlagen vom 23.06.2026",
+        "fundstelle": "Kap. 4, Beispiel „Neueinstellung in geringfügige Beschäftigung … nach Erreichen der Regelaltersgrenze“ (PDF-Seite 34); PGR-Vorrang 109/110 (PDF-Seite 47)",
+        "url": "https://www.barmer.de/resource/blob/1240988/c540493d62551775403049318fbd7aef/seminarunterlagen-altersrentner-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Altersrentner 2026"
+      },
+      "sachverhalt": "Altersrentner nach der Regelaltersgrenze nimmt am 01.07.2026 einen Minijob auf: RV-frei, Arbeitgeber zahlt Pauschalbeiträge. Er kann auf die RV-Freiheit verzichten und dann gemeinsam mit dem Arbeitgeber Beiträge zahlen. Hier: Verzicht erklärt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-03-03",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-04-01",
+        "rvVerzicht": "ja",
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agUnterlagen": ["rvVerzicht"],
+        "agRvVerzichtEingang": "2026-07-01"
+      },
+      "hinweis": "Neue Kombination: Minijob nach der Regelaltersgrenze mit Verzicht → RV 1 (nicht 5), Personengruppe bleibt 109 („Schlüsselzahlen 109 und 110 haben immer Vorrang“, PDF-Seite 47). Ohne Verzicht wie D-MJRAG (6500)."
+    },
+    {
+      "id": "KK-BARMER-04",
+      "titel": "Regelaltersgrenze im Juli 2026, Vollrente ab 01.08.2026 und Beschäftigung",
+      "quelle": {
+        "dokument": "BARMER: Online-Seminar „Beschäftigung von Altersrentnerinnen und Altersrentnern 2026“, Seminarunterlagen vom 23.06.2026",
+        "fundstelle": "Kap. 3 „Altersrenten – Aktivrente“, Beispiel Frau Schmitz (PDF-Seite 19); BGR-Übersicht Kap. 6 (PDF-Seite 45)",
+        "url": "https://www.barmer.de/resource/blob/1240988/c540493d62551775403049318fbd7aef/seminarunterlagen-altersrentner-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Altersrentner 2026"
+      },
+      "sachverhalt": "Geboren 17.03.1960, Regelaltersgrenze im Juli 2026, Altersrente ab 01.08.2026; sie arbeitet mehr als geringfügig weiter. Monatlich bis 2.000 € steuerfrei (Aktivrente). Mit Vollrente: KV ermäßigt, RV und AV frei mit Arbeitgeberanteil → 119/3321.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "3321",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1960-03-17",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "ragErreicht": "ja",
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-08-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "In der Quelle wird sie „weiterbeschäftigt“; hier Beginn am 01.08.2026 (Rentenbeginn). Entgelt 2.400 € angenommen.",
+      "hinweis": "Prüft den Weg über „Regelaltersgrenze erreicht: Ja“ (Jahrgang 1960) statt über das Geburtsdatum. Die Folie sagt „Der Arbeitgeber zahlt hälftige Sozialversicherungsbeiträge (außer Arbeitslosenversicherung)“; nach der BGR-Übersicht derselben Quelle (3321: „ALV-frei, aber AG-Anteil“) zahlt er den AV-Anteil aber weiter. Die Quelle nennt den 17.07.2026 als Tag der Regelaltersgrenze, nach §§ 187, 188 BGB ist es der 16.07.2026 – für das Ergebnis ohne Bedeutung."
+    },
+    {
+      "id": "KK-BARMER-05",
+      "titel": "Abiturientin vor der Ausbildung, 12.07.–20.08. Vollzeit, 2.410 €",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 2 „Prüfung der Berufsmäßigkeit“, Beispiel „Schulabgängerin – anschließend Berufsausbildung“ (PDF-Seite 22)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Abitur im Juni, erstmals befristet beschäftigt 12.07.–20.08.2026, 40 Std./Woche, 2.410 €; ab 01.09.2026 Ausbildung. Schulabgänger vor dem Start ins Berufsleben sind berufsmäßig → versicherungspflichtig in allen Zweigen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "2007-04-04",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-06-30",
+        "planNachSchule": "ausbildung",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-12",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2410.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-20",
+        "agKurzfristigArbeitstage": "29",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-20"
+      },
+      "hinweis": "KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen. Übergangsbereich 0 (2.410 €). Schulende-Datum und Arbeitstage angenommen."
+    },
+    {
+      "id": "KK-BARMER-06",
+      "titel": "Abiturient vor dem Studium, 14.06.–30.07. Vollzeit",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 2 „Prüfung der Berufsmäßigkeit“, Beispiel „Schulabgänger – anschließend Studium“ (PDF-Seite 23)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Abitur im Juni, befristete Vollzeitbeschäftigung 14.06.–30.07.2026, Studium ab 01.10.2026 beabsichtigt → nicht berufsmäßig, kurzfristig und versicherungsfrei.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-01-01",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-06-12",
+        "planNachSchule": "studium",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-14",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-30",
+        "agKurzfristigArbeitstage": "34",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-30"
+      },
+      "hinweis": "Entgelt ist nicht genannt (2.200 € angenommen); Schulende-Datum angenommen."
+    },
+    {
+      "id": "KK-BARMER-07",
+      "titel": "Student 18 Std./Woche als Kellner, 1.100 €",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 3 „Werkstudenten-Privileg“, Beispiel „20-Stunden-Grenze unterschritten“ (PDF-Seite 34)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Student jobbt unbefristet als Kellner, 18 Std./Woche, 1.100 € → KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-11-11",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "5",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1100.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "18.00",
+        "agVorlesungszeitStunden": "18.00"
+      },
+      "hinweis": "Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit)."
+    },
+    {
+      "id": "KK-BARMER-08",
+      "titel": "Student 22 Std./Woche unbefristet, 1.350 €",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 3 „Werkstudenten-Privileg“, Beispiel „20-Stunden-Grenze überschritten“ (PDF-Seite 35)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Student, unbefristet Verkäufer, 22 Std./Woche, 1.350 € → weder dem Studium untergeordnet noch geringfügig: in allen Zweigen versicherungspflichtig (auch bei Wochenend-/Abendarbeit wegen fehlender Befristung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2004-12-12",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "4",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1350.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "22.00",
+        "agVorlesungszeitStunden": "22.00",
+        "agRandzeiten": true
+      },
+      "hinweis": "Knapp über der 20-Stunden-Grenze (vgl. ST-01 mit 25 Std.). Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit, Stunden über 20 am Wochenende, abends oder nachts: Ja)."
+    },
+    {
+      "id": "KK-BARMER-09",
+      "titel": "Studentin 19 Std./Woche, in den Semesterferien 38 Std.",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 3 „Werkstudenten-Privileg“, Beispiel „Ausweitung einer Beschäftigung während der Semesterferien“ (PDF-Seite 37)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Studentin, Vorlesungszeit 19 Std./Woche (1.150 €), Semesterferien 38 Std. (2.300 €). Die Beschäftigung ordnet sich dem Studium unter und wird nur in den Ferien ausgeweitet → KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "unsicher": ["uebergangsbereich"]
+      },
+      "person": {
+        "geburtsdatum": "2004-09-09",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1150.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "19.00",
+        "agVorlesungszeitStunden": "19.00"
+      },
+      "hinweis": "Die Ausweitung in den Ferien ist im Fragebogen nicht als eigene Phase erfassbar; Kennzeichen Übergangsbereich hängt vom Jahresdurchschnitt ab (Quelle nennt die Ferienmonate nicht) – nicht hart testen. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit)."
+    },
+    {
+      "id": "KK-BARMER-10",
+      "titel": "Minijob 245 € (4 Std.) neben Studentenjob 17 Std.: zusammen über 20 Std.",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 3 „Werkstudenten-Privileg: mehrere Beschäftigungen“, Beispiel „Mehrere Beschäftigungen“ (PDF-Seite 39)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Student mit Dauerbeschäftigung an der Theaterkasse (17 Std., 1.100 €) nimmt am 01.10.2026 unbefristet eine Beschäftigung in einer Gaststätte auf (4 Std., 245 €). Theaterkasse ab 01.10. voll pflichtig (21 Std.); Gaststätte: geringfügig entlohnt und erste Nebenbeschäftigung → KV, PV, AV frei, RV pflichtig (Befreiung möglich). Beurteilt wird die Gaststätte.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-06-06",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "7",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Theaterkasse",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2025-04-01",
+            "jobEntgeltMonat": "1100.00",
+            "jobStundenWoche": "17.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-10-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "245.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Zugleich Beleg, dass die Stunden eines Minijobs auf die 20-Stunden-Grenze angerechnet werden (die Theaterkasse wird pflichtig)."
+    },
+    {
+      "id": "KK-BARMER-11",
+      "titel": "Befristete Studentenbeschäftigung 25 Std., Vorbeschäftigungen zusammen 180 Kalendertage über 20 Std.",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 3 „Werkstudenten-Privileg“, Beispiel „Mehrere Beschäftigungen“ (26-Wochen-Grenze, Mika K.) (PDF-Seite 41)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Student jobbt gelegentlich; befristete Beschäftigung 01.12.–31.01. mit 25 Std. (davon 10 am Wochenende). Im rückgerechneten Zeitjahr: 01.03.–31.03. (25 Std., 31 KT), 01.05.–31.05. (18 Std., zählt nicht), 01.07.–26.08. (25 Std., 57 KT), 01.09.–30.09. (22 Std., 30 KT) und die aktuelle (62 KT) = 180 KT ≤ 182 → KV, PV, AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2002-12-02",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "6",
+        "ueber20hJahr": true,
+        "ueber20hZeiten": [
+          {
+            "rowId": "r1",
+            "ueber20hVon": "2026-03-01",
+            "ueber20hBis": "2026-03-31",
+            "ueber20hStunden": "25.00",
+            "ueber20hArbeitgeber": "Arbeitgeber A",
+            "ueber20hFerien": false
+          },
+          {
+            "rowId": "r2",
+            "ueber20hVon": "2026-07-01",
+            "ueber20hBis": "2026-08-26",
+            "ueber20hStunden": "25.00",
+            "ueber20hArbeitgeber": "Arbeitgeber B",
+            "ueber20hFerien": true
+          },
+          {
+            "rowId": "r3",
+            "ueber20hVon": "2026-09-01",
+            "ueber20hBis": "2026-09-30",
+            "ueber20hStunden": "22.00",
+            "ueber20hArbeitgeber": "Arbeitgeber C",
+            "ueber20hFerien": false
+          }
+        ],
+        "artLautVereinbarung": "werkstudent",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-03-01",
+            "vbBis": "2026-03-31",
+            "vbArt": "mehr"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-05-01",
+            "vbBis": "2026-05-31",
+            "vbArt": "mehr"
+          },
+          {
+            "rowId": "r3",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-07-01",
+            "vbBis": "2026-08-26",
+            "vbArt": "mehr"
+          },
+          {
+            "rowId": "r4",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-09-01",
+            "vbBis": "2026-09-30",
+            "vbArt": "mehr"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-12-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agBefristet": true,
+        "agBefristetBis": "2027-01-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "25.00",
+        "agVorlesungszeitStunden": "25.00",
+        "agRandzeiten": true
+      },
+      "angepasst": "Alle Daten um ein Jahr verschoben (Quelle: 01.12.2025–31.01.2026, Vorbeschäftigungen 2025), damit der Beginn in 2026 liegt; die Kalendertage bleiben gleich (kein Schaltjahr). Entgelt 1.400 € angenommen; ob die Vorbeschäftigungen in Ferien lagen, ist angenommen.",
+      "hinweis": "Grenzwert 180 von 182 Kalendertagen. Kurzfristig ist die Beschäftigung nicht, weil die Beschäftigungszeiten im Kalenderjahr schon über drei Monate liegen. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit, Stunden über 20 am Wochenende, abends oder nachts: Ja). Vorbeschäftigungen des Kalenderjahres aus dem Sachverhalt eingetragen."
+    },
+    {
+      "id": "KK-BARMER-12",
+      "titel": "Vorgeschriebenes Zwischenpraktikum 25 Std., 1.550 €",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 4 „Vorgeschriebene Praktika“, Beispiel „Vorgeschriebenes Zwischenpraktikum“ (PDF-Seite 50)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "FH-Student absolviert das für den Abschluss erforderliche Zwischenpraktikum, 25 Std./Woche, 1.550 € → in allen Zweigen versicherungsfrei (nur Unfallversicherung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "190",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-03-03",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "5",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1550.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtStudium",
+        "agPraktikumBis": "2026-08-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "25.00"
+      },
+      "hinweis": "Gleicher Regelweg wie ST-ZP; Entgelt über 2.000 €-Grenze unerheblich."
+    },
+    {
+      "id": "KK-BARMER-13",
+      "titel": "Vorgeschriebenes Vorpraktikum mit 300 €: Geringverdiener",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 4 „Vorgeschriebene Praktika“, Beispiel „Vorgeschriebenes Vorpraktikum“ (PDF-Seite 51)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Vorgeschriebenes Vorpraktikum mit regelmäßig 300 € im Monat → in allen Zweigen versicherungspflichtig; weil 325 € nicht überschritten werden, trägt der Betrieb die Beiträge allein.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "121",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-07-07",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-06-30",
+        "planNachSchule": "studium",
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30"
+      },
+      "hinweis": "Neue Kombination: Vor-/Nachpraktikum mit Entgelt bis 325 € → 121 (ST-VP: 900 € → 105; ST-VP0/KK-TK-08: ohne Entgelt → 105)."
+    },
+    {
+      "id": "KK-BARMER-14",
+      "titel": "Vorgeschriebenes Nachpraktikum ohne Vergütung, 30 Std.",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 4 „Vorgeschriebene Praktika“, Beispiel „Vorgeschriebenes Nachpraktikum“ (PDF-Seite 52)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Nach dem letzten Studiensemester vorgeschriebenes Nachpraktikum, 30 Std./Woche, ohne Vergütung → RV und AV pflichtig, Beiträge aus 39,55 € (2026), Beitragsgruppe „0110“; kranken- und pflegeversichert als Praktikantin.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "105",
+        "bgr": "0110",
+        "kv": "keine Beiträge aus der Beschäftigung (Versicherung als Praktikantin)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "keine Beiträge aus der Beschäftigung (wie KV)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2001-05-05",
+        "status": "schulende",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "schulendeDatum": "2026-02-28",
+        "planNachSchule": "arbeit",
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "0.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "30.00"
+      },
+      "hinweis": "Status nach Studienende im Fragebogen schwer zu wählen; hier „Schule/Ausbildung beendet“ mit Vorhaben „Arbeit“ als Näherung (Exmatrikulation angenommen). Personengruppe 105 abgeleitet, BGR wörtlich in der Quelle."
+    },
+    {
+      "id": "KK-BARMER-15",
+      "titel": "Freiwilliges Zwischenpraktikum 4 Monate, 7,5 Std., 500 €",
+      "quelle": {
+        "dokument": "BARMER: Handout „Beschäftigung von Schülern, Studierenden und Praktikanten“ (Online-Seminar 2026, Folien datiert 31.07.2026)",
+        "fundstelle": "Kap. 4 „Freiwillige Praktika“, Beispiel „Freiwilliges Zwischenpraktikum“ (PDF-Seite 54)",
+        "url": "https://www.barmer.de/resource/blob/1259320/f98d8f30cbe8515d6151c83befcbf3a0/handout-schueler-studierende-praktikanten-data.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BARMER Schüler/Studierende 2026"
+      },
+      "sachverhalt": "Student, nicht vorgeschriebenes Praktikum über vier Monate während des Studiums, 7,5 Std./Woche, 500 € → geringfügig entlohnt: KV-Pauschalbeiträge an die Minijob-Zentrale, keine PV- und AV-Beiträge, RV pflichtig mit Befreiungsoption.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2004-04-14",
+        "status": "student",
+        "bezugRente": false,
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "4",
+        "ueber20hJahr": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-06-30",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "7.50",
+        "agVorlesungszeitStunden": "7.50"
+      },
+      "hinweis": "Bestätigt ST-FZPMJ mit anderen Daten (4 Monate statt 6, 7,5 statt 15 Std.). Die RV-Befreiung kann die Person im Fragebogen nur bei „Minijob“ äußern; hier keine angenommen. Am 02.11.2026 um die neuen Fragen des Fragebogens ergänzt (Wochenstunden in der Vorlesungszeit)."
+    },
+    {
+      "id": "KK-MKK-01",
+      "titel": "Altersvollrente vor der Regelaltersgrenze, 14 Std., 1.300 €; Regelaltersgrenze im September",
+      "quelle": {
+        "dokument": "mkk – meine krankenkasse (BKK), Arbeitgeberservice: Vortragsfolien „Beschäftigung von Rentnern“, 28.10.2025",
+        "fundstelle": "Abschnitt „Altersvollrente nach Erreichen der Regelaltersgrenze“, Beispiel „Berta Bauer“ (PDF-Seite 10)",
+        "url": "https://arbeitgeber.meine-krankenkasse.de/fileadmin/Dokumente/Infothek/Arbeitgeber/Rentner.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "mkk Rentner 2025"
+      },
+      "sachverhalt": "Altersvollrentnerin, arbeitet 14 Std./Woche für 1.300 €; Regelaltersgrenze am 11.09. erreicht → bis 30.09. Beitragsgruppe 3111 und Personengruppe 120, ab 01.10. 3321 und 119.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "spaeter": [
+          {
+            "ab": "2026-10-01",
+            "pgr": "119",
+            "bgr": "3321"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1960-05-12",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "ragErreicht": "nein",
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-12-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "14.00"
+      },
+      "angepasst": "Quelle mit Stand 2025 (geb. 12.07.1959, Regelaltersgrenze 11.09.2025, Beginn 01.05.2025). Um ein Jahr verschoben: Geburtsdatum 12.05.1960 (Jahrgang 1960: 66 Jahre 4 Monate → 11.09.2026), Beginn 01.05.2026. 1.300 € liegen 2025 wie 2026 im Übergangsbereich; die Schlüssel hängen nicht von den geänderten Grenzen ab. Rentenbeginn angenommen."
+    },
+    {
+      "id": "KK-AOK-01",
+      "titel": "Zwei Minijobs 300 € und 330 €: zusammen 630 €",
+      "quelle": {
+        "dokument": "AOK Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Mehrfachbeschäftigungen bei Minijobs“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Mehrere Minijobs“, „Beispiel: Überschreiten der Geringfügigkeitsgrenze“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/mehrfachbeschaeftigungen-bei-minijobs/",
+        "abgerufen": "2026-11-02",
+        "kurz": "AOK Mehrfachbeschäftigung 2026"
+      },
+      "sachverhalt": "Beschäftigung A 300 €, B 330 €, keine Hauptbeschäftigung; zusammen 630 € > 603 € → beide in KV, PV, RV und AV versicherungspflichtig. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1986-10-16",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "330.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Knapp über der Grenze (27 €); Übergangsbereich mit 630 €."
+    },
+    {
+      "id": "KK-AOK-02",
+      "titel": "Kurzfristige Erntehilfe 650 € neben Minijob mit 603 €",
+      "quelle": {
+        "dokument": "AOK Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Mehrfachbeschäftigungen bei Minijobs“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Geringfügig entlohnte Beschäftigung neben einer kurzfristigen Beschäftigung“, „Beispiel: 603-Euro-Job und kurzfristige Beschäftigung gleichzeitig“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/mehrfachbeschaeftigungen-bei-minijobs/",
+        "abgerufen": "2026-11-02",
+        "kurz": "AOK Mehrfachbeschäftigung 2026"
+      },
+      "sachverhalt": "Ganzjährige Büroaushilfe mit 603 € (geringfügig entlohnt) und daneben Erntehelfer 01.05.–31.07. für 650 € (kurzfristig). Keine Zusammenrechnung: A bleibt Minijob, B ist beitragsfrei in allen Zweigen. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1975-05-15",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Büro Arbeitgeber A",
+            "jobArt": "minijob",
+            "jobSeit": "2026-01-01",
+            "jobEntgeltMonat": "603.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "650.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-31",
+        "agKurzfristigArbeitstage": "65",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-31"
+      },
+      "hinweis": "Status der Person (Haushalt) und Arbeitstage angenommen. Ob der Betrieb landwirtschaftlich ist, sagt die Quelle nicht; das Ergebnis hängt davon nicht ab (drei Monate)."
+    },
+    {
+      "id": "MJZ-01",
+      "titel": "Vollzeitangestellter als Ordner an fünf Festival-Wochenenden, 600 € je Wochenende",
+      "quelle": {
+        "dokument": "Minijob-Zentrale, Magazin: „Kurzfristiger Minijob: So prüfen Arbeitgeber Berufsmäßigkeit“, veröffentlicht 09.04.2025, aktualisiert 12.02.2026",
+        "fundstelle": "Abschnitt „Wer ist nicht berufsmäßig tätig?“, Beispiel",
+        "url": "https://magazin.minijob-zentrale.de/kurzfristiger-minijob-berufsmaessigkeit-pruefen/",
+        "abgerufen": "2026-11-02",
+        "kurz": "MJZ-Magazin Berufsmäßigkeit 2026"
+      },
+      "sachverhalt": "Vollzeitangestellter arbeitet im Sommer an fünf Wochenenden als Ordner auf einem Festival, 600 € je Wochenende. Der Hauptberuf sichert das Einkommen → nicht berufsmäßig, kurzfristiger Minijob möglich.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-07-07",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Hauptarbeitgeber",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2019-01-01",
+            "jobEntgeltMonat": "3200.00"
+          }
+        ],
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-04",
+        "agEntgeltArt": "pauschale",
+        "agPauschale": "600.00",
+        "agErwartetMonat": "2400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-02",
+        "agKurzfristigArbeitstage": "10",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-02"
+      },
+      "hinweis": "Datum der Wochenenden, Hauptjob und Monatsverdienst (bis vier Wochenenden) angenommen. Hohes Entgelt ist unerheblich, weil nicht berufsmäßig."
+    },
+    {
+      "id": "MJZ-02",
+      "titel": "Zweiter Minijob 200 € neben Hauptjob und Minijob 300 €",
+      "quelle": {
+        "dokument": "Minijob-Zentrale, Magazin: „Hauptjob und Minijob kombinieren – so geht es richtig!“, veröffentlicht 21.08.2024, aktualisiert 13.02.2026",
+        "fundstelle": "Abschnitt „Langfristig: Hauptbeschäftigung und Minijob mit Verdienstgrenze“, Beispiel",
+        "url": "https://magazin.minijob-zentrale.de/hauptjob-minijob-kombinieren/",
+        "abgerufen": "2026-11-02",
+        "kurz": "MJZ-Magazin Hauptjob und Minijob 2026"
+      },
+      "sachverhalt": "Arbeitnehmerin mit Hauptbeschäftigung und einem Minijob (300 €) nimmt einen zweiten Minijob (200 €) auf. Nur der erste bleibt Minijob; der zweite wird mit der Hauptbeschäftigung zusammengerechnet und versicherungspflichtig zur Krankenkasse gemeldet – auch wenn beide Minijobs zusammen (500 €) unter 603 € liegen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1985-05-05",
+        "status": "arbeitnehmer",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Hauptarbeitgeber",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2018-01-01",
+            "jobEntgeltMonat": "2400.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber Minijob 1",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle nennt nur „versicherungspflichtig“; AV frei nach § 27 Abs. 2 SGB III (keine Zusammenrechnung mit der Hauptbeschäftigung). Hauptjob-Entgelt 2.400 € angenommen → Übergangsbereich 0 (2.400 + 200 €)."
+    },
+    {
+      "id": "MJZ-03",
+      "titel": "Reinigungskraft: Minijob 250 € ab Januar und 350 € ab Juni",
+      "quelle": {
+        "dokument": "Minijob-Zentrale: „Mehrere Minijobs gleichzeitig – geht das?“ (ohne Datum, Grenze 603 € ab 01.01.2026 genannt)",
+        "fundstelle": "Abschnitt „Mehrere Minijobs bei unterschiedlichen Arbeitgebern“, „Beispiel für zwei Minijobs“",
+        "url": "https://www.minijob-zentrale.de/DE/die-minijobs/mehrere-jobs/detailseite.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "MJZ Mehrere Minijobs 2026"
+      },
+      "sachverhalt": "Reinigungskraft mit Minijob 1 (250 €, ab Januar) und Minijob 2 (350 €, ab Juni) bei verschiedenen Arbeitgebern; ab Juni zusammen 600 € ≤ 603 € → beide bleiben Minijobs. Beurteilt wird Minijob 2.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1979-09-19",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber 1",
+            "jobArt": "minijob",
+            "jobSeit": "2026-01-01",
+            "jobEntgeltMonat": "250.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "350.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Gesetzliche KV und keine RV-Befreiung angenommen."
+    },
+    {
+      "id": "KK-IP-01",
+      "titel": "Kurzfristige Nebenbeschäftigung neben dem Bundesfreiwilligendienst",
+      "quelle": {
+        "dokument": "Informationsportal für Arbeitgeber (Arbeitgeberportal mehrerer Krankenkassen): Steckbrief „Berufsmäßigkeit“, Stand 01.01.2026",
+        "fundstelle": "„Worum handelt es sich?“, Aufzählung „Immer ausschließen kann man Berufsmäßigkeit …“, S. 1",
+        "url": "https://www.informationsportal.de/wp-content/uploads/Steckbrief-Berufsmaessigkeit.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "Informationsportal Steckbrief Berufsmäßigkeit 2026"
+      },
+      "sachverhalt": "Freiwillige im Bundesfreiwilligendienst übernimmt daneben eine befristete Aushilfe 04.07.–31.08. an zehn Arbeitstagen für 900 €. Neben einem Bundesfreiwilligendienst ist Berufsmäßigkeit immer ausgeschlossen → kurzfristig, versicherungsfrei.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2006-06-26",
+        "status": "dienst",
+        "bezugRente": false,
+        "dienstBis": "2027-08-31",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Einsatzstelle Freiwilligendienst",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2025-09-01",
+            "jobEntgeltMonat": "600.00"
+          }
+        ],
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-04",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-31",
+        "agKurzfristigArbeitstage": "10",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      },
+      "hinweis": "Sachverhalt aus der Regel der Quelle gebildet (kein Beispiel im Original). Der Dienst ist in weitereJobs als versicherungspflichtig eingetragen (eine Art „Freiwilligendienst“ gibt es dort nicht)."
+    },
+    {
+      "id": "KK-IP-02",
+      "titel": "Asylbewerber als kurzfristige Aushilfe über der Grenze: berufsmäßig",
+      "quelle": {
+        "dokument": "Informationsportal für Arbeitgeber (Arbeitgeberportal mehrerer Krankenkassen): Steckbrief „Berufsmäßigkeit“, Stand 01.01.2026",
+        "fundstelle": "„Worum handelt es sich?“, Aufzählung der Indizien für Berufsmäßigkeit („Asylbewerbern und Geduldeten“), S. 1",
+        "url": "https://www.informationsportal.de/wp-content/uploads/Steckbrief-Berufsmaessigkeit.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "Informationsportal Steckbrief Berufsmäßigkeit 2026"
+      },
+      "sachverhalt": "Asylbewerber (Aufenthaltsgestattung) nimmt befristet 01.06.–31.08. eine Aushilfe für 1.000 € auf. Bei Asylbewerbern und Geduldeten ist Berufsmäßigkeit anzunehmen; Entgelt über 603 € → keine kurzfristige Beschäftigung, versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1996-03-03",
+        "status": "sonstiges",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "situationSonstiges": "Asylbewerber mit Aufenthaltsgestattung",
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-31",
+        "agKurzfristigArbeitstage": "65",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      },
+      "nichtAbbildbar": "Der Fragebogen kennt den Status „Asylbewerber/Geduldet“ nicht als Antwort; er steht nur als Freitext unter „sonstiges“, den die Regeln nicht lesen. Erwartet ist 101/1111; ein Vorschlag 110 wäre falsch.",
+      "hinweis": "Sachverhalt aus der Regel der Quelle gebildet. Befristung 13 Wochen gewählt, damit die KV-Ziffer nicht von der Zehn-Wochen-Frage abhängt."
+    },
+    {
+      "id": "BE-01",
+      "titel": "Erntehelferin im landwirtschaftlichen Betrieb, 15 Wochen und 80 Arbeitstage",
+      "quelle": {
+        "dokument": "Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 21.05.2026",
+        "fundstelle": "TOP 3 „Kurzfristige Beschäftigungen in landwirtschaftlichen Betrieben; hier: Bestimmung des wirtschaftlichen Schwerpunkts bei Mischbetrieben“, Abs. 1",
+        "url": "https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2026/2026_05_21_download.zip?__blob=publicationFile&v=2",
+        "abgerufen": "2026-11-02",
+        "kurz": "BE 21.05.2026 TOP 3"
+      },
+      "sachverhalt": "Hausfrau, Erntehelferin in einem landwirtschaftlichen Betrieb (Gartenbau/Ackerbau), befristet 01.04.–14.07.2026 (15 Wochen) an 80 Arbeitstagen, 1.800 €. Seit 2026 gilt in landwirtschaftlichen Betrieben die Zeitgrenze 15 Wochen oder 90 Arbeitstage → kurzfristig, versicherungsfrei.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-04-24",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agLandwirtschaft": true,
+        "agFamilieLandwirtschaft": false,
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-14",
+        "agKurzfristigArbeitstage": "80",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-14"
+      },
+      "hinweis": "Sachverhalt aus der Regel gebildet (§ 8 Abs. 1 Nr. 2 SGB IV i. d. F. ab 01.01.2026; auch BA FW 27.2.2 Abs. 4). Grenzwerte: 105 Kalendertage = 15 Wochen, 80 AT liegen über 70, aber unter 90. In einem nicht landwirtschaftlichen Betrieb wäre die Beschäftigung nicht kurzfristig (vgl. BE-02)."
+    },
+    {
+      "id": "BE-02",
+      "titel": "Dieselbe Erntehilfe in einem Mischbetrieb mit überwiegend nicht landwirtschaftlichen Beschäftigten",
+      "quelle": {
+        "dokument": "Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 21.05.2026",
+        "fundstelle": "TOP 3, Abs. 3–4 (Schwerpunkt nach der Zahl der Beschäftigten; sonst drei Monate oder 70 Arbeitstage)",
+        "url": "https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2026/2026_05_21_download.zip?__blob=publicationFile&v=2",
+        "abgerufen": "2026-11-02",
+        "kurz": "BE 21.05.2026 TOP 3"
+      },
+      "sachverhalt": "Wie BE-01, aber der Beschäftigungsbetrieb ist ein Mischbetrieb (Hof mit Gastronomie und Handel fremder Waren), in dem die Mehrzahl der Beschäftigten nicht landwirtschaftlich arbeitet → kein landwirtschaftlicher Betrieb, es gelten drei Monate oder 70 Arbeitstage – auch für die Erntehelferin. 15 Wochen und 80 AT → nicht kurzfristig, versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1980-04-24",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-14",
+        "agKurzfristigArbeitstage": "80",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-14"
+      },
+      "hinweis": "Der Arbeitgeber verneint „landwirtschaftlicher Betrieb“ richtig, wählt aber „kurzfristige Aushilfe“; die Zeitgrenzen prüft die App heute nicht (Gruppe A). KV 1, weil die Befristung über zehn Wochen liegt."
+    },
+    {
+      "id": "BE-03",
+      "titel": "Pensionär mit Versorgung nach einer besonderen Altersgrenze verzichtet auf die RV-Freiheit",
+      "quelle": {
+        "dokument": "Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 23.11.2016",
+        "fundstelle": "TOP 3 „Rentenversicherungsfreiheit von Altersvollrentnern und Altersversorgungsbeziehern“, S. 12 (Verzicht auch für Versorgungsbezieher nach § 5 Abs. 4 Nr. 2 SGB VI)",
+        "url": "https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2016/2016_11_23_download.zip?__blob=publicationFile",
+        "abgerufen": "2026-11-02",
+        "kurz": "BE 23.11.2016 TOP 3"
+      },
+      "sachverhalt": "Ruhestandsbeamter (Polizei, Versorgung wegen Erreichens der besonderen Altersgrenze mit 62), Beihilfe, privat versichert, Regelaltersgrenze noch nicht erreicht; Beschäftigung 1.500 €. Seit 2017 können auch Versorgungsbezieher auf die RV-Freiheit verzichten; er verzichtet → RV voller Beitrag, AV pflichtig (Regelaltersgrenze nicht erreicht), KV frei (Beihilfe), PV privat.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1964-05-05",
+        "status": "ruhestand",
+        "bezugRente": false,
+        "bezugPension": true,
+        "beamtBeihilfe": true,
+        "pensionArt": "alter",
+        "rvVerzicht": "ja",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "ja",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false,
+        "agUnterlagen": ["rvVerzicht"],
+        "agRvVerzichtEingang": "2026-03-01"
+      },
+      "hinweis": "Gegenstück zu D-119P (ohne Verzicht: 119/0310). Personengruppe 120 nach DEÜV Anlage 2 („Versicherungspflichtige … Versorgungsbezieher wegen Alters“). Übergangsbereich abgeleitet (RV und AV pflichtig, 1.500 €)."
+    },
+    {
+      "id": "BA-01",
+      "titel": "Visagistin am Theater, auf fünf Tage befristet: unständige Beschäftigung",
+      "quelle": {
+        "dokument": "Bundesagentur für Arbeit: Fachliche Weisungen Arbeitslosenversicherung, § 27 SGB III Versicherungsfreie Beschäftigte, gültig ab 01.07.2026 (Stand 07/2026)",
+        "fundstelle": "Anhang „27.3.1 Beispiele Berufsmäßigkeit“, „Beispiel berufsmäßig ausgeübte Beschäftigung“, S. 26",
+        "url": "https://www.arbeitsagentur.de/datei/fw-sgb-iii-27_ba015174.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BA FW § 27 SGB III (07/2026)"
+      },
+      "sachverhalt": "Ausgebildete Friseurin und Visagistin ohne Daueranstellung hilft am Theater aus; Arbeitsvertrag für 5 Tage befristet (Mo, Mi, Fr je 8 Std.). Unständige Beschäftigung, berufsmäßig (derzeit Haupteinnahmequelle); unständig Beschäftigte sind arbeitslosenversicherungsfrei (§ 27 Abs. 3 Nr. 1 SGB III).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "118",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "unsicher": ["kv", "uebergangsbereich"]
+      },
+      "person": {
+        "geburtsdatum": "1995-05-15",
+        "status": "arbeitslos",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "leistungArbeitslos": "keine",
+        "arbeitsuchendSeit": "2026-01-15",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-02",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": true,
+        "agBefristetBis": "2026-03-06"
+      },
+      "nichtAbbildbar": "Unständig Beschäftigte (Personengruppe 118) schließt der Fragebogen über den Ausschluss „unstaendig“ aus (versicherungspflichtige Beschäftigung auf weniger als eine Woche befristet). Test: Ausschluss greift, kein Vorschlag. Personengruppe 118 steht nicht in tests/support/anlage16.ts; die Beitragsgruppe ist nicht geprüft.",
+      "hinweis": "Status „arbeitslos/arbeitsuchend“ und Entgelt angenommen. Die übrigen Beispiele der FW § 27 (Übergangsregelung 2021, vier Monate/102 Arbeitstage) gelten 2026 nicht mehr und sind nicht übernommen."
+    },
+    {
+      "id": "BA-02",
+      "titel": "Zwei Saisonjobs in landwirtschaftlichen Betrieben: zusammen genau 105 Kalendertage",
+      "quelle": {
+        "dokument": "Bundesagentur für Arbeit: Fachliche Weisungen Arbeitslosenversicherung, § 27 SGB III Versicherungsfreie Beschäftigte, gültig ab 01.07.2026 (Stand 07/2026)",
+        "fundstelle": "FW 27.2.2 Abs. 4 und 5 (Zeitgrenzen 15 Wochen/90 Arbeitstage; bei Zusammenrechnung 105 Kalendertage), S. 14",
+        "url": "https://www.arbeitsagentur.de/datei/fw-sgb-iii-27_ba015174.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "BA FW § 27 SGB III (07/2026)"
+      },
+      "sachverhalt": "Hausfrau, Saisonarbeit in landwirtschaftlichen Betrieben: A 01.03.–30.04.2026 (zwei volle Monate = 60 KT, 40 AT, kurzfristig), jetzt B 01.06.–15.07.2026 (30 + 15 = 45 KT, 32 AT), 1.600 €. Zusammen 105 KT ≤ 105 und 72 AT ≤ 90 → B ist kurzfristig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1977-07-17",
+        "status": "haushalt",
+        "bezugRente": false,
+        "grundsicherung": false,
+        "artLautVereinbarung": "aushilfe",
+        "weitereBeschaeftigung": false,
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Obsthof A",
+            "vbVon": "2026-03-01",
+            "vbBis": "2026-04-30",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "40",
+            "vbEntgeltMonat": "1600.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agLandwirtschaft": true,
+        "agFamilieLandwirtschaft": false,
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-15",
+        "agKurzfristigArbeitstage": "32",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-15"
+      },
+      "hinweis": "Sachverhalt aus der Regel gebildet. Grenzwert: genau 105 Kalendertage (volle Monate mit 30 KT). Außerhalb der Landwirtschaft wären 105 KT > 90 und 72 AT > 70 – nicht kurzfristig. Dass die Berufsmäßigkeit aus dem Erwerbsverhalten in der Landwirtschaft ebenfalls an 15 Wochen/90 AT gemessen wird, sagt die TK (FI Minijobs 2026, S. 75: „drei Monate/15 Wochen oder 70/90 Arbeitstage“); nicht am Gesetzestext geprüft."
+    }
+  ]
+}

@@ -604,6 +604,9 @@ const KURZFRISTIG_ARGS: readonly FieldType[] = [
   'date',
   'date',
   ...UMWANDLUNG_ARGS,
+  'boolean',
+  'choice',
+  'date',
 ];
 
 const isoOrUndefined = (value: FieldValue | undefined) =>
@@ -637,6 +640,9 @@ function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear
     kind,
     beitrag,
     zuschuss,
+    landwirtschaft,
+    rentenart,
+    renteSeit,
   ] = values.slice(10);
   const start = isoOrUndefined(beginn);
   if (start === undefined) return undefined;
@@ -655,6 +661,9 @@ function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear
       arbeitstage: numberOrUndefined(column(vbTage)[i]),
       entgelt: cents(column(vbEntgelt)[i] ?? null),
     })),
+    landwirtschaft: landwirtschaft === true,
+    // A full old-age pension: out of working life since its start (GfR B 2.3.3.3).
+    ausscheiden: rentenart === 'altersvoll' ? isoOrUndefined(renteSeit) : undefined,
   };
   const mine = payOf(fixed, expected, kind, beitrag, zuschuss, beginn).cents;
   const yearly = mine === undefined ? undefined : yearlyPay(mine, oneOff ?? null, entitled ?? null);
@@ -724,7 +733,15 @@ function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze' | 'werkstudent'): HintTes
           `Mit den gleichzeitig laufenden oder im selben Monat liegenden Aushilfen ${euro(total)} im Monat (Geringfügigkeits-Richtlinien B 2.3.3).`,
         );
       }
-      let notShortTerm = time.status === 'ueberschritten' || regular;
+      // A short-term job is fixed in advance (GfR B 2.3, 2.4); "befristet: Nein" rules it out.
+      const open =
+        mode !== 'werkstudent' && job.befristet === false && job.rahmenvereinbarung !== true;
+      if (open) {
+        detail.push(
+          'Nicht im Voraus befristet: keine kurzfristige Beschäftigung (Geringfügigkeits-Richtlinien B 2.3, 2.4).',
+        );
+      }
+      let notShortTerm = time.status === 'ueberschritten' || regular || open;
       let uncertain = time.status === 'offen';
       if (mode !== 'bisGrenze') {
         const earlier = berufsmaessigNachVorbeschaeftigungen(job, limit);
@@ -749,8 +766,8 @@ const hours = (value: number) => String(value).replace('.', ',');
  * The Werkstudentenprivileg (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III; Rundschreiben
  * Studenten und Praktikanten 23.11.2016, Tz. A 1.2.4, checked in the text 2026-11-02): only in the
  * semester breaks, or at most 20 hours a week in the lecture period with the other jobs together;
- * above that only mostly at weekends, evenings or nights and fixed to at most 26 weeks (examples 1, 2,
- * 4). Missing hours or end, or more than 20 hours elsewhere in the last 12 months (the 26-week rule,
+ * above that only with the hours beyond 20 at weekends, evenings or nights (example 1: 18 + 7 at the
+ * weekend) and fixed to at most 26 weeks (examples 1, 2, 4). Missing hours or end, or more than 20 hours elsewhere in the last 12 months (the 26-week rule,
  * Tz. A 1.2.4 d): holds, uncertain. Arguments: semester breaks only, hours, mostly at the edges of the
  * day, fixed term, start, fixed until, more than 20 hours in the last 12 months, hours of the other
  * jobs (column).
@@ -795,7 +812,7 @@ const werkstudentenprivileg: HintTest = {
       return {
         holds: false,
         detail: [
-          `${sum} in der Vorlesungszeit, nicht überwiegend am Wochenende, abends oder nachts: kein Werkstudentenprivileg (Tz. A 1.2.4 a, Beispiele 2 und 4).`,
+          `${sum} in der Vorlesungszeit, die Stunden über 20 nicht am Wochenende, abends oder nachts: kein Werkstudentenprivileg (Tz. A 1.2.4 a, Beispiele 2 und 4).`,
         ],
       };
     }
@@ -819,7 +836,7 @@ const werkstudentenprivileg: HintTest = {
       holds: true,
       ...(open || ueber20 === true ? { uncertain: true } : {}),
       detail: [
-        `${sum}, überwiegend am Wochenende, abends oder nachts, höchstens 26 Wochen befristet: Werkstudentenprivileg (Tz. A 1.2.4 a)${ueber20 === true ? '; in den letzten 12 Monaten schon mehr als 20 Wochenstunden – mehr als 26 Wochen im Jahr beenden es (Tz. A 1.2.4 d), bitte prüfen' : ''}.`,
+        `${sum}, die Stunden über 20 am Wochenende, abends oder nachts, höchstens 26 Wochen befristet: Werkstudentenprivileg (Tz. A 1.2.4 a)${ueber20 === true ? '; in den letzten 12 Monaten schon mehr als 20 Wochenstunden – mehr als 26 Wochen im Jahr beenden es (Tz. A 1.2.4 d), bitte prüfen' : ''}.`,
       ],
     };
   },
@@ -944,6 +961,65 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
   };
 }
 
+/**
+ * A second or further Minijob that lifts a main job below the JAEG above it (Geringfügigkeits-
+ * Richtlinien 2026 B 2.2.2.8, examples 27; TK example): it is added to the main job and is at first
+ * subject to KV; the KV obligation ends with the calendar year only if the JAEG is also exceeded in
+ * the next one. Arguments as `weitererMinijobNebenJaegFreierHauptbeschaeftigung`.
+ */
+const weitererMinijobUeberJaeg: HintTest = {
+  args: [...MINIJOB_ARGS, 'choice'],
+  describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
+    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt, laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze besteht und erst dieser weitere Minijob die Grenze überschreitet`,
+  run: ([
+    fixed,
+    expected,
+    oneOff,
+    entitled,
+    on,
+    arts,
+    pays,
+    starts,
+    kind,
+    beitrag,
+    zuschuss,
+    y2002,
+  ]) => {
+    const own = geringfuegigkeit(true).run(
+      [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
+        (value) => value ?? null,
+      ),
+    );
+    if (!own || !own.holds) return own;
+    const year = yearOf(on);
+    const start = typeof on === 'string' ? on : '';
+    const jobs = otherJobs(arts ?? null, pays ?? null, starts ?? null);
+    const mains = jobs.rows.filter((row) => HAUPTBESCHAEFTIGUNG.has(row.art));
+    const minijobs = [...jobs.rows.filter((row) => row.art === 'minijob')].sort((a, b) =>
+      (a.seit ?? '').localeCompare(b.seit ?? ''),
+    );
+    const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
+    if (mains.length === 0 || !earlier || year === undefined) return { holds: false, detail: [] };
+    const jaeg = cents(
+      RECHENGROESSEN[year]?.[y2002 === 'ja' ? 'jaegBesondersJahr' : 'jaegJahr'] ?? '',
+    );
+    if (jaeg === undefined) return { holds: false, uncertain: true, detail: [] };
+    const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
+    if (main > jaeg) return { holds: false, detail: [] };
+    const later = minijobs.slice(1).reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
+    const mine = (payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0) * 12;
+    const total = main + later + mine;
+    if (total <= jaeg) return { holds: false, detail: [] };
+    return {
+      holds: true,
+      ...(mains.some((row) => row.cents === undefined) ? { uncertain: true } : {}),
+      detail: [
+        `Hauptbeschäftigung ${euro(main)} und weitere Minijobs zusammen ${euro(total)} im Jahr: erst mit diesem Minijob über der Jahresarbeitsentgeltgrenze von ${euro(jaeg)} – zunächst krankenversicherungspflichtig; die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten Jahr überschritten wird (Geringfügigkeits-Richtlinien B 2.2.2.8).`,
+      ],
+    };
+  },
+};
+
 /** Another job is a vocational training (Rundschreiben Übergangsbereich Tz. 4.3.6.1). */
 const andereBeschaeftigungAusbildung: HintTest = {
   args: ['choice'],
@@ -960,6 +1036,7 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   geringfuegigEntlohnt,
   geringfuegigNebenKurzfristigen,
   weitererMinijobNebenJaegFreierHauptbeschaeftigung: weitererMinijobNebenJaegFrei(false),
+  weitererMinijobUeberJaeg,
   weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze: weitererMinijobNebenJaegFrei(true),
   kurzfristigBefristetBisDreiMonate: kurzfristigkeit('werkstudent'),
   kurzfristigGegeben: kurzfristigkeit('gegeben'),

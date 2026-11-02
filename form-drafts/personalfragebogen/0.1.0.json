@@ -3983,16 +3983,16 @@
           "id": "agRandzeiten",
           "role": "arbeitgeber",
           "type": "boolean",
-          "label": "Überwiegend am Wochenende, abends oder nachts",
-          "question": "Liegt die Arbeitszeit überwiegend am Wochenende, abends oder nachts?",
-          "help": "Dann kann die Werkstudentenregel auch über 20 Wochenstunden gelten, wenn die Beschäftigung auf höchstens 26 Wochen befristet ist.",
+          "label": "Stunden über 20 am Wochenende, abends oder nachts",
+          "question": "Liegen die Stunden über 20 hinaus am Wochenende, abends oder nachts?",
+          "help": "Zum Beispiel 18 Stunden an Werktagen tagsüber und 7 Stunden am Wochenende: Dann kann die Werkstudentenregel auch über 20 Wochenstunden gelten, wenn die Beschäftigung auf höchstens 26 Wochen befristet ist.",
           "required": true,
           "purpose": "Werkstudentenregel über 20 Wochenstunden (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a, Beispiele 1 und 4)",
           "showIf": {
             "field": "agVorlesungszeitStunden",
             "greaterThan": "20"
           },
-          "because": "Über 20 Wochenstunden zählt, ob sich die Arbeit dem Studium unterordnet – am Wochenende, abends oder nachts – und höchstens 26 Wochen dauert (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a)."
+          "because": "Über 20 Wochenstunden zählt, ob sich die Arbeit dem Studium unterordnet – höchstens 20 Stunden tagsüber an Werktagen, der Rest am Wochenende, abends oder nachts – und höchstens 26 Wochen dauert (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a, Beispiel 1)."
         },
         {
           "id": "agPraktikumBis",
@@ -6813,7 +6813,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -6875,7 +6878,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -6909,7 +6915,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           },
           "check": true
@@ -7117,7 +7126,59 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          }
+        },
+        {
+          "value": "110",
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigBefristetBisDreiMonate",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agPraktikumBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -7507,7 +7568,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -7569,7 +7633,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -7611,7 +7678,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -7645,7 +7715,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -7735,7 +7808,59 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigBefristetBisDreiMonate",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agPraktikumBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -7928,6 +8053,58 @@
               "jobStundenWoche"
             ]
           }
+        },
+        {
+          "value": "1",
+          "reason": "Weiterer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze, mit ihm darüber: zunächst krankenversicherungspflichtig; die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten Jahr überschritten wird (Geringfügigkeits-Richtlinien B 2.2.2.8).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobUeberJaeg",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002"
+            ]
+          },
+          "check": true
         },
         {
           "value": "0",
@@ -8538,7 +8715,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -8600,7 +8780,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -8658,7 +8841,59 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigBefristetBisDreiMonate",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agPraktikumBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -8777,7 +9012,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -8811,7 +9049,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9226,7 +9467,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9288,7 +9532,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9322,7 +9569,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9380,7 +9630,59 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigBefristetBisDreiMonate",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agPraktikumBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9665,7 +9967,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9727,7 +10032,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9761,7 +10069,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -9851,7 +10162,59 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigBefristetBisDreiMonate",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agPraktikumBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -10333,7 +10696,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -10391,7 +10757,59 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["begleitend", "freiwillig"]
+              },
+              {
+                "field": "status",
+                "equals": "student"
+              }
+            ]
+          },
+          "test": {
+            "fn": "kurzfristigBefristetBisDreiMonate",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agPraktikumBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -10513,7 +10931,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },
@@ -10547,7 +10968,10 @@
               "jobBefristetBis",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
             ]
           }
         },

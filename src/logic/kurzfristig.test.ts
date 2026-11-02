@@ -1,6 +1,7 @@
 // Short-term employment after the Geringfügigkeits-Richtlinien 2026 B 2.3 (checked in the text
 // 2026-11-02); the day counts are the ones the examples print.
 import {
+  addDays,
   berufsmaessigNachVorbeschaeftigungen,
   endOfMonths,
   entgeltImSelbenMonat,
@@ -260,5 +261,75 @@ describe('pay of short-term jobs in the same month (B 2.3.3, example 4c)', () =>
     expect(entgeltImSelbenMonat(job('2026-04-16', '2026-05-10', 11, { frueher: april }))).toBe(0);
     // A job of the month before does not count.
     expect(entgeltImSelbenMonat(job('2026-05-02', '2026-05-20', 11, { frueher: april }))).toBe(0);
+  });
+});
+
+// 2026-11-02, GfR 2026 B 2.3.4 (BE 21.05.2026, BA example BA-02) and B 2.3.3.3 (TK example KK-TK-24).
+describe('agricultural businesses: 15 weeks or 90 working days', () => {
+  it('adds days across months and years', () => {
+    expect(addDays('2026-04-01', 104)).toBe('2026-07-14');
+    expect(addDays('2026-12-30', 3)).toBe('2027-01-02');
+    expect(addDays('2028-02-28', 1)).toBe('2028-02-29');
+    expect(addDays('2026-05-03', 0)).toBe('2026-05-03');
+  });
+
+  it.each<[string, ShortTermJob, string]>([
+    [
+      '15 weeks exactly, 80 days',
+      job('2026-04-01', '2026-07-14', 80, { landwirtschaft: true }),
+      'eingehalten',
+    ],
+    [
+      '15 weeks and a day, 91 days',
+      job('2026-04-01', '2026-07-15', 91, { landwirtschaft: true }),
+      'ueberschritten',
+    ],
+    [
+      'four months, 90 working days',
+      job('2026-04-01', '2026-07-31', 90, { landwirtschaft: true }),
+      'eingehalten',
+    ],
+    ['the same outside agriculture', job('2026-04-01', '2026-07-14', 80), 'ueberschritten'],
+  ])('%s → %s', (_label, input, status) => {
+    expect(zeitgrenze(input).status).toBe(status);
+  });
+
+  it('adds up to 105 calendar days (BA-02: 60 + 45 = 105, 72 working days)', () => {
+    const rows = [earlier('kurzfristig', '2026-03-01', '2026-04-30', 40, 160000)];
+    const within = job('2026-06-01', '2026-07-15', 32, { landwirtschaft: true, frueher: rows });
+    expect(zeitgrenze(within).status).toBe('eingehalten');
+    const over = job('2026-06-01', '2026-07-16', 60, { landwirtschaft: true, frueher: rows });
+    expect(zeitgrenze(over).status).toBe('ueberschritten');
+  });
+});
+
+describe('out of working life: earlier jobs from then on only (B 2.3.3.3)', () => {
+  const rows = [earlier('mehr', '2026-01-01', '2026-05-31', 104, 280000)];
+
+  it('leaves out a job that ended before the old-age pension began', () => {
+    const result = berufsmaessigNachVorbeschaeftigungen(
+      job('2026-08-01', '2026-08-30', 21, { frueher: rows, ausscheiden: '2026-06-01' }),
+      LIMIT,
+    );
+    expect(result.holds).toBe(false);
+    expect(result.detail.join(' ')).toContain('vor dem Rentenbeginn am 01.06.2026');
+  });
+
+  it('counts it without a pension', () => {
+    expect(
+      berufsmaessigNachVorbeschaeftigungen(
+        job('2026-08-01', '2026-08-30', 21, { frueher: rows }),
+        LIMIT,
+      ).holds,
+    ).toBe(true);
+  });
+
+  it('counts only the part after the start, then by the days', () => {
+    const result = berufsmaessigNachVorbeschaeftigungen(
+      job('2026-08-01', '2026-09-30', 40, { frueher: rows, ausscheiden: '2026-03-01' }),
+      LIMIT,
+    );
+    // 01.03.–31.05. = 90 days + 01.08.–30.09. = 60 days; working days unknown after cutting.
+    expect(result).toMatchObject({ holds: true, uncertain: true });
   });
 });
