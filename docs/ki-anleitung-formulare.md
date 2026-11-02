@@ -216,9 +216,13 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   erste Zeile); `keinArbeitsentgelt` (Betrag, Betrag: der erste beantwortete ist 0 €); `ueberBeitragsbemessungsgrenze` (Betrag, Betrag, Datum: eigenes Monatsentgelt, Entgelte
   weiterer Beschäftigungen – darf eine Tabellenspalte sein, sie wird summiert – und der Stichtag,
   dessen Jahr die Rechengrößen bestimmt); `ueberMassgeblicheJahresarbeitsentgeltgrenze` (Betrag,
-  Betrag, Betrag, Betrag, Ja/Nein, Auswahl, Datum: festes bzw. erwartetes Monatsentgelt, Entgelte
-  weiterer Beschäftigungen, Einmalzahlungen mit Anspruch; die besondere Grenze nach § 6 Abs. 7
-  SGB V, wenn die Auswahl „ja“ ist); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
+  Betrag, Betrag, Betrag, Ja/Nein, Auswahl, Datum, Auswahl, Datum: festes bzw. erwartetes Monatsentgelt,
+  Entgelte weiterer Beschäftigungen, Einmalzahlungen mit Anspruch, Stichtag, dazu Art und Beginn der
+  weiteren Beschäftigungen – der zuerst aufgenommene Minijob neben einer Hauptbeschäftigung zählt nicht;
+  die besondere Grenze nach § 6 Abs. 7 SGB V, wenn die Auswahl „ja“ ist);
+  `weitererMinijobNebenJaegFreierHauptbeschaeftigung` und `weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze` (wie `geringfuegigEntlohnt`,
+  dazu die Auswahl zum 31.12.2002: weiterer Minijob neben einer Hauptbeschäftigung über der Grenze, bzw.
+  dazu die Minijobs zusammen in der Geringfügigkeitsgrenze); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
   Einmalzahlungen und nur die Entgelte versicherungspflichtiger weiterer Beschäftigungen – ohne Beamtenbezüge,
   kurzfristige Beschäftigungen und den zuerst aufgenommenen Minijob neben einer Hauptbeschäftigung – im Monat
   über der Minijob-Grenze und höchstens 2.000 €); `andereBeschaeftigungAusbildung` (Auswahl-Spalte: eine

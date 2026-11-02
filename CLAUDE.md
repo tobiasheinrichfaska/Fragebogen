@@ -616,17 +616,22 @@ Key design decisions (details in `docs/plan.md`):
   or in the same month counts (B 2.3.3). Otherwise the proposal becomes the Minijob (109) or 101, with a
   check. Number columns may now feed named tests. GFR-40B: the derived Übergangsbereich of the research
   (1) was wrong — next to the main job both pays count (3.050 €), corrected to 0.
+  E — JAEG with several jobs (GfR B 2.2.2.8 checked in the text): the first Minijob next to a main job is
+  not added (`ueberMassgeblicheJahresarbeitsentgeltgrenze` now with the columns kind and start, same sum
+  as the Übergangsbereich); a further Minijob next to a main job above the JAEG is not added in the KV
+  (KV 0; PV 0 while the Minijobs together stay within the limit, then the check note names the report
+  101 · 6000 to the Minijob-Zentrale; examples 25, 26).
 
 ---
 
 ## Known Limitations
 
-- **SV proposals differ from 10 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
-  Werkstudent rules come before 109/110 and ignore the 20 hours (C); JAEG counts the first Minijob,
-  second Minijob next to a JAEG-free main job (E); Entgeltumwandlung (G). Four examples cannot be
-  expressed (two periods, tax-free allowances, change at the turn of the year, household Minijob =
-  excluded). One proposal per job at its start: a later change (e.g. RV exemption from the month the
-  request came in, a short-term job becoming short-term again when a parallel one ends) is named in the
+- **SV proposals differ from 7 official examples** (2026-11-02, `docs/sv-vorgaben/`, open for decision):
+  Werkstudent rules come before 109/110 and ignore the 20 hours (C, six cases); Entgeltumwandlung (G).
+  Four examples cannot be expressed (two periods, tax-free allowances, change at the turn of the year,
+  household Minijob = excluded). One proposal per job at its start: a later change (e.g. RV exemption
+  from the month the request came in, a short-term job becoming short-term again when a parallel one
+  ends) and a second report (Minijob-Zentrale 101 · 6000 next to the Krankenkasse) are named in the
   check note, not as a second proposal.
 - **Short-term jobs:** Berufsmäßigkeit from earlier jobs counts every earlier job of the calendar year;
   for people who left working life (full old-age pension, household) or students only the time after

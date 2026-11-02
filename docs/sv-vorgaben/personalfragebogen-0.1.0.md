@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 66 gleich, 10 abweichend. 101 abgeleitete Varianten, 28 Grenzfälle.
+80 Fälle aus 1 Datei(en): 76 abbildbar, 4 nicht abbildbar; 69 gleich, 7 abweichend. 101 abgeleitete Varianten, 28 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -37,10 +37,10 @@
 | GFR-23C | GfR 2026, Bsp. 23 | Beamter, erster Minijob neben versicherungspflichtiger Nebenbeschäftigung | 109 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 0100 · ÜB 0 | gleich |
 | GFR-24C | GfR 2026, Bsp. 24 | wie GFR-23C, mit RV-Befreiung | 109 · 0500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 0500 · ÜB 0 | gleich |
 | GFR-25A | GfR 2026, Bsp. 25 | Über der JAEG, freiwillig GKV, Firmenzahler | 101 · 9111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 9111 · ÜB 0 | gleich |
-| GFR-25C | GfR 2026, Bsp. 25 | Zweiter Minijob neben JAEG-freier Hauptbeschäftigung | 101 · 0100 · ÜB 0; Minijob-Zentrale: 101 · 6000 | S O, PGR O, BGR O, ÜB A | 101 (p) · 9101 (p) · ÜB 0 | abweichend (E) |
+| GFR-25C | GfR 2026, Bsp. 25 | Zweiter Minijob neben JAEG-freier Hauptbeschäftigung | 101 · 0100 · ÜB 0; Minijob-Zentrale: 101 · 6000 | S O, PGR O, BGR O, ÜB A | 101 (p) · 0100 (p) · ÜB 0 | gleich |
 | GFR-26A | GfR 2026, Bsp. 26 | Über der JAEG, freiwillig GKV, Selbstzahler | 101 · 0111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 0111 · ÜB 0 | gleich |
-| GFR-26C | GfR 2026, Bsp. 26 | Zweiter Minijob neben JAEG-freier Hauptbeschäftigung, Minijobs über der Grenze | 101 · 0101 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 (p) · 9101 (p) · ÜB 0 | abweichend (E) |
-| GFR-27 | GfR 2026, Bsp. 27 | JAEG-Überschreitung durch Zusammenrechnung zum Jahreswechsel | 101 · 0101 | S O, PGR O, BGR O | 109 (p) · 6500 (p) · ÜB 0 (p) | nicht abbildbar |
+| GFR-26C | GfR 2026, Bsp. 26 | Zweiter Minijob neben JAEG-freier Hauptbeschäftigung, Minijobs über der Grenze | 101 · 0101 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 (p) · 0101 (p) · ÜB 0 | gleich |
+| GFR-27 | GfR 2026, Bsp. 27 | JAEG-Überschreitung durch Zusammenrechnung zum Jahreswechsel | 101 · 0101 | S O, PGR O, BGR O | 109 (p) · 0500 (p) · ÜB 0 (p) | nicht abbildbar |
 | GFR-28 | GfR 2026, Bsp. 28 | Minijob 600 €, privat versichert, ohne Befreiung | 109 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 0100 · ÜB 0 | gleich |
 | GFR-29 | GfR 2026, Bsp. 29 | Haushaltshilfe im Privathaushalt (Haushaltsscheck) | 209 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | – · – · ÜB – | nicht abbildbar |
 | GFR-31A | GfR 2026, Bsp. 31 | Apotheker, Versorgungswerk-befreit | 101 · 1011 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 1011 · ÜB 0 | gleich |
@@ -86,7 +86,7 @@
 | D-EMV | SGB V / SGB III | Rente wegen voller Erwerbsminderung, Teilzeit 900 € | 101 · 3101 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 3101 (p) · ÜB 1 | gleich |
 | D-RAGNV | SGB VI / Anlage 2 | Regelaltersgrenze erreicht, nie rentenversichert | 101 · 1321 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1321 (p) · ÜB 1 | gleich |
 | D-JAEG02 | SGB V § 6 Abs. 7 | Seit vor 2003 privat versichert, 72.000 € im Jahr | 101 · 0110 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 101 · 0110 · ÜB 0 | gleich |
-| D-JAEGMJ | GfR 2026, B 2.2.2.8 | Hauptbeschäftigung knapp unter der JAEG neben erstem Minijob | 101 · 1111 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 101 · 9111 (p) · ÜB 0 | abweichend (E) |
+| D-JAEGMJ | GfR 2026, B 2.2.2.8 | Hauptbeschäftigung knapp unter der JAEG neben erstem Minijob | 101 · 1111 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 0 | gleich |
 | D-MJRAG | GfR 2026, B 2.2.4.2 | Altersvollrentner nach der Regelaltersgrenze im Minijob | 109 · 6500 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
 | D-603 | SGB IV § 8 | Grenzfall: „Minijob“ mit 603,01 € | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
 | D-KFAZ | GfR 2026, B 2.3.3.2 | Aushilfe zwischen Schule und Ausbildung, über der Grenze | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
@@ -94,7 +94,6 @@
 ## Abweichungen
 
 - **C – Werkstudenten und freiwillige Praktika: 20-Stunden-Grenze und Vorrang von 109/110 fehlen:** ST-01, ST-02A, ST-04, ST-KF, ST-WSMJ, ST-FZPMJ
-- **E – JAEG bei mehreren Beschäftigungen: erster Minijob wird mitgezählt, KV im zweiten Minijob:** GFR-25C, GFR-26C, D-JAEGMJ
 - **G – Entgeltumwandlung senkt das Entgelt für die Minijob-Grenze nicht:** GFR-14
 
 ## Nicht abbildbar

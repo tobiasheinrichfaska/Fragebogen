@@ -227,6 +227,8 @@ describe('check hints — definition rules', () => {
       'ueberBeitragsbemessungsgrenze',
       'ueberGeringfuegigkeitsgrenze',
       'ueberMassgeblicheJahresarbeitsentgeltgrenze',
+      'weitererMinijobNebenJaegFreierHauptbeschaeftigung',
+      'weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze',
     ]);
   });
 });
@@ -587,5 +589,77 @@ describe('the short-term tests', () => {
   it('is a Minijob when no longer short-term and the pay is within the limit (4c)', () => {
     expect(run('geringfuegigNebenKurzfristigen', {})).toEqual(yes);
     expect(run('geringfuegigNebenKurzfristigen', { pay: '1400.00' })).toEqual(no);
+  });
+});
+
+// 2026-11-02, Geringfügigkeits-Richtlinien 2026 B 2.2.2.8 and examples 25, 26 (GFR-25C, -26C,
+// D-JAEGMJ).
+describe('Minijobs next to a main job above the JAEG', () => {
+  const rows = (main: string, first: string) => [
+    ['svpflichtig', 'minijob'],
+    [main, first],
+    ['2020-01-01', '2026-07-01'],
+  ];
+  const run = (fn: string, own: string, main: string, first: string) => {
+    const [arts, pays, starts] = rows(main, first);
+    return HINT_TESTS[fn]?.run([
+      own,
+      null,
+      null,
+      null,
+      '2026-09-01',
+      arts as never,
+      pays as never,
+      starts as never,
+      null,
+    ])?.holds;
+  };
+  const KV = 'weitererMinijobNebenJaegFreierHauptbeschaeftigung';
+  const PV = 'weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze';
+
+  it('frees a second Minijob in the KV when the main job is above the JAEG (example 25)', () => {
+    expect(run(KV, '300.00', '7000.00', '300.00')).toBe(true);
+    expect(run(PV, '300.00', '7000.00', '300.00')).toBe(true);
+  });
+
+  it('keeps the PV when the Minijobs together are above the limit (example 26)', () => {
+    expect(run(KV, '300.00', '7000.00', '400.00')).toBe(true);
+    expect(run(PV, '300.00', '7000.00', '400.00')).toBe(false);
+  });
+
+  it('does not apply below the JAEG, to the first Minijob or above the Minijob limit', () => {
+    expect(run(KV, '300.00', '6450.00', '300.00')).toBe(false);
+    const first = HINT_TESTS[KV]?.run([
+      '300.00',
+      null,
+      null,
+      null,
+      '2026-09-01',
+      ['svpflichtig'] as never,
+      ['7000.00'] as never,
+      ['2020-01-01'] as never,
+      null,
+    ]);
+    expect(first?.holds).toBe(false);
+    expect(run(KV, '650.00', '7000.00', '300.00')).toBe(false);
+  });
+
+  it('leaves the first Minijob out of the JAEG sum (B 2.2.2.8)', () => {
+    const jaeg = (others: string[], arts: string[], starts: string[]) =>
+      HINT_TESTS.ueberMassgeblicheJahresarbeitsentgeltgrenze?.run([
+        '6100.00',
+        null,
+        others as never,
+        null,
+        null,
+        null,
+        '2026-03-01',
+        arts as never,
+        starts as never,
+      ])?.holds;
+    // 73.200 € + a first Minijob of 450 €: not added, below 77.400 €.
+    expect(jaeg(['450.00'], ['minijob'], ['2025-01-01'])).toBe(false);
+    // A second job subject to insurance is added.
+    expect(jaeg(['450.00'], ['svpflichtig'], ['2025-01-01'])).toBe(true);
   });
 });

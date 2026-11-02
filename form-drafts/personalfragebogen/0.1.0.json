@@ -6337,7 +6337,9 @@
           "ezBetrag",
           "ezAnspruch",
           "pkvBestand2002",
-          "agBeschaeftigungsbeginn"
+          "agBeschaeftigungsbeginn",
+          "jobArt",
+          "jobSeit"
         ]
       },
       "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
@@ -6358,7 +6360,9 @@
           "ezBetrag",
           "ezAnspruch",
           "pkvBestand2002",
-          "agBeschaeftigungsbeginn"
+          "agBeschaeftigungsbeginn",
+          "jobArt",
+          "jobSeit"
         ]
       },
       "message": "Laut den Verdienstangaben – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – liegt das regelmäßige Jahresarbeitsentgelt über der maßgeblichen Jahresarbeitsentgeltgrenze, der Arbeitgeber hat „nicht über der Grenze“ angegeben: klären; bei freiwilliger Versicherung Firmen- oder Selbstzahler erfragen.",
@@ -7466,6 +7470,47 @@
           "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten: wie Werkstudenten frei, bei höchstens 20 Wochenstunden oder in den Semesterferien (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)."
         },
         {
+          "value": "0",
+          "reason": "Weiterer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze: in der KV nicht mit ihr zusammengerechnet, weil sie krankenversicherungsfrei ist (Geringfügigkeits-Richtlinien, Beispiele 25 und 26) – Meldung an die Krankenkasse ohne KV; bleiben die Minijobs zusammen bis zur Grenze, zusätzlich an die Minijob-Zentrale 101 · 6000.",
+          "when": {
+            "any": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              },
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "svpflichtig"
+                  },
+                  {
+                    "not": {
+                      "field": "agArbeitszeitmodell",
+                      "equals": "altersteilzeit"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenJaegFreierHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "pkvBestand2002"
+            ]
+          },
+          "check": true
+        },
+        {
           "value": "6",
           "when": {
             "all": [
@@ -7700,7 +7745,9 @@
               "ezBetrag",
               "ezAnspruch",
               "pkvBestand2002",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobSeit"
             ]
           },
           "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert, Firmenzahler laut Arbeitgeber."
@@ -7728,7 +7775,9 @@
               "ezBetrag",
               "ezAnspruch",
               "pkvBestand2002",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobSeit"
             ]
           },
           "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert, Selbstzahler laut Arbeitgeber."
@@ -7748,7 +7797,9 @@
               "ezBetrag",
               "ezAnspruch",
               "pkvBestand2002",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobSeit"
             ]
           },
           "check": true,
@@ -7770,7 +7821,9 @@
               "ezBetrag",
               "ezAnspruch",
               "pkvBestand2002",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobSeit"
             ]
           }
         },
@@ -7786,7 +7839,9 @@
               "ezBetrag",
               "ezAnspruch",
               "pkvBestand2002",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobSeit"
             ]
           },
           "check": true
@@ -9149,6 +9204,47 @@
         },
         {
           "value": "0",
+          "reason": "Weiterer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze, die Minijobs zusammen bis zur Grenze: keine Pflegeversicherung aus dieser Beschäftigung (Geringfügigkeits-Richtlinien, Beispiel 25).",
+          "when": {
+            "any": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              },
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "svpflichtig"
+                  },
+                  {
+                    "not": {
+                      "field": "agArbeitszeitmodell",
+                      "equals": "altersteilzeit"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "pkvBestand2002"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
           "when": {
             "all": [
               {
@@ -9263,7 +9359,9 @@
               "ezBetrag",
               "ezAnspruch",
               "pkvBestand2002",
-              "agBeschaeftigungsbeginn"
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobSeit"
             ]
           }
         },

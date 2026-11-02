@@ -92,15 +92,12 @@ const GROUPS = {
 
 const KNOWN_DEVIATIONS: Record<string, Deviation> = {
   'GFR-14': { gruppe: 'G', app: { pgr: '101', bgr: '1111', uebergang: '1' } },
-  'GFR-25C': { gruppe: 'E', app: { bgr: '9101' } },
-  'GFR-26C': { gruppe: 'E', app: { bgr: '9101' } },
   'ST-01': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-02A': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-04': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-KF': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-WSMJ': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
   'ST-FZPMJ': { gruppe: 'C', app: { pgr: '106', bgr: '0100' } },
-  'D-JAEGMJ': { gruppe: 'E', app: { bgr: '9111' } },
 };
 
 function actual(r: Assessment): Record<Aspect, string> {

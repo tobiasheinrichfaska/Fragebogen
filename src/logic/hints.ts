@@ -180,7 +180,7 @@ const yearOf = (on: FieldValue | undefined) =>
  * year holds and says so.
  */
 const massgeblicheJaeg: HintTest = {
-  args: ['money', 'money', 'money', 'money', 'boolean', 'choice', 'date'],
+  args: ['money', 'money', 'money', 'money', 'boolean', 'choice', 'date', 'choice', 'date'],
   describe: ([
     fixed = '',
     expected = '',
@@ -189,17 +189,22 @@ const massgeblicheJaeg: HintTest = {
     entitled = '',
     y2002 = '',
     on = '',
+    art = '',
   ]) =>
-    `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist`,
-  run: ([fixed, expected, others, oneOff, entitled, y2002, on]) => {
+    `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist`,
+  run: ([fixed, expected, others, oneOff, entitled, y2002, on, arts, starts]) => {
     const mine = ownPay(fixed, expected);
     const year = yearOf(on);
     if (mine === undefined || year === undefined) return undefined;
-    const { yearly, facts } = yearlyPay(
-      mine + (cents(others ?? null) ?? 0),
-      oneOff ?? null,
-      entitled ?? null,
+    // The first Minijob next to a main job does not count (GfR B 2.2.2.8: only a "zweite oder
+    // weitere" Minijob is added to the main job).
+    const insured = insuredOtherPay(
+      mine,
+      cents(RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0,
+      otherJobs(arts ?? null, others ?? null, starts ?? null),
+      'Geringfügigkeits-Richtlinien B 2.2.2.8',
     );
+    const { yearly, facts } = yearlyPay(mine + insured.cents, oneOff ?? null, entitled ?? null);
     const special = y2002 === 'ja';
     const label = special
       ? 'besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)'
@@ -217,7 +222,11 @@ const massgeblicheJaeg: HintTest = {
     }
     return {
       holds: yearly > limit,
-      detail: [`Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(limit)}.`],
+      ...(insured.uncertain ? { uncertain: true } : {}),
+      detail: [
+        `Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(limit)}.`,
+        ...insured.notes,
+      ],
     };
   },
 };
@@ -381,7 +390,12 @@ const minijobNebenHauptbeschaeftigung: HintTest = {
  * employment unless its own pay is within the Minijob limit. A job abroad or a missing amount or
  * start leaves the sum uncertain.
  */
-function insuredOtherPay(own: number, limit: number, jobs: OtherJobs) {
+function insuredOtherPay(
+  own: number,
+  limit: number,
+  jobs: OtherJobs,
+  source = 'Rundschreiben Übergangsbereich Tz. 4.2.2',
+) {
   const haupt = own > limit || jobs.haupt;
   const minijobs = jobs.rows.filter((row) => row.art === 'minijob');
   const first = haupt
@@ -409,7 +423,7 @@ function insuredOtherPay(own: number, limit: number, jobs: OtherJobs) {
     jobs.rows.length === 0
       ? []
       : [
-          `Mitgerechnet aus anderen Beschäftigungen: ${euro(sum)} im Monat${left.length > 0 ? `; nicht mitgerechnet: ${[...new Set(left)].join(', ')}` : ''} (Rundschreiben Übergangsbereich Tz. 4.2.2).`,
+          `Mitgerechnet aus anderen Beschäftigungen: ${euro(sum)} im Monat${left.length > 0 ? `; nicht mitgerechnet: ${[...new Set(left)].join(', ')}` : ''} (${source}).`,
         ];
   return { cents: sum, uncertain, notes };
 }
@@ -635,6 +649,57 @@ const geringfuegigNebenKurzfristigen: HintTest = {
   },
 };
 
+/**
+ * A second or further Minijob next to a main job whose pay is above the Jahresarbeitsentgeltgrenze
+ * (Geringfügigkeits-Richtlinien 2026, examples 25 and 26): the main job is free in the KV, so the
+ * Minijob is not added to it there. `bisGrenze`: the Minijobs together also stay within the limit —
+ * then no PV from this job, the employer pays the KV flat rate with a report of its own to the
+ * Minijob-Zentrale (101 · 6000). Arguments as `geringfuegigEntlohnt`, then "privately insured on
+ * 31.12.2002".
+ */
+function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
+  return {
+    args: [...MINIJOB_ARGS, 'choice'],
+    describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
+      `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze besteht${bisGrenze ? ' und die Minijobs zusammen die Geringfügigkeitsgrenze einhalten' : ''}`,
+    run: ([fixed, expected, oneOff, entitled, on, arts, pays, starts, y2002]) => {
+      const own = geringfuegigkeit(true).run(
+        [fixed, expected, oneOff, entitled, on].map((value) => value ?? null),
+      );
+      if (!own || !own.holds) return own;
+      const year = yearOf(on);
+      const start = typeof on === 'string' ? on : '';
+      const jobs = otherJobs(arts ?? null, pays ?? null, starts ?? null);
+      const mains = jobs.rows.filter((row) => HAUPTBESCHAEFTIGUNG.has(row.art));
+      const minijobs = jobs.rows.filter((row) => row.art === 'minijob');
+      const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
+      if (mains.length === 0 || !earlier || year === undefined) {
+        return { holds: false, detail: [] };
+      }
+      const special = y2002 === 'ja';
+      const jaeg = cents(RECHENGROESSEN[year]?.[special ? 'jaegBesondersJahr' : 'jaegJahr'] ?? '');
+      const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
+      const unknown = jaeg === undefined || mains.some((row) => row.cents === undefined);
+      if (!unknown && main <= (jaeg ?? 0)) return { holds: false, detail: [] };
+      const limit = cents(RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0;
+      const together =
+        (ownPay(fixed, expected) ?? 0) + minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
+      const within = together <= limit;
+      if (bisGrenze && !within) return { holds: false, detail: [] };
+      return {
+        holds: true,
+        ...(unknown ? { uncertain: true } : {}),
+        detail: [
+          `Hauptbeschäftigung ${euro(main)} im Jahr: über der Jahresarbeitsentgeltgrenze, krankenversicherungsfrei – dieser weitere Minijob wird in der KV nicht mit ihr zusammengerechnet (Geringfügigkeits-Richtlinien, Beispiele 25 und 26).`,
+          within
+            ? `Minijobs zusammen ${euro(together)} im Monat: innerhalb der Grenze – zusätzlich Meldung an die Minijob-Zentrale mit Personengruppe 101 und Beitragsgruppen 6000 (Pauschalbeitrag zur KV).`
+            : `Minijobs zusammen ${euro(together)} im Monat: über der Grenze.`,
+        ],
+      };
+    },
+  };
+}
+
 /** Another job is a vocational training (Rundschreiben Übergangsbereich Tz. 4.3.6.1). */
 const andereBeschaeftigungAusbildung: HintTest = {
   args: ['choice'],
@@ -649,6 +714,8 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   andereBeschaeftigungAusbildung,
   geringfuegigEntlohnt,
   geringfuegigNebenKurzfristigen,
+  weitererMinijobNebenJaegFreierHauptbeschaeftigung: weitererMinijobNebenJaegFrei(false),
+  weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze: weitererMinijobNebenJaegFrei(true),
   kurzfristigGegeben: kurzfristigkeit('gegeben'),
   kurzfristigGegebenBisGeringfuegigkeitsgrenze: kurzfristigkeit('bisGrenze'),
   minijobNebenHauptbeschaeftigung,
