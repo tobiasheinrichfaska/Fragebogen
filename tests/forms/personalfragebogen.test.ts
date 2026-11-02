@@ -4,10 +4,10 @@ import { join } from 'node:path';
 import { missingRequired, visibleFields } from '../../src/logic/form';
 import type { FieldValue } from '../../src/logic/model';
 import { createQuestionnaire, sealPart, setValue, startPart } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, ok, QUESTIONNAIRE_ID, STROKES } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
 const { definition } = form;
 
 const visible = (role: string, data: Record<string, FieldValue>) =>

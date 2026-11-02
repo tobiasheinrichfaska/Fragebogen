@@ -14,13 +14,15 @@ import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { buildLugImport, neededInputs, type LugEntries } from '../../src/logic/lugImport';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FIXTURE_FORMS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const FILE = join(__dirname, '..', '..', 'config', 'export.local.json');
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
-const sofort = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '0.2.0.json')));
-const sofortFrozen = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
+const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.2.0.json')));
+const sofortFrozen = registeredFrom(
+  readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')),
+);
 
 type Answers = Record<string, unknown>;
 function filled(

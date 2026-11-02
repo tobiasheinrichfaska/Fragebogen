@@ -23,7 +23,7 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FIXTURE_FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import {
   NONCE_EMPLOYER,
   NONCE_GUARDIAN,
@@ -33,7 +33,7 @@ import {
   note,
 } from '../support/sample';
 
-const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')));
 
 const PERSON = {
   familienname: 'Musterfrau',

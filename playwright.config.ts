@@ -8,6 +8,9 @@ export default defineConfig({
   testMatch: '**/*.spec.ts',
   timeout: 180_000,
   expect: { timeout: 30_000 },
+  // Two at a time: with four parallel workers the WebKit flow (PDF written and read again) hit the
+  // 180 s timeout twice on 2026-11-01 while it passes alone in 41 s.
+  workers: 2,
   reporter: [['list']],
   use: { acceptDownloads: true, trace: 'retain-on-failure' },
   projects: [

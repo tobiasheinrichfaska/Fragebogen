@@ -43,7 +43,7 @@ const entries = allVersions
       .map((other) => `${other.form.definition.version} (eingefroren)`),
   }));
 
-const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const personal = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '0.1.0.json')));
 
 function stepsOf(role: string): FlowStep[] {
   const station = flowPlan(personal).stations.find((s) => s.role.id === role);
@@ -105,10 +105,11 @@ describe('flow plan of the Personalfragebogen', () => {
     expect(guardian?.because).toContain('§ 106 BGB');
   });
 
-  it('shows only the newest version of each form and names the older one', () => {
+  it('shows only the newest version of each form', () => {
+    // Sofortmeldung 0.1.0 was withdrawn when 0.2.0 was published (Tobias 2026-11-01).
     const sofort = entries.filter((entry) => entry.form.definition.id === 'sofortmeldung');
     expect(sofort.map((entry) => entry.form.definition.version)).toEqual(['0.2.0']);
-    expect(sofort[0]?.older).toEqual(['0.1.0 (eingefroren)']);
+    expect(sofort[0]?.older).toEqual([]);
   });
 
   it('every draft states its validity and what it does not cover', () => {

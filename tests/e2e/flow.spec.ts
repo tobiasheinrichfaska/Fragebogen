@@ -10,7 +10,7 @@ import { expectClean, guard } from './guards';
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
 const FORM = JSON.parse(
   readFileSync(
-    fileURLToPath(new URL('../../forms/sofortmeldung/0.1.0.json', import.meta.url)),
+    fileURLToPath(new URL('../../forms/sofortmeldung/0.2.0.json', import.meta.url)),
     'utf8',
   ),
 ) as {
@@ -24,11 +24,6 @@ const FORM = JSON.parse(
     }[];
   }[];
 };
-const FIELDS = new Map(
-  FORM.sections
-    .flatMap((section) => section.fields)
-    .map((field) => [field.question ?? field.label, field]),
-);
 
 // Fictitious data only.
 const ANSWERS: Readonly<Record<string, string>> = {
@@ -40,19 +35,34 @@ const ANSWERS: Readonly<Record<string, string>> = {
   agBeschaeftigungsbeginn: '02.11.2026',
   familienname: 'Musterfrau',
   vorname: 'Erika',
+  namensbestandteile: 'Nein',
   geburtsnameWieFamilienname: 'Ja',
   geburtsdatum: '17.05.1990',
+  geborenInDeutschland: 'Ja',
   geburtsort: 'Musterstadt',
-  geburtsland: 'Deutschland',
   geschlecht: 'weiblich',
-  staatsangehoerigkeit: 'deutsch',
+  deutscheStaatsangehoerigkeit: 'Ja',
   versicherungsnummer: '65 170590 M 520',
-  strasse: 'Musterweg 1',
+  anschriftAusland: 'Nein',
+  strassenname: 'Musterweg',
+  hausnummer: '1',
   anschriftZusatz: '',
   postleitzahl: '12345',
   wohnort: 'Musterstadt',
-  anschriftAusland: 'Nein',
 };
+
+// The heading as the app shows it: `{id}` placeholders filled with the earlier answer („…“).
+const FIELDS = new Map(
+  FORM.sections
+    .flatMap((section) => section.fields)
+    .map((field) => [
+      (field.question ?? field.label).replace(
+        / ?\{([a-zA-Z0-9]+)\}/g,
+        (match, id: string) => `${match.startsWith(' ') ? ' ' : ''}„${ANSWERS[id] ?? ''}“`,
+      ),
+      field,
+    ]),
+);
 
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

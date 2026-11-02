@@ -6,9 +6,9 @@
 | Angabe | Wert |
 | --- | --- |
 | Formular | personalfragebogen, Version 0.1.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
+| Status | Eingefrorene Testfassung (0.x): darf vor dem ersten Release gelöscht werden, solange kein echter Fragebogen damit ausgefüllt wurde |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026 |
-| Definition (SHA-256) | 1ece4a9fd46fb0f32a79cd046bfd1e723f16920457be2608e6db00c09eda8fb1 |
+| Definition (SHA-256) | 3dcf31e2ea75f74d0f60db5544ea7563a6bec6d25dca11f4a29cee98fb23d645 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -630,11 +630,11 @@ Alle übrigen Angaben sind unabhängig.
 
 - Kenntnisnahme durch: Beschäftigte Person
 - Art: wird in der App gelesen und bestätigt
-- Stand: 30.10.2026
+- Stand: 01.11.2026
 
 > Ihr Arbeitgeber verarbeitet diese Angaben, um Ihr Arbeitsverhältnis durchzuführen und abzurechnen: für die Lohnabrechnung, für den Abruf Ihrer elektronischen Lohnsteuerabzugsmerkmale beim Bundeszentralamt für Steuern (§ 39e EStG) und für die Meldungen zur Sozialversicherung (§ 28a SGB IV). Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO.
 >
-> Die meisten Angaben müssen Sie machen (§ 28o Abs. 1 SGB IV, § 39e Abs. 4 EStG); fehlen sie, kann Ihr Arbeitgeber Sie nicht richtig anmelden und abrechnen. Ihre Bankverbindung braucht er, um Ihnen das Entgelt zu überweisen. Telefonnummer und E-Mail-Adresse sind freiwillig; er nutzt sie nur für Rückfragen. Eine Schwerbehinderung oder Gleichstellung trägt Ihr Arbeitgeber nur ein, wenn Sie sie ihm freiwillig mitgeteilt und nachgewiesen haben; er verarbeitet sie, um Ihre Rechte als schwerbehinderter Mensch zu wahren und seine Pflichten nach dem SGB IX zu erfüllen (Art. 9 Abs. 2 Buchst. b DSGVO, § 26 Abs. 3 BDSG). Angaben zu Kindern verarbeitet er nur für den Beitrag zur Pflegeversicherung.
+> Die meisten Angaben müssen Sie machen (§ 28o Abs. 1 SGB IV, § 39e Abs. 4 EStG); fehlen sie, kann Ihr Arbeitgeber Sie nicht richtig anmelden und abrechnen. Ihre Bankverbindung braucht er, um Ihnen das Entgelt zu überweisen. Telefonnummer und E-Mail-Adresse sind freiwillig; er nutzt sie nur für Rückfragen. Eine Schwerbehinderung oder Gleichstellung trägt Ihr Arbeitgeber nur ein, wenn Sie sie ihm freiwillig mitgeteilt und nachgewiesen haben; er verarbeitet sie, um Ihre Rechte als schwerbehinderter Mensch zu wahren und seine Pflichten nach dem SGB IX zu erfüllen (Art. 9 Abs. 2 Buchst. b DSGVO). Angaben zu Kindern verarbeitet er nur für den Beitrag zur Pflegeversicherung.
 >
 > Angaben zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung trägt Ihr Arbeitgeber im selben Fragebogen ein.
 >
@@ -642,9 +642,9 @@ Alle übrigen Angaben sind unabhängig.
 >
 > Die Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen: Entgeltunterlagen bis zum Ablauf des Kalenderjahres nach der letzten Betriebsprüfung (§ 28f Abs. 1 SGB IV), das Lohnkonto bis zum Ablauf des sechsten Kalenderjahres nach der letzten Lohnzahlung (§ 41 Abs. 1 Satz 9 EStG).
 >
-> Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.
+> Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO, soweit die Verarbeitung auf dem Arbeitsvertrag beruht, das Recht, die von Ihnen bereitgestellten Angaben in einem gängigen, maschinenlesbaren Format zu erhalten (Art. 20 DSGVO), und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.
 >
-> Diese App speichert und versendet nichts. Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben.
+> Diese App speichert und versendet Ihre Angaben nicht; sie verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
 
 ## Verknüpfung der Teile
 

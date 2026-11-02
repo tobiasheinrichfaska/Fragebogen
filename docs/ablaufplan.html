@@ -62,127 +62,14 @@ wird aber nicht mit unterschrieben.</p>
 <li><span class="swatch" style="background:var(--taken);border-color:var(--taken-line)"></span>Legt eine andere Station fest</li>
 </ul>
 <ol>
+<li><a href="#personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
+<li><a href="#sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung 0.2.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
 <li><a href="#dienstwagen-0.1.0">Dienstwagen: Überlassung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
-<li><a href="#personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
-<li><a href="#sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung 0.2.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 </ol>
-<h2 id="dienstwagen-0.1.0">Dienstwagen: Überlassung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b</code></p>
-<p><strong>Diese Fassung gilt für „Überlassen ab“ ab 01.01.2026.</strong></p>
-<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.</li>
-<li>Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.</li>
-<li>Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung.</li>
-</ul></div>
-<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
-<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
-<li>Arbeitgeber und Beschäftigte Person: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
-</ul></div>
-<section class="station" id="dienstwagen-0.1.0-arbeitgeber">
-<h3>Station: Arbeitgeber</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<h4>Arbeitgeber und beschäftigte Person</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Familienname der beschäftigten Person</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Vornamen der beschäftigten Person</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Personalnummer</span><div class="meta">Personalnummer · Text · optional</div></li>
-</ol>
-<h4>Fahrzeug</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">5</span> <span class="q">Amtliches Kennzeichen</span><div class="meta">Amtliches Kennzeichen · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">6</span> <span class="q">Marke und Modell</span><div class="meta">Marke und Modell · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">7</span> <span class="q">Datum der Erstzulassung</span><div class="meta">Datum der Erstzulassung · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">8</span> <span class="q">Kauf- oder Leasingbeginn beim Arbeitgeber</span><div class="meta">Kauf- oder Leasingbeginn beim Arbeitgeber · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">9</span> <span class="q">Inländischer Listenpreis bei Erstzulassung</span><div class="meta">Inländischer Listenpreis bei Erstzulassung · Betrag · Pflicht</div></li>
-<li class="step level-0"><span class="num">10</span> <span class="q">Werkseitige Sonderausstattung</span><div class="meta">Werkseitige Sonderausstattung · Betrag · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">11</span> <span class="q">Antrieb</span><div class="meta">Antrieb · Auswahl: Verbrennungsmotor · Hybrid ohne Stecker · Plug-in-Hybrid (extern aufladbar) · reines Elektrofahrzeug · Brennstoffzelle (Wasserstoff) · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 12, Nr. 13, Nr. 14 ab.</div><div class="meta">Zulassungsbescheinigung Teil I, Feld 10.</div></li>
-<li class="step level-1"><span class="num">12</span> <span class="q">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am</span><div class="meta">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „reines Elektrofahrzeug“ oder „Plug-in-Hybrid (extern aufladbar)“ oder „Brennstoffzelle (Wasserstoff)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der ersten Überlassung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
-<li class="step level-1"><span class="num">13</span> <span class="q">CO2-Emission</span><div class="meta">CO2-Emission · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
-<li class="step level-1"><span class="num">14</span> <span class="q">Elektrische Reichweite</span><div class="meta">Elektrische Reichweite · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
-</ol>
-<h4>Überlassung</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">15</span> <span class="q">Überlassen ab</span><div class="meta">Überlassen ab · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">16</span> <span class="q">Überlassen bis</span><div class="meta">Überlassen bis · Datum · optional</div></li>
-<li class="step level-0 decision"><span class="num">17</span> <span class="q">Darf die Person das Fahrzeug privat nutzen?</span><div class="meta">Privatnutzung erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18 ab.</div><div class="meta">Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger).</div></li>
-<li class="step level-1"><span class="num">18</span> <span class="q">Regelung des Nutzungsverbots</span><div class="meta">Regelung des Nutzungsverbots · Auswahl: Arbeitsvertrag · Dienstwagenvereinbarung · Betriebsvereinbarung · schriftlicher Verzicht der Person (auf Papier) · Pflicht</div><div class="when">Gefragt erst wenn „Privatnutzung erlaubt“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht.</div></li>
-<li class="step level-0 decision"><span class="num">19</span> <span class="q">Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 20 ab.</div></li>
-<li class="step level-1"><span class="num">20</span> <span class="q">Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?</span><div class="meta">Pauschalierung mit 15 % · Ja/Nein · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt“ mit „Ja“ beantwortet ist (hängt ab von Nr. 19).</div><div class="why">Warum: Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG).</div></li>
-<li class="step level-0"><span class="num">21</span> <span class="q">Trifft einer dieser Sonderfälle zu?</span><div class="meta">Sonderfälle · Mehrfachauswahl: Fahrtenbuch statt 1-%-Regelung · Einzelbewertung der Fahrten (0,002 % je Fahrt) · weniger als 5 Arbeitstage pro Woche vor Ort (Homeoffice) · Zuzahlungen oder Kostenübernahme durch die Person · Familienheimfahrten (doppelte Haushaltsführung) · Fahrer wird gestellt · mehrere Personen nutzen das Fahrzeug privat · Erstattung von Ladestrom zu Hause · Überlassung durch Gehaltsumwandlung · keiner davon · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<section class="station" id="dienstwagen-0.1.0-person">
-<h3>Station: Beschäftigte Person</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Was Ihre Angaben bewirken“.</p>
-<h4>Angaben der beschäftigten Person</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">3</span> <span class="q">Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 6 ab.</div></li>
-<li class="step level-0 decision"><span class="num">4</span> <span class="q">Fahren Sie von Ihrer Meldeanschrift aus?</span><div class="meta">Fahrten von der Meldeanschrift · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div></li>
-<li class="step level-1"><span class="num">5</span> <span class="q">Anschrift der Wohnung, von der Sie fahren</span><div class="meta">Anschrift der Wohnung, von der Sie fahren · Text · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist (hängt ab von Nr. 4).</div><div class="why">Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung.</div></li>
-<li class="step level-1"><span class="num">6</span> <span class="q">Entfernung Wohnung – erste Tätigkeitsstätte</span><div class="meta">Entfernung Wohnung – erste Tätigkeitsstätte · Zahl · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer zur ersten Tätigkeitsstätte fährt, braucht die Entfernung für die 0,03 % je Kilometer (§ 8 Abs. 2 Satz 3 EStG).</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<h2 id="lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>5d8b1b4e9a8bd993188908a935fd65d59939e0b70f68d709a2717b690063abe0</code></p>
-<p><strong>Diese Fassung gilt für „Abrechnungsmonat“ ab 01.01.2026.</strong></p>
-<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.</li>
-<li>Ein- und Austritte meldet sie an; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.</li>
-<li>Pfändungen werden nur angezeigt; die Berechnung des pfändbaren Betrags übernimmt die Lohnabrechnung.</li>
-</ul></div>
-<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
-<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
-</ul></div>
-<section class="station" id="lohnmeldung-0.1.0-arbeitgeber">
-<h3>Station: Arbeitgeber</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Bis wann die Meldung gebraucht wird“, „Arbeitszeit aufzeichnen“.</p>
-<h4>Meldung</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Abrechnungsmonat</span><div class="meta">Abrechnungsmonat · Monat · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Stunden und Zuschläge gelten für</span><div class="meta">Stunden und Zuschläge gelten für · Auswahl: den Abrechnungsmonat · den Vormonat (Abrechnung einen Monat später) · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Betriebsnummer des Arbeitgebers</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Mandantennummer</span><div class="meta">Mandantennummer · Text · optional</div></li>
-<li class="step level-0"><span class="num">6</span> <span class="q">Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?</span><div class="meta">Abgabe bis zum … des Monats · Zahl · optional</div></li>
-<li class="step level-0"><span class="num">7</span> <span class="q">Ansprechperson für Rückfragen</span><div class="meta">Ansprechperson für Rückfragen · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">8</span> <span class="q">Telefon</span><div class="meta">Telefon · Text · Pflicht, wenn „E-Mail“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 9.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 9 ab.</div></li>
-<li class="step level-0 decision"><span class="num">9</span> <span class="q">E-Mail</span><div class="meta">E-Mail · Text · Pflicht, wenn „Telefon“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 8.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div></li>
-<li class="step level-0"><span class="num">10</span> <span class="q">Name der Person, die die Meldung abgibt</span><div class="meta">Name der Person, die die Meldung abgibt · Text · Pflicht</div></li>
-</ol>
-<h4>Mitarbeitende</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">11</span> <span class="q">Wer war im Abrechnungsmonat beschäftigt?</span><div class="meta">Mitarbeitende · Tabelle mit den Spalten Personalnummer · Familienname, Vorname · Vergütung · Stundenlohn bzw. Monatsentgelt brutto · Vereinbarte Wochenstunden · Änderung bei Lohn oder Stunden gilt ab · Gearbeitete Stunden · Wegen Feiertag ausgefallene Stunden · Auszuzahlende Überstunden · Stand Arbeitszeitkonto am Monatsende · scheidet in diesem Monat aus · Bemerkung · Pflicht</div></li>
-</ol>
-<h4>Was in diesem Monat war</h4>
-<ol class="flow">
-<li class="step level-0 decision"><span class="num">12</span> <span class="q">Zahlen Sie in diesem Monat Zuschläge für Nacht-, Sonntags- oder Feiertagsarbeit oder für Überstunden?</span><div class="meta">Zuschläge in diesem Monat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 13 ab.</div></li>
-<li class="step level-1"><span class="num">13</span> <span class="q">Zuschläge</span><div class="meta">Zuschläge · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · Stunden · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Zuschläge in diesem Monat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 12).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
-<li class="step level-0 decision"><span class="num">14</span> <span class="q">Gab es in diesem Monat Urlaub, Krankheit oder andere Fehlzeiten?</span><div class="meta">Fehlzeiten in diesem Monat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 15 ab.</div><div class="meta">Auch halbe Tage und Fehlzeiten, die schon im Vormonat begonnen haben.</div></li>
-<li class="step level-1"><span class="num">15</span> <span class="q">Fehlzeiten</span><div class="meta">Fehlzeiten · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · von · bis · dauert über das Monatsende an · ausgefallene Arbeitstage in diesem Monat · ausgefallene Stunden · Nachweis · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Fehlzeiten in diesem Monat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 14).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
-<li class="step level-0 decision"><span class="num">16</span> <span class="q">Gibt es einmalige Zahlungen, Vorschüsse, Sachzuwendungen oder Erstattungen?</span><div class="meta">Einmalige Zahlungen in diesem Monat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 17 ab.</div><div class="meta">Bitte früh melden: Für Einmalzahlungen darf nicht mit den Werten des Vormonats gerechnet werden (§ 23 Abs. 1 SGB IV).</div></li>
-<li class="step level-1"><span class="num">17</span> <span class="q">Einmalige Zahlungen, Vorschüsse und Sachzuwendungen</span><div class="meta">Einmalige Zahlungen, Vorschüsse und Sachzuwendungen · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · Betrag (brutto) · Anzahl (nur Mahlzeiten) · ausgezahlt am · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Einmalige Zahlungen in diesem Monat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 16).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
-<li class="step level-0"><span class="num">18</span> <span class="q">Welche laufenden Zusatzleistungen gibt es?</span><div class="meta">Laufende Zusatzleistungen · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · Betrag im Monat · seit · endet am · Bemerkung · optional</div></li>
-<li class="step level-0 decision"><span class="num">19</span> <span class="q">Hat jemand angefangen oder aufgehört, oder steht ein Austritt fest?</span><div class="meta">Ein- und Austritte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 20 ab.</div><div class="meta">Neue Beschäftigte brauchen zusätzlich den Personalfragebogen; in bestimmten Branchen muss die Sofortmeldung vor dem ersten Arbeitstag erstattet sein.</div></li>
-<li class="step level-1"><span class="num">20</span> <span class="q">Ein- und Austritte</span><div class="meta">Ein- und Austritte · Tabelle mit den Spalten Person (Personalnummer oder Name) · Eintritt oder Austritt · Datum · Grund des Austritts · Resturlaub zum Auszahlen · Unterlagen bei Eintritt · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Ein- und Austritte“ mit „Ja“ beantwortet ist (hängt ab von Nr. 19).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
-<li class="step level-0 decision"><span class="num">21</span> <span class="q">Hat sich bei einer Person etwas geändert (Anschrift, Krankenkasse, Name …)?</span><div class="meta">Änderungen bei einer Person · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 22 ab.</div><div class="meta">Lohn und Wochenstunden ändern Sie direkt bei den Mitarbeitenden.</div></li>
-<li class="step level-1"><span class="num">22</span> <span class="q">Änderungen</span><div class="meta">Änderungen · Tabelle mit den Spalten Person (Personalnummer oder Name) · Was hat sich geändert? · Neue Angabe · gilt ab · schriftliche Mitteilung der Person liegt vor · Pflicht</div><div class="when">Gefragt erst wenn „Änderungen bei einer Person“ mit „Ja“ beantwortet ist (hängt ab von Nr. 21).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
-<li class="step level-0 decision"><span class="num">23</span> <span class="q">Ist eine Pfändung, eine Vorpfändung oder eine Abtretung eingegangen?</span><div class="meta">Pfändung oder Abtretung eingegangen · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 24 ab.</div><div class="meta">Bitte schicken Sie das Schreiben sofort, nicht erst mit der Monatsmeldung: Die Erklärung als Drittschuldner ist binnen zwei Wochen fällig.</div></li>
-<li class="step level-1"><span class="num">24</span> <span class="q">Angaben zur Pfändung</span><div class="meta">Angaben zur Pfändung · Text · Pflicht</div><div class="when">Gefragt erst wenn „Pfändung oder Abtretung eingegangen“ mit „Ja“ beantwortet ist (hängt ab von Nr. 23).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
-<li class="step level-0"><span class="num">25</span> <span class="q">Weitere Hinweise</span><div class="meta">Weitere Hinweise · Text · optional</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
 <h2 id="personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>1ece4a9fd46fb0f32a79cd046bfd1e723f16920457be2608e6db00c09eda8fb1</code></p>
+<p class="meta">Veröffentlicht (Testfassung) · Definition <code>3dcf31e2ea75f74d0f60db5544ea7563a6bec6d25dca11f4a29cee98fb23d645</code></p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.</li>
@@ -544,8 +431,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">0.2.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>3daf91a1dd99cb85fdd63e94a9e07d01205b29b40424e6de8667a9b7730e3ddb</code></p>
-<p class="meta">Ersetzt die ältere Fassung 0.1.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
+<p class="meta">Veröffentlicht (Testfassung) · Definition <code>0afae3b2a475456214cbaa08bbe181db4fa14b7bcb3d7d36c0c1213383949538</code></p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.</li>
@@ -614,6 +500,119 @@ wird aber nicht mit unterschrieben.</p>
 <li class="step level-0"><span class="num">4</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
 <li class="step level-0"><span class="num">5</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
 <li class="step level-0"><span class="num">6</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<h2 id="dienstwagen-0.1.0">Dienstwagen: Überlassung <span class="muted">0.1.0</span></h2>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b</code></p>
+<p><strong>Diese Fassung gilt für „Überlassen ab“ ab 01.01.2026.</strong></p>
+<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
+<li>Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.</li>
+<li>Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.</li>
+<li>Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung.</li>
+</ul></div>
+<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
+<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
+<li>Arbeitgeber und Beschäftigte Person: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+</ul></div>
+<section class="station" id="dienstwagen-0.1.0-arbeitgeber">
+<h3>Station: Arbeitgeber</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<h4>Arbeitgeber und beschäftigte Person</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Familienname der beschäftigten Person</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">3</span> <span class="q">Vornamen der beschäftigten Person</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Personalnummer</span><div class="meta">Personalnummer · Text · optional</div></li>
+</ol>
+<h4>Fahrzeug</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">5</span> <span class="q">Amtliches Kennzeichen</span><div class="meta">Amtliches Kennzeichen · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">6</span> <span class="q">Marke und Modell</span><div class="meta">Marke und Modell · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">7</span> <span class="q">Datum der Erstzulassung</span><div class="meta">Datum der Erstzulassung · Datum · Pflicht</div></li>
+<li class="step level-0"><span class="num">8</span> <span class="q">Kauf- oder Leasingbeginn beim Arbeitgeber</span><div class="meta">Kauf- oder Leasingbeginn beim Arbeitgeber · Datum · Pflicht</div></li>
+<li class="step level-0"><span class="num">9</span> <span class="q">Inländischer Listenpreis bei Erstzulassung</span><div class="meta">Inländischer Listenpreis bei Erstzulassung · Betrag · Pflicht</div></li>
+<li class="step level-0"><span class="num">10</span> <span class="q">Werkseitige Sonderausstattung</span><div class="meta">Werkseitige Sonderausstattung · Betrag · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">11</span> <span class="q">Antrieb</span><div class="meta">Antrieb · Auswahl: Verbrennungsmotor · Hybrid ohne Stecker · Plug-in-Hybrid (extern aufladbar) · reines Elektrofahrzeug · Brennstoffzelle (Wasserstoff) · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 12, Nr. 13, Nr. 14 ab.</div><div class="meta">Zulassungsbescheinigung Teil I, Feld 10.</div></li>
+<li class="step level-1"><span class="num">12</span> <span class="q">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am</span><div class="meta">Erstmals einer beschäftigten Person zur Privatnutzung überlassen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „reines Elektrofahrzeug“ oder „Plug-in-Hybrid (extern aufladbar)“ oder „Brennstoffzelle (Wasserstoff)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der ersten Überlassung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
+<li class="step level-1"><span class="num">13</span> <span class="q">CO2-Emission</span><div class="meta">CO2-Emission · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
+<li class="step level-1"><span class="num">14</span> <span class="q">Elektrische Reichweite</span><div class="meta">Elektrische Reichweite · Zahl · Pflicht</div><div class="when">Gefragt erst wenn bei „Antrieb“ „Plug-in-Hybrid (extern aufladbar)“ gewählt ist (hängt ab von Nr. 11).</div><div class="why">Warum: Ein Plug-in-Hybrid wird nur bei geringem CO2-Ausstoß oder ausreichender elektrischer Reichweite geringer angesetzt (§ 6 Abs. 1 Nr. 4 Satz 2 EStG).</div></li>
+</ol>
+<h4>Überlassung</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">15</span> <span class="q">Überlassen ab</span><div class="meta">Überlassen ab · Datum · Pflicht</div></li>
+<li class="step level-0"><span class="num">16</span> <span class="q">Überlassen bis</span><div class="meta">Überlassen bis · Datum · optional</div></li>
+<li class="step level-0 decision"><span class="num">17</span> <span class="q">Darf die Person das Fahrzeug privat nutzen?</span><div class="meta">Privatnutzung erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18 ab.</div><div class="meta">Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger).</div></li>
+<li class="step level-1"><span class="num">18</span> <span class="q">Regelung des Nutzungsverbots</span><div class="meta">Regelung des Nutzungsverbots · Auswahl: Arbeitsvertrag · Dienstwagenvereinbarung · Betriebsvereinbarung · schriftlicher Verzicht der Person (auf Papier) · Pflicht</div><div class="when">Gefragt erst wenn „Privatnutzung erlaubt“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht.</div></li>
+<li class="step level-0 decision"><span class="num">19</span> <span class="q">Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 20 ab.</div></li>
+<li class="step level-1"><span class="num">20</span> <span class="q">Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?</span><div class="meta">Pauschalierung mit 15 % · Ja/Nein · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt“ mit „Ja“ beantwortet ist (hängt ab von Nr. 19).</div><div class="why">Warum: Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG).</div></li>
+<li class="step level-0"><span class="num">21</span> <span class="q">Trifft einer dieser Sonderfälle zu?</span><div class="meta">Sonderfälle · Mehrfachauswahl: Fahrtenbuch statt 1-%-Regelung · Einzelbewertung der Fahrten (0,002 % je Fahrt) · weniger als 5 Arbeitstage pro Woche vor Ort (Homeoffice) · Zuzahlungen oder Kostenübernahme durch die Person · Familienheimfahrten (doppelte Haushaltsführung) · Fahrer wird gestellt · mehrere Personen nutzen das Fahrzeug privat · Erstattung von Ladestrom zu Hause · Überlassung durch Gehaltsumwandlung · keiner davon · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="dienstwagen-0.1.0-person">
+<h3>Station: Beschäftigte Person</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Was Ihre Angaben bewirken“.</p>
+<h4>Angaben der beschäftigten Person</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">3</span> <span class="q">Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 6 ab.</div></li>
+<li class="step level-0 decision"><span class="num">4</span> <span class="q">Fahren Sie von Ihrer Meldeanschrift aus?</span><div class="meta">Fahrten von der Meldeanschrift · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div></li>
+<li class="step level-1"><span class="num">5</span> <span class="q">Anschrift der Wohnung, von der Sie fahren</span><div class="meta">Anschrift der Wohnung, von der Sie fahren · Text · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist (hängt ab von Nr. 4).</div><div class="why">Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung.</div></li>
+<li class="step level-1"><span class="num">6</span> <span class="q">Entfernung Wohnung – erste Tätigkeitsstätte</span><div class="meta">Entfernung Wohnung – erste Tätigkeitsstätte · Zahl · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer zur ersten Tätigkeitsstätte fährt, braucht die Entfernung für die 0,03 % je Kilometer (§ 8 Abs. 2 Satz 3 EStG).</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<h2 id="lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten <span class="muted">0.1.0</span></h2>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>5d8b1b4e9a8bd993188908a935fd65d59939e0b70f68d709a2717b690063abe0</code></p>
+<p><strong>Diese Fassung gilt für „Abrechnungsmonat“ ab 01.01.2026.</strong></p>
+<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
+<li>Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.</li>
+<li>Ein- und Austritte meldet sie an; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.</li>
+<li>Pfändungen werden nur angezeigt; die Berechnung des pfändbaren Betrags übernimmt die Lohnabrechnung.</li>
+</ul></div>
+<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
+<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
+</ul></div>
+<section class="station" id="lohnmeldung-0.1.0-arbeitgeber">
+<h3>Station: Arbeitgeber</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p>Zuerst die Hinweise: „Bis wann die Meldung gebraucht wird“, „Arbeitszeit aufzeichnen“.</p>
+<h4>Meldung</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Abrechnungsmonat</span><div class="meta">Abrechnungsmonat · Monat · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Stunden und Zuschläge gelten für</span><div class="meta">Stunden und Zuschläge gelten für · Auswahl: den Abrechnungsmonat · den Vormonat (Abrechnung einen Monat später) · Pflicht</div></li>
+<li class="step level-0"><span class="num">3</span> <span class="q">Firma des Arbeitgebers</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Betriebsnummer des Arbeitgebers</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Mandantennummer</span><div class="meta">Mandantennummer · Text · optional</div></li>
+<li class="step level-0"><span class="num">6</span> <span class="q">Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?</span><div class="meta">Abgabe bis zum … des Monats · Zahl · optional</div></li>
+<li class="step level-0"><span class="num">7</span> <span class="q">Ansprechperson für Rückfragen</span><div class="meta">Ansprechperson für Rückfragen · Text · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">8</span> <span class="q">Telefon</span><div class="meta">Telefon · Text · Pflicht, wenn „E-Mail“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 9.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 9 ab.</div></li>
+<li class="step level-0 decision"><span class="num">9</span> <span class="q">E-Mail</span><div class="meta">E-Mail · Text · Pflicht, wenn „Telefon“ leer ist</div><div class="when">Pflicht hängt ab von Nr. 8.</div><div class="why">Warum: Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht.</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div></li>
+<li class="step level-0"><span class="num">10</span> <span class="q">Name der Person, die die Meldung abgibt</span><div class="meta">Name der Person, die die Meldung abgibt · Text · Pflicht</div></li>
+</ol>
+<h4>Mitarbeitende</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">11</span> <span class="q">Wer war im Abrechnungsmonat beschäftigt?</span><div class="meta">Mitarbeitende · Tabelle mit den Spalten Personalnummer · Familienname, Vorname · Vergütung · Stundenlohn bzw. Monatsentgelt brutto · Vereinbarte Wochenstunden · Änderung bei Lohn oder Stunden gilt ab · Gearbeitete Stunden · Wegen Feiertag ausgefallene Stunden · Auszuzahlende Überstunden · Stand Arbeitszeitkonto am Monatsende · scheidet in diesem Monat aus · Bemerkung · Pflicht</div></li>
+</ol>
+<h4>Was in diesem Monat war</h4>
+<ol class="flow">
+<li class="step level-0 decision"><span class="num">12</span> <span class="q">Zahlen Sie in diesem Monat Zuschläge für Nacht-, Sonntags- oder Feiertagsarbeit oder für Überstunden?</span><div class="meta">Zuschläge in diesem Monat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 13 ab.</div></li>
+<li class="step level-1"><span class="num">13</span> <span class="q">Zuschläge</span><div class="meta">Zuschläge · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · Stunden · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Zuschläge in diesem Monat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 12).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
+<li class="step level-0 decision"><span class="num">14</span> <span class="q">Gab es in diesem Monat Urlaub, Krankheit oder andere Fehlzeiten?</span><div class="meta">Fehlzeiten in diesem Monat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 15 ab.</div><div class="meta">Auch halbe Tage und Fehlzeiten, die schon im Vormonat begonnen haben.</div></li>
+<li class="step level-1"><span class="num">15</span> <span class="q">Fehlzeiten</span><div class="meta">Fehlzeiten · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · von · bis · dauert über das Monatsende an · ausgefallene Arbeitstage in diesem Monat · ausgefallene Stunden · Nachweis · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Fehlzeiten in diesem Monat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 14).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
+<li class="step level-0 decision"><span class="num">16</span> <span class="q">Gibt es einmalige Zahlungen, Vorschüsse, Sachzuwendungen oder Erstattungen?</span><div class="meta">Einmalige Zahlungen in diesem Monat · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 17 ab.</div><div class="meta">Bitte früh melden: Für Einmalzahlungen darf nicht mit den Werten des Vormonats gerechnet werden (§ 23 Abs. 1 SGB IV).</div></li>
+<li class="step level-1"><span class="num">17</span> <span class="q">Einmalige Zahlungen, Vorschüsse und Sachzuwendungen</span><div class="meta">Einmalige Zahlungen, Vorschüsse und Sachzuwendungen · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · Betrag (brutto) · Anzahl (nur Mahlzeiten) · ausgezahlt am · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Einmalige Zahlungen in diesem Monat“ mit „Ja“ beantwortet ist (hängt ab von Nr. 16).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
+<li class="step level-0"><span class="num">18</span> <span class="q">Welche laufenden Zusatzleistungen gibt es?</span><div class="meta">Laufende Zusatzleistungen · Tabelle mit den Spalten Person (Personalnummer oder Name) · Art · Betrag im Monat · seit · endet am · Bemerkung · optional</div></li>
+<li class="step level-0 decision"><span class="num">19</span> <span class="q">Hat jemand angefangen oder aufgehört, oder steht ein Austritt fest?</span><div class="meta">Ein- und Austritte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 20 ab.</div><div class="meta">Neue Beschäftigte brauchen zusätzlich den Personalfragebogen; in bestimmten Branchen muss die Sofortmeldung vor dem ersten Arbeitstag erstattet sein.</div></li>
+<li class="step level-1"><span class="num">20</span> <span class="q">Ein- und Austritte</span><div class="meta">Ein- und Austritte · Tabelle mit den Spalten Person (Personalnummer oder Name) · Eintritt oder Austritt · Datum · Grund des Austritts · Resturlaub zum Auszahlen · Unterlagen bei Eintritt · Bemerkung · Pflicht</div><div class="when">Gefragt erst wenn „Ein- und Austritte“ mit „Ja“ beantwortet ist (hängt ab von Nr. 19).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
+<li class="step level-0 decision"><span class="num">21</span> <span class="q">Hat sich bei einer Person etwas geändert (Anschrift, Krankenkasse, Name …)?</span><div class="meta">Änderungen bei einer Person · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 22 ab.</div><div class="meta">Lohn und Wochenstunden ändern Sie direkt bei den Mitarbeitenden.</div></li>
+<li class="step level-1"><span class="num">22</span> <span class="q">Änderungen</span><div class="meta">Änderungen · Tabelle mit den Spalten Person (Personalnummer oder Name) · Was hat sich geändert? · Neue Angabe · gilt ab · schriftliche Mitteilung der Person liegt vor · Pflicht</div><div class="when">Gefragt erst wenn „Änderungen bei einer Person“ mit „Ja“ beantwortet ist (hängt ab von Nr. 21).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
+<li class="step level-0 decision"><span class="num">23</span> <span class="q">Ist eine Pfändung, eine Vorpfändung oder eine Abtretung eingegangen?</span><div class="meta">Pfändung oder Abtretung eingegangen · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 24 ab.</div><div class="meta">Bitte schicken Sie das Schreiben sofort, nicht erst mit der Monatsmeldung: Die Erklärung als Drittschuldner ist binnen zwei Wochen fällig.</div></li>
+<li class="step level-1"><span class="num">24</span> <span class="q">Angaben zur Pfändung</span><div class="meta">Angaben zur Pfändung · Text · Pflicht</div><div class="when">Gefragt erst wenn „Pfändung oder Abtretung eingegangen“ mit „Ja“ beantwortet ist (hängt ab von Nr. 23).</div><div class="why">Warum: Die Tabelle erscheint nur, wenn es in diesem Monat etwas zu melden gibt; die Ja/Nein-Frage davor hält die Meldung kurz.</div></li>
+<li class="step level-0"><span class="num">25</span> <span class="q">Weitere Hinweise</span><div class="meta">Weitere Hinweise · Text · optional</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>

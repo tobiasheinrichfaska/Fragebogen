@@ -4,10 +4,10 @@ import { join } from 'node:path';
 import { fillPlaceholders } from '../../src/logic/display';
 import { fieldsById, visibleFields } from '../../src/logic/form';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '0.2.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.2.0.json')));
 const fields = fieldsById(form.definition);
 const person = () => ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'person'));
 

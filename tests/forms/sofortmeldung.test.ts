@@ -19,7 +19,7 @@ import {
   startPart,
 } from '../../src/logic/questionnaire';
 import { completenessGaps, transmissionBlockers } from '../../src/logic/requirements';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FIXTURE_FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import {
   NONCE_EMPLOYER,
   NONCE_GUARDIAN,
@@ -30,7 +30,7 @@ import {
   personSealInput,
 } from '../support/sample';
 
-const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')));
 const { definition } = form;
 
 const PERSON = {

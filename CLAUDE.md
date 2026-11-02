@@ -131,8 +131,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/support/sample.ts`                                | Shared fictitious scenarios (person signs, employer seals + chains, Kanzlei/DATEV receipt; second version; minor + guardian on form 1.1.0)                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `tests/golden/`                                          | Golden questionnaires (`beispiel-<version>/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `src/logic/*.test.ts`                                    | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `forms/`                                                 | Form definitions `forms/<id>/<version>.json` (`sofortmeldung/0.1.0.json`, test version), `published.json` (frozen hashes), `README.md` (freeze rules, German)                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `form-drafts/`                                           | Drafts under expert review, same layout (`personalfragebogen`, `steuerfreigabe`, `dienstwagen`, `lohnmeldung` 0.1.0; `sofortmeldung` 0.2.0 with the review of 2026-10-30); never bundled; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                                                                                                                                                                                                                                                    |
+| `forms/`                                                 | Published form definitions `forms/<id>/<version>.json` (`sofortmeldung/0.2.0.json`, `personalfragebogen/0.1.0.json`, both test versions, published 2026-11-01), `published.json` (frozen hashes), `README.md` (freeze and removal rules, German)                                                                                                                                                                                                                                                                                                                                |
+| `form-drafts/`                                           | Drafts under expert review, same layout (`steuerfreigabe`, `dienstwagen`, `lohnmeldung` 0.1.0); never bundled into the public app; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                                                                                                                                                                                                                                                                                                           |
 | `docs/formulare/`                                        | Generated field catalogues `<id>-<version>.md` for every form and draft (`npm run catalogue`; never edit by hand), `README.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `tests/support/formFiles.ts`                             | Reads `forms/` and `form-drafts/` (lazy, so misnamed files are reported)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `tests/forms/formDrafts.test.ts`                         | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -568,9 +568,9 @@ Key design decisions (details in `docs/plan.md`):
 
 ## Known Limitations
 
-- **WebKit full-flow E2E can time out under heavy load** (2026-11-01: one run 14/15 after 3.1 min,
-  the 180 s test timeout hit in `flow.spec.ts:139`; the immediate rerun 15/15 in 58 s). Rerun before
-  suspecting the code; a repeat failure on an idle machine is a real finding.
+- **WebKit full-flow E2E was load-sensitive** (2026-11-01: twice the 180 s timeout with four
+  parallel workers, alone 41 s): `playwright.config.ts` now runs two workers (two consecutive full
+  runs 15/15). A timeout again on an idle machine is a real finding.
 - **E2E covers the release build only** (`npm run test:e2e`, Chromium, Firefox and WebKit under
   `file://`): Sofortmeldung employer → person signs with the mouse → PDF → reopened → Kanzlei →
   PDF for the personnel file, with the no-network / CSP / console / storage guards. The drafts
@@ -625,9 +625,6 @@ Key design decisions (details in `docs/plan.md`):
   and CRLF there, stripped by `passwordFromStdin`). Basic Auth is remembered by the browser's
   password manager, not by a cookie. Apache's `Require ip` sees the connecting address: a changing
   office IP must be updated with `-Einrichten`.
-- **The published Sofortmeldung 0.1.0 is frozen with the old order** (postcode before "Ausland?", no
-  postcode check) and its help text still says „Weiß ich gerade nicht“; fixed in the 0.2.0 draft —
-  publishing 0.2.0 replaces it (test versions may be removed, Tobias 2026-10-31).
 - **No DATEV filing date as receipt yet** (`source: 'datev'`, plan step 13): receipts record when a
   file was read into the app.
 - **Joining questionnaires by decision does not link the parts** — `partsNotLinked` stays until one
@@ -737,9 +734,15 @@ Key design decisions (details in `docs/plan.md`):
   for the employer's own data, never for the person's.
 - **Privacy notice of the Sofortmeldung** is a first version (confirmation click); a detailed
   review is pending (Tobias, 2026-10-29).
-- **Only a test version is published:** Sofortmeldung 0.1.0 may still be deleted before the first
-  release (no real questionnaires yet); no golden files for it until a permanent 1.0.0. Drafts are
-  never bundled into the app.
+- **Published for real use (2026-11-01, Tobias: "öffentlich, auch echte Daten"):** Personalfragebogen
+  0.1.0 and Sofortmeldung 0.2.0 (test versions, marked in the app); Sofortmeldung 0.1.0 withdrawn
+  (kept only as test fixture `tests/fixtures/forms/sofortmeldung/0.1.0.json`). **Retention
+  (Tobias):** finished questionnaires are filed as PDF in DATEV, so a version stays frozen only while
+  questionnaires with it circulate and may then be removed; every file carries its definition, an
+  old one stays readable (no longer vouched for by the app). Privacy notice reviewed before release
+  (no § 26 BDSG; Art. 20 DSGVO limited to contract-based processing; web-server logs named); the
+  sentence for the homepage privacy statement went to Tobias (not in the repo). Drafts are never
+  bundled into the public app.
 - **Versicherungsnummer:** only shape and check digit; area number and the birth-date part are not
   checked (a cross-check with the birth date will be a form rule).
 - **Money:** at most 2 decimals, no negative amounts, at most 12 integer digits.
@@ -835,13 +838,12 @@ Beitragsgruppen as a proposal with pre-questions that exclude uncovered special 
 word order) and 5b (review applied: all birth/address data, preselected yes/no questions, `initial`,
 `masterData`, `partLinks` + `partsNotLinked`), master data as bookmark link (decision C) and 5c
 (interview logic: `interview.ts`, `dependencies.ts`, `deferQuestion`, `question`/`help` texts,
-interview-order rule; Sofortmeldung question and help texts drafted) done. The Sofortmeldung is frozen as
-test version **0.1.0** (`forms/sofortmeldung/0.1.0.json`, catalogue
-`docs/formulare/sofortmeldung-0.1.0.md`).
+interview-order rule; Sofortmeldung question and help texts drafted) done. Published since 2026-11-01:
+Sofortmeldung **0.2.0** and Personalfragebogen **0.1.0** (catalogues in `docs/formulare/`).
 
-**Drafts awaiting Tobias's review (2026-10-30):** Personalfragebogen (reworked for all employment
-variants), Steuerfreigabe (§ 87d AO), Dienstwagen (Überlassung), Lohnmeldung (monthly); catalogues
-in `docs/formulare/`. After approval: freeze as 0.x test versions (move to `forms/` + hash in
+**Drafts awaiting Tobias's review:** Steuerfreigabe (§ 87d AO; 1–n approvers on one device wanted),
+Dienstwagen (Überlassung), Lohnmeldung (monthly; being rebuilt: Vormonat PDF, calendar per person,
+Lohnart rows); catalogues in `docs/formulare/`. After approval: freeze as 0.x test versions (move to `forms/` + hash in
 `published.json`). Open engine ideas from the research: references between tables, age conditions.
 **2026-10-30 (later):** check "Angaben nachträglich ändern" (two weaknesses fixed: summary edit
 returns to the summary, voluntary answers can be taken back; "Zur Zusammenfassung" link),

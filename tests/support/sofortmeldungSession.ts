@@ -10,11 +10,11 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { FORMS_DIR, readJson, registeredFrom } from './formFiles';
+import { FIXTURE_FORMS_DIR, readJson, registeredFrom } from './formFiles';
 import { NONCE_EMPLOYER, NONCE_PERSON, QUESTIONNAIRE_ID, STROKES, note } from './sample';
 
 export const sofortmeldung = registeredFrom(
-  readJson(join(FORMS_DIR, 'sofortmeldung', '0.1.0.json')),
+  readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')),
 );
 
 const must = (result: SessionResult): Session => {

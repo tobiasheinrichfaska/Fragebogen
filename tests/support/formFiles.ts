@@ -8,6 +8,8 @@ import { definitionHash, type RegisteredForm } from '../../src/logic/formRegistr
 
 export const FORMS_DIR = fileURLToPath(new URL('../../forms/', import.meta.url));
 export const DRAFTS_DIR = fileURLToPath(new URL('../../form-drafts/', import.meta.url));
+/** Withdrawn versions kept only to test the engine (e.g. Sofortmeldung 0.1.0). */
+export const FIXTURE_FORMS_DIR = fileURLToPath(new URL('../fixtures/forms/', import.meta.url));
 
 export interface DefinitionFile {
   folder: string;
