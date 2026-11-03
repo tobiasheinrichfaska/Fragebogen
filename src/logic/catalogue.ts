@@ -130,6 +130,8 @@ export const TEXT_FORMAT_LABELS: Readonly<Record<TextFormat, string>> = {
   jahr: 'Jahr (4 Ziffern)',
   ziffern: 'nur Ziffern',
   kfzKennzeichen: 'amtliches Kennzeichen',
+  glaeubigerId: 'Gläubiger-Identifikationsnummer (mit Prüfziffer)',
+  mandatsreferenz: 'Mandatsreferenz (höchstens 35 Zeichen)',
 };
 
 const germanNumber = (value: number) => String(value).replace('.', ',');

@@ -1,14 +1,18 @@
 # Critical User Paths — Fragebogen
 
 **Purpose:** Core workflows that must not break. Audit validates these end-to-end.
-Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, scan, photos) exist (steps 6–8, smoke-tested headless under file://); Kanzlei merge UI follows — every path below is still **open** (end-to-end).
+Status 2026-11-03: all stations exist — filling in, interview, signing, PDF and import (steps 6–8),
+the Kanzlei station with merge, receipts and LuG hand-over (step 9) and the hardened build with E2E
+in three engines (step 10). Sofortmeldung 1.0.0 is in production. A checked box means: covered by
+the named automated test (the audit re-runs them); unchecked paths are guarded by unit tests and
+`manual_tests/` but not yet pinned to one named check here.
 
 ## Offline & privacy (applies to every path)
 
-- [ ] **Open the single HTML file by double-click (file://)** — app renders, no console errors
-- [ ] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest (E2E guard in three engines, `npm run test:e2e`)
-- [ ] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow (E2E guard)
-- [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean
+- [x] **Open the single HTML file by double-click (file://)** — app renders, no console errors (`tests/e2e/flow.spec.ts`, console guard in three engines)
+- [x] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest (`tests/e2e/guards.ts` via `npm run test:e2e`, three engines)
+- [x] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow (`tests/e2e/guards.ts`, `expectClean`)
+- [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean (manual: MT-17; no automated guard yet)
 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
 

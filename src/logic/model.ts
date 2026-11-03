@@ -90,6 +90,8 @@ export const TEXT_FORMATS = [
   'jahr',
   'ziffern',
   'kfzKennzeichen',
+  'glaeubigerId',
+  'mandatsreferenz',
 ] as const;
 export type TextFormat = (typeof TEXT_FORMATS)[number];
 

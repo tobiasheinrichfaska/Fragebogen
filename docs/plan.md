@@ -62,8 +62,11 @@ nachgezogen, berichtet und angehalten.
 
 **Später:**
 
-- weitere Formulare: Minijob/kurzfristig, RV-Befreiung, Auszubildende, Elterneigenschaft (mit
-  Belegdateien), Mandantenaufnahme, Mieterselbstauskunft;
+- weitere Formulare (Stand 03.11.2026): **Kündigung/Austritt** (in Arbeit; nur der Arbeitgeber füllt
+  aus, mit Hinweisen auf typische Fehler – Tobias 03.11.2026), Elterneigenschaft (mit Belegdateien;
+  der Feldtyp `file` fehlt noch), Mandantenaufnahme, Mieterselbstauskunft. **Ohne eigenes Formular:**
+  Minijob/kurzfristig und Auszubildende stecken im Personalfragebogen; der RV-Befreiungsantrag bleibt
+  auf Papier (Tobias 30.10.2026), der Personalfragebogen erfasst nur den Wunsch und das Eingangsdatum;
 - Export in den DATEV-Lohn-Stammdatenimport;
 - QR-Code für den Papierweg;
 - optionaler Internet-Zeitstempel (RFC 3161);

@@ -29,6 +29,9 @@ export type IssueCode =
   | 'telefon.format'
   | 'email.format'
   | 'bic.format'
+  | 'glaeubigerId.format'
+  | 'glaeubigerId.checksum'
+  | 'mandatsreferenz.format'
   | 'steuernummer.format'
   | 'jahr.format'
   | 'ziffern.format'
@@ -92,6 +95,11 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'email.format': 'Bitte eine E-Mail-Adresse wie name@beispiel.de eingeben.',
   'bic.format':
     'Der BIC hat 8 oder 11 Stellen: 4 Buchstaben für die Bank, 2 für das Land, 2 Zeichen für den Ort und gegebenenfalls 3 für die Filiale.',
+  'glaeubigerId.format':
+    'Die Gläubiger-Identifikationsnummer beginnt mit dem Länderkürzel und zwei Prüfziffern; in Deutschland hat sie 18 Stellen, zum Beispiel DE98ZZZ09999999999.',
+  'glaeubigerId.checksum': 'Die Gläubiger-Identifikationsnummer stimmt nicht (Prüfziffer).',
+  'mandatsreferenz.format':
+    "Die Mandatsreferenz hat höchstens 35 Zeichen: Buchstaben ohne Umlaute, Ziffern und + ? / - : ( ) . , ', ohne Leerzeichen.",
   'steuernummer.format':
     'Die Steuernummer hat 10 bis 13 Ziffern, auch mit Schrägstrichen oder Leerzeichen geschrieben.',
   'jahr.format': 'Bitte ein Jahr mit vier Ziffern angeben, zum Beispiel 2025.',

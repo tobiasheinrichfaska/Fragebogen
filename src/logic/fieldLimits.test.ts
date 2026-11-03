@@ -246,3 +246,41 @@ describe('a floating date bound (maxDate "today")', () => {
     );
   });
 });
+
+describe('the SEPA formats (Tobias 2026-11-03: the simple e-signature suffices for a mandate)', () => {
+  it.each<[TextFormat, string, string]>([
+    // Creditor identifier: compact capitals; DE98ZZZ09999999999 is the Bundesbank's test number.
+    ['glaeubigerId', 'de98 zzz 0999 9999 999', 'DE98ZZZ09999999999'],
+    ['glaeubigerId', 'AT92ZZZ00000012345', 'AT92ZZZ00000012345'],
+    // Mandate reference: stored as written (case carries meaning for some creditors).
+    ['mandatsreferenz', 'M-2026/001.KASSE', 'M-2026/001.KASSE'],
+    ['mandatsreferenz', "K'(1):2,3?+a", "K'(1):2,3?+a"],
+    ['mandatsreferenz', 'A'.repeat(35), 'A'.repeat(35)],
+  ])('%s: %j → %j', (textFormat, raw, stored) => {
+    expect(normalizeFieldValue(field('text', { textFormat }), raw)).toEqual(accepted(stored));
+  });
+
+  it.each<[TextFormat, string, IssueCode]>([
+    ['glaeubigerId', 'DE97ZZZ09999999999', 'glaeubigerId.checksum'],
+    ['glaeubigerId', 'DE98ZZZ0999999999', 'glaeubigerId.format'],
+    ['mandatsreferenz', 'A'.repeat(36), 'mandatsreferenz.format'],
+    ['mandatsreferenz', 'MREF 001', 'mandatsreferenz.format'],
+    ['mandatsreferenz', 'MÄNDAT1', 'mandatsreferenz.format'],
+    ['mandatsreferenz', 'MREF_001', 'mandatsreferenz.format'],
+    ['mandatsreferenz', 'M;1', 'mandatsreferenz.format'],
+  ])('%s refuses %j', (textFormat, raw, issue) => {
+    expect(normalizeFieldValue(field('text', { textFormat }), raw)).toEqual(refused(issue));
+  });
+
+  it('is idempotent on its own output', () => {
+    for (const [textFormat, raw] of [
+      ['glaeubigerId', 'de98zzz09999999999'],
+      ['mandatsreferenz', 'M-2026/001'],
+    ] as const) {
+      const definition = field('text', { textFormat });
+      const once = normalizeFieldValue(definition, raw);
+      if (!once.ok) throw new Error(`${textFormat} rejected ${raw}`);
+      expect(normalizeFieldValue(definition, once.value)).toEqual(once);
+    }
+  });
+});

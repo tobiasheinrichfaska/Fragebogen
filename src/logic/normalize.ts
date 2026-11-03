@@ -17,7 +17,13 @@ import type {
   TextFormat,
 } from './model';
 import { listOptionFor, optionsOf, REFERENCE_LISTS, suggestionsOf } from './options';
-import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
+import {
+  checkBetriebsnummer,
+  checkGlaeubigerId,
+  checkIban,
+  checkSvNumber,
+  checkTaxId,
+} from './validators';
 
 export const CANON_VERSION = 1;
 
@@ -243,6 +249,12 @@ const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<
       ? accept(`${match[1] ?? ''}-${match[2] ?? ''} ${match[3] ?? ''}${match[4] ?? ''}`)
       : reject('kennzeichen.format');
   },
+  // SEPA creditor identifier, stored compact in capitals (check digit in validators.ts).
+  glaeubigerId: (text) => checkGlaeubigerId(text.replace(/\s/g, '').toUpperCase()),
+  // SEPA mandate reference: up to 35 characters of the SEPA set, no spaces (German banks' rule
+  // per secondary sources; the EPC set would allow them — the creditor chooses it anyway).
+  mandatsreferenz: (text) =>
+    /^[A-Za-z0-9'+?/:().,-]{1,35}$/.test(text) ? accept(text) : reject('mandatsreferenz.format'),
   // A count in half steps such as the Kinderfreibetragszähler: "4", "4,5" (stored with a comma).
   halbeSchritte: (text) => {
     const match = /^(\d{1,2})(?:[,.]([05])0?)?$/.exec(text.replace(/\s/g, ''));

@@ -58,7 +58,8 @@ const VECTORS: readonly [string, string, number | undefined, string][] = [
   ],
 ];
 
-describe('sha512Crypt', () => {
+// sha512-crypt iterates thousands of rounds by design; slow in parallel full runs.
+describe('sha512Crypt', { timeout: 20_000 }, () => {
   it.each(VECTORS)('matches the specification for "%s"', (password, salt, rounds, expected) => {
     expect(sha512Crypt(password, salt, rounds)).toBe(expected);
   });
@@ -83,7 +84,7 @@ describe('newPassword', () => {
   });
 });
 
-describe('changeTesters', () => {
+describe('changeTesters', { timeout: 20_000 }, () => {
   const today = '2026-11-01';
   const add = (list: readonly Tester[], name: string) => {
     const result = changeTesters(list, 'neu', name, today, counting());

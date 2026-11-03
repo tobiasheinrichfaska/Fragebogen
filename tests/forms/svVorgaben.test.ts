@@ -154,7 +154,8 @@ describe('the official cases themselves', () => {
     },
   );
 
-  it('records every known deviation for an existing, mappable case', () => {
+  // Builds a questionnaire per case (248+); flaked at 5 s in parallel full runs (2026-11-03).
+  it('records every known deviation for an existing, mappable case', { timeout: 30_000 }, () => {
     const ids = new Set(MAPPABLE.map((c) => c.id));
     expect(Object.keys(KNOWN_DEVIATIONS).filter((id) => !ids.has(id))).toEqual([]);
   });

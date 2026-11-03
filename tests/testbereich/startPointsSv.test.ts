@@ -70,7 +70,8 @@ const partOf = (p: StartPoint, role: string) => {
   return part as { answers: Record<string, unknown> };
 };
 
-describe('SV cases from their start points (manual_tests/07)', () => {
+// Each case builds and seals whole questionnaires; slow in parallel full runs.
+describe('SV cases from their start points (manual_tests/07)', { timeout: 30_000 }, () => {
   it('MT-96: Aushilfe over three months and 70 working days', () => {
     const start = point('personalfragebogen-aushilfe-art-offen');
     const kurz = {

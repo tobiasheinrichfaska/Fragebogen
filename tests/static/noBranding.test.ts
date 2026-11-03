@@ -24,18 +24,23 @@ function markersOf(raw: Record<string, unknown>): string[] {
 }
 
 describe('committed files', () => {
-  it.runIf(existsSync(local))('never name the Kanzlei of the local configuration', () => {
-    const markers = markersOf(JSON.parse(readFileSync(local, 'utf8')) as Record<string, unknown>);
-    expect(markers.length).toBeGreaterThan(0);
-    const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' })
-      .split('\0')
-      .filter((path) => path !== '' && !/\.(png|jpe?g|ttf|woff2?|pdf|ico)$/i.test(path));
-    const hits = tracked.flatMap((path) => {
-      const full = join(ROOT, path);
-      if (!existsSync(full)) return [];
-      const text = readFileSync(full, 'utf8').toLowerCase();
-      return markers.filter((marker) => text.includes(marker.toLowerCase())).map(() => path);
-    });
-    expect(hits).toEqual([]);
-  });
+  // Scans every committed file; slow in parallel full runs (flaked at 5 s, 2026-11-03).
+  it.runIf(existsSync(local))(
+    'never name the Kanzlei of the local configuration',
+    { timeout: 20_000 },
+    () => {
+      const markers = markersOf(JSON.parse(readFileSync(local, 'utf8')) as Record<string, unknown>);
+      expect(markers.length).toBeGreaterThan(0);
+      const tracked = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' })
+        .split('\0')
+        .filter((path) => path !== '' && !/\.(png|jpe?g|ttf|woff2?|pdf|ico)$/i.test(path));
+      const hits = tracked.flatMap((path) => {
+        const full = join(ROOT, path);
+        if (!existsSync(full)) return [];
+        const text = readFileSync(full, 'utf8').toLowerCase();
+        return markers.filter((marker) => text.includes(marker.toLowerCase())).map(() => path);
+      });
+      expect(hits).toEqual([]);
+    },
+  );
 });

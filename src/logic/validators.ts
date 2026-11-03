@@ -9,6 +9,8 @@ const SV_NUMBER_SHAPE = /^\d{8}[A-Z]\d{3}$/;
 const SV_NUMBER_WEIGHTS = [2, 1, 2, 5, 7, 1, 2, 1, 2, 1, 2, 1] as const;
 const BETRIEBSNUMMER_SHAPE = /^\d{8}$/;
 const BETRIEBSNUMMER_WEIGHTS = [1, 2, 1, 2, 1, 2, 1] as const;
+const GLAEUBIGER_ID_SHAPE = /^[A-Z]{2}\d{2}[A-Z0-9]{3}[A-Z0-9]{1,28}$/;
+const GLAEUBIGER_ID_DE = /^DE\d{2}[A-Z0-9]{3}\d{11}$/;
 
 /** IBAN (ISO 13616): shape, length for known countries, ISO 7064 MOD 97-10. */
 export function checkIban(iban: string): Checked<string> {
@@ -27,6 +29,17 @@ function mod97(chars: string): number {
     remainder = code <= 57 ? (remainder * 10 + code - 48) % 97 : (remainder * 100 + code - 55) % 97;
   }
   return remainder;
+}
+
+/**
+ * SEPA creditor identifier (Gläubiger-Identifikationsnummer, Deutsche Bundesbank): country, two
+ * check digits computed like the IBAN's (ISO 13616) but without the business code, the business
+ * code (default ZZZ), the national identifier — in Germany 11 digits, 18 characters in all.
+ */
+export function checkGlaeubigerId(id: string): Checked<string> {
+  if (!GLAEUBIGER_ID_SHAPE.test(id)) return reject('glaeubigerId.format');
+  if (id.startsWith('DE') && !GLAEUBIGER_ID_DE.test(id)) return reject('glaeubigerId.format');
+  return mod97(id.slice(7) + id.slice(0, 4)) === 1 ? accept(id) : reject('glaeubigerId.checksum');
 }
 
 /** Steuerliche Identifikationsnummer (§ 139b AO): 11 digits, digit pattern, ISO 7064 MOD 11,10. */

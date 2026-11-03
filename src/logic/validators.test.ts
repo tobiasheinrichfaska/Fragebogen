@@ -1,5 +1,11 @@
 import { IBAN_LENGTHS } from './data/ibanLengths';
-import { checkBetriebsnummer, checkIban, checkSvNumber, checkTaxId } from './validators';
+import {
+  checkBetriebsnummer,
+  checkGlaeubigerId,
+  checkIban,
+  checkSvNumber,
+  checkTaxId,
+} from './validators';
 
 // Deterministic PRNG (mulberry32) for property tests: same cases on every run.
 function prng(seed: number): () => number {
@@ -176,4 +182,40 @@ describe('checkBetriebsnummer', () => {
       expect(checkBetriebsnummer(number)).toEqual({ ok: false, issue: 'betriebsnummer.format' });
     },
   );
+});
+
+describe('checkGlaeubigerId', () => {
+  // DE98ZZZ09999999999 is the official test number of the Deutsche Bundesbank; AT92… was computed
+  // independently per ISO 13616 (98 − mod 97 of national part + country + "00").
+  it.each(['DE98ZZZ09999999999', 'AT92ZZZ00000012345'])('accepts %s', (id) => {
+    expect(checkGlaeubigerId(id)).toEqual({ ok: true, value: id, warnings: [] });
+  });
+
+  it('ignores the business code (positions 5–7), as the Bundesbank prescribes', () => {
+    expect(checkGlaeubigerId('DE98ABC09999999999')).toEqual({
+      ok: true,
+      value: 'DE98ABC09999999999',
+      warnings: [],
+    });
+  });
+
+  it.each(['DE97ZZZ09999999999', 'DE98ZZZ09999999998', 'AT93ZZZ00000012345'])(
+    'rejects the wrong check digits of %s',
+    (id) => {
+      expect(checkGlaeubigerId(id)).toEqual({ ok: false, issue: 'glaeubigerId.checksum' });
+    },
+  );
+
+  it.each([
+    'DE98ZZZ0999999999', // a German one has 11 national digits (17 characters here)
+    'DE98ZZZ099999999991', // 12 national digits
+    'DE98ZZZA9999999999', // a letter in the German national identifier
+    'D898ZZZ09999999999', // a digit in the country code
+    'DE9AZZZ09999999999', // a letter among the check digits
+    'DE98Z_Z09999999999', // an underscore is outside the character set
+    'DE98ZZZ', // no national identifier at all
+    '', // empty
+  ])('rejects the shape of %j', (id) => {
+    expect(checkGlaeubigerId(id)).toEqual({ ok: false, issue: 'glaeubigerId.format' });
+  });
 });
