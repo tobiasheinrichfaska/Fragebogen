@@ -15,24 +15,23 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ANLAGE_16 } from '../support/anlage16';
 import { readJson } from '../support/formFiles';
-import { assess, shownValue, svForm, type Answers, type Assessment } from '../support/svCase';
+import {
+  actual,
+  assess,
+  DIGITS,
+  expectedBgr,
+  masked,
+  shownValue,
+  svForm,
+  wanted,
+  type Answers,
+  type Aspect,
+  type Assessment,
+  type Expected,
+} from '../support/svCase';
 
 const FIXTURE_DIR = fileURLToPath(new URL('../fixtures/sv-vorgaben/', import.meta.url));
 const PROOF = ['am Original geprüft', 'abgeleitet', 'nicht verifiziert'] as const;
-const DIGITS = ['kv', 'rv', 'av', 'pv'] as const;
-
-interface Expected {
-  pgr: string;
-  bgr: string;
-  uebergangsbereich?: string;
-  /**
-   * What a test must not check hard: a digit (kv, rv, av, pv — e.g. KV 1 or 3 for a short fixed term)
-   * or the Übergangsbereich.
-   */
-  unsicher?: string[];
-  spaeter?: { ab: string; pgr: string; bgr: string }[];
-  zusatzmeldung?: { an: string; pgr: string; bgr: string };
-}
 
 interface Case {
   file: string;
@@ -64,15 +63,6 @@ const resultOf = (c: Case): Assessment => {
   return found;
 };
 
-/** The expected Beitragsgruppen with "?" where the case leaves a digit open. */
-const expectedBgr = (c: Case) =>
-  [...c.erwartet.bgr]
-    .map((digit, i) => (c.erwartet.unsicher?.includes(DIGITS[i] ?? '') ? '?' : digit))
-    .join('');
-const masked = (value: string | undefined, pattern: string) =>
-  [...(value ?? '')].map((digit, i) => (pattern[i] === '?' ? '?' : digit)).join('');
-
-type Aspect = 'pgr' | 'bgr' | 'uebergang';
 interface Deviation {
   /** What the app proposes today. */
   app: Partial<Record<Aspect, string>>;
@@ -98,29 +88,10 @@ const KNOWN_DEVIATIONS: Record<string, Deviation> = {
   'KK-TK-04': { gruppe: 'K', app: { pgr: '101', bgr: '1111' } },
 };
 
-function actual(r: Assessment): Record<Aspect, string> {
-  return {
-    pgr: r.pgr?.status === 'proposed' ? (r.pgr.value ?? '–') : '–',
-    bgr: r.bgr?.status === 'proposed' ? (r.bgr.value ?? '–') : '–',
-    uebergang: r.uebergang?.status === 'proposed' ? (r.uebergang.value ?? '–') : '–',
-  };
-}
-
-function wanted(c: Case): Partial<Record<Aspect, string>> {
-  return {
-    pgr: c.erwartet.pgr,
-    bgr: expectedBgr(c),
-    ...(c.erwartet.uebergangsbereich === undefined ||
-    c.erwartet.unsicher?.includes('uebergangsbereich')
-      ? {}
-      : { uebergang: c.erwartet.uebergangsbereich }),
-  };
-}
-
 /** The aspects in which the app differs from the expectation, with the app's value. */
 function deviationsOf(c: Case): Partial<Record<Aspect, string>> {
   const app = actual(resultOf(c));
-  const expected = wanted(c);
+  const expected = wanted(c.erwartet);
   const found: Partial<Record<Aspect, string>> = {};
   if (app.pgr !== expected.pgr) found.pgr = app.pgr;
   if (masked(app.bgr, expected.bgr ?? '') !== expected.bgr) found.bgr = app.bgr;
@@ -219,12 +190,12 @@ describe('the app on the official cases', () => {
     ['bgr', 'Beitragsgruppen'],
     ['uebergang', 'Übergangsbereich'],
   ] as const) {
-    const withAspect = cases.filter(([, , c]) => wanted(c)[aspect] !== undefined);
+    const withAspect = cases.filter(([, , c]) => wanted(c.erwartet)[aspect] !== undefined);
     it.each(withAspect)(`%s (%s): ${label} as in the source`, (id, _t, c) => {
       const known = KNOWN_DEVIATIONS[id]?.app[aspect];
       const app = actual(resultOf(c))[aspect];
       if (known === undefined) {
-        const expected = wanted(c)[aspect] ?? '';
+        const expected = wanted(c.erwartet)[aspect] ?? '';
         expect(aspect === 'bgr' ? masked(app, expected) : app).toBe(expected);
       } else {
         // Known and open: the app must still say exactly this, so any change is noticed.
@@ -367,12 +338,10 @@ describe('variations of the official cases', () => {
       const app = actual(result);
       if (variation.expected) {
         const e = variation.expected(base.erwartet);
-        const expectedBgr = [...e.bgr]
-          .map((d, i) => (e.unsicher?.includes(DIGITS[i] ?? '') ? '?' : d))
-          .join('');
-        expect({ pgr: app.pgr, bgr: masked(app.bgr, expectedBgr) }).toEqual({
+        const pattern = expectedBgr(e);
+        expect({ pgr: app.pgr, bgr: masked(app.bgr, pattern) }).toEqual({
           pgr: e.pgr,
-          bgr: expectedBgr,
+          bgr: pattern,
         });
       } else {
         expect(app).toEqual(actual(resultOf(base)));

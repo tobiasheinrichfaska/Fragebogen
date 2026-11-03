@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-251 Fälle aus 4 Datei(en): 243 abbildbar, 8 nicht abbildbar; 242 gleich, 1 abweichend. 319 abgeleitete Varianten, 39 Grenzfälle.
+255 Fälle aus 4 Datei(en): 247 abbildbar, 8 nicht abbildbar; 246 gleich, 1 abweichend. 324 abgeleitete Varianten, 39 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -70,7 +70,11 @@
 | GFR-40B | GfR 2026, Bsp. 40 | Aushilfe, mit früheren Aushilfen über drei Monate | 101 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 0 | gleich |
 | GFR-41 | GfR 2026, Bsp. 41 | Rentner springt gelegentlich ein | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
 | GFR-42 | GfR 2026, Bsp. 42 | Regelmäßige Einsätze an fünf Tagen im Monat | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| GFR-43a | GfR 2026, Bsp. 43a | Urlaubsvertretung 02.05.–08.07. nach zwei Aushilfen: über drei Monate | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| GFR-44B | GfR 2026, Bsp. 44 | Zweite Aushilfe 03.08.–30.09. für 600 €: nicht kurzfristig, aber Minijob | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 · ÜB 0 | gleich |
 | GFR-45B | GfR 2026, Bsp. 45 | Zweite Aushilfe im Jahr über drei Monate, über der Grenze | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| GFR-46 | GfR 2026, Bsp. 46 | Aushilfe 01.12.–28.02. nach Aushilfe 01.06.–31.08.: über drei Monate, auch über den Jahreswechsel | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| GFR-47 | GfR 2026, Bsp. 47 | Aushilfe 01.12.–28.02. nach Aushilfe 01.07.–31.08.: kurzfristig, auch über den Jahreswechsel | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 (p) · 0000 (p) · ÜB 0 (p) | gleich |
 | GFR-48 | GfR 2026, Bsp. 48 | Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
 | ST-01 | RS Studenten, Bsp. 1 | Student 25 Std./Woche unbefristet | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
 | ST-02A | RS Studenten, Bsp. 2 | Werkstudentenjob 18 Std. neben Minijob 7 Std.: zusammen über 20 Std. | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
@@ -151,7 +155,7 @@
 | KK-TK-43 | TK FI Rentner 2026, Folie 32 | Altersteilrente nach Erreichen der Regelaltersgrenze | 101 · 1121 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1121 (p) · ÜB 1 | gleich |
 | KK-TK-44 | TK FI Rentner 2026, Folie 33 | Vorgezogene Altersvollrente, Minijob ab 01.05.2026, Regelaltersgrenze im Oktober 2026 | 109 · 6100 · ÜB 0; ab 01.11.2026: 109 · 6500 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
 | KK-TK-45 | TK FI Rentner 2026, Folie 34 | Regelaltersgrenze im April 2026 erreicht, ohne Rente in Vollzeit weiter | 101 · 1111 · ÜB 0; ab 01.05.2026: 101 · 1121 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 0 | gleich |
-| KK-TK-46 | TK FI Rentner 2026, Folie 26 | Pensionär nach der Regelaltersgrenze als Lehrkraft, 1.250 € | 119 · 0320; UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | 119 · 0320 (p) · ÜB 1 | gleich |
+| KK-TK-46 | TK FI Rentner 2026, Folie 26 | Pensionär nach der Regelaltersgrenze als Lehrkraft, 1.250 € | 119 · 0320 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 119 · 0320 (p) · ÜB 1 | gleich |
 | KK-TK-47 | TK Webinar-FAQ Rentner 2026 | Privat versicherter Altersvollrentner nach der Regelaltersgrenze | 119 · 0320 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 119 · 0320 (p) · ÜB 0 | gleich |
 | KK-TK-48 | TK FI Rentner 2026, Folie 17/18 | Rente wegen teilweiser Erwerbsminderung, 5 Std. täglich | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
 | KK-TK-49 | TK FI Rentner 2026, Bsp. 1 | Rentnerin (64) mit vorgezogener Vollrente im Minijob mit 603 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |

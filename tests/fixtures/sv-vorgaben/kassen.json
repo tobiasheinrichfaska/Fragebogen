@@ -2569,7 +2569,7 @@
         "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
         "av": "frei, Arbeitgeberanteil (halber Beitrag)",
         "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
-        "unsicher": ["uebergangsbereich"]
+        "uebergangsbereich": "1"
       },
       "person": {
         "geburtsdatum": "1959-02-10",
@@ -2594,7 +2594,7 @@
         "agBeschaeftigungsart": "svpflichtig",
         "agBefristet": false
       },
-      "hinweis": "Neue Kombination gegenüber D-119P (dort vor der Regelaltersgrenze, AV pflichtig): nach der Regelaltersgrenze AV-Arbeitgeberanteil (2). Private KV angenommen (Beihilfe). Ob das Kennzeichen Übergangsbereich bei einer in allen Zweigen versicherungsfreien Beschäftigung zu setzen ist, ist offen. Die Quelle (Folie 27) sagt: „Ist die Altersgrenze noch nicht erreicht, so besteht … Rentenversicherungspflicht in vollem Umfang“ – gemeint ist die beamtenrechtliche Altersgrenze der Versorgung, nicht die Regelaltersgrenze (vgl. § 5 Abs. 4 S. 1 Nr. 2 SGB VI)."
+      "hinweis": "Neue Kombination gegenüber D-119P (dort vor der Regelaltersgrenze, AV pflichtig): nach der Regelaltersgrenze AV-Arbeitgeberanteil (2). Private KV angenommen (Beihilfe). Kennzeichen Übergangsbereich 1 (1.250 €): Die Kennzeichnung richtet sich nach der RV und ist auch dann zu setzen, wenn dort wegen Versicherungsfreiheit nur der Arbeitgeberanteil nach § 172 Abs. 1 SGB VI anfällt (RS Übergangsbereich 20.12.2022, Ziff. 5; seit 03.11.2026 hart geprüft). Die Quelle (Folie 27) sagt: „Ist die Altersgrenze noch nicht erreicht, so besteht … Rentenversicherungspflicht in vollem Umfang“ – gemeint ist die beamtenrechtliche Altersgrenze der Versorgung, nicht die Regelaltersgrenze (vgl. § 5 Abs. 4 S. 1 Nr. 2 SGB VI)."
     },
     {
       "id": "KK-TK-47",

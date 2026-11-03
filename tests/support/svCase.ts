@@ -63,3 +63,46 @@ export function assess(person: Answers, employer: Answers): Assessment {
 /** "109 (p)" style, "–" without a proposal. */
 export const shownValue = (result: DerivationResult | undefined) =>
   result?.status === 'proposed' ? `${result.value ?? ''}${result.check ? ' (p)' : ''}` : '–';
+
+export const DIGITS = ['kv', 'rv', 'av', 'pv'] as const;
+
+/** The expectation of a case file (tests/fixtures/sv-vorgaben*). */
+export interface Expected {
+  pgr: string;
+  bgr: string;
+  uebergangsbereich?: string;
+  /**
+   * What a test must not check hard: a digit (kv, rv, av, pv — e.g. KV 1 against 3 where the sources
+   * differ) or the Übergangsbereich.
+   */
+  unsicher?: string[];
+  spaeter?: { ab: string; pgr: string; bgr: string }[];
+  zusatzmeldung?: { an: string; pgr: string; bgr: string };
+}
+
+export type Aspect = 'pgr' | 'bgr' | 'uebergang';
+
+/** The expected Beitragsgruppen with "?" where the case leaves a digit open. */
+export const expectedBgr = (e: Expected) =>
+  [...e.bgr].map((digit, i) => (e.unsicher?.includes(DIGITS[i] ?? '') ? '?' : digit)).join('');
+
+export const masked = (value: string | undefined, pattern: string) =>
+  [...(value ?? '')].map((digit, i) => (pattern[i] === '?' ? '?' : digit)).join('');
+
+export function actual(r: Assessment): Record<Aspect, string> {
+  return {
+    pgr: r.pgr?.status === 'proposed' ? (r.pgr.value ?? '–') : '–',
+    bgr: r.bgr?.status === 'proposed' ? (r.bgr.value ?? '–') : '–',
+    uebergang: r.uebergang?.status === 'proposed' ? (r.uebergang.value ?? '–') : '–',
+  };
+}
+
+export function wanted(e: Expected): Partial<Record<Aspect, string>> {
+  return {
+    pgr: e.pgr,
+    bgr: expectedBgr(e),
+    ...(e.uebergangsbereich === undefined || e.unsicher?.includes('uebergangsbereich')
+      ? {}
+      : { uebergang: e.uebergangsbereich }),
+  };
+}

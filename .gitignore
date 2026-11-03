@@ -34,5 +34,7 @@ config/kanzlei.local.json
 config/export.local.json
 # Tests of the test page that name DATEV's wage types or fields — local only (Tobias 2026-11-01)
 config/tests.local.md
+# SV cases from a licensed commercial specialist portal — Kanzlei-internal, local only (2026-11-03)
+tests/fixtures/sv-vorgaben-lokal/
 # SFTP upload: server, user, pinned host key, DPAPI-encrypted password, upload log — local only
 deploy/.local/

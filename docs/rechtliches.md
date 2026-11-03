@@ -186,6 +186,17 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
   dort fragt der Fragebogen. Lohnsteuerbescheinigungen früherer Arbeitgeber helfen bei sonstigen
   Bezügen (§ 39b Abs. 3 S. 2 EStG: ohne sie wird hochgerechnet); sie stehen deshalb nur in der
   Liste der Arbeitspapiere.
+- **Zählung der Zeitgrenzen (Prüfung 03.11.2026, GfR 2026 am Text gelesen):** Eine einzelne
+  Beschäftigung darf nicht über drei Monate dauern, gezählt in Kalender- und Zeitmonaten (B 2.3); ein
+  Zeitmonat ist eine Monatsfrist nach § 26 Abs. 1 SGB X mit §§ 187 Abs. 2, 188 Abs. 2 und 3 BGB (2.5. bis
+  1.6.). Beim Zusammenrechnen mehrerer Zeiträume gelten 90 Kalendertage; volle Kalendermonate zählen
+  30 Tage, Teilmonate die tatsächlichen Tage, und ein Zeitraum ohne vollen Kalendermonat, aber mit einem
+  Zeitmonat, zählt für diesen ebenfalls 30 Tage; Kalendermonate gehen vor (B 2.3.2, Rechentabellen der
+  Beispiele 16, 40, 45, 48). So auch die Minijob-Zentrale (FAQ „Mehrere kurzfristige Beschäftigungen“) und
+  das AOK-Fachportal („Kurzfristige Beschäftigung“, das zusätzlich die ältere Regel nennt, dass bei
+  lauter vollen Kalendermonaten in Monaten gezählt wird – mit 30 Tagen je Monat dasselbe Ergebnis). Die
+  Geringfügigkeitsgrenze ist auch bei einer Beschäftigung von weniger als einem Monat ein Monatswert
+  (B 2.3.3; BSG 05.12.2017 – B 12 R 10/15 R); eine anteilige Grenze gibt es nicht mehr.
 - **Prüfung der SV-Beurteilung (30.10.2026, am Gesetzestext geprüft):** Gegen die
   Versicherungsfreiheits- und Befreiungstatbestände geprüft; ergänzt wurden:
   - **Befreiung von der Krankenversicherungspflicht** (§ 8 Abs. 1 SGB V): Befreite bleiben

@@ -2353,6 +2353,133 @@
       "hinweis": "Abbildung: Arbeitgeber wählt „kurzfristige Aushilfe“, unbefristet, mit Rahmenvereinbarung; das Ende 31.12. ist nur eingetragen, weil die Frage Pflicht ist."
     },
     {
+      "id": "GFR-43a",
+      "titel": "Urlaubsvertretung 02.05.–08.07. nach zwei Aushilfen: über drei Monate",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 43a (zu B 2.3.2), S. 124–125",
+        "kurz": "GfR 2026, Bsp. 43a"
+      },
+      "sachverhalt": "Hausfrau, Urlaubsvertretung 02.05.–08.07. (Sechstagewoche, 68 Kalendertage/58 Arbeitstage); vorher 02.01.–25.01. (Fünftagewoche, 24/17) und 31.03.–15.04. (Sechstagewoche, 16/13), beide kurzfristig (110) → zusammen 108 Kalendertage, über drei Monate → versicherungspflichtig in allen Zweigen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-01-02",
+            "vbBis": "2026-01-25",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "17"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-03-31",
+            "vbBis": "2026-04-15",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "13"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-02",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-08",
+        "agKurzfristigArbeitstage": "58",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-08"
+      },
+      "angepasst": "Die Quelle nennt kein Entgelt; 1.200 € angenommen (über der Geringfügigkeitsgrenze, damit die Zeitgrenze entscheidet).",
+      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 68 Tage ohne Hauptbeschäftigung – GfR uneinheitlich, siehe GFR-45B. Übergangsbereich (1.200 €) abgeleitet."
+    },
+    {
+      "id": "GFR-44B",
+      "titel": "Zweite Aushilfe 03.08.–30.09. für 600 €: nicht kurzfristig, aber Minijob",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 44 (zu B 2.3.2, B 3.2, C 2.1, C 3.2), zweite Beschäftigung, S. 126",
+        "kurz": "GfR 2026, Bsp. 44"
+      },
+      "sachverhalt": "Familienversicherte Verkäuferin, befristet 02.05.–28.06. (57 Kalendertage/49 Arbeitstage, 1.200 €, kurzfristig 110) und 03.08.–30.09. (59/50, 600 €) → die zweite Beschäftigung überschreitet zusammen mit der ersten die Zeitgrenze, ist aber geringfügig entlohnt → 109 / 6-1-0-0.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-05-02",
+            "vbBis": "2026-06-28",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "49",
+            "vbEntgeltMonat": "1200.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-03",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-30",
+        "agKurzfristigArbeitstage": "50",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Gegenstück zu GFR-45B (dort 1.350 € → versicherungspflichtig). Der Arbeitgeber wählt „kurzfristig“; keine RV-Befreiung beantragt."
+    },
+    {
       "id": "GFR-45B",
       "titel": "Zweite Aushilfe im Jahr über drei Monate, über der Grenze",
       "quelle": {
@@ -2411,6 +2538,122 @@
         "agBefristetBis": "2026-09-30"
       },
       "hinweis": "KV laut Beispiel 1 trotz Befristung auf 59 Tage, ohne Hauptbeschäftigung daneben. Die GfR sind hier uneinheitlich: Beispiele 4a und 4b nennen bei ebenso kurzer Befristung KV 3. Die App folgt § 44 Abs. 2 Satz 1 Nr. 3 und § 243 SGB V sowie dem Besprechungsergebnis vom 12.06.2008 (TOP 3) und schlägt KV 3 mit Prüfhinweis vor."
+    },
+    {
+      "id": "GFR-46",
+      "titel": "Aushilfe 01.12.–28.02. nach Aushilfe 01.06.–31.08.: über drei Monate, auch über den Jahreswechsel",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 46 (zu B 2.3.2), S. 127",
+        "kurz": "GfR 2026, Bsp. 46"
+      },
+      "sachverhalt": "Hausfrau, ab 01.12. bis 28.02. des Folgejahres befristete Aushilfe für 1.200 €; im laufenden Jahr schon 01.06.–31.08. (mehr als 70 Arbeitstage) kurzfristig beschäftigt → im Kalenderjahr zusammen über drei Monate, nicht kurzfristig; bleibt über den Jahreswechsel versicherungspflichtig (keine getrennte Beurteilung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-06-01",
+            "vbBis": "2026-08-31",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "78"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-12-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2027-02-28",
+        "agKurzfristigArbeitstage": "61",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2027-02-28"
+      },
+      "hinweis": "Jahr 2026 gewählt (die Quelle nennt keins). KV 1: auf 90 Tage befristet. Arbeitstage angenommen; Übergangsbereich abgeleitet."
+    },
+    {
+      "id": "GFR-47",
+      "titel": "Aushilfe 01.12.–28.02. nach Aushilfe 01.07.–31.08.: kurzfristig, auch über den Jahreswechsel",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil J, Beispiel 47 (zu B 2.3.2), S. 127–128",
+        "kurz": "GfR 2026, Bsp. 47"
+      },
+      "sachverhalt": "Hausfrau, ab 01.12. bis 28.02. des Folgejahres befristete Aushilfe für 1.200 €; im laufenden Jahr schon 01.07.–31.08. beschäftigt → im Kalenderjahr zusammen nicht über drei Monate, kurzfristig; bleibt über den Jahreswechsel frei, weil auf nicht mehr als drei Monate befristet.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-04-12",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-07-01",
+            "vbBis": "2026-08-31",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "44"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-12-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2027-02-28",
+        "agKurzfristigArbeitstage": "61",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2027-02-28"
+      },
+      "hinweis": "Jahr 2026 gewählt; Art der Vorbeschäftigung (kurzfristig) und Arbeitstage angenommen. Zählung: Juli und August als volle Kalendermonate je 30 Tage plus Dezember 30 = 90 Tage, nicht über drei Monate."
     },
     {
       "id": "GFR-48",
