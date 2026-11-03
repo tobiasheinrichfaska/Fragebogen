@@ -5,7 +5,7 @@ merkt sie nur an.** Längen begrenzt schon das Eingabefeld. Alle Regeln sind zus
 getestet (`src/logic/fieldLimits.test.ts`, `tests/forms/sofortmeldung030.test.ts`); hier geht es um
 das, was man am Bildschirm sieht.
 
-**Umgebung:** Sofortmeldung ab Fassung 0.3.0 (Startseite: „Personalfragebogen: Angaben für die
+**Umgebung:** Sofortmeldung ab Fassung 0.4.0, im Testbereich die neueste (Startseite: „Personalfragebogen: Angaben für die
 Sofortmeldung“, Fassung unten auf der Startseite bzw. in der Zusammenfassung). Für MT-108 die Fassung
 mit den Entwürfen (im Testbereich schon geladen). Nur erfundene Daten.
 
@@ -62,14 +62,16 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 **Schritte:**
 
 1. `31.12.1875` eingeben und **„Weiter“**.
-2. `01.01.2027` eingeben und **„Weiter“**.
+2. Das Datum von morgen eingeben und **„Weiter“**; danach das Datum von heute.
 3. `17.05.1990` eingeben und **„Weiter“**.
 
 **Erwartet:**
 
 - Schritt 1: Unter dem Feld steht rot **„Das Datum liegt zu weit zurück – frühestens 01.01.1876.“**;
   die Frage bleibt stehen.
-- Schritt 2: **„Das Datum liegt zu spät – spätestens 31.12.2026.“**
+- Schritt 2: Bei morgen **„Das Datum liegt zu spät – spätestens heute.“**; das Datum von heute wird
+  angenommen. _Nicht offensichtlich:_ Die Grenze wandert mit dem Kalender – sie gilt ab Fassung 0.4.0
+  der Sofortmeldung (in 0.3.0 war sie fest der 31.12.2026).
 - Schritt 3: Angenommen, es geht weiter.
 
 ---

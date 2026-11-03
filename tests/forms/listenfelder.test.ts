@@ -1,17 +1,17 @@
 // Official DEÜV lists in the drafts (Tobias 2026-10-30): state of a foreign address, name prefix and
 // suffix are chosen from the tables; street and house number apart. Country of birth and nationality
 // (Tobias 2026-11-01): yes/no for Germany first, then a search list where free text is allowed with a
-// warning. The same ids in the Sofortmeldung 0.3.0 and the Personalfragebogen, so they are taken
+// warning. The same ids in the newest Sofortmeldung and the Personalfragebogen, so they are taken
 // over. Fictitious data.
 import { join } from 'node:path';
 import { listCodesOf, listEntryOf, listOf } from '../../src/logic/options';
 import { prefillFrom } from '../../src/logic/prefill';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, newestPublished, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
-const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.3.0.json')));
+const sofort = newestPublished('sofortmeldung');
 
 const LISTS = {
   anschriftStaat: 'deuevStaatenAusland2025',
@@ -21,7 +21,7 @@ const LISTS = {
 
 describe.each([
   ['Personalfragebogen', personal],
-  ['Sofortmeldung 0.3.0', sofort],
+  [`Sofortmeldung ${sofort.definition.version}`, sofort],
 ])('%s', (_name, form) => {
   const fields = new Map(
     form.definition.sections.flatMap((s) => s.fields).map((f) => [f.id, f] as const),

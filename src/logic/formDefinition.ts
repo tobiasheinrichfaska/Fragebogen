@@ -44,6 +44,8 @@ export const OPTION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 /** Explainer video path below the configured address: lower-case segments, e.g. `a/b-c`. */
 export const EXPLAINER_PATH = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,3}$/;
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
+/** A fixed day or `today` (minDate/maxDate). */
+const DATE_BOUND_SHAPE = /^(?:\d{4}-\d{2}-\d{2}|today)$/;
 const MAX_CONDITION_DEPTH = 8;
 import { MAX_NUMBER_DECIMALS, normalizeFieldValue } from './normalize';
 import { optionsOf, REFERENCE_LISTS } from './options';
@@ -507,7 +509,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     o[key] === undefined ? undefined : decodeNumber(d, o[key], `${path}.${key}`),
   );
   const [minDate, maxDate] = (['minDate', 'maxDate'] as const).map((key) =>
-    o[key] === undefined ? undefined : d.string(o[key], `${path}.${key}`, ISO_DATE_SHAPE),
+    o[key] === undefined ? undefined : d.string(o[key], `${path}.${key}`, DATE_BOUND_SHAPE),
   );
   const because = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
   const fromRole = o.fromRole === undefined ? undefined : decodeFromRole(d, o.fromRole, path);
@@ -1006,11 +1008,16 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
       const day = field[key];
       if (day === undefined) continue;
       if (field.type !== 'date') report(`${path}.${key}`, `only date fields have ${key}`);
-      else if (!isIsoDate(day)) report(`${path}.${key}`, `"${day}" is not a calendar date`);
+      else if (day !== 'today' && !isIsoDate(day)) {
+        report(`${path}.${key}`, `"${day}" is not a calendar date`);
+      }
     }
+    // Against `today` there is nothing to compare until the day itself.
     if (
       field.minDate !== undefined &&
       field.maxDate !== undefined &&
+      field.minDate !== 'today' &&
+      field.maxDate !== 'today' &&
       field.minDate > field.maxDate
     ) {
       report(`${path}.maxDate`, 'lies before "minDate"');

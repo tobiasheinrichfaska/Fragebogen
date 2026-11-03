@@ -160,7 +160,7 @@ export interface IssueBounds {
 const germanNumber = (value: number | undefined) =>
   value === undefined ? '' : String(value).replace('.', ',');
 const germanDay = (value: string | undefined) =>
-  value === undefined ? '' : value.split('-').reverse().join('.');
+  value === undefined ? '' : value === 'today' ? 'heute' : value.split('-').reverse().join('.');
 
 /** The German message of an issue, with the field's bounds filled in (e.g. „Höchstens 30 Zeichen.“). */
 export function issueMessage(issue: IssueCode, bounds: IssueBounds = {}): string {

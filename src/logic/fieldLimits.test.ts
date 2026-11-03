@@ -221,3 +221,28 @@ describe('DEÜV character rules (only hints)', () => {
     expect(normalizeFieldValue(name, 'Müller')).toEqual(accepted('Müller'));
   });
 });
+
+describe('a floating date bound (maxDate "today")', () => {
+  const birth = field('date', { minDate: '1876-01-01', maxDate: 'today' });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('takes today and refuses tomorrow, whatever the year', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2031, 6, 1, 10));
+    expect(normalizeFieldValue(birth, '01.07.2031')).toEqual(accepted('2031-07-01'));
+    expect(normalizeFieldValue(birth, '02.07.2031')).toEqual(refused('date.tooLate'));
+    expect(normalizeFieldValue(birth, '31.12.1875')).toEqual(refused('date.tooEarly'));
+  });
+
+  it('names "heute" in the message', () => {
+    expect(issueMessage('date.tooLate', { maxDate: 'today' })).toBe(
+      'Das Datum liegt zu spät – spätestens heute.',
+    );
+    expect(issueMessage('date.tooEarly', { minDate: 'today' })).toBe(
+      'Das Datum liegt zu weit zurück – frühestens heute.',
+    );
+  });
+});

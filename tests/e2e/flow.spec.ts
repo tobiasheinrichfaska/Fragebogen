@@ -2,18 +2,26 @@
 // the Sofortmeldung, the person signs with the mouse, the PDF is created and opened again, and the
 // Kanzlei reads it in and writes the PDF for the personnel file. Guards: no request leaves the
 // device, no CSP violation, no console error, nothing left in the browser's storage.
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { expectClean, guard } from './guards';
 
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
-const FORM = JSON.parse(
-  readFileSync(
-    fileURLToPath(new URL('../../forms/sofortmeldung/0.3.0.json', import.meta.url)),
-    'utf8',
-  ),
-) as {
+// The app starts the newest published version; its labels drive the steps.
+const SOFORT_DIR = fileURLToPath(new URL('../../forms/sofortmeldung/', import.meta.url));
+const versionKey = (file: string) =>
+  file
+    .slice(0, -'.json'.length)
+    .split('.')
+    .map((part) => part.padStart(6, '0'))
+    .join('.');
+const NEWEST = readdirSync(SOFORT_DIR)
+  .filter((file) => file.endsWith('.json'))
+  .sort((a, b) => (versionKey(a) < versionKey(b) ? -1 : 1))
+  .at(-1);
+const FORM = JSON.parse(readFileSync(join(SOFORT_DIR, NEWEST ?? ''), 'utf8')) as {
   sections: {
     fields: {
       id: string;

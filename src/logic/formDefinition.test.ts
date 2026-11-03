@@ -1331,3 +1331,17 @@ describe('field limits (validation package 2026-11-03)', () => {
     });
   });
 });
+
+describe('date bounds with "today" (Tobias 2026-11-03)', () => {
+  it('accepts "today" on either side, and nothing else that is not a day', () => {
+    const d = definition();
+    Object.assign(fieldAt(d, 0, 1), { minDate: '1876-01-01', maxDate: 'today' });
+    expect(checkFormDefinition(d)).toEqual([]);
+    Object.assign(fieldAt(d, 0, 1), { minDate: 'today', maxDate: '2000-01-01' });
+    expect(checkFormDefinition(d)).toEqual([]);
+    const result = parseFormDefinition(
+      rawWith(['sections', 0, 'fields', 1, 'maxDate'], 'tomorrow'),
+    );
+    expect(result.ok).toBe(false);
+  });
+});

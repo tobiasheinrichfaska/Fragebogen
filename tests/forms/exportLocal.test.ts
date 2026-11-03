@@ -21,12 +21,13 @@ import {
   FORMS_DIR,
   readJson,
   registeredFrom,
+  newestPublished,
 } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const FILE = join(__dirname, '..', '..', 'config', 'export.local.json');
 const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
-const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.3.0.json')));
+const sofort = newestPublished('sofortmeldung');
 const sofortFrozen = registeredFrom(
   readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')),
 );

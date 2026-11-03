@@ -2,6 +2,7 @@
 // form; verification hashes the stored values as they are. A later change of these rules can then
 // never flip an old verdict — it requires a new CANON_VERSION instead.
 import { normalizeCalendar } from './calendar';
+import { boundDay } from './clock';
 import { evaluateCondition } from './conditions';
 import { isIsoMonth, parseIsoDate } from './dates';
 import { deuevHints } from './deuevZeichen';
@@ -148,8 +149,12 @@ function withinBounds(value: string, field: FieldDefinition): Checked<string> {
 /** The earliest and latest day of a date field. */
 function withinDates(checked: Checked<IsoDate>, field: FieldDefinition): Checked<IsoDate> {
   if (!checked.ok) return checked;
-  if (field.minDate !== undefined && checked.value < field.minDate) return reject('date.tooEarly');
-  if (field.maxDate !== undefined && checked.value > field.maxDate) return reject('date.tooLate');
+  if (field.minDate !== undefined && checked.value < boundDay(field.minDate)) {
+    return reject('date.tooEarly');
+  }
+  if (field.maxDate !== undefined && checked.value > boundDay(field.maxDate)) {
+    return reject('date.tooLate');
+  }
   return checked;
 }
 

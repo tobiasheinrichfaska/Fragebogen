@@ -174,7 +174,7 @@
           "role": "person",
           "type": "date",
           "minDate": "1876-01-01",
-          "maxDate": "2026-12-31",
+          "maxDate": "today",
           "label": "Geburtsdatum",
           "question": "Wann sind Sie geboren?",
           "help": "Zum Beispiel 17.05.1990.",

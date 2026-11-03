@@ -4,6 +4,8 @@
 
 /** Calendar date `YYYY-MM-DD`. Never parsed through `Date` (UTC off-by-one). */
 export type IsoDate = string;
+/** A fixed day or `today`: the device's calendar day when a value is entered or sealed. */
+export type DateBound = IsoDate | 'today';
 /** Lower-case hex SHA-256 digest. */
 export type Sha256Hex = string;
 export type RoleId = string;
@@ -228,10 +230,10 @@ export interface FieldDefinition {
   step?: number;
   /** `number` only: above this a hint asks to check the value (e.g. more than 10 hours a day). */
   warnAbove?: number;
-  /** `date` only: the earliest day. */
-  minDate?: IsoDate;
-  /** `date` only: the latest day. */
-  maxDate?: IsoDate;
+  /** `date` only: the earliest day, or `today`. */
+  minDate?: DateBound;
+  /** `date` only: the latest day, or `today` (e.g. a birth date never lies in the future). */
+  maxDate?: DateBound;
   /** `number` only: unit shown after the value, e.g. "Std.", "km", "kWh". */
   unit?: string;
   /** `number` only: decimal places, 0 (default), 1 or 2; stored with exactly that many. */

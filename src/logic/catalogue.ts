@@ -14,6 +14,7 @@ import { optionsOf, REFERENCE_LISTS } from './options';
 import { describeValidity } from './validity';
 import type {
   AcknowledgementKind,
+  DateBound,
   FieldDefinition,
   FieldType,
   FormDefinition,
@@ -132,6 +133,7 @@ export const TEXT_FORMAT_LABELS: Readonly<Record<TextFormat, string>> = {
 };
 
 const germanNumber = (value: number) => String(value).replace('.', ',');
+const germanBound = (bound: DateBound) => (bound === 'today' ? 'heute' : formatGermanDate(bound));
 
 function fieldKind(field: FieldDefinition): string {
   let kind = FIELD_TYPE_LABELS[field.type];
@@ -150,8 +152,8 @@ function fieldKind(field: FieldDefinition): string {
     if (field.step !== undefined) kind += `, in Schritten von ${germanNumber(field.step)}`;
     if (field.warnAbove !== undefined) kind += `, Hinweis über ${germanNumber(field.warnAbove)}`;
   }
-  if (field.minDate !== undefined) kind += `, frühestens ${formatGermanDate(field.minDate)}`;
-  if (field.maxDate !== undefined) kind += `, spätestens ${formatGermanDate(field.maxDate)}`;
+  if (field.minDate !== undefined) kind += `, frühestens ${germanBound(field.minDate)}`;
+  if (field.maxDate !== undefined) kind += `, spätestens ${germanBound(field.maxDate)}`;
   if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
   const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
   if (list)

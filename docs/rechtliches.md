@@ -360,8 +360,8 @@ begrenzt schon das Eingabefeld; die Prüfung lehnt Längeres zusätzlich ab.
 - **Arbeitszeit:** höchstens 24 Stunden am Tag, 168 in der Woche, 366 Arbeitstage im Jahr
   (unmöglich darüber); ein Hinweis über 10 Stunden am Tag und 48 Stunden in der Woche (§ 3 ArbZG: werktäglich 8,
   höchstens 10 Stunden; sechs Werktage).
-- **Geburtsdatum** frühestens 150 Jahre vor dem Jahr der Formularfassung und spätestens an ihrem
-  Ende (feste Daten je Fassung: 01.01.1876 bis 31.12.2026).
+- **Geburtsdatum** frühestens 01.01.1876 und nie nach dem Tag der Eingabe – eine fließende Grenze
+  (Tobias 03.11.2026; ab Sofortmeldung 0.4.0).
 
 ## Quellen
 

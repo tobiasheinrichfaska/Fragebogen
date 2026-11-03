@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseFormDefinition } from '../../src/logic/formDefinition';
-import { definitionHash, type RegisteredForm } from '../../src/logic/formRegistry';
+import { compareVersions, definitionHash, type RegisteredForm } from '../../src/logic/formRegistry';
 
 export const FORMS_DIR = fileURLToPath(new URL('../../forms/', import.meta.url));
 export const DRAFTS_DIR = fileURLToPath(new URL('../../form-drafts/', import.meta.url));
@@ -45,4 +45,15 @@ export function registeredFrom(raw: unknown): RegisteredForm {
   const parsed = parseFormDefinition(raw);
   if (!parsed.ok) throw new Error(JSON.stringify(parsed.issues));
   return { definition: parsed.definition, definitionHash: definitionHash(parsed.definition) };
+}
+
+/** The newest published version of a form — for tests that mean "the current Sofortmeldung". */
+export function newestPublished(id: string): RegisteredForm {
+  const versions = readdirSync(join(FORMS_DIR, id))
+    .filter((file) => file.endsWith('.json'))
+    .map((file) => file.slice(0, -'.json'.length))
+    .sort(compareVersions);
+  const newest = versions.at(-1);
+  if (newest === undefined) throw new Error(`no published version of "${id}"`);
+  return registeredFrom(readJson(join(FORMS_DIR, id, `${newest}.json`)));
 }
