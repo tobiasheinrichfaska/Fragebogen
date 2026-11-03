@@ -218,8 +218,26 @@ export interface FieldDefinition {
   /**
    * Key of a master datum (e.g. `betriebsnummer`) that a station may remember on its own device and
    * reuse in every form with the same key. Only for the station's own data, never the person's.
+   * A conditional field is filled as soon as its question becomes available.
    */
   masterData?: string;
+  /**
+   * Master-data keys by case instead of one `masterData` key, e.g. the wage-tax policy for Minijobs
+   * and for short-term helpers on the same question: the first case whose condition holds over the
+   * role's answers names the key.
+   */
+  masterDataCases?: MasterDataCase[];
+}
+
+/** One case of `FieldDefinition.masterDataCases`. */
+export interface MasterDataCase {
+  key: string;
+  /** Heading of the entry on the link screen, e.g. "Lohnsteuer bei Minijobs". */
+  label: string;
+  /** Over earlier fields of the same role. */
+  when: Condition;
+  /** `choice` only: the answers that fit this case (all options when left out). */
+  options?: string[];
 }
 
 /** A further page of a table (`FieldDefinition.pages`). */

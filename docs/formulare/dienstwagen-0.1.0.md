@@ -26,7 +26,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Firma des Arbeitgebers (agFirma)<br>Hilfe: So, wie sie auf dem Briefkopf steht. | Arbeitgeber | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | Pflicht | Zuordnung |
+| Firma des Arbeitgebers (agFirma)<br>Hilfe: So, wie sie auf dem Briefkopf steht. | Arbeitgeber | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung |
 | Familienname der beschäftigten Person (agFamilienname) | Arbeitgeber | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
 | Vornamen der beschäftigten Person (agVorname) | Arbeitgeber | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
 | Personalnummer (agPersonalnummer)<br>Hilfe: Nur wenn schon vergeben. | Arbeitgeber | Text | immer | optional | Zuordnung in der Lohnabrechnung |

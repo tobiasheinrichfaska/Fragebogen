@@ -139,7 +139,13 @@ function fieldKind(field: FieldDefinition): string {
     kind += `, Vorschläge aus der Liste „${hints.title}“ (${hints.options.length} Einträge; ${hints.source}); freie Eingabe mit Hinweis`;
   if (field.computed) kind += ` (berechnet: ${field.computed.fn})`;
   if (field.initial !== undefined) kind += `; vorbelegt: ${initialLabel(field, field.initial)}`;
-  if (field.masterData !== undefined) kind += '; Stammdatum, kann auf dem Gerät gemerkt werden';
+  if (field.masterData !== undefined)
+    kind += `; Stammdatum „${field.masterData}“, kann im Stammdaten-Link gemerkt werden`;
+  if (field.masterDataCases !== undefined) {
+    kind += `; Stammdatum je Fall, kann im Stammdaten-Link gemerkt werden: ${field.masterDataCases
+      .map((entry) => `„${entry.label}“ (${entry.key})`)
+      .join(', ')}`;
+  }
   if (field.carryOver === false) kind += '; wird nicht aus einer anderen Datei übernommen';
   if (field.carryOver === 'nextMonth') kind += '; wird übernommen als der folgende Monat';
   if (field.carryRowsIf) {

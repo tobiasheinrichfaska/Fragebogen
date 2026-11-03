@@ -1,7 +1,12 @@
 // Start: new questionnaire (latest published version of each form), open a file, delete all data.
 import { useRef } from 'react';
 import { APP_CONFIG } from '../config';
-import { isTestVersion, type FormRegistry, type RegisteredForm } from '../logic/formRegistry';
+import {
+  isTestVersion,
+  latestForms,
+  type FormRegistry,
+  type RegisteredForm,
+} from '../logic/formRegistry';
 import { DRAFT_HASHES } from '../io/bundledForms';
 import { describeValidity } from '../logic/validity';
 import { Card } from './common';
@@ -19,14 +24,20 @@ interface Props {
   onNew: (form: RegisteredForm) => void;
   onOpen: (file: File) => void;
   onKanzlei: () => void;
+  onMasterDataLink: () => void;
   onClearAll: () => void;
 }
 
-export function StartScreen({ registry, onNew, onOpen, onKanzlei, onClearAll }: Props) {
+export function StartScreen({
+  registry,
+  onNew,
+  onOpen,
+  onKanzlei,
+  onMasterDataLink,
+  onClearAll,
+}: Props) {
   const input = useRef<HTMLInputElement>(null);
-  const latest = [...new Set(registry.forms.map((form) => form.definition.id))]
-    .map((id) => registry.latest(id))
-    .filter((form): form is RegisteredForm => form !== undefined);
+  const latest = latestForms(registry);
   return (
     <>
       <Card title="Neuer Fragebogen">
@@ -72,6 +83,15 @@ export function StartScreen({ registry, onNew, onOpen, onKanzlei, onClearAll }: 
         />
         <button type="button" onClick={() => input.current?.click()}>
           Datei öffnen …
+        </button>
+      </Card>
+      <Card title="Stammdaten-Link">
+        <p>
+          Angaben zum Betrieb, etwa Firma und Betriebsnummer, in einem Link merken. Als Lesezeichen
+          angelegt, sind sie bei jedem neuen Fragebogen schon eingetragen.
+        </p>
+        <button type="button" onClick={onMasterDataLink}>
+          Stammdaten-Link erstellen oder ändern …
         </button>
       </Card>
       <Card title="Kanzlei">

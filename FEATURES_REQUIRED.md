@@ -41,6 +41,7 @@ Status 2026-10-30: filling in, interview, signing, PDF and import (data pages, s
 - [ ] **Same-device flow (Gerätemodus)** — "Wer füllt jetzt aus?" picks the role; role locked, nothing stored, wiped at the end
 - [ ] **Either station first** — employer first (person sees the employer data read-only and signs over it) or person first (employer confirms the person part); the questionnaire is complete only when the parts are linked (`partsNotLinked` otherwise), and passing on to the next station is never blocked by a missing part
 - [ ] **Employer master data via bookmark link** — "Link mit meinen Stammdaten" puts company name and Betriebsnummer into the link; opening the bookmark fills them in; a broken link or a value in the wrong format is shown with its reason
+- [ ] **Create or change the master-data link** — "Stammdaten-Link erstellen oder ändern" (start page, Kanzlei station) lists every key once, reads a pasted link, rejects a wrong value at its entry, names what the firm data exclude, and gives the link; a conditional question (Lohnsteuer bei Minijobs) is filled from the link when it appears and follows the kind of employment until someone changes it; the summary's new link keeps the keys of other forms
 - [ ] **Preselected answers** — e.g. "Geburtsname gleich Familienname?" starts with Ja and can be changed
 
 - [ ] **Validity of a form version** — every draft states the period of its reference date (e.g. first working day); a date outside warns at input, blocks signing and passing on; start screen, role choice, PDF and docs show it

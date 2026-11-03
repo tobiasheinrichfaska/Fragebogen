@@ -60,6 +60,22 @@ export function masterDataFragment(data: MasterData): MasterDataLinkResult {
     : { ok: true, fragment };
 }
 
+/**
+ * Where a link made for someone else points: this page when it is hosted, otherwise (a file on
+ * this computer) the configured app address — a file path would lead nowhere on another device.
+ */
+export function masterDataLinkBase(page: string, appAddress: string | undefined): string {
+  const address = page.split('#')[0] ?? '';
+  return address.startsWith('https:') || appAddress === undefined ? address : appAddress;
+}
+
+/** The part of a pasted link or fragment from "#" on (the whole text without one). */
+export function fragmentOf(pasted: string): string {
+  const text = pasted.trim();
+  const at = text.indexOf('#');
+  return at === -1 ? text : text.slice(at);
+}
+
 export type ParsedMasterDataLink =
   | { ok: true; data: MasterData | undefined }
   | { ok: false; issue: MasterDataLinkIssue; detail: readonly string[] };

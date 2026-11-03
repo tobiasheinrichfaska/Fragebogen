@@ -23,6 +23,7 @@ import {
   type FormDefinition,
   type FormValidity,
   type InfoBlock,
+  type MasterDataCase,
   type MatchKey,
   type RoleCondition,
   type RoleDefinition,
@@ -357,6 +358,7 @@ export const FIELD_KEYS = [
   'computed',
   'initial',
   'masterData',
+  'masterDataCases',
   'rowLabel',
   'carryOver',
   'carryRowsIf',
@@ -382,6 +384,20 @@ function decodePage(d: Decoder, raw: unknown, path: string): TablePage | undefin
   const columns = d.array(o.columns, `${path}.columns`, (v, p) => d.string(v, p, ID), 1);
   if (id === undefined || question === undefined || columns === undefined) return undefined;
   return { id, question, ...(help === undefined ? {} : { help }), columns };
+}
+
+function decodeMasterDataCase(d: Decoder, raw: unknown, path: string): MasterDataCase | undefined {
+  const o = d.object(raw, path, ['key', 'label', 'when', 'options']);
+  if (!o) return undefined;
+  const key = d.string(o.key, `${path}.key`, ID);
+  const label = d.string(o.label, `${path}.label`);
+  const when = decodeCondition(d, o.when, `${path}.when`, 0);
+  const options =
+    o.options === undefined
+      ? undefined
+      : d.array(o.options, `${path}.options`, (v, p) => d.string(v, p, OPTION_ID), 1);
+  if (key === undefined || label === undefined || when === undefined) return undefined;
+  return { key, label, when, ...(options === undefined ? {} : { options }) };
 }
 
 function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | undefined {
@@ -431,6 +447,15 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
       : d.string(o.initial, `${path}.initial`, OPTION_ID);
   const masterData =
     o.masterData === undefined ? undefined : d.string(o.masterData, `${path}.masterData`, ID);
+  const masterDataCases =
+    o.masterDataCases === undefined
+      ? undefined
+      : d.array(
+          o.masterDataCases,
+          `${path}.masterDataCases`,
+          (v, p) => decodeMasterDataCase(d, v, p),
+          1,
+        );
   const rowLabel = o.rowLabel === undefined ? undefined : d.string(o.rowLabel, `${path}.rowLabel`);
   const carryOver =
     o.carryOver === undefined
@@ -508,6 +533,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(computed === undefined ? {} : { computed }),
     ...(initial === undefined ? {} : { initial }),
     ...(masterData === undefined ? {} : { masterData }),
+    ...(masterDataCases === undefined ? {} : { masterDataCases }),
     ...(rowLabel === undefined ? {} : { rowLabel }),
     ...(carryOver === undefined ? {} : { carryOver }),
     ...(carryRowsIf === undefined ? {} : { carryRowsIf }),
@@ -891,7 +917,13 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
       report(`${path}.id`, '"rowId" is reserved for the row id');
     // A column belongs to its table's role; its only condition is a row condition (showIf on
     // earlier columns of the same row, see rowConditions), and it has no other extras.
-    for (const key of ['requiredIf', 'initial', 'masterData', 'computed'] as const) {
+    for (const key of [
+      'requiredIf',
+      'initial',
+      'masterData',
+      'masterDataCases',
+      'computed',
+    ] as const) {
       if (isColumn && field[key] !== undefined)
         report(`${path}.${key}`, `table columns cannot have ${key}`);
     }
@@ -1297,18 +1329,60 @@ function interviewOrder({ definition, report }: CheckContext): void {
   });
 }
 
-/** A master-data key names one top-level text-like field per form. */
-function masterDataKeys({ fields, report }: CheckContext): void {
+/**
+ * A master-data key names one top-level single-value field per form. Cases name their key by a
+ * condition over earlier fields of the same role (the link is filled in form order) and may narrow
+ * a choice to the answers that fit the case.
+ */
+function masterDataKeys({ definition, fields, report }: CheckContext): void {
   const seen = new Map<string, string>();
+  const claim = (key: string, fieldId: string, at: string) => {
+    const other = seen.get(key);
+    if (other !== undefined) report(at, `key "${key}" is already used by "${other}"`);
+    else seen.set(key, fieldId);
+  };
+  const position = new Map(
+    definition.sections.flatMap((section) => section.fields).map((field, i) => [field.id, i]),
+  );
   for (const { field, path, isColumn } of fields.values()) {
-    if (field.masterData === undefined) continue;
-    const at = `${path}.masterData`;
+    if (field.masterData === undefined && field.masterDataCases === undefined) continue;
+    const at = `${path}.${field.masterData === undefined ? 'masterDataCases' : 'masterData'}`;
     if (isColumn || !MASTER_DATA_TYPES.includes(field.type)) {
       report(at, 'only single values (top-level, no lists or tables) can be master data');
     }
-    const other = seen.get(field.masterData);
-    if (other !== undefined) report(at, `key "${field.masterData}" is already used by "${other}"`);
-    else seen.set(field.masterData, field.id);
+    if (field.masterData !== undefined && field.masterDataCases !== undefined) {
+      report(`${path}.masterDataCases`, 'use either "masterData" or "masterDataCases", not both');
+    }
+    if (field.masterData !== undefined) claim(field.masterData, field.id, at);
+    const own = new Set(optionsOf(field).map((option) => option.id));
+    field.masterDataCases?.forEach((entry, i) => {
+      const casePath = `${path}.masterDataCases[${i}]`;
+      claim(entry.key, field.id, `${casePath}.key`);
+      forEachLeaf(entry.when, `${casePath}.when`, (leaf, leafPath) => {
+        const target = fields.get(leaf.field);
+        if (!target) return report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
+        if (target.field.role !== field.role || target.isColumn) {
+          report(`${leafPath}.field`, 'must be a top-level field of the same role');
+        }
+        if ((position.get(leaf.field) ?? 0) >= (position.get(field.id) ?? 0)) {
+          report(`${leafPath}.field`, `"${leaf.field}" must come before "${field.id}"`);
+        }
+        const problem = leafProblem(leaf, target.field);
+        if (problem) report(`${leafPath}.${problem.at}`, problem.message);
+      });
+      if (entry.options === undefined) return;
+      if (field.type !== 'choice') {
+        report(`${casePath}.options`, 'only choice fields narrow their options');
+        return;
+      }
+      const unknown = entry.options.filter((id) => !own.has(id));
+      if (unknown.length > 0) {
+        report(`${casePath}.options`, `"${unknown.join('", "')}" is not an option id`);
+      }
+      if (new Set(entry.options).size !== entry.options.length) {
+        report(`${casePath}.options`, 'lists an option twice');
+      }
+    });
   }
 }
 

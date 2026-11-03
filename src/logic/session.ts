@@ -19,7 +19,7 @@ import {
   type InterviewSummary,
 } from './interview';
 import { ISSUE_MESSAGES, type IssueCode } from './issues';
-import { applyMasterData, type MasterDataSkip } from './masterData';
+import { applyMasterData, type MasterData, type MasterDataFills } from './masterData';
 import { displayValue } from './display';
 import { activeExclusions } from './hints';
 import type {
@@ -74,6 +74,11 @@ export interface Session {
   arrivals: Readonly<Record<Sha256Hex, Arrival>>;
   /** Changes since the last saved file. */
   dirty: boolean;
+  /** The master-data link of this visit and what it filled per role (never saved). */
+  masterData?: {
+    record: MasterData;
+    fills: Readonly<Record<RoleId, MasterDataFills>>;
+  };
 }
 
 export type SessionResult =
@@ -459,7 +464,15 @@ function activeRole(session: Session): RoleId | SessionResult {
 export function answer(session: Session, fieldId: string, raw: unknown): SessionResult {
   const role = activeRole(session);
   if (typeof role !== 'string') return role;
-  return fromTransition(session, setValue(session.questionnaire, session.form, role, fieldId, raw));
+  const result = fromTransition(
+    session,
+    setValue(session.questionnaire, session.form, role, fieldId, raw),
+  );
+  if (!result.ok || !session.masterData) return result;
+  // An answer may open a question the link can fill (e.g. the wage tax of a Minijob).
+  const filled = fillMasterData(result.session, session.masterData.record);
+  if (!filled.ok) return result;
+  return ok(filled.session, [...result.warnings, ...filled.skipped]);
 }
 
 export function defer(session: Session, fieldId: string): SessionResult {
@@ -574,22 +587,47 @@ export function markSaved(session: Session): Session {
   return { ...session, dirty: false };
 }
 
-/** Fills remembered master data (bookmark link) into the active role's draft. */
+/**
+ * Fills remembered master data (bookmark link) into the active role's draft and keeps the record
+ * in the session, so later answers fill the questions they open. Refused values come back as
+ * German lines ("Feld: Grund").
+ */
 export function fillMasterData(
   session: Session,
-  stored: unknown,
-): { ok: true; session: Session; applied: string[]; skipped: MasterDataSkip[] } | { ok: false } {
-  if (session.role === undefined) return { ok: false };
-  const result = applyMasterData(session.questionnaire, session.form, session.role, stored);
+  stored: MasterData,
+): { ok: true; session: Session; applied: string[]; skipped: string[] } | { ok: false } {
+  const role = session.role;
+  if (role === undefined) return { ok: false };
+  const fills = session.masterData?.fills ?? {};
+  const result = applyMasterData(session.questionnaire, session.form, role, stored, fills[role]);
   if (!result.ok) return { ok: false };
+  const skipped = result.skipped.map((skip) => {
+    const { message, detail } = transitionMessage(session.form, {
+      ok: false,
+      code: skip.code,
+      detail: skip.detail,
+    });
+    return `${detail[0] ?? skip.fieldId}: ${message}`;
+  });
+  const changed = result.applied.length > 0 || result.cleared.length > 0;
   return {
     ok: true,
     session: {
       ...session,
       questionnaire: result.questionnaire,
-      dirty: result.applied.length > 0 || session.dirty,
+      dirty: changed || session.dirty,
+      masterData: { record: stored, fills: { ...fills, [role]: result.fills } },
     },
     applied: result.applied,
-    skipped: result.skipped,
+    skipped,
   };
+}
+
+/** Whether the answer to this question is still the one the master-data link filled in. */
+export function filledFromLink(session: Session, fieldId: FieldId): boolean {
+  const role = session.role;
+  if (role === undefined) return false;
+  const fill = session.masterData?.fills[role]?.[fieldId];
+  const value = currentPart(session.questionnaire, role)?.data[fieldId] ?? null;
+  return fill?.state === 'filled' && JSON.stringify(fill.value) === JSON.stringify(value);
 }

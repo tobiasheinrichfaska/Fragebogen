@@ -99,7 +99,7 @@ describe('formCatalogue', () => {
     const markdown = formCatalogue(linkedForm(), 'draft');
     expect(lineWith(markdown, '(weitereBeschaeftigung)')).toContain('| Ja/Nein; vorbelegt: Nein |');
     expect(lineWith(markdown, '(agFirma)')).toContain(
-      '| Text; Stammdatum, kann auf dem Gerät gemerkt werden |',
+      '| Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden |',
     );
     expect(markdown).toContain(
       '## Verknüpfung der Teile\n\n- Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, ' +

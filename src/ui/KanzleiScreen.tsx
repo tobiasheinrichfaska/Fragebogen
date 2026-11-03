@@ -30,6 +30,7 @@ import {
   type MergeConflict,
   type MergeGroup,
 } from '../logic/merge';
+import type { MasterData } from '../logic/masterData';
 import type { FormDefinition, MergeDecision } from '../logic/model';
 import { BLOCKER_MESSAGES } from '../logic/requirements';
 import { sessionFromFile } from '../logic/session';
@@ -37,10 +38,13 @@ import { formatLocalDateTime } from '../logic/time';
 import { Banner, Card, type BannerMessage } from './common';
 import { FormView } from './FormView';
 import { LugExport } from './LugExport';
+import { MasterDataLinkForm } from './MasterDataLinkForm';
 import { createPdf, openAnyFile } from './pdfActions';
 
 interface Props {
   registry: FormRegistry;
+  /** The master-data link the app was opened with, as the start of a Mandant's link. */
+  remembered?: MasterData;
   onBack: () => void;
 }
 
@@ -55,7 +59,7 @@ const PART_STATUS = {
   draft: 'Entwurf',
 } as const;
 
-export function KanzleiScreen({ registry, onBack }: Props) {
+export function KanzleiScreen({ registry, remembered, onBack }: Props) {
   const [inbox, setInbox] = useState<Inbox>(EMPTY_INBOX);
   const [reports, setReports] = useState<FileReport[]>([]);
   const [collected, setCollected] = useState<Uint8Array[]>([]);
@@ -215,6 +219,16 @@ export function KanzleiScreen({ registry, onBack }: Props) {
             ))}
           </ul>
         )}
+      </Card>
+
+      <Card title="Stammdaten-Link für einen Mandanten">
+        <details className="master-link-form">
+          <summary>Stammdaten-Link erstellen oder ändern</summary>
+          <MasterDataLinkForm
+            registry={registry}
+            {...(remembered ? { initial: remembered } : {})}
+          />
+        </details>
       </Card>
 
       {merged.proposals.length > 0 && (

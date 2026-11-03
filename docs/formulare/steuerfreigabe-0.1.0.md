@@ -27,7 +27,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Mandantennummer (mandantennummer)<br>Frage: Mandantennummer | Kanzlei | Text; Stammdatum, kann auf dem Gerät gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
+| Mandantennummer (mandantennummer)<br>Frage: Mandantennummer | Kanzlei | Text; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
 | Vor- und Familienname der Mandantin oder des Mandanten (mandantNameKanzlei) | Kanzlei | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Mandantin oder des Mandanten |
 | Steuerjahr (steuerjahr)<br>Hilfe: Zum Beispiel 2025. | Kanzlei | Text | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Erklärungen (erklaerungen)<br>Frage: Welche Erklärungen werden freigegeben?<br>Hilfe: Je Steuerjahr eine Freigabe; mehrere Erklärungen desselben Jahres sind möglich. | Kanzlei | Mehrfachauswahl: Einkommensteuer, Umsatzsteuer, Gewerbesteuer, Feststellungserklärung, sonstige Erklärung | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |

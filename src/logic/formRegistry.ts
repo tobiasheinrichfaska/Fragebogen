@@ -174,6 +174,13 @@ export function buildFormRegistry(
 }
 
 /** Registry over already trusted forms (the bundled ones), without the published-list check. */
+/** The latest version of every form, in the order the forms first appear. */
+export function latestForms(registry: FormRegistry): RegisteredForm[] {
+  return [...new Set(registry.forms.map((form) => form.definition.id))]
+    .map((id) => registry.latest(id))
+    .filter((form): form is RegisteredForm => form !== undefined);
+}
+
 export function registryOf(forms: readonly RegisteredForm[]): FormRegistry {
   const byHash = new Map(forms.map((form) => [form.definitionHash, form]));
   return {

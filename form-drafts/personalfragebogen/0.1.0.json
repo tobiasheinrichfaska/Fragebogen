@@ -4095,7 +4095,8 @@
           "question": "In welchem Betrieb oder welcher Betriebsstätte arbeitet die Person?",
           "help": "Nur, wenn Sie mehrere Betriebe oder Betriebsstätten haben.",
           "required": false,
-          "purpose": "Zuordnung zu Betrieb und Betriebsnummer; Lohnsteuer-Betriebsstätte"
+          "purpose": "Zuordnung zu Betrieb und Betriebsnummer; Lohnsteuer-Betriebsstätte",
+          "masterData": "betriebsstaette"
         },
         {
           "id": "agAbteilung",
@@ -4113,7 +4114,8 @@
           "question": "Zu welcher Gefahrtarifstelle Ihrer Berufsgenossenschaft gehört die Tätigkeit?",
           "help": "Steht im Veranlagungsbescheid der Berufsgenossenschaft; nur nötig, wenn Sie mehrere Gefahrtarifstellen haben.",
           "required": false,
-          "purpose": "Lohnnachweis an die Unfallversicherung (§ 99 SGB VII)"
+          "purpose": "Lohnnachweis an die Unfallversicherung (§ 99 SGB VII)",
+          "masterData": "gefahrtarifstelle"
         },
         {
           "id": "agBeziehung",
@@ -4409,6 +4411,26 @@
               "id": "pruefen",
               "label": "Bitte die lohnabrechnende Stelle prüfen lassen"
             }
+          ],
+          "masterDataCases": [
+            {
+              "key": "lohnsteuerMinijob",
+              "label": "Lohnsteuer bei Minijobs",
+              "when": {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              },
+              "options": ["elstam", "pauschal2", "pauschal20", "pruefen"]
+            },
+            {
+              "key": "lohnsteuerAushilfe",
+              "label": "Lohnsteuer bei kurzfristigen Aushilfen",
+              "when": {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              "options": ["elstam", "pauschal25", "pauschal5", "pruefen"]
+            }
           ]
         },
         {
@@ -4424,7 +4446,25 @@
             "in": ["pauschal2", "pauschal20", "pauschal25", "pauschal5"]
           },
           "because": "Nur eine Pauschalsteuer kann auf die Person abgewälzt werden; sie mindert dann nicht die Bemessungsgrundlage (§ 40 Abs. 3 S. 2, § 40a Abs. 5 EStG).",
-          "purpose": "Lohnabrechnung bei Pauschalsteuer (§ 40 Abs. 3, § 40a Abs. 5 EStG)"
+          "purpose": "Lohnabrechnung bei Pauschalsteuer (§ 40 Abs. 3, § 40a Abs. 5 EStG)",
+          "masterDataCases": [
+            {
+              "key": "abwaelzungMinijob",
+              "label": "Abwälzung der Pauschalsteuer bei Minijobs",
+              "when": {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
+            },
+            {
+              "key": "abwaelzungAushilfe",
+              "label": "Abwälzung der Pauschalsteuer bei kurzfristigen Aushilfen",
+              "when": {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              }
+            }
+          ]
         },
         {
           "id": "agKostenstelle",
@@ -5018,7 +5058,8 @@
           "label": "Tarifvertrag",
           "question": "Gilt ein Tarifvertrag? Wenn ja, welcher?",
           "required": false,
-          "purpose": "Entgelt, Urlaub und Zuschläge nach Tarif"
+          "purpose": "Entgelt, Urlaub und Zuschläge nach Tarif",
+          "masterData": "tarifvertrag"
         },
         {
           "id": "agZuschlaege",

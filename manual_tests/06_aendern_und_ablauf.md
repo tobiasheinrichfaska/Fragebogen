@@ -233,6 +233,103 @@ Projekt.
 
 ---
 
+## MT-99: Stammdaten-Link erstellen und sehen, was er ausschließt
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“).
+
+**Schritte:**
+
+1. Auf der Startseite **„Stammdaten-Link erstellen oder ändern …“** klicken.
+2. Bei der Firma `Beispiel Gastro GmbH` eingeben, bei der Betriebsnummer `1234 567X`.
+3. Die Betriebsnummer auf `1234 5678` berichtigen.
+4. Bei **„Lohnsteuer bei Minijobs“** „pauschal 2 % (Minijob)“ wählen, bei **„Abwälzung der
+   Pauschalsteuer bei Minijobs“** „Ja“; bei **„Lohnsteuer bei kurzfristigen Aushilfen“** „pauschal
+   25 % (kurzfristige Aushilfe)“, bei der Abwälzung für Aushilfen „Nein“; bei der Mandantennummer
+   `99999`.
+5. Beim Privathaushalt „Ja“ wählen; danach bei der besonderen Betriebsart „knappschaftlicher
+   Betrieb (Bergbau)“; danach bei der Seeschifffahrt „Ja“.
+6. Alle drei zurücksetzen (Privathaushalt „Nein“, Betriebsart „Nein, keine davon“, Seeschifffahrt
+   „Nein“) und unter „Ihr Link“ **„Kopieren“** klicken.
+7. Zur Startseite, **„Eingänge zusammenführen …“** öffnen, unten **„Stammdaten-Link erstellen oder
+   ändern“** aufklappen, den kopierten Link bei „Vorhandenen Link einfügen“ einfügen und
+   **„Einlesen“** klicken.
+
+**Erwartet:**
+
+- Schritt 1: Jede Angabe steht nur einmal da, auch wenn mehrere Formulare sie nutzen („Genutzt in:
+  …“). _Nicht offensichtlich:_ In der öffentlichen Fassung gibt es nur Firma und Betriebsnummer;
+  Lohnsteuer, Tarifvertrag und die Angaben der Monatsmeldung erscheinen nur mit den Entwürfen
+  (Testbereich).
+- Schritt 2: Unter der Betriebsnummer steht der Grund der Ablehnung, und unter „Ihr Link“ steht
+  „Bitte erst die markierten Angaben berichtigen.“ statt eines Links.
+- Schritt 3: Der Link erscheint mit „… von 2.000 Zeichen“.
+- Schritt 4: Bei „Lohnsteuer bei Minijobs“ gibt es nur ELStAM, pauschal 2 %, pauschal 20 % und
+  „prüfen lassen“, bei den Aushilfen nur ELStAM, 25 %, 5 % und „prüfen lassen“.
+- Schritt 5: Ein Kasten „Was diese Angaben bewirken“ erscheint:
+  - beim Privathaushalt „Je nach den Angaben zur Person macht die App keine Vorschläge – Minijob oder
+    kurzfristige Beschäftigung im Privathaushalt …“;
+  - bei der Knappschaft „Die App macht für diesen Betrieb keine Vorschläge – Beschäftigung in einem
+    knappschaftlichen Betrieb …“;
+  - bei der Seeschifffahrt „… Beschäftigung an Bord eines Seeschiffs …“ (je nach Person).
+- Schritt 6: Der Kasten verschwindet.
+- Schritt 7: „Link eingelesen: … Angaben“, alle Antworten aus Schritt 2–4 stehen wieder da. Die
+  Liste der Eingänge bleibt unverändert.
+
+---
+
+## MT-100: Lohnsteuer-Regel aus dem Link erscheint mit der Frage
+
+**Einstieg:** Sie öffnen den Link aus MT-99 in einem neuen Tab und beginnen einen neuen Fragebogen
+„Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
+**Voraussetzungen:** MT-99 (der kopierte Link).
+
+**Schritte:**
+
+1. Bis **„Wie ist die Beschäftigung vorgesehen?“** gehen und „Minijob (bis 603 € im Monat)“ wählen.
+2. Bei **„Wie soll die Lohnsteuer erhoben werden?“** und bei der Abwälzung jeweils **„Weiter“**.
+3. Zurück zur Beschäftigungsart, „kurzfristige Aushilfe …“ wählen und wieder bis zur Lohnsteuer
+   gehen.
+4. Die Lohnsteuer auf „nach den Lohnsteuermerkmalen (ELStAM)“ ändern; zurück zur Beschäftigungsart
+   und wieder „Minijob“ wählen.
+
+**Erwartet:**
+
+- Beim Beginnen: „Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.“; Firma und
+  Betriebsnummer sind schon beantwortet.
+- Schritt 1–2: Die Lohnsteuer-Frage erscheint mit „pauschal 2 % (Minijob)“ gewählt und dem Hinweis
+  „Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.“; die Abwälzung folgt mit „Ja“. _Nicht
+  offensichtlich:_ Die Fragen werden trotzdem gezeigt – der Link belegt nur vor, er beantwortet
+  nichts ungesehen.
+- Schritt 3: Jetzt ist „pauschal 25 % (kurzfristige Aushilfe)“ vorbelegt, die Abwälzung „Nein“.
+- Schritt 4: „ELStAM“ bleibt stehen, ohne den Hinweis „Vorbelegt …“: Was Sie geändert haben,
+  überschreibt der Link nicht mehr.
+
+---
+
+## MT-101: Der Link fürs nächste Mal behält die Angaben anderer Formulare
+
+**Einstieg:** Sie machen direkt nach MT-100 weiter.
+
+**Voraussetzungen:** MT-100.
+
+**Schritte:**
+
+1. Den Fragebogen bis zur **Zusammenfassung** durchgehen und den Abschnitt **„Stammdaten für das
+   nächste Mal“** lesen.
+2. In der Adresszeile `stammdaten=1` in `stammdaten=2` ändern und die Seite neu laden (F5).
+
+**Erwartet:**
+
+- Schritt 1: Der Text nennt die Angaben dieses Fragebogens, darunter „Lohnsteuer bei Minijobs“, und
+  „Weitere … Angaben aus Ihrem bisherigen Link bleiben erhalten.“ Der Link enthält weiterhin
+  `mandantennummer=99999` und `lohnsteuerAushilfe=pauschal25`. Er enthält keine Daten der Person.
+- Schritt 2: Oben erscheint „Stammdaten-Link: Dieser Stammdaten-Link stammt aus einer anderen
+  Version der App und kann nicht gelesen werden.“ Ein neuer Fragebogen beginnt ohne vorbelegte
+  Firma.
+
+---
+
 ## MT-86: Kontaktdaten, A1 beim Arbeitgeber, Krankenversicherung im Minijob
 
 **Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“.

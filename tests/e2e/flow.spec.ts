@@ -81,11 +81,12 @@ async function heading(page: Page): Promise<string> {
     .evaluate((element) => element.childNodes[0]?.textContent?.trim() ?? '');
 }
 
-/** Answers every step of the interview with ANSWERS until the summary. */
-async function answerUntilSummary(page: Page): Promise<void> {
+/** Answers every step of the interview with ANSWERS until the summary (or the question stopAt). */
+async function answerUntilSummary(page: Page, stopAt?: string): Promise<void> {
   for (let i = 0; i < 60; i++) {
     const current = await heading(page);
     if (current === 'Zusammenfassung') return;
+    if (stopAt !== undefined && FIELDS.get(current)?.id === stopAt) return;
     if (current.startsWith('Datenschutz') || current.startsWith('Hinweis')) {
       await press(
         page,
@@ -190,6 +191,35 @@ test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on t
     testInfo.outputPath('personalakte.pdf'),
   );
   expect(statSync(personnelFile).size).toBeGreaterThan(10_000);
+
+  await expectClean(page, found);
+});
+
+test('a master-data link made on the start page fills the next questionnaire', async ({ page }) => {
+  const found = await guard(page);
+  await page.goto(pathToFileURL(APP).href);
+  await press(page, 'Stammdaten-Link erstellen oder ändern');
+  const form = page.locator('.master-link-form');
+  await form.locator('#master-firma').fill('Beispiel Bau GmbH');
+  await form.locator('#master-betriebsnummer').fill('1234 567X');
+  await expect(form).toContainText('Bitte erst die markierten Angaben berichtigen.');
+  await form.locator('#master-betriebsnummer').fill('1234 5678');
+  const link = form.getByLabel('Stammdaten-Link');
+  await expect(link).toHaveValue(
+    /#stammdaten=1&betriebsnummer=12345678&firma=Beispiel\+Bau\+GmbH$/,
+  );
+
+  // Opened like a bookmark: a fresh load with the fragment. Only the fragment is used — a build
+  // with an app address points the link to the hosted app, which this test must never load.
+  const url = await link.inputValue();
+  await page.goto(pathToFileURL(APP).href + url.slice(url.indexOf('#')));
+  await page.reload();
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await expect(page.locator('main')).toContainText('Stammdaten aus Ihrem Lesezeichen übernommen.');
+  await answerUntilSummary(page, 'agFirma');
+  await expect(page.locator('.question input').first()).toHaveValue('Beispiel Bau GmbH');
+  await expect(page.locator('main')).toContainText('Vorbelegt aus Ihrem Stammdaten-Link');
 
   await expectClean(page, found);
 });

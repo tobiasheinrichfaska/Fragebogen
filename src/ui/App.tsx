@@ -22,10 +22,11 @@ import {
   type Session,
   type SessionResult,
 } from '../logic/session';
-import { Banner, type BannerMessage } from './common';
+import { Banner, Card, type BannerMessage } from './common';
 import { DoneScreen } from './DoneScreen';
 import { InterviewScreen } from './InterviewScreen';
 import { KanzleiScreen } from './KanzleiScreen';
+import { MasterDataLinkForm } from './MasterDataLinkForm';
 import { RolesScreen } from './RolesScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
@@ -37,7 +38,8 @@ type Screen =
   | { kind: 'interview' }
   | { kind: 'sign' }
   | { kind: 'done'; role: string }
-  | { kind: 'kanzlei' };
+  | { kind: 'kanzlei' }
+  | { kind: 'stammdaten' };
 
 const tracker = new InputTracker();
 
@@ -107,33 +109,54 @@ function Workspace({ registry }: { registry: FormRegistry }) {
     setBanner(undefined);
   };
 
+  /** Fills the link's master data into the role just entered; later answers fill the rest. */
+  const withLink = (next: Session): { session: Session; info?: BannerMessage } => {
+    if (!remembered.ok || !remembered.data) return { session: next };
+    const filled = fillMasterData(next, remembered.data);
+    if (!filled.ok) return { session: next };
+    if (filled.applied.length === 0 && filled.skipped.length === 0) {
+      return { session: filled.session };
+    }
+    return {
+      session: filled.session,
+      info: {
+        tone: filled.skipped.length > 0 ? 'warning' : 'info',
+        text:
+          filled.applied.length > 0
+            ? 'Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.'
+            : 'Stammdaten aus Ihrem Lesezeichen konnten nicht übernommen werden.',
+        detail: filled.skipped,
+      },
+    };
+  };
+
   const enter = (role: string) => {
     if (!session) return;
     const result = enterRole(session, role);
     if (!result.ok) return apply(result, screen);
     tracker.reset();
-    let next = result.session;
-    let info: BannerMessage | undefined;
-    if (remembered.ok && remembered.data) {
-      const filled = fillMasterData(next, remembered.data);
-      if (filled.ok && (filled.applied.length > 0 || filled.skipped.length > 0)) {
-        next = filled.session;
-        info = {
-          tone: filled.skipped.length > 0 ? 'warning' : 'info',
-          text:
-            filled.applied.length > 0
-              ? 'Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.'
-              : 'Stammdaten aus Ihrem Lesezeichen konnten nicht übernommen werden.',
-          detail: filled.skipped.map((skip) => `${skip.key}: ${skip.detail.join(' ')}`),
-        };
-      }
-    }
+    const { session: next, info } = withLink(result.session);
     setSession(next);
     setScreen({ kind: 'interview' });
     setBanner(
       info ??
         (result.warnings.length > 0
           ? { tone: 'info', text: result.warnings.join(' ') }
+          : undefined),
+    );
+  };
+
+  /** A new version or a reopened part: the link fills what is still empty there as well. */
+  const continueRole = (result: SessionResult) => {
+    if (!result.ok) return apply(result, screen);
+    tracker.reset();
+    const { session: next, info } = withLink(result.session);
+    setSession(next);
+    setScreen({ kind: 'interview' });
+    setBanner(
+      info ??
+        (result.warnings.length > 0
+          ? { tone: 'warning', text: result.warnings.join(' ') }
           : undefined),
     );
   };
@@ -282,22 +305,39 @@ function Workspace({ registry }: { registry: FormRegistry }) {
             setBanner(undefined);
             setScreen({ kind: 'kanzlei' });
           }}
+          onMasterDataLink={() => {
+            setBanner(undefined);
+            setScreen({ kind: 'stammdaten' });
+          }}
           onClearAll={clearAll}
         />
       )}
       {screen.kind === 'kanzlei' && (
-        <KanzleiScreen registry={registry} onBack={() => setScreen({ kind: 'start' })} />
+        <KanzleiScreen
+          registry={registry}
+          {...(remembered.ok && remembered.data ? { remembered: remembered.data } : {})}
+          onBack={() => setScreen({ kind: 'start' })}
+        />
+      )}
+      {screen.kind === 'stammdaten' && (
+        <Card title="Stammdaten-Link erstellen oder ändern">
+          <MasterDataLinkForm
+            registry={registry}
+            {...(remembered.ok && remembered.data ? { initial: remembered.data } : {})}
+          />
+          <div className="nav">
+            <button type="button" className="link" onClick={() => setScreen({ kind: 'start' })}>
+              Zur Startseite
+            </button>
+          </div>
+        </Card>
       )}
       {session && screen.kind === 'roles' && (
         <RolesScreen
           session={session}
           onEnter={enter}
-          onNewVersion={(r) => {
-            if (apply(startNewVersion(session, r), { kind: 'interview' })) tracker.reset();
-          }}
-          onReopen={(r) => {
-            if (apply(reopen(session, r), { kind: 'interview' })) tracker.reset();
-          }}
+          onNewVersion={(r) => continueRole(startNewVersion(session, r))}
+          onReopen={(r) => continueRole(reopen(session, r))}
           onSaveInterim={saveInterim}
           onTakeOver={(f) => void takeOverFile(f)}
           onPdf={() => void pdf()}

@@ -6,8 +6,8 @@ import { fillPlaceholders } from '../logic/display';
 import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { interviewProgress } from '../logic/interview';
 import type { InterviewStep } from '../logic/interview';
-import { masterDataOf } from '../logic/masterData';
-import { masterDataFragment } from '../logic/masterDataLink';
+import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
+import { MASTER_DATA_LINK_MESSAGES, masterDataFragment } from '../logic/masterDataLink';
 import { currentPart, latestSealed } from '../logic/questionnaire';
 import {
   acknowledge,
@@ -15,6 +15,7 @@ import {
   currentStep,
   defer,
   editFromSummary,
+  filledFromLink,
   fixedFields,
   goTo,
   leaveEmpty,
@@ -29,6 +30,7 @@ import {
   type Session,
 } from '../logic/session';
 import { Banner, Card, Explainer, NoticeText, type BannerMessage } from './common';
+import { MasterDataLink } from './MasterDataLink';
 import { isTextLike } from './fieldKinds';
 import { FieldInput } from './FieldInput';
 import { TableStep } from './TableStep';
@@ -284,6 +286,9 @@ function QuestionStep({
           {step.required ? '' : <span className="muted"> (freiwillig)</span>}
         </h2>
         {field.help !== undefined && <p className="help">{said(field.help)}</p>}
+        {filledFromLink(session, field.id) && (
+          <p className="link-note">Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.</p>
+        )}
         <Explainer path={field.explainer} />
         <FieldInput
           field={field}
@@ -352,8 +357,15 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
   const others = definition.roles.filter(
     (other) => other.id !== role && latestSealed(session.questionnaire, other.id),
   );
-  const masterData = masterDataOf(definition, role, part.data);
-  const link = Object.keys(masterData).length > 0 ? masterDataFragment(masterData) : undefined;
+  // The link for next time keeps what the loaded link held for other forms (Tobias 2026-11-03).
+  const own = masterDataOf(definition, role, part.data);
+  const masterData = mergedMasterData(session.masterData?.record, definition, role, part.data);
+  const link = Object.keys(own).length > 0 ? masterDataFragment(masterData) : undefined;
+  const ownLabels = fieldsOfRole(definition, role).flatMap((field) => {
+    const key = masterDataKeyFor(field, (id) => part.data[id] ?? null);
+    return key !== undefined && Object.hasOwn(own, key.key) ? [key.label] : [];
+  });
+  const fromOthers = Object.keys(masterData).filter((key) => !Object.hasOwn(own, key)).length;
 
   return (
     <Card title="Zusammenfassung">
@@ -505,15 +517,27 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
         );
       })}
 
-      {link?.ok && (
+      {link && (
         <div className="summary-section">
           <h3>Stammdaten für das nächste Mal</h3>
-          <p className="muted">
-            Legen Sie diesen Link als Lesezeichen an. Beim nächsten Fragebogen sind Firma und
-            Betriebsnummer dann schon eingetragen. Der Link enthält keine Daten der beschäftigten
-            Person.
-          </p>
-          <MasterDataLink fragment={link.fragment} onBanner={onBanner} />
+          {link.ok ? (
+            <>
+              <p className="muted">
+                Legen Sie diesen Link als Lesezeichen an. Beim nächsten Fragebogen sind diese
+                Angaben zum Betrieb dann schon eingetragen: {ownLabels.join(', ')}.
+                {fromOthers > 0
+                  ? ` Weitere ${String(fromOthers)} Angaben aus Ihrem bisherigen Link bleiben erhalten.`
+                  : ''}{' '}
+                Der Link enthält keine Daten der beschäftigten Person.
+              </p>
+              <MasterDataLink url={`${location.href.split('#')[0] ?? ''}${link.fragment}`} />
+            </>
+          ) : (
+            <p className="field-error" role="alert">
+              Für diese Angaben lässt sich kein Stammdaten-Link erzeugen:{' '}
+              {MASTER_DATA_LINK_MESSAGES[link.issue]}
+            </p>
+          )}
         </div>
       )}
 
@@ -529,40 +553,5 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
         </button>
       </div>
     </Card>
-  );
-}
-
-function MasterDataLink({
-  fragment,
-  onBanner,
-}: {
-  fragment: string;
-  onBanner: (message: BannerMessage | undefined) => void;
-}) {
-  const url = `${location.href.split('#')[0] ?? ''}${fragment}`;
-  return (
-    <div className="master-link">
-      <input
-        readOnly
-        value={url}
-        onFocus={(event) => event.target.select()}
-        aria-label="Stammdaten-Link"
-      />
-      <button
-        type="button"
-        onClick={() => {
-          navigator.clipboard.writeText(url).then(
-            () =>
-              onBanner({
-                tone: 'success',
-                text: 'Link kopiert. Legen Sie ihn als Lesezeichen an.',
-              }),
-            () => onBanner({ tone: 'info', text: 'Bitte den Link markieren und kopieren.' }),
-          );
-        }}
-      >
-        Kopieren
-      </button>
-    </div>
   );
 }

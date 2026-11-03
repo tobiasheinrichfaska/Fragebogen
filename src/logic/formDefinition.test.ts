@@ -945,6 +945,89 @@ describe('preselection, master data and linked parts', () => {
       'already used by "agNachname"',
     ],
     [
+      'a fixed key and cases on one field',
+      (d) => {
+        const field = fieldAt(d, 0, 4);
+        field.masterData = 'art';
+        field.masterDataCases = [
+          { key: 'artJa', label: 'Art', when: { field: 'weitereBeschaeftigung', equals: true } },
+        ];
+      },
+      '$.sections[0].fields[4].masterDataCases',
+      'not both',
+    ],
+    [
+      'a case that looks ahead in form order',
+      (d) => {
+        fieldAt(d, 0, 4).masterDataCases = [
+          { key: 'art', label: 'Art', when: { field: 'bemerkungen', answered: true } },
+        ];
+      },
+      '$.sections[0].fields[4].masterDataCases[0].when.field',
+      'must come before "weitereArt"',
+    ],
+    [
+      'a case over another role',
+      (d) => {
+        fieldAt(d, 0, 4).masterDataCases = [
+          { key: 'art', label: 'Art', when: { field: 'agNachname', answered: true } },
+        ];
+      },
+      '$.sections[0].fields[4].masterDataCases[0].when.field',
+      'same role',
+    ],
+    [
+      'a case that does not fit its field',
+      (d) => {
+        fieldAt(d, 0, 4).masterDataCases = [
+          { key: 'art', label: 'Art', when: { field: 'weitereBeschaeftigung', equals: 'ja' } },
+        ];
+      },
+      '$.sections[0].fields[4].masterDataCases[0].when.equals',
+      'expected a boolean',
+    ],
+    [
+      'an unknown option in a case',
+      (d) => {
+        fieldAt(d, 0, 4).masterDataCases = [
+          {
+            key: 'art',
+            label: 'Art',
+            when: { field: 'weitereBeschaeftigung', equals: true },
+            options: ['minijob', 'kurzfristig'],
+          },
+        ];
+      },
+      '$.sections[0].fields[4].masterDataCases[0].options',
+      '"kurzfristig" is not an option id',
+    ],
+    [
+      'narrowed options on a text field',
+      (d) => {
+        fieldAt(d, 0, 5).masterDataCases = [
+          {
+            key: 'bemerkung',
+            label: 'Bemerkung',
+            when: { field: 'weitereBeschaeftigung', equals: true },
+            options: ['minijob'],
+          },
+        ];
+      },
+      '$.sections[0].fields[5].masterDataCases[0].options',
+      'only choice fields',
+    ],
+    [
+      'a case key that another field uses',
+      (d) => {
+        fieldAt(d, 0, 0).masterData = 'art';
+        fieldAt(d, 0, 4).masterDataCases = [
+          { key: 'art', label: 'Art', when: { field: 'weitereBeschaeftigung', equals: true } },
+        ];
+      },
+      '$.sections[0].fields[4].masterDataCases[0].key',
+      'already used by "nachname"',
+    ],
+    [
       'a link to an unknown role',
       (d) => {
         d.partLinks = [['person', 'kanzlei']];
@@ -1090,5 +1173,40 @@ describe('calendar fields', () => {
       },
     );
     expect(checkFormDefinition(d)).toEqual([]);
+  });
+});
+
+describe('master data by case', () => {
+  it('accepts cases over earlier fields of the same role with narrowed options', () => {
+    const d = definition();
+    fieldAt(d, 0, 4).masterDataCases = [
+      {
+        key: 'artJa',
+        label: 'Art bei weiterer Beschäftigung',
+        when: { field: 'weitereBeschaeftigung', equals: true },
+        options: ['minijob'],
+      },
+    ];
+    expect(checkFormDefinition(d)).toEqual([]);
+  });
+
+  it('decodes a case strictly', () => {
+    const when = { field: 'weitereBeschaeftigung', equals: true };
+    const good = parseFormDefinition(
+      rawWith(
+        ['sections', 0, 'fields', 4, 'masterDataCases'],
+        [{ key: 'art', label: 'Art', when }],
+      ),
+    );
+    expect(good.ok).toBe(true);
+    const bad = parseFormDefinition(
+      rawWith(['sections', 0, 'fields', 4, 'masterDataCases'], [{ key: 'art', when, wert: 1 }]),
+    );
+    expect(bad.ok ? [] : bad.issues.map((issue) => issue.path)).toEqual(
+      expect.arrayContaining([
+        '$.sections[0].fields[4].masterDataCases[0].label',
+        '$.sections[0].fields[4].masterDataCases[0].wert',
+      ]),
+    );
   });
 });
