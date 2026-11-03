@@ -1,0 +1,891 @@
+{
+  "titel": "SV-Beurteilung: Testfälle aus dem AOK-Fachportal für Arbeitgeber (Personengruppe, Beitragsgruppen, Übergangsbereich)",
+  "hinweis": "Keine Rechtsberatung. Recherche vom 03.11.2026 über Claude in Chrome im frei zugänglichen AOK-Fachportal (Region Baden-Württemberg); Bezugsjahr 2026. Neutrale Personen; Sachverhalte in eigenen Worten nach den genannten Fundstellen. Sekundärquelle (Krankenkasse), keine verbindliche Vorgabe. Ergänzt kassen.json (KK-AOK-01 und -02 stammen von derselben Seite „Mehrfachbeschäftigungen bei Minijobs“). Übernommen sind die Beispiele, die ein Einstellungsfragebogen ausdrücken kann. Nicht übernommen: Regelaussagen, die vorhandene Fälle schon abdecken (duales Studium, Praktika, Schulabgänger, Rentner, Beamte, Vorruhestand, Freiwilligendienst), unständige Beschäftigungen, Bestandsfälle über den Jahreswechsel und der Widerruf der RV-Befreiung. Nennt die Quelle nur „versicherungspflichtig“, ist die KV-Ziffer nach § 44 Abs. 2 Satz 1 Nr. 3 und § 243 SGB V abgeleitet (unter zehn Wochen befristet: 3).",
+  "stand": "2026-11-03",
+  "werte2026": {
+    "geringfuegigkeitsgrenzeMonat": "603.00",
+    "uebergangsbereichObergrenze": "2000.00",
+    "geringverdienergrenze": "325.00",
+    "jaeg": "77400.00",
+    "jaegBesondere": "69750.00",
+    "mindestlohnStunde": "13.90"
+  },
+  "lesehilfe": "wie kassen.json",
+  "faelle": [
+    {
+      "id": "AOK-FP-01",
+      "titel": "Unbefristet an den letzten fünf Arbeitstagen jedes Monats, 900 €",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Kurzfristige Beschäftigung“, zuletzt aktualisiert 18.06.2026",
+        "fundstelle": "Abschnitt „Dauerhafte oder wiederkehrende Arbeitsverhältnisse“, „Beispiel: Dauerarbeitsverhältnis“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/kurzfristige-beschaeftigung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Kurzfristige Beschäftigung 2026"
+      },
+      "sachverhalt": "Bankkauffrau, unbefristet jeweils an den letzten fünf Arbeitstagen jedes Kalendermonats für 900 € im Monat; die Einsätze sind vorhersehbar und wiederholen sich. Trotz weniger als 70 Arbeitstagen im Jahr nicht kurzfristig, weil regelmäßig → sozialversicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1980-04-04",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-12-31",
+        "agKurzfristigArbeitstage": "60",
+        "agRahmenvereinbarung": true,
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle sagt nur „sozialversicherungspflichtig“; Schlüssel und Übergangsbereich (900 €) abgeleitet. Der Arbeitgeber wählt hier „kurzfristig“ mit Rahmenvereinbarung ohne Ende – genau die Falle, vor der das Beispiel warnt. Beginn und Arbeitstage angenommen. Gleicher Regelweg wie GFR-42."
+    },
+    {
+      "id": "AOK-FP-02",
+      "titel": "Zweite Aushilfe 2.6.–31.7. nach einer Aushilfe 3.3.–30.4.: Zeitgrenzen überschritten",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Kurzfristige Beschäftigung“, zuletzt aktualisiert 18.06.2026",
+        "fundstelle": "Abschnitt „Zusammenrechnung mehrerer kurzfristiger Beschäftigungen“, „Beispiel: Zeitmonate bei kurzfristig Beschäftigten“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/kurzfristige-beschaeftigung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Kurzfristige Beschäftigung 2026, Zeitmonate"
+      },
+      "sachverhalt": "Vorbeschäftigung 3.3.–30.4.2026 an 41 Arbeitstagen, zu beurteilende Beschäftigung 2.6.–31.7.2026 an 42 Arbeitstagen. Zusammen 119 Kalendertage (59 + 60) und 83 Arbeitstage → drei Monate und 70 Arbeitstage überschritten, keine kurzfristige Beschäftigung.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1979-09-09",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-03-03",
+            "vbBis": "2026-04-30",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "41"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-02",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-31",
+        "agKurzfristigArbeitstage": "42",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-31"
+      },
+      "hinweis": "Die Quelle nennt kein Entgelt und kein Ergebnis je Zweig, nur „keine kurzfristige Beschäftigung“. Entgelt (1.000 €) und Status angenommen; damit versicherungspflichtig. KV 3: auf 60 Tage befristet, ohne Hauptbeschäftigung kein Krankengeldanspruch (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V). Die Quelle zählt den Zeitmonat 3.3.–1.4. mit 29 Tagen, obwohl sie vorher 30 Tage je Zeitmonat nennt; das Ergebnis hängt davon nicht ab."
+    },
+    {
+      "id": "AOK-FP-03",
+      "titel": "Befristete Aushilfe 1.2.–15.5., 1.400 €: über drei Monate",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Kurzfristige Beschäftigung“, zuletzt aktualisiert 18.06.2026",
+        "fundstelle": "Abschnitt „Was ist Berufsmäßigkeit …“, „Beispiel: Prüfung der Berufsmäßigkeit einer Beschäftigung“, Beschäftigung A",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/kurzfristige-beschaeftigung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Kurzfristige Beschäftigung 2026, Berufsmäßigkeit A"
+      },
+      "sachverhalt": "Befristet vom 1.2. bis 15.5. (Fünftagewoche, 40 Stunden) für 1.400 € im Monat → weder geringfügig entlohnt noch kurzfristig (über drei Monate), sozialversicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1988-08-08",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-05-15",
+        "agKurzfristigArbeitstage": "73",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-05-15"
+      },
+      "hinweis": "Die Quelle sagt nur „sozialversicherungspflichtig“; Schlüssel und Übergangsbereich (1.400 €) abgeleitet. KV 1, weil über zehn Wochen befristet. Jahr 2026, Status und Arbeitstage angenommen. Vorbeschäftigung zu AOK-FP-04."
+    },
+    {
+      "id": "AOK-FP-04",
+      "titel": "Aushilfe 16.6.–31.7. nach versicherungspflichtiger Beschäftigung: berufsmäßig",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Kurzfristige Beschäftigung“, zuletzt aktualisiert 18.06.2026",
+        "fundstelle": "Abschnitt „Was ist Berufsmäßigkeit …“, „Beispiel: Prüfung der Berufsmäßigkeit einer Beschäftigung“, Beschäftigung B",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/kurzfristige-beschaeftigung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Kurzfristige Beschäftigung 2026, Berufsmäßigkeit B"
+      },
+      "sachverhalt": "Befristet vom 16.6. bis 31.7. (Fünftagewoche, 40 Stunden) für 1.400 € im Monat. Im selben Jahr vorher Beschäftigung A vom 1.2. bis 15.5. mit 1.400 € (versicherungspflichtig) → zusammen über drei Monate, berufsmäßig, nicht kurzfristig, sozialversicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1988-08-08",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-02-01",
+            "vbBis": "2026-05-15",
+            "vbArt": "mehr",
+            "vbArbeitstage": "73",
+            "vbEntgeltMonat": "1400.00"
+          }
+        ]
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-16",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-07-31",
+        "agKurzfristigArbeitstage": "34",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-31"
+      },
+      "hinweis": "Die Quelle sagt nur „sozialversicherungspflichtig“; Schlüssel und Übergangsbereich abgeleitet. KV 3: auf 46 Tage befristet, ohne Hauptbeschäftigung kein Krankengeldanspruch (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; GfR 2026 Bsp. 48 nennt auf gleichem Weg 1). Jahr 2026, Status und Arbeitstage angenommen. Gleicher Regelweg wie GFR-48."
+    },
+    {
+      "id": "AOK-FP-10",
+      "titel": "Werkstudentin 20 Stunden, in den Semesterferien 30 Stunden",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Beschäftigung von Werkstudenten“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „20-Wochenstunden-Grenze“, „Beispiel: Beschäftigung über 20 Stunden hinaus in den Semesterferien“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/studenten-und-praktikanten/beschaeftigung-von-werkstudenten/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Werkstudenten 2026, Semesterferien"
+      },
+      "sachverhalt": "Studierende, im Semester 20 Wochenstunden in einem Restaurant; nur in den Semesterferien (20.7.–16.9.) zehn Stunden mehr → Werkstudentenprivileg: nur RV-Beiträge.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2004-04-14",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "4",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agNurSemesterferien": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "20.00",
+        "agVorlesungszeitStunden": "20.00"
+      },
+      "hinweis": "Das Beispiel nennt kein Entgelt und keine Schlüssel. Entgelt (1.000 €) und Beginn angenommen; 106/0100 und Übergangsbereich wie bei den anderen Werkstudenten-Fällen abgeleitet. Die Ausweitung in den Ferien ändert nichts, weil sie im Jahr höchstens 26 Wochen dauert."
+    },
+    {
+      "id": "AOK-FP-12",
+      "titel": "Student als Barkeeper unbefristet 25 Stunden, davon 10 am Wochenende und nachts",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Beschäftigung von Werkstudenten“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Arbeit am Wochenende und in den Abend- und Nachtstunden“, „Beispiel: Studierendenjob mit Arbeitszeiten am Wochenende“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/studenten-und-praktikanten/beschaeftigung-von-werkstudenten/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Werkstudenten 2026, Wochenende"
+      },
+      "sachverhalt": "Student, ab 1.10. unbefristet als Barkeeper mit 25 Wochenstunden, davon zehn am Wochenende und nachts → kein Werkstudentenprivileg, weil die zeitliche Befristung fehlt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-10-10",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-10-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agBefristet": false,
+        "agNurSemesterferien": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "25.00",
+        "agVorlesungszeitStunden": "25.00",
+        "agRandzeiten": true
+      },
+      "hinweis": "Das Beispiel nennt nur „kein Werkstudentenprivileg“; 101/1111 abgeleitet (so auch die AOK-Seite „Arbeitgeber-Meldungen für Studenten“ für den Verlust des Werkstudentenstatus). Entgelt (1.500 €) angenommen. Die Stunden am Wochenende helfen nur bei einer Befristung auf höchstens 26 Wochen."
+    },
+    {
+      "id": "AOK-FP-22",
+      "titel": "Regel: freiwilliges Vorpraktikum ohne Immatrikulation, über 603 €",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Praktikanten in der Sozialversicherung“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Nicht vorgeschriebene Praktika“, „Vor- oder Nachpraktikum“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/studenten-und-praktikanten/praktikanten-in-der-sozialversicherung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Praktikanten 2026, freiwilliges Vor-/Nachpraktikum"
+      },
+      "sachverhalt": "Regel der Quelle: Ein freiwilliges, entgeltliches Vor- oder Nachpraktikum außerhalb der Immatrikulation mit mehr als 603 € im Monat gehört nicht zur betrieblichen Berufsbildung und ist grundsätzlich in allen Zweigen pflichtig; bis 603 € ist ein Minijob möglich.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2007-04-04",
+        "status": "studienbewerber",
+        "studienbeginnGeplant": "2026-10",
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-09-30",
+        "agVorlesungszeitStunden": "40.00",
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Sachverhalt aus der Regel der Quelle gebildet (Studienbewerber vor dem Studium, sechs Monate, 1.200 €); über drei Monate, damit keine kurzfristige Beschäftigung vorgeht, und über zehn Wochen, also KV 1. Neue Kombination gegenüber VL-24 (dieselbe Lage mit 510 €: Minijob)."
+    },
+    {
+      "id": "AOK-FP-25",
+      "titel": "Freiwilliges Zwischenpraktikum 15 Stunden, 900 €",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Praktikanten in der Sozialversicherung“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Nicht vorgeschriebene Praktika“, „Übersicht: Nicht vorgeschriebene Zwischenpraktika – Beitrags- und Personengruppen“, Zeile 3",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/studenten-und-praktikanten/praktikanten-in-der-sozialversicherung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Praktikanten 2026, Übersicht Zeile 3"
+      },
+      "sachverhalt": "Immatrikulierter Student, nicht vorgeschriebenes Zwischenpraktikum mit höchstens 20 Wochenstunden und mehr als 603 € im Monat → Werkstudentenprivileg, 106 / 0-1-0-0.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2002-02-12",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "5",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agBefristet": false,
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-08-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "15.00",
+        "agVorlesungszeitStunden": "15.00"
+      },
+      "hinweis": "Zeile der portaleigenen Tabelle; Stunden, Entgelt und Zeitraum angenommen (über drei Monate, damit keine kurzfristige Beschäftigung vorgeht). Übergangsbereich wie bei den anderen Werkstudenten-Fällen abgeleitet. Neue Kombination gegenüber ST-FZPMJ (bis 603 €) und VL-20 (über 20 Stunden)."
+    },
+    {
+      "id": "AOK-FP-26",
+      "titel": "Schüler-Minijob 560 €, familienversichert",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Geringfügig entlohnte Beschäftigung“, zuletzt aktualisiert 16.09.2026",
+        "fundstelle": "Abschnitt „Überschreiten der Geringfügigkeitsgrenze“, „Beispiel: Gelegentliche Überschreitung der Geringfügigkeitsgrenze bei einem Minijob“ (zweites Beispiel)",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/geringfuegig-entlohnte-beschaeftigung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Minijob 2026, gelegentliches Überschreiten"
+      },
+      "sachverhalt": "Familienversicherter Schüler ab 1.1.2026 für 560 € im Monat. Später unvorhersehbare Mehrarbeit (Februar 630 €, Mai 690 €, Juli 630 €, Oktober 980 €); erst im Oktober übersteigt der Jahresdurchschnitt 603 €, einmalig unvorhersehbar und unter 1.206 € → durchgehend versicherungsfreier Minijob.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2009-05-05",
+        "status": "schueler",
+        "schulart": "allgemein",
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "560.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle sagt nur „versicherungsfreier Minijob“; 109/6100 abgeleitet (gesetzlich familienversichert: KV-Pauschale; keine RV-Befreiung genannt, also RV-pflichtig). Die spätere Mehrarbeit ist beim Eintritt nicht vorhersehbar und deshalb nicht Teil der Angaben. Geburtsdatum angenommen."
+    },
+    {
+      "id": "AOK-FP-30",
+      "titel": "Hauptbeschäftigung 800 € neben einem Minijob mit 300 €",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Mehrfachbeschäftigungen bei Minijobs“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "„Beispiel: ein Minijob neben versicherungspflichtiger Hauptbeschäftigung“, Beschäftigung A",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/mehrfachbeschaeftigungen-bei-minijobs/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Mehrfachbeschäftigung 2026, ein Minijob A"
+      },
+      "sachverhalt": "Zwei Beschäftigungen bei verschiedenen Arbeitgebern: A mit 800 € und B mit 300 € im Monat. A liegt über 603 € und ist in allen Zweigen pflichtig (Hauptbeschäftigung). Beurteilt wird A.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1983-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-06-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle nennt die Pflicht in allen Zweigen, aber keine Schlüssel und keinen Übergangsbereich. Für den Übergangsbereich zählt der erste Minijob neben der Hauptbeschäftigung nicht (RS Übergangsbereich Tz. 4.2.2) → 800 €, Kennzeichen 1. Beginn und Datum des Minijobs angenommen. Gleicher Regelweg wie KK-TK-41."
+    },
+    {
+      "id": "AOK-FP-31",
+      "titel": "Minijob 300 € neben einer Hauptbeschäftigung mit 800 €",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Mehrfachbeschäftigungen bei Minijobs“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "„Beispiel: ein Minijob neben versicherungspflichtiger Hauptbeschäftigung“, Beschäftigung B",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/mehrfachbeschaeftigungen-bei-minijobs/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Mehrfachbeschäftigung 2026, ein Minijob B"
+      },
+      "sachverhalt": "Neben der pflichtigen Hauptbeschäftigung A mit 800 € nur ein einziger Minijob B mit 300 € im Monat → B wird nicht mit A zusammengerechnet und ist geringfügig entlohnt. Beurteilt wird B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1983-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "800.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle sagt „geringfügig entlohnt“, ohne Schlüssel; 109/6100 abgeleitet (gesetzlich versichert, keine RV-Befreiung). Daten angenommen."
+    },
+    {
+      "id": "AOK-FP-32",
+      "titel": "Zweiter Minijob 180 € neben Hauptbeschäftigung 800 € und erstem Minijob 300 €",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Mehrfachbeschäftigungen bei Minijobs“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "„Beispiel: zwei Minijobs neben versicherungspflichtiger Hauptbeschäftigung“, Beschäftigung C",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/mehrfachbeschaeftigungen-bei-minijobs/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Mehrfachbeschäftigung 2026, zwei Minijobs C"
+      },
+      "sachverhalt": "Hauptbeschäftigung A mit 800 €, zuerst aufgenommener Minijob B mit 300 € und weiterer Minijob C mit 180 € bei verschiedenen Arbeitgebern. C wird mit A zusammengerechnet → in KV, PV und RV pflichtig, in der AV frei (keine Zusammenrechnung). Beurteilt wird C.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1983-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "800.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-06-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "180.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle nennt die Zweige, aber keine Schlüssel; 101/1101 abgeleitet. Übergangsbereich: A und C zusammen 980 € (RS Übergangsbereich Tz. 4.2.2) → 1. Daten angenommen. Gleicher Regelweg wie GFR-20C."
+    },
+    {
+      "id": "AOK-FP-36",
+      "titel": "Minijob 600 € mit Weihnachtsgeld 500 €: Jahresgrenze überschritten",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Geringfügig entlohnte Beschäftigung“, zuletzt aktualisiert 16.09.2026",
+        "fundstelle": "Abschnitt „Einmalzahlungen prüfen“, „Beispiel: Überschreiten der Geringfügigkeitsgrenze durch Einmalzahlungen“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/minijobs/geringfuegig-entlohnte-beschaeftigung/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Minijob 2026, Einmalzahlungen"
+      },
+      "sachverhalt": "600 € im Monat und 500 € Weihnachtsgeld → Jahresentgelt 7.700 € über 7.236 € → kein Minijob, pflichtig in allen Zweigen für die ganze Beschäftigung.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1977-07-17",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "minijob",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "500.00",
+            "ezMonat": "11",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle sagt „pflichtig in allen Zweigen“, ohne Schlüssel; 101/1111 und Übergangsbereich (rund 642 € im Monatsdurchschnitt) abgeleitet. Status, Beginn und Auszahlungsmonat angenommen; der Arbeitgeber wählt „Minijob“. Gleicher Regelweg wie GFR-06."
+    },
+    {
+      "id": "AOK-FP-44",
+      "titel": "Regel: Minijob neben einer Rente wegen voller Erwerbsminderung",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Rente und Hinzuverdienst“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Minijob und Bezug einer EM-Rente“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/beschaeftigung-aelterer-arbeitnehmer/rente-und-hinzuverdienst/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Rente und Hinzuverdienst 2026, Minijob"
+      },
+      "sachverhalt": "Regel der Quelle: Bezieher einer Erwerbsminderungsrente, als Rentner gesetzlich krankenversichert, in einer geringfügig entlohnten Beschäftigung bis 603 € → Personengruppe 109; Arbeitgeber zahlt 13 % KV-Pauschale und 15 % zur RV; Meldung an die Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1970-03-03",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "emVoll",
+        "renteSeit": "2022-05-01",
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "450.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Sachverhalt aus der Regel der Quelle gebildet (450 €). Die Quelle nennt die Personengruppe 109, aber keine Beitragsgruppe; RV 1, weil eine Erwerbsminderungsrente – anders als die Altersvollrente nach der Regelaltersgrenze – nicht rentenversicherungsfrei macht und keine Befreiung beantragt ist."
+    },
+    {
+      "id": "AOK-FP-45",
+      "titel": "Regel: kurzfristige Aushilfe neben einer Rente wegen voller Erwerbsminderung",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Rente und Hinzuverdienst“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Minijob und Bezug einer EM-Rente“ (kurzfristige Beschäftigung)",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/beschaeftigung-aelterer-arbeitnehmer/rente-und-hinzuverdienst/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK Rente und Hinzuverdienst 2026, kurzfristig"
+      },
+      "sachverhalt": "Regel der Quelle: Bezieher einer Erwerbsminderungsrente in einer von vornherein auf drei Monate oder 70 Arbeitstage begrenzten, nicht berufsmäßigen Beschäftigung → sozialversicherungsfrei, Personengruppe 110, Meldung an die Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1970-03-03",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "emVoll",
+        "renteSeit": "2022-05-01",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-31",
+        "agKurzfristigArbeitstage": "44",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      },
+      "hinweis": "Sachverhalt aus der Regel der Quelle gebildet (zwei Monate, 1.200 €, keine weiteren Beschäftigungen im Jahr). Rentner zählen nicht zu den Gruppen, die von vornherein als berufsmäßig gelten (AOK „Kurzfristige Beschäftigung“, Berufsmäßige Personengruppen)."
+    },
+    {
+      "id": "AOK-FP-47",
+      "titel": "Eintritt 1.7.2026 mit 6.000 € plus Urlaubs- und Weihnachtsgeld: über der JAEG",
+      "quelle": {
+        "dokument": "AOK-Fachportal für Arbeitgeber (AOK Baden-Württemberg): „Die Jahresarbeitsentgeltgrenze (JAEG)“, zuletzt aktualisiert 01.01.2026",
+        "fundstelle": "Abschnitt „Regelmäßiges Jahresarbeitsentgelt“, „Beispiel: regelmäßiges Jahresarbeitsentgelt“",
+        "url": "https://www.aok.de/fk/bw/sozialversicherung/sozialversicherungspflicht-und-freiheit/die-jahresarbeitsentgeltgrenze/",
+        "abgerufen": "2026-11-03",
+        "kurz": "AOK JAEG 2026"
+      },
+      "sachverhalt": "Beginn 1.7.2026 mit 6.000 € im Monat, dazu Urlaubsgeld und Weihnachtsgeld von je 6.000 € → regelmäßiges Jahresarbeitsentgelt 72.000 € + 12.000 € = 84.000 € über 77.400 € → krankenversicherungsfrei ab Beginn.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "9111",
+        "kv": "frei, freiwillig gesetzlich versichert (Firmenzahler)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1984-08-04",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "festeStelle"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "6000.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "urlaubsgeld",
+            "ezBetrag": "6000.00",
+            "ezMonat": "06",
+            "ezAnspruch": true
+          },
+          {
+            "rowId": "r2",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "6000.00",
+            "ezMonat": "11",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": true,
+        "agFirmenzahler": "firmenzahler",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle beurteilt nur die KV (frei ab Beginn); freiwillige gesetzliche Versicherung mit Firmenzahlerverfahren angenommen → 9111, die übrigen Zweige nach den allgemeinen Regeln. Ohne die Einmalzahlungen läge das Jahresarbeitsentgelt mit 72.000 € unter der Grenze; sie zählen mit, weil ein Anspruch besteht."
+    }
+  ]
+}

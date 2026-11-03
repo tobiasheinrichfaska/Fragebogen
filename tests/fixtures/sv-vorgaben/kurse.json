@@ -2229,13 +2229,12 @@
       },
       "erwartet": {
         "pgr": "101",
-        "bgr": "1111",
-        "kv": "pflichtig (allgemeiner Beitrag)",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "1"
       },
       "person": {
         "geburtsdatum": "1981-01-01",
@@ -2277,7 +2276,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-30"
       },
-      "hinweis": "Die Quelle sagt nur „sozialversicherungspflichtig“; Schlüssel abgeleitet. KV unsicher wie GFR-40B/45B (Befristung bis zehn Wochen: 1 oder 3). Gleicher Regelweg wie GFR-45B, andere Daten."
+      "hinweis": "Die Quelle sagt nur „sozialversicherungspflichtig“; Schlüssel abgeleitet. KV 3: auf weniger als zehn Wochen befristet, kein Krankengeldanspruch (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft; GfR 2026 Bsp. 45 nennt auf gleichem Weg 1). Gleicher Regelweg wie GFR-45B, andere Daten."
     },
     {
       "id": "VL-35",

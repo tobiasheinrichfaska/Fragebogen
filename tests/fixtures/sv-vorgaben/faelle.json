@@ -2661,13 +2661,12 @@
       },
       "erwartet": {
         "pgr": "101",
-        "bgr": "1111",
-        "kv": "pflichtig (allgemeiner Beitrag)",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "1"
       },
       "person": {
         "geburtsdatum": "2003-03-01",
@@ -2722,7 +2721,7 @@
         "agVorlesungszeitStunden": "25.00",
         "agRandzeiten": false
       },
-      "hinweis": "Entgelt (1.500 €) angenommen. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit und die Lage der Arbeitszeit sowie die Vorbeschäftigungen des Kalenderjahres aus dem Sachverhalt ergänzt (neue Fragen des Fragebogens). KV-Ziffer nicht hart prüfen: auf neun Wochen befristet – nach der Zehn-Wochen-Regel (kein Krankengeldanspruch) wäre KV 3 denkbar; die Quellen sind uneinheitlich (vgl. GFR-40B)."
+      "hinweis": "Entgelt (1.500 €) angenommen. Am 02.11.2026 um die Wochenstunden der Vorlesungszeit und die Lage der Arbeitszeit sowie die Vorbeschäftigungen des Kalenderjahres aus dem Sachverhalt ergänzt (neue Fragen des Fragebogens). KV 3: auf neun Wochen befristet, ohne Hauptbeschäftigung daneben kein Krankengeldanspruch (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft)."
     },
     {
       "id": "ST-SF",

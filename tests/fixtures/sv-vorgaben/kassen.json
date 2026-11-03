@@ -1200,7 +1200,7 @@
         "av": "frei (kein Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
         "uebergangsbereich": "1",
-        "unsicher": ["kv", "av"]
+        "unsicher": ["av"]
       },
       "person": {
         "geburtsdatum": "2008-02-02",
@@ -1242,7 +1242,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-06-13"
       },
-      "hinweis": "Widerspruch: Die Quelle nennt Versicherungspflicht „in der Kranken-, Pflege-, Renten- und Arbeitslosenversicherung“; Schüler allgemeinbildender Schulen sind aber nach § 27 Abs. 4 S. 1 Nr. 1 SGB III arbeitslosenversicherungsfrei (so auch TK FI Studierende 2026, Kap. 3.5, S. 61). Schulart „allgemeinbildend“ und Entgelt 800 € sind angenommen. KV 3 wegen Befristung auf weniger als zehn Wochen (offener Punkt) – nicht hart testen."
+      "hinweis": "Widerspruch: Die Quelle nennt Versicherungspflicht „in der Kranken-, Pflege-, Renten- und Arbeitslosenversicherung“; Schüler allgemeinbildender Schulen sind aber nach § 27 Abs. 4 S. 1 Nr. 1 SGB III arbeitslosenversicherungsfrei (so auch TK FI Studierende 2026, Kap. 3.5, S. 61). Schulart „allgemeinbildend“ und Entgelt 800 € sind angenommen. KV 3 wegen Befristung auf weniger als zehn Wochen (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft)."
     },
     {
       "id": "KK-TK-23",
@@ -1268,8 +1268,7 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "1"
       },
       "person": {
         "geburtsdatum": "1986-06-16",
@@ -1304,7 +1303,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-24"
       },
-      "hinweis": "Status der Person ist in der Quelle nicht genannt („Der Arbeitnehmer“), hier Haushalt angenommen. KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen. Gleicher Regelweg wie GFR-48."
+      "hinweis": "Status der Person ist in der Quelle nicht genannt („Der Arbeitnehmer“), hier Haushalt angenommen. KV 3 wegen Befristung unter zehn Wochen (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft). Gleicher Regelweg wie GFR-48."
     },
     {
       "id": "KK-TK-24",
@@ -1393,8 +1392,7 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "1"
       },
       "person": {
         "geburtsdatum": "2007-05-05",
@@ -1420,7 +1418,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-24"
       },
-      "hinweis": "Neuer Weg gegenüber D-KFAZ: Vorhaben „Freiwilligendienst“. KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen."
+      "hinweis": "Neuer Weg gegenüber D-KFAZ: Vorhaben „Freiwilligendienst“. KV 3 wegen Befristung unter zehn Wochen (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft)."
     },
     {
       "id": "KK-TK-26",
@@ -2193,8 +2191,7 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "1",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "1"
       },
       "person": {
         "geburtsdatum": "2007-02-22",
@@ -2220,7 +2217,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-25"
       },
-      "hinweis": "KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen."
+      "hinweis": "KV 3 wegen Befristung unter zehn Wochen (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft)."
     },
     {
       "id": "KK-TK-40",
@@ -2986,8 +2983,7 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "0",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "0"
       },
       "person": {
         "geburtsdatum": "2007-04-04",
@@ -3013,7 +3009,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-08-20"
       },
-      "hinweis": "KV 3 wegen Befristung unter zehn Wochen (offener Punkt) – nicht hart testen. Übergangsbereich 0 (2.410 €). Schulende-Datum und Arbeitstage angenommen."
+      "hinweis": "KV 3 wegen Befristung unter zehn Wochen (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; seit 03.11.2026 hart geprüft). Übergangsbereich 0 (2.410 €). Schulende-Datum und Arbeitstage angenommen."
     },
     {
       "id": "KK-BARMER-06",
