@@ -30,9 +30,7 @@ const heading = (page: Page) => page.locator('.test-app .card h2').first();
 test('a start link opens the Sofortmeldung ready to sign', async ({ page }) => {
   const found = await openCase(page, 'MT-21');
   await page.getByRole('button', { name: '▶ Zum Unterschreiben öffnen' }).click();
-  await expect(
-    page.getByText(/^Vorbereiteter Fragebogen: Sofortmeldung – alles ausgefüllt/),
-  ).toBeVisible();
+  await expect(page.getByText(/^Vorbereitet: Sofortmeldung – alles ausgefüllt/)).toBeVisible();
   await expect(heading(page)).toContainText('Zusammenfassung');
   await expect(page.locator('.test-app').getByText('Beispiel Bau GmbH').first()).toBeVisible();
   await expectQuiet(page, found);
@@ -42,5 +40,15 @@ test('a start link opens the Personalfragebogen at the decisive question', async
   const found = await openCase(page, 'MT-96');
   await page.getByRole('button', { name: '▶ Aushilfe vorbereitet öffnen' }).click();
   await expect(heading(page)).toContainText('Wie ist die Beschäftigung vorgesehen?');
+  await expectQuiet(page, found);
+});
+
+test('a Kanzlei start link opens the station with prepared inputs', async ({ page }) => {
+  const found = await openCase(page, 'MT-42');
+  await page.getByRole('button', { name: '▶ Zwei Fassungen öffnen' }).click();
+  await expect(page.getByText(/^Vorbereitet: Kanzlei – zwei Fassungen/)).toBeVisible();
+  await expect(page.locator('.test-app')).toContainText(
+    'Für dieselbe Rolle liegen verschiedene Fassungen vor',
+  );
   await expectQuiet(page, found);
 });

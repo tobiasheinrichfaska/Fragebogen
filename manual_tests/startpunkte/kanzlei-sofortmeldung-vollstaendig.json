@@ -1,0 +1,11 @@
+{
+  "id": "kanzlei-sofortmeldung-vollstaendig",
+  "title": "Kanzlei – eine vollständige Sofortmeldung ist eingegangen",
+  "inbox": [
+    {
+      "name": "Sofortmeldung_vollstaendig.pdf",
+      "from": "sofortmeldung-vollstaendig"
+    }
+  ],
+  "open": "kanzlei"
+}

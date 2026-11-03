@@ -1,0 +1,16 @@
+{
+  "id": "kanzlei-sofortmeldung-personalnummer",
+  "title": "Kanzlei – eine vollständige Sofortmeldung mit Personalnummer 42 ist eingegangen",
+  "inbox": [
+    {
+      "name": "Sofortmeldung_vollstaendig.pdf",
+      "from": "sofortmeldung-vollstaendig",
+      "change": {
+        "arbeitgeber": {
+          "agPersonalnummer": "42"
+        }
+      }
+    }
+  ],
+  "open": "kanzlei"
+}

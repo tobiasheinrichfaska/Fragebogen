@@ -1,13 +1,24 @@
 // Start points of the test area (Tobias 2026-11-03): every prepared questionnaire builds with the
 // newest version of its form, every start link of manual_tests/ names one, and none is left unused.
-// A form change that breaks a start point fails here, not in front of a tester.
+// A form change that breaks a start point fails here, not in front of a tester. Kanzlei start
+// points give the inbox their test expects (one complete questionnaire, a version conflict, two
+// questionnaires without a common id).
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { compareVersions, type RegisteredForm } from '../../src/logic/formRegistry';
+import { compareVersions, registryOf, type RegisteredForm } from '../../src/logic/formRegistry';
+import { mergeInbox } from '../../src/logic/kanzlei';
 import { inlineMarkdown, parseManualTests, startLinksOf } from '../../src/logic/manualTests';
 import { currentPart, latestSealed } from '../../src/logic/questionnaire';
 import { roleStates } from '../../src/logic/session';
-import { buildStartPoint, parseStartPoint, type StartPoint } from '../../src/logic/startPoints';
+import {
+  buildKanzleiStart,
+  buildStartPoint,
+  isKanzleiStart,
+  parseStartPoint,
+  type AnyStartPoint,
+  type StartEnvironment,
+  type StartPoint,
+} from '../../src/logic/startPoints';
 import {
   definitionFiles,
   DRAFTS_DIR,
@@ -20,7 +31,7 @@ import { note, QUESTIONNAIRE_ID } from '../support/sample';
 const DIR = join(__dirname, '..', '..', 'manual_tests');
 const START_DIR = join(DIR, 'startpunkte');
 
-const points: StartPoint[] = readdirSync(START_DIR)
+const all: AnyStartPoint[] = readdirSync(START_DIR)
   .filter((name) => name.endsWith('.json'))
   .map((name) => {
     const parsed = parseStartPoint(readJson(join(START_DIR, name)));
@@ -28,6 +39,9 @@ const points: StartPoint[] = readdirSync(START_DIR)
     expect(`${parsed.point.id}.json`).toBe(name);
     return parsed.point;
   });
+const points = all.filter((point): point is StartPoint => !isKanzleiStart(point));
+const kanzlei = all.filter(isKanzleiStart);
+const byId = new Map(all.map((point) => [point.id, point]));
 
 // The test folder carries the published forms and the drafts; the newest version of each counts.
 const forms = [...definitionFiles(FORMS_DIR), ...definitionFiles(DRAFTS_DIR)]
@@ -44,6 +58,30 @@ const ENV = {
   nonce: () => '0123456789abcdef0123456789abcdef',
   now: { local: '2026-11-03T10:00:00.000+01:00', utc: '2026-11-03T09:00:00.000Z' },
   systemNote: note('2026-11-03T10:00:00.000+01:00', '2026-11-03T09:00:00.000Z', ['keyboard']),
+};
+
+/** Like the test page: one label, one questionnaire id and one row of nonces. */
+function envOf(): (label: string | undefined) => StartEnvironment {
+  const ids = new Map<string, string>();
+  let fresh = 0;
+  return (label) => {
+    const id =
+      label === undefined
+        ? `00000000-0000-4000-8000-${String(++fresh).padStart(12, '0')}`
+        : (ids.get(label) ?? `11111111-1111-4111-8111-${String(ids.size + 1).padStart(12, '0')}`);
+    if (label !== undefined) ids.set(label, id);
+    let n = 0;
+    return { ...ENV, questionnaireId: id, nonce: () => String(++n).padStart(32, '0') };
+  };
+}
+const RECEIVED = { ...ENV.now, timeZone: 'Europe/Berlin' };
+const registry = registryOf(forms);
+const inboxOf = (id: string) => {
+  const point = kanzlei.find((p) => p.id === id);
+  if (!point) throw new Error(id);
+  const built = buildKanzleiStart(point, byId, newest, envOf(), RECEIVED);
+  if (!built.ok) throw new Error(built.problems.join('\n'));
+  return built.inbox;
 };
 
 const links = readdirSync(DIR)
@@ -91,9 +129,42 @@ describe('start points (manual_tests/startpunkte/)', () => {
   });
 
   it('every start link names a start point, and every start point is used', () => {
-    const ids = new Set(points.map((point) => point.id));
+    const ids = new Set(all.map((point) => point.id));
+    const used = new Set([...links, ...kanzlei.flatMap((p) => p.inbox.map((e) => e.from))]);
     expect(links.filter((id) => !ids.has(id))).toEqual([]);
-    expect([...ids].filter((id) => !links.includes(id))).toEqual([]);
+    expect([...ids].filter((id) => !used.has(id))).toEqual([]);
+  });
+
+  it.each(kanzlei.map((point) => [point.id, point] as const))(
+    '%s builds its inbox',
+    (_id, point) => {
+      const built = buildKanzleiStart(point, byId, newest, envOf(), RECEIVED);
+      expect(built.ok ? [] : built.problems).toEqual([]);
+      if (built.ok)
+        expect(built.inbox.files.map((f) => f.name)).toEqual(point.inbox.map((e) => e.name));
+    },
+  );
+
+  it('one complete Sofortmeldung is complete at the Kanzlei', () => {
+    const merged = mergeInbox(inboxOf('kanzlei-sofortmeldung-vollstaendig'), registry);
+    expect(merged.groups).toHaveLength(1);
+    expect(merged.groups[0]?.conflicts ?? []).toEqual([]);
+  });
+
+  it('two versions of one person are a conflict for a human to decide (MT-42)', () => {
+    const inbox = inboxOf('kanzlei-zwei-fassungen');
+    expect(new Set(inbox.files.map((f) => f.questionnaire.questionnaireId)).size).toBe(1);
+    const merged = mergeInbox(inbox, registry);
+    expect(merged.groups).toHaveLength(1);
+    expect(merged.groups[0]?.conflicts.map((c) => c.role)).toEqual(['person']);
+  });
+
+  it('two questionnaires without a common id are proposed for linking (MT-43)', () => {
+    const inbox = inboxOf('kanzlei-ohne-gemeinsame-id');
+    expect(new Set(inbox.files.map((f) => f.questionnaire.questionnaireId)).size).toBe(2);
+    const merged = mergeInbox(inbox, registry);
+    expect(merged.groups).toHaveLength(2);
+    expect(merged.proposals).toHaveLength(1);
   });
 
   it('reports what no longer fits instead of building half a questionnaire', () => {

@@ -3,8 +3,14 @@
 // what the manual test expects. A start point that drifts from its test fails here first.
 import { join } from 'node:path';
 import { derive } from '../../src/logic/derivations';
+import { checkHints } from '../../src/logic/hints';
 import { answer, seal, type Session, type SessionResult } from '../../src/logic/session';
-import { buildStartPoint, parseStartPoint, type StartPoint } from '../../src/logic/startPoints';
+import {
+  buildStartPoint,
+  isKanzleiStart,
+  parseStartPoint,
+  type StartPoint,
+} from '../../src/logic/startPoints';
 import { shownValue, svForm } from '../support/svCase';
 import { readJson } from '../support/formFiles';
 import { note, QUESTIONNAIRE_ID } from '../support/sample';
@@ -21,6 +27,7 @@ const ENV = {
 function point(id: string, change?: (p: StartPoint) => void): StartPoint {
   const parsed = parseStartPoint(readJson(join(START_DIR, `${id}.json`)));
   if (!parsed.ok) throw new Error(JSON.stringify(parsed.issues));
+  if (isKanzleiStart(parsed.point)) throw new Error(`${id} is a Kanzlei start point`);
   change?.(parsed.point);
   return parsed.point;
 }
@@ -49,6 +56,7 @@ function run(start: StartPoint, answers: Readonly<Record<string, unknown>>) {
   );
   const results = new Map(derive(s.questionnaire, svForm.definition).map((d) => [d.id, d]));
   return {
+    hints: checkHints(s.questionnaire, svForm.definition).map((h) => h.id),
     pgr: shownValue(results.get('personengruppe')),
     bgr: shownValue(results.get('beitragsgruppen')),
     ue: shownValue(results.get('uebergangsbereich')),
@@ -172,5 +180,54 @@ describe('SV cases from their start points (manual_tests/07)', () => {
       ts: '714024412',
     });
     expect(run(start, {}).ts).toBe('?????4412 (p)');
+  });
+
+  it('MT-45: Personengruppe 109 for a Minijob with 520 €', () => {
+    const start = point('personalfragebogen-minijob-entgelt-offen');
+    expect(
+      run(start, {
+        agEntgeltArt: 'monatsentgelt',
+        agMonatsentgelt: '520,00',
+        agBeschaeftigungsart: 'minijob',
+        agBesteuerung: 'elstam',
+      }),
+    ).toMatchObject({ pgr: '109' });
+  });
+
+  it('MT-88: two Minijobs together, and a Berufsmäßigkeit only above the limit', () => {
+    const two = point('personalfragebogen-zweiter-minijob-entgelt-offen');
+    expect(
+      run(two, {
+        agEntgeltArt: 'monatsentgelt',
+        agMonatsentgelt: '450,00',
+        agBeschaeftigungsart: 'minijob',
+        agBesteuerung: 'elstam',
+      }),
+    ).toMatchObject({ pgr: '101 (p)', bgr: '1111', ue: '1 (p)' });
+    const jobless = point('personalfragebogen-arbeitslos-entgelt-offen');
+    const aushilfe = (pay: string) => ({
+      agMonatsentgelt: pay,
+      agBeschaeftigungsart: 'kurzfristig',
+      agKurzfristigBis: '31.12.2026',
+      agKurzfristigArbeitstage: '30',
+      agRahmenvereinbarung: false,
+      agBesteuerung: 'elstam',
+    });
+    expect(run(jobless, aushilfe('1.500,00'))).toMatchObject({ pgr: '101 (p)' });
+    expect(run(jobless, aushilfe('500,00'))).toMatchObject({ pgr: '110', bgr: '0000' });
+  });
+
+  it('MT-44: check hints for a job seeker near the Regelaltersgrenze as an Aushilfe', () => {
+    const start = point('personalfragebogen-rag-arbeitslos-art-offen');
+    const { hints } = run(start, {
+      agBeschaeftigungsart: 'kurzfristig',
+      agKurzfristigBis: '31.12.2026',
+      agKurzfristigArbeitstage: '30',
+      agRahmenvereinbarung: false,
+      agBesteuerung: 'elstam',
+    });
+    expect(hints).toEqual(
+      expect.arrayContaining(['kurzfristigArbeitslos', 'regelaltersgrenzeNichtAngegeben']),
+    );
   });
 });

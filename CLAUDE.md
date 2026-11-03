@@ -643,6 +643,9 @@ Key design decisions (details in `docs/plan.md`):
   types those (and the follow-ups they open), seals, creates the PDF and reads it in at the Kanzlei.
   A counter-check reopens the start link. The twin test found one gap at once: MT-96 never named the
   fixed term, and a not-limited Aushilfe is no kurzfristige Beschäftigung.
+- **Kanzlei start points:** `inbox` entries reuse questionnaire start points (`from`, optional `change`);
+  one `questionnaire` label = one questionnaire id and one row of nonces, so equal parts seal equally —
+  that gives the version conflict of MT-42 without a hand-made pair of PDFs.
 - **Test area only:** a real employer part holds personal data, which never goes into a link.
 
 ### Personalfragebogen review of 2026-11-01 (Tobias)
@@ -763,10 +766,11 @@ Key design decisions (details in `docs/plan.md`):
   only for the 27 states of Anlage 18. HTML `maxlength` counts UTF-16 units, the check counts
   characters, so a character outside the BMP may stop the input one character early. Values from
   older questionnaires or links are checked by the rules of the version that reads them.
-- **Start links in the test area** (2026-11-03): built for the Sofortmeldung chain and seven SV cases;
-  the Kanzlei cases (MT-40–45, 68–71, 88) and MT-95 still produce their inputs by hand — next: start
-  points that open the Kanzlei station with prepared inputs. A start point signs with a typed name,
-  so a drawn signature still needs MT-21.
+- **Start links in the test area** (2026-11-03): built for the Sofortmeldung chain, the SV cases and the
+  Kanzlei cases (station opened with prepared inputs; MT-41–45, 68–70, 88). MT-40 still reads real files
+  (that is its subject) and MT-95 still needs a Monatsmeldung of the previous month made by hand. A start
+  point signs with a typed name, so a drawn signature still needs MT-21; prepared inputs carry no file of
+  their own and the same time for every part.
 - **SV proposals and the 256 examples** (2026-11-03, `docs/sv-vorgaben/`): all 248 mappable ones match
   (81 official, 75 insurer, 76 course/publisher, 16 AOK portal). A student in a job chosen as Minijob or
   "sv-pflichtig" that is not a Minijob gets the Werkstudentenregel only with the weekly hours of the

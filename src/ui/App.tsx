@@ -7,6 +7,7 @@ import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
 import { InputTracker, newQuestionnaireId } from '../io/environment';
 import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
+import type { Inbox } from '../logic/kanzlei';
 import { fileNameFor } from '../logic/fileNames';
 import type { FormRegistry, RegisteredForm } from '../logic/formRegistry';
 import {
@@ -50,10 +51,21 @@ const tracker = new InputTracker();
 /** A questionnaire prepared by a start link of the test area, opened in its interview. */
 export interface PreparedStart {
   title: string;
-  session: Session;
-  /** The interview of the open role, or the overview „Wer füllt jetzt aus?“. */
-  screen: 'interview' | 'overview';
+  /** The interview of the open role, the overview „Wer füllt jetzt aus?“ or the Kanzlei station. */
+  screen: 'interview' | 'overview' | 'kanzlei';
+  session?: Session;
+  /** The Kanzlei station's prepared inputs. */
+  inbox?: Inbox;
 }
+
+const START_SCREENS = { interview: 'interview', overview: 'roles', kanzlei: 'kanzlei' } as const;
+
+const START_TEXTS: Readonly<Record<PreparedStart['screen'], string>> = {
+  interview:
+    'Die übrigen Angaben sind schon ausgefüllt – Sie beginnen bei der Frage, um die es im Test geht.',
+  overview: 'Die Teile sind schon ausgefüllt und abgeschlossen.',
+  kanzlei: 'Die Eingänge sind schon eingelesen.',
+};
 
 export function App({ start }: { start?: PreparedStart }) {
   if (!BUNDLED_FORMS.ok) {
@@ -81,7 +93,7 @@ function startBanner(
   if (start) {
     return {
       tone: 'info',
-      text: `Vorbereiteter Fragebogen: ${start.title}. ${start.screen === 'overview' ? 'Die Teile sind schon ausgefüllt und abgeschlossen.' : 'Die übrigen Angaben sind schon ausgefüllt – Sie beginnen bei der Frage, um die es im Test geht.'}`,
+      text: `Vorbereitet: ${start.title}. ${START_TEXTS[start.screen]}`,
     };
   }
   if (!remembered.ok) {
@@ -115,9 +127,7 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
     () => start?.session ?? (linked ? startSession(linked, newQuestionnaireId()) : undefined),
   );
   const [screen, setScreen] = useState<Screen>(
-    start
-      ? { kind: start.screen === 'overview' ? 'roles' : 'interview' }
-      : { kind: linked ? 'roles' : 'start' },
+    start ? { kind: START_SCREENS[start.screen] } : { kind: linked ? 'roles' : 'start' },
   );
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
@@ -364,6 +374,7 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
       {screen.kind === 'kanzlei' && (
         <KanzleiScreen
           registry={registry}
+          {...(start?.inbox ? { initialInbox: start.inbox } : {})}
           {...(remembered.ok && remembered.data ? { remembered: remembered.data } : {})}
           onBack={() => setScreen({ kind: 'start' })}
         />

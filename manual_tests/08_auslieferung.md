@@ -154,7 +154,7 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
   in der Liste mit „– nicht im Testbereich“.
 - Schritt 7: Die App zeigt wieder ihre Startseite; die Ergebnisse links sind noch da.
 - Schritt 9: Rechts öffnet sich die Zusammenfassung der beschäftigten Person mit dem Hinweis
-  „Vorbereiteter Fragebogen: Sofortmeldung – alles ausgefüllt, die Person unterschreibt.“; am Handy
+  „Vorbereitet: Sofortmeldung – alles ausgefüllt, die Person unterschreibt.“; am Handy
   springt die Ansicht auf „App“. _Nicht offensichtlich:_ Passt ein Startpunkt nicht mehr zum
   Formular, meldet der Testbereich das mit Grund, statt einen halben Fragebogen zu öffnen.
 - _Nicht offensichtlich:_ Wird ein Test geändert, nachdem Sie ihn bewertet haben (z. B. nach einem

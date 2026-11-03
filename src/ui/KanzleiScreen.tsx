@@ -45,6 +45,8 @@ interface Props {
   registry: FormRegistry;
   /** The master-data link the app was opened with, as the start of a Mandant's link. */
   remembered?: MasterData;
+  /** Inputs prepared by a start point of the test area. */
+  initialInbox?: Inbox;
   onBack: () => void;
 }
 
@@ -59,9 +61,17 @@ const PART_STATUS = {
   draft: 'Entwurf',
 } as const;
 
-export function KanzleiScreen({ registry, remembered, onBack }: Props) {
-  const [inbox, setInbox] = useState<Inbox>(EMPTY_INBOX);
-  const [reports, setReports] = useState<FileReport[]>([]);
+export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Props) {
+  const [inbox, setInbox] = useState<Inbox>(initialInbox ?? EMPTY_INBOX);
+  const [reports, setReports] = useState<FileReport[]>(() =>
+    (initialInbox?.files ?? []).map((file) => ({
+      name: file.name,
+      message: {
+        tone: 'info',
+        text: 'Vorbereiteter Eingang aus dem Testbereich – nicht aus einer Datei gelesen.',
+      },
+    })),
+  );
   const [collected, setCollected] = useState<Uint8Array[]>([]);
   const [viewing, setViewing] = useState<string | undefined>();
   const [banner, setBanner] = useState<BannerMessage | undefined>();

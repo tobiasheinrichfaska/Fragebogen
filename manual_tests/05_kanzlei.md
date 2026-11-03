@@ -6,8 +6,10 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 
 **Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen die PDFs aus MT-30 und MT-31.
 
-**Voraussetzungen:** Eine vollständige PDF (MT-30) und die PDF des Arbeitgebers zur Weitergabe
-(MT-31) desselben Fragebogens liegen vor.
+**Voraussetzungen:** Eine vollständige PDF und die PDF des Arbeitgebers zur Weitergabe **desselben**
+Fragebogens. Am schnellsten: [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen),
+**„PDF erstellen“** (Weitergabe); dann im selben Fragebogen als „Beschäftigte Person“ ausfüllen,
+unterschreiben und noch einmal **„PDF erstellen“** (vollständig).
 
 **Schritte:**
 
@@ -32,9 +34,10 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 
 ## MT-41: Formular ansehen und PDF für die Personalakte
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; direkt nach MT-40.
+**Einstieg:** [Kanzlei mit vollständiger Sofortmeldung öffnen](start:kanzlei-sofortmeldung-vollstaendig) –
+die Kanzlei-Station mit einem eingelesenen, vollständigen Fragebogen. Oder direkt nach MT-40.
 
-**Voraussetzungen:** MT-40 durchgeführt.
+**Voraussetzungen:** Startlink oder MT-40.
 
 **Schritte:**
 
@@ -58,16 +61,17 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 
 ## MT-42: Zwei Fassungen, die nicht aufeinander aufbauen
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen zwei vollständige PDFs desselben Fragebogens (siehe Voraussetzungen).
+**Einstieg:** [Zwei Fassungen öffnen](start:kanzlei-zwei-fassungen) – die Kanzlei-Station mit zwei
+Eingängen **desselben** Fragebogens: derselbe Teil des Arbeitgebers, aber die Person hat zweimal
+unabhängig unterschrieben (Vorname „Erika“ bzw. „Erika Maria“).
 
-**Voraussetzungen:** Zwei vollständige PDFs **desselben** Fragebogens, bei denen die Person zweimal
-unabhängig unterschrieben hat (dieselbe PDF des Arbeitgebers zweimal ausfüllen lassen, einmal mit
-anderem Vornamen).
+**Voraussetzungen:** Startlink. Ohne Testbereich: dieselbe PDF des Arbeitgebers zweimal von der
+Person ausfüllen lassen, einmal mit anderem Vornamen, und beide PDFs einlesen.
 
 **Schritte:**
 
-1. Beide PDFs in „Eingänge zusammenführen …“ einlesen.
-2. Bei einer Fassung **„Diese Fassung gilt“** klicken.
+1. Den Kasten zum Fragebogen ansehen.
+2. Bei „Sofortmeldung_Fassung_2.pdf“ **„Diese Fassung gilt“** klicken.
 3. Unter „Ihre Entscheidungen“ **„zurücknehmen“** klicken.
 
 **Erwartet:**
@@ -80,19 +84,23 @@ anderem Vornamen).
   „Widersprüche: Die Vornamen weichen … ab.“ _Nicht offensichtlich:_ Ein Widerspruch blockiert die
   Ausgabe nicht; er ist ein Hinweis für die Kanzlei.
 - Schritt 3: Der Konflikt ist wieder da.
+- _Nicht offensichtlich:_ Nach dem Startlink tragen beide Fassungen dieselbe Uhrzeit; im Prüfergebnis
+  steht je Eingang „Vorbereiteter Eingang aus dem Testbereich – nicht aus einer Datei gelesen.“
 
 ---
 
 ## MT-43: Fragebögen ohne gemeinsame ID
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen zwei PDFs aus zwei verschiedenen neuen Fragebögen „Personalfragebogen: Angaben für die Sofortmeldung“.
+**Einstieg:** [Zwei eigene Fragebögen öffnen](start:kanzlei-ohne-gemeinsame-id) – die Kanzlei-Station
+mit zwei Eingängen: Die Person und der Arbeitgeber haben **jeweils einen eigenen** Fragebogen
+begonnen (zwei verschiedene IDs) und nur ihren Teil abgeschlossen.
 
-**Voraussetzungen:** Die Person und der Arbeitgeber haben **jeweils einen eigenen** neuen Fragebogen
-begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abgeschlossen.
+**Voraussetzungen:** Startlink. Ohne Testbereich: zwei neue Fragebögen, je einer nur von der Person
+und nur vom Arbeitgeber abgeschlossen, beide PDFs einlesen.
 
 **Schritte:**
 
-1. Beide PDFs in „Eingänge zusammenführen …“ einlesen.
+1. Die beiden Karten ansehen.
 2. Bei „Gehören diese Fragebögen zusammen?“ **„Zusammenführen“** klicken.
 
 **Erwartet:**
@@ -109,18 +117,18 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 
 ## MT-44: Prüfhinweise bei der Zusammenführung
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
+**Einstieg:** [Arbeitsuchende Person vorbereitet öffnen](start:personalfragebogen-rag-arbeitslos-art-offen)
+– die Person (geboren 15.03.1960, „arbeitslos oder arbeitsuchend gemeldet“, Arbeitslosengeld,
+„Regelaltersgrenze erreicht?“ **„Nein“**) hat unterschrieben; der Arbeitgeber (Beginn 02.11.2026,
+1.500,00 €, befristet bis 31.12.2026) steht bei der Art der Beschäftigung.
 
-**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Personalfragebogen-Entwurf.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Neuen Personalfragebogen beginnen. Als Person Geburtsdatum 15.03.1960, bei „Was machen Sie
-   hauptsächlich …“ „arbeitslos oder arbeitsuchend gemeldet“ und bei „Regelaltersgrenze erreicht?“
-   **„Nein“** wählen, sonst beliebig ausfüllen und unterschreiben.
-2. Als Arbeitgeber „kurzfristige Aushilfe“ wählen, Tag der Beschäftigungsaufnahme 02.11.2026,
-   abschließen, PDF erstellen.
-3. Die PDF unter „Eingänge zusammenführen …“ einlesen.
+1. „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige Aushilfe …“; Ende `31.12.2026`, `30`
+   Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
+2. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
 
 **Erwartet:**
 
@@ -134,16 +142,18 @@ begonnen (zwei verschiedene IDs) und jeweils nur ihren Teil ausgefüllt und abge
 
 ## MT-45: Vorschlag Personengruppe
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station (Karte „Kanzlei“).
+**Einstieg:** [Minijob vorbereitet öffnen](start:personalfragebogen-minijob-entgelt-offen) – die Person
+(„einen Minijob“, keine weitere Beschäftigung) hat unterschrieben; der Arbeitgeber steht bei „Wie
+wird die Person bezahlt?“.
 
-**Voraussetzungen:** Vorschau-Fassung; ein Personalfragebogen, in dem der Arbeitgeber „Minijob“ mit
-festem Monatsentgelt **520,00 €** angegeben hat und die Person „keine weitere Beschäftigung“; beide
-Teile abgeschlossen, PDF erstellt.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Station Kanzlei: die PDF einlesen.
-2. Die PDF für die Personalakte erstellen und das Prüfblatt ansehen.
+1. „festes Monatsentgelt“ **520,00 €**; „Wie ist die Beschäftigung vorgesehen?“ → „Minijob (bis
+   603 € im Monat)“; Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
+2. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
+3. Die PDF für die Personalakte erstellen und das Prüfblatt ansehen.
 
 **Erwartet:**
 
@@ -159,7 +169,9 @@ Teile abgeschlossen, PDF erstellt.
 
 ## MT-68: Übergabe an Lohn und Gehalt (nur Kanzlei-Build mit Zuordnung)
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ bzw. „Personalfragebogen: Angaben für die Lohnabrechnung“; danach die Kanzlei-Station (Karte „Kanzlei“).
+**Einstieg:** [Kanzlei mit vollständigem Personalfragebogen öffnen](start:kanzlei-personalfragebogen-vollstaendig)
+– die Kanzlei-Station mit einem eingelesenen Personalfragebogen (Erika Musterfrau, Beginn
+02.11.2026, 2.500,00 €, Personalnummer 42).
 
 **Testbereich:** Die App-Schritte gehen auch dort; das Einspielen in Lohn und Gehalt nur in der
 Kanzlei (Testmandant).
@@ -168,12 +180,12 @@ Kanzlei (Testmandant).
 
 - Kanzlei-Build mit `config/export.local.json`: `npm run build:kanzlei` (für den Entwurf des
   Personalfragebogens die Vorschau: `npm run build:preview`).
-- Ein vollständiger Personalfragebogen (beide Teile).
+- Ein vollständiger Personalfragebogen (beide Teile) – im Testbereich über den Startlink.
 - **Ein Testmandant** in Lohn und Gehalt, nie ein echter Mandant.
 
 **Schritte:**
 
-1. Station „Kanzlei“: die PDFs einlesen.
+1. Station „Kanzlei“: die PDFs einlesen (nach dem Startlink schon geschehen).
 2. Unter „Übergabe an DATEV Lohn und Gehalt“ zunächst nichts eintragen.
 3. Mandantennummer des Testmandanten und eine freie Mitarbeiternummer eintragen; „neu anlegen“
    wählen; „Lohnart für das Monatsentgelt“, „Betriebsnummer der Krankenkasse“ und „KK-Nr. der
@@ -233,9 +245,11 @@ Sofortmeldung (ab 0.2.0) mit Personalnummer und später ein Personalfragebogen d
 
 **Schritte:**
 
-1. Station „Kanzlei“: die Sofortmeldung einlesen; „neu anlegen“, Mandanten- und Mitarbeiternummer;
+1. [Kanzlei mit Sofortmeldung öffnen](start:kanzlei-sofortmeldung-personalnummer) (Personalnummer 42) –
+   oder die Sofortmeldung selbst einlesen; „neu anlegen“, Mandanten- und Mitarbeiternummer;
    Importdatei herunterladen und einspielen.
-2. Später den Personalfragebogen einlesen; dieselbe Mitarbeiternummer, „vorhandenen Mitarbeiter
+2. Später [Kanzlei mit Personalfragebogen öffnen](start:kanzlei-personalfragebogen-vollstaendig) (dieselbe
+   Person) – oder den Personalfragebogen selbst einlesen; dieselbe Mitarbeiternummer, „vorhandenen Mitarbeiter
    ergänzen“; die Zeile „Bitte in DATEV Lohn und Gehalt vergleichen: Mitarbeiter … ist …“ mit Lohn und
    Gehalt vergleichen; Importdatei einspielen.
 3. Gegenprobe: eine Mitarbeiternummer, die es im Testmandanten nicht gibt, mit „vorhandenen Mitarbeiter
@@ -295,23 +309,26 @@ eingeben …“), „4,5“ wird angenommen. Unter 0 geht es nicht.
 
 ## MT-88: Vorschläge ziehen die richtigen Schlüsse (mehrere Minijobs, berufsmäßige Aushilfe)
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station (Karte „Kanzlei“).
+**Einstieg:** Drei Startlinks, je einer pro Schritt.
 
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen), Beginn 02.11.2026.
 
 **Schritte:**
 
-1. Person: „Haben Sie zurzeit noch eine andere Beschäftigung?“ **„Ja“**, eine Zeile „Minijob“, seit
-   01.01.2025, 300 € im Monat. Arbeitgeber: „Minijob“, Monatsentgelt 450 €. Beide Teile abschließen,
-   in der Kanzlei-Station einlesen.
-2. Neuer Bogen: Person „arbeitslos oder arbeitsuchend gemeldet“, Arbeitslosengeld. Arbeitgeber:
-   „kurzfristige Aushilfe“, Monatsentgelt 1.500 €. Einlesen.
-3. Wie Schritt 2, aber Monatsentgelt 500 €.
+1. [Zweiter Minijob vorbereitet öffnen](start:personalfragebogen-zweiter-minijob-entgelt-offen) – die
+   Person hat eine andere Beschäftigung angegeben (Minijob seit 01.01.2025, 300 € im Monat). Als
+   Arbeitgeber „festes Monatsentgelt“ 450,00 €, „Minijob (bis 603 € im Monat)“, Lohnsteuer ELStAM;
+   abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
+2. [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – die Person
+   ist „arbeitslos oder arbeitsuchend gemeldet“ (Arbeitslosengeld); der Arbeitgeber steht beim
+   Monatsentgelt. 1.500,00 € eingeben; „kurzfristige Aushilfe …“, Ende `31.12.2026`, `30`
+   Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer ELStAM; abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
+3. Den Startlink aus Schritt 2 erneut öffnen und 500,00 € eingeben, sonst wie Schritt 2.
 
 **Erwartet:**
 
 - Schritt 1: Vorschlag Personengruppe **101** mit „bitte prüfen“, Beitragsgruppen **1111**,
-  Kennzeichen Übergangsbereich 1 – die beiden Minijobs liegen zusammen über 603 € und werden
+  Kennzeichen Übergangsbereich 1 (mit „bitte prüfen“) – die beiden Minijobs liegen zusammen über 603 € und werden
   zusammengerechnet (nicht 109).
 - Schritt 2: Personengruppe **101** mit „bitte prüfen“ statt 110 – wer arbeitsuchend gemeldet ist, ist
   berufsmäßig beschäftigt; über der Geringfügigkeitsgrenze ist die Aushilfe nicht kurzfristig.

@@ -1,0 +1,22 @@
+{
+  "id": "kanzlei-zwei-fassungen",
+  "title": "Kanzlei – zwei Fassungen der Person zu einem Fragebogen",
+  "inbox": [
+    {
+      "name": "Sofortmeldung_Fassung_1.pdf",
+      "from": "sofortmeldung-vollstaendig",
+      "questionnaire": "gemeinsam"
+    },
+    {
+      "name": "Sofortmeldung_Fassung_2.pdf",
+      "from": "sofortmeldung-vollstaendig",
+      "questionnaire": "gemeinsam",
+      "change": {
+        "person": {
+          "vorname": "Erika Maria"
+        }
+      }
+    }
+  ],
+  "open": "kanzlei"
+}

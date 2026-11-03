@@ -2,7 +2,7 @@
 // local tests that name DATEV's wage types or fields, never committed. Bundled only into the test
 // folder build (`--mode testbereich`); every other build gets an empty catalogue and no test page.
 import { parseManualTests, type ManualTestFile } from '../../logic/manualTests';
-import { parseStartPoint, type StartPoint } from '../../logic/startPoints';
+import { parseStartPoint, type AnyStartPoint } from '../../logic/startPoints';
 
 export const TEST_AREA = import.meta.env.MODE === 'testbereich';
 
@@ -40,7 +40,7 @@ const startFiles: Record<string, unknown> = TEST_AREA
     })
   : {};
 
-export const START_POINTS: ReadonlyMap<string, StartPoint> = new Map(
+export const START_POINTS: ReadonlyMap<string, AnyStartPoint> = new Map(
   Object.values(startFiles).flatMap((raw) => {
     const parsed = parseStartPoint(raw);
     return parsed.ok ? [[parsed.point.id, parsed.point] as const] : [];

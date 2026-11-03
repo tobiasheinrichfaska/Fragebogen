@@ -1,0 +1,15 @@
+{
+  "id": "kanzlei-ohne-gemeinsame-id",
+  "title": "Kanzlei – Person und Arbeitgeber haben je einen eigenen Fragebogen begonnen",
+  "inbox": [
+    {
+      "name": "Sofortmeldung_Person.pdf",
+      "from": "sofortmeldung-person-unterschrieben"
+    },
+    {
+      "name": "Sofortmeldung_Arbeitgeber.pdf",
+      "from": "sofortmeldung-arbeitgeber-abgeschlossen"
+    }
+  ],
+  "open": "kanzlei"
+}

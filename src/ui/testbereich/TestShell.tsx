@@ -4,7 +4,12 @@
 import { Fragment, useState, type ReactNode } from 'react';
 import { BUNDLED_FORMS } from '../../io/bundledForms';
 import { deviceNow, newNonce, newQuestionnaireId, systemNoteFor } from '../../io/environment';
-import { buildStartPoint } from '../../logic/startPoints';
+import {
+  buildKanzleiStart,
+  buildStartPoint,
+  isKanzleiStart,
+  type StartEnvironment,
+} from '../../logic/startPoints';
 import type { PreparedStart } from '../App';
 import { START_POINTS } from './catalogue';
 import { TestPanel } from './TestPanel';
@@ -16,15 +21,44 @@ const RESTART_QUESTION =
 function prepare(id: string): PreparedStart | string {
   const point = START_POINTS.get(id);
   if (!point) return `Den Startpunkt „${id}“ gibt es nicht.`;
-  const form = BUNDLED_FORMS.ok ? BUNDLED_FORMS.registry.latest(point.form) : undefined;
-  if (!form) return `Das Formular „${point.form}“ ist in dieser Fassung der App nicht enthalten.`;
+  const registry = BUNDLED_FORMS.ok ? BUNDLED_FORMS.registry : undefined;
   const now = deviceNow();
-  const built = buildStartPoint(point, form, {
-    questionnaireId: newQuestionnaireId(),
-    nonce: newNonce,
-    now: { local: now.local, utc: now.utc },
-    systemNote: systemNoteFor(now, ['keyboard']),
-  });
+  const systemNote = systemNoteFor(now, ['keyboard']);
+  // Inputs with one label share the questionnaire id and the nonces (equal parts, equal seals).
+  const shared = new Map<string, { id: string; nonces: string[] }>();
+  const envOf = (label: string | undefined): StartEnvironment => {
+    const own = (label === undefined ? undefined : shared.get(label)) ?? {
+      id: newQuestionnaireId(),
+      nonces: [],
+    };
+    if (label !== undefined) shared.set(label, own);
+    let next = 0;
+    return {
+      questionnaireId: own.id,
+      nonce: () => {
+        if (next === own.nonces.length) own.nonces.push(newNonce());
+        return own.nonces[next++] ?? newNonce();
+      },
+      now: { local: now.local, utc: now.utc },
+      systemNote,
+    };
+  };
+  if (isKanzleiStart(point)) {
+    const inbox = buildKanzleiStart(
+      point,
+      START_POINTS,
+      (formId) => registry?.latest(formId),
+      envOf,
+      { local: now.local, utc: now.utc, timeZone: now.timeZone },
+    );
+    if (!inbox.ok) {
+      return `Der Startpunkt „${point.title}“ passt nicht mehr zum Formular:\n\n${inbox.problems.join('\n')}`;
+    }
+    return { title: point.title, screen: 'kanzlei', inbox: inbox.inbox };
+  }
+  const form = registry?.latest(point.form);
+  if (!form) return `Das Formular „${point.form}“ ist in dieser Fassung der App nicht enthalten.`;
+  const built = buildStartPoint(point, form, envOf(undefined));
   if (!built.ok) {
     return `Der Startpunkt „${point.title}“ passt nicht mehr zum Formular:\n\n${built.problems.join('\n')}`;
   }

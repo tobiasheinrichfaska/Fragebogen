@@ -1,0 +1,11 @@
+{
+  "id": "kanzlei-personalfragebogen-vollstaendig",
+  "title": "Kanzlei – ein vollständiger Personalfragebogen ist eingegangen",
+  "inbox": [
+    {
+      "name": "Personalfragebogen_vollstaendig.pdf",
+      "from": "personalfragebogen-vollstaendig"
+    }
+  ],
+  "open": "kanzlei"
+}
