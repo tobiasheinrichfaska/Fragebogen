@@ -1740,6 +1740,29 @@
               "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)"
             }
           ]
+        },
+        {
+          "id": "ausgeschiedenSeit",
+          "role": "person",
+          "type": "date",
+          "label": "Nicht mehr berufstätig seit",
+          "question": "Seit wann sind Sie nicht mehr berufstätig?",
+          "help": "Der Tag nach dem Ende Ihrer letzten regulären Beschäftigung, zum Beispiel vor der Familienzeit. Leer lassen, wenn Sie nie regulär beschäftigt waren.",
+          "required": false,
+          "purpose": "Prüfung einer kurzfristigen Beschäftigung: Berufsmäßigkeit (§ 8 Abs. 1 Nr. 2 SGB IV, Geringfügigkeits-Richtlinien B 2.3.3.3)",
+          "showIf": {
+            "all": [
+              {
+                "field": "status",
+                "equals": "haushalt"
+              },
+              {
+                "field": "vorbeschJahr",
+                "equals": true
+              }
+            ]
+          },
+          "because": "Wer aus dem Berufsleben ausgeschieden ist, etwa als Hausfrau oder Hausmann, für den zählen bei der Prüfung der Berufsmäßigkeit nur die Beschäftigungen danach (Geringfügigkeits-Richtlinien B 2.3.3.3). Gefragt wird deshalb nur bei früheren Beschäftigungen im Kalenderjahr."
         }
       ]
     },
@@ -6857,7 +6880,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -6922,7 +6946,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -6971,7 +6996,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           },
           "check": true
@@ -7009,7 +7035,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           },
           "check": true
@@ -7303,6 +7330,83 @@
           "reason": "Minijob bis zur Geringfügigkeitsgrenze; wegen weiterer Beschäftigungen die Zusammenrechnung prüfen (§ 8 Abs. 2 SGB IV)."
         },
         {
+          "value": "106",
+          "when": {
+            "all": [
+              {
+                "field": "status",
+                "equals": "student"
+              },
+              {
+                "field": "studienArt",
+                "equals": "vollzeit"
+              },
+              {
+                "field": "urlaubssemester",
+                "equals": false
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              },
+              {
+                "not": {
+                  "field": "versorgungswerk",
+                  "equals": "befreit"
+                }
+              },
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "werkstudentenprivilegNachArbeitszeit",
+            "args": [
+              "agArbeitszeitmodell",
+              "agWochenstunden",
+              "agStdMo",
+              "agStdDi",
+              "agStdMi",
+              "agStdDo",
+              "agStdFr",
+              "agStdSa",
+              "agStdSo",
+              "agAbrufWochenstunden",
+              "agMonatsstunden",
+              "agJahresstunden",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
+            ]
+          },
+          "check": true,
+          "reason": "Studentin oder Student im Vollzeitstudium in einer Beschäftigung, die kein Minijob ist – allein oder mit den anderen Minijobs zusammen über der Geringfügigkeitsgrenze: Bei höchstens 20 Wochenstunden laut Arbeitszeit, mit den anderen Beschäftigungen zusammen, gilt die Werkstudentenregel – versicherungsfrei in KV, PV und AV, rentenversicherungspflichtig (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a; TK Fachinformation Studierende 2026, Beispiel 6)."
+        },
+        {
           "value": "101",
           "when": {
             "field": "agBeschaeftigungsart",
@@ -7382,7 +7486,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -7427,7 +7532,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8088,7 +8194,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8153,7 +8260,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8198,7 +8306,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8235,7 +8344,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8328,7 +8438,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8373,7 +8484,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -8831,6 +8943,83 @@
           "reason": "Minijob ohne gesetzliche Krankenversicherung: kein Pauschalbeitrag (§ 249b SGB V gilt nur für Versicherte)."
         },
         {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "status",
+                "equals": "student"
+              },
+              {
+                "field": "studienArt",
+                "equals": "vollzeit"
+              },
+              {
+                "field": "urlaubssemester",
+                "equals": false
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              },
+              {
+                "not": {
+                  "field": "versorgungswerk",
+                  "equals": "befreit"
+                }
+              },
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "werkstudentenprivilegNachArbeitszeit",
+            "args": [
+              "agArbeitszeitmodell",
+              "agWochenstunden",
+              "agStdMo",
+              "agStdDi",
+              "agStdMi",
+              "agStdDo",
+              "agStdFr",
+              "agStdSa",
+              "agStdSo",
+              "agAbrufWochenstunden",
+              "agMonatsstunden",
+              "agJahresstunden",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
+            ]
+          },
+          "check": true,
+          "reason": "Werkstudent: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 3 SGB V)."
+        },
+        {
           "value": "3",
           "reason": "Vorruhestandsgeld: ermäßigter Beitrag (Personengruppe 108 kennt in der KV nur 0, 3, 4, 9 – DEÜV Anlage 16).",
           "when": {
@@ -9243,7 +9432,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -9308,7 +9498,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -9369,7 +9560,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -9414,7 +9606,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -9536,7 +9729,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -9573,7 +9767,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -9991,7 +10186,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10056,7 +10252,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10093,7 +10290,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10154,7 +10352,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10199,7 +10398,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10408,6 +10608,83 @@
         },
         {
           "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "status",
+                "equals": "student"
+              },
+              {
+                "field": "studienArt",
+                "equals": "vollzeit"
+              },
+              {
+                "field": "urlaubssemester",
+                "equals": false
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              },
+              {
+                "not": {
+                  "field": "versorgungswerk",
+                  "equals": "befreit"
+                }
+              },
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "werkstudentenprivilegNachArbeitszeit",
+            "args": [
+              "agArbeitszeitmodell",
+              "agWochenstunden",
+              "agStdMo",
+              "agStdDi",
+              "agStdMi",
+              "agStdDo",
+              "agStdFr",
+              "agStdSa",
+              "agStdSo",
+              "agAbrufWochenstunden",
+              "agMonatsstunden",
+              "agJahresstunden",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
+            ]
+          },
+          "check": true,
+          "reason": "Werkstudent: arbeitslosenversicherungsfrei (§ 27 Abs. 4 S. 1 Nr. 2 SGB III)."
+        },
+        {
+          "value": "0",
           "reason": "Vorruhestandsgeld: Personengruppe 108 kennt in der AV nur 0 (DEÜV Anlage 16).",
           "when": {
             "field": "agBeschaeftigungsart",
@@ -10539,7 +10816,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10604,7 +10882,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10641,7 +10920,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10734,7 +11014,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -10779,7 +11060,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -11002,6 +11284,83 @@
             ]
           },
           "reason": "Minijob: keine Beiträge zur Pflegeversicherung (DEÜV Anlage 1, Fußnote 2)."
+        },
+        {
+          "value": "0",
+          "when": {
+            "all": [
+              {
+                "field": "status",
+                "equals": "student"
+              },
+              {
+                "field": "studienArt",
+                "equals": "vollzeit"
+              },
+              {
+                "field": "urlaubssemester",
+                "equals": false
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              },
+              {
+                "not": {
+                  "field": "versorgungswerk",
+                  "equals": "befreit"
+                }
+              },
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "test": {
+            "fn": "werkstudentenprivilegNachArbeitszeit",
+            "args": [
+              "agArbeitszeitmodell",
+              "agWochenstunden",
+              "agStdMo",
+              "agStdDi",
+              "agStdMi",
+              "agStdDo",
+              "agStdFr",
+              "agStdSa",
+              "agStdSo",
+              "agAbrufWochenstunden",
+              "agMonatsstunden",
+              "agJahresstunden",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
+            ]
+          },
+          "check": true,
+          "reason": "Werkstudent: Personengruppe 106 kennt in der PV nur 0 (DEÜV Anlage 16)."
         },
         {
           "value": "0",
@@ -11280,7 +11639,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -11341,7 +11701,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -11386,7 +11747,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -11562,7 +11924,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },
@@ -11599,7 +11962,8 @@
               "bavZuschuss",
               "agLandwirtschaft",
               "rentenart",
-              "renteSeit"
+              "renteSeit",
+              "ausgeschiedenSeit"
             ]
           }
         },

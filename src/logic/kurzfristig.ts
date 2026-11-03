@@ -27,8 +27,8 @@ export interface ShortTermJob {
   /** Agricultural business (GfR B 2.3.4): 15 weeks or 90 working days. */
   landwirtschaft?: boolean;
   /**
-   * The day the person left working life (start of a full old-age pension): earlier jobs count for
-   * Berufsmäßigkeit only from then on (B 2.3.3.3, example 49).
+   * The day the person left working life (start of a full old-age pension, or the household since):
+   * earlier jobs count for Berufsmäßigkeit only from then on (B 2.3.3.3, example 49).
    */
   ausscheiden?: IsoDate | undefined;
 }
@@ -269,7 +269,7 @@ export function berufsmaessigNachVorbeschaeftigungen(
         since === undefined
           ? []
           : [
-              `Frühere Beschäftigungen vor dem Rentenbeginn am ${formatGermanDate(since)} zählen nicht für die Berufsmäßigkeit (Geringfügigkeits-Richtlinien B 2.3.3.3).`,
+              `Frühere Beschäftigungen vor dem Ausscheiden aus dem Berufsleben am ${formatGermanDate(since)} zählen nicht für die Berufsmäßigkeit (Geringfügigkeits-Richtlinien B 2.3.3.3).`,
             ],
     };
   }

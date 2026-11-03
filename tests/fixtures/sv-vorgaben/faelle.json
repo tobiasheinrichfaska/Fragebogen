@@ -2656,6 +2656,65 @@
       "hinweis": "Jahr 2026 gewählt; Art der Vorbeschäftigung (kurzfristig) und Arbeitstage angenommen. Zählung: Juli und August als volle Kalendermonate je 30 Tage plus Dezember 30 = 90 Tage, nicht über drei Monate."
     },
     {
+      "id": "GFR-B2333H",
+      "titel": "Hausfrau nach dem Ausscheiden aus dem Berufsleben: frühere Stelle zählt nicht für die Berufsmäßigkeit",
+      "quelle": {
+        "dokument": "Geringfügigkeits-Richtlinien 2026 (GKV-Spitzenverband, DRV Bund, DRV Knappschaft-Bahn-See, BA), Stand 05.01.2026",
+        "fundstelle": "Teil B 2.3.3.3, S. 46–47 („Hausfrauen und Hausmänner“)",
+        "kurz": "GfR 2026, B 2.3.3.3"
+      },
+      "sachverhalt": "Regel der Quelle: Bei Personen, die aus dem Berufsleben ausgeschieden sind, z. B. Hausfrauen und Hausmänner, zählen für die Berufsmäßigkeit mehr als geringfügige Beschäftigungszeiten nur nach dem Ausscheiden. Hier: Vollzeitstelle bis 31.03.2026 (3.000 €), seit 01.04. Hausfrau; Aushilfe 01.08.–15.09.2026 für 1.000 € → nicht berufsmäßig, kurzfristig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1966-03-03",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-01-01",
+            "vbBis": "2026-03-31",
+            "vbArt": "mehr",
+            "vbEntgeltMonat": "3000.00"
+          }
+        ],
+        "ausgeschiedenSeit": "2026-04-01"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-15",
+        "agKurzfristigArbeitstage": "33",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-15"
+      },
+      "hinweis": "Sachverhalt aus der Regel der Quelle gebildet; Gegenstück zu GFR-48, wo die frühere versicherungspflichtige Beschäftigung einer Hausfrau mitzählt (dort ohne Ausscheiden danach). Ohne die Angabe „Nicht mehr berufstätig seit“ zählt die Stelle bis 31.03. mit (dann 101, nicht kurzfristig)."
+    },
+    {
       "id": "GFR-48",
       "titel": "Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig",
       "quelle": {

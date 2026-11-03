@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-255 Fälle aus 4 Datei(en): 247 abbildbar, 8 nicht abbildbar; 246 gleich, 1 abweichend. 324 abgeleitete Varianten, 39 Grenzfälle.
+256 Fälle aus 4 Datei(en): 248 abbildbar, 8 nicht abbildbar; 248 gleich, 0 abweichend. 325 abgeleitete Varianten, 39 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -75,6 +75,7 @@
 | GFR-45B | GfR 2026, Bsp. 45 | Zweite Aushilfe im Jahr über drei Monate, über der Grenze | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
 | GFR-46 | GfR 2026, Bsp. 46 | Aushilfe 01.12.–28.02. nach Aushilfe 01.06.–31.08.: über drei Monate, auch über den Jahreswechsel | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
 | GFR-47 | GfR 2026, Bsp. 47 | Aushilfe 01.12.–28.02. nach Aushilfe 01.07.–31.08.: kurzfristig, auch über den Jahreswechsel | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 (p) · 0000 (p) · ÜB 0 (p) | gleich |
+| GFR-B2333H | GfR 2026, B 2.3.3.3 | Hausfrau nach dem Ausscheiden aus dem Berufsleben: frühere Stelle zählt nicht für die Berufsmäßigkeit | 110 · 0000 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
 | GFR-48 | GfR 2026, Bsp. 48 | Aushilfe nach mehr als geringfügiger Vorbeschäftigung: berufsmäßig | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR O, BGR O, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
 | ST-01 | RS Studenten, Bsp. 1 | Student 25 Std./Woche unbefristet | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 | gleich |
 | ST-02A | RS Studenten, Bsp. 2 | Werkstudentenjob 18 Std. neben Minijob 7 Std.: zusammen über 20 Std. | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
@@ -113,7 +114,7 @@
 | KK-TK-01 | TK FI Studierende 2026, Bsp. 3 | Werkstudent 19 Std./Woche, 1.500 €, unbefristet | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 106 · 0100 · ÜB 1 | gleich |
 | KK-TK-02 | TK FI Studierende 2026, Bsp. 4 | Studierender 28 Std./Woche mit regelmäßiger Nachtarbeit, 2.350 € | 101 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 0 | gleich |
 | KK-TK-03 | TK FI Studierende 2026, Bsp. 5 | Zweite Studentenbeschäftigung: zusammen 22 Std./Woche | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
-| KK-TK-04 | TK FI Studierende 2026, Bsp. 6 | Zwei kleine Studentenjobs über der Minijob-Grenze, zusammen 12 Std./Woche | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1111 · ÜB 1 (p) | abweichend (K) |
+| KK-TK-04 | TK FI Studierende 2026, Bsp. 6 | Zwei kleine Studentenjobs über der Minijob-Grenze, zusammen 12 Std./Woche | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 106 (p) · 0100 (p) · ÜB 1 (p) | gleich |
 | KK-TK-05 | TK FI Studierende 2026, Bsp. 7 | Studierender 24 Std./Woche mit Nacht- und Wochenendeinsätzen, 1.800 € | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 | gleich |
 | KK-TK-06 | TK FI Studierende 2026, Zusatzbeispiel | Werkstudent genau 20 Std./Woche, in den Semesterferien 40 Std. | 106 · 0100; UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | 106 · 0100 · ÜB 1 | gleich |
 | KK-TK-07 | TK FI Studierende 2026, Bsp. 8 | Studentin, befristet 05.07.–15.10., 40 Std., nur 3 Tage in der Vorlesungszeit | 106 · 0100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 106 · 0100 · ÜB 0 | gleich |
@@ -268,7 +269,7 @@
 
 ## Abweichungen
 
-- **K – Studierende in einer als Minijob oder versicherungspflichtig gewählten Beschäftigung: Werkstudentenprivileg nicht geprüft (Wochenstunden nur bei „Werkstudent“ gefragt):** KK-TK-04
+Keine.
 
 ## Nicht abbildbar
 

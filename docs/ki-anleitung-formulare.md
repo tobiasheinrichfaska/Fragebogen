@@ -207,13 +207,20 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   Kalendermonat); `werkstudentenprivileg` (Ja/Nein, Zahl, Ja/Nein, Ja/Nein, Datum, Datum, Ja/Nein,
   Zahl-Spalte: nur Semesterferien, Wochenstunden der Vorlesungszeit, Stunden über 20 am Wochenende/abends/nachts,
   befristet, Beginn, befristet bis, über 20 Stunden in den letzten 12 Monaten, Stunden der weiteren
-  Beschäftigungen – das Werkstudentenprivileg gilt); `kurzfristigBefristetBisDreiMonate` (wie die
+  Beschäftigungen – das Werkstudentenprivileg gilt); `werkstudentenprivilegNachArbeitszeit` (Auswahl
+  Arbeitszeitmodell, Wochenstunden, Stunden Montag bis Sonntag, Wochenstunden auf Abruf, Monats- und
+  Jahresstunden, befristet, Beginn, befristet bis, über 20 Stunden in den letzten 12 Monaten, Stunden der
+  weiteren Beschäftigungen: dasselbe mit den Wochenstunden laut Arbeitszeit, für Studierende in einer als
+  Minijob oder versicherungspflichtig gewählten Beschäftigung; ohne Stunden kein Ergebnis);
+  `kurzfristigBefristetBisDreiMonate` (wie die
   Aushilfe-Tests, mit „befristet bis“ als Ende: höchstens drei Monate befristet und sonst kurzfristig); `kurzfristigGegeben`, `kurzfristigGegebenBisGeringfuegigkeitsgrenze` und
-  `geringfuegigNebenKurzfristigen` (achtzehn Felder: Beginn, Ende, Arbeitstage, Rahmenvereinbarung,
+  `geringfuegigNebenKurzfristigen` (25 Felder: Beginn, Ende, Arbeitstage, Rahmenvereinbarung,
   befristet; die Spalten Art, von, bis, Arbeitstage, Entgelt der früheren Beschäftigungen; festes und
   erwartetes Entgelt, Einmalzahlungen und Anspruch; die Spalten Art, Entgelt, seit, befristet bis der
-  weiteren Beschäftigungen: Zeitgrenze, Regelmäßigkeit und Berufsmäßigkeit einer kurzfristigen
-  Beschäftigung, sonst Minijob); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
+  weiteren Beschäftigungen; Art, Beitrag und Zuschuss der betrieblichen Altersversorgung;
+  landwirtschaftlicher Betrieb; Rentenart und Rentenbeginn; nicht mehr berufstätig seit: Zeitgrenze,
+  Regelmäßigkeit und Berufsmäßigkeit einer kurzfristigen Beschäftigung – frühere Beschäftigungen vor
+  dem Ausscheiden aus dem Berufsleben zählen nicht –, sonst Minijob); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
   weniger als sieben Tage); `hoechstensGeringfuegigkeitsgrenze` und `ueberGeringfuegigkeitsgrenze` (Betrag, Betrag, Betrag,
   Ja/Nein, Datum: festes Monatsentgelt, erwarteter Monatsverdienst – es zählt der beantwortete –,
   Spalte der Einmalzahlungen und Spalte „Anspruch“ derselben Tabelle, Stichtag; zwölf Monate plus

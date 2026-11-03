@@ -312,7 +312,9 @@ describe('out of working life: earlier jobs from then on only (B 2.3.3.3)', () =
       LIMIT,
     );
     expect(result.holds).toBe(false);
-    expect(result.detail.join(' ')).toContain('vor dem Rentenbeginn am 01.06.2026');
+    expect(result.detail.join(' ')).toContain(
+      'vor dem Ausscheiden aus dem Berufsleben am 01.06.2026',
+    );
   });
 
   it('counts it without a pension', () => {

@@ -246,9 +246,11 @@
         "agMonatsentgelt": "400.00",
         "agUeberJaeg": false,
         "agBeschaeftigungsart": "minijob",
-        "agBefristet": false
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "5.00"
       },
-      "hinweis": "Der Arbeitgeber D wählt hier – wie in der Praxis zu erwarten – „Minijob“. Erwartet ist trotzdem 106: Nach dem Scheitern der Minijob-Prüfung ist die Werkstudentenregelung zu prüfen (Quelle, S. 31). Mit „Werkstudent“ als Art ergäbe sich derselbe Erwartungswert."
+      "hinweis": "Der Arbeitgeber D wählt hier – wie in der Praxis zu erwarten – „Minijob“. Erwartet ist trotzdem 106: Nach dem Scheitern der Minijob-Prüfung ist die Werkstudentenregelung zu prüfen (Quelle, S. 31). Mit „Werkstudent“ als Art ergäbe sich derselbe Erwartungswert. Seit 03.11.2026 prüft die App die Werkstudentenregel auch hier, mit den 5 Wochenstunden laut Arbeitszeit und den 7 Stunden bei C (zusammen 12)."
     },
     {
       "id": "KK-TK-05",

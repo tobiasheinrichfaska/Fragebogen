@@ -232,6 +232,7 @@ describe('check hints — definition rules', () => {
       'weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze',
       'weitererMinijobUeberJaeg',
       'werkstudentenprivileg',
+      'werkstudentenprivilegNachArbeitszeit',
     ]);
   });
 });
@@ -522,6 +523,57 @@ describe('limited in advance to less than ten weeks', () => {
   it('needs both dates', () => {
     expect(short('')).toBeUndefined();
     expect(HINT_TESTS.kuerzerAlsZehnWochen?.run([null, null, null, null])).toBeUndefined();
+  });
+});
+
+// 2026-11-03, group K (TK FI Studierende 2026, Beispiel 6 = KK-TK-04): a student whose job the
+// employer chose as Minijob or "sv-pflichtig" is a Werkstudent at most 20 hours a week with the other
+// jobs; the hours come from the working-time answers. Arguments: model, weekly hours, Monday–Sunday,
+// on-call weekly hours, monthly hours, yearly hours, fixed term, start, until, over 20 in the last 12
+// months, hours of the other jobs.
+describe('the Werkstudentenprivileg after the working time', () => {
+  const run = (model: string, hours: Record<string, string>, others: string[] = []) => {
+    const at = (key: string) => hours[key] ?? null;
+    return HINT_TESTS.werkstudentenprivilegNachArbeitszeit?.run([
+      model,
+      at('woche'),
+      ...['mo', 'di', 'mi', 'do', 'fr', 'sa', 'so'].map(at),
+      at('abruf'),
+      at('monat'),
+      at('jahr'),
+      false,
+      '2026-09-01',
+      null,
+      false,
+      others,
+    ] as never);
+  };
+
+  it('adds the hours of the other jobs (5 + 7 = 12)', () => {
+    expect(run('wechselnd', { woche: '5.00' }, ['7.00'])).toEqual({
+      holds: true,
+      detail: [
+        '5 + 7 Stunden anderer Beschäftigungen = 12 Wochenstunden: höchstens 20 (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a).',
+      ],
+    });
+    expect(run('wechselnd', { woche: '15.00' }, ['7.00'])?.holds).toBe(false);
+  });
+
+  it('reads the hours of each working-time model', () => {
+    expect(run('festeTage', { mo: '4.00', mi: '4.00', fr: '4.00' })?.detail[0]).toMatch(/^12 /);
+    expect(run('abruf', { abruf: '10.00' })?.holds).toBe(true);
+    expect(run('monatsstunden', { monat: '86.67' })?.detail[0]).toMatch(/^20 /);
+    expect(run('monatsstunden', { monat: '100.00' })?.holds).toBe(false);
+    expect(run('jahresarbeitszeit', { jahr: '1040.00' })?.detail[0]).toMatch(/^20 /);
+    expect(run('gleitzeit', { woche: '20.50' })?.holds).toBe(false);
+  });
+
+  it('gives no proposal without hours, and none for shifts or partial retirement', () => {
+    expect(run('wechselnd', {})).toBeUndefined();
+    expect(run('festeTage', {})).toBeUndefined();
+    expect(run('schicht', { woche: '10.00' })).toBeUndefined();
+    expect(run('altersteilzeit', { woche: '10.00' })).toBeUndefined();
+    expect(run('', { woche: '10.00' })).toBeUndefined();
   });
 });
 

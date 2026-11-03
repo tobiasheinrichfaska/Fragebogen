@@ -84,9 +84,7 @@ const GROUPS = {
   K: 'Studierende in einer als Minijob oder versicherungspflichtig gewählten Beschäftigung: Werkstudentenprivileg nicht geprüft (Wochenstunden nur bei „Werkstudent“ gefragt)',
 } as const;
 
-const KNOWN_DEVIATIONS: Record<string, Deviation> = {
-  'KK-TK-04': { gruppe: 'K', app: { pgr: '101', bgr: '1111' } },
-};
+const KNOWN_DEVIATIONS: Record<string, Deviation> = {};
 
 /** The aspects in which the app differs from the expectation, with the app's value. */
 function deviationsOf(c: Case): Partial<Record<Aspect, string>> {

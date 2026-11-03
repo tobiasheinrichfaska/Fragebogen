@@ -607,6 +607,7 @@ const KURZFRISTIG_ARGS: readonly FieldType[] = [
   'boolean',
   'choice',
   'date',
+  'date',
 ];
 
 const isoOrUndefined = (value: FieldValue | undefined) =>
@@ -643,6 +644,7 @@ function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear
     landwirtschaft,
     rentenart,
     renteSeit,
+    ausgeschiedenSeit,
   ] = values.slice(10);
   const start = isoOrUndefined(beginn);
   if (start === undefined) return undefined;
@@ -662,8 +664,10 @@ function shortTermFacts(values: readonly FieldValue[]): ShortTermFacts | 'noYear
       entgelt: cents(column(vbEntgelt)[i] ?? null),
     })),
     landwirtschaft: landwirtschaft === true,
-    // A full old-age pension: out of working life since its start (GfR B 2.3.3.3).
-    ausscheiden: rentenart === 'altersvoll' ? isoOrUndefined(renteSeit) : undefined,
+    // Out of working life (GfR B 2.3.3.3): since the start of a full old-age pension, or since the
+    // day a person in the household names.
+    ausscheiden:
+      rentenart === 'altersvoll' ? isoOrUndefined(renteSeit) : isoOrUndefined(ausgeschiedenSeit),
   };
   const mine = payOf(fixed, expected, kind, beitrag, zuschuss, beginn).cents;
   const yearly = mine === undefined ? undefined : yearlyPay(mine, oneOff ?? null, entitled ?? null);
@@ -839,6 +843,67 @@ const werkstudentenprivileg: HintTest = {
         `${sum}, die Stunden über 20 am Wochenende, abends oder nachts, höchstens 26 Wochen befristet: Werkstudentenprivileg (Tz. A 1.2.4 a)${ueber20 === true ? '; in den letzten 12 Monaten schon mehr als 20 Wochenstunden – mehr als 26 Wochen im Jahr beenden es (Tz. A 1.2.4 d), bitte prüfen' : ''}.`,
       ],
     };
+  },
+};
+
+const WOCHEN_JE_MONAT = 52 / 12;
+
+/** Weekly hours of this job from the working-time answers; undefined where the model gives none. */
+function weeklyHours(model: FieldValue | undefined, values: readonly FieldValue[]) {
+  const [woche, mo, di, mi, don, fr, sa, so, abruf, monat, jahr] = values.map(numberOrUndefined);
+  const rounded = (value: number | undefined) =>
+    value === undefined ? undefined : Math.round(value * 100) / 100;
+  switch (model) {
+    case 'wechselnd':
+    case 'gleitzeit':
+    case 'vertrauen':
+      return woche;
+    case 'festeTage': {
+      const days = [mo, di, mi, don, fr, sa, so];
+      return days.every((day) => day === undefined)
+        ? undefined
+        : rounded(days.reduce<number>((sum, day) => sum + (day ?? 0), 0));
+    }
+    case 'abruf':
+      return abruf;
+    case 'monatsstunden':
+      return rounded(monat === undefined ? undefined : monat / WOCHEN_JE_MONAT);
+    case 'jahresarbeitszeit':
+      return rounded(jahr === undefined ? undefined : jahr / 52);
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * A student in a job the employer chose as Minijob or "sv-pflichtig" that is not a Minijob, alone or
+ * added to the other Minijobs (§ 8 Abs. 2 SGB IV): the Werkstudentenprivileg with the weekly hours of
+ * the working-time answers and the other jobs (TK Fachinformation Studierende 2026, Beispiel 6;
+ * Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a). Whether hours above 20 lie at weekends is
+ * not asked here, so above 20 there is no privilege; without hours no proposal (undefined).
+ */
+const werkstudentenprivilegNachArbeitszeit: HintTest = {
+  args: [
+    'choice',
+    ...Array<FieldType>(11).fill('number'),
+    'boolean',
+    'date',
+    'date',
+    'boolean',
+    'number',
+  ],
+  describe: ([modell = '', ...rest]) =>
+    `nach den Wochenstunden laut „${modell}“ (mit „${rest[15] ?? ''}“) höchstens 20 Wochenstunden vorliegen und damit das Werkstudentenprivileg gilt`,
+  run: (values) => {
+    const [modell, ...rest] = values;
+    const own = weeklyHours(modell, rest.slice(0, 11));
+    if (own === undefined) return undefined;
+    const [befristet, beginn, bis, ueber20, andere] = rest.slice(11);
+    return werkstudentenprivileg.run(
+      [false, String(own), false, befristet, beginn, bis, ueber20, andere].map(
+        (value) => value ?? null,
+      ),
+    );
   },
 };
 
@@ -1033,6 +1098,7 @@ const andereBeschaeftigungAusbildung: HintTest = {
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   andereBeschaeftigungAusbildung,
   werkstudentenprivileg,
+  werkstudentenprivilegNachArbeitszeit,
   geringfuegigEntlohnt,
   geringfuegigNebenKurzfristigen,
   weitererMinijobNebenJaegFreierHauptbeschaeftigung: weitererMinijobNebenJaegFrei(false),

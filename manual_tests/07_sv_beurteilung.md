@@ -273,3 +273,61 @@ Monatsentgelt 1.000,00 €, Art der Beschäftigung „Werkstudent“, nicht nur 
   Studium im Vordergrund steht, gilt wieder 106.
 - Schritt 3: Personengruppe 190, Beitragsgruppen 0000, Übergangsbereich 0 – die Person ist nur noch in
   der Unfallversicherung versichert.
+
+## MT-102: Studentin mit zwei Minijobs, die zusammen über der Grenze liegen
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
+**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.09.2026, festes
+Monatsentgelt 400,00 €, „Wie ist die Beschäftigung vorgesehen?“: „Minijob (bis 603 € im Monat)“, nicht
+befristet. Die Person füllt danach als Studentin ihren Teil aus: „Studentin oder Student (eingeschrieben)“,
+„Vollzeitstudium“, kein Urlaubssemester, Fachsemester 3, gesetzlich versichert, „einen Minijob (bis 603 € im
+Monat)“; bei „Haben Sie zurzeit noch eine andere Beschäftigung?“ „Ja“ und in der Tabelle eine Zeile: Art
+„Minijob“, seit 01.01.2024, Verdienst 500,00 €, Stunden pro Woche 7.
+
+**Schritte:**
+
+1. Als Arbeitgeber bei „Wie ist die Arbeitszeit vereinbart?“ „feste Wochenstunden, die Tage wechseln
+   (Dienstplan)“ wählen und bei „Wie viele Stunden arbeitet die Person pro Woche (Sollzeit)?“ `5` eingeben.
+   Weiter bis zur Kanzlei gehen und die Vorschläge ansehen.
+2. Die Wochenstunden auf `15` ändern.
+3. Zurück auf `5`; als Person das Studium auf „Teilzeitstudium“ ändern.
+
+**Erwartet:**
+
+- Schritt 1: Personengruppe 106 und Beitragsgruppen 0100, beide mit „bitte prüfen“, Übergangsbereich 1.
+  Die Erläuterung zum Vorschlag nennt 5 + 7 = 12 Wochenstunden. _Nicht offensichtlich:_ Beide Jobs liegen für sich unter
+  603 €, zusammen aber bei 900 € – dann ist keiner ein Minijob mehr, und für Studierende gilt die
+  Werkstudentenregel (nur RV-pflichtig), obwohl der Arbeitgeber „Minijob“ gewählt hat.
+- Schritt 2: 15 + 7 = 22 Stunden – Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 1111.
+- Schritt 3: Personengruppe 101 mit „bitte prüfen“ – beim Teilzeitstudium schlägt die App die
+  Werkstudentenregel hier nicht vor.
+- _Nicht offensichtlich:_ Ohne Angabe der Arbeitszeit (z. B. bei Schichtarbeit) bleibt es bei 101 mit
+  „bitte prüfen“; die App rät dann nicht.
+
+## MT-103: Hausfrau – frühere Vollzeitstelle zählt nicht für die Berufsmäßigkeit
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
+**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.08.2026, festes
+Monatsentgelt 1.000,00 €, „kurzfristige Aushilfe (höchstens 3 Monate oder 70 Arbeitstage)“ bis 15.09.2026
+an 33 Arbeitstagen, befristet bis 15.09.2026. Die Person füllt danach ihren Teil aus: „Haushaltsführung
+oder Familienarbeit“, gesetzlich versichert, „eine Aushilfe für höchstens 3 Monate oder 70 Arbeitstage“.
+
+**Schritte:**
+
+1. Als Person bei „Haben Sie in diesem Kalenderjahr schon anderswo gearbeitet …?“ „Ja“ wählen und eine
+   Zeile eintragen: von 01.01.2026 bis 31.03.2026, Art „mehr als geringfügig“, Verdienst 3.000,00 €.
+2. Die folgende Frage „Seit wann sind Sie nicht mehr berufstätig?“ leer lassen, weiter bis zur Kanzlei
+   gehen und die Vorschläge ansehen.
+3. Die Frage mit `01.04.2026` beantworten.
+
+**Erwartet:**
+
+- Die Frage „Seit wann sind Sie nicht mehr berufstätig?“ erscheint erst nach Schritt 1 – nur bei
+  „Haushaltsführung oder Familienarbeit“ und früheren Beschäftigungen im Jahr.
+- Schritt 2: Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 3111 – die Stelle bis 31.03. zählt für
+  die Berufsmäßigkeit mit.
+- Schritt 3: Personengruppe 110, Beitragsgruppen 0000. _Nicht offensichtlich:_ Die Begründung nennt, dass
+  Beschäftigungen vor dem Ausscheiden aus dem Berufsleben am 01.04.2026 nicht zählen
+  (Geringfügigkeits-Richtlinien B 2.3.3.3).
