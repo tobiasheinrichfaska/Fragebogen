@@ -9138,7 +9138,7 @@
         },
         {
           "value": "3",
-          "reason": "Auf höchstens zehn Wochen befristet: kein Krankengeldanspruch, ermäßigter Beitrag (§ 243 SGB V; § 44 Abs. 2 SGB V, § 3 Abs. 3 EntgFG nicht am Gesetzestext geprüft).",
+          "reason": "Im Voraus auf weniger als zehn Wochen befristet und keine Hauptbeschäftigung daneben: Nach vier Wochen Wartezeit (§ 3 Abs. 3 EntgFG) bleiben keine sechs Wochen Entgeltfortzahlung, also kein Krankengeld und ermäßigter Beitrag (§ 44 Abs. 2 Satz 1 Nr. 3, § 243 SGB V; Besprechungsergebnis vom 12.06.2008, TOP 3). Allgemeiner Beitrag dagegen bei einer Wahlerklärung zum Krankengeld oder wenn ein Tarif- oder Arbeitsvertrag die Entgeltfortzahlung ab dem ersten Tag gewährt und die Beschäftigung mindestens sechs Wochen dauert.",
           "when": {
             "all": [
               {
@@ -9152,8 +9152,8 @@
             ]
           },
           "test": {
-            "fn": "hoechstensZehnWochen",
-            "args": ["agBeschaeftigungsbeginn", "agBefristetBis"]
+            "fn": "kuerzerAlsZehnWochen",
+            "args": ["agBeschaeftigungsbeginn", "agBefristetBis", "jobArt", "elternzeitAnderswo"]
           },
           "check": true
         },

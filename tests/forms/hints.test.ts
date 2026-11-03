@@ -211,11 +211,11 @@ describe('check hints — definition rules', () => {
       'geringfuegigNebenKurzfristigen',
       'hoechstensGeringfuegigkeitsgrenze',
       'hoechstensGeringverdienergrenze',
-      'hoechstensZehnWochen',
       'imUebergangsbereich',
       'inSpaeteremMonat',
       'keinArbeitsentgelt',
       'kuerzerAlsEineWoche',
+      'kuerzerAlsZehnWochen',
       'kurzfristigBefristetBisDreiMonate',
       'kurzfristigGegeben',
       'kurzfristigGegebenBisGeringfuegigkeitsgrenze',
@@ -490,6 +490,38 @@ describe('a later calendar month', () => {
     });
     expect(later('2027-01-02', '2026-12-31')?.holds).toBe(true);
     expect(later(null, '2026-05-03')).toBeUndefined();
+  });
+});
+
+// 2026-11-03, bug: "höchstens zehn Wochen" gave the reduced KV rate at exactly 70 days, where four
+// weeks of waiting leave six weeks of continued pay (Besprechungsergebnis 12.06.2008, TOP 3: "kürzeren
+// Zeitraum als zehn Wochen"). A main employment pays Krankengeld (GfR 2026, Beispiel 40 → 1-1-1-1),
+// one resting in parental leave does not (Beispiel 4b → 3-1-1-1).
+describe('limited in advance to less than ten weeks', () => {
+  const short = (until: string, arts: unknown = null, leave: unknown = false) =>
+    HINT_TESTS.kuerzerAlsZehnWochen?.run([
+      '2026-08-01',
+      until as never,
+      arts as never,
+      leave as never,
+    ]);
+
+  it('counts the days of the contract and stops before the tenth week ends', () => {
+    expect(short('2026-10-08')).toEqual({ holds: true, detail: ['Dauer: 69 Tage.'] });
+    expect(short('2026-10-09')).toEqual({ holds: false, detail: ['Dauer: 70 Tage.'] });
+    expect(short('2026-08-20')?.holds).toBe(true);
+  });
+
+  it('gives no reduced rate next to a main employment, unless it rests in parental leave', () => {
+    expect(short('2026-09-20', ['svpflichtig'])?.holds).toBe(false);
+    expect(short('2026-09-20', ['ausbildung'])?.holds).toBe(false);
+    expect(short('2026-09-20', ['minijob', 'kurzfristig'])?.holds).toBe(true);
+    expect(short('2026-09-20', ['svpflichtig'], true)?.holds).toBe(true);
+  });
+
+  it('needs both dates', () => {
+    expect(short('')).toBeUndefined();
+    expect(HINT_TESTS.kuerzerAlsZehnWochen?.run([null, null, null, null])).toBeUndefined();
   });
 });
 

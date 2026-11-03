@@ -266,7 +266,7 @@
         "agArbeitszeitmodell": "wechselnd",
         "agWochenstunden": "14.00"
       },
-      "hinweis": "KV 3 im Beispiel: ermäßigter Beitrag bei Befristung bis zehn Wochen (kein Krankengeldanspruch). Die App gibt KV 3 nur, wenn „befristet“ mit Ende angegeben ist."
+      "hinweis": "KV 3 im Beispiel: ermäßigter Beitrag bei Befristung auf weniger als zehn Wochen (kein Krankengeldanspruch). Die App gibt KV 3 nur, wenn „befristet“ mit Ende angegeben ist."
     },
     {
       "id": "GFR-04b",
@@ -2199,8 +2199,7 @@
         "rv": "pflichtig (voller Beitrag)",
         "av": "pflichtig (voller Beitrag)",
         "pv": "pflichtig (voller Beitrag)",
-        "uebergangsbereich": "0",
-        "unsicher": ["kv"]
+        "uebergangsbereich": "0"
       },
       "person": {
         "geburtsdatum": "1990-05-17",
@@ -2252,7 +2251,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-20"
       },
-      "hinweis": "KV laut Beispiel 1; die Beschäftigung ist auf 51 Tage befristet, nach der Zehn-Wochen-Regel (ermäßigter Beitrag) wäre KV 3 denkbar – GfR uneinheitlich (vgl. Beispiele 4a, 4b). KV in Tests nicht hart prüfen. Übergangsbereich am 02.11.2026 berichtigt (war abgeleitet 1): neben der versicherungspflichtigen Hauptbeschäftigung A (2.200 €) werden nach RS Übergangsbereich Tz. 4.2.2 die Entgelte beider versicherungspflichtiger Beschäftigungen zusammengerechnet (3.050 €) – über 2.000 €, kein Übergangsbereich."
+      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 51 Tage: Die Hauptbeschäftigung A zahlt mindestens sechs Wochen Entgeltfortzahlung, also besteht Anspruch auf Krankengeld (§ 44 Abs. 2 Satz 1 Nr. 3 SGB V) und kein ermäßigter Beitrag. Seit 03.11.2026 hart geprüft. Übergangsbereich am 02.11.2026 berichtigt (war abgeleitet 1): neben der versicherungspflichtigen Hauptbeschäftigung A (2.200 €) werden nach RS Übergangsbereich Tz. 4.2.2 die Entgelte beider versicherungspflichtiger Beschäftigungen zusammengerechnet (3.050 €) – über 2.000 €, kein Übergangsbereich."
     },
     {
       "id": "GFR-41",
@@ -2411,7 +2410,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-30"
       },
-      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 59 Tage – siehe Zehn-Wochen-Frage bei GFR-40B."
+      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 59 Tage, ohne Hauptbeschäftigung daneben. Die GfR sind hier uneinheitlich: Beispiele 4a und 4b nennen bei ebenso kurzer Befristung KV 3. Die App folgt § 44 Abs. 2 Satz 1 Nr. 3 und § 243 SGB V sowie dem Besprechungsergebnis vom 12.06.2008 (TOP 3) und schlägt KV 3 mit Prüfhinweis vor."
     },
     {
       "id": "GFR-48",
@@ -2470,7 +2469,7 @@
         "agBefristet": true,
         "agBefristetBis": "2026-09-20"
       },
-      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 39 Tage – siehe GFR-40B."
+      "hinweis": "KV laut Beispiel 1 trotz Befristung auf 39 Tage, ohne Hauptbeschäftigung daneben – GfR uneinheitlich, siehe GFR-45B."
     },
     {
       "id": "ST-01",

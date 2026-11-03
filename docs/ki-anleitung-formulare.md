@@ -234,8 +234,9 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   Einmalzahlungen und nur die Entgelte versicherungspflichtiger weiterer Beschäftigungen – ohne Beamtenbezüge,
   kurzfristige Beschäftigungen und den zuerst aufgenommenen Minijob neben einer Hauptbeschäftigung – im Monat
   über der Minijob-Grenze und höchstens 2.000 €); `andereBeschaeftigungAusbildung` (Auswahl-Spalte: eine
-  weitere Beschäftigung ist eine Ausbildung); `ab55Jahren` (Geburtsdatum, Stichtag); `listeneintragNichtGueltig` (Textfeld mit Vorschlagsliste, Datum: der gewählte Listeneintrag gilt an diesem Tag nicht, z. B. eine Krankenkasse nach einer Fusion); `hoechstensZehnWochen` (Datum, Datum: höchstens
-  70 Tage einschließlich).
+  weitere Beschäftigung ist eine Ausbildung); `ab55Jahren` (Geburtsdatum, Stichtag); `listeneintragNichtGueltig` (Textfeld mit Vorschlagsliste, Datum: der gewählte Listeneintrag gilt an diesem Tag nicht, z. B. eine Krankenkasse nach einer Fusion); `kuerzerAlsZehnWochen` (Datum, Datum, Spalte
+  Art der anderen Beschäftigungen, Elternzeit: weniger als 70 Tage einschließlich und keine Hauptbeschäftigung
+  daneben, außer sie ruht in der Elternzeit).
 
   Die Entgelt-Tests (`hoechstensGeringfuegigkeitsgrenze`, `ueberGeringfuegigkeitsgrenze`,
   `geringfuegigEntlohnt`, `minijobNebenHauptbeschaeftigung`, `imUebergangsbereich`,

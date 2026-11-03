@@ -666,6 +666,13 @@ Key design decisions (details in `docs/plan.md`):
   alongside) is short-term or a Minijob for everyone, not only students (RS Studenten, overview 3/4).
   A source claiming partial old-age pensioners are always berufsmäßig was not followed (GfR B 2.3.3.3
   names them only for counting earlier jobs; question F7 of the portal prompt).
+  Reduced KV rate for short fixed terms (2026-11-03, § 44 Abs. 2 S. 1 Nr. 3, § 243 SGB V and § 3 Abs. 3
+  EntgFG checked in the text; Besprechungsergebnis 12.06.2008 TOP 3 via a commercial portal): KV 3 only
+  for a term of **less than** ten weeks (`kuerzerAlsZehnWochen`, was "at most" — 70 days gave 3) and not
+  next to a main job (GfR example 40 → 1), unless that rests in parental leave (example 4b → 3); still
+  "prüfen", the reason names Wahlerklärung and continued pay from day one. GfR examples 45/48 (1 without a
+  main job) contradict 4a/4b; the app follows the law. Research from a commercial portal stays
+  local: only cases an official free source carries go into the public fixtures.
 
 ---
 

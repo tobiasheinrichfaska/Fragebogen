@@ -1071,17 +1071,21 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
           }
         : undefined,
   },
-  hoechstensZehnWochen: {
-    args: ['date', 'date'],
-    describe: ([from = '', until = '']) =>
-      `von „${from}“ bis „${until}“ höchstens zehn Wochen liegen`,
-    run: ([from, until]) =>
-      typeof from === 'string' && typeof until === 'string' && isIsoDate(from) && isIsoDate(until)
-        ? {
-            holds: dayNumber(until) - dayNumber(from) + 1 <= 70,
-            detail: [`Dauer: ${dayNumber(until) - dayNumber(from) + 1} Tage.`],
-          }
-        : undefined,
+  // No Krankengeld without six weeks of continued pay (§ 44 Abs. 2 S. 1 Nr. 3 SGB V). The EFZG pays
+  // only after four weeks (§ 3 Abs. 3), so a job limited in advance to less than ten weeks has none
+  // (Besprechungsergebnis 12.06.2008, TOP 3) — unless a main employment pays it (GfR 2026,
+  // Beispiel 40); one resting in parental leave does not.
+  kuerzerAlsZehnWochen: {
+    args: ['date', 'date', 'choice', 'boolean'],
+    describe: ([from = '', until = '', art = '', leave = '']) =>
+      `von „${from}“ bis „${until}“ weniger als zehn Wochen liegen und laut „${art}“ keine Hauptbeschäftigung besteht (außer bei „${leave}“)`,
+    run: ([from, until, arts, leave]) => {
+      if (typeof from !== 'string' || typeof until !== 'string') return undefined;
+      if (!isIsoDate(from) || !isIsoDate(until)) return undefined;
+      const days = dayNumber(until) - dayNumber(from) + 1;
+      const haupt = leave !== true && otherJobs(arts ?? null, null, null).haupt;
+      return { holds: days < 70 && !haupt, detail: [`Dauer: ${days} Tage.`] };
+    },
   },
   // Not without pay: DEÜV Anlage 2 (121) "Dies gilt nicht für Auszubildende ohne Arbeitsentgelt".
   hoechstensGeringverdienergrenze: {

@@ -215,10 +215,19 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
     Nr. 2, 5 SGB V; § 5 Abs. 1 SGB VI); knappschaftliche Betriebe (Datenbaustein Knappschaft/See,
     Tz. 1.3.5).
   - **Bereits vorhandene Daten, Auswertung kommt mit den Beitragsgruppen:** Arbeitslosengeld
-    macht arbeitslosenversicherungsfrei (§ 27 Abs. 5 SGB III). Wer höchstens zehn Wochen befristet
-    beschäftigt ist, hat keinen Krankengeldanspruch, weil die Entgeltfortzahlung erst nach vier
-    Wochen beginnt (§ 44 Abs. 2 SGB V, § 3 Abs. 3 EntgFG); daraus folgt der ermäßigte
-    Beitragssatz. Diese Herleitung ist _nicht am Gesetzestext verifiziert_.
+    macht arbeitslosenversicherungsfrei (§ 27 Abs. 5 SGB III). Wer im Voraus auf **weniger** als
+    zehn Wochen befristet beschäftigt ist, hat keinen Krankengeldanspruch: Die Entgeltfortzahlung
+    beginnt erst nach vier Wochen (§ 3 Abs. 3 EntgFG), es bleiben also keine sechs Wochen
+    (§ 44 Abs. 2 Satz 1 Nr. 3 SGB V); daraus folgt der ermäßigte Beitragssatz (§ 243 SGB V). Beides
+    ist am Gesetzestext geprüft (03.11.2026); die Zehn-Wochen-Grenze steht so im
+    Besprechungsergebnis der Spitzenverbände vom 12.06.2008, TOP 3 („kürzeren Zeitraum als zehn
+    Wochen“). Bei genau zehn Wochen bleiben sechs Wochen Entgeltfortzahlung, also allgemeiner
+    Beitrag. Ausnahmen: eine Wahlerklärung zum Krankengeld; Entgeltfortzahlung ab dem ersten Tag
+    laut Tarif- oder Arbeitsvertrag bei mindestens sechs Wochen Dauer (beides nur als Prüfhinweis);
+    eine Hauptbeschäftigung daneben (GfR 2026, Beispiel 40: 1-1-1-1), außer sie ruht in der
+    Elternzeit (Beispiel 4b: 3-1-1-1). Die GfR sind nicht einheitlich: Beispiele 45 und 48 nennen
+    bei 59 bzw. 39 Tagen ohne Hauptbeschäftigung KV 1, Beispiele 4a und 4b bei 20 bzw. 34 Tagen
+    KV 3. Die App folgt dem Gesetz und schlägt KV 3 mit Prüfhinweis vor.
 - **Beitragsgruppen, Übergangsbereich, Tätigkeitsschlüssel (30.10.2026):** Die Vorschläge stützen sich auf
   DEÜV Anlage 1 (Schlüssel, Stand 26.06.2024), Anlage 16 (zulässige Kombinationen je Personengruppe, Version
   8.01) und Anlage 5 (Tätigkeitsschlüssel, Version 3.06, am Original gelesen: Stelle 6 Schulabschluss 1–4/9,
@@ -227,8 +236,9 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
   SGB V; § 5 Abs. 4, § 6 Abs. 1b, § 172 SGB VI; § 27 Abs. 2, 4, 5, § 28, § 346 Abs. 3 SGB III (Arbeitgeberanteil
   nach der Regelaltersgrenze, wieder seit 2022); § 20 Abs. 1, § 28 Abs. 2, § 55 Abs. 1 S. 3 SGB XI (halber
   PV-Beitrag bei Beihilfe); § 20 Abs. 2, 2a SGB IV (Übergangsbereich bis 2.000 €, nicht für zur
-  Berufsausbildung Beschäftigte). _Nicht verifiziert_ (nicht in den lokalen Texten): § 44 Abs. 2 und § 50
-  SGB V (kein Krankengeld bei Befristung bis zehn Wochen bzw. voller Erwerbsminderungsrente).
+  Berufsausbildung Beschäftigte); seit 03.11.2026 auch § 44 Abs. 2 SGB V und § 3 Abs. 3 EntgFG.
+  _Nicht verifiziert_ (nicht in den lokalen Texten): § 50 SGB V (kein Krankengeld bei voller
+  Erwerbsminderungsrente).
 - **Kinder (Pflegeversicherung):** Das BZSt liefert nur „Elterneigenschaft ab …“ und „Anzahl Kinder
   unter 25 ab …“ — keine Namen, keine Geburtsdaten (§ 55a SGB XI). Daraus folgt Datensparsamkeit:
   Einzeldaten nur für **nicht abrufbare** Kinder. Nicht abrufbar sind laut den Gemeinsamen
