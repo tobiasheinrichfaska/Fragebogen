@@ -9,12 +9,16 @@
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung  # Kanzlei build
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf        # check + connection test
 #   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten       # change the access data
+#   powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test -OhneRueckfrage  # unattended
+# -OhneRueckfrage (Tobias 2026-11-03, away from the desk): no window at all, messages only in the
+# terminal and the log; only a committed state, only with stored access data and a pinned host key.
 [CmdletBinding()]
 param(
   [string]$Ziel = 'oeffentlich',
   [switch]$Einrichten,
   [switch]$Probelauf,
-  [switch]$OhneBuild
+  [switch]$OhneBuild,
+  [switch]$OhneRueckfrage
 )
 
 $ErrorActionPreference = 'Stop'
@@ -32,6 +36,7 @@ $title = 'Fragebogen – Upload'
 # Messages come to the front (a hidden topmost owner) and also go to the terminal.
 function Show-Message([string]$text, [string]$buttons = 'OK', [string]$icon = 'Information') {
   Write-Host $text
+  if ($OhneRueckfrage) { return $null }
   $owner = New-Object System.Windows.Forms.Form
   $owner.TopMost = $true
   try { return [System.Windows.Forms.MessageBox]::Show($owner, $text, $title, $buttons, $icon) }
@@ -285,6 +290,9 @@ function Write-Log([string]$text) {
 
 try {
   $settings = Read-Settings
+  if ($OhneRueckfrage -and ($Einrichten -or -not $settings -or -not (Test-Path $passwordPath) -or -not $settings.hostkeys)) {
+    throw 'Ohne Rückfrage geht es nur mit gespeichertem Zugang und gemerktem Serverschlüssel – erst einmal mit Fenster einrichten (-Einrichten).'
+  }
   if ($Einrichten -or -not $settings -or -not (Test-Path $passwordPath)) {
     $settings = Invoke-Setup $settings
     if (-not $settings) { exit 1 }
@@ -334,8 +342,13 @@ try {
   }
 
   $warning = if ($dirty) { "`n`nAchtung: Es gibt nicht committete Änderungen – hochgeladen wird der Stand auf der Festplatte." } else { '' }
-  $answer = Show-Message ("$($plan.description)`nnach $($settings.server):$place`nStand $commit$warning`n`n$fileList$notes`n`nJetzt hochladen?") 'YesNo' 'Question'
-  if ($answer -ne 'Yes') { exit 1 }
+  if ($OhneRueckfrage) {
+    if ($dirty) { throw 'Ohne Rückfrage wird nur ein committeter Stand hochgeladen; es gibt nicht committete Änderungen.' }
+    Write-Host "$($plan.description)`nnach $($settings.server):$place`nStand $commit`n`n$fileList$notes`n`nOhne Rückfrage: wird hochgeladen."
+  } else {
+    $answer = Show-Message ("$($plan.description)`nnach $($settings.server):$place`nStand $commit$warning`n`n$fileList$notes`n`nJetzt hochladen?") 'YesNo' 'Question'
+    if ($answer -ne 'Yes') { exit 1 }
+  }
 
   $checks = @()
   if ($plan.prepare) {

@@ -246,9 +246,9 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-19: Schnellantworten, sofortiges Weiter und Postleitzahl
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ (im Testbereich ist das die neue Fassung 0.2.0).
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ (ab Fassung 0.2.0; im Testbereich die neueste).
 
-**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Sofortmeldung 0.2.0 (Entwurf).
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Sofortmeldung ab 0.2.0.
 
 **Schritte:**
 
@@ -280,7 +280,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 **Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ (oder „Personalfragebogen: Angaben für die Sofortmeldung“) als „Beschäftigte Person“.
 
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen; lokal `npm run build:preview`), Personalfragebogen oder Sofortmeldung
-0.2.0 (Entwurf), Rolle „Beschäftigte Person“.
+ab 0.2.0, Rolle „Beschäftigte Person“.
 
 **Schritte:**
 

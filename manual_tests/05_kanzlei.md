@@ -228,7 +228,7 @@ Kanzlei (Testmandant).
 **Testbereich:** nur in der Kanzlei – braucht einen Testmandanten in Lohn und Gehalt.
 
 **Voraussetzungen:** Fassung mit Entwürfen und Zuordnung (im Testbereich schon geladen; lokal `npm run build:preview`), Testmandant; eine
-Sofortmeldung 0.2.0 mit Personalnummer und später ein Personalfragebogen derselben Person
+Sofortmeldung (ab 0.2.0) mit Personalnummer und später ein Personalfragebogen derselben Person
 („Angaben übernehmen“ aus der Sofortmeldung).
 
 **Schritte:**

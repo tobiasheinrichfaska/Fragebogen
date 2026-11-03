@@ -44,6 +44,9 @@ installiert.
 3. Ohne `-Probelauf` erneut aufrufen und die Rückfrage „Jetzt hochladen?“ mit „Ja“ beantworten.
 4. Erneut mit `-Probelauf` aufrufen.
 5. Die Datei `deploy/.local/sftp-passwort.dpapi` in einem Editor öffnen.
+6. Eine Kleinigkeit ändern, ohne sie zu committen, und
+   `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test -OhneRueckfrage` aufrufen; dann
+   die Änderung zurücknehmen und erneut aufrufen.
 
 **Erwartet:**
 
@@ -54,6 +57,9 @@ installiert.
   committete Änderungen, warnt die Rückfrage davor.
 - Schritt 4: Kein Fenster mit Zugangsdaten mehr – sie sind gespeichert.
 - Schritt 5: Nur eine lange Zeichenfolge, kein lesbares Passwort.
+- Schritt 6: Es öffnet sich **kein** Fenster. Mit der Änderung bricht das Werkzeug im Terminal ab
+  („Ohne Rückfrage wird nur ein committeter Stand hochgeladen …“) und lädt nichts hoch; danach steht
+  im Terminal „Ohne Rückfrage: wird hochgeladen.“ und am Ende „index.html: online identisch“.
 - _Nicht offensichtlich:_ Ein anderer Windows-Benutzer (oder ein anderer PC) kann die Datei nicht
   entschlüsseln; dort fragt das Werkzeug neu.
 

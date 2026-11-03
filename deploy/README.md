@@ -24,7 +24,13 @@ powershell -ExecutionPolicy Bypass -File deploy\upload.ps1                # öff
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test     # Testordner
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung  # später
 powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten    # Zugang oder IPs ändern
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test -OhneRueckfrage  # ohne Fenster
 ```
+
+**Ohne Rückfrage** (`-OhneRueckfrage`, z. B. wenn niemand am Platz ist): kein Fenster, auch nicht die
+Frage „Jetzt hochladen?“; alle Meldungen nur im Terminal und im Protokoll. Das geht nur mit
+gespeichertem Zugang und gemerktem Serverschlüssel und nur für einen **committeten** Stand – sonst
+bricht das Werkzeug ab, ohne etwas hochzuladen.
 
 | Ziel                  | Ordner                 | Inhalt                                                                                                                  | Wer darf zugreifen                                             |
 | --------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |

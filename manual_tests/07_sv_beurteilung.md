@@ -122,7 +122,7 @@ abgeschlossen; Station „Kanzlei“.
 
 **Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ (oder „Personalfragebogen: Angaben für die Sofortmeldung“) als „Beschäftigte Person“.
 
-**Voraussetzungen:** Personalfragebogen oder Sofortmeldung 0.2.0 (Entwurf), Rolle „Person“.
+**Voraussetzungen:** Personalfragebogen oder Sofortmeldung ab 0.2.0, Rolle „Person“.
 
 **Schritte:**
 

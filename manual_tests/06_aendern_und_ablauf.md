@@ -118,7 +118,7 @@ Projekt.
 - Gelb hinterlegt sind **Weichen**: Fragen, von deren Antwort andere abhängen („davon hängen
   Nr. … ab“). Violett: Angaben, die eine andere Station festlegt.
 - Die Seite lädt nichts aus dem Internet und funktioniert offline.
-- Je Formular steht nur die **neueste Fassung**; eine ältere (z. B. Sofortmeldung 0.1.0) ist oben
+- Je Formular steht nur die **neueste Fassung**; eine ältere (z. B. Sofortmeldung 0.2.0) ist oben
   als „ersetzt“ genannt. Darunter stehen die **Gültigkeit** und „Was dieser Fragebogen nicht
   abdeckt“.
 

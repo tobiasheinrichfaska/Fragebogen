@@ -22,7 +22,7 @@
   Abschlüsse“** mit der gezeichneten Unterschrift, Systemvermerk und Prüfwert je Rolle.
 - Dann das **Prüfblatt**, eine Seite **„Anlage: Daten in maschinenlesbarer Form“** mit
   Zeichenkolonnen und eine Seite **„Anlage: Daten als QR-Codes“**.
-- Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 0.1.0 · Seite x von y“.
+- Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 0.3.0 · Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
 - _Nicht offensichtlich:_ Der Dateiname enthält keinen Personennamen. Die Unterschrift ist als
   Linie gezeichnet (vergrößern bleibt scharf), nicht als Bild.
 
