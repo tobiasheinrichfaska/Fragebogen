@@ -450,7 +450,10 @@ Key design decisions (details in `docs/plan.md`):
   the V16.1 field description, listed in the quick-entry description 2025-10), together with the Rentner
   register (Rentnerschlüssel 2024, waiver). **Employee mode is a required choice:** "neu anlegen"
   (MitarbeiterNeu) or "vorhandenen ergänzen" (MitarbeiterSel only, never creates one) — replaces
-  MitarbeiterSelOderNeu, which silently creates or overwrites on a wrong number. The Sofortmeldung 0.2.0 has
+  MitarbeiterSelOderNeu, which silently creates or overwrites on a wrong number. **Record names of
+  the import spec** (MitarbeiterNeu/MitarbeiterSel, "Satz-/Feldbeschreibung V16.1") **may appear in
+  public docs** (Tobias 2026-11-03, audit decision); field names, wage types and the mapping itself
+  stay local (`config/export.local.json`, local tests). The Sofortmeldung 0.2.0 has
   its own mapping (`formVersion`), so the employee can be created early and completed later under the same
   number; the station shows number, name and start to compare. The Erfassungsblatt is also a PDF of its own
   (`sheetPdf.ts`; one Unterlage per file).
@@ -1068,7 +1071,10 @@ interview-order rule; Sofortmeldung question and help texts drafted) done. Publi
 Sofortmeldung **1.0.0** in production since 2026-11-03 (test versions 0.2.0–0.4.0 still registered; catalogues in `docs/formulare/`); the Personalfragebogen stays a draft in the
 test folder.
 
-**Drafts awaiting Tobias's review:** Steuerfreigabe (§ 87d AO; 1–n approvers on one device wanted),
+**Drafts awaiting Tobias's review:** Austritt (`form-drafts/austritt/0.1.0.json`, 2026-11-03: one role
+arbeitgeber, 77 fields, covers Kündigung/Aufhebung/Befristung/Ausbildungsende/Tod; decisions: notices
+without legal advice, missing written form = check hint, one form + a new version before the last
+payroll, catalogue `docs/formulare/austritt-0.1.0.md`), Steuerfreigabe (§ 87d AO; 1–n approvers on one device wanted),
 Dienstwagen (Überlassung), Lohnmeldung (monthly; being rebuilt: Vormonat PDF, calendar per person,
 Lohnart rows); catalogues in `docs/formulare/`. After approval: freeze as 0.x test versions (move to `forms/` + hash in
 `published.json`). Open engine ideas from the research: references between tables, age conditions.
