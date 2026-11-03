@@ -100,3 +100,51 @@ describe('parseMasterDataFragment', () => {
     for (const message of Object.values(MASTER_DATA_LINK_MESSAGES)) expect(message).toMatch(/\.$/);
   });
 });
+
+describe('the form a link opens (Tobias 2026-11-03)', () => {
+  it('names the form right after the marker, never a version', () => {
+    const made = masterDataFragment({ firma: 'Beispiel Bau GmbH' }, 'sofortmeldung');
+    expect(made).toEqual({
+      ok: true,
+      fragment: '#stammdaten=1&formular=sofortmeldung&firma=Beispiel+Bau+GmbH',
+    });
+    expect(masterDataFragment({}, 'sofortmeldung')).toEqual({
+      ok: true,
+      fragment: '#stammdaten=1&formular=sofortmeldung',
+    });
+  });
+
+  it('reads the form apart from the master data', () => {
+    expect(
+      parseMasterDataFragment('#stammdaten=1&formular=sofortmeldung&betriebsnummer=12345671'),
+    ).toEqual({ ok: true, data: { betriebsnummer: '12345671' }, form: 'sofortmeldung' });
+    expect(parseMasterDataFragment('#stammdaten=1&formular=personalfragebogen')).toEqual({
+      ok: true,
+      data: {},
+      form: 'personalfragebogen',
+    });
+  });
+
+  it('keeps links without a form as they were', () => {
+    expect(parseMasterDataFragment('#stammdaten=1&firma=X')).toEqual({
+      ok: true,
+      data: { firma: 'X' },
+    });
+  });
+
+  it.each([
+    ['#stammdaten=1&formular=a&formular=b', 'duplicateKey'],
+    ['#stammdaten=1&formular=Sofort-Meldung', 'invalidKey'],
+    ['#stammdaten=1&formular=', 'invalidKey'],
+  ])('refuses %s', (hash, issue) => {
+    expect(parseMasterDataFragment(hash)).toMatchObject({ ok: false, issue });
+  });
+
+  it('never writes "formular" as master data or a malformed form', () => {
+    expect(masterDataFragment({ formular: 'x' })).toMatchObject({ ok: false, issue: 'invalidKey' });
+    expect(masterDataFragment({}, 'Sofort Meldung')).toMatchObject({
+      ok: false,
+      issue: 'invalidKey',
+    });
+  });
+});

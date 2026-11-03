@@ -9,7 +9,11 @@ import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import { fileNameFor } from '../logic/fileNames';
 import type { FormRegistry, RegisteredForm } from '../logic/formRegistry';
-import { MASTER_DATA_LINK_MESSAGES, parseMasterDataFragment } from '../logic/masterDataLink';
+import {
+  MASTER_DATA_LINK_MESSAGES,
+  parseMasterDataFragment,
+  type ParsedMasterDataLink,
+} from '../logic/masterDataLink';
 import {
   enterRole,
   fillMasterData,
@@ -68,27 +72,57 @@ export function App({ start }: { start?: PreparedStart }) {
   return <Workspace registry={BUNDLED_FORMS.registry} {...(start ? { start } : {})} />;
 }
 
+/** The banner a fresh start shows: start point, bookmark link that opened a form, or a link error. */
+function startBanner(
+  start: PreparedStart | undefined,
+  remembered: ParsedMasterDataLink,
+  linked: RegisteredForm | undefined,
+): BannerMessage | undefined {
+  if (start) {
+    return {
+      tone: 'info',
+      text: `Vorbereiteter Fragebogen: ${start.title}. ${start.screen === 'overview' ? 'Die Teile sind schon ausgefüllt und abgeschlossen.' : 'Die übrigen Angaben sind schon ausgefüllt – Sie beginnen bei der Frage, um die es im Test geht.'}`,
+    };
+  }
+  if (!remembered.ok) {
+    return {
+      tone: 'warning',
+      text: `Stammdaten-Link: ${MASTER_DATA_LINK_MESSAGES[remembered.issue]}`,
+      detail: remembered.detail,
+    };
+  }
+  if (remembered.form === undefined) return undefined;
+  return linked
+    ? {
+        tone: 'info',
+        text: `Neuer Fragebogen „${linked.definition.title}“ aus Ihrem Lesezeichen. Die Angaben zum Betrieb aus dem Link sind beim Arbeitgeber schon eingetragen.`,
+      }
+    : {
+        tone: 'warning',
+        text: `Ihr Lesezeichen soll einen neuen Fragebogen „${remembered.form}“ öffnen; diese Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.`,
+      };
+}
+
 function Workspace({ registry, start }: { registry: FormRegistry; start?: PreparedStart }) {
-  const [session, setSession] = useState<Session | undefined>(start?.session);
+  const remembered = useMemo(() => parseMasterDataFragment(location.hash), []);
+  // A bookmark link that names a form opens a new questionnaire of its newest version at once.
+  const linked = useMemo(
+    () =>
+      !start && remembered.ok && remembered.form ? registry.latest(remembered.form) : undefined,
+    [registry, remembered, start],
+  );
+  const [session, setSession] = useState<Session | undefined>(
+    () => start?.session ?? (linked ? startSession(linked, newQuestionnaireId()) : undefined),
+  );
   const [screen, setScreen] = useState<Screen>(
-    start ? { kind: start.screen === 'overview' ? 'roles' : 'interview' } : { kind: 'start' },
+    start
+      ? { kind: start.screen === 'overview' ? 'roles' : 'interview' }
+      : { kind: linked ? 'roles' : 'start' },
   );
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
-  const remembered = useMemo(() => parseMasterDataFragment(location.hash), []);
   const [banner, setBanner] = useState<BannerMessage | undefined>(() =>
-    start
-      ? {
-          tone: 'info',
-          text: `Vorbereiteter Fragebogen: ${start.title}. ${start.screen === 'overview' ? 'Die Teile sind schon ausgefüllt und abgeschlossen.' : 'Die übrigen Angaben sind schon ausgefüllt – Sie beginnen bei der Frage, um die es im Test geht.'}`,
-        }
-      : remembered.ok
-        ? undefined
-        : {
-            tone: 'warning',
-            text: `Stammdaten-Link: ${MASTER_DATA_LINK_MESSAGES[remembered.issue]}`,
-            detail: remembered.detail,
-          },
+    startBanner(start, remembered, linked),
   );
 
   useEffect(() => {
@@ -339,6 +373,7 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
           <MasterDataLinkForm
             registry={registry}
             {...(remembered.ok && remembered.data ? { initial: remembered.data } : {})}
+            {...(remembered.ok && remembered.form ? { initialForm: remembered.form } : {})}
           />
           <div className="nav">
             <button type="button" className="link" onClick={() => setScreen({ kind: 'start' })}>

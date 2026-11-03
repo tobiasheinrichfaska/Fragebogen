@@ -4,6 +4,11 @@
 
 /** Calendar date `YYYY-MM-DD`. Never parsed through `Date` (UTC off-by-one). */
 export type IsoDate = string;
+/**
+ * The key of the bookmark link that names the form it opens (Tobias 2026-11-03: the link leads into
+ * a new, partly prefilled questionnaire); reserved, never a master-data key.
+ */
+export const MASTER_DATA_FORM_KEY = 'formular';
 /** A fixed day or `today`: the device's calendar day when a value is entered or sealed. */
 export type DateBound = IsoDate | 'today';
 /** Lower-case hex SHA-256 digest. */

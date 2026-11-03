@@ -213,8 +213,14 @@ test('a master-data link made on the start page fills the next questionnaire', a
   await expect(form).toContainText('Bitte erst die markierten Angaben berichtigen.');
   await form.locator('#master-betriebsnummer').fill('1234 5671');
   const link = form.getByLabel('Stammdaten-Link');
+  // By default the link opens a new Sofortmeldung (Tobias 2026-11-03); the start page is a choice.
+  await form.locator('#master-opens').selectOption('');
   await expect(link).toHaveValue(
     /#stammdaten=1&betriebsnummer=12345671&firma=Beispiel\+Bau\+GmbH$/,
+  );
+  await form.locator('#master-opens').selectOption('sofortmeldung');
+  await expect(link).toHaveValue(
+    /#stammdaten=1&formular=sofortmeldung&betriebsnummer=12345671&firma=Beispiel\+Bau\+GmbH$/,
   );
 
   // Opened like a bookmark: a fresh load with the fragment. Only the fragment is used — a build
@@ -222,7 +228,9 @@ test('a master-data link made on the start page fills the next questionnaire', a
   const url = await link.inputValue();
   await page.goto(pathToFileURL(APP).href + url.slice(url.indexOf('#')));
   await page.reload();
-  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await expect(page.locator('main')).toContainText(
+    'Neuer Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ aus Ihrem Lesezeichen.',
+  );
   await press(page, 'Ich bin: Arbeitgeber');
   await expect(page.locator('main')).toContainText('Stammdaten aus Ihrem Lesezeichen übernommen.');
   await answerUntilSummary(page, 'agFirma');

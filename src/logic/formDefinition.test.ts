@@ -1345,3 +1345,14 @@ describe('date bounds with "today" (Tobias 2026-11-03)', () => {
     expect(result.ok).toBe(false);
   });
 });
+
+describe('the reserved link key "formular"', () => {
+  it('is no master-data key of a form', () => {
+    const d = definition();
+    Object.assign(fieldAt(d, 0, 0), { masterData: 'formular' });
+    expect(checkFormDefinition(d)).toContainEqual({
+      path: '$.sections[0].fields[0].masterData',
+      message: expect.stringContaining('reserved'),
+    });
+  });
+});

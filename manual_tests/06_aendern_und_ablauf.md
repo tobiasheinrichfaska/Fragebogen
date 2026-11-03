@@ -241,7 +241,7 @@ Projekt.
 
 1. Auf der Startseite **„Stammdaten-Link erstellen oder ändern …“** klicken.
 2. Bei der Firma `Beispiel Gastro GmbH` eingeben, bei der Betriebsnummer `1234 567X`.
-3. Die Betriebsnummer auf `1234 5678` berichtigen.
+3. Die Betriebsnummer auf `1234 5671` berichtigen.
 4. Bei **„Lohnsteuer bei Minijobs“** „pauschal 2 % (Minijob)“ wählen, bei **„Abwälzung der
    Pauschalsteuer bei Minijobs“** „Ja“; bei **„Lohnsteuer bei kurzfristigen Aushilfen“** „pauschal
    25 % (kurzfristige Aushilfe)“, bei der Abwälzung für Aushilfen „Nein“; bei der Mandantennummer
@@ -249,7 +249,8 @@ Projekt.
 5. Beim Privathaushalt „Ja“ wählen; danach bei der besonderen Betriebsart „knappschaftlicher
    Betrieb (Bergbau)“; danach bei der Seeschifffahrt „Ja“.
 6. Alle drei zurücksetzen (Privathaushalt „Nein“, Betriebsart „Nein, keine davon“, Seeschifffahrt
-   „Nein“) und unter „Ihr Link“ **„Kopieren“** klicken.
+   „Nein“). Unter „Ihr Link“ bei **„Was soll der Link öffnen?“** „einen neuen Fragebogen
+   „Personalfragebogen: Angaben für die Lohnabrechnung““ wählen und **„Kopieren“** klicken.
 7. Zur Startseite, **„Eingänge zusammenführen …“** öffnen, unten **„Stammdaten-Link erstellen oder
    ändern“** aufklappen, den kopierten Link bei „Vorhandenen Link einfügen“ einfügen und
    **„Einlesen“** klicken.
@@ -271,7 +272,7 @@ Projekt.
   - bei der Knappschaft „Die App macht für diesen Betrieb keine Vorschläge – Beschäftigung in einem
     knappschaftlichen Betrieb …“;
   - bei der Seeschifffahrt „… Beschäftigung an Bord eines Seeschiffs …“ (je nach Person).
-- Schritt 6: Der Kasten verschwindet.
+- Schritt 6: Der Kasten verschwindet. Der Link beginnt mit `#stammdaten=1&formular=personalfragebogen`.
 - Schritt 7: „Link eingelesen: … Angaben“, alle Antworten aus Schritt 2–4 stehen wieder da. Die
   Liste der Eingänge bleibt unverändert.
 
@@ -279,8 +280,8 @@ Projekt.
 
 ## MT-100: Lohnsteuer-Regel aus dem Link erscheint mit der Frage
 
-**Einstieg:** Sie öffnen den Link aus MT-99 in einem neuen Tab und beginnen einen neuen Fragebogen
-„Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+**Einstieg:** Sie öffnen den Link aus MT-99 in einem neuen Tab – er beginnt gleich einen neuen
+Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wählen „Ich bin: Arbeitgeber“.
 
 **Voraussetzungen:** MT-99 (der kopierte Link).
 
@@ -325,8 +326,40 @@ Projekt.
   „Weitere … Angaben aus Ihrem bisherigen Link bleiben erhalten.“ Der Link enthält weiterhin
   `mandantennummer=99999` und `lohnsteuerAushilfe=pauschal25`. Er enthält keine Daten der Person.
 - Schritt 2: Oben erscheint „Stammdaten-Link: Dieser Stammdaten-Link stammt aus einer anderen
-  Version der App und kann nicht gelesen werden.“ Ein neuer Fragebogen beginnt ohne vorbelegte
-  Firma.
+  Version der App und kann nicht gelesen werden.“ Die App zeigt die Startseite; ein neuer
+  Fragebogen beginnt ohne vorbelegte Firma.
+
+---
+
+## MT-109: Das Lesezeichen beginnt gleich einen neuen Fragebogen
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) und klicken
+**„Stammdaten-Link erstellen oder ändern …“**.
+
+**Schritte:**
+
+1. Firma `Beispiel Bau GmbH`, Betriebsnummer `1234 5671` eingeben. Unter „Ihr Link“ bei **„Was soll
+   der Link öffnen?“** nachsehen, was gewählt ist; **„Kopieren“**.
+2. Den Link in einem neuen Tab öffnen.
+3. Im ersten Tab „die Startseite (das Formular wählt man dort)“ wählen, kopieren und in einem neuen
+   Tab öffnen.
+4. In der öffentlichen App (nicht im Testbereich) einen Link mit `formular=personalfragebogen` öffnen
+   (z. B. den Link aus MT-99).
+
+**Erwartet:**
+
+- Schritt 1: Vorgewählt ist „einen neuen Fragebogen „Personalfragebogen: Angaben für die
+  Sofortmeldung““. Der Hinweis darunter sagt, dass der Link nur das Formular nennt, keine Fassung.
+- Schritt 2: Sofort ein **neuer, leerer Fragebogen** „Personalfragebogen: Angaben für die
+  Sofortmeldung“ bei „Wer füllt jetzt aus?“ – ohne Umweg über die Startseite. Oben: „Neuer
+  Fragebogen … aus Ihrem Lesezeichen. Die Angaben zum Betrieb aus dem Link sind beim Arbeitgeber
+  schon eingetragen.“
+- Schritt 3: Die Startseite wie früher; Firma und Betriebsnummer stehen trotzdem in jedem neuen
+  Fragebogen beim Arbeitgeber.
+- Schritt 4: Gelb: „Ihr Lesezeichen soll einen neuen Fragebogen „personalfragebogen“ öffnen; diese
+  Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.“ – die Startseite erscheint.
+  _Nicht offensichtlich:_ Der Link öffnet immer die neueste Fassung des Formulars; er bleibt auch
+  nach einer neuen Fassung gültig.
 
 ---
 

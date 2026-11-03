@@ -34,6 +34,8 @@ interface Props {
   registry: FormRegistry;
   /** The link the app was opened with: its values are the start. */
   initial?: MasterData;
+  /** The form that link opens. */
+  initialForm?: string;
 }
 
 /** Typed text for text-like entries, the chosen option or yes/no otherwise; null = no answer. */
@@ -61,8 +63,10 @@ function keptOf(catalog: MasterDataCatalog, record: MasterData | undefined): Mas
 const issueText = (issue: string, bounds?: IssueBounds) =>
   issue in ISSUE_MESSAGES ? issueMessage(issue as IssueCode, bounds) : 'Diese Angabe ist ungültig.';
 
-export function MasterDataLinkForm({ registry, initial }: Props) {
+export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
   const forms = useMemo(() => latestForms(registry), [registry]);
+  // Which new questionnaire the link opens (Tobias 2026-11-03); "" = the start page.
+  const [opens, setOpens] = useState(() => initialForm ?? forms[0]?.definition.id ?? '');
   const catalog = useMemo(() => masterDataCatalog(forms), [forms]);
   const [inputs, setInputs] = useState<Inputs>(() => inputsOf(catalog, initial));
   // Keys this app does not know (e.g. from a newer version) stay in the link unchanged.
@@ -83,7 +87,10 @@ export function MasterDataLinkForm({ registry, initial }: Props) {
     }
   }
   const link =
-    errors.size === 0 && Object.keys(record).length > 0 ? masterDataFragment(record) : undefined;
+    errors.size === 0 && (Object.keys(record).length > 0 || opens !== '')
+      ? masterDataFragment(record, opens === '' ? undefined : opens)
+      : undefined;
+  const opened = forms.find((form) => form.definition.id === opens);
   const exclusions = masterDataExclusions(forms, record);
   const base = masterDataLinkBase(location.href, APP_CONFIG.appAddress);
 
@@ -103,6 +110,7 @@ export function MasterDataLinkForm({ registry, initial }: Props) {
     }
     setInputs(inputsOf(catalog, parsed.data));
     setKept(keptOf(catalog, parsed.data));
+    setOpens(parsed.form ?? '');
     setPasted('');
     setMessage({
       tone: 'success',
@@ -182,6 +190,27 @@ export function MasterDataLinkForm({ registry, initial }: Props) {
 
       <div className="summary-section">
         <h3>Ihr Link</h3>
+        <div className="master-entry">
+          <label htmlFor="master-opens" className="master-question">
+            Was soll der Link öffnen?
+          </label>
+          <select
+            id="master-opens"
+            value={opens}
+            onChange={(event) => setOpens(event.target.value)}
+          >
+            {forms.map((form) => (
+              <option key={form.definition.id} value={form.definition.id}>
+                einen neuen Fragebogen „{form.definition.title}“
+              </option>
+            ))}
+            <option value="">die Startseite (das Formular wählt man dort)</option>
+          </select>
+          <p className="help">
+            Der Link nennt nur das Formular, keine Fassung: Er öffnet immer die neueste Fassung,
+            auch nach einer Aktualisierung der App.
+          </p>
+        </div>
         {errors.size > 0 && (
           <p className="field-error" role="alert">
             Bitte erst die markierten Angaben berichtigen.
@@ -201,8 +230,10 @@ export function MasterDataLinkForm({ registry, initial }: Props) {
             <p className="muted">
               {link.fragment.length.toLocaleString('de-DE')} von{' '}
               {MASTER_DATA_LINK_MAX_LENGTH.toLocaleString('de-DE')} Zeichen. Legen Sie den Link als
-              Lesezeichen an oder geben Sie ihn weiter; geöffnet trägt er die Angaben in jeden neuen
-              Fragebogen ein.
+              Lesezeichen an oder geben Sie ihn weiter.{' '}
+              {opened
+                ? `Geöffnet beginnt er einen neuen Fragebogen „${opened.definition.title}“; die Angaben zum Betrieb sind beim Arbeitgeber schon eingetragen.`
+                : 'Geöffnet trägt er die Angaben in jeden neuen Fragebogen ein.'}
             </p>
           </>
         )}

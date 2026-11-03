@@ -32,6 +32,7 @@ import {
   type TablePage,
   TEXT_FORMATS,
   DEUEV_RULES,
+  MASTER_DATA_FORM_KEY,
 } from './model';
 
 /** Form id, also the folder name under forms/. */
@@ -1413,6 +1414,7 @@ function interviewOrder({ definition, report }: CheckContext): void {
 function masterDataKeys({ definition, fields, report }: CheckContext): void {
   const seen = new Map<string, string>();
   const claim = (key: string, fieldId: string, at: string) => {
+    if (key === MASTER_DATA_FORM_KEY) report(at, `"${key}" is reserved for the form a link opens`);
     const other = seen.get(key);
     if (other !== undefined) report(at, `key "${key}" is already used by "${other}"`);
     else seen.set(key, fieldId);

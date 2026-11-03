@@ -360,7 +360,9 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
   // The link for next time keeps what the loaded link held for other forms (Tobias 2026-11-03).
   const own = masterDataOf(definition, role, part.data);
   const masterData = mergedMasterData(session.masterData?.record, definition, role, part.data);
-  const link = Object.keys(own).length > 0 ? masterDataFragment(masterData) : undefined;
+  // Opened next time, it begins a new questionnaire of this form (Tobias 2026-11-03).
+  const link =
+    Object.keys(own).length > 0 ? masterDataFragment(masterData, definition.id) : undefined;
   const ownLabels = fieldsOfRole(definition, role).flatMap((field) => {
     const key = masterDataKeyFor(field, (id) => part.data[id] ?? null);
     return key !== undefined && Object.hasOwn(own, key.key) ? [key.label] : [];
@@ -523,8 +525,9 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
           {link.ok ? (
             <>
               <p className="muted">
-                Legen Sie diesen Link als Lesezeichen an. Beim nächsten Fragebogen sind diese
-                Angaben zum Betrieb dann schon eingetragen: {ownLabels.join(', ')}.
+                Legen Sie diesen Link als Lesezeichen an. Er beginnt beim nächsten Mal gleich einen
+                neuen Fragebogen „{definition.title}“, und diese Angaben zum Betrieb sind dann schon
+                eingetragen: {ownLabels.join(', ')}.
                 {fromOthers > 0
                   ? ` Weitere ${String(fromOthers)} Angaben aus Ihrem bisherigen Link bleiben erhalten.`
                   : ''}{' '}

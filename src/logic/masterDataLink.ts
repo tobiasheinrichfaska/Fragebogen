@@ -1,10 +1,13 @@
 // Master data carried in a bookmark link (Tobias, 2026-10-29: option C, no browser storage). The
-// app address gets a fragment such as #stammdaten=1&betriebsnummer=12345671&firma=Beispiel+GmbH.
+// app address gets a fragment such as #stammdaten=1&betriebsnummer=12345671&firma=Beispiel+GmbH;
+// with formular=sofortmeldung it opens a new questionnaire of that form at once (Tobias
+// 2026-11-03) — the form id only, never a version, so the link keeps working with new versions.
 // A fragment never reaches the server, but it stays in bookmarks and the browser history, which
 // is acceptable for the employer's own data only. Parsing is strict and all-or-nothing; the
 // result is still untrusted and goes through applyMasterData (setValue) like typed input.
 import { ID } from './formDefinition';
 import type { MasterData } from './masterData';
+import { MASTER_DATA_FORM_KEY } from './model';
 
 const MARKER = 'stammdaten';
 export const MASTER_DATA_LINK_VERSION = '1';
@@ -39,18 +42,27 @@ export type MasterDataLinkResult =
   | { ok: true; fragment: string }
   | { ok: false; issue: MasterDataLinkIssue; detail: readonly string[] };
 
-/** The fragment (with "#") for a bookmark; keys sorted, so equal data gives an equal link. */
-export function masterDataFragment(data: MasterData): MasterDataLinkResult {
+/**
+ * The fragment (with "#") for a bookmark; keys sorted, so equal data gives an equal link. `form`:
+ * the form the link opens as a new questionnaire.
+ */
+export function masterDataFragment(data: MasterData, form?: string): MasterDataLinkResult {
   const entries = Object.entries(data).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
   if (entries.length > MASTER_DATA_LINK_MAX_KEYS) {
     return { ok: false, issue: 'tooManyKeys', detail: [String(entries.length)] };
   }
   const params = new URLSearchParams([[MARKER, MASTER_DATA_LINK_VERSION]]);
+  if (form !== undefined) {
+    if (!ID.test(form)) return { ok: false, issue: 'invalidKey', detail: [form] };
+    params.append(MASTER_DATA_FORM_KEY, form);
+  }
   for (const [key, value] of entries) {
     if (typeof value !== 'string') {
       throw new RangeError(`Master datum "${key}" is not a text value`);
     }
-    if (!ID.test(key)) return { ok: false, issue: 'invalidKey', detail: [key] };
+    if (!ID.test(key) || key === MASTER_DATA_FORM_KEY) {
+      return { ok: false, issue: 'invalidKey', detail: [key] };
+    }
     if (value === '') return { ok: false, issue: 'emptyValue', detail: [key] };
     params.append(key, value);
   }
@@ -77,12 +89,13 @@ export function fragmentOf(pasted: string): string {
 }
 
 export type ParsedMasterDataLink =
-  | { ok: true; data: MasterData | undefined }
+  | { ok: true; data: MasterData | undefined; form?: string }
   | { ok: false; issue: MasterDataLinkIssue; detail: readonly string[] };
 
 /**
  * Reads master data from a location hash (with or without "#"). A hash without the marker is not
- * a master-data link (`data: undefined`); a marked but malformed one is refused as a whole.
+ * a master-data link (`data: undefined`); a marked but malformed one is refused as a whole. `form`:
+ * the form the link opens, if it names one.
  */
 export function parseMasterDataFragment(hash: string): ParsedMasterDataLink {
   const body = hash.startsWith('#') ? hash.slice(1) : hash;
@@ -96,7 +109,15 @@ export function parseMasterDataFragment(hash: string): ParsedMasterDataLink {
     return { ok: false, issue: 'unknownVersion', detail: versions };
   }
   const data: MasterData = {};
-  const keys = [...new Set(params.keys())].filter((key) => key !== MARKER);
+  const forms = params.getAll(MASTER_DATA_FORM_KEY);
+  const form = forms[0];
+  if (forms.length > 1) return { ok: false, issue: 'duplicateKey', detail: [MASTER_DATA_FORM_KEY] };
+  if (form !== undefined && !ID.test(form)) {
+    return { ok: false, issue: 'invalidKey', detail: [MASTER_DATA_FORM_KEY] };
+  }
+  const keys = [...new Set(params.keys())].filter(
+    (key) => key !== MARKER && key !== MASTER_DATA_FORM_KEY,
+  );
   if (keys.length > MASTER_DATA_LINK_MAX_KEYS) {
     return { ok: false, issue: 'tooManyKeys', detail: [String(keys.length)] };
   }
@@ -111,5 +132,5 @@ export function parseMasterDataFragment(hash: string): ParsedMasterDataLink {
     }
     data[key] = value;
   }
-  return { ok: true, data };
+  return { ok: true, data, ...(form === undefined ? {} : { form }) };
 }

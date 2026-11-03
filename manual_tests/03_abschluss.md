@@ -139,19 +139,21 @@ stehen in der Zusammenfassung des Arbeitgebers. Ohne Testbereich: MT-11 bis zur 
 **Schritte:**
 
 1. Klicken Sie im Abschnitt **„Stammdaten für das nächste Mal“** auf **„Kopieren“**.
-2. Öffnen Sie den kopierten Link in einem neuen Tab, beginnen Sie einen neuen Fragebogen und wählen
-   Sie **„Ich bin: Arbeitgeber“**.
+2. Öffnen Sie den kopierten Link in einem neuen Tab und wählen Sie **„Ich bin: Arbeitgeber“**.
 3. Ändern Sie im Link hinter `betriebsnummer=` eine Ziffer zu einem Buchstaben und öffnen Sie ihn
-   erneut. Beginnen Sie wieder als Arbeitgeber.
+   erneut. Wählen Sie wieder „Ich bin: Arbeitgeber“.
 
 **Erwartet:**
 
-- Der Link endet auf `#stammdaten=1&betriebsnummer=…&firma=…`. Er enthält **keine** Daten der Person.
-- Nach Schritt 2 erscheint „Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.“, und Firma
-  und Betriebsnummer sind schon beantwortet.
+- Der Link endet auf `#stammdaten=1&formular=sofortmeldung&betriebsnummer=…&firma=…`. Er enthält
+  **keine** Daten der Person.
+- Schritt 2: Der Link öffnet gleich einen **neuen Fragebogen** „Personalfragebogen: Angaben für die
+  Sofortmeldung“ bei „Wer füllt jetzt aus?“, mit dem Hinweis „Neuer Fragebogen … aus Ihrem
+  Lesezeichen“. Nach „Ich bin: Arbeitgeber“ erscheint „Stammdaten aus Ihrem Lesezeichen übernommen.
+  Bitte prüfen.“, und Firma und Betriebsnummer sind schon beantwortet.
 - Nach Schritt 3 meldet die App, dass die Stammdaten nicht übernommen werden konnten, mit dem Grund
   („Die Betriebsnummer hat genau 8 Ziffern.“).
-- _Nicht offensichtlich:_ Der Link nennt weder Formular noch Fassung. Ein Link aus einem früheren
+- _Nicht offensichtlich:_ Der Link nennt das Formular, aber keine Fassung. Ein Link aus einem früheren
   Test füllt Firma und Betriebsnummer auch in einer neueren Fassung der Sofortmeldung (seit 0.3.0
   geprüft). Hat die neue Fassung eine strengere Prüfung, übernimmt die App einen alten Wert, der
   nicht mehr passt, nicht und sagt das mit dem Grund (z. B. eine Betriebsnummer mit falscher
