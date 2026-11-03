@@ -222,7 +222,11 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
     ist am Gesetzestext geprüft (03.11.2026); die Zehn-Wochen-Grenze steht so im
     Besprechungsergebnis der Spitzenverbände vom 12.06.2008, TOP 3 („kürzeren Zeitraum als zehn
     Wochen“). Bei genau zehn Wochen bleiben sechs Wochen Entgeltfortzahlung, also allgemeiner
-    Beitrag. Ausnahmen: eine Wahlerklärung zum Krankengeld; Entgeltfortzahlung ab dem ersten Tag
+    Beitrag. Gestützt auch durch das Gemeinsame Rundschreiben zum Krankengeld (RS 2022/06,
+    Ziff. 3.1.1.3.2 „Unständig oder kurzzeitig Beschäftigte“; mit Wahlerklärung ruht der Anspruch
+    die ersten sechs Wochen, § 49 Abs. 1 Nr. 7 SGB V) und Fußnote 2 der Praktikanten-Übersicht im
+    Studenten-Rundschreiben (RS 2016/07: ohne Krankengeldanspruch KV „3“) – beide im Wortlaut in
+    der AOK-Rechtsdatenbank (Dok.-ID 2240919 und 10905), über Claude in Chrome gelesen. Ausnahmen: eine Wahlerklärung zum Krankengeld; Entgeltfortzahlung ab dem ersten Tag
     laut Tarif- oder Arbeitsvertrag bei mindestens sechs Wochen Dauer (beides nur als Prüfhinweis);
     eine Hauptbeschäftigung daneben (GfR 2026, Beispiel 40: 1-1-1-1), außer sie ruht in der
     Elternzeit (Beispiel 4b: 3-1-1-1). Die GfR sind nicht einheitlich: Beispiele 45 und 48 nennen
