@@ -140,10 +140,35 @@ describe('checkSvNumber', () => {
   );
 });
 
+// Gemeinsames Rundschreiben „Meldeverfahren zur Sozialversicherung“ (Stand 17.06.2026, Ziff.
+// 1.3.2.2). Bug 2026-11-03: the check digit, documented there, was not checked — "12345678" passed.
 describe('checkBetriebsnummer', () => {
-  it.each(['12345678', '00000001'])('accepts %s', (number) => {
+  it.each([
+    '12345671', // 1+4+3+8+5+(1+2)+7 = 31 → 1
+    '12345676', // the check digit + 5 is valid too
+    '01234561',
+    '01234566',
+    '11112348', // first three digits above 110
+    '11112343',
+    '09900008', // 099 is the last allowed below 100
+    '99999993',
+  ])('accepts %s', (number) => {
     expect(checkBetriebsnummer(number)).toEqual({ ok: true, value: number, warnings: [] });
   });
+
+  it.each(['12345678', '12345672', '11112340', '99999990'])(
+    'rejects the wrong check digit of %s',
+    (number) => {
+      expect(checkBetriebsnummer(number)).toEqual({ ok: false, issue: 'betriebsnummer.checksum' });
+    },
+  );
+
+  it.each(['00012340', '10000004', '10512345', '11000004'])(
+    'rejects the first three digits of %s (001–099 or above 110)',
+    (number) => {
+      expect(checkBetriebsnummer(number)).toEqual({ ok: false, issue: 'betriebsnummer.prefix' });
+    },
+  );
 
   it.each(['', '1234567', '123456789', '1234567a', '1234 5678', '１２３４５６７８'])(
     'rejects the malformed %j',

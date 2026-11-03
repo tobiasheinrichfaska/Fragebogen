@@ -221,9 +221,9 @@ describe('the master-data catalogue of all forms', () => {
       if (!found) throw new Error(key);
       return found;
     };
-    expect(masterDataInput(entry('betriebsnummer'), '1234 5678')).toEqual({
+    expect(masterDataInput(entry('betriebsnummer'), '1234 5671')).toEqual({
       ok: true,
-      value: '12345678',
+      value: '12345671',
     });
     expect(masterDataInput(entry('privathaushalt'), true)).toEqual({ ok: true, value: 'ja' });
     expect(masterDataInput(entry('firma'), '  Beispiel   GmbH ')).toEqual({

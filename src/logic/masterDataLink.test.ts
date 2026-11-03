@@ -14,8 +14,8 @@ function fragmentOf(data: Record<string, string>): string {
 
 describe('masterDataFragment', () => {
   it('writes a marked, sorted fragment', () => {
-    expect(fragmentOf({ firma: 'Beispiel Bau GmbH', betriebsnummer: '12345678' })).toBe(
-      '#stammdaten=1&betriebsnummer=12345678&firma=Beispiel+Bau+GmbH',
+    expect(fragmentOf({ firma: 'Beispiel Bau GmbH', betriebsnummer: '12345671' })).toBe(
+      '#stammdaten=1&betriebsnummer=12345671&firma=Beispiel+Bau+GmbH',
     );
   });
 
@@ -51,8 +51,8 @@ describe('parseMasterDataFragment', () => {
   it.each(['Beispiel Bau GmbH', 'Müller & Söhne GmbH, „Bau“ #1 = 100 %', 'a+b?c/d'])(
     'round-trips %j',
     (firma) => {
-      const parsed = parseMasterDataFragment(fragmentOf({ firma, betriebsnummer: '12345678' }));
-      expect(parsed).toEqual({ ok: true, data: { betriebsnummer: '12345678', firma } });
+      const parsed = parseMasterDataFragment(fragmentOf({ firma, betriebsnummer: '12345671' }));
+      expect(parsed).toEqual({ ok: true, data: { betriebsnummer: '12345671', firma } });
     },
   );
 

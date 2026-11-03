@@ -166,7 +166,7 @@ nennt seine Rolle.
 | `iban`           | IBAN mit Prüfziffer                                                                                                                                                               |
 | `taxId`          | Steuer-Identifikationsnummer mit Prüfziffer                                                                                                                                       |
 | `svNumber`       | Versicherungsnummer der Rentenversicherung mit Prüfziffer                                                                                                                         |
-| `betriebsnummer` | 8 Ziffern                                                                                                                                                                         |
+| `betriebsnummer` | 8 Ziffern, die ersten drei 001–099 oder über 110, mit Prüfziffer (Rundschreiben Meldeverfahren Ziff. 1.3.2.2)                                                                     |
 | `repeatGroup`    | Tabelle mit `columns`, höchstens 30 Zeilen                                                                                                                                        |
 | `calendar`       | Tage eines Monats (`monthFrom`) mit Markierung; die `options` sind die Markierungen in Tipp-Reihenfolge (verschiedene Anfangsbuchstaben), gespeichert als Liste `JJJJ-MM-TT:<id>` |
 | `file`           | vorgesehen, noch nicht nutzbar – nicht verwenden                                                                                                                                  |

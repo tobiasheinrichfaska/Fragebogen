@@ -244,7 +244,7 @@ describe('Personalfragebogen draft — complete parts can be sealed', () => {
     let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber'));
     const values: Record<string, unknown> = {
       agFirma: 'Beispiel Bau GmbH',
-      agBetriebsnummer: '12345678',
+      agBetriebsnummer: '12345671',
       agFamilienname: 'Musterfrau',
       agVorname: 'Erika',
       agBeschaeftigungsbeginn: '02.11.2026',

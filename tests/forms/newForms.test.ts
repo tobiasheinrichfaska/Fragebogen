@@ -137,7 +137,7 @@ describe('Lohnmeldung draft — taken over from last month', () => {
       fill(createQuestionnaire(QUESTIONNAIRE_ID, source), source, 'arbeitgeber', {
         abrechnungsmonat: '10.2026',
         agFirma: 'Beispiel Bau GmbH',
-        agBetriebsnummer: '12345678',
+        agBetriebsnummer: '12345671',
         mandantennummer: '99999',
         abgabetag: '15',
         ansprechpartner: 'Jürgen Beispiel',

@@ -862,9 +862,6 @@ Key design decisions (details in `docs/plan.md`):
   known to keep files unchanged).
 - **IBAN:** lengths known for 78 countries; other countries only get shape + MOD 97 and a warning.
   The national BBAN structure (e.g. German bank code) is not checked.
-- **Betriebsnummer:** only "exactly 8 digits"; the check digit is not checked yet. Correction
-  2026-10-31: the algorithm IS publicly documented (Gemeinsames Rundschreiben „Meldeverfahren zur
-  Sozialversicherung“, Stand 17.06.2026, Ziffer 1.3.2.2) — implementing it is open.
 - **Help pages "Wo finde ich …?"** (pilot 2026-10-31: Steuer-ID, Versicherungsnummer): positions on
   documents without an official layout (payslip, Meldebescheinigung, most notices) are not stated by any
   source and are shown as such; the Einkommensteuerbescheid position ("oben links") is stated by NRW

@@ -50,7 +50,7 @@ const PERSON = {
 
 const EMPLOYER = {
   agFirma: 'Beispiel Bau GmbH',
-  agBetriebsnummer: '12345678',
+  agBetriebsnummer: '12345671',
   agFamilienname: 'Musterfrau',
   agVorname: 'Erika',
   agBeschaeftigungsbeginn: '02.11.2026',
@@ -237,7 +237,7 @@ describe('session — Sofortmeldung on one device', () => {
 
   it('fills the employer master data from the bookmark link', () => {
     const s = must(enterRole(fresh(), 'arbeitgeber'));
-    const result = fillMasterData(s, { firma: 'Beispiel Bau GmbH', betriebsnummer: '1234 5678' });
+    const result = fillMasterData(s, { firma: 'Beispiel Bau GmbH', betriebsnummer: '1234 5671' });
     expect(result).toMatchObject({
       ok: true,
       applied: ['agFirma', 'agBetriebsnummer'],

@@ -28,7 +28,7 @@ describe('displayValue', () => {
     ['iban', 'DE89370400440532013000', 'DE89 3704 0044 0532 0130 00'],
     ['taxId', '86095742719', '86 095 742 719'],
     ['svNumber', '65170590M520', '65 170590 M 520'],
-    ['betriebsnummer', '12345678', '12345678'],
+    ['betriebsnummer', '12345671', '12345671'],
   ])('%s %j → %j', (type, value, shown) => {
     expect(displayValue(field(type), value as never)).toBe(shown);
   });

@@ -17,7 +17,7 @@ const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1
 const { definition } = form;
 const SEALABLE_EMPLOYER = {
   agFirma: 'Beispiel Bau GmbH',
-  agBetriebsnummer: '12345678',
+  agBetriebsnummer: '12345671',
   agFamilienname: 'Musterfrau',
   agVorname: 'Erika',
   agBeschaeftigungsbeginn: '02.11.2026',
@@ -117,7 +117,7 @@ describe('preliminary tax data for the first payroll', () => {
 describe('check hints of the review', () => {
   const employer = {
     agFirma: 'Beispiel GmbH',
-    agBetriebsnummer: '12345678',
+    agBetriebsnummer: '12345671',
     agFamilienname: 'Musterfrau',
     agVorname: 'Erika',
     agBeschaeftigungsbeginn: '02.11.2026',

@@ -8,6 +8,7 @@ const TAX_ID_SHAPE = /^\d{11}$/;
 const SV_NUMBER_SHAPE = /^\d{8}[A-Z]\d{3}$/;
 const SV_NUMBER_WEIGHTS = [2, 1, 2, 5, 7, 1, 2, 1, 2, 1, 2, 1] as const;
 const BETRIEBSNUMMER_SHAPE = /^\d{8}$/;
+const BETRIEBSNUMMER_WEIGHTS = [1, 2, 1, 2, 1, 2, 1] as const;
 
 /** IBAN (ISO 13616): shape, length for known countries, ISO 7064 MOD 97-10. */
 export function checkIban(iban: string): Checked<string> {
@@ -77,10 +78,23 @@ export function checkSvNumber(number: string): Checked<string> {
 }
 
 /**
- * Betriebsnummer (§ 18i SGB IV), issued by the Bundesagentur für Arbeit: exactly 8 digits. The last
- * digit is said to be a check digit, but its algorithm is not publicly documented, so it is not
- * checked.
+ * Betriebsnummer (§ 18i SGB IV) after the Gemeinsames Rundschreiben „Meldeverfahren zur
+ * Sozialversicherung“ (Stand 17.06.2026, Ziff. 1.3.2.2): 8 digits, the first three 001 to 099 or
+ * above 110; digits 1 to 7 weighted 1, 2, 1, 2, 1, 2, 1, the digit sums of the products added,
+ * modulo 10, is the check digit — the last digit of check digit + 5 is valid as well.
  */
 export function checkBetriebsnummer(number: string): Checked<string> {
-  return BETRIEBSNUMMER_SHAPE.test(number) ? accept(number) : reject('betriebsnummer.format');
+  if (!BETRIEBSNUMMER_SHAPE.test(number)) return reject('betriebsnummer.format');
+  const head = Number(number.slice(0, 3));
+  if (head === 0 || (head >= 100 && head <= 110)) return reject('betriebsnummer.prefix');
+  let sum = 0;
+  BETRIEBSNUMMER_WEIGHTS.forEach((weight, i) => {
+    const product = Number(number[i]) * weight;
+    sum += Math.floor(product / 10) + (product % 10);
+  });
+  const check = sum % 10;
+  const last = Number(number[7]);
+  return last === check || last === (check + 5) % 10
+    ? accept(number)
+    : reject('betriebsnummer.checksum');
 }

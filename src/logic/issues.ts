@@ -34,6 +34,8 @@ export type IssueCode =
   | 'svNumber.format'
   | 'svNumber.checksum'
   | 'betriebsnummer.format'
+  | 'betriebsnummer.prefix'
+  | 'betriebsnummer.checksum'
   | 'choice.unknown'
   | 'choice.notInList'
   | 'rows.tooMany'
@@ -83,6 +85,9 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
     'Die Versicherungsnummer hat 12 Stellen: 8 Ziffern, einen Buchstaben und 3 Ziffern.',
   'svNumber.checksum': 'Die Versicherungsnummer stimmt nicht (Prüfziffer).',
   'betriebsnummer.format': 'Die Betriebsnummer hat genau 8 Ziffern.',
+  'betriebsnummer.prefix':
+    'Diese Betriebsnummer gibt es nicht: Die ersten drei Ziffern sind 001 bis 099 oder größer als 110.',
+  'betriebsnummer.checksum': 'Die Betriebsnummer stimmt nicht (Prüfziffer).',
   'choice.unknown': 'Bitte eine der angebotenen Möglichkeiten wählen.',
   'choice.notInList':
     'Diese Angabe steht nicht in der amtlichen Liste. Bitte einen Eintrag aus den Vorschlägen wählen.',

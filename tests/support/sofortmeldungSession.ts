@@ -28,7 +28,7 @@ const fill = (session: Session, values: Readonly<Record<string, unknown>>) =>
 export function employerOnly(): Session {
   let s = fill(must(enterRole(startSession(sofortmeldung, QUESTIONNAIRE_ID), 'arbeitgeber')), {
     agFirma: 'Beispiel Bau GmbH',
-    agBetriebsnummer: '12345678',
+    agBetriebsnummer: '12345671',
     agFamilienname: 'Müller-Lüdenscheidt',
     agVorname: 'Jürgen',
     agBeschaeftigungsbeginn: '02.11.2026',

@@ -1,5 +1,5 @@
 // Master data carried in a bookmark link (Tobias, 2026-10-29: option C, no browser storage). The
-// app address gets a fragment such as #stammdaten=1&betriebsnummer=12345678&firma=Beispiel+GmbH.
+// app address gets a fragment such as #stammdaten=1&betriebsnummer=12345671&firma=Beispiel+GmbH.
 // A fragment never reaches the server, but it stays in bookmarks and the browser history, which
 // is acceptable for the employer's own data only. Parsing is strict and all-or-nothing; the
 // result is still untrusted and goes through applyMasterData (setValue) like typed input.

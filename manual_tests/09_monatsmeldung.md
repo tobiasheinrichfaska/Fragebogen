@@ -11,7 +11,7 @@ lokal `npm run build:preview`, Datei `dist-preview/index.html`. Nur erfundene Da
 
 **Schritte:**
 
-1. Beide Hinweise bestätigen. Abrechnungsmonat `11.2026`, Firma, Betriebsnummer `12345678`,
+1. Beide Hinweise bestätigen. Abrechnungsmonat `11.2026`, Firma, Betriebsnummer `12345671`,
    Mandantennummer `99999`, Ihren Namen, eine E-Mail und bei „Lohnarten Ihres Betriebs“ zwei Zeilen
    `1000 Stundenlohn` und `2000 Nachtzuschlag 25 %` eingeben.
 2. Bei „Wer war im Abrechnungsmonat beschäftigt?“ zwei Personen anlegen: „Musterfrau, Erika“ mit

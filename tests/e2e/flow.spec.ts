@@ -28,7 +28,7 @@ const FORM = JSON.parse(
 // Fictitious data only.
 const ANSWERS: Readonly<Record<string, string>> = {
   agFirma: 'Beispiel Bau GmbH',
-  agBetriebsnummer: '12345678',
+  agBetriebsnummer: '12345671',
   agFamilienname: 'Musterfrau',
   agVorname: 'Erika',
   agPersonalnummer: '',
@@ -203,10 +203,10 @@ test('a master-data link made on the start page fills the next questionnaire', a
   await form.locator('#master-firma').fill('Beispiel Bau GmbH');
   await form.locator('#master-betriebsnummer').fill('1234 567X');
   await expect(form).toContainText('Bitte erst die markierten Angaben berichtigen.');
-  await form.locator('#master-betriebsnummer').fill('1234 5678');
+  await form.locator('#master-betriebsnummer').fill('1234 5671');
   const link = form.getByLabel('Stammdaten-Link');
   await expect(link).toHaveValue(
-    /#stammdaten=1&betriebsnummer=12345678&firma=Beispiel\+Bau\+GmbH$/,
+    /#stammdaten=1&betriebsnummer=12345671&firma=Beispiel\+Bau\+GmbH$/,
   );
 
   // Opened like a bookmark: a fresh load with the fragment. Only the fragment is used — a build

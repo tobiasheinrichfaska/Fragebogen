@@ -49,7 +49,7 @@ const PERSON = {
 
 const EMPLOYER = {
   agFirma: 'Beispiel Bau GmbH',
-  agBetriebsnummer: '1234 5678',
+  agBetriebsnummer: '1234 5671',
   agFamilienname: 'Musterfrau',
   agVorname: 'Erika',
   agBeschaeftigungsbeginn: '02.11.2026',
@@ -222,7 +222,7 @@ describe('Sofortmeldung 0.1.0 — station order', () => {
       received(person, 'person', '2026-10-30T08:00:00.000+01:00', '2026-10-30T07:00:00.000Z'),
     );
     expect(completenessGaps(q, form)).toEqual([]);
-    expect(latestSealed(q, 'arbeitgeber')?.data.agBetriebsnummer).toBe('12345678');
+    expect(latestSealed(q, 'arbeitgeber')?.data.agBetriebsnummer).toBe('12345671');
   });
 
   it('is incomplete while the parts do not reference each other', () => {
@@ -273,7 +273,7 @@ describe('Sofortmeldung 0.1.0 — employer master data', () => {
     const q = draft(empty(), 'arbeitgeber', EMPLOYER);
     expect(masterDataOf(definition, 'arbeitgeber', dataOf(q, 'arbeitgeber'))).toEqual({
       firma: 'Beispiel Bau GmbH',
-      betriebsnummer: '12345678',
+      betriebsnummer: '12345671',
     });
   });
 
@@ -286,7 +286,7 @@ describe('Sofortmeldung 0.1.0 — employer master data', () => {
       ),
     );
     if (!link.ok) throw new Error(link.issue);
-    expect(link.fragment).toBe('#stammdaten=1&betriebsnummer=12345678&firma=Beispiel+Bau+GmbH');
+    expect(link.fragment).toBe('#stammdaten=1&betriebsnummer=12345671&firma=Beispiel+Bau+GmbH');
     const parsed = parseMasterDataFragment(link.fragment);
     if (!parsed.ok || !parsed.data) throw new Error('no master data');
     const result = applyMasterData(
