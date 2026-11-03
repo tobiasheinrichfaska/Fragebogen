@@ -107,6 +107,8 @@ Wochen). Die Quellen sind sich nicht einig:
 - In den Beispielen 40, 45 und 48 (39 bis 59 Tage) nennen sie dagegen die KV-Ziffer 1.
 - Andere Fachquellen begründen die 3 so: Ohne mindestens sechs Wochen Entgeltfortzahlung bestehe kein
   Krankengeldanspruch.
+- Das Rundschreiben zu Studenten und Praktikanten (Übersicht, Fußnoten) nennt die 3, „sofern kein
+  Anspruch auf Krankengeld besteht“, nennt aber keine Zahl von Wochen.
 
 Gesucht:
 
@@ -160,6 +162,20 @@ Zusammen liegen sie über der Grenze.
 2. Werden für die 20-Stunden-Grenze die Stunden aller Beschäftigungen zusammengezählt?
 3. Welches Kennzeichen Übergangsbereich gilt?
 4. Welche Schlüssel gelten für jede der beiden Beschäftigungen?
+
+**F7 – Berufsmäßigkeit bei Altersteilrentnern.** Ein Bezieher einer Teilrente wegen Alters nimmt eine
+befristete Aushilfe für zwei Monate mit 1.700 € im Monat auf; im Kalenderjahr hatte er keine weiteren
+Beschäftigungen. Die Quellen sind sich nicht einig:
+
+- Eine Fachquelle sagt, Teilrentner gehörten zu den Erwerbstätigen. Über der Geringfügigkeitsgrenze
+  sei ihre Aushilfe deshalb berufsmäßig und nicht kurzfristig.
+- Die Geringfügigkeits-Richtlinien 2026 (B 2.3.3.3) nennen Altersteilrentner nur bei der Anrechnung
+  früherer Beschäftigungszeiten.
+
+Gesucht:
+
+1. die Regel und ihre Fundstelle;
+2. Beispiele für Teil- und Vollrentner in kurzfristigen Beschäftigungen.
 
 ### Teil B – Beispiele des Portals mit ihren Ergebnissen
 

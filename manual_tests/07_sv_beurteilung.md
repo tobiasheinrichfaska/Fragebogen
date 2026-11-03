@@ -248,3 +248,28 @@ ihren Teil aus.
 - Schritt 4: Personengruppe 109, Beitragsgruppen 6100 – ein Minijob geht der Werkstudentenregel vor.
 - _Nicht offensichtlich:_ Bei „nur in der vorlesungsfreien Zeit: Ja“ fragt der Bogen keine Stunden; dann
   bleibt es bei 106 unabhängig von der Stundenzahl.
+
+## MT-98: Langzeitstudium und Versorgungswerk beim Werkstudenten
+
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+
+**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.04.2026, festes
+Monatsentgelt 1.000,00 €, Art der Beschäftigung „Werkstudent“, nicht nur in den Semesterferien,
+15 Wochenstunden in der Vorlesungszeit. Die Person füllt danach als Studentin ihren Teil aus
+(Vollzeitstudium, gesetzlich versichert, kein Versorgungswerk).
+
+**Schritte:**
+
+1. Als Person bei „Fachsemester“ `4` eingeben, weiter bis zur Kanzlei gehen und die Vorschläge ansehen.
+2. Das Fachsemester auf `27` ändern.
+3. Zurück auf `4`; bei „Sind Sie Pflichtmitglied eines berufsständischen Versorgungswerks …?“
+   „Ja, die Befreiung für diese Beschäftigung ist beantragt oder erteilt“ wählen.
+
+**Erwartet:**
+
+- Schritt 1: Personengruppe 106, Beitragsgruppen 0100.
+- Schritt 2: Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 1111. Die Begründung nennt „mehr als
+  25 Fachsemester“. _Nicht offensichtlich:_ Das ist nur eine Vermutung; weist die Person nach, dass das
+  Studium im Vordergrund steht, gilt wieder 106.
+- Schritt 3: Personengruppe 190, Beitragsgruppen 0000, Übergangsbereich 0 – die Person ist nur noch in
+  der Unfallversicherung versichert.

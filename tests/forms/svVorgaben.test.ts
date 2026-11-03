@@ -277,6 +277,12 @@ const withDigit = (bgr: string, index: number, digit: string) =>
 const matches = (c: Case) => Object.keys(deviationsOf(c)).length === 0;
 const minijob = (c: Case) =>
   c.erwartet.pgr === '109' && c.erwartet.spaeter === undefined && matches(c);
+// A Minijob without any contribution (private KV, Versorgungswerk) is reported with 190 (GfR 2026 D 1).
+const minijobOnlyAccidentInsured = (c: Case) =>
+  c.erwartet.pgr === '190' &&
+  c.arbeitgeber.agBeschaeftigungsart === 'minijob' &&
+  c.erwartet.spaeter === undefined &&
+  matches(c);
 
 const VARIATIONS: Variation[] = [
   {
@@ -299,20 +305,26 @@ const VARIATIONS: Variation[] = [
   {
     id: 'privat',
     label: 'Minijob: privat statt gesetzlich krankenversichert',
-    source: '§ 249b SGB V (Pauschalbeitrag nur für gesetzlich Versicherte); GfR 2026 Bsp. 28',
+    source:
+      '§ 249b SGB V (Pauschalbeitrag nur für gesetzlich Versicherte); GfR 2026 Bsp. 28; ohne jeden Beitrag 190 (GfR 2026 D 1)',
     applies: (c) =>
       minijob(c) && c.erwartet.bgr[0] === '6' && c.person.krankenversicherung === 'gesetzlich',
     person: (p) => ({ ...p, krankenversicherung: 'privat' }),
-    expected: (e) => ({ ...e, bgr: withDigit(e.bgr, 0, '0') }),
+    expected: (e) => {
+      const bgr = withDigit(e.bgr, 0, '0');
+      return { ...e, bgr, ...(bgr === '0000' ? { pgr: '190' } : {}) };
+    },
   },
   {
     id: 'gesetzlich',
     label: 'Minijob: gesetzlich statt privat krankenversichert',
-    source: '§ 249b SGB V; GfR 2026 Bsp. 22, 28',
+    source: '§ 249b SGB V; GfR 2026 Bsp. 22, 28, D 1',
     applies: (c) =>
-      minijob(c) && c.erwartet.bgr[0] === '0' && c.person.krankenversicherung === 'privat',
+      (minijob(c) || minijobOnlyAccidentInsured(c)) &&
+      c.erwartet.bgr[0] === '0' &&
+      c.person.krankenversicherung === 'privat',
     person: (p) => ({ ...p, krankenversicherung: 'gesetzlich' }),
-    expected: (e) => ({ ...e, bgr: withDigit(e.bgr, 0, '6') }),
+    expected: (e) => ({ ...e, pgr: '109', bgr: withDigit(e.bgr, 0, '6') }),
   },
   {
     id: 'stundenlohn',

@@ -1,0 +1,4224 @@
+{
+  "titel": "SV-Beurteilung: Testfälle aus Lehrgängen, Fachverlagen und Lohnbüro-Blogs (Personengruppe, Beitragsgruppen, Übergangsbereich)",
+  "hinweis": "Keine Rechtsberatung. Recherche vom 02.11.2026; Bezugsjahr 2026. Erfundene Personen; Sachverhalte in eigenen Worten nach den genannten Fundstellen. Ergänzt tests/fixtures/sv-vorgaben/faelle.json (amtliche Quellen); Fachliteratur und Blogs enthalten Fehler – wo eine Quelle den GfR 2026 oder dem Gesetz widerspricht, ist ihr Ergebnis nicht übernommen (siehe sv-vorgaben-kurse.md). Die Seiten wurden mit WebFetch gelesen (Auszug durch ein Sprachmodell, bei Haufe nur der frei sichtbare Teil vor der Bezahlschranke).",
+  "stand": "2026-11-02",
+  "werte2026": {
+    "geringfuegigkeitsgrenzeMonat": "603.00",
+    "uebergangsbereichObergrenze": "2000.00",
+    "geringverdienergrenze": "325.00",
+    "jaeg": "77400.00",
+    "jaegBesondere": "69750.00",
+    "mindestlohnStunde": "13.90"
+  },
+  "lesehilfe": {
+    "id": "KU = Lehrgang/Übungsaufgabe, VL = Fachverlag/Lexikon (lohn-info, Haufe, Lexware, personalwissen), BL = Lohnbüro-Blog. IHK-Material mit Lösungen war nicht frei zugänglich (keine IHK-Fälle).",
+    "erwartet": "pgr = Personengruppenschlüssel (DEÜV Anlage 2), bgr = Beitragsgruppen KV RV AV PV (DEÜV Anlage 1 Teil 2), kv/rv/av/pv = dieselbe Aussage in Worten; optional uebergangsbereich (Kennzeichen 0/1), spaeter (Wechsel im Lauf der Beschäftigung), zusatzmeldung (zweite Meldung an die Minijob-Zentrale), unsicher (Zweige, die ein Test nicht hart prüfen sollte).",
+    "pruefstatus": "je Aussage: „am Original geprüft“ = Schlüssel bzw. Aussage steht so in der Quelle (über WebFetch gelesen); „abgeleitet“ = eigene Ableitung aus der Aussage der Quelle, DEÜV Anlage 2/16 und den GfR 2026; „nicht verifiziert“ = nicht am Original geprüft. Sachverhalt „abgeleitet“ = aus einer allgemeinen Aussage konstruiert.",
+    "person/arbeitgeber": "nur die für die Vorschläge wirksamen Angaben und die Antworten, von denen ihre Abfrage abhängt, in gespeicherter Form (Datum JJJJ-MM-TT, Monat JJJJ-MM, Geld \"1234.56\", Zahlen mit den Nachkommastellen des Felds, Ja/Nein als true/false, Auswahl als Options-ID, Tabellen als Zeilen mit rowId). Reihenfolge = Reihenfolge, in der ein Test sie setzen sollte. Andere Pflichtfelder fehlen absichtlich. Nicht genannte Werte (Entgelt, Geburtsdatum, Beginn) sind angenommen und im Hinweis vermerkt."
+  },
+  "faelle": [
+    {
+      "id": "KU-01",
+      "titel": "Arbeiter mit Stundenlohn 15 € × 170 Stunden",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung, Beispiel 1",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8, Bsp. 1"
+      },
+      "sachverhalt": "Arbeiter, Stundenlohn 15 €, 170 Stunden im Monat (2.550 €), gesetzlich pflichtversichert, Elterneigenschaft nachgewiesen, keine besonderen Merkmale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1988-03-10",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "15.00",
+        "agErwartetMonat": "2550.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Das Arbeitsblatt hat keine Lösung; Schlüssel aus DEÜV Anlage 2 (101: ohne besondere Merkmale) abgeleitet. Die Elterneigenschaft wirkt nur auf den PV-Beitragssatz, nicht auf die Beitragsgruppe."
+    },
+    {
+      "id": "KU-02",
+      "titel": "Auszubildender (18) mit 500 € Ausbildungsvergütung",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung, Beispiel 3",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8, Bsp. 3"
+      },
+      "sachverhalt": "Auszubildender, 18 Jahre, Ausbildungsvergütung 500 €, gesetzlich pflichtversichert.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "102",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2008-05-05",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "ausbildung",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "500.00",
+            "avGueltigAb": "2026-08-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "ausbildung",
+        "agAusserbetrieblich": false,
+        "agBefristet": false
+      },
+      "hinweis": "Über der Geringverdienergrenze (325 €) → 102; Übergangsbereich 0 nach § 20 Abs. 2a S. 9 SGB IV. Die Mindestausbildungsvergütung nach § 17 BBiG liegt 2026 über 500 €; für die SV-Schlüssel ist das ohne Bedeutung. Antwortstil wie D-121EZ (Status „arbeitnehmer“, unbefristet)."
+    },
+    {
+      "id": "KU-03",
+      "titel": "Auszubildender (18) mit 310 € Ausbildungsvergütung",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung, Beispiel 4",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8, Bsp. 4"
+      },
+      "sachverhalt": "Auszubildender, 18 Jahre, Ausbildungsvergütung 310 €, gesetzlich pflichtversichert.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "121",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2008-06-06",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "ausbildung",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "310.00",
+            "avGueltigAb": "2026-08-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "ausbildung",
+        "agAusserbetrieblich": false,
+        "agBefristet": false
+      },
+      "hinweis": "Bis 325 € → 121 (Arbeitgeber trägt die Beiträge allein, § 20 Abs. 3 S. 1 Nr. 1 SGB IV). In einer BBiG-Ausbildung wäre 310 € 2026 unter der Mindestvergütung; der Fall prüft nur die Grenze."
+    },
+    {
+      "id": "KU-04",
+      "titel": "Minijob 350 €, familienversichert, von der RV-Pflicht befreit",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung, Beispiel 5",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8, Bsp. 5"
+      },
+      "sachverhalt": "Geringfügig entlohnt, 350 € im Monat, familienversichert, Lohnsteuer pauschal 2 %, auf Antrag von der RV-Pflicht befreit.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-09-09",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "350.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "2017 lag die Grenze bei 450 €; 350 € liegt auch 2026 darunter, das Ergebnis hängt nicht vom Jahr ab."
+    },
+    {
+      "id": "KU-05",
+      "titel": "Altersvollrentner nach der Regelaltersgrenze, genau 2.000 €",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung (Fortsetzung), Beispiel 7",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8a.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8a, Bsp. 7"
+      },
+      "sachverhalt": "Weiterbeschäftigter Altersvollrentner, 2.000 € im Monat, gesetzlich versichert, Elterneigenschaft, kein Verzicht auf die RV-Freiheit genannt.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "3321",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1959-01-10",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-04-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "Im Original 66 Jahre im Jahr 2017 (Regelaltersgrenze damals 65 J. 6 M., erreicht). 2026 erreicht der Jahrgang 1960 sie erst mit 66 J. 4 M.; das Geburtsdatum ist deshalb auf den 10.01.1959 gelegt (RAG am 10.03.2025). Die AV-Ziffer war 2017–2021 0 (Aussetzung des Arbeitgeberanteils), 2026 gilt 2.",
+      "hinweis": "Grenzwert: 2.000,00 € liegt noch im Übergangsbereich (§ 20 Abs. 2 SGB IV „bis 2.000 Euro“). Übergangsbereich bei 119 wie D-119 aus RS Übergangsbereich Tz. 4.3.3.6 abgeleitet."
+    },
+    {
+      "id": "KU-06",
+      "titel": "Angestellter, privat versichert, Verdienst über der JAEG",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung (Fortsetzung), Beispiel 8",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8a.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8a, Bsp. 8"
+      },
+      "sachverhalt": "Angestellter mit Gehalt über der Jahresarbeitsentgeltgrenze, private Kranken- und Pflegeversicherung.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-02-02",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agFirmenzahler": "nichtFreiwillig",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "Original 6.000 € (× 12 = 72.000 €, 2017 über der JAEG von 57.600 €). 2026 läge das unter 77.400 €; auf 7.000 € (84.000 €) angehoben, damit die Beziehung zur Grenze gleich bleibt."
+    },
+    {
+      "id": "KU-07",
+      "titel": "Kurzfristige Aushilfe einen Monat, 1.000 €",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung (Fortsetzung), Beispiel 9",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8a.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8a, Bsp. 9"
+      },
+      "sachverhalt": "Kurzfristig Beschäftigter, ein Monat, 1.000 €.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1979-09-09",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-05-31",
+        "agKurzfristigArbeitstage": "21",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-05-31"
+      },
+      "hinweis": "Status und Vorbeschäftigungen nennt das Arbeitsblatt nicht; angenommen: Hausfrau ohne Vorbeschäftigung, also nicht berufsmäßig. 2017 galten übergangsweise schon drei Monate/70 Arbeitstage (§ 115 SGB IV a. F.), seit 2019 dauerhaft; ein Monat hält jede Fassung ein."
+    },
+    {
+      "id": "KU-08",
+      "titel": "Minijob 350 €, privat versichert, von der RV-Pflicht befreit",
+      "quelle": {
+        "dokument": "lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen)",
+        "fundstelle": "Übungsaufgaben zur Beitragsberechnung (Fortsetzung), Beispiel 11",
+        "url": "https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8a.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Lehrgang, Aufgabe 8a, Bsp. 11"
+      },
+      "sachverhalt": "Geringfügig entlohnt, 350 € im Monat, privat krankenversichert, Lohnsteuer pauschal 2 %, auf Antrag von der RV-Pflicht befreit.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0500",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1972-11-11",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "350.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "VL-01",
+      "titel": "Hauptbeschäftigung 1.000 € neben zwei Minijobs (200 € befreit, 250 €)",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 101 – Sozialversicherungspflichtig Beschäftigte ohne besondere Merkmale“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispiel „Mehrere geringfügig entlohnte Beschäftigungsverhältnisse neben versicherungspflichtiger Hauptbeschäftigung“, Arbeitgeber A",
+        "url": "https://lohn-info.de/personengruppenschluessel_101.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 101, Bsp. 1 (A)"
+      },
+      "sachverhalt": "Hauptbeschäftigung bei A 1.000 €; erster Minijob bei B 200 € (RV-befreit) bleibt außen vor; zweiter Minijob bei C 250 € wird mit A zusammengerechnet. Hier: Beschäftigung A beginnt, B und C bestehen schon.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1985-06-06",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "200.00",
+            "jobRvBefreit": "ja"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber C",
+            "jobArt": "minijob",
+            "jobSeit": "2025-06-01",
+            "jobEntgeltMonat": "250.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Übergangsbereich abgeleitet (RS Übergangsbereich Tz. 4.2.2): A + C = 1.250 €, der erste Minijob B zählt nicht. Die Zeitfolge (B und C vor A) ist angenommen; dann wird ab Beginn von A der später aufgenommene Minijob C zusammengerechnet."
+    },
+    {
+      "id": "VL-02",
+      "titel": "Zweiter Minijob 250 € neben Hauptbeschäftigung 1.000 € und erstem Minijob",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 101 – Sozialversicherungspflichtig Beschäftigte ohne besondere Merkmale“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispiel „Mehrere geringfügig entlohnte Beschäftigungsverhältnisse neben versicherungspflichtiger Hauptbeschäftigung“, Arbeitgeber C",
+        "url": "https://lohn-info.de/personengruppenschluessel_101.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 101, Bsp. 1 (C)"
+      },
+      "sachverhalt": "Wie VL-01, beurteilt wird der später aufgenommene Minijob bei C (250 €): mit der Hauptbeschäftigung zusammengerechnet, versicherungspflichtig außer AV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1985-06-06",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2020-01-01",
+            "jobEntgeltMonat": "1000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "200.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "250.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Übergangsbereich abgeleitet: A + C = 1.250 € (B zählt nicht). Gleicher Regelweg wie GFR-20C, andere Beträge."
+    },
+    {
+      "id": "VL-03",
+      "titel": "Erster Minijob 200 € neben JAEG-freier Hauptbeschäftigung (Firmenzahler)",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 101 – Sozialversicherungspflichtig Beschäftigte ohne besondere Merkmale“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispiel „Mehrere geringfügig entlohnte Beschäftigungsverhältnisse neben einer krankenversicherungsfreien Hauptbeschäftigung“, Arbeitgeber B",
+        "url": "https://lohn-info.de/personengruppenschluessel_101.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 101, Bsp. 2 (B)"
+      },
+      "sachverhalt": "Hauptbeschäftigung bei A 7.500 €, freiwillig gesetzlich versichert, Firmenzahler. Erster Minijob bei B 200 €, keine RV-Befreiung: nicht zusammengerechnet, Pauschalbeitrag zur KV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1978-12-12",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2018-04-01",
+            "jobEntgeltMonat": "7500.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Neue Kombination: Minijob-Pauschale zur KV auch bei freiwilliger GKV-Versicherung (KV 6). Die Hauptbeschäftigung über der JAEG ändert am ersten Minijob nichts."
+    },
+    {
+      "id": "VL-04",
+      "titel": "Zweiter Minijob 180 € neben JAEG-freier Hauptbeschäftigung: zwei Meldungen",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 101 – Sozialversicherungspflichtig Beschäftigte ohne besondere Merkmale“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispiel „Mehrere geringfügig entlohnte Beschäftigungsverhältnisse neben einer krankenversicherungsfreien Hauptbeschäftigung“, Arbeitgeber C",
+        "url": "https://lohn-info.de/personengruppenschluessel_101.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 101, Bsp. 2 (C)"
+      },
+      "sachverhalt": "Wie VL-03, beurteilt wird der zweite Minijob bei C (180 €): für die RV mit der Hauptbeschäftigung zusammengerechnet; KV frei mit Pauschalbeitrag. C meldet an die Krankenkasse 101/0100 und an die Minijob-Zentrale 101/6000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0100",
+        "kv": "frei; Pauschalbeitrag an die Minijob-Zentrale (gesonderte Meldung 101/6000)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0",
+        "zusatzmeldung": {
+          "an": "Minijob-Zentrale",
+          "pgr": "101",
+          "bgr": "6000"
+        }
+      },
+      "person": {
+        "geburtsdatum": "1978-12-12",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2018-04-01",
+            "jobEntgeltMonat": "7500.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2026-02-01",
+            "jobEntgeltMonat": "200.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-05-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "180.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Gleicher Regelweg wie GFR-25C (andere Beträge, B ohne Befreiung). Ein Vorschlag je Beschäftigung kann die zweite Meldung nicht abbilden."
+    },
+    {
+      "id": "VL-05",
+      "titel": "Versorgungswerk-Mitglied, privat versichert, über der JAEG",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 101 – Sozialversicherungspflichtig Beschäftigte ohne besondere Merkmale“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Tabelle „Beispiele für Beitragsgruppenschlüssel“, Zeile „Berufsständische Versorgung und private Krankenversicherung“",
+        "url": "https://lohn-info.de/personengruppenschluessel_101.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 101, Tabelle"
+      },
+      "sachverhalt": "Privat kranken- und pflegeversichert, Mitglied eines berufsständischen Versorgungswerks und für die Beschäftigung von der RV-Pflicht befreit; nur AV-pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0010",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "befreit zugunsten des Versorgungswerks (kein DRV-Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1983-04-04",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein",
+        "versorgungswerk": "befreit"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "8000.00",
+        "agUeberJaeg": true,
+        "agFirmenzahler": "nichtFreiwillig",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Tabellenzeile nennt keinen Sachverhalt mit Zahlen; angenommen: angestellte Rechtsanwältin, 8.000 € im Monat (über der JAEG, damit die private Versicherung KV-frei ist)."
+    },
+    {
+      "id": "VL-06",
+      "titel": "Altersteilrente nach der Regelaltersgrenze",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Rentner – Übersicht zur Beschäftigung von Rentnern“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Übersicht zur Beschäftigung von Rentnern, Zeile „Teilrente nach Regelaltersgrenze (01.01.2022–31.12.2026)“; ebenso Tabelle auf der Seite PGR 101",
+        "url": "https://lohn-info.de/rentner.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Rentner, Übersicht"
+      },
+      "sachverhalt": "Bezieher einer Altersteilrente, Regelaltersgrenze erreicht: RV-pflichtig (Teilrente, keine Vollrente), AV frei mit Arbeitgeberanteil, KV mit Krankengeld.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1121",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-05-05",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersteil",
+        "renteSeit": "2024-06-01",
+        "rvNieVersichert": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Ab 01.01.2027 nennt die Quelle 1121 (Teilrente bis zwei Drittel) bzw. 3121 (mehr als zwei Drittel); für Beginn 2026 gilt 1121. Entgelt angenommen."
+    },
+    {
+      "id": "VL-07",
+      "titel": "Rente wegen teilweiser Erwerbsminderung, Teilzeit 1.200 €",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Rentner – Übersicht zur Beschäftigung von Rentnern“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Übersicht zur Beschäftigung von Rentnern, Zeile „Rente wegen teilweiser Erwerbsminderung“; ebenso PGR 101",
+        "url": "https://lohn-info.de/rentner.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Rentner, Übersicht"
+      },
+      "sachverhalt": "Bezieherin einer Rente wegen teilweiser Erwerbsminderung in einer Teilzeitbeschäftigung: in allen Zweigen versicherungspflichtig; AV nur dann 0, wenn die Agentur für Arbeit dauernde Nichtverfügbarkeit feststellt.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["av"]
+      },
+      "person": {
+        "geburtsdatum": "1972-07-07",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": true,
+        "rentenart": "emTeil",
+        "renteSeit": "2024-01-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Entgelt angenommen. Reihenfolge wie D-EMV (Status „arbeitnehmer“). AV-Ziffer nicht hart testen (1101 nach Feststellung der BA)."
+    },
+    {
+      "id": "VL-08",
+      "titel": "Werkstudent im Zweitstudium, Mitglied eines Versorgungswerks",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 190 – Beschäftigte, die ausschließlich in der gesetzlichen Unfallversicherung versichert sind“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Fallbeispiel „Werkstudent im Zweitstudium (Tierarzt)“; ebenso PGR 106, Abschnitt Grundsätzliches",
+        "url": "https://lohn-info.de/personengruppenschluessel_190.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 190/106"
+      },
+      "sachverhalt": "Tierarzt im Zweitstudium arbeitet als Werkstudent als Tierarzt; für diese Tätigkeit zugunsten seiner berufsständischen Versorgungseinrichtung von der RV-Pflicht befreit. KV/AV/PV frei (Werkstudent), RV befreit: nur unfallversichert.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "190",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "befreit zugunsten des Versorgungswerks (kein DRV-Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1996-02-02",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "4",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "versorgungswerk": "befreit"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "15.00",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "15.00"
+      },
+      "hinweis": "Neuer Regelweg: Werkstudent + Versorgungswerk → 190 statt 106. Entgelt und Stunden angenommen."
+    },
+    {
+      "id": "VL-09",
+      "titel": "Apothekerin im Minijob, privat versichert, Versorgungswerk",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 190 – Beschäftigte, die ausschließlich in der gesetzlichen Unfallversicherung versichert sind“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Fallbeispiel „Apothekerin in geringfügiger Beschäftigung“",
+        "url": "https://lohn-info.de/personengruppenschluessel_190.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 190"
+      },
+      "sachverhalt": "Privat krankenversicherte Apothekerin in einem Minijob in ihrem Beruf, zugunsten ihrer berufsständischen Versorgungseinrichtung von der RV-Pflicht befreit: kein KV-Pauschalbeitrag (privat), kein RV-Beitrag (Versorgungswerk) – Meldung mit 190/0000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "190",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "befreit zugunsten des Versorgungswerks (kein DRV-Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1975-03-03",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "versorgungswerk": "befreit",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Bestätigt durch GfR 2026 Teil D 1 (S. 78 der Abschrift): Fallen für einen Minijob weder KV-Pauschale (privat) noch RV-Beiträge (Versorgungswerk) an, ist mit 190/0000 zu melden. Die Quelle spricht noch vom „Verzicht auf die RV-Freiheit“ (Recht vor 2013); das Ergebnis gilt unverändert. Entgelt und Status angenommen; „rvBefreiungWunsch nein“, weil keine Befreiung nach § 6 Abs. 1b SGB VI gemeint ist."
+    },
+    {
+      "id": "VL-10",
+      "titel": "Beurlaubter Beamter als Lehrer an einer Privatschule",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 190 – Beschäftigte, die ausschließlich in der gesetzlichen Unfallversicherung versichert sind“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Fallbeispiel „Beurlaubter Beamter (z. B. verbeamteter Lehrer an einer Privatschule)“",
+        "url": "https://lohn-info.de/personengruppenschluessel_190.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 190"
+      },
+      "sachverhalt": "Beurlaubter Beamter unterrichtet an einer Privatschule; versicherungsfrei in KV, RV, AV, PV, nur unfallversichert: 190/0000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "190",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-08-08",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agSonderstatus": "beamtenrechtlich",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "4500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "nichtAbbildbar": "Der Arbeitgeber gibt „Fortzahlung der Bezüge und Beihilfe nach beamtenrechtlichen Grundsätzen“ an (agSonderstatus „beamtenrechtlich“); der Fragebogen schließt diesen Fall bewusst aus (Ausschluss „beamtenrechtlich“). Test: Ausschluss greift, kein Vorschlag."
+    },
+    {
+      "id": "VL-11",
+      "titel": "Altersvollrentner nach der Regelaltersgrenze, privat versichert",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 119 – Versicherungsfreie Altersvollrentner und Versorgungsbezieher wegen Alters“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispieltabelle PGR 119, Zeile „Vollrente wegen Alters nach Vollendung der Regelaltersgrenze, private Krankenversicherung, ab 01.01.2022“",
+        "url": "https://lohn-info.de/personengruppenschluessel_119.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 119"
+      },
+      "sachverhalt": "Altersvollrentner nach der Regelaltersgrenze, privat kranken- und pflegeversichert, kein Verzicht: RV frei mit Arbeitgeberanteil, AV frei mit halbem Beitrag, keine KV/PV-Beiträge.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "0320",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1957-06-01",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2023-06-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle setzt KV-Freiheit voraus. Bei einem Verdienst unter der JAEG folgt sie hier aus § 6 Abs. 3a SGB V (ab 55, in den letzten fünf Jahren nicht gesetzlich versichert; die Hälfte-Voraussetzung ist angenommen). Entgelt angenommen."
+    },
+    {
+      "id": "VL-12",
+      "titel": "Altersvollrente vor der Regelaltersgrenze, privat versichert",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 120 – Versicherungspflichtige Altersvollrentner und Versorgungsbezieher wegen Alters“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispieltabelle PGR 120, Zeile „Vollrente wegen Alters vor Erreichen der Regelaltersgrenze, private Krankenversicherung“",
+        "url": "https://lohn-info.de/personengruppenschluessel_120.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 120"
+      },
+      "sachverhalt": "Altersvollrentner vor der Regelaltersgrenze, privat versichert: RV und AV pflichtig, keine KV/PV-Beiträge.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1962-09-09",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-10-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "3000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Ebenso Lexware-FAQ „(Altersvoll-) Rentner abrechnen“, Tabelle „Privat krankenversichert“, Zeile „Vor RGA“: 120 / 0-1-1-0. KV-Freiheit wie VL-11 über § 6 Abs. 3a SGB V angenommen."
+    },
+    {
+      "id": "VL-13",
+      "titel": "Altersvollrente nach der Regelaltersgrenze, privat versichert, mit Verzicht",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 120 – Versicherungspflichtige Altersvollrentner und Versorgungsbezieher wegen Alters“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispieltabelle PGR 120, Zeile „Vollrente wegen Alters nach Erreichen der Regelaltersgrenze, private Krankenversicherung, Verzicht auf die RV-Freiheit“",
+        "url": "https://lohn-info.de/personengruppenschluessel_120.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 120"
+      },
+      "sachverhalt": "Altersvollrentner nach der Regelaltersgrenze, privat versichert, verzichtet schriftlich auf die RV-Freiheit: RV pflichtig, AV frei mit Arbeitgeberanteil.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "0120",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-02-02",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-03-01",
+        "rvVerzicht": "ja",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Lexware-FAQ druckt für denselben Fall 0-1-2-1 (PV 1) – Widerspruch, siehe Quellenfehler in sv-vorgaben-kurse.md."
+    },
+    {
+      "id": "VL-14",
+      "titel": "Außerbetriebliche Ausbildung mit 800 €",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 121 – Auszubildende, deren Arbeitsentgelt die Geringverdienergrenze nicht übersteigt“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Tabelle „Berufsausbildung / PGR bis 2011 / PGR ab 2012“, Zeile „Außerbetriebliche Berufsausbildung; Höhe des Entgelts ist nicht relevant“ (ebenso PGR 102)",
+        "url": "https://lohn-info.de/personengruppenschluessel_121.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info PGR 121/102"
+      },
+      "sachverhalt": "Auszubildende in einer außerbetrieblichen Einrichtung, Vergütung 800 €: unabhängig von der Höhe Personengruppe 122.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "122",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2009-03-03",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "ausbildung",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-09-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "800.00",
+            "avGueltigAb": "2026-09-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "ausbildung",
+        "agAusserbetrieblich": true,
+        "agBefristet": false
+      },
+      "hinweis": "Erster Fall mit 122 im Katalog. Betriebsart bleibt „keine“: Teilnehmer einer Jugendhilfe-Einrichtung oder eines Berufsbildungswerks wären ausgeschlossen (Ausschluss „einrichtung“)."
+    },
+    {
+      "id": "VL-15",
+      "titel": "Praxisintegriertes duales Studium mit 300 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), Lexikonbeitrag „Dualer Student / 3 Meldungen“ (ohne Standdatum)",
+        "fundstelle": "Abschnitt 3 „Meldungen“",
+        "url": "https://www.haufe.de/id/beitrag/dualer-student-3-meldungen-HI14926669.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Dualer Student, Abschn. 3"
+      },
+      "sachverhalt": "Dual Studierender mit einer Vergütung bis zur Geringverdienergrenze: Personengruppe 121; über der Grenze oder ohne Entgelt 102.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "121",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-10-10",
+        "status": "student",
+        "studienArt": "dual",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "1",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "ausbildung",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-10-01",
+        "agEntgeltArt": "ausbildungsverguetung",
+        "agAusbildungsverguetung": [
+          {
+            "rowId": "r1",
+            "avJahr": "1",
+            "avBetrag": "300.00",
+            "avGueltigAb": "2026-10-01"
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "dualesStudium",
+        "agBefristet": false
+      },
+      "hinweis": "Die Quelle nennt die Regel ohne Zahlenbeispiel; Sachverhalt konstruiert. Ergänzt D-102-0 (ohne Entgelt)."
+    },
+    {
+      "id": "VL-16",
+      "titel": "Langzeitstudent im 27. Fachsemester, 15 Stunden",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Ordentliche Studierende – Werkstudenten“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Abschnitte „Ende des Werkstudentenstatus“ / Studienzeit: mehr als 25 Fachsemester",
+        "url": "https://lohn-info.de/studenten_werkstudenten_ordentlichen_studierenden.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Werkstudenten"
+      },
+      "sachverhalt": "Student im 27. Fachsemester arbeitet 15 Stunden die Woche für 1.000 €. Bei mehr als 25 Fachsemestern gilt die widerlegbare Vermutung, dass das Studium nicht mehr im Vordergrund steht: kein Werkstudentenprivileg, versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1995-05-05",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "27",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "15.00",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "15.00"
+      },
+      "hinweis": "Die Quelle nennt die Regel ohne Zahlenbeispiel und ohne Fundstelle (die Überschrift „bis zu 25 Fachsemestern“ widerspricht dem Text nicht). Ergebnis gilt, solange die Vermutung nicht widerlegt ist. Der Fragebogen fragt das Fachsemester; es wirkt bisher nicht auf die Regeln."
+    },
+    {
+      "id": "VL-17",
+      "titel": "Vorgeschriebenes Zwischenpraktikum 300 €, freiwillig versichert",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 2 Vorgeschriebenes Zwischenpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 2, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-2-vorgeschriebenes-zwischenpraktikum-bis-603eur-monatlich-HI11296876.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 2"
+      },
+      "sachverhalt": "Student, 30, Pflichtpraktikum laut Studienordnung, fünf Monate, 300 € im Monat, freiwillig gesetzlich versichert: in allen Zweigen frei, Meldung 190/0000 an die Krankenkasse, keine Minijob-Pauschalen.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "190",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1996-01-15",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "6",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "pflichtStudium",
+        "agPraktikumBis": "2026-08-31",
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      }
+    },
+    {
+      "id": "VL-18",
+      "titel": "Freiwilliges Zwischenpraktikum in den Semesterferien, 530 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 4 Nicht vorgeschriebenes Zwischenpraktikum während der Semesterferien“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 4, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-4-nicht-vorgeschriebenes-zwischenpraktikum-waehrend-der-semesterferien-HI1856642.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 4"
+      },
+      "sachverhalt": "Student, gesetzlich versichert, freiwilliges Praktikum in einer Werbeagentur vom 1.7. bis 31.8., 530 € im Monat: kurzfristig, keine Pauschalen, Meldung 110/0000 an die Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-08-08",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "4",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "530.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-31",
+        "agKurzfristigArbeitstage": "44",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      },
+      "hinweis": "Der Arbeitgeber wählt hier „kurzfristige Aushilfe“ (GfR B 2.4: befristet bis zur Geringfügigkeitsgrenze kann kurzfristig oder geringfügig entlohnt sein). Arbeitstage bei Fünf-Tage-Woche angenommen."
+    },
+    {
+      "id": "VL-19",
+      "titel": "Freiwilliges Zwischenpraktikum sechs Monate, 530 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 5 Nicht vorgeschriebenes Zwischenpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 5, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-5-nicht-vorgeschriebenes-zwischenpraktikum-bis-603eur-monatlich-HI1856643.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 5"
+      },
+      "sachverhalt": "Student, gesetzlich versichert, freiwilliges Praktikum ab 1.7. für sechs Monate, 530 € im Monat: wie eine Studentenbeschäftigung, geringfügig entlohnt, RV-pflichtig, Meldung 109/6100 an die Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2002-12-12",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "5",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "530.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-12-31",
+        "agVorlesungszeitStunden": "10.00",
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-31"
+      },
+      "hinweis": "Gleicher Regelweg wie ST-FZPMJ, jetzt mit Schlüsseln aus dem Original. Den Wunsch nach RV-Befreiung fragt der Fragebogen nur bei „Minijob“ aus Sicht der Person; ohne Befreiung 6100. Wochenstunden in der Vorlesungszeit nennt die Quelle nicht (angenommen 10)."
+    },
+    {
+      "id": "VL-20",
+      "titel": "Freiwilliges Zwischenpraktikum 22 Stunden, 1.580 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 6 Nicht vorgeschriebenes Zwischenpraktikum zwischen 603,01 EUR und 2.000 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 6, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI1856644.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 6"
+      },
+      "sachverhalt": "Student, gesetzlich versichert, freiwilliges Praktikum ab 1.7. für sechs Monate, 22 Wochenstunden, 1.580 €: versicherungspflichtig als Arbeitnehmer, Übergangsbereich, weil keine Beschäftigung zur Berufsausbildung.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2001-01-21",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "7",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1580.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-12-31",
+        "agVorlesungszeitStunden": "22.00",
+        "agRandzeiten": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-31",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "22.00"
+      },
+      "hinweis": "Über 20 Wochenstunden in der Vorlesungszeit und länger als drei Monate: keine Werkstudenten-Freiheit. Aufgerufen über die Kurzadresse x-HI1856644 (leitet auf den Beitrag)."
+    },
+    {
+      "id": "VL-21",
+      "titel": "Vorgeschriebenes Vorpraktikum 300 € (Geringverdiener)",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 7 Vorgeschriebenes Vorpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 7, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-7-vorgeschriebenes-vorpraktikum-bis-603eur-monatlich-HI11296877.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 7"
+      },
+      "sachverhalt": "Noch nicht eingeschrieben, Vorpraktikum laut Studienordnung, drei Monate ab 1.7., 40 Stunden, 300 €: als zur Berufsausbildung Beschäftigter in allen Zweigen pflichtig, keine Geringfügigkeit; unter 325 € trägt der Arbeitgeber die Beiträge allein; Meldung 121/1111.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "121",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-02-02",
+        "status": "studienbewerber",
+        "studienbeginnGeplant": "2026-10",
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "300.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30",
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      }
+    },
+    {
+      "id": "VL-22",
+      "titel": "Vorgeschriebenes Vorpraktikum 800 €, vorher privat versichert",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 8 Vorgeschriebenes Vorpraktikum über 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 8, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-8-vorgeschriebenes-vorpraktikum-ueber-603eur-monatlich-HI1856645.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 8"
+      },
+      "sachverhalt": "Bisher privat versichert, noch nicht eingeschrieben, Vorpraktikum laut Studienordnung 1.6.–30.9., 40 Stunden, 800 €: in allen Zweigen pflichtig als zur Berufsausbildung Beschäftigter, Übergangsbereich gilt nicht; Meldung 105/1111 an die gewählte Krankenkasse.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "105",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2006-11-11",
+        "status": "studienbewerber",
+        "studienbeginnGeplant": "2026-10",
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "nein",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30",
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Neue Kombination: bisher privat versichert, wird pflichtversichert (kein Befreiungsgrund) – KV 1 und PV 1 trotz Antwort „privat“."
+    },
+    {
+      "id": "VL-23",
+      "titel": "Vorgeschriebenes Nachpraktikum ohne Entgelt",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 9 Vorgeschriebenes Nachpraktikum, kein Arbeitsentgelt“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 9, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-9-vorgeschriebenes-nachpraktikum-kein-arbeitsentgelt-HI1856647.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 9"
+      },
+      "sachverhalt": "Nicht mehr eingeschriebener Absolvent, Nachpraktikum zur Berufsanerkennung, sechs Monate ab 1.4., 30 Stunden, ohne Vergütung: KV/PV über die Familienversicherung (vorrangig), RV und AV pflichtig aus fiktivem Entgelt (1 % der Bezugsgröße, 2026: 39,55 €); Meldung 105/0110.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "105",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2000-05-05",
+        "status": "sonstiges",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "pflicht",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "0.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "pflichtVorNach",
+        "agPraktikumBis": "2026-09-30",
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Wie ST-VP0, aber Nachpraktikum. Eine Antwort „ohne Arbeitsentgelt“ fehlt dem Fragebogen; abgebildet mit 0,00 € Monatsentgelt (Befund H in sv-vorgaben.md). Status „sonstiges“, weil die Person nicht mehr studiert."
+    },
+    {
+      "id": "VL-24",
+      "titel": "Freiwilliges Vorpraktikum vier Monate, 510 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 10 Nicht vorgeschriebenes Vorpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 10, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-10-nicht-vorgeschriebenes-vorpraktikum-bis-603eur-monatlich-HI11296878.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Praktikant, Kap. 10"
+      },
+      "sachverhalt": "Noch nicht eingeschrieben, freiwilliges Vorpraktikum ab 1.6. für vier Monate, 7 Wochenstunden, 510 €: geringfügig entlohnt, RV-pflichtig mit Befreiungsmöglichkeit, Meldung 109/6100 (bei Befreiung 6500) an die Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2007-03-03",
+        "status": "studienbewerber",
+        "studienbeginnGeplant": "2026-10",
+        "bezugRente": false,
+        "artLautVereinbarung": "praktikum",
+        "praktikumArt": "freiwillig",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "510.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "praktikum",
+        "agPraktikumArt": "freiwillig",
+        "agPraktikumBis": "2026-09-30",
+        "agVorlesungszeitStunden": "7.00",
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Der Arbeitgeber wählt „Praktikum / anderes freiwilliges Praktikum“ (vier Monate, also nicht „bis 3 Monate“). Für Nicht-Studenten gibt es dafür keine eigene Regel; wählt der Arbeitgeber „Minijob“, ist es der Standardweg."
+    },
+    {
+      "id": "VL-25",
+      "titel": "Student im Minijob 590 €, gesetzlich versichert",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 1 Minijob“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-1-minijob-HI10158284.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 1"
+      },
+      "sachverhalt": "Eingeschriebener Student, unbefristet ab 1.2., 10 Wochenstunden, gleichbleibend 590 €, keine Sonderzahlungen: geringfügig entlohnt, RV-pflichtig; 109 mit 6100 (gesetzlich, RV-pflichtig).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2004-04-04",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "590.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "10.00"
+      }
+    },
+    {
+      "id": "VL-26",
+      "titel": "Student im Minijob 590 €, privat versichert, befreit",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 1 Minijob“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis (Schlüsselliste 6100/6500/0100/0500)",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-1-minijob-HI10158284.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 1"
+      },
+      "sachverhalt": "Wie VL-25, der Student ist privat versichert und lässt sich von der RV-Pflicht befreien: 109/0500.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0500",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2004-04-04",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "590.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "10.00"
+      },
+      "hinweis": "Die Quelle druckt die vier Varianten als Liste; diese Variante ist daraus gewählt."
+    },
+    {
+      "id": "VL-27",
+      "titel": "Student, befristet zwei Monate Vollzeit, 2.400 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 2 Kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 2, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-2-kurzfristige-beschaeftigung-HI10158285.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 2"
+      },
+      "sachverhalt": "Eingeschriebener Student, Supermarkt 1.2.–31.3., 40 Stunden Mo–Fr, 2.400 €, keine Vorbeschäftigung: kurzfristig; die Kurzfristigkeit ist vor dem Werkstudentenprivileg zu prüfen; 110/0000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-10-10",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-03-31",
+        "agKurzfristigArbeitstage": "42",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-03-31"
+      },
+      "hinweis": "Bestätigt die Reihenfolge „kurzfristig vor Werkstudent“ (RS Studenten C 1; offener Befund C). Arbeitstage 2026 gezählt (Februar 20, März 22)."
+    },
+    {
+      "id": "VL-28",
+      "titel": "Werkstudent 17 Stunden, 1.000 €: Übergangsbereich",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 3 Beschäftigung mit wöchentlicher Arbeitszeit von nicht mehr als 20 Stunden“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 3, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI10158286.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 3"
+      },
+      "sachverhalt": "Eingeschriebener Student, unbefristet ab 1.3., 17 Wochenstunden, 1.000 €: KV/PV/AV frei, RV pflichtig; RV-Beiträge nach den Regeln des Übergangsbereichs, keine KV-Pauschale; 106/0100 an die Krankenkasse.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2002-03-03",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "17.00",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "17.00"
+      },
+      "hinweis": "Klärt offenen Punkt 6 (Übergangsbereich bei Werkstudenten): Die Quelle wendet den Übergangsbereich auf den RV-Beitrag an (Kennzeichen 1). Aufgerufen über die Kurzadresse x-HI10158286."
+    },
+    {
+      "id": "VL-29",
+      "titel": "Student befristet fünf Monate, 24 Stunden mit Wochenendarbeit",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 4 Überschreitung der 20-Wochenstunden-Grenze, Arbeit in den Abend- und Nachtstunden und am Wochenende, befristete Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 4, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI10158287.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 4"
+      },
+      "sachverhalt": "Eingeschriebener Student, erstmals beschäftigt, befristet 1.2.–30.6., 24 Wochenstunden (Mo–Do je 4 Stunden vormittags, 8 Stunden am Wochenende), 1.700 €: Werkstudentenprivileg bleibt, weil die Überschreitung nur am Wochenende liegt und höchstens 26 Wochen dauert; 106/0100.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-05-15",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1700.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "24.00",
+        "agRandzeiten": true,
+        "agBefristet": true,
+        "agBefristetBis": "2026-06-30",
+        "agArbeitszeitmodell": "festeTage",
+        "agStdMo": "4.00",
+        "agStdDi": "4.00",
+        "agStdMi": "4.00",
+        "agStdDo": "4.00",
+        "agStdSa": "4.00",
+        "agStdSo": "4.00"
+      },
+      "hinweis": "Übergangsbereich abgeleitet wie VL-28. Neue Kombination: mehr als 20 Stunden nur durch Wochenendarbeit, befristet. Im Suchindex trägt dasselbe Kapitel die Nummer 5 (Haufe nummeriert um)."
+    },
+    {
+      "id": "VL-30",
+      "titel": "Student unbefristet, 24 Stunden mit Wochenendarbeit",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 5 Überschreitung der 20-Wochenstunden-Grenze, Arbeit in den Abend- und Nachtstunden und am Wochenende, unbefristete Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 5, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI10158288.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 5"
+      },
+      "sachverhalt": "Wie VL-29, aber unbefristet ab 1.4., 1.800 €: Versicherungspflicht in allen Zweigen ab 1.4.; 101/1111.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-05-15",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "24.00",
+        "agRandzeiten": true,
+        "agBefristet": false,
+        "agArbeitszeitmodell": "festeTage",
+        "agStdMo": "4.00",
+        "agStdDi": "4.00",
+        "agStdMi": "4.00",
+        "agStdDo": "4.00",
+        "agStdSa": "4.00",
+        "agStdSo": "4.00"
+      },
+      "hinweis": "Übergangsbereich abgeleitet (1.800 €). Im Suchindex als Kapitel 6 geführt."
+    },
+    {
+      "id": "VL-31",
+      "titel": "Werkstudent 20 Stunden, später befristet Wochenendstunden dazu",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 6 Befristete Überschreitung der 20-Wochenstunden-Grenze, Arbeit in den Abend- und Nachtstunden“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 6, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-6-befristete-ueberschreitung-der-20-wochenstunden-grenze-arbeit-in-den-abend-und-nachtstunden-HI10672394.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 6"
+      },
+      "sachverhalt": "Student seit 1.4. unbefristet 20 Wochenstunden (werktags je 4 Stunden); vom 10.6. bis 31.7. zusätzlich 10 Stunden am Wochenende; vorher nie über 20 Stunden: bleibt frei, weil die Mehrstunden zusammen höchstens 26 Wochen (182 Kalendertage) ausmachen; 106/0100.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2002-09-09",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1100.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "20.00",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "20.00"
+      },
+      "hinweis": "Beurteilt wird der Beginn (genau 20 Stunden = Grenzwert, noch frei). Die spätere Ausweitung ändert nichts (kein „spaeter“-Eintrag nötig). Entgelt angenommen, Übergangsbereich daraus abgeleitet."
+    },
+    {
+      "id": "VL-32",
+      "titel": "Werkstudent 20 Stunden, in den Semesterferien 40 Stunden",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 7 Überschreitung der 20-Wochenstunden-Grenze in den Semesterferien“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 7, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-7-ueberschreitung-der-20-wochenstunden-grenze-in-den-semesterferien-HI10158289.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 7"
+      },
+      "sachverhalt": "Student unbefristet ab 1.1., in der Vorlesungszeit 20 Stunden (1.400 €), in den Semesterferien (11.2.–17.4., 29.7.–8.10.) 40 Stunden (2.800 €): Werkstudentenprivileg bleibt; KV/PV/AV frei, RV pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)"
+      },
+      "person": {
+        "geburtsdatum": "2001-11-11",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-05",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": false,
+        "agVorlesungszeitStunden": "20.00",
+        "agBefristet": false,
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "20.00"
+      },
+      "hinweis": "Quellenfehler: Das Original druckt Personengruppe 101 (mit 0100). Nach DEÜV Anlage 2 und RS Studenten C 1 ist ein Werkstudent mit dieser Versicherungsfreiheit mit 106 zu melden; die PGR ist deshalb abgeleitet, die BGR stammt aus dem Original. Übergangsbereich nicht gesetzt (schwankendes Entgelt, Jahresdurchschnitt nahe 2.000 €). Beginn auf einen Werktag gelegt."
+    },
+    {
+      "id": "VL-33",
+      "titel": "Zweite Ferienbeschäftigung nach einer kurzfristigen, 40 Stunden",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 8 Befristete Beschäftigungen ausschließlich in den Semesterferien“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 8, Ergebnis zum Zeitraum 5.8.–8.10.",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-8-befristete-beschaeftigungen-ausschliesslich-in-den-semesterferien-HI10158290.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Studentenjobs, Kap. 8"
+      },
+      "sachverhalt": "Student, Supermarkt, jeweils im Voraus befristet 13.2.–13.4. und 5.8.–8.10., 40 Stunden, 2.500 €. Die erste Beschäftigung ist kurzfristig (110/0000); die zweite nicht mehr (zusammen 124 Kalendertage/89 Arbeitstage). Beurteilt wird die zweite.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-02-14",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": true,
+        "ueber20hZeiten": [
+          {
+            "rowId": "r1",
+            "ueber20hVon": "2026-02-13",
+            "ueber20hBis": "2026-04-13",
+            "ueber20hStunden": "40.00",
+            "ueber20hArbeitgeber": "derselbe Supermarkt",
+            "ueber20hFerien": true
+          }
+        ],
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "derselbe Supermarkt",
+            "vbVon": "2026-02-13",
+            "vbBis": "2026-04-13",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "44",
+            "vbEntgeltMonat": "2500.00"
+          }
+        ],
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-05",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": true,
+        "agBefristet": true,
+        "agBefristetBis": "2026-10-08",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "40.00"
+      },
+      "hinweis": "Das Ergebnis für den zweiten Zeitraum ist im frei sichtbaren Text abgeschnitten (nur „nicht mehr kurzfristig“). Abgeleitet: Beschäftigung nur in der vorlesungsfreien Zeit → Werkstudent (RS Studenten A 1.2.4 b); die Zeiten über 20 Stunden (zusammen rund 18 Wochen) bleiben unter 26 Wochen. Über 2.000 € → kein Übergangsbereich."
+    },
+    {
+      "id": "VL-34",
+      "titel": "Urlaubsvertretung nach zwei Vorbeschäftigungen: Zeitgrenze überschritten",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Kurzfristige Beschäftigung / 1 Zeitgrenzen überschritten“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI13778423.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Kurzfristige Beschäftigung, Kap. 1"
+      },
+      "sachverhalt": "Hausfrau übernimmt Vertretungen bei Pflegediensten: A 2.1.–25.2. (54 Kalendertage/39 Arbeitstage), B 31.3.–15.4. (16/12), jetzt C 1.8.–30.9. (60 Kalendertage, 18 Arbeitstage im Monat), 1.800 € im Monat. Zusammen 130 Kalendertage/87 Arbeitstage: nicht kurzfristig, wegen des Entgelts auch kein Minijob – sozialversicherungspflichtig von Beginn an.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "unsicher": ["kv"]
+      },
+      "person": {
+        "geburtsdatum": "1981-01-01",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Pflegedienst A",
+            "vbVon": "2026-01-02",
+            "vbBis": "2026-02-25",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "39"
+          },
+          {
+            "rowId": "r2",
+            "vbArbeitgeber": "Pflegedienst B",
+            "vbVon": "2026-03-31",
+            "vbBis": "2026-04-15",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "12"
+          }
+        ],
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-30",
+        "agKurzfristigArbeitstage": "36",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Die Quelle sagt nur „sozialversicherungspflichtig“; Schlüssel abgeleitet. KV unsicher wie GFR-40B/45B (Befristung bis zehn Wochen: 1 oder 3). Gleicher Regelweg wie GFR-45B, andere Daten."
+    },
+    {
+      "id": "VL-35",
+      "titel": "Arbeitsuchender, Wochenendaushilfe 100 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Kurzfristige Beschäftigung / 5 Arbeitsuchende“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 5, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-kurzfristige-beschaeftigung-5-arbeitsuchende-HI13778425.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Kurzfristige Beschäftigung, Kap. 5"
+      },
+      "sachverhalt": "Bei der Agentur für Arbeit arbeitsuchend gemeldeter junger Mann, Küchenhilfe an einem Wochenende (Sa/So) für 50 € am Tag, zusammen 100 €; keine Vorbeschäftigung: berufsmäßig erst über der Geringfügigkeitsgrenze, daher kurzfristig; 110/0000.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-07-07",
+        "status": "arbeitslos",
+        "grundsicherung": false,
+        "leistungArbeitslos": "keine",
+        "arbeitsuchendSeit": "2026-03-01",
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-13",
+        "agEntgeltArt": "pauschale",
+        "agPauschale": "50.00",
+        "agErwartetMonat": "100.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-06-14",
+        "agKurzfristigArbeitstage": "2",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-06-14"
+      },
+      "hinweis": "Leistungsbezug nicht genannt (angenommen: keine Leistung). Abgebildet mit „Pauschale je Einsatz“; der Monatsverdienst ist der Gesamtverdienst."
+    },
+    {
+      "id": "VL-36",
+      "titel": "Kurzfristige Aushilfe im Einzelhandel, 2.000 € (Sechs-Tage-Woche)",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 1 Kurzfristige neben geringfügiger Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis Beschäftigung 1",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-mehrfachbeschaeftigung-1-kurzfristige-neben-geringfuegiger-beschaeftigung-HI7484835.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 1"
+      },
+      "sachverhalt": "Über den Ehemann familienversicherte Frau, nicht arbeitslos gemeldet, nicht in Elternzeit; Einzelhandel 4.4.–31.5.2026, 2.000 €, Sechs-Tage-Woche: kurzfristig; 110/0000 an die Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1984-08-08",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-04",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-05-31",
+        "agKurzfristigArbeitstage": "49",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-05-31"
+      },
+      "hinweis": "Arbeitstage bei Sechs-Tage-Woche gezählt."
+    },
+    {
+      "id": "VL-37",
+      "titel": "Befristeter Minijob 500 € nach einer kurzfristigen Beschäftigung",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 1 Kurzfristige neben geringfügiger Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis Beschäftigung 2",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-mehrfachbeschaeftigung-1-kurzfristige-neben-geringfuegiger-beschaeftigung-HI7484835.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 1"
+      },
+      "sachverhalt": "Dieselbe Frau, Bäckerei 1.7.–31.7.2026, drei Vormittage die Woche, 500 €: trotz Befristung als geringfügig entlohnt behandelt, nicht mit der kurzfristigen zusammengerechnet; 109/6100 (6500 bei Befreiung).",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1984-08-08",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": true,
+        "agBefristetBis": "2026-07-31"
+      },
+      "hinweis": "GfR 2026 B 2.4: eine befristete Beschäftigung bis zur Geringfügigkeitsgrenze kann als kurzfristig oder als geringfügig entlohnt behandelt werden. Neue Kombination: befristeter Minijob (die Befristung bis zehn Wochen darf hier nicht zu KV 3 führen)."
+    },
+    {
+      "id": "VL-38",
+      "titel": "Zweiter Minijob 100 € neben Hauptbeschäftigung 4.000 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 2 Hauptbeschäftigung und 2 geringfügig entlohnte Beschäftigungen“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 2, Ergebnis Arbeitgeber C",
+        "url": "https://www.haufe.de/id/beitrag/x-HI7489814.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 2"
+      },
+      "sachverhalt": "Hauptbeschäftigung bei A 4.000 € (101/1111), erster Minijob bei B 450 € (109/6500), ab 1.6.2026 zusätzlich C 100 €: C wird mit A zusammengerechnet, pflichtig außer AV; C meldet 101/1101 an die Krankenkasse.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1101",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1980-10-10",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2019-01-01",
+            "jobEntgeltMonat": "4000.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2024-03-01",
+            "jobEntgeltMonat": "450.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-06-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "100.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Übergangsbereich abgeleitet: A + C = 4.100 € > 2.000 € → 0 (anders als GFR-20C/VL-02)."
+    },
+    {
+      "id": "VL-39",
+      "titel": "Teilzeit 900 € neben Minijob und kurzfristiger Beschäftigung: Übergangsbereich",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 4 Hauptbeschäftigung, geringfügig entlohnte und kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 4, Ergebnis Arbeitgeber A",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-mehrfachbeschaeftigung-4-hauptbeschaeftigung-geringfuegig-entlohnte-und-kurzfristige-beschaeftigung-HI7484837.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 4"
+      },
+      "sachverhalt": "Teilzeit bei A 900 € (ohne Sonderzahlungen), daneben Schreibarbeiten bei B für 300 € (RV-befreit) und Wochenendaushilfe bei C vom 1.8. bis 15.9.2026 (200 € je Wochenende): A ist in allen Zweigen pflichtig, Beiträge nach dem Übergangsbereich.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1990-02-20",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "ja"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Gaststätte C",
+            "jobArt": "kurzfristig",
+            "jobSeit": "2026-08-01",
+            "jobBefristetBis": "2026-09-15",
+            "jobEntgeltMonat": "800.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "900.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Der Beginn bei A ist in der Quelle nicht genannt; angenommen 01.08.2026, damit C im Fragebogen schon als weitere Beschäftigung steht. Nach RS Übergangsbereich Tz. 4.2.2 zählen weder der erste Minijob noch die kurzfristige Beschäftigung mit. Schlüssel abgeleitet (im sichtbaren Text abgeschnitten)."
+    },
+    {
+      "id": "VL-40",
+      "titel": "Wochenendaushilfe neben Teilzeit und Minijob: kurzfristig",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 4 Hauptbeschäftigung, geringfügig entlohnte und kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 4, Sachverhalt Arbeitgeber C",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-mehrfachbeschaeftigung-4-hauptbeschaeftigung-geringfuegig-entlohnte-und-kurzfristige-beschaeftigung-HI7484837.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 4"
+      },
+      "sachverhalt": "Dieselbe Person, Aushilfe in einer Gaststätte an sechs Wochenenden vom 1.8. bis 15.9.2026, je 12 Stunden, 200 € je Wochenende (zusammen 1.200 €), neben der Teilzeit bei A und dem Minijob bei B.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1990-02-20",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Arbeitgeber A",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2024-01-01",
+            "jobEntgeltMonat": "900.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Arbeitgeber B",
+            "jobArt": "minijob",
+            "jobSeit": "2025-01-01",
+            "jobEntgeltMonat": "300.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "pauschale",
+        "agPauschale": "200.00",
+        "agErwartetMonat": "800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-15",
+        "agKurzfristigArbeitstage": "12",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-15"
+      },
+      "hinweis": "Das Ergebnis zu C ist im sichtbaren Text abgeschnitten. Abgeleitet: befristet unter drei Monaten, neben einer versicherungspflichtigen Hauptbeschäftigung nicht berufsmäßig (GfR B 2.3.3.1) → kurzfristig."
+    },
+    {
+      "id": "VL-41",
+      "titel": "Zwei Minijobs je 250 €, beide befreit",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 5 Mehrere geringfügige Beschäftigungen unter der Geringfügigkeitsgrenze“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 5, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI7484838.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 5"
+      },
+      "sachverhalt": "Familienversicherte Bedienung mit zwei Minijobs je 250 €, keine weitere Beschäftigung; Befreiungsantrag bei beiden Arbeitgebern: zusammen 500 € unter der Grenze, beide geringfügig, Pauschalen 15 % RV und 13 % KV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1992-12-01",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Gaststätte 1",
+            "jobArt": "minijob",
+            "jobSeit": "2025-05-01",
+            "jobEntgeltMonat": "250.00",
+            "jobRvBefreit": "ja"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "schonBefreit"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "250.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Schlüssel im sichtbaren Text nicht gedruckt; aus den Pauschalen abgeleitet."
+    },
+    {
+      "id": "VL-42",
+      "titel": "Zwei Minijobs je 400 €: beide versicherungspflichtig",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 6 Mehrere geringfügige Beschäftigungen über der Geringfügigkeitsgrenze“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 6, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI7484839.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Mehrfachbeschäftigung, Kap. 6"
+      },
+      "sachverhalt": "Familienversicherte Bedienung mit zwei Beschäftigungen je 400 €, keine Hauptbeschäftigung: zusammen 800 € über der Grenze, keine ist geringfügig; Sozialversicherungspflicht in beiden, Beiträge nach dem Übergangsbereich.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1992-12-01",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Gaststätte 1",
+            "jobArt": "minijob",
+            "jobSeit": "2025-09-01",
+            "jobEntgeltMonat": "400.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "400.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Gleicher Regelweg wie UEB-15 (zwei Minijobs zusammen 720 €), hier mit dem Übergangsbereich im Original."
+    },
+    {
+      "id": "VL-43",
+      "titel": "Studentin, befristet ein Jahr, ca. 300 € plus Weihnachtsgeld, privat versichert",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 1.3 Studenten“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Abschnitt 1.3, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-geringfuegig-entlohnte-beschaeftigung-13-studenten-HI9478712.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Geringfügig entlohnte Beschäftigung, 1.3"
+      },
+      "sachverhalt": "Studentin, befristet ein Jahr ab 1.1., 15 € je Stunde, rund 20 Stunden im Monat (≈ 300 €), Weihnachtsgeld 120 € im November, über die Eltern privat versichert: 3.720 € im Jahr, geringfügig entlohnt (nicht kurzfristig); RV-pflichtig, keine KV-Pauschale; Anmeldung bei der Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2005-06-06",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "2",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "15.00",
+        "agErwartetMonat": "300.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "120.00",
+            "ezMonat": "11",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-31"
+      },
+      "hinweis": "Schlüssel im sichtbaren Text nicht gedruckt; 109 folgt aus „als geringfügig entlohnte Beschäftigte bei der Minijob-Zentrale anmelden“, 0100 aus „RV-pflichtig, privat versichert“. Neue Kombination: auf ein Jahr befristet, aber regelmäßig → kein kurzfristiger Minijob."
+    },
+    {
+      "id": "VL-44",
+      "titel": "Trainer im Sportverein 750 € mit Übungsleiterfreibetrag",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 1.4 Trainertätigkeit“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Abschnitt 1.4, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI9478713.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Geringfügig entlohnte Beschäftigung, 1.4"
+      },
+      "sachverhalt": "Vereinsmitglied trainiert nebenberuflich die Beachvolleyball-Mannschaft eines gemeinnützigen Vereins ab 1.1. für 750 € im Monat (9.000 € im Jahr); daneben versicherungspflichtige Hauptbeschäftigung, gesetzlich pflichtversichert. Nach Abzug des Übungsleiterfreibetrags (3.300 €) bleiben 5.700 € (475 € im Monat): geringfügig entlohnt, Anmeldung mit Personengruppe 109.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1987-07-17",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Hauptarbeitgeber",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2015-09-01",
+            "jobEntgeltMonat": "3200.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "750.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "nichtAbbildbar": "Den steuer- und beitragsfreien Übungsleiterfreibetrag (§ 3 Nr. 26 EStG, 2026: 3.300 € im Jahr) fragt der Fragebogen nicht ab; mit 750 € Monatsentgelt liegt der Minijob für die Regeln über der Grenze. Wie GFR-11.",
+      "hinweis": "BGR abgeleitet (erster Minijob neben Hauptbeschäftigung, keine Befreiung angegeben; mit Befreiung 6500). Das Entgelt der Hauptbeschäftigung ist angenommen."
+    },
+    {
+      "id": "VL-45",
+      "titel": "Beamter mit zweitem Nebenjob 250 €: beide Nebenjobs pflichtig",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 1.5 Beamte“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Abschnitt 1.5, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI9478714.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Geringfügig entlohnte Beschäftigung, 1.5"
+      },
+      "sachverhalt": "Privat versicherter Beamter mit Beihilfe; seit drei Jahren Hausmeister für 430 €, ab 1.1. zusätzlich Pförtner für 250 €. Die Nebenjobs werden nicht mit dem Beamtenverhältnis, aber untereinander zusammengerechnet (680 €): KV/PV frei (Beamter), RV und AV pflichtig, Übergangsbereich; Meldung 101/0110 an die Krankenkasse.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "am Original geprüft"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "0110",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1975-05-05",
+        "status": "beamter",
+        "elternzeitAnderswo": false,
+        "beamtBeihilfe": true,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Dienstherr",
+            "jobArt": "beamter",
+            "jobSeit": "2005-08-01",
+            "jobEntgeltMonat": "4200.00"
+          },
+          {
+            "rowId": "r2",
+            "jobArbeitgeber": "Hausmeisterei",
+            "jobArt": "minijob",
+            "jobSeit": "2023-01-01",
+            "jobEntgeltMonat": "430.00",
+            "jobRvBefreit": "nein"
+          }
+        ],
+        "krankenversicherung": "privat",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "250.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Bestätigt GFR-21 (Übergangsbereich 1: die Beamtenbezüge zählen nicht). Beamtenbezüge im Fragebogen als Zeile „beamter“ mit angenommenem Betrag (Befund F)."
+    },
+    {
+      "id": "VL-46",
+      "titel": "Aushilfe 500 € mit Urlaubs- und Weihnachtsgeld: über der Jahresgrenze",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 2.1 Weihnachtsgeld“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Abschnitt 2.1, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI9478716.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Geringfügig entlohnte Beschäftigung, 2.1"
+      },
+      "sachverhalt": "Angestellte Aushilfe, 500 € im Monat, vertraglich Urlaubsgeld 900 € (Juli) und Weihnachtsgeld 600 € (Dezember): 7.500 € im Jahr > 7.236 € – sozialversicherungspflichtig ab Beginn, Beiträge an die Krankenkasse.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1969-04-14",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agEinmalzahlungen": [
+          {
+            "rowId": "r1",
+            "ezArt": "urlaubsgeld",
+            "ezBetrag": "900.00",
+            "ezMonat": "07",
+            "ezAnspruch": true
+          },
+          {
+            "rowId": "r2",
+            "ezArt": "weihnachtsgeld",
+            "ezBetrag": "600.00",
+            "ezMonat": "12",
+            "ezAnspruch": true
+          }
+        ],
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Schlüssel und Übergangsbereich abgeleitet (Durchschnitt 625 €). Ähnlich GFR-06, aber zwei Einmalzahlungen."
+    },
+    {
+      "id": "VL-47",
+      "titel": "Minijob 483,72 € neben Hauptbeschäftigung, einmal unvorhersehbar darüber",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Nebenbeschäftigung / 3 Minijob, einmalig über der Geringfügigkeitsgrenze“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 3, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI1855589.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Nebenbeschäftigung, Kap. 3"
+      },
+      "sachverhalt": "Bürokraft (gesetzlich versichert) mit Minijob an einer Tankstelle: 8 Stunden die Woche zu 13,90 € (483,72 € im Monat), RV-befreit; im Juni wegen einer Krankheitsvertretung 622,72 €. Unvorhersehbares Überschreiten ist unschädlich, es bleibt ein Minijob.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1986-06-26",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": true,
+        "weitereJobs": [
+          {
+            "rowId": "r1",
+            "jobArbeitgeber": "Büro-Arbeitgeber",
+            "jobArt": "svpflichtig",
+            "jobSeit": "2019-05-01",
+            "jobEntgeltMonat": "2800.00"
+          }
+        ],
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "13.90",
+        "agErwartetMonat": "483.72",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Beurteilt wird der Beginn (regelmäßiges Entgelt). Schlüssel abgeleitet aus „Pauschalabgaben 15 % RV, 13 % KV“. Entgelt der Hauptbeschäftigung angenommen. 483,72 € = 13,90 € × 8 × 4,35."
+    },
+    {
+      "id": "VL-48",
+      "titel": "Bezieher von Arbeitslosengeld im Minijob, befreit",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Nebenbeschäftigung / 5 Hinzuverdienst bei ALG“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 5, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-nebenbeschaeftigung-5-hinzuverdienst-bei-alg-HI1855592.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Nebenbeschäftigung, Kap. 5"
+      },
+      "sachverhalt": "Bezieher von Arbeitslosengeld, gesetzlich versichert, Aushilfe 5 Stunden die Woche zu 13,90 € (302,33 €), RV-befreit: geringfügige Beschäftigung, Pauschalen 15 % RV und 13 % KV; vom Netto werden 165 € Freibetrag abgezogen, der Rest auf das ALG angerechnet.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6500",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "frei bzw. befreit, Pauschalbeitrag des Arbeitgebers",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1970-10-10",
+        "status": "arbeitslos",
+        "grundsicherung": false,
+        "leistungArbeitslos": "arbeitslosengeld",
+        "arbeitsuchendSeit": "2026-02-01",
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "ja"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-04-01",
+        "agEntgeltArt": "stundenlohn",
+        "agStundenlohn": "13.90",
+        "agErwartetMonat": "302.33",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Schlüssel abgeleitet. Neue Kombination: ALG-Bezug im Minijob (die AV-Freiheit nach § 27 Abs. 5 SGB III ändert an AV 0 nichts)."
+    },
+    {
+      "id": "VL-49",
+      "titel": "Altersvollrente nach der Regelaltersgrenze, Beginn 1.7.2026",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 1 Altersvollrentenbezug nach Vollendung der Regelaltersgrenze, Beschäftigungsbeginn ab 2026“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis (Regelfall)",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-1-altersvollrentenbezug-nach-vollendung-der-regelaltersgrenze-beschaeftigungsbeginn-ab-2026-HI10078268.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Rentnerbeschäftigung, Kap. 1"
+      },
+      "sachverhalt": "Altersvollrentner nach der Regelaltersgrenze, mehr als geringfügig beschäftigt ab 1.7.2026: KV/PV pflichtig (KV ermäßigt, kein Krankengeld), RV und AV frei mit Arbeitgeberanteil; Anmeldung 119/3321.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "3321",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-03-03",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-04-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Entgelt angenommen (über 2.000 €, Übergangsbereich 0). Bestätigt D-119 mit Original-Schlüsseln. Die Aktivrente (§ 3 Nr. 21 EStG) wirkt nur steuerlich."
+    },
+    {
+      "id": "VL-50",
+      "titel": "Altersvollrente nach der Regelaltersgrenze mit Verzicht, 1.800 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 1 Altersvollrentenbezug nach Vollendung der Regelaltersgrenze, Beschäftigungsbeginn ab 2026“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis (bei schriftlichem Verzicht)",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-1-altersvollrentenbezug-nach-vollendung-der-regelaltersgrenze-beschaeftigungsbeginn-ab-2026-HI10078268.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Rentnerbeschäftigung, Kap. 1"
+      },
+      "sachverhalt": "Wie VL-49, der Rentner verzichtet schriftlich auf die RV-Freiheit (Erklärung in den Entgeltunterlagen): 120/3121.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3121",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1958-03-03",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2024-04-01",
+        "rvVerzicht": "ja",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Entgelt angenommen (im Übergangsbereich)."
+    },
+    {
+      "id": "VL-51",
+      "titel": "Altersvollrente vor der Regelaltersgrenze, Beginn 1.8.2026",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 2 Altersvollrentenbezug vor Erreichen der Regelaltersgrenze, Beschäftigungsbeginn ab 2026“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 2, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-2-altersvollrentenbezug-vor-erreichen-der-regelaltersgrenze-beschaeftigungsbeginn-ab-2026-HI10078271.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Rentnerbeschäftigung, Kap. 2"
+      },
+      "sachverhalt": "Vorgezogene Altersvollrente, mehr als geringfügige Beschäftigung ab 1.8.2026: in allen Zweigen pflichtig, KV ermäßigt (kein Krankengeld); Anmeldung 120/3111. Keine Hinzuverdienstgrenze mehr seit 2023.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1963-05-05",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-06-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "3000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Geburtsdatum und Entgelt angenommen."
+    },
+    {
+      "id": "VL-52",
+      "titel": "Altersvollrente vor der Regelaltersgrenze, Wechsel bei Erreichen der Grenze",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 3 Altersvollrentenbezug vor Erreichen der Regelaltersgrenze“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 3, Ergebnis (Meldungen)",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-3-altersvollrentenbezug-vor-erreichen-der-regelaltersgrenze-HI10078272.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Rentnerbeschäftigung, Kap. 3"
+      },
+      "sachverhalt": "Arbeitnehmer, geboren 14.1.1961, Altersvollrente vor der Regelaltersgrenze, kein Verzicht; Regelaltersgrenze am 14.7.2027. Anmeldung 120/3111; Abmeldung 31.7.2027 mit 120/3111, Anmeldung 1.8.2027 mit 119/3321.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1",
+        "spaeter": [
+          {
+            "ab": "2027-08-01",
+            "pgr": "119",
+            "bgr": "3321"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1961-01-14",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-02-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "angepasst": "Beschäftigungsbeginn im Original 01.08.2025; auf 01.01.2026 gelegt (Ergebnis unabhängig vom Beginn, solange vor dem Erreichen der Regelaltersgrenze). Rentenbeginn und Entgelt angenommen."
+    },
+    {
+      "id": "VL-53",
+      "titel": "Altersteilrente vor der Regelaltersgrenze",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 4 Arbeitnehmer mit Teilrentenbezug wegen Alters vor Erreichen der Regelaltersgrenze“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 4, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-4-arbeitnehmer-mit-teilrentenbezug-wegen-alters-vor-erreichen-der-regelaltersgrenze-HI10078273.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Rentnerbeschäftigung, Kap. 4"
+      },
+      "sachverhalt": "Teilrente wegen Alters vor der Regelaltersgrenze, mehr als geringfügige Beschäftigung ab 1.2.2026: in allen Zweigen pflichtig; Anmeldung 101/1111.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1111",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1963-02-02",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersteil",
+        "renteSeit": "2026-01-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Ebenso lohn-info „Rentner“ (Teilrente vor RAG bis 31.12.2026: 101/1111) und Lexware-FAQ. Entgelt angenommen."
+    },
+    {
+      "id": "VL-54",
+      "titel": "Volle Erwerbsminderungsrente, Teilzeit",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 6 Arbeitnehmer bezieht volle Erwerbsminderungsrente“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 6, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI10078274.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Rentnerbeschäftigung, Kap. 6"
+      },
+      "sachverhalt": "Bezieher einer vollen Erwerbsminderungsrente, mehr als geringfügige Beschäftigung ab 1.2.2026: KV/PV/RV pflichtig (KV ermäßigt, kein Krankengeld), AV frei ohne Arbeitgeberanteil; Anmeldung 101/3101. Hinzuverdienstgrenze 2026: 20.763,75 € im Jahr.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "3101",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1970-03-03",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "emVoll",
+        "renteSeit": "2022-05-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1200.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Bestätigt D-EMV mit Original-Schlüsseln; hier mit Status „ruhestand“. Entgelt angenommen (unter der Hinzuverdienstgrenze)."
+    },
+    {
+      "id": "VL-55",
+      "titel": "Altersvollrentner als Aushilfe nach einer Vollzeitstelle vor Rentenbeginn",
+      "quelle": {
+        "dokument": "Haufe Online Redaktion, „Altersvollrentner in einer kurzfristigen Beschäftigung“, haufe.de Personal/Entgelt, 28.09.2026",
+        "fundstelle": "Beispiel im Beitrag",
+        "url": "https://www.haufe.de/personal/entgelt/altersvollrentner-im-kurzfristigen-minijob_78_374746.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe News 28.09.2026"
+      },
+      "sachverhalt": "Altersvollrente ab 1.6.2026 nach Erreichen der Regelaltersgrenze; bis 31.5.2026 Vollzeitstelle mit 3.500 €; Aushilfe 1.7.–30.9.2026 (Fünf-Tage-Woche) für 1.700 €. Zeiten vor dem Rentenbeginn zählen nicht: nicht berufsmäßig, kurzfristiger Minijob.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1959-03-01",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-06-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "früherer Arbeitgeber",
+            "vbVon": "2026-01-01",
+            "vbBis": "2026-05-31",
+            "vbArt": "mehr",
+            "vbEntgeltMonat": "3500.00"
+          }
+        ],
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1700.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-09-30",
+        "agKurzfristigArbeitstage": "66",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-09-30"
+      },
+      "hinweis": "Schlüssel abgeleitet (110 nur mit 0000, DEÜV Anlage 16). Prüft GfR B 2.3.3.3: bei Vollrentnern zählen mehr als geringfügige Zeiten nur nach dem Ausscheiden. Geburtsdatum angenommen (RAG 01.05.2025)."
+    },
+    {
+      "id": "VL-56",
+      "titel": "Altersteilrentner als befristete Aushilfe über der Grenze, ohne Vorbeschäftigungen",
+      "quelle": {
+        "dokument": "Haufe Online Redaktion, „Altersvollrentner in einer kurzfristigen Beschäftigung“, haufe.de Personal/Entgelt, 28.09.2026",
+        "fundstelle": "Abschnitt zu Teilrentnern",
+        "url": "https://www.haufe.de/personal/entgelt/altersvollrentner-im-kurzfristigen-minijob_78_374746.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe News 28.09.2026"
+      },
+      "sachverhalt": "Bezieher einer Altersteilrente, Aushilfe 1.7.–31.8.2026 für 1.700 € im Monat. Teilrentner gehören zu den Erwerbstätigen: über der Geringfügigkeitsgrenze berufsmäßig, also keine kurzfristige Beschäftigung – versicherungspflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1962-04-04",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersteil",
+        "renteSeit": "2025-05-01",
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-07-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1700.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-08-31",
+        "agKurzfristigArbeitstage": "44",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-08-31"
+      },
+      "hinweis": "Erwartung am 03.11.2026 nach dem amtlichen Text berichtigt (war 101/1111 nach der Quelle). Die Quelle nennt Teilrentner pauschal berufsmäßig; die Geringfügigkeits-Richtlinien 2026 kennen das nicht: Sie nennen Altersteilrentner nur dabei, dass frühere Beschäftigungszeiten für die Berufsmäßigkeit voll zählen (B 2.3.3.3: „Bezieher einer Vollrente wegen Alters (keine Altersteilrentner)“). Ohne Vorbeschäftigungen im Kalenderjahr und innerhalb der Zeitgrenzen bleibt die Beschäftigung kurzfristig (B 2.3.3.2, 2.3.3.3). Offen für die Recherche im Fachportal (Frage F7). Sachverhalt aus der allgemeinen Aussage des Beitrags gebildet (kein Zahlenbeispiel)."
+    },
+    {
+      "id": "VL-57",
+      "titel": "Schüler, Rahmenvereinbarung für Samstage, höchstens 70 Arbeitstage",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Schüler / 2 Kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 2, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI1629375.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Schüler, Kap. 2"
+      },
+      "sachverhalt": "Gymnasiast, 18, über den Vater familienversichert, arbeitet jeden Samstag 8 Stunden im Supermarkt; Rahmenvereinbarung auf ein Jahr befristet mit höchstens 70 Arbeitstagen, 500 € im Monat: kurzfristig, in allen Zweigen frei; Personengruppe 110, An- und Abmeldung bei der Minijob-Zentrale.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "am Original geprüft",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2008-01-20",
+        "status": "schueler",
+        "schulart": "allgemein",
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-03",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-12-31",
+        "agKurzfristigArbeitstage": "52",
+        "agRahmenvereinbarung": true,
+        "agBefristet": true,
+        "agBefristetBis": "2026-12-31"
+      },
+      "hinweis": "BGR nicht gedruckt (110 lässt nur 0000 zu). Bestätigt GfR 2026 B 2.3 (S. 41): Rahmenvereinbarungen bis zu einem Jahr mit höchstens 70 Arbeitstagen gelten als kurzfristig, der BSG-Auffassung vom 05.12.2017 wird nicht gefolgt. Neue Kombination: Rahmenvereinbarung „ja“ mit regelmäßigem Rhythmus."
+    },
+    {
+      "id": "VL-58",
+      "titel": "Schüler im Minijob 450 €",
+      "quelle": {
+        "dokument": "Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Schüler / 1 Minijob“ (ohne Standdatum, rechnet mit Werten 2026)",
+        "fundstelle": "Kapitel 1, Ergebnis",
+        "url": "https://www.haufe.de/id/beitrag/x-HI1629374.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "Haufe Schüler, Kap. 1"
+      },
+      "sachverhalt": "Gymnasiast, 17, familienversichert, nachmittags und samstags zusammen 8 Stunden die Woche, 450 €: KV, PV und AV frei, RV pflichtig mit Befreiungsmöglichkeit.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2009-02-02",
+        "status": "schueler",
+        "schulart": "allgemein",
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-03-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "450.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "hinweis": "Schlüssel im sichtbaren Text nicht gedruckt; aus „KV/PV/AV frei, RV pflichtig“ abgeleitet. Minderjährig: gesetzliche Vertretung unterschreibt mit (für die Vorschläge ohne Wirkung)."
+    },
+    {
+      "id": "VL-59",
+      "titel": "Regelaltersgrenze erreicht, Rente noch nicht beantragt",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Altersteilrente, Nichtinanspruchnahme, Ohne Rentenanspruch“, Zeile „Nach RGA, Anspruch nicht in Anspruch genommen“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Beschäftigter nach der Regelaltersgrenze, der seine Altersrente (noch) nicht bezieht: RV pflichtig (keine Vollrente), AV frei mit Arbeitgeberanteil; 101/1121.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "101",
+        "bgr": "1121",
+        "kv": "pflichtig (allgemeiner Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1958-01-15",
+        "status": "arbeitnehmer",
+        "grundsicherung": false,
+        "elternzeitAnderswo": false,
+        "bezugRente": false,
+        "rvNieVersichert": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "3000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Neuer Regelweg: kein Rentenbezug nach der RAG. Entgelt angenommen."
+    },
+    {
+      "id": "VL-60",
+      "titel": "Altersvollrentner nach der RAG über der JAEG, Firmenzahler",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Freiwillig krankenversichert (Firmenzahler)“, Zeile „Nach RGA, kein Verzicht“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Altersvollrentner nach der Regelaltersgrenze mit Verdienst über der JAEG, freiwillig gesetzlich versichert, Firmenzahler, kein Verzicht: 119/9321.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "9321",
+        "kv": "frei, freiwillig gesetzlich versichert (Firmenzahler)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1957-08-08",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2023-08-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agFirmenzahler": "firmenzahler",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Sachverhalt aus der Tabellenzeile konstruiert, Entgelt angenommen. Neue Kombination 119 mit KV 9."
+    },
+    {
+      "id": "VL-61",
+      "titel": "Altersvollrentner nach der RAG über der JAEG, Firmenzahler, mit Verzicht",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Freiwillig krankenversichert (Firmenzahler)“, Zeile „Nach RGA, Verzicht ja“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Wie VL-60, mit schriftlichem Verzicht auf die RV-Freiheit: 120/9121.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "9121",
+        "kv": "frei, freiwillig gesetzlich versichert (Firmenzahler)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1957-08-08",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2023-08-01",
+        "rvVerzicht": "ja",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agFirmenzahler": "firmenzahler",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "VL-62",
+      "titel": "Altersvollrente vor der RAG über der JAEG, Firmenzahler",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Freiwillig krankenversichert (Firmenzahler)“, Zeile „Vor RGA, Verzicht nicht möglich“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Vorgezogene Altersvollrente, Verdienst über der JAEG, freiwillig gesetzlich versichert, Firmenzahler: 120/9111.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "9111",
+        "kv": "frei, freiwillig gesetzlich versichert (Firmenzahler)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1962-12-12",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2026-01-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agFirmenzahler": "firmenzahler",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      }
+    },
+    {
+      "id": "VL-63",
+      "titel": "Altersvollrentner nach der RAG über der JAEG, Selbstzahler",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Freiwillig krankenversichert (Selbstzahler)“, Zeile „Nach RGA, kein Verzicht“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Wie VL-60, aber Selbstzahler: KV 0 (Beitrag zahlt die Person), PV bleibt pflichtig.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "0321",
+        "kv": "frei, freiwillig gesetzlich versichert (Selbstzahler)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1957-08-08",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2023-08-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "7000.00",
+        "agUeberJaeg": true,
+        "agFirmenzahler": "selbstzahler",
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Quellenfehler: Lexware druckt 0-3-2-0 (PV 0), in derselben Tabelle beim Verzicht aber 0-1-2-1 (PV 1). Freiwillig gesetzlich Versicherte sind pflegeversichert; GfR 2026 Bsp. 26 meldet Selbstzahler mit 0111 (PV 1). Erwartet deshalb abgeleitet 119/0321."
+    },
+    {
+      "id": "VL-64",
+      "titel": "Altersrente eines Versorgungswerks nach der RAG",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Berufsständische Versorgungsbezüge“, Zeile „Nach RGA (ab 01.01.2022)“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Bezieher einer Altersrente aus einem berufsständischen Versorgungswerk nach der Regelaltersgrenze, gesetzlich versichert: 119/3321.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "3321",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1957-09-09",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "versorgungswerkAlter",
+        "renteSeit": "2023-10-01",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Die Zeile „Vor RGA“ derselben Tabelle (101/1011) ist nicht übernommen – siehe sv-vorgaben-kurse.md (widerspricht § 5 Abs. 4 S. 1 Nr. 2 SGB VI und D-119P)."
+    },
+    {
+      "id": "VL-65",
+      "titel": "Pensionär wegen Alters nach der RAG, Beihilfe, privat versichert",
+      "quelle": {
+        "dokument": "Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später)",
+        "fundstelle": "Tabelle „Beamtenrechtliche Versorgungsbezüge“, Zeile „Nach RGA (ab 01.01.2022), Ruhegehalt und Beihilfe“",
+        "url": "https://www.lexware.de/support/faq/faq-beitrag/000033545/",
+        "abgerufen": "2026-11-02",
+        "kurz": "Lexware FAQ Rentner"
+      },
+      "sachverhalt": "Ruhestandsbeamter nach der Regelaltersgrenze mit Ruhegehalt und Beihilfe, privat versichert: KV/PV frei, RV frei mit Arbeitgeberanteil, AV frei mit halbem Beitrag; 119/0320.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "119",
+        "bgr": "0320",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "av": "frei, Arbeitgeberanteil (halber Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "1958-06-06",
+        "status": "ruhestand",
+        "bezugRente": false,
+        "bezugPension": true,
+        "beamtBeihilfe": true,
+        "pensionArt": "alter",
+        "rvVerzicht": "nein",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "privat",
+        "pkvBestand2002": "ja",
+        "gkvLetzte5Jahre": "nein",
+        "kvBefreiung": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "1800.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Entgelt angenommen; Übergangsbereich wie D-119 abgeleitet. Die Zeile „Vor RGA“ (101/0310) ist nicht übernommen (D-119P: 119/0310)."
+    },
+    {
+      "id": "VL-66",
+      "titel": "Student in den Semesterferien Vollzeit 2.000 €, ohne Vorbeschäftigung",
+      "quelle": {
+        "dokument": "personalwissen.de (VNR Verlag für die Deutsche Wirtschaft), Übersicht „Ihr Unternehmen kann einen Studenten wie folgt beschäftigen“ (Semesterferien 13.7.–15.10.2025)",
+        "fundstelle": "Tabelle, Zeile 1 („befristet vom 15.8. bis 15.10. in Vollzeit, 2.000 €“)",
+        "url": "https://static.personalwissen.de/wp-content/uploads/2025/05/Uebersicht_Beschaeftigungsmoeglichkeiten_Student.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "personalwissen Übersicht Studenten"
+      },
+      "sachverhalt": "Student, befristet 15.8.–15.10. in Vollzeit, 2.000 € im Monat, Semesterferien 13.7.–15.10. Die Quelle nennt Werkstudent und ergänzt: ohne andere Beschäftigungen im Jahr käme die kurzfristige Beschäftigung in Frage (ohne RV-Pflicht), „Prüfen!“.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "110",
+        "bgr": "0000",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "frei bzw. befreit (kein Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2003-12-03",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "aushilfe",
+        "vorbeschJahr": false,
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-15",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "kurzfristig",
+        "agKurzfristigBis": "2026-10-15",
+        "agKurzfristigArbeitstage": "44",
+        "agRahmenvereinbarung": false,
+        "agBefristet": true,
+        "agBefristetBis": "2026-10-15"
+      },
+      "angepasst": "Original 2025; auf 2026 gelegt (gleiche Daten).",
+      "hinweis": "Ohne Vorbeschäftigung geht die Kurzfristigkeit vor (RS Studenten C 1; Haufe Studentenjobs Kap. 2) – deshalb 110, nicht die erste Antwort der Quelle. Variante mit Vorbeschäftigung: VL-67."
+    },
+    {
+      "id": "VL-67",
+      "titel": "Student in den Semesterferien Vollzeit 2.000 €, nach einer Aushilfe im Frühjahr",
+      "quelle": {
+        "dokument": "personalwissen.de (VNR Verlag für die Deutsche Wirtschaft), Übersicht „Ihr Unternehmen kann einen Studenten wie folgt beschäftigen“ (Semesterferien 13.7.–15.10.2025)",
+        "fundstelle": "Tabelle, Zeile 1 (Variante mit Vorbeschäftigung)",
+        "url": "https://static.personalwissen.de/wp-content/uploads/2025/05/Uebersicht_Beschaeftigungsmoeglichkeiten_Student.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "personalwissen Übersicht Studenten"
+      },
+      "sachverhalt": "Wie VL-66, der Student hatte aber vom 2.3. bis 29.5.2026 schon eine kurzfristige Vollzeitbeschäftigung: die Zeitgrenze ist ausgeschöpft, es bleibt die Werkstudenten-Freiheit in den Semesterferien (KV/PV/AV frei, RV pflichtig).",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "106",
+        "bgr": "0100",
+        "kv": "frei bzw. nicht pflichtig (kein Beitrag)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "1"
+      },
+      "person": {
+        "geburtsdatum": "2003-12-03",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": true,
+        "ueber20hZeiten": [
+          {
+            "rowId": "r1",
+            "ueber20hVon": "2026-03-02",
+            "ueber20hBis": "2026-05-29",
+            "ueber20hStunden": "40.00",
+            "ueber20hArbeitgeber": "Aushilfe bei Arbeitgeber X",
+            "ueber20hFerien": false
+          }
+        ],
+        "bezugRente": false,
+        "artLautVereinbarung": "werkstudent",
+        "vorbeschJahr": true,
+        "vorbeschaeftigungen": [
+          {
+            "rowId": "r1",
+            "vbArbeitgeber": "Arbeitgeber X",
+            "vbVon": "2026-03-02",
+            "vbBis": "2026-05-29",
+            "vbArt": "kurzfristig",
+            "vbArbeitstage": "65",
+            "vbEntgeltMonat": "2000.00"
+          }
+        ],
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-08-15",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2000.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "werkstudent",
+        "agNurSemesterferien": true,
+        "agBefristet": true,
+        "agBefristetBis": "2026-10-15",
+        "agArbeitszeitmodell": "wechselnd",
+        "agWochenstunden": "40.00"
+      },
+      "angepasst": "Variante konstruiert, damit die erste Antwort der Quelle (Werkstudent) gilt; Jahr 2026.",
+      "hinweis": "Grenzwert: genau 2.000 € → Übergangsbereich 1 (wie VL-28 bei Werkstudenten angewandt). Zeiten über 20 Stunden zusammen rund 22 Wochen, also unter 26."
+    },
+    {
+      "id": "VL-68",
+      "titel": "Student im unbefristeten Minijob genau an der Grenze",
+      "quelle": {
+        "dokument": "personalwissen.de (VNR Verlag für die Deutsche Wirtschaft), Übersicht „Ihr Unternehmen kann einen Studenten wie folgt beschäftigen“ (Semesterferien 13.7.–15.10.2025)",
+        "fundstelle": "Tabelle, Zeile 3 („das ganze Jahr unbefristet, monatlich 556 €“)",
+        "url": "https://static.personalwissen.de/wp-content/uploads/2025/05/Uebersicht_Beschaeftigungsmoeglichkeiten_Student.pdf",
+        "abgerufen": "2026-11-02",
+        "kurz": "personalwissen Übersicht Studenten"
+      },
+      "sachverhalt": "Studentischer Mitarbeiter, unbefristet das ganze Jahr, Verdienst genau an der Geringfügigkeitsgrenze: Minijob, Pauschalen an die Minijob-Zentrale, RV-pflichtig mit Befreiungsmöglichkeit.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "2004-01-30",
+        "status": "student",
+        "studienArt": "vollzeit",
+        "hochschule": "Beispiel-Hochschule",
+        "urlaubssemester": false,
+        "fachsemester": "3",
+        "ueber20hJahr": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "603.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false
+      },
+      "angepasst": "Original 556 € = Geringfügigkeitsgrenze 2025; auf 603 € (Grenze 2026) skaliert, damit der Verdienst wieder genau an der Grenze liegt.",
+      "hinweis": "Die Quelle sagt „versicherungsfrei in allen Zweigen“ und im selben Satz „RV-Pflicht mit Befreiungsmöglichkeit“; maßgeblich ist das Zweite (§ 6 Abs. 1b SGB VI)."
+    },
+    {
+      "id": "VL-69",
+      "titel": "Minijob durch Entgeltumwandlung: 600 € minus 200 € bAV",
+      "quelle": {
+        "dokument": "lohn-info.de, Lohnlexikon: „Geringfügige Beschäftigungen (Minijob)“ (ohne Standdatum, © 2007–2026)",
+        "fundstelle": "Beispiel zur Entgeltumwandlung (betriebliche Altersversorgung)",
+        "url": "https://lohn-info.de/gering.html",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohn-info Geringfügige Beschäftigungen"
+      },
+      "sachverhalt": "Bruttoanspruch 600 €, ab Beginn um 200 € zugunsten einer betrieblichen Altersversorgung gemindert: das verbleibende Entgelt (400 €) überschreitet die Grenze nicht – geringfügig entlohnt, Pauschalbeiträge zur KV und RV.",
+      "pruefstatus": {
+        "sachverhalt": "am Original geprüft",
+        "pgr": "abgeleitet",
+        "bgr": "abgeleitet",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "109",
+        "bgr": "6100",
+        "kv": "frei, Pauschalbeitrag des Arbeitgebers",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "frei (kein Beitrag)",
+        "pv": "kein Beitrag (frei bzw. nicht pflichtig)",
+        "uebergangsbereich": "0"
+      },
+      "person": {
+        "geburtsdatum": "1983-03-13",
+        "status": "haushalt",
+        "grundsicherung": false,
+        "bezugRente": false,
+        "artLautVereinbarung": "minijob",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich",
+        "rvBefreiungWunsch": "nein"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-01-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "600.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "minijob",
+        "agBefristet": false,
+        "agBav": "umwandlung",
+        "agBavVertraege": [
+          {
+            "rowId": "r1",
+            "bavWeg": "direktversicherung",
+            "bavBeitrag": "200.00"
+          }
+        ]
+      },
+      "hinweis": "Die Quelle nennt „Versicherungsfreiheit in der … Rentenversicherung“ – Recht vor 2013; heute RV-pflichtig mit Befreiungsmöglichkeit (GfR B 2.2.4). Erwartet deshalb 6100 (ohne Befreiung). Gleicher Regelweg wie GFR-14 (offener Befund G)."
+    },
+    {
+      "id": "BL-01",
+      "titel": "Altersvollrentner erreicht die Regelaltersgrenze während der Beschäftigung",
+      "quelle": {
+        "dokument": "LohnDialog Abrechnungsgesellschaft mbH (Lohnbüro), Blog „Aktivrente 2026: Beitragsgruppenschlüssel und Abrechnung“, Stand September 2026",
+        "fundstelle": "Abschnitte „Personengruppe“, „Beitragsgruppenschlüssel“, „Wechsel im laufenden Jahr“ und Checkliste",
+        "url": "https://www.lohndialog.de/aktivrente-2026-was-arbeitgeber-bei-der-lohnabrechnung-jetzt-beachten-muessen/",
+        "abgerufen": "2026-11-02",
+        "kurz": "lohndialog Aktivrente 2026"
+      },
+      "sachverhalt": "Altersvollrentner vor der Regelaltersgrenze: 120/3111; nach Erreichen: 119/3321, der Statuswechsel braucht eine neue Meldung. Hier: Vollrente seit 2025, Jahrgang März 1960 (Regelaltersgrenze 15.07.2026), Beschäftigung ab 01.02.2026.",
+      "pruefstatus": {
+        "sachverhalt": "abgeleitet",
+        "pgr": "am Original geprüft",
+        "bgr": "am Original geprüft",
+        "uebergangsbereich": "abgeleitet"
+      },
+      "erwartet": {
+        "pgr": "120",
+        "bgr": "3111",
+        "kv": "pflichtig (ermäßigter Beitrag, kein Krankengeld)",
+        "rv": "pflichtig (voller Beitrag)",
+        "av": "pflichtig (voller Beitrag)",
+        "pv": "pflichtig (voller Beitrag)",
+        "uebergangsbereich": "0",
+        "spaeter": [
+          {
+            "ab": "2026-08-01",
+            "pgr": "119",
+            "bgr": "3321"
+          }
+        ]
+      },
+      "person": {
+        "geburtsdatum": "1960-03-15",
+        "ragErreicht": "nein",
+        "status": "ruhestand",
+        "bezugRente": true,
+        "bezugPension": false,
+        "rentenart": "altersvoll",
+        "renteSeit": "2025-06-01",
+        "artLautVereinbarung": "festeStelle",
+        "weitereBeschaeftigung": false,
+        "krankenversicherung": "gesetzlich"
+      },
+      "arbeitgeber": {
+        "agBeschaeftigungsbeginn": "2026-02-01",
+        "agEntgeltArt": "monatsentgelt",
+        "agMonatsentgelt": "2500.00",
+        "agUeberJaeg": false,
+        "agBeschaeftigungsart": "svpflichtig",
+        "agBefristet": false
+      },
+      "hinweis": "Sachverhalt konstruiert nach der allgemeinen Aussage. Prüft die Frage „Regelaltersgrenze erreicht“ (Jahrgang zwischen 03.11.1959 und 01.09.1960): bei „Nein“ wird kein Verzicht gefragt. RV-/AV-Freiheit ab Ablauf des Monats, in dem die RAG erreicht wird (§ 5 Abs. 4 S. 1 Nr. 1 SGB VI, § 28 Abs. 1 Nr. 1 SGB III). Die Aktivrente (§ 3 Nr. 21 EStG) ändert die Schlüssel nicht."
+    }
+  ]
+}

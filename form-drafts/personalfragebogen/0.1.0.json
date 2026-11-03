@@ -6886,6 +6886,56 @@
           }
         },
         {
+          "value": "190",
+          "reason": "Minijob ohne Pauschalbeitrag zur Krankenversicherung (nicht gesetzlich versichert) und ohne Rentenversicherungsbeitrag (befreit zugunsten des Versorgungswerks): nur in der Unfallversicherung versichert – Personengruppe 190, Beitragsgruppe 0000 (Geringfügigkeits-Richtlinien D 1; DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig", "keine"]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigNebenKurzfristigen",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit"
+            ]
+          },
+          "check": true
+        },
+        {
           "value": "109",
           "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten, regelmäßig oder berufsmäßig; Geringfügigkeits-Richtlinien B 2.3): mit diesem Entgelt ein Minijob.",
           "when": {
@@ -6924,6 +6974,52 @@
           "check": true
         },
         {
+          "value": "190",
+          "reason": "Minijob ohne Pauschalbeitrag zur Krankenversicherung (nicht gesetzlich versichert) und ohne Rentenversicherungsbeitrag (befreit zugunsten des Versorgungswerks): nur in der Unfallversicherung versichert – Personengruppe 190, Beitragsgruppe 0000 (Geringfügigkeits-Richtlinien D 1; DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "not": {
+                      "field": "weitereBeschaeftigung",
+                      "equals": true
+                    }
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig", "keine"]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss"
+            ]
+          }
+        },
+        {
           "value": "109",
           "when": {
             "all": [
@@ -6956,6 +7052,59 @@
             ]
           },
           "reason": "Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze."
+        },
+        {
+          "value": "190",
+          "reason": "Minijob ohne Pauschalbeitrag zur Krankenversicherung (nicht gesetzlich versichert) und ohne Rentenversicherungsbeitrag (befreit zugunsten des Versorgungswerks): nur in der Unfallversicherung versichert – Personengruppe 190, Beitragsgruppe 0000 (Geringfügigkeits-Richtlinien D 1; DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "svpflichtig"
+                  },
+                  {
+                    "not": {
+                      "field": "agArbeitszeitmodell",
+                      "equals": "altersteilzeit"
+                    }
+                  },
+                  {
+                    "not": {
+                      "field": "weitereBeschaeftigung",
+                      "equals": true
+                    }
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig", "keine"]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss"
+            ]
+          },
+          "check": true
         },
         {
           "value": "109",
@@ -6997,6 +7146,69 @@
           },
           "check": true,
           "reason": "Als versicherungspflichtig vorgesehen, aber das Entgelt liegt im Jahr nicht über der Geringfügigkeitsgrenze: ein Minijob (§ 8 Abs. 1 Nr. 1 SGB IV)."
+        },
+        {
+          "value": "190",
+          "reason": "Minijob ohne Pauschalbeitrag zur Krankenversicherung (nicht gesetzlich versichert) und ohne Rentenversicherungsbeitrag (befreit zugunsten des Versorgungswerks): nur in der Unfallversicherung versichert – Personengruppe 190, Beitragsgruppe 0000 (Geringfügigkeits-Richtlinien D 1; DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "any": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "minijob"
+                      },
+                      {
+                        "all": [
+                          {
+                            "field": "agBeschaeftigungsart",
+                            "equals": "svpflichtig"
+                          },
+                          {
+                            "not": {
+                              "field": "agArbeitszeitmodell",
+                              "equals": "altersteilzeit"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "field": "weitereBeschaeftigung",
+                    "equals": true
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig", "keine"]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss"
+            ]
+          },
+          "check": true
         },
         {
           "value": "109",
@@ -7135,7 +7347,7 @@
         },
         {
           "value": "110",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "reason": "Nicht vorgeschriebenes Praktikum, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
           "when": {
             "all": [
               {
@@ -7144,11 +7356,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -7183,6 +7391,42 @@
           }
         },
         {
+          "value": "190",
+          "reason": "Minijob ohne Pauschalbeitrag zur Krankenversicherung (nicht gesetzlich versichert) und ohne Rentenversicherungsbeitrag (befreit zugunsten des Versorgungswerks): nur in der Unfallversicherung versichert – Personengruppe 190, Beitragsgruppe 0000 (Geringfügigkeits-Richtlinien D 1; DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "werkstudent"
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig", "keine"]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss"
+            ]
+          }
+        },
+        {
           "value": "109",
           "reason": "Werkstudent(in) mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob – Personengruppe 109 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien C 2.2).",
           "when": {
@@ -7207,21 +7451,29 @@
           }
         },
         {
-          "value": "109",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5).",
+          "value": "190",
+          "reason": "Minijob ohne Pauschalbeitrag zur Krankenversicherung (nicht gesetzlich versichert) und ohne Rentenversicherungsbeitrag (befreit zugunsten des Versorgungswerks): nur in der Unfallversicherung versichert – Personengruppe 190, Beitragsgruppe 0000 (Geringfügigkeits-Richtlinien D 1; DEÜV Anlage 2).",
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "praktikum"
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "in": ["orientierung", "begleitend", "freiwillig"]
+                  }
+                ]
               },
               {
-                "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig", "keine"]
               },
               {
-                "field": "status",
-                "equals": "student"
+                "field": "versorgungswerk",
+                "equals": "befreit"
               }
             ]
           },
@@ -7243,7 +7495,8 @@
           }
         },
         {
-          "value": "106",
+          "value": "109",
+          "reason": "Nicht vorgeschriebenes Praktikum mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob – nicht vorgeschriebene Praktika werden wie andere Beschäftigungen beurteilt (Rundschreiben Studenten und Praktikanten, Übersicht 3 und 4; Geringfügigkeits-Richtlinien C 2.5).",
           "when": {
             "all": [
               {
@@ -7252,16 +7505,245 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
+                "in": ["orientierung", "begleitend", "freiwillig"]
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss"
+            ]
+          }
+        },
+        {
+          "value": "101",
+          "reason": "Mehr als 25 Fachsemester: Es wird vermutet, dass das Studium nicht mehr im Vordergrund steht – keine Werkstudentenregel, versicherungspflichtig (Rundschreiben Studenten und Praktikanten Tz. A 1.2.2 g). Die Vermutung kann widerlegt werden; dann gilt 106.",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "werkstudent"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "praktikum"
+                      },
+                      {
+                        "field": "agPraktikumArt",
+                        "in": ["begleitend", "freiwillig"]
+                      },
+                      {
+                        "field": "status",
+                        "equals": "student"
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "field": "status",
-                "equals": "student"
+                "field": "fachsemester",
+                "greaterThan": "25"
+              }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "190",
+          "reason": "Werkstudentenregel (versicherungsfrei in KV, PV und AV) und für diese Beschäftigung zugunsten des Versorgungswerks von der Rentenversicherung befreit: nur in der Unfallversicherung versichert – Personengruppe 190 (DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "praktikum"
+                      },
+                      {
+                        "field": "agPraktikumArt",
+                        "in": ["begleitend", "freiwillig"]
+                      },
+                      {
+                        "field": "status",
+                        "equals": "student"
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "field": "fachsemester",
+                      "greaterThan": "25"
+                    }
+                  }
+                ]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
+          "test": {
+            "fn": "werkstudentenprivileg",
+            "args": [
+              "agNurSemesterferien",
+              "agVorlesungszeitStunden",
+              "agRandzeiten",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "106",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "in": ["begleitend", "freiwillig"]
+                  },
+                  {
+                    "field": "status",
+                    "equals": "student"
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
               }
             ]
           },
           "check": true,
           "reason": "Freiwilliges Praktikum während des Studiums: Es gilt die Werkstudentenregel (höchstens 20 Wochenstunden oder in den Semesterferien) – bitte die Arbeitszeit prüfen.",
+          "test": {
+            "fn": "werkstudentenprivileg",
+            "args": [
+              "agNurSemesterferien",
+              "agVorlesungszeitStunden",
+              "agRandzeiten",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
+            ]
+          }
+        },
+        {
+          "value": "190",
+          "reason": "Werkstudentenregel (versicherungsfrei in KV, PV und AV) und für diese Beschäftigung zugunsten des Versorgungswerks von der Rentenversicherung befreit: nur in der Unfallversicherung versichert – Personengruppe 190 (DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "werkstudent"
+                      },
+                      {
+                        "field": "agNurSemesterferien",
+                        "equals": true
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "field": "fachsemester",
+                      "greaterThan": "25"
+                    }
+                  }
+                ]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          }
+        },
+        {
+          "value": "106",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "werkstudent"
+                  },
+                  {
+                    "field": "agNurSemesterferien",
+                    "equals": true
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              }
+            ]
+          },
+          "reason": "Werkstudent(in), nur in der vorlesungsfreien Zeit beschäftigt."
+        },
+        {
+          "value": "190",
+          "reason": "Werkstudentenregel (versicherungsfrei in KV, PV und AV) und für diese Beschäftigung zugunsten des Versorgungswerks von der Rentenversicherung befreit: nur in der Unfallversicherung versichert – Personengruppe 190 (DEÜV Anlage 2).",
+          "when": {
+            "all": [
+              {
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "werkstudent"
+                  },
+                  {
+                    "not": {
+                      "field": "fachsemester",
+                      "greaterThan": "25"
+                    }
+                  }
+                ]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              }
+            ]
+          },
           "test": {
             "fn": "werkstudentenprivileg",
             "args": [
@@ -7285,18 +7767,12 @@
                 "equals": "werkstudent"
               },
               {
-                "field": "agNurSemesterferien",
-                "equals": true
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
               }
             ]
-          },
-          "reason": "Werkstudent(in), nur in der vorlesungsfreien Zeit beschäftigt."
-        },
-        {
-          "value": "106",
-          "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "werkstudent"
           },
           "reason": "Werkstudent(in) mit höchstens 20 Wochenstunden in der Vorlesungszeit (oder darüber am Wochenende, abends oder nachts, höchstens 26 Wochen): versicherungsfrei in KV, PV und AV, rentenversicherungspflichtig (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4).",
           "test": {
@@ -7817,7 +8293,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "reason": "Nicht vorgeschriebenes Praktikum, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
           "when": {
             "all": [
               {
@@ -7826,11 +8302,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -7922,7 +8394,7 @@
         },
         {
           "value": "6",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5). Gesetzlich versichert: Pauschalbeitrag (§ 249b SGB V).",
+          "reason": "Nicht vorgeschriebenes Praktikum mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5). Gesetzlich versichert: Pauschalbeitrag (§ 249b SGB V).",
           "when": {
             "all": [
               {
@@ -7933,11 +8405,7 @@
                   },
                   {
                     "field": "agPraktikumArt",
-                    "in": ["begleitend", "freiwillig"]
-                  },
-                  {
-                    "field": "status",
-                    "equals": "student"
+                    "in": ["orientierung", "begleitend", "freiwillig"]
                   }
                 ]
               },
@@ -7966,7 +8434,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5).",
+          "reason": "Nicht vorgeschriebenes Praktikum mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5).",
           "when": {
             "all": [
               {
@@ -7975,11 +8443,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -8004,8 +8468,18 @@
           "value": "0",
           "reason": "Werkstudent: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 3 SGB V).",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "werkstudent"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "werkstudent"
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              }
+            ]
           },
           "test": {
             "fn": "werkstudentenprivileg",
@@ -8026,16 +8500,26 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "praktikum"
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "in": ["begleitend", "freiwillig"]
+                  },
+                  {
+                    "field": "status",
+                    "equals": "student"
+                  }
+                ]
               },
               {
-                "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
               }
             ]
           },
@@ -8850,7 +9334,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "reason": "Nicht vorgeschriebenes Praktikum, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
           "when": {
             "all": [
               {
@@ -8859,11 +9343,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -9639,7 +10119,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "reason": "Nicht vorgeschriebenes Praktikum, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
           "when": {
             "all": [
               {
@@ -9648,11 +10128,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -9688,10 +10164,52 @@
         },
         {
           "value": "0",
+          "reason": "Nicht vorgeschriebenes Praktikum mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob, arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III).",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              },
+              {
+                "field": "agPraktikumArt",
+                "in": ["orientierung", "begleitend", "freiwillig"]
+              }
+            ]
+          },
+          "test": {
+            "fn": "geringfuegigEntlohnt",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss"
+            ]
+          }
+        },
+        {
+          "value": "0",
           "reason": "Werkstudent: arbeitslosenversicherungsfrei (§ 27 Abs. 4 S. 1 Nr. 2 SGB III).",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "werkstudent"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "werkstudent"
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              }
+            ]
           },
           "test": {
             "fn": "werkstudentenprivileg",
@@ -9712,16 +10230,26 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "praktikum"
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "in": ["begleitend", "freiwillig"]
+                  },
+                  {
+                    "field": "status",
+                    "equals": "student"
+                  }
+                ]
               },
               {
-                "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
               }
             ]
           },
@@ -10171,7 +10699,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "reason": "Nicht vorgeschriebenes Praktikum, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
           "when": {
             "all": [
               {
@@ -10180,11 +10708,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -10244,7 +10768,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5).",
+          "reason": "Nicht vorgeschriebenes Praktikum mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5).",
           "when": {
             "all": [
               {
@@ -10253,11 +10777,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -10282,8 +10802,18 @@
           "value": "0",
           "reason": "Werkstudent: Personengruppe 106 kennt in der PV nur 0 (DEÜV Anlage 16).",
           "when": {
-            "field": "agBeschaeftigungsart",
-            "equals": "werkstudent"
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "werkstudent"
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              }
+            ]
           },
           "test": {
             "fn": "werkstudentenprivileg",
@@ -10304,16 +10834,26 @@
           "when": {
             "all": [
               {
-                "field": "agBeschaeftigungsart",
-                "equals": "praktikum"
+                "all": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "praktikum"
+                  },
+                  {
+                    "field": "agPraktikumArt",
+                    "in": ["begleitend", "freiwillig"]
+                  },
+                  {
+                    "field": "status",
+                    "equals": "student"
+                  }
+                ]
               },
               {
-                "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
               }
             ]
           },
@@ -10766,7 +11306,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
+          "reason": "Nicht vorgeschriebenes Praktikum, auf höchstens drei Monate befristet: zugleich kurzfristig – Personengruppe 110 geht vor (Rundschreiben Studenten und Praktikanten Tz. C 1; Geringfügigkeits-Richtlinien B 2.4).",
           "when": {
             "all": [
               {
@@ -10775,11 +11315,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -10839,7 +11375,7 @@
         },
         {
           "value": "0",
-          "reason": "Freiwilliges Praktikum einer Studentin oder eines Studenten mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5). Kein Übergangsbereich.",
+          "reason": "Nicht vorgeschriebenes Praktikum mit einem Entgelt bis zur Geringfügigkeitsgrenze: Minijob (Geringfügigkeits-Richtlinien C 2.5). Kein Übergangsbereich.",
           "when": {
             "all": [
               {
@@ -10848,11 +11384,7 @@
               },
               {
                 "field": "agPraktikumArt",
-                "in": ["begleitend", "freiwillig"]
-              },
-              {
-                "field": "status",
-                "equals": "student"
+                "in": ["orientierung", "begleitend", "freiwillig"]
               }
             ]
           },
@@ -10870,6 +11402,61 @@
               "agBav",
               "bavBeitrag",
               "bavZuschuss"
+            ]
+          }
+        },
+        {
+          "value": "0",
+          "reason": "Werkstudentenregel und Befreiung zugunsten des Versorgungswerks: keine Beiträge aus der Beschäftigung, kein Übergangsbereich.",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "werkstudent"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "praktikum"
+                      },
+                      {
+                        "field": "agPraktikumArt",
+                        "in": ["begleitend", "freiwillig"]
+                      },
+                      {
+                        "field": "status",
+                        "equals": "student"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "versorgungswerk",
+                "equals": "befreit"
+              },
+              {
+                "not": {
+                  "field": "fachsemester",
+                  "greaterThan": "25"
+                }
+              }
+            ]
+          },
+          "test": {
+            "fn": "werkstudentenprivileg",
+            "args": [
+              "agNurSemesterferien",
+              "agVorlesungszeitStunden",
+              "agRandzeiten",
+              "agBefristet",
+              "agBeschaeftigungsbeginn",
+              "agBefristetBis",
+              "ueber20hJahr",
+              "jobStundenWoche"
             ]
           }
         },

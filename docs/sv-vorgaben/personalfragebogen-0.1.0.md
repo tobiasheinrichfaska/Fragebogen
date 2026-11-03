@@ -6,7 +6,7 @@
 > Übergangsbereich (ÜB) und der Vorschlag der App für dieselben Antworten; „(p)“ = mit Prüfvermerk.
 > Belegt: S = Sachverhalt; O = am Original geprüft, A = abgeleitet, N = nicht verifiziert.
 
-157 Fälle aus 2 Datei(en): 151 abbildbar, 6 nicht abbildbar; 150 gleich, 1 abweichend. 203 abgeleitete Varianten, 39 Grenzfälle.
+235 Fälle aus 3 Datei(en): 227 abbildbar, 8 nicht abbildbar; 226 gleich, 1 abweichend. 297 abgeleitete Varianten, 39 Grenzfälle.
 
 | ID | Quelle | Sachverhalt | Erwartet | Belegt | App | Ergebnis |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -167,6 +167,84 @@
 | BE-03 | BE 23.11.2016 TOP 3 | Pensionär mit Versorgung nach einer besonderen Altersgrenze verzichtet auf die RV-Freiheit | 120 · 0110 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 120 · 0110 · ÜB 1 | gleich |
 | BA-01 | BA FW § 27 SGB III (07/2026) | Visagistin am Theater, auf fünf Tage befristet: unständige Beschäftigung | 118 · 1101; KV, UEBERGANGSBEREICH unsicher | S O, PGR A, BGR A, ÜB A | – · – · ÜB – | nicht abbildbar |
 | BA-02 | BA FW § 27 SGB III (07/2026) | Zwei Saisonjobs in landwirtschaftlichen Betrieben: zusammen genau 105 Kalendertage | 110 · 0000 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KU-01 | lohn-info Lehrgang, Aufgabe 8, Bsp. 1 | Arbeiter mit Stundenlohn 15 € × 170 Stunden | 101 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 101 · 1111 · ÜB 0 | gleich |
+| KU-02 | lohn-info Lehrgang, Aufgabe 8, Bsp. 3 | Auszubildender (18) mit 500 € Ausbildungsvergütung | 102 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 102 · 1111 · ÜB 0 | gleich |
+| KU-03 | lohn-info Lehrgang, Aufgabe 8, Bsp. 4 | Auszubildender (18) mit 310 € Ausbildungsvergütung | 121 · 1111 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 121 · 1111 · ÜB 0 | gleich |
+| KU-04 | lohn-info Lehrgang, Aufgabe 8, Bsp. 5 | Minijob 350 €, familienversichert, von der RV-Pflicht befreit | 109 · 6500 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
+| KU-05 | lohn-info Lehrgang, Aufgabe 8a, Bsp. 7 | Altersvollrentner nach der Regelaltersgrenze, genau 2.000 € | 119 · 3321 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 119 · 3321 (p) · ÜB 1 | gleich |
+| KU-06 | lohn-info Lehrgang, Aufgabe 8a, Bsp. 8 | Angestellter, privat versichert, Verdienst über der JAEG | 101 · 0110 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 101 · 0110 · ÜB 0 | gleich |
+| KU-07 | lohn-info Lehrgang, Aufgabe 8a, Bsp. 9 | Kurzfristige Aushilfe einen Monat, 1.000 € | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| KU-08 | lohn-info Lehrgang, Aufgabe 8a, Bsp. 11 | Minijob 350 €, privat versichert, von der RV-Pflicht befreit | 109 · 0500 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 0500 · ÜB 0 | gleich |
+| VL-01 | lohn-info PGR 101, Bsp. 1 (A) | Hauptbeschäftigung 1.000 € neben zwei Minijobs (200 € befreit, 250 €) | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 (p) | gleich |
+| VL-02 | lohn-info PGR 101, Bsp. 1 (C) | Zweiter Minijob 250 € neben Hauptbeschäftigung 1.000 € und erstem Minijob | 101 · 1101 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1101 (p) · ÜB 1 (p) | gleich |
+| VL-03 | lohn-info PGR 101, Bsp. 2 (B) | Erster Minijob 200 € neben JAEG-freier Hauptbeschäftigung (Firmenzahler) | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 (p) · 6100 (p) · ÜB 0 | gleich |
+| VL-04 | lohn-info PGR 101, Bsp. 2 (C) | Zweiter Minijob 180 € neben JAEG-freier Hauptbeschäftigung: zwei Meldungen | 101 · 0100 · ÜB 0; Minijob-Zentrale: 101 · 6000 | S O, PGR O, BGR O, ÜB A | 101 (p) · 0100 (p) · ÜB 0 | gleich |
+| VL-05 | lohn-info PGR 101, Tabelle | Versorgungswerk-Mitglied, privat versichert, über der JAEG | 101 · 0010 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 101 · 0010 · ÜB 0 | gleich |
+| VL-06 | lohn-info Rentner, Übersicht | Altersteilrente nach der Regelaltersgrenze | 101 · 1121 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 101 · 1121 (p) · ÜB 0 | gleich |
+| VL-07 | lohn-info Rentner, Übersicht | Rente wegen teilweiser Erwerbsminderung, Teilzeit 1.200 € | 101 · 1111 · ÜB 1; AV unsicher | S A, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 | gleich |
+| VL-08 | lohn-info PGR 190/106 | Werkstudent im Zweitstudium, Mitglied eines Versorgungswerks | 190 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 190 · 0000 · ÜB 0 | gleich |
+| VL-09 | lohn-info PGR 190 | Apothekerin im Minijob, privat versichert, Versorgungswerk | 190 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 190 · 0000 · ÜB 0 | gleich |
+| VL-10 | lohn-info PGR 190 | Beurlaubter Beamter als Lehrer an einer Privatschule | 190 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | – · – · ÜB – | nicht abbildbar |
+| VL-11 | lohn-info PGR 119 | Altersvollrentner nach der Regelaltersgrenze, privat versichert | 119 · 0320 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 119 · 0320 (p) · ÜB 0 | gleich |
+| VL-12 | lohn-info PGR 120 | Altersvollrente vor der Regelaltersgrenze, privat versichert | 120 · 0110 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 120 · 0110 (p) · ÜB 0 | gleich |
+| VL-13 | lohn-info PGR 120 | Altersvollrente nach der Regelaltersgrenze, privat versichert, mit Verzicht | 120 · 0120 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 120 · 0120 (p) · ÜB 0 | gleich |
+| VL-14 | lohn-info PGR 121/102 | Außerbetriebliche Ausbildung mit 800 € | 122 · 1111 · ÜB 0 | S A, PGR O, BGR A, ÜB A | 122 · 1111 · ÜB 0 | gleich |
+| VL-15 | Haufe Dualer Student, Abschn. 3 | Praxisintegriertes duales Studium mit 300 € | 121 · 1111 · ÜB 0 | S A, PGR O, BGR A, ÜB A | 121 · 1111 · ÜB 0 | gleich |
+| VL-16 | lohn-info Werkstudenten | Langzeitstudent im 27. Fachsemester, 15 Stunden | 101 · 1111 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| VL-17 | Haufe Praktikant, Kap. 2 | Vorgeschriebenes Zwischenpraktikum 300 €, freiwillig versichert | 190 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 190 · 0000 · ÜB 0 | gleich |
+| VL-18 | Haufe Praktikant, Kap. 4 | Freiwilliges Zwischenpraktikum in den Semesterferien, 530 € | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-19 | Haufe Praktikant, Kap. 5 | Freiwilliges Zwischenpraktikum sechs Monate, 530 € | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| VL-20 | Haufe Praktikant, Kap. 6 | Freiwilliges Zwischenpraktikum 22 Stunden, 1.580 € | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB O | 101 · 1111 · ÜB 1 | gleich |
+| VL-21 | Haufe Praktikant, Kap. 7 | Vorgeschriebenes Vorpraktikum 300 € (Geringverdiener) | 121 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 121 · 1111 · ÜB 0 | gleich |
+| VL-22 | Haufe Praktikant, Kap. 8 | Vorgeschriebenes Vorpraktikum 800 €, vorher privat versichert | 105 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB O | 105 · 1111 (p) · ÜB 0 | gleich |
+| VL-23 | Haufe Praktikant, Kap. 9 | Vorgeschriebenes Nachpraktikum ohne Entgelt | 105 · 0110 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 105 · 0110 · ÜB 0 | gleich |
+| VL-24 | Haufe Praktikant, Kap. 10 | Freiwilliges Vorpraktikum vier Monate, 510 € | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| VL-25 | Haufe Studentenjobs, Kap. 1 | Student im Minijob 590 €, gesetzlich versichert | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| VL-26 | Haufe Studentenjobs, Kap. 1 | Student im Minijob 590 €, privat versichert, befreit | 109 · 0500 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 0500 · ÜB 0 | gleich |
+| VL-27 | Haufe Studentenjobs, Kap. 2 | Student, befristet zwei Monate Vollzeit, 2.400 € | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-28 | Haufe Studentenjobs, Kap. 3 | Werkstudent 17 Stunden, 1.000 €: Übergangsbereich | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB O | 106 · 0100 · ÜB 1 | gleich |
+| VL-29 | Haufe Studentenjobs, Kap. 4 | Student befristet fünf Monate, 24 Stunden mit Wochenendarbeit | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| VL-30 | Haufe Studentenjobs, Kap. 5 | Student unbefristet, 24 Stunden mit Wochenendarbeit | 101 · 1111 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 1 | gleich |
+| VL-31 | Haufe Studentenjobs, Kap. 6 | Werkstudent 20 Stunden, später befristet Wochenendstunden dazu | 106 · 0100 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| VL-32 | Haufe Studentenjobs, Kap. 7 | Werkstudent 20 Stunden, in den Semesterferien 40 Stunden | 106 · 0100 | S O, PGR A, BGR O | 106 · 0100 · ÜB 1 | gleich |
+| VL-33 | Haufe Studentenjobs, Kap. 8 | Zweite Ferienbeschäftigung nach einer kurzfristigen, 40 Stunden | 106 · 0100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 106 · 0100 · ÜB 0 | gleich |
+| VL-34 | Haufe Kurzfristige Beschäftigung, Kap. 1 | Urlaubsvertretung nach zwei Vorbeschäftigungen: Zeitgrenze überschritten | 101 · 1111 · ÜB 1; KV unsicher | S O, PGR A, BGR A, ÜB A | 101 (p) · 3111 (p) · ÜB 1 | gleich |
+| VL-35 | Haufe Kurzfristige Beschäftigung, Kap. 5 | Arbeitsuchender, Wochenendaushilfe 100 € | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-36 | Haufe Mehrfachbeschäftigung, Kap. 1 | Kurzfristige Aushilfe im Einzelhandel, 2.000 € (Sechs-Tage-Woche) | 110 · 0000 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-37 | Haufe Mehrfachbeschäftigung, Kap. 1 | Befristeter Minijob 500 € nach einer kurzfristigen Beschäftigung | 109 · 6100 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| VL-38 | Haufe Mehrfachbeschäftigung, Kap. 2 | Zweiter Minijob 100 € neben Hauptbeschäftigung 4.000 € | 101 · 1101 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 (p) · 1101 (p) · ÜB 0 | gleich |
+| VL-39 | Haufe Mehrfachbeschäftigung, Kap. 4 | Teilzeit 900 € neben Minijob und kurzfristiger Beschäftigung: Übergangsbereich | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 · 1111 · ÜB 1 (p) | gleich |
+| VL-40 | Haufe Mehrfachbeschäftigung, Kap. 4 | Wochenendaushilfe neben Teilzeit und Minijob: kurzfristig | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-41 | Haufe Mehrfachbeschäftigung, Kap. 5 | Zwei Minijobs je 250 €, beide befreit | 109 · 6500 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6500 (p) · ÜB 0 | gleich |
+| VL-42 | Haufe Mehrfachbeschäftigung, Kap. 6 | Zwei Minijobs je 400 €: beide versicherungspflichtig | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB O | 101 (p) · 1111 · ÜB 1 (p) | gleich |
+| VL-43 | Haufe Geringfügig entlohnte Beschäftigung, 1.3 | Studentin, befristet ein Jahr, ca. 300 € plus Weihnachtsgeld, privat versichert | 109 · 0100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 0100 · ÜB 0 | gleich |
+| VL-44 | Haufe Geringfügig entlohnte Beschäftigung, 1.4 | Trainer im Sportverein 750 € mit Übungsleiterfreibetrag | 109 · 6100 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 101 (p) · 1111 · ÜB 0 | nicht abbildbar |
+| VL-45 | Haufe Geringfügig entlohnte Beschäftigung, 1.5 | Beamter mit zweitem Nebenjob 250 €: beide Nebenjobs pflichtig | 101 · 0110 · ÜB 1 | S O, PGR O, BGR O, ÜB O | 101 (p) · 0110 · ÜB 1 (p) | gleich |
+| VL-46 | Haufe Geringfügig entlohnte Beschäftigung, 2.1 | Aushilfe 500 € mit Urlaubs- und Weihnachtsgeld: über der Jahresgrenze | 101 · 1111 · ÜB 1 | S O, PGR A, BGR A, ÜB A | 101 (p) · 1111 · ÜB 1 | gleich |
+| VL-47 | Haufe Nebenbeschäftigung, Kap. 3 | Minijob 483,72 € neben Hauptbeschäftigung, einmal unvorhersehbar darüber | 109 · 6500 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 (p) · 6500 (p) · ÜB 0 | gleich |
+| VL-48 | Haufe Nebenbeschäftigung, Kap. 5 | Bezieher von Arbeitslosengeld im Minijob, befreit | 109 · 6500 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6500 · ÜB 0 | gleich |
+| VL-49 | Haufe Rentnerbeschäftigung, Kap. 1 | Altersvollrente nach der Regelaltersgrenze, Beginn 1.7.2026 | 119 · 3321 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 119 · 3321 (p) · ÜB 0 | gleich |
+| VL-50 | Haufe Rentnerbeschäftigung, Kap. 1 | Altersvollrente nach der Regelaltersgrenze mit Verzicht, 1.800 € | 120 · 3121 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 120 · 3121 (p) · ÜB 1 | gleich |
+| VL-51 | Haufe Rentnerbeschäftigung, Kap. 2 | Altersvollrente vor der Regelaltersgrenze, Beginn 1.8.2026 | 120 · 3111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 120 · 3111 · ÜB 0 | gleich |
+| VL-52 | Haufe Rentnerbeschäftigung, Kap. 3 | Altersvollrente vor der Regelaltersgrenze, Wechsel bei Erreichen der Grenze | 120 · 3111 · ÜB 1; ab 01.08.2027: 119 · 3321 | S O, PGR O, BGR O, ÜB A | 120 · 3111 · ÜB 1 | gleich |
+| VL-53 | Haufe Rentnerbeschäftigung, Kap. 4 | Altersteilrente vor der Regelaltersgrenze | 101 · 1111 · ÜB 0 | S O, PGR O, BGR O, ÜB A | 101 · 1111 · ÜB 0 | gleich |
+| VL-54 | Haufe Rentnerbeschäftigung, Kap. 6 | Volle Erwerbsminderungsrente, Teilzeit | 101 · 3101 · ÜB 1 | S O, PGR O, BGR O, ÜB A | 101 · 3101 (p) · ÜB 1 | gleich |
+| VL-55 | Haufe News 28.09.2026 | Altersvollrentner als Aushilfe nach einer Vollzeitstelle vor Rentenbeginn | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-56 | Haufe News 28.09.2026 | Altersteilrentner als befristete Aushilfe über der Grenze, ohne Vorbeschäftigungen | 110 · 0000 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-57 | Haufe Schüler, Kap. 2 | Schüler, Rahmenvereinbarung für Samstage, höchstens 70 Arbeitstage | 110 · 0000 · ÜB 0 | S O, PGR O, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-58 | Haufe Schüler, Kap. 1 | Schüler im Minijob 450 € | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| VL-59 | Lexware FAQ Rentner | Regelaltersgrenze erreicht, Rente noch nicht beantragt | 101 · 1121 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 101 · 1121 (p) · ÜB 0 | gleich |
+| VL-60 | Lexware FAQ Rentner | Altersvollrentner nach der RAG über der JAEG, Firmenzahler | 119 · 9321 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 119 · 9321 (p) · ÜB 0 | gleich |
+| VL-61 | Lexware FAQ Rentner | Altersvollrentner nach der RAG über der JAEG, Firmenzahler, mit Verzicht | 120 · 9121 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 120 · 9121 (p) · ÜB 0 | gleich |
+| VL-62 | Lexware FAQ Rentner | Altersvollrente vor der RAG über der JAEG, Firmenzahler | 120 · 9111 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 120 · 9111 · ÜB 0 | gleich |
+| VL-63 | Lexware FAQ Rentner | Altersvollrentner nach der RAG über der JAEG, Selbstzahler | 119 · 0321 · ÜB 0 | S A, PGR A, BGR A, ÜB A | 119 · 0321 (p) · ÜB 0 | gleich |
+| VL-64 | Lexware FAQ Rentner | Altersrente eines Versorgungswerks nach der RAG | 119 · 3321 · ÜB 0 | S A, PGR O, BGR O, ÜB A | 119 · 3321 (p) · ÜB 0 | gleich |
+| VL-65 | Lexware FAQ Rentner | Pensionär wegen Alters nach der RAG, Beihilfe, privat versichert | 119 · 0320 · ÜB 1 | S A, PGR O, BGR O, ÜB A | 119 · 0320 (p) · ÜB 1 | gleich |
+| VL-66 | personalwissen Übersicht Studenten | Student in den Semesterferien Vollzeit 2.000 €, ohne Vorbeschäftigung | 110 · 0000 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 110 · 0000 · ÜB 0 | gleich |
+| VL-67 | personalwissen Übersicht Studenten | Student in den Semesterferien Vollzeit 2.000 €, nach einer Aushilfe im Frühjahr | 106 · 0100 · ÜB 1 | S A, PGR A, BGR A, ÜB A | 106 · 0100 · ÜB 1 | gleich |
+| VL-68 | personalwissen Übersicht Studenten | Student im unbefristeten Minijob genau an der Grenze | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| VL-69 | lohn-info Geringfügige Beschäftigungen | Minijob durch Entgeltumwandlung: 600 € minus 200 € bAV | 109 · 6100 · ÜB 0 | S O, PGR A, BGR A, ÜB A | 109 · 6100 · ÜB 0 | gleich |
+| BL-01 | lohndialog Aktivrente 2026 | Altersvollrentner erreicht die Regelaltersgrenze während der Beschäftigung | 120 · 3111 · ÜB 0; ab 01.08.2026: 119 · 3321 | S A, PGR O, BGR O, ÜB A | 120 · 3111 · ÜB 0 | gleich |
 
 ## Abweichungen
 
@@ -180,6 +258,8 @@
 - **GFR-29** (GfR 2026, Bsp. 29): Minijobs im Privathaushalt laufen über das Haushaltsscheckverfahren (Personengruppe 209); der Fragebogen schließt sie bewusst aus (Ausschluss „haushaltsscheck“). Test: Ausschluss greift, kein Vorschlag.
 - **KK-IP-02** (Informationsportal Steckbrief Berufsmäßigkeit 2026): Der Fragebogen kennt den Status „Asylbewerber/Geduldet“ nicht als Antwort; er steht nur als Freitext unter „sonstiges“, den die Regeln nicht lesen. Erwartet ist 101/1111; ein Vorschlag 110 wäre falsch.
 - **BA-01** (BA FW § 27 SGB III (07/2026)): Unständig Beschäftigte (Personengruppe 118) schließt der Fragebogen über den Ausschluss „unstaendig“ aus (versicherungspflichtige Beschäftigung auf weniger als eine Woche befristet). Test: Ausschluss greift, kein Vorschlag. Personengruppe 118 steht nicht in tests/support/anlage16.ts; die Beitragsgruppe ist nicht geprüft.
+- **VL-10** (lohn-info PGR 190): Der Arbeitgeber gibt „Fortzahlung der Bezüge und Beihilfe nach beamtenrechtlichen Grundsätzen“ an (agSonderstatus „beamtenrechtlich“); der Fragebogen schließt diesen Fall bewusst aus (Ausschluss „beamtenrechtlich“). Test: Ausschluss greift, kein Vorschlag.
+- **VL-44** (Haufe Geringfügig entlohnte Beschäftigung, 1.4): Den steuer- und beitragsfreien Übungsleiterfreibetrag (§ 3 Nr. 26 EStG, 2026: 3.300 € im Jahr) fragt der Fragebogen nicht ab; mit 750 € Monatsentgelt liegt der Minijob für die Regeln über der Grenze. Wie GFR-11.
 
 ## Grenzfälle 2026
 
@@ -249,3 +329,53 @@
 - Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 21.05.2026 – https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2026/2026_05_21_download.zip?__blob=publicationFile&v=2
 - Besprechung des GKV-Spitzenverbandes, der DRV Bund und der BA über Fragen des gemeinsamen Beitragseinzugs am 23.11.2016 – https://www.deutsche-rentenversicherung.de/SharedDocs/Downloads/DE/Fachliteratur_Kommentare_Gesetzestexte/summa_summarum/besprechungsergebnisse/beitragseinzug/2016/2016_11_23_download.zip?__blob=publicationFile
 - Bundesagentur für Arbeit: Fachliche Weisungen Arbeitslosenversicherung, § 27 SGB III Versicherungsfreie Beschäftigte, gültig ab 01.07.2026 (Stand 07/2026) – https://www.arbeitsagentur.de/datei/fw-sgb-iii-27_ba015174.pdf
+- lohn-info.de, Lehrgang der Lohnabrechnung, Abschnitt Sozialversicherung: „Übungsaufgaben zur Beitragsberechnung“ (Beitragsjahr 2017, Privatwirtschaft; Arbeitsblatt ohne Lösungen) – https://www.lohn-info.de/lehrgang_sozialversicherung_aufgabe8a.html
+- lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 101 – Sozialversicherungspflichtig Beschäftigte ohne besondere Merkmale“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/personengruppenschluessel_101.html
+- lohn-info.de, Lohnlexikon: „Rentner – Übersicht zur Beschäftigung von Rentnern“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/rentner.html
+- lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 190 – Beschäftigte, die ausschließlich in der gesetzlichen Unfallversicherung versichert sind“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/personengruppenschluessel_190.html
+- lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 119 – Versicherungsfreie Altersvollrentner und Versorgungsbezieher wegen Alters“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/personengruppenschluessel_119.html
+- lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 120 – Versicherungspflichtige Altersvollrentner und Versorgungsbezieher wegen Alters“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/personengruppenschluessel_120.html
+- lohn-info.de, Lohnlexikon: „Personengruppenschlüssel 121 – Auszubildende, deren Arbeitsentgelt die Geringverdienergrenze nicht übersteigt“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/personengruppenschluessel_121.html
+- Haufe Personal Office (Haufe-Lexware), Lexikonbeitrag „Dualer Student / 3 Meldungen“ (ohne Standdatum) – https://www.haufe.de/id/beitrag/dualer-student-3-meldungen-HI14926669.html
+- lohn-info.de, Lohnlexikon: „Ordentliche Studierende – Werkstudenten“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/studenten_werkstudenten_ordentlichen_studierenden.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 2 Vorgeschriebenes Zwischenpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-2-vorgeschriebenes-zwischenpraktikum-bis-603eur-monatlich-HI11296876.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 4 Nicht vorgeschriebenes Zwischenpraktikum während der Semesterferien“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-4-nicht-vorgeschriebenes-zwischenpraktikum-waehrend-der-semesterferien-HI1856642.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 5 Nicht vorgeschriebenes Zwischenpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-5-nicht-vorgeschriebenes-zwischenpraktikum-bis-603eur-monatlich-HI1856643.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 6 Nicht vorgeschriebenes Zwischenpraktikum zwischen 603,01 EUR und 2.000 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI1856644.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 7 Vorgeschriebenes Vorpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-7-vorgeschriebenes-vorpraktikum-bis-603eur-monatlich-HI11296877.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 8 Vorgeschriebenes Vorpraktikum über 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-8-vorgeschriebenes-vorpraktikum-ueber-603eur-monatlich-HI1856645.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 9 Vorgeschriebenes Nachpraktikum, kein Arbeitsentgelt“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-9-vorgeschriebenes-nachpraktikum-kein-arbeitsentgelt-HI1856647.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Praktikant / 10 Nicht vorgeschriebenes Vorpraktikum bis 603 EUR monatlich“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-praktikant-10-nicht-vorgeschriebenes-vorpraktikum-bis-603eur-monatlich-HI11296878.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 1 Minijob“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-1-minijob-HI10158284.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 2 Kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-2-kurzfristige-beschaeftigung-HI10158285.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 3 Beschäftigung mit wöchentlicher Arbeitszeit von nicht mehr als 20 Stunden“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI10158286.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 4 Überschreitung der 20-Wochenstunden-Grenze, Arbeit in den Abend- und Nachtstunden und am Wochenende, befristete Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI10158287.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 5 Überschreitung der 20-Wochenstunden-Grenze, Arbeit in den Abend- und Nachtstunden und am Wochenende, unbefristete Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI10158288.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 6 Befristete Überschreitung der 20-Wochenstunden-Grenze, Arbeit in den Abend- und Nachtstunden“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-6-befristete-ueberschreitung-der-20-wochenstunden-grenze-arbeit-in-den-abend-und-nachtstunden-HI10672394.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 7 Überschreitung der 20-Wochenstunden-Grenze in den Semesterferien“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-7-ueberschreitung-der-20-wochenstunden-grenze-in-den-semesterferien-HI10158289.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Studentenjobs / 8 Befristete Beschäftigungen ausschließlich in den Semesterferien“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-studentenjobs-8-befristete-beschaeftigungen-ausschliesslich-in-den-semesterferien-HI10158290.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Kurzfristige Beschäftigung / 1 Zeitgrenzen überschritten“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI13778423.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Kurzfristige Beschäftigung / 5 Arbeitsuchende“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-kurzfristige-beschaeftigung-5-arbeitsuchende-HI13778425.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 1 Kurzfristige neben geringfügiger Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-mehrfachbeschaeftigung-1-kurzfristige-neben-geringfuegiger-beschaeftigung-HI7484835.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 2 Hauptbeschäftigung und 2 geringfügig entlohnte Beschäftigungen“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI7489814.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 4 Hauptbeschäftigung, geringfügig entlohnte und kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-mehrfachbeschaeftigung-4-hauptbeschaeftigung-geringfuegig-entlohnte-und-kurzfristige-beschaeftigung-HI7484837.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 5 Mehrere geringfügige Beschäftigungen unter der Geringfügigkeitsgrenze“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI7484838.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Mehrfachbeschäftigung / 6 Mehrere geringfügige Beschäftigungen über der Geringfügigkeitsgrenze“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI7484839.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 1.3 Studenten“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-geringfuegig-entlohnte-beschaeftigung-13-studenten-HI9478712.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 1.4 Trainertätigkeit“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI9478713.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 1.5 Beamte“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI9478714.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Geringfügig entlohnte Beschäftigung / 2.1 Weihnachtsgeld“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI9478716.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Nebenbeschäftigung / 3 Minijob, einmalig über der Geringfügigkeitsgrenze“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI1855589.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Nebenbeschäftigung / 5 Hinzuverdienst bei ALG“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-nebenbeschaeftigung-5-hinzuverdienst-bei-alg-HI1855592.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 1 Altersvollrentenbezug nach Vollendung der Regelaltersgrenze, Beschäftigungsbeginn ab 2026“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-1-altersvollrentenbezug-nach-vollendung-der-regelaltersgrenze-beschaeftigungsbeginn-ab-2026-HI10078268.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 2 Altersvollrentenbezug vor Erreichen der Regelaltersgrenze, Beschäftigungsbeginn ab 2026“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-2-altersvollrentenbezug-vor-erreichen-der-regelaltersgrenze-beschaeftigungsbeginn-ab-2026-HI10078271.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 3 Altersvollrentenbezug vor Erreichen der Regelaltersgrenze“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-3-altersvollrentenbezug-vor-erreichen-der-regelaltersgrenze-HI10078272.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 4 Arbeitnehmer mit Teilrentenbezug wegen Alters vor Erreichen der Regelaltersgrenze“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/praxis-beispiele-rentnerbeschaeftigung-4-arbeitnehmer-mit-teilrentenbezug-wegen-alters-vor-erreichen-der-regelaltersgrenze-HI10078273.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Rentnerbeschäftigung / 6 Arbeitnehmer bezieht volle Erwerbsminderungsrente“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI10078274.html
+- Haufe Online Redaktion, „Altersvollrentner in einer kurzfristigen Beschäftigung“, haufe.de Personal/Entgelt, 28.09.2026 – https://www.haufe.de/personal/entgelt/altersvollrentner-im-kurzfristigen-minijob_78_374746.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Schüler / 2 Kurzfristige Beschäftigung“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI1629375.html
+- Haufe Personal Office (Haufe-Lexware), „Praxis-Beispiele: Schüler / 1 Minijob“ (ohne Standdatum, rechnet mit Werten 2026) – https://www.haufe.de/id/beitrag/x-HI1629374.html
+- Lexware (Haufe-Lexware), Support-FAQ „(Altersvoll-) Rentner abrechnen“ (ohne Datum; Stand nach Inhalt 2024 oder später) – https://www.lexware.de/support/faq/faq-beitrag/000033545/
+- personalwissen.de (VNR Verlag für die Deutsche Wirtschaft), Übersicht „Ihr Unternehmen kann einen Studenten wie folgt beschäftigen“ (Semesterferien 13.7.–15.10.2025) – https://static.personalwissen.de/wp-content/uploads/2025/05/Uebersicht_Beschaeftigungsmoeglichkeiten_Student.pdf
+- lohn-info.de, Lohnlexikon: „Geringfügige Beschäftigungen (Minijob)“ (ohne Standdatum, © 2007–2026) – https://lohn-info.de/gering.html
+- LohnDialog Abrechnungsgesellschaft mbH (Lohnbüro), Blog „Aktivrente 2026: Beitragsgruppenschlüssel und Abrechnung“, Stand September 2026 – https://www.lohndialog.de/aktivrente-2026-was-arbeitgeber-bei-der-lohnabrechnung-jetzt-beachten-muessen/
