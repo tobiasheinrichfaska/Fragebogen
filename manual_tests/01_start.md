@@ -15,7 +15,7 @@ Server (Einstieg dort: die Startseite der App rechts neben dem Testbereich).
 **Erwartet:**
 
 - Die Überschrift **„Fragebogen“** erscheint, darunter drei Kästen: **„Neuer Fragebogen“** mit
-  dem Knopf **„Personalfragebogen: Angaben für die Sofortmeldung“** (Version 0.4.0 · Testfassung, oder höher),
+  dem Knopf **„Personalfragebogen: Angaben für die Sofortmeldung“** (Version 1.0.0, ohne „Testfassung“, oder höher),
   **„Weiterbearbeiten oder prüfen“** und **„Ihre Daten bleiben auf diesem Gerät“**.
 - _Nicht offensichtlich:_ Der Personalfragebogen, die Monatsmeldung, die Steuerfreigabe und die
   Dienstwagen-Überlassung fehlen hier – sie sind Entwürfe und stehen nur im Testbereich.

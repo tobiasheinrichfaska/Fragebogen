@@ -30,13 +30,23 @@ Datei **gemeinsam** entfernt oder gemeinsam geändert, merkt der Test das nicht.
 CI gegen das letzte Release (Schritt 12). Bis dahin sichern die Golden-Dateien aus Schritt 3 ab,
 denn sie verweisen per Hash auf ihre Definition.
 
-## Testfassungen (Version 0.x)
+## Testfassungen und Produktivfassungen (Tobias 03.11.2026)
 
-Versionen mit führender 0, etwa `sofortmeldung/0.2.0.json`, sind Testfassungen; die App
-kennzeichnet sie. Sie werden eingefroren wie jede andere Version und dürfen, wie jede Version,
-entfernt werden, sobald keine Bögen mehr mit ihnen unterwegs sind. Golden-Dateien prüfen das
-Dateiformat (Siegel, Kanonisierung) gegen feste Beispiele; sie hängen nicht davon ab, welche
-Fassungen die App mitliefert.
+- **Produktivfassung** = veröffentlicht hier in `forms/` ab Version **1.0.0**, nur nach
+  ausdrücklicher Freigabe. Für neue Bögen bietet die App immer die neueste Fassung eines Formulars
+  an; ältere Fassungen bleiben nur im Register, damit unterwegs befindliche Bögen weiter geprüft
+  und bearbeitet werden können.
+- **Testfassung** = Entwurf in [`form-drafts/`](../form-drafts/README.md), nur im Testbereich und
+  dort gekennzeichnet. Eine Änderung wird dort erprobt und danach als nächste Produktivfassung
+  (1.1.0, 2.0.0 …) veröffentlicht. Ein Entwurf ist immer neuer als alles Veröffentlichte desselben
+  Formulars, und ein Formular mit Produktivfassung bekommt keine 0.x-Fassung mehr
+  (`tests/forms/sofortmeldung100.test.ts`).
+- **Die Fassungen 0.x** in `forms/` stammen aus der Testphase vor der ersten Produktivfassung (z. B.
+  `sofortmeldung/0.2.0.json` bis `0.4.0.json`); die App kennzeichnet sie als „Testfassung“. Sie
+  dürfen, wie jede Version, entfernt werden, sobald keine Bögen mehr mit ihnen unterwegs sind.
+
+Golden-Dateien prüfen das Dateiformat (Siegel, Kanonisierung) gegen feste Beispiele; sie hängen
+nicht davon ab, welche Fassungen die App mitliefert.
 
 ## Entwürfe
 

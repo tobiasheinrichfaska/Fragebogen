@@ -25,7 +25,7 @@ getipptem Namen unterschrieben).
   Systemvermerk und Prüfwert je Rolle.
 - Dann das **Prüfblatt**, eine Seite **„Anlage: Daten in maschinenlesbarer Form“** mit
   Zeichenkolonnen und eine Seite **„Anlage: Daten als QR-Codes“**.
-- Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 0.4.0 · Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
+- Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 1.0.0 · Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
 - _Nicht offensichtlich:_ Der Dateiname enthält keinen Personennamen. Eine gezeichnete Unterschrift ist
   als Linie gesetzt (vergrößern bleibt scharf), nicht als Bild.
 

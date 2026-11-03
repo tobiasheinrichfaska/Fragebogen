@@ -61,7 +61,9 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Bitte nicht als Fehler melden
 
-- „Testfassung“ beim Formular: Version 0.x ist gewollt, solange die App vor ihrem ersten Release steht.
+- „Entwurf“ beim Formular im Testbereich: Das ist die Testfassung einer Änderung, gewollt. Die
+  Sofortmeldung ist seit 03.11.2026 produktiv (Version 1.0.0, ohne Kennzeichnung); „Testfassung“ steht
+  nur noch bei älteren Fassungen 0.x, mit denen Bögen unterwegs sein können.
 
 ## Pflege (für Entwickler)
 

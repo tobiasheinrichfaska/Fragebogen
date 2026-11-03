@@ -10,7 +10,7 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { FORMS_DIR, newestPublished, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
 const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.4.0.json')));
@@ -28,8 +28,7 @@ describe('Sofortmeldung 0.4.0', () => {
     vi.useRealTimers();
   });
 
-  it('is the newest version and differs from 0.3.0 only by the bound of the birth date', () => {
-    expect(newestPublished('sofortmeldung').definition.version).toBe('0.4.0');
+  it('differs from 0.3.0 only by the bound of the birth date', () => {
     expect(fieldsById(form.definition).get('geburtsdatum')).toMatchObject({
       minDate: '1876-01-01',
       maxDate: 'today',

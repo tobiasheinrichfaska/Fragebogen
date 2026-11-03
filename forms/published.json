@@ -13,5 +13,10 @@
     "id": "sofortmeldung",
     "version": "0.4.0",
     "definitionHash": "952f09f3844c811a667eadba670bf65690d7e16896436cd6f709e71df9a8a506"
+  },
+  {
+    "id": "sofortmeldung",
+    "version": "1.0.0",
+    "definitionHash": "d2913484400f5d73c26685a65bcdcaf5cee5c163d3d0b4f5856280ce38d264cd"
   }
 ]
