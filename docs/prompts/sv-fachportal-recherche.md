@@ -12,9 +12,10 @@ Anmeldung, und enthält viele durchgerechnete Beispiele. Von dort stammen bisher
 
 **So gehst du vor:**
 
-1. Chrome öffnen und Claude in Chrome starten. Eine Anmeldung ist nicht nötig.
-2. Den Text unter „Prompt“ vollständig einfügen. Teil A und Teil B dürfen in zwei getrennten Sitzungen
-   laufen. Für Teil B dann die Folgenachricht „Bitte jetzt Teil B“ schicken.
+1. Chrome öffnen und Claude in Chrome in einem **neuen Chat** starten. Eine Anmeldung ist nicht nötig.
+2. Den Text unter „Prompt“ vollständig einfügen. Claude in Chrome nennt zuerst, wie viele Schritte
+   (Freigaben) es etwa braucht. Teil A und Teil B dürfen in zwei getrennten Sitzungen laufen. Für
+   Teil B dann die Folgenachricht „Bitte jetzt Teil B“ schicken.
 3. Jede JSON-Antwort als eigene Datei in `c:\skripte\public\Fragebogen\import\` speichern, z. B.
    `sv-fachportal-teil1.json`, `sv-fachportal-teil2.json`. Der Ordner `import` wird nicht ins Repository
    übernommen.
@@ -36,10 +37,15 @@ Es dient als Testmaterial für eine Software, die diese Schlüssel vorschlägt.
   Software herunter. Nutze keine Beitragsrechner. Bei der Cookie-Abfrage wähle „nur notwendige“
   bzw. „ablehnen“. Verlangt eine Seite eine Anmeldung oder Zahlung, notiere sie unter `offen` und
   mach mit der nächsten weiter.
-- **Andere Seiten** sind nur für Teil A erlaubt, und nur, wenn das Portal eine Frage nicht beantwortet
-  oder auf ein Dokument verweist. Erlaubt sind dann amtliche Stellen: GKV-Spitzenverband,
-  gkv-datenaustausch.de, Deutsche Rentenversicherung, Bundesagentur für Arbeit, Minijob-Zentrale,
-  gesetze-im-internet.de. Foren und Blogs zählen nicht als Beleg.
+- **Schritte ankündigen.** Nenne vor dem ersten Schritt, wie viele Schritte du für Teil A und für
+  Teil B etwa brauchst. Jeder Schritt braucht eine Freigabe von Hand.
+- **Bleib im Portal.** Die amtlichen Texte (Geringfügigkeits-Richtlinien, Rundschreiben,
+  Besprechungsergebnisse, Gesetze) prüft Claude Code selbst. Verweist das Portal auf einen, nenne
+  nur dessen Fundstelle. Foren und Blogs zählen nicht als Beleg.
+- **Grundlage je Fall:** Nennt das Portal beim Beispiel ein Gesetz, ein Rundschreiben oder ein Urteil
+  (mit Aktenzeichen), schreibe es in `grundlage`. Sonst bleibt `grundlage` `null`.
+- **Abgeschnittene Sätze:** Bricht ein Satz beim Lesen ab, scrolle weiter oder öffne den Abschnitt
+  erneut, bevor du einen Wert auf `null` setzt.
 - **Keine Vermutungen.** Jede Angabe trägt ihre Quelle (Seite, Abschnitt, URL, Stand). Was nicht in der
   Quelle steht, bleibt `null`. Ergänze keine Annahmen; nenne fehlende Angaben in `hinweis`.
 - **Schlüssel nie selbst ableiten.** Trage `pgr`, `bgr` und `uebergangsbereich` nur ein, wenn sie in der
@@ -70,11 +76,14 @@ Es dient als Testmaterial für eine Software, die diese Schlüssel vorschlägt.
 - Das Kennzeichen Übergangsbereich steht in der Meldung. Trage es so ein, wie die Quelle es nennt.
 
 Für die Zweige `kv`, `rv`, `av` und `pv` nimmst du, wenn möglich, eine dieser Formulierungen. Passt
-keine, schreibst du die Aussage der Quelle in kurzen eigenen Worten.
+keine, schreibst du die Aussage der Quelle in kurzen eigenen Worten. Sagt die Quelle nur
+„versicherungspflichtig“ oder „sozialversicherungsfrei“ für alle Zweige zusammen, trage es in jeden
+Zweig ein und vermerke in `hinweis`, dass die Quelle nicht nach Zweigen aufschlüsselt.
 
 - **kv:**
   - „pflichtig (allgemeiner Beitrag)“
   - „pflichtig (ermäßigter Beitrag, kein Krankengeld)“
+  - „pflichtig (Beitragssatz in der Quelle nicht genannt)“
   - „frei bzw. nicht pflichtig (kein Beitrag)“
   - „frei, Pauschalbeitrag des Arbeitgebers“
 - **rv:**
@@ -93,9 +102,9 @@ keine, schreibst du die Aussage der Quelle in kurzen eigenen Worten.
 
 ### Teil A – offene Fragen
 
-Beantworte jede Frage mit Beleg. Suche zuerst im Portal: in den Fachbeiträgen, im Lexikon, in den
-Fachinformationen und in einer Sammlung von Rundschreiben oder Besprechungsergebnissen, falls es eine
-gibt. Folge den Verweisen auf amtliche Dokumente. Jedes Beispiel, das du dabei findest, kommt
+Beantworte jede Frage mit Beleg aus dem Portal: aus den Fachbeiträgen, dem Lexikon und den
+Fachinformationen. Halte Teil A kurz, mit höchstens drei Seiten je Frage; Teil B ist wichtiger. Steht
+eine Antwort nicht im Portal, trage das unter `offen` ein. Jedes Beispiel, das du dabei findest, kommt
 zusätzlich als Fall in `faelle`, mit `frage` = Fragenummer.
 
 **F1 – Ermäßigter KV-Beitrag (Beitragsgruppe 3) bei kurz befristeten Beschäftigungen.** Angenommen,
@@ -195,6 +204,11 @@ Fachinformationen durch, und zwar zu diesen Themen in dieser Reihenfolge:
 8. Auszubildende (Geringverdiener), Freiwilligendienst, Vorruhestand, Bezieher von Arbeitslosengeld,
    Elternzeit;
 9. alles andere mit Personen- oder Beitragsgruppe.
+
+**Besonders gesucht**, weil es dazu noch kaum Fälle gibt: Schüler und Ferienjobs, duales Studium,
+Freiwilligendienst, Vorruhestand, Elternzeit, Bezieher von Arbeitslosengeld, mehrere Beschäftigungen
+im Übergangsbereich, Beispiele mit ausdrücklichem Kennzeichen Übergangsbereich und Beispiele, die eine
+Beitragsgruppe wörtlich nennen.
 
 **Schon vorhanden, bitte überspringen:** die zwei Beispiele auf der Seite „Mehrfachbeschäftigungen bei
 Minijobs“:
@@ -311,6 +325,7 @@ Nachrichten auf. Jede Nachricht ist dann ein vollständiges JSON derselben Form 
         "spaeter": [{ "ab": "", "aenderung": "" }]
       },
       "wortlaut": { "pgr": false, "bgr": false, "uebergangsbereich": false },
+      "grundlage": null,
       "zitat": "",
       "hinweis": ""
     }
