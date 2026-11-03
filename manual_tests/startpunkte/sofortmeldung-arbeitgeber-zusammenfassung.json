@@ -1,0 +1,21 @@
+{
+  "id": "sofortmeldung-arbeitgeber-zusammenfassung",
+  "title": "Sofortmeldung – Arbeitgeber ausgefüllt, noch nicht abgeschlossen",
+  "form": "sofortmeldung",
+  "parts": [
+    {
+      "role": "arbeitgeber",
+      "answers": {
+        "agFirma": "Beispiel Bau GmbH",
+        "agBetriebsnummer": "12345671",
+        "agFamilienname": "Musterfrau",
+        "agVorname": "Erika",
+        "agBeschaeftigungsbeginn": "02.11.2026"
+      }
+    }
+  ],
+  "open": {
+    "role": "arbeitgeber",
+    "at": "summary"
+  }
+}

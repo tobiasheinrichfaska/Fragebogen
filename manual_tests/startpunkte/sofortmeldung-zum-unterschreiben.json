@@ -1,0 +1,42 @@
+{
+  "id": "sofortmeldung-zum-unterschreiben",
+  "title": "Sofortmeldung – alles ausgefüllt, die Person unterschreibt",
+  "form": "sofortmeldung",
+  "parts": [
+    {
+      "role": "arbeitgeber",
+      "answers": {
+        "agFirma": "Beispiel Bau GmbH",
+        "agBetriebsnummer": "12345671",
+        "agFamilienname": "Musterfrau",
+        "agVorname": "Erika",
+        "agBeschaeftigungsbeginn": "02.11.2026"
+      },
+      "seal": "unsigned"
+    },
+    {
+      "role": "person",
+      "answers": {
+        "familienname": "Musterfrau",
+        "vorname": "Erika",
+        "namensbestandteile": false,
+        "geburtsnameWieFamilienname": true,
+        "geburtsdatum": "17.05.1990",
+        "geborenInDeutschland": true,
+        "geburtsort": "Musterstadt",
+        "geschlecht": "weiblich",
+        "deutscheStaatsangehoerigkeit": true,
+        "versicherungsnummer": "65 170590 M 520",
+        "anschriftAusland": false,
+        "strassenname": "Musterweg",
+        "hausnummer": "1",
+        "postleitzahl": "12345",
+        "wohnort": "Musterstadt"
+      }
+    }
+  ],
+  "open": {
+    "role": "person",
+    "at": "summary"
+  }
+}

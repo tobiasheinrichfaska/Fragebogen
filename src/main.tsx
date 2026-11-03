@@ -11,9 +11,7 @@ if (!root) throw new Error('Root element #root is missing');
 createRoot(root).render(
   <StrictMode>
     {TEST_AREA ? (
-      <TestShell>
-        <App />
-      </TestShell>
+      <TestShell>{(start) => <App {...(start ? { start } : {})} />}</TestShell>
     ) : (
       <App />
     )}

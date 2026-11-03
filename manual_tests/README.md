@@ -46,6 +46,11 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
   App** neu starten. Dorthin
   kommen Sie jederzeit mit **„App neu starten (Startseite)“** oben im Testbereich – Ihre
   Testergebnisse bleiben, nur die Eingaben in der App sind dann weg.
+- **Startlinks (▶):** Viele Tests beginnen mit einem Knopf wie **„▶ Zum Unterschreiben öffnen“**. Er
+  startet die App rechts neu, mit einem vorbereiteten Fragebogen voller erfundener Angaben – zum
+  Beispiel hat der Arbeitgeber schon abgeschlossen, und Sie beginnen genau bei der Frage, um die es
+  im Test geht. Für eine Gegenprobe öffnen Sie den Startlink einfach noch einmal. Ihre
+  Testergebnisse bleiben dabei erhalten, nur die Eingaben in der App sind weg.
 - **Aufeinander aufbauende Tests:** Steht bei „Voraussetzungen“ ein anderer Test (z. B. „MT-10“),
   ist die Nummer anklickbar; machen Sie diesen Test zuerst oder direkt davor.
 - **„Nicht im Testbereich“:** Manche Tests gehen nur mit der heruntergeladenen Datei oder nur am
@@ -68,5 +73,12 @@ angepasst. Das gehört zur Definition of Done.
 - Jeder Test beginnt direkt unter der Überschrift mit `**Einstieg:**` – welchen Fragebogen man auf
   der Startseite neu startet (im Testbereich stehen alle Fragebögen zur Wahl), oder auf welchem Test
   er aufbaut. Ein automatischer Test prüft das.
+- **Startpunkte statt Vorlauf** (Tobias 2026-11-03: nicht jeden Bereich immer wieder befüllen): Ein
+  Test, der nur einen kleinen Teil prüft, beginnt mit einem Startlink
+  `[Text](start:<kennung>)`. Der Startpunkt liegt als Daten in `startpunkte/<kennung>.json`
+  (Formular, Antworten je Rolle wie getippt, abgeschlossen oder offen, wo er öffnet). Die App baut
+  ihn mit der neuesten Formularfassung; `tests/testbereich/startPoints.test.ts` prüft, dass jeder
+  Startpunkt aufgeht und benutzt wird, `startPointsSv.test.ts` spielt die SV-Fälle ab ihrem
+  Startpunkt durch. Nur erfundene Daten; Startpunkte gibt es nur im Testbereich.
 - Eingegangene Testberichte liegen in `import/` (nicht im Repo). Nach der Bearbeitung kommen sie
   nach `import/archiv/<JJJJ-MM-TT>/` (Tag der Bearbeitung).

@@ -138,6 +138,7 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 7. In der App einen Fragebogen beginnen, dann links **„App neu starten (Startseite)“** und die
    Rückfrage bestätigen.
 8. Am Handy dasselbe; oben zwischen **„Testanleitung“** und **„App“** wechseln.
+9. MT-21 öffnen und **„▶ Zum Unterschreiben öffnen“** anklicken, die Rückfrage bestätigen.
 
 **Erwartet:**
 
@@ -152,6 +153,10 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 6 (Liste): MT-10 öffnet sich. MT-01 zeigt oben „Nicht im Testbereich: …“ mit Grund und steht
   in der Liste mit „– nicht im Testbereich“.
 - Schritt 7: Die App zeigt wieder ihre Startseite; die Ergebnisse links sind noch da.
+- Schritt 9: Rechts öffnet sich die Zusammenfassung der beschäftigten Person mit dem Hinweis
+  „Vorbereiteter Fragebogen: Sofortmeldung – alles ausgefüllt, die Person unterschreibt.“; am Handy
+  springt die Ansicht auf „App“. _Nicht offensichtlich:_ Passt ein Startpunkt nicht mehr zum
+  Formular, meldet der Testbereich das mit Grund, statt einen halben Fragebogen zu öffnen.
 - _Nicht offensichtlich:_ Wird ein Test geändert, nachdem Sie ihn bewertet haben (z. B. nach einem
   neuen Upload des Testordners), steht er in der Liste mit „– geändert seit Ihrem Test“ und im Test
   mit der Bitte, ihn neu zu bewerten; der Testbericht vermerkt es ebenfalls.

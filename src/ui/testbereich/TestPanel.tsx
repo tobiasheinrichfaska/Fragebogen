@@ -20,7 +20,7 @@ import {
 } from '../../logic/testRun';
 import { Banner, type BannerMessage } from '../common';
 import { createTestReportPdf } from '../pdfActions';
-import { TEST_CASES, TEST_FILES } from './catalogue';
+import { START_POINT_PROBLEMS, START_POINTS, TEST_CASES, TEST_FILES } from './catalogue';
 import { Blocks, Inline, type RefHandler } from './Markdown';
 import { loadRun, saveRun } from './storage';
 
@@ -37,7 +37,13 @@ const plain = (text: string) =>
 
 const clock = (local: string | undefined) => (local ? `${local.slice(11, 16)} Uhr` : '–');
 
-export function TestPanel({ onRestartApp }: { onRestartApp: () => void }) {
+export function TestPanel({
+  onRestartApp,
+  onStart,
+}: {
+  onRestartApp: () => void;
+  onStart: (id: string) => void;
+}) {
   const [run, setRun] = useState<TestRun>(loadRun);
   const [stored, setStored] = useState(true);
   const [area, setArea] = useState('');
@@ -54,6 +60,8 @@ export function TestPanel({ onRestartApp }: { onRestartApp: () => void }) {
   const refs: RefHandler = {
     open: (id) => setSelected(id),
     knows: (id) => TEST_CASES.some((c) => c.id === id),
+    start: onStart,
+    startKnown: (id) => START_POINTS.has(id),
   };
 
   const report = async () => {
@@ -78,6 +86,15 @@ export function TestPanel({ onRestartApp }: { onRestartApp: () => void }) {
           App neu starten (Startseite)
         </button>
       </p>
+      {START_POINT_PROBLEMS.length > 0 && (
+        <Banner
+          message={{
+            tone: 'error',
+            text: 'Einige vorbereitete Startpunkte sind fehlerhaft und fehlen deshalb:',
+            detail: [...START_POINT_PROBLEMS],
+          }}
+        />
+      )}
       {!stored && (
         <Banner
           message={{

@@ -21,7 +21,8 @@ letzten acht Zeichen.
 
 ## MT-90: PDF/A-Prüfung mit Acrobat Pro (optional)
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) und **„PDF
+erstellen“**.
 
 **Voraussetzungen:** Adobe Acrobat Pro (nicht der kostenlose Reader). Eine PDF aus der App.
 
@@ -39,7 +40,8 @@ Bildschirmfotos dürfen nur erfundene Daten zeigen.
 
 ## MT-91: DATEV-Ablage hin und zurück
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) und **„PDF
+erstellen“**.
 
 **Voraussetzungen:** Zugang zu einer DATEV-Testablage, also kein echter Mandant und keine echte
 Personalakte. Eine PDF aus der App.
@@ -60,7 +62,8 @@ Ablagedatum soll später als vertrauenswürdige Eingangszeit dienen.
 
 ## MT-92: Acrobat „Speichern unter“
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) und **„PDF
+erstellen“**.
 
 **Voraussetzungen:** Adobe Acrobat (Pro oder Reader). Eine PDF aus der App.
 
@@ -77,7 +80,8 @@ Datenseiten bleiben unverändert.
 
 ## MT-93: Drucken als PDF („Microsoft Print to PDF“)
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus der App, z. B. aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) und **„PDF
+erstellen“**.
 
 **Voraussetzungen:** Windows. Eine PDF aus der App.
 

@@ -2,7 +2,9 @@
 
 ## MT-30: PDF erstellen (vollständig)
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-21 durch – oder Sie machen direkt nach MT-21 weiter (beide Teile abgeschlossen).
+**Einstieg:** Direkt nach MT-21 (gezeichnete Unterschrift) – oder schneller:
+[Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) (die Person hat dort mit
+getipptem Namen unterschrieben).
 
 **Voraussetzungen:** MT-21 bestanden: Arbeitgeber abgeschlossen, Person unterschrieben, im Kasten
 „Stand“ steht „Vollständig“.
@@ -19,20 +21,23 @@
 - Seite 1 beginnt mit **„Vollständig: alle erforderlichen Teile liegen vor und sind verknüpft.“**
   Die Angaben des Arbeitgebers sind **grau hinterlegt**.
 - Es folgen die Hinweise mit „bestätigt von: Beschäftigte Person“, dann **„Unterschriften und
-  Abschlüsse“** mit der gezeichneten Unterschrift, Systemvermerk und Prüfwert je Rolle.
+  Abschlüsse“** mit der gezeichneten Unterschrift (nach dem Startlink: dem getippten Namen),
+  Systemvermerk und Prüfwert je Rolle.
 - Dann das **Prüfblatt**, eine Seite **„Anlage: Daten in maschinenlesbarer Form“** mit
   Zeichenkolonnen und eine Seite **„Anlage: Daten als QR-Codes“**.
-- Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 0.3.0 · Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
-- _Nicht offensichtlich:_ Der Dateiname enthält keinen Personennamen. Die Unterschrift ist als
-  Linie gezeichnet (vergrößern bleibt scharf), nicht als Bild.
+- Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 0.4.0 · Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
+- _Nicht offensichtlich:_ Der Dateiname enthält keinen Personennamen. Eine gezeichnete Unterschrift ist
+  als Linie gesetzt (vergrößern bleibt scharf), nicht als Bild.
 
 ---
 
 ## MT-31: PDF zur Weitergabe (noch nicht vollständig)
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-20 durch – oder Sie machen direkt nach MT-20 weiter (nur der Arbeitgeber hat abgeschlossen).
+**Einstieg:** [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen) –
+Sie stehen in der Übersicht. Ohne Testbereich: direkt nach MT-20.
 
-**Voraussetzungen:** Neuer Fragebogen; nur der Arbeitgeber hat abgeschlossen (MT-20).
+**Voraussetzungen:** Nur der Arbeitgeber hat abgeschlossen; der Teil der Person ist noch nicht
+begonnen.
 
 **Schritte:**
 
@@ -51,7 +56,8 @@
 
 ## MT-32: Die eigene PDF wieder öffnen
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 oder MT-31.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig)
+und **„PDF erstellen“** oder MT-31.
 
 **Voraussetzungen:** Eine PDF aus MT-30 oder MT-31.
 
@@ -73,7 +79,8 @@
 
 ## MT-33: PDF in einem anderen Programm neu gespeichert
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 und ein PDF-Programm.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig)
+und **„PDF erstellen“** und ein PDF-Programm.
 
 **Voraussetzungen:** Eine PDF aus MT-30; Acrobat oder ein anderes PDF-Programm.
 
@@ -93,7 +100,8 @@
 
 ## MT-34: Ausdruck scannen (Papierweg)
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30, einen Drucker und einen Scanner.
+**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig)
+und **„PDF erstellen“**, einen Drucker und einen Scanner.
 
 **Voraussetzungen:** Eine PDF aus MT-30, ein Drucker und ein Scanner (oder ein Kopierer mit
 Scan-to-PDF).

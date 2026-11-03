@@ -43,7 +43,15 @@ type Screen =
 
 const tracker = new InputTracker();
 
-export function App() {
+/** A questionnaire prepared by a start link of the test area, opened in its interview. */
+export interface PreparedStart {
+  title: string;
+  session: Session;
+  /** The interview of the open role, or the overview „Wer füllt jetzt aus?“. */
+  screen: 'interview' | 'overview';
+}
+
+export function App({ start }: { start?: PreparedStart }) {
   if (!BUNDLED_FORMS.ok) {
     return (
       <main className="shell">
@@ -57,23 +65,30 @@ export function App() {
       </main>
     );
   }
-  return <Workspace registry={BUNDLED_FORMS.registry} />;
+  return <Workspace registry={BUNDLED_FORMS.registry} {...(start ? { start } : {})} />;
 }
 
-function Workspace({ registry }: { registry: FormRegistry }) {
-  const [session, setSession] = useState<Session | undefined>();
-  const [screen, setScreen] = useState<Screen>({ kind: 'start' });
+function Workspace({ registry, start }: { registry: FormRegistry; start?: PreparedStart }) {
+  const [session, setSession] = useState<Session | undefined>(start?.session);
+  const [screen, setScreen] = useState<Screen>(
+    start ? { kind: start.screen === 'overview' ? 'roles' : 'interview' } : { kind: 'start' },
+  );
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
   const remembered = useMemo(() => parseMasterDataFragment(location.hash), []);
   const [banner, setBanner] = useState<BannerMessage | undefined>(() =>
-    remembered.ok
-      ? undefined
-      : {
-          tone: 'warning',
-          text: `Stammdaten-Link: ${MASTER_DATA_LINK_MESSAGES[remembered.issue]}`,
-          detail: remembered.detail,
-        },
+    start
+      ? {
+          tone: 'info',
+          text: `Vorbereiteter Fragebogen: ${start.title}. ${start.screen === 'overview' ? 'Die Teile sind schon ausgefüllt und abgeschlossen.' : 'Die übrigen Angaben sind schon ausgefüllt – Sie beginnen bei der Frage, um die es im Test geht.'}`,
+        }
+      : remembered.ok
+        ? undefined
+        : {
+            tone: 'warning',
+            text: `Stammdaten-Link: ${MASTER_DATA_LINK_MESSAGES[remembered.issue]}`,
+            detail: remembered.detail,
+          },
   );
 
   useEffect(() => {

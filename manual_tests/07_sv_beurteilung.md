@@ -36,25 +36,27 @@ Bildschirm sichtbar ist.
 
 ## MT-61: Azubi mit 550 € ist kein Minijob
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station.
+**Einstieg:** [Auszubildende vorbereitet öffnen](start:personalfragebogen-azubi-entgelt-offen) – die
+Person (Ausbildung) hat abgeschlossen; der Arbeitgeber ist bis „Wie wird die Person bezahlt?“
+ausgefüllt.
 
-**Voraussetzungen:** Personalfragebogen, beide Teile (Person und Arbeitgeber) ausgefüllt und
-abgeschlossen; Station „Kanzlei“.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Person: „Was haben Sie mit Ihrem Arbeitgeber vereinbart?“ → „eine Ausbildung oder ein duales
-   Studium“.
-2. Arbeitgeber: „Wie wird die Person bezahlt?“ → „Ausbildungsvergütung“, 1. Ausbildungsjahr
-   550,00 €; Art der Beschäftigung „Ausbildung“; „Findet die Ausbildung in einer außerbetrieblichen
-   Einrichtung statt?“ → Nein.
-3. Beide PDFs in der Kanzlei einlesen.
+1. „Wie wird die Person bezahlt?“ → „Ausbildungsvergütung“; 1. Ausbildungsjahr 550,00 €, gültig ab
+   01.09.2026. „Wie ist die Beschäftigung vorgesehen?“ → „Ausbildung“; Beruf beliebig, Ende
+   31.08.2029; „Findet die Ausbildung in einer außerbetrieblichen Einrichtung statt?“ → Nein.
+2. Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift
+   abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“
+   einlesen; die Vorschläge ansehen.
+3. Für die Gegenprobe den Startlink erneut öffnen und 300,00 € eingeben.
 
 **Erwartet:**
 
 - Unter „Vorschläge (die App entscheidet nicht – bitte prüfen)“ steht die Personengruppe **102**.
 - Es erscheint **kein** Hinweis, dass es sich um einen Minijob handeln könnte.
-- Gegenprobe mit 300,00 €: Vorschlag **121** (Geringverdienergrenze 325 €).
+- Schritt 3 (Gegenprobe mit 300,00 €): Vorschlag **121** (Geringverdienergrenze 325 €).
 
 ---
 
@@ -147,24 +149,27 @@ abgeschlossen; Station „Kanzlei“.
 
 ## MT-66: Beitragsgruppen, Übergangsbereich und Tätigkeitsschlüssel in der Kanzlei
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und füllen beide Teile aus; danach die Kanzlei-Station.
+**Einstieg:** [Teilzeitstelle vorbereitet öffnen](start:personalfragebogen-teilzeit-berufskennziffer-offen)
+– die Person (gesetzlich versichert, Abitur, Bachelor) hat abgeschlossen; der Arbeitgeber hat festes
+Monatsentgelt 1.500,00 €, „sozialversicherungspflichtig“, unbefristet, Teilzeit, keine
+Arbeitnehmerüberlassung; Sie stehen bei der Berufskennziffer.
 
-**Voraussetzungen:** Personalfragebogen mit beiden Teilen, Station „Kanzlei“.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Person: gesetzlich versichert, Abitur, Bachelor.
-2. Arbeitgeber: festes Monatsentgelt 1.500,00 €, „sozialversicherungspflichtig“, unbefristet,
-   Teilzeit, keine Arbeitnehmerüberlassung, Berufskennziffer 71402.
-3. Beide Teile in der Kanzlei einlesen; die Vorschläge ansehen.
-4. Gegenprobe: die Berufskennziffer leer lassen.
+1. „Kennen Sie die fünfstellige Berufskennziffer?“ → `71402`.
+2. Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift
+   abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“
+   einlesen; die Vorschläge ansehen.
+3. Für die Gegenprobe den Startlink erneut öffnen und die Berufskennziffer leer lassen.
 
 **Erwartet:**
 
 - Vorschläge: Personengruppe 101, Beitragsgruppen 1111, Kennzeichen Übergangsbereich 1,
   Tätigkeitsschlüssel 714024412.
 - Zu jedem Vorschlag steht die Begründung, bei den Beitragsgruppen für KV, RV, AV und PV einzeln.
-- Schritt 4: Tätigkeitsschlüssel „?????4412“ mit „bitte prüfen“.
+- Schritt 3: Tätigkeitsschlüssel „?????4412“ mit „bitte prüfen“.
 - _Nicht offensichtlich:_ Die App entscheidet nichts. Die Vorschläge stehen auch auf dem Prüfblatt der PDF,
   werden aber nie mitunterschrieben.
 
@@ -197,26 +202,30 @@ abgeschlossen; Station „Kanzlei“.
 
 ## MT-96: Aushilfe über drei Monate und 70 Arbeitstage
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+**Einstieg:** [Aushilfe vorbereitet öffnen](start:personalfragebogen-aushilfe-art-offen) – die Person
+(Arbeitnehmerin, keine früheren Beschäftigungen im Jahr) hat abgeschlossen; der Arbeitgeber hat Beginn
+01.06.2026, festes Monatsentgelt 1.500,00 € und befristet bis 31.08.2026; Sie stehen bei der Art der
+Beschäftigung.
 
-**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.06.2026, festes
-Monatsentgelt 1.500,00 €. Die Person füllt danach ihren Teil aus (Status „Arbeitnehmerin oder
-Arbeitnehmer“, keine früheren Beschäftigungen im Kalenderjahr).
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Als Art der Beschäftigung „kurzfristige Aushilfe (höchstens 3 Monate oder 70 Arbeitstage)“ wählen,
-   „Ende der Aushilfe“ `31.08.2026` und „Arbeitstage der Aushilfe“ `78` eingeben, bis zur Kanzlei gehen
-   und die Vorschläge ansehen.
-2. „Ende der Aushilfe“ auf `01.09.2026` und die Arbeitstage auf `79` ändern.
-3. Das Monatsentgelt auf 500,00 € ändern.
+1. „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige Aushilfe (höchstens 3 Monate oder 70
+   Arbeitstage)“; „Bis wann ist die Aushilfe befristet?“ `31.08.2026`; Arbeitstage `78`;
+   Rahmenvereinbarung „Nein“; Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
+2. Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift
+   abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“
+   einlesen; die Vorschläge ansehen.
+3. Für die Gegenprobe den Startlink erneut öffnen und als Ende `01.09.2026` mit `79` Arbeitstagen eingeben.
+4. Wie Schritt 3, zusätzlich mit **„Zurück“** zum Monatsentgelt und 500,00 € eingeben.
 
 **Erwartet:**
 
-- Schritt 1: Personengruppe 110, Beitragsgruppen 0000 – genau drei Monate sind noch kurzfristig.
-- Schritt 2: Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 1111; die Begründung nennt die
+- Schritt 2: Personengruppe 110, Beitragsgruppen 0000 – genau drei Monate sind noch kurzfristig.
+- Schritt 3: Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 1111; die Begründung nennt die
   Zeitgrenze („Von vornherein länger als drei Monate … und mehr als 70 Arbeitstage“).
-- Schritt 3: Personengruppe 109 mit „bitte prüfen“, Beitragsgruppen 6100 – die Beschäftigung ist dann
+- Schritt 4: Personengruppe 109 mit „bitte prüfen“, Beitragsgruppen 6100 – die Beschäftigung ist dann
   ein Minijob.
 - _Nicht offensichtlich:_ Über drei Monate mit höchstens 70 Arbeitstagen (z. B. 30.09. mit 70 Tagen)
   bleibt es eine kurzfristige Beschäftigung (110) – beide Grenzen sind gleichwertig.
@@ -225,20 +234,21 @@ Arbeitnehmer“, keine früheren Beschäftigungen im Kalenderjahr).
 
 ## MT-97: Werkstudent – Wochenstunden in der Vorlesungszeit
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+**Einstieg:** [Werkstudentin vorbereitet öffnen](start:personalfragebogen-werkstudent-stunden-offen) – die
+Studentin (Vollzeitstudium, 3. Fachsemester) hat abgeschlossen; der Arbeitgeber hat Beginn 01.04.2026,
+festes Monatsentgelt 1.200,00 € und „Werkstudent“.
 
-**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.04.2026, festes
-Monatsentgelt 1.200,00 €, Art der Beschäftigung „Werkstudent“. Die Person füllt danach als Studentin
-ihren Teil aus.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Bei „Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?“ „Nein“ wählen.
-2. Bei „Wie viele Stunden pro Woche arbeitet die Person in der Vorlesungszeit?“ `20` eingeben, weiter bis
-   zur Kanzlei gehen und die Vorschläge ansehen.
-3. Die Stunden auf `25` ändern; bei der nun folgenden Frage „Liegen die Stunden über 20 hinaus am
+1. „Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?“ → „Nein“.
+2. „Wie viele Stunden pro Woche arbeitet die Person in der Vorlesungszeit?“ → `20`. Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift
+   abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“
+   einlesen; die Vorschläge ansehen.
+3. Für die Gegenprobe den Startlink erneut öffnen und `25` Stunden eingeben; bei der nun folgenden Frage „Liegen die Stunden über 20 hinaus am
    Wochenende, abends oder nachts?“ „Nein“ wählen.
-4. Das Monatsentgelt auf 600,00 € und die Stunden auf `12` ändern.
+4. Für die Gegenprobe den Startlink erneut öffnen und `12` Stunden eingeben, dann mit **„Zurück“** zum Monatsentgelt und 600,00 € eingeben.
 
 **Erwartet:**
 
@@ -251,19 +261,22 @@ ihren Teil aus.
 
 ## MT-98: Langzeitstudium und Versorgungswerk beim Werkstudenten
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+**Einstieg:** [Studentin ab dem Fachsemester öffnen](start:personalfragebogen-werkstudent-fachsemester-offen) –
+der Arbeitgeber hat abgeschlossen (Beginn 01.04.2026, 1.000,00 €, „Werkstudent“, nicht nur in den
+Semesterferien, 15 Wochenstunden); die Studentin (Vollzeitstudium, gesetzlich versichert, kein
+Versorgungswerk) steht beim Fachsemester.
 
-**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.04.2026, festes
-Monatsentgelt 1.000,00 €, Art der Beschäftigung „Werkstudent“, nicht nur in den Semesterferien,
-15 Wochenstunden in der Vorlesungszeit. Die Person füllt danach als Studentin ihren Teil aus
-(Vollzeitstudium, gesetzlich versichert, kein Versorgungswerk).
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Als Person bei „Fachsemester“ `4` eingeben, weiter bis zur Kanzlei gehen und die Vorschläge ansehen.
-2. Das Fachsemester auf `27` ändern.
-3. Zurück auf `4`; bei „Sind Sie Pflichtmitglied eines berufsständischen Versorgungswerks …?“
-   „Ja, die Befreiung für diese Beschäftigung ist beantragt oder erteilt“ wählen.
+1. „Im wievielten Fachsemester studieren Sie?“ → `4`. Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, unterschreiben,
+   **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen;
+   die Vorschläge ansehen.
+2. Für die Gegenprobe den Startlink erneut öffnen und das Fachsemester `27` eingeben.
+3. Für die Gegenprobe den Startlink erneut öffnen und `4` eingeben; bei „Sind Sie Pflichtmitglied eines berufsständischen Versorgungswerks …?“
+   „Ja, die Befreiung für diese Beschäftigung ist beantragt oder erteilt“ wählen und einen Namen
+   eintragen.
 
 **Erwartet:**
 
@@ -276,26 +289,29 @@ Monatsentgelt 1.000,00 €, Art der Beschäftigung „Werkstudent“, nicht nur 
 
 ## MT-102: Studentin mit zwei Minijobs, die zusammen über der Grenze liegen
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+**Einstieg:** [Zwei Minijobs vorbereitet öffnen](start:personalfragebogen-zwei-minijobs-arbeitszeit-offen)
+– die Studentin (Vollzeitstudium, 3. Fachsemester, gesetzlich versichert, „einen Minijob“) hat
+abgeschlossen und eine weitere Beschäftigung angegeben: Minijob seit 01.01.2024, 500,00 €, 7 Stunden
+pro Woche. Der Arbeitgeber hat Beginn 01.09.2026, festes Monatsentgelt 400,00 €, „Minijob (bis 603 €
+im Monat)“, nicht befristet; Sie stehen bei der Arbeitszeit.
 
-**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.09.2026, festes
-Monatsentgelt 400,00 €, „Wie ist die Beschäftigung vorgesehen?“: „Minijob (bis 603 € im Monat)“, nicht
-befristet. Die Person füllt danach als Studentin ihren Teil aus: „Studentin oder Student (eingeschrieben)“,
-„Vollzeitstudium“, kein Urlaubssemester, Fachsemester 3, gesetzlich versichert, „einen Minijob (bis 603 € im
-Monat)“; bei „Haben Sie zurzeit noch eine andere Beschäftigung?“ „Ja“ und in der Tabelle eine Zeile: Art
-„Minijob“, seit 01.01.2024, Verdienst 500,00 €, Stunden pro Woche 7.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Als Arbeitgeber bei „Wie ist die Arbeitszeit vereinbart?“ „feste Wochenstunden, die Tage wechseln
-   (Dienstplan)“ wählen und bei „Wie viele Stunden arbeitet die Person pro Woche (Sollzeit)?“ `5` eingeben.
-   Weiter bis zur Kanzlei gehen und die Vorschläge ansehen.
-2. Die Wochenstunden auf `15` ändern.
-3. Zurück auf `5`; als Person das Studium auf „Teilzeitstudium“ ändern.
+1. „Wie ist die Arbeitszeit vereinbart?“ → „feste Wochenstunden, die Tage wechseln (Dienstplan)“;
+   „Wie viele Stunden arbeitet die Person pro Woche (Sollzeit)?“ `5`; Tage pro Woche `2`.
+   Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift
+   abschließen, **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“
+   einlesen; die Vorschläge ansehen.
+2. Für die Gegenprobe den Startlink erneut öffnen und `15` Wochenstunden eingeben.
+3. Für die Gegenprobe den Startlink erneut öffnen, wie in Schritt 1 `5` Stunden eingeben und
+   abschließen. Dann in der Übersicht bei der Person **„Neue Fassung beginnen“**, „Wie studieren
+   Sie?“ → „Teilzeitstudium“, unterschreiben, PDF erstellen und in der Kanzlei einlesen.
 
 **Erwartet:**
 
-- Schritt 1: Personengruppe 106 und Beitragsgruppen 0100, beide mit „bitte prüfen“, Übergangsbereich 1.
+- Schritt 1: Personengruppe 106, Beitragsgruppen 0100 und Übergangsbereich 1, alle mit „bitte prüfen“.
   Die Erläuterung zum Vorschlag nennt 5 + 7 = 12 Wochenstunden. _Nicht offensichtlich:_ Beide Jobs liegen für sich unter
   603 €, zusammen aber bei 900 € – dann ist keiner ein Minijob mehr, und für Studierende gilt die
   Werkstudentenregel (nur RV-pflichtig), obwohl der Arbeitgeber „Minijob“ gewählt hat.
@@ -307,26 +323,27 @@ Monat)“; bei „Haben Sie zurzeit noch eine andere Beschäftigung?“ „Ja“
 
 ## MT-103: Hausfrau – frühere Vollzeitstelle zählt nicht für die Berufsmäßigkeit
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbeitgeber“.
+**Einstieg:** [Hausfrau ab früheren Beschäftigungen öffnen](start:personalfragebogen-hausfrau-vorbeschaeftigung-offen)
+– der Arbeitgeber hat abgeschlossen (Beginn 01.08.2026, 1.000,00 €, „kurzfristige Aushilfe“ bis
+15.09.2026 an 33 Arbeitstagen, befristet bis 15.09.2026); die Person („Haushaltsführung oder
+Familienarbeit“, gesetzlich versichert, „eine Aushilfe …“) steht bei den früheren Beschäftigungen.
 
-**Voraussetzungen:** Personalfragebogen, Rolle „Arbeitgeber“; Beschäftigungsbeginn 01.08.2026, festes
-Monatsentgelt 1.000,00 €, „kurzfristige Aushilfe (höchstens 3 Monate oder 70 Arbeitstage)“ bis 15.09.2026
-an 33 Arbeitstagen, befristet bis 15.09.2026. Die Person füllt danach ihren Teil aus: „Haushaltsführung
-oder Familienarbeit“, gesetzlich versichert, „eine Aushilfe für höchstens 3 Monate oder 70 Arbeitstage“.
+**Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen).
 
 **Schritte:**
 
-1. Als Person bei „Haben Sie in diesem Kalenderjahr schon anderswo gearbeitet …?“ „Ja“ wählen und eine
-   Zeile eintragen: von 01.01.2026 bis 31.03.2026, Art „mehr als geringfügig“, Verdienst 3.000,00 €.
-2. Die folgende Frage „Seit wann sind Sie nicht mehr berufstätig?“ leer lassen, weiter bis zur Kanzlei
-   gehen und die Vorschläge ansehen.
-3. Die Frage mit `01.04.2026` beantworten.
+1. „Haben Sie in diesem Kalenderjahr schon anderswo gearbeitet …?“ → „Ja“ und eine Zeile eintragen:
+   von 01.01.2026 bis 31.03.2026, Art „mehr als geringfügig“, Verdienst 3.000,00 €.
+2. Die folgende Frage „Seit wann sind Sie nicht mehr berufstätig?“ leer lassen. Die übrigen Fragen sind vorausgefüllt: mit **„Weiter“** bis zur Zusammenfassung, unterschreiben,
+   **„PDF erstellen“** und die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen;
+   die Vorschläge ansehen.
+3. Für die Gegenprobe den Startlink erneut öffnen und Schritt 1 wiederholen, die Frage dann mit `01.04.2026` beantworten.
 
 **Erwartet:**
 
 - Die Frage „Seit wann sind Sie nicht mehr berufstätig?“ erscheint erst nach Schritt 1 – nur bei
   „Haushaltsführung oder Familienarbeit“ und früheren Beschäftigungen im Jahr.
-- Schritt 2: Personengruppe 101 mit „bitte prüfen“, Beitragsgruppen 3111 – die Stelle bis 31.03. zählt für
+- Schritt 2: Personengruppe 101 und Beitragsgruppen 3111, beide mit „bitte prüfen“ – die Stelle bis 31.03. zählt für
   die Berufsmäßigkeit mit.
 - Schritt 3: Personengruppe 110, Beitragsgruppen 0000. _Nicht offensichtlich:_ Die Begründung nennt, dass
   Beschäftigungen vor dem Ausscheiden aus dem Berufsleben am 01.04.2026 nicht zählen

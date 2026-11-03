@@ -153,7 +153,11 @@ export type InlineToken =
   | { kind: 'text' | 'strong' | 'em' | 'code'; text: string }
   | { kind: 'link'; text: string; href: string }
   /** A reference to another test ("MT-10", "MT-83/84" gives two), clickable on the test page. */
-  | { kind: 'ref'; text: string; id: string };
+  | { kind: 'ref'; text: string; id: string }
+  /** `[text](start:<id>)`: opens a prepared start point in the app (test area only). */
+  | { kind: 'start'; text: string; id: string };
+
+const START_LINK = /^start:([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 
 const REF = /\b((?:MT|L)-\d+[a-z]?)\b/g;
 
@@ -188,7 +192,7 @@ const INLINE =
 
 /**
  * Bold, code, italics and links of one line; a link is kept only with an https address (relative
- * links into the repository mean nothing on the test page — their text stays).
+ * links into the repository mean nothing on the test page — their text stays) or as a start link.
  */
 export function inlineMarkdown(text: string): InlineToken[] {
   const tokens: InlineToken[] = [];
@@ -201,14 +205,29 @@ export function inlineMarkdown(text: string): InlineToken[] {
     else if (code !== undefined) tokens.push({ kind: 'code', text: code });
     else if (em !== undefined) tokens.push({ kind: 'em', text: em });
     else if (linkText !== undefined && href !== undefined) {
+      const start = START_LINK.exec(href)?.[1];
       tokens.push(
-        href.startsWith('https://')
-          ? { kind: 'link', text: linkText, href }
-          : { kind: 'text', text: linkText.replace(/^`|`$/g, '') },
+        start !== undefined
+          ? { kind: 'start', text: linkText, id: start }
+          : href.startsWith('https://')
+            ? { kind: 'link', text: linkText, href }
+            : { kind: 'text', text: linkText.replace(/^`|`$/g, '') },
       );
     }
     at = index + match[0].length;
   }
   if (at < text.length) tokens.push(...withRefs(text.slice(at)));
   return tokens;
+}
+
+/** The start points the cases of a file link to, in order of appearance. */
+export function startLinksOf(file: ManualTestFile): string[] {
+  const texts = file.cases.flatMap((testCase) =>
+    testCase.parts.flatMap((part) =>
+      part.blocks.flatMap((block) => (block.kind === 'list' ? block.items : [block.text])),
+    ),
+  );
+  return texts.flatMap((text) =>
+    inlineMarkdown(text).flatMap((token) => (token.kind === 'start' ? [token.id] : [])),
+  );
 }

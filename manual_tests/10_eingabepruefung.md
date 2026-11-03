@@ -78,22 +78,22 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 
 ## MT-107: Prüfhinweise zu Versicherungsnummer und Postleitzahl im Ausland
 
-**Einstieg:** wie MT-104.
+**Einstieg:** [Ab dem Geburtsdatum öffnen](start:sofortmeldung-person-ab-geburtsdatum) – der
+Arbeitgeber hat abgeschlossen, die Person „Erika Musterfrau“ ist bis zum Geburtsort ausgefüllt; Sie
+stehen beim Geburtsdatum.
 
 **Schritte:**
 
-1. Als Person ausfüllen: Familienname `Musterfrau`, Geburtsdatum `18.05.1990`, Geschlecht
-   „weiblich“, Versicherungsnummer `65 170590 M 520`.
-2. Bei „Liegt die Anschrift im Ausland?“ **„Ja“**, Staat „Niederlande“, Postleitzahl `1234AB`; den
-   Rest beliebig ausfüllen und unterschreiben, PDF erstellen.
-3. Als Arbeitgeber den Bogen ergänzen und abschließen (wie MT-11 und MT-20), PDF erstellen.
-4. Die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
+1. Geburtsdatum `18.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`.
+2. Bei „Liegt die Anschrift im Ausland?“ **„Ja“**, Staat „Niederlande“, Postleitzahl `1234AB`;
+   Straße, Hausnummer und Wohnort beliebig. Unterschreiben, **„PDF erstellen“**.
+3. Die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
 
 **Erwartet:**
 
 - Schritt 1: Die Versicherungsnummer wird angenommen, **ohne** Fehler – sie hat eine gültige
   Prüfziffer, auch wenn sie nicht ganz zum Geburtsdatum passt.
-- Schritt 4: In der Karte des Fragebogens steht „Prüfhinweise:“ mit
+- Schritt 3: In der Karte des Fragebogens steht „Prüfhinweise:“ mit
   - „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. …
     Geburtsdatum in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“ und der Fundstelle
     „§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1“;

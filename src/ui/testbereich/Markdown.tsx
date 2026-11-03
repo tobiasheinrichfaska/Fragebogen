@@ -5,6 +5,9 @@ import { inlineMarkdown, type Block } from '../../logic/manualTests';
 export interface RefHandler {
   open: (id: string) => void;
   knows: (id: string) => boolean;
+  /** A start link opens its prepared questionnaire in the app. */
+  start?: (id: string) => void;
+  startKnown?: (id: string) => boolean;
 }
 
 export function Inline({ text, refs }: { text: string; refs?: RefHandler }) {
@@ -24,6 +27,16 @@ export function Inline({ text, refs }: { text: string; refs?: RefHandler }) {
                 {token.text}
               </a>
             );
+          case 'start': {
+            const start = refs?.start;
+            return start && refs.startKnown?.(token.id) ? (
+              <button key={i} type="button" className="start-link" onClick={() => start(token.id)}>
+                ▶ {token.text}
+              </button>
+            ) : (
+              <span key={i}>{token.text}</span>
+            );
+          }
           case 'ref':
             return refs?.knows(token.id) ? (
               <button key={i} type="button" className="link" onClick={() => refs.open(token.id)}>

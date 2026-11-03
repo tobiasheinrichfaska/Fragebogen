@@ -1,0 +1,19 @@
+{
+  "id": "sofortmeldung-arbeitgeber-abgeschlossen",
+  "title": "Sofortmeldung – nur der Arbeitgeber hat abgeschlossen",
+  "form": "sofortmeldung",
+  "parts": [
+    {
+      "role": "arbeitgeber",
+      "answers": {
+        "agFirma": "Beispiel Bau GmbH",
+        "agBetriebsnummer": "12345671",
+        "agFamilienname": "Musterfrau",
+        "agVorname": "Erika",
+        "agBeschaeftigungsbeginn": "02.11.2026"
+      },
+      "seal": "unsigned"
+    }
+  ],
+  "open": "overview"
+}

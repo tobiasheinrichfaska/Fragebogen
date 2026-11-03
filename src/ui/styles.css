@@ -811,6 +811,16 @@ table.sheet tr.sheet-mask th {
   display: none;
 }
 
+/* A start link of a test: opens a prepared questionnaire in the app. */
+button.start-link {
+  min-height: 2.25rem;
+  margin: 0.125rem 0;
+  padding: 0.25rem 0.75rem;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .test-panel {
   position: sticky;
   top: 0;

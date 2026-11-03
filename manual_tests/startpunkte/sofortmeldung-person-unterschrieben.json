@@ -1,0 +1,31 @@
+{
+  "id": "sofortmeldung-person-unterschrieben",
+  "title": "Sofortmeldung – die Person hat unterschrieben, der Arbeitgeber noch nicht",
+  "form": "sofortmeldung",
+  "parts": [
+    {
+      "role": "person",
+      "answers": {
+        "familienname": "Musterfrau",
+        "vorname": "Erika",
+        "namensbestandteile": false,
+        "geburtsnameWieFamilienname": true,
+        "geburtsdatum": "17.05.1990",
+        "geborenInDeutschland": true,
+        "geburtsort": "Musterstadt",
+        "geschlecht": "weiblich",
+        "deutscheStaatsangehoerigkeit": true,
+        "versicherungsnummer": "65 170590 M 520",
+        "anschriftAusland": false,
+        "strassenname": "Musterweg",
+        "hausnummer": "1",
+        "postleitzahl": "12345",
+        "wohnort": "Musterstadt"
+      },
+      "seal": {
+        "typed": "Erika Musterfrau"
+      }
+    }
+  ],
+  "open": "overview"
+}
