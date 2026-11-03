@@ -143,3 +143,8 @@ Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
   und Betriebsnummer sind schon beantwortet.
 - Nach Schritt 3 meldet die App, dass die Stammdaten nicht übernommen werden konnten, mit dem Grund
   („Die Betriebsnummer hat genau 8 Ziffern.“).
+- _Nicht offensichtlich:_ Der Link nennt weder Formular noch Fassung. Ein Link aus einem früheren
+  Test füllt Firma und Betriebsnummer auch in einer neueren Fassung der Sofortmeldung (seit 0.3.0
+  geprüft). Hat die neue Fassung eine strengere Prüfung, übernimmt die App einen alten Wert, der
+  nicht mehr passt, nicht und sagt das mit dem Grund (z. B. eine Betriebsnummer mit falscher
+  Prüfziffer).

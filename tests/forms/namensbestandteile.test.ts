@@ -1,5 +1,5 @@
 // Name components of the DEÜV data block "Name" (Tobias 2026-10-30): asked only behind one yes/no
-// question, with the same ids in the Sofortmeldung 0.2.0 and the Personalfragebogen, so they are
+// question, with the same ids in the Sofortmeldung 0.3.0 and the Personalfragebogen, so they are
 // taken over from one to the other. Fictitious data.
 import { join } from 'node:path';
 import { visibleFields } from '../../src/logic/form';
@@ -9,12 +9,12 @@ import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/form
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
-const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.2.0.json')));
+const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.3.0.json')));
 const COMPONENTS = ['titel', 'vorsatzwort', 'namenszusatz'];
 
 describe.each([
   ['Personalfragebogen', personal],
-  ['Sofortmeldung 0.2.0', sofort],
+  ['Sofortmeldung 0.3.0', sofort],
 ])('%s', (_name, form) => {
   const shown = (data: Record<string, boolean>) =>
     visibleFields(form.definition, 'person', data).map((f) => f.id);

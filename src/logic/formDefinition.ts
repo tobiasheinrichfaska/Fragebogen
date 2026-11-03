@@ -31,6 +31,7 @@ import {
   type SectionDefinition,
   type TablePage,
   TEXT_FORMATS,
+  DEUEV_RULES,
 } from './model';
 
 /** Form id, also the folder name under forms/. */
@@ -364,9 +365,17 @@ export const FIELD_KEYS = [
   'carryRowsIf',
   'quickAnswers',
   'textFormat',
+  'maxLength',
+  'deuevRule',
   'unit',
   'decimals',
   'signed',
+  'min',
+  'max',
+  'step',
+  'warnAbove',
+  'minDate',
+  'maxDate',
   'because',
   'fromRole',
   'monthFrom',
@@ -485,9 +494,21 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     o.textFormat === undefined
       ? undefined
       : d.literal(o.textFormat, `${path}.textFormat`, TEXT_FORMATS);
+  const maxLength =
+    o.maxLength === undefined ? undefined : d.integer(o.maxLength, `${path}.maxLength`, 1);
+  const deuevRule =
+    o.deuevRule === undefined
+      ? undefined
+      : d.literal(o.deuevRule, `${path}.deuevRule`, DEUEV_RULES);
   const unit = o.unit === undefined ? undefined : d.string(o.unit, `${path}.unit`);
   const decimals = o.decimals === undefined ? undefined : d.integer(o.decimals, `${path}.decimals`);
   const signed = o.signed === undefined ? undefined : d.boolean(o.signed, `${path}.signed`);
+  const [min, max, step, warnAbove] = (['min', 'max', 'step', 'warnAbove'] as const).map((key) =>
+    o[key] === undefined ? undefined : decodeNumber(d, o[key], `${path}.${key}`),
+  );
+  const [minDate, maxDate] = (['minDate', 'maxDate'] as const).map((key) =>
+    o[key] === undefined ? undefined : d.string(o[key], `${path}.${key}`, ISO_DATE_SHAPE),
+  );
   const because = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
   const fromRole = o.fromRole === undefined ? undefined : decodeFromRole(d, o.fromRole, path);
   const monthFrom =
@@ -539,9 +560,17 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(carryRowsIf === undefined ? {} : { carryRowsIf }),
     ...(quickAnswers === undefined ? {} : { quickAnswers }),
     ...(textFormat === undefined ? {} : { textFormat }),
+    ...(maxLength === undefined ? {} : { maxLength }),
+    ...(deuevRule === undefined ? {} : { deuevRule }),
     ...(unit === undefined ? {} : { unit }),
     ...(decimals === undefined ? {} : { decimals }),
     ...(signed === undefined ? {} : { signed }),
+    ...(min === undefined ? {} : { min }),
+    ...(max === undefined ? {} : { max }),
+    ...(step === undefined ? {} : { step }),
+    ...(warnAbove === undefined ? {} : { warnAbove }),
+    ...(minDate === undefined ? {} : { minDate }),
+    ...(maxDate === undefined ? {} : { maxDate }),
     ...(because === undefined ? {} : { because }),
     ...(fromRole === undefined ? {} : { fromRole }),
     ...(monthFrom === undefined ? {} : { monthFrom }),
@@ -549,6 +578,12 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(pages === undefined ? {} : { pages }),
     ...(carryFrom === undefined ? {} : { carryFrom }),
   };
+}
+
+/** A finite JSON number (bounds of number fields). */
+function decodeNumber(d: Decoder, value: unknown, path: string): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  return d.report(path, 'expected a number');
 }
 
 function decodeFromRole(
@@ -938,13 +973,47 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     if (field.multiline !== undefined && field.type !== 'text') {
       report(`${path}.multiline`, 'only text fields can be multiline');
     }
-    for (const key of ['unit', 'decimals', 'signed'] as const) {
+    for (const key of ['unit', 'decimals', 'signed', 'min', 'max', 'step', 'warnAbove'] as const) {
       if (field[key] !== undefined && field.type !== 'number') {
         report(`${path}.${key}`, `only number fields have ${key}`);
       }
     }
     if (field.decimals !== undefined && field.decimals > MAX_NUMBER_DECIMALS) {
       report(`${path}.decimals`, `at most ${MAX_NUMBER_DECIMALS} decimal places`);
+    }
+    for (const key of ['min', 'max', 'step', 'warnAbove'] as const) {
+      const bound = field[key];
+      if (bound === undefined || field.type !== 'number') continue;
+      const places = String(bound).split('.')[1]?.length ?? 0;
+      if (places > (field.decimals ?? 0))
+        report(`${path}.${key}`, 'more decimal places than the field');
+      if (bound < 0 && field.signed !== true)
+        report(`${path}.${key}`, 'negative, but the field is not signed');
+    }
+    if (field.min !== undefined && field.max !== undefined && field.min > field.max) {
+      report(`${path}.max`, 'is below "min"');
+    }
+    if (field.step !== undefined && field.step <= 0) report(`${path}.step`, 'must be above 0');
+    if (field.warnAbove !== undefined && field.max !== undefined && field.warnAbove >= field.max) {
+      report(`${path}.warnAbove`, 'must be below "max"');
+    }
+    for (const key of ['maxLength', 'deuevRule'] as const) {
+      if (field[key] !== undefined && field.type !== 'text') {
+        report(`${path}.${key}`, `only text fields have ${key}`);
+      }
+    }
+    for (const key of ['minDate', 'maxDate'] as const) {
+      const day = field[key];
+      if (day === undefined) continue;
+      if (field.type !== 'date') report(`${path}.${key}`, `only date fields have ${key}`);
+      else if (!isIsoDate(day)) report(`${path}.${key}`, `"${day}" is not a calendar date`);
+    }
+    if (
+      field.minDate !== undefined &&
+      field.maxDate !== undefined &&
+      field.minDate > field.maxDate
+    ) {
+      report(`${path}.maxDate`, 'lies before "minDate"');
     }
     if (field.carryOver === 'nextMonth' && field.type !== 'month') {
       report(`${path}.carryOver`, '"nextMonth" only for month fields');

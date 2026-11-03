@@ -21,6 +21,7 @@ import type {
   RoleDefinition,
   SignaturePolicy,
   SignatureRequirement,
+  TextFormat,
 } from './model';
 
 export const FIELD_TYPE_LABELS: Readonly<Record<FieldType, string>> = {
@@ -117,18 +118,40 @@ function initialLabel(field: FieldDefinition, initial: boolean | string): string
   return optionsOf(field).find((option) => option.id === initial)?.label ?? initial;
 }
 
+export const TEXT_FORMAT_LABELS: Readonly<Record<TextFormat, string>> = {
+  postleitzahlDe: 'deutsche Postleitzahl (5 Ziffern)',
+  kldb2010: 'Berufskennziffer KldB 2010 (5 Ziffern)',
+  halbeSchritte: 'Zahl in halben Schritten (z. B. 4,5)',
+  telefon: 'Telefonnummer mit Vorwahl',
+  email: 'E-Mail-Adresse',
+  bic: 'BIC (8 oder 11 Stellen)',
+  steuernummer: 'Steuernummer (10 bis 13 Ziffern)',
+  jahr: 'Jahr (4 Ziffern)',
+  ziffern: 'nur Ziffern',
+  kfzKennzeichen: 'amtliches Kennzeichen',
+};
+
+const germanNumber = (value: number) => String(value).replace('.', ',');
+
 function fieldKind(field: FieldDefinition): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
-  if (field.textFormat === 'postleitzahlDe') kind += ', deutsche Postleitzahl (5 Ziffern)';
-  if (field.textFormat === 'kldb2010') kind += ', Berufskennziffer KldB 2010 (5 Ziffern)';
-  if (field.textFormat === 'halbeSchritte') kind += ', Zahl in halben Schritten (z. B. 4,5)';
+  if (field.textFormat !== undefined) kind += `, ${TEXT_FORMAT_LABELS[field.textFormat]}`;
+  if (field.maxLength !== undefined) kind += `, höchstens ${field.maxLength} Zeichen`;
+  if (field.deuevRule !== undefined)
+    kind += ', Hinweis bei Zeichen, die die Meldung zur Sozialversicherung nicht annimmt';
   if (field.type === 'number') {
     const decimals = field.decimals ?? 0;
     kind += decimals === 0 ? ', ganzzahlig' : `, ${decimals} Nachkommastellen`;
     if (field.unit !== undefined) kind += `, in ${field.unit}`;
     if (field.signed) kind += ', auch negativ';
+    if (field.min !== undefined) kind += `, mindestens ${germanNumber(field.min)}`;
+    if (field.max !== undefined) kind += `, höchstens ${germanNumber(field.max)}`;
+    if (field.step !== undefined) kind += `, in Schritten von ${germanNumber(field.step)}`;
+    if (field.warnAbove !== undefined) kind += `, Hinweis über ${germanNumber(field.warnAbove)}`;
   }
+  if (field.minDate !== undefined) kind += `, frühestens ${formatGermanDate(field.minDate)}`;
+  if (field.maxDate !== undefined) kind += `, spätestens ${formatGermanDate(field.maxDate)}`;
   if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
   const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
   if (list)

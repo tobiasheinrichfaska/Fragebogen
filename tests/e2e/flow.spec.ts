@@ -10,7 +10,7 @@ import { expectClean, guard } from './guards';
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
 const FORM = JSON.parse(
   readFileSync(
-    fileURLToPath(new URL('../../forms/sofortmeldung/0.2.0.json', import.meta.url)),
+    fileURLToPath(new URL('../../forms/sofortmeldung/0.3.0.json', import.meta.url)),
     'utf8',
   ),
 ) as {

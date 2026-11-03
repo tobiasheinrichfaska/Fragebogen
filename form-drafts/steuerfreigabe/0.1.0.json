@@ -47,6 +47,7 @@
           "id": "mandantennummer",
           "role": "kanzlei",
           "type": "text",
+          "textFormat": "ziffern",
           "label": "Mandantennummer",
           "question": "Mandantennummer",
           "required": false,
@@ -65,6 +66,7 @@
           "id": "steuerjahr",
           "role": "kanzlei",
           "type": "text",
+          "textFormat": "jahr",
           "label": "Steuerjahr",
           "help": "Zum Beispiel 2025.",
           "required": true,
@@ -164,6 +166,7 @@
           "id": "steuernummer",
           "role": "kanzlei",
           "type": "text",
+          "textFormat": "steuernummer",
           "label": "Steuernummer",
           "required": false,
           "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)"

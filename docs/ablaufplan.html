@@ -62,14 +62,15 @@ wird aber nicht mit unterschrieben.</p>
 <li><span class="swatch" style="background:var(--taken);border-color:var(--taken-line)"></span>Legt eine andere Station fest</li>
 </ul>
 <ol>
-<li><a href="#sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung 0.2.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
+<li><a href="#sofortmeldung-0.3.0">Personalfragebogen: Angaben für die Sofortmeldung 0.3.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
 <li><a href="#dienstwagen-0.1.0">Dienstwagen: Überlassung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 </ol>
-<h2 id="sofortmeldung-0.2.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">0.2.0</span></h2>
-<p class="meta">Veröffentlicht (Testfassung) · Definition <code>0afae3b2a475456214cbaa08bbe181db4fa14b7bcb3d7d36c0c1213383949538</code></p>
+<h2 id="sofortmeldung-0.3.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">0.3.0</span></h2>
+<p class="meta">Veröffentlicht (Testfassung) · Definition <code>6f3be4b1f627df48384abb3c30695074d9723edad9f6672f1ff39b67ac1055ca</code></p>
+<p class="meta">Ersetzt die ältere Fassung 0.2.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.</li>
@@ -81,7 +82,7 @@ wird aber nicht mit unterschrieben.</p>
 <li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
 </ul></div>
-<section class="station" id="sofortmeldung-0.2.0-person">
+<section class="station" id="sofortmeldung-0.3.0-person">
 <h3>Station: Beschäftigte Person</h3>
 <p class="meta">Wird gebraucht: immer · unterschreibt</p>
 <p>Zuerst die Hinweise: „Datenschutzhinweis“, „Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)“.</p>
@@ -106,18 +107,18 @@ wird aber nicht mit unterschrieben.</p>
 </ol>
 <h4>Anschrift</h4>
 <ol class="flow">
-<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht.</div></li>
+<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis.</div></li>
 <li class="step level-1"><span class="num">18</span> <span class="q">In welchem Staat liegt Ihre Anschrift?</span><div class="meta">Staat · Auswahl: aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.</div></li>
 <li class="step level-0"><span class="num">19</span> <span class="q">In welcher Straße wohnen Sie?</span><div class="meta">Straße · Text · Pflicht</div></li>
 <li class="step level-0"><span class="num">20</span> <span class="q">Welche Hausnummer hat die Anschrift?</span><div class="meta">Hausnummer · Text · optional</div></li>
 <li class="step level-0"><span class="num">21</span> <span class="q">Gibt es einen Zusatz zur Anschrift?</span><div class="meta">Anschriftenzusatz · Text · optional</div></li>
 <li class="step level-1"><span class="num">22</span> <span class="q">Wie lautet Ihre Postleitzahl?</span><div class="meta">Postleitzahl · Text · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.</div></li>
-<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen.</div></li>
+<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis.</div></li>
 <li class="step level-0"><span class="num">24</span> <span class="q">In welchem Ort wohnen Sie?</span><div class="meta">Wohnort · Text · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
-<section class="station" id="sofortmeldung-0.2.0-vertretung">
+<section class="station" id="sofortmeldung-0.3.0-vertretung">
 <h3>Station: Gesetzliche Vertretung</h3>
 <p class="meta">Wird gebraucht: nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist · unterschreibt</p>
 <p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.</p>
@@ -127,7 +128,7 @@ wird aber nicht mit unterschrieben.</p>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
-<section class="station" id="sofortmeldung-0.2.0-arbeitgeber">
+<section class="station" id="sofortmeldung-0.3.0-arbeitgeber">
 <h3>Station: Arbeitgeber</h3>
 <p class="meta">Wird gebraucht: immer · schließt ab, Unterschrift freiwillig</p>
 <h4>Angaben des Arbeitgebers</h4>
@@ -142,7 +143,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="dienstwagen-0.1.0">Dienstwagen: Überlassung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>0646cd09226eb1c402cba8dfdd9bee557f06c00d59e2089b8edb9239deed9775</code></p>
 <p><strong>Diese Fassung gilt für „Überlassen ab“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.</li>
@@ -204,7 +205,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>cccc2447d81b3c21edde7bda7407ca04a9820ca5e6d7280bba7b5c627c53b07b</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>a647674dbc4ca3eefd0997f798561d13cfe23c3352314674bdc0cc9fa8c7aad2</code></p>
 <p><strong>Diese Fassung gilt für „Abrechnungsmonat“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.</li>
@@ -250,7 +251,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>6dbe9ff9beb097a41b1a06acff2f384051dbee41fc0a2fcba51d0a0d5cc8991c</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>312bbfa35460b3e48e02728d737b5073deeae09a123933a6482162dd59e5497d</code></p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.</li>
@@ -308,13 +309,13 @@ wird aber nicht mit unterschrieben.</p>
 </ol>
 <h4>Anschrift</h4>
 <ol class="flow">
-<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht.</div></li>
+<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis.</div></li>
 <li class="step level-1"><span class="num">18</span> <span class="q">In welchem Staat liegt Ihre Anschrift?</span><div class="meta">Staat · Auswahl: aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.</div></li>
 <li class="step level-0"><span class="num">19</span> <span class="q">In welcher Straße wohnen Sie?</span><div class="meta">Straße · Text · Pflicht</div></li>
 <li class="step level-0"><span class="num">20</span> <span class="q">Welche Hausnummer hat die Anschrift?</span><div class="meta">Hausnummer · Text · optional</div></li>
 <li class="step level-0"><span class="num">21</span> <span class="q">Gibt es einen Zusatz zur Anschrift?</span><div class="meta">Anschriftenzusatz · Text · optional</div></li>
 <li class="step level-1"><span class="num">22</span> <span class="q">Wie lautet Ihre Postleitzahl?</span><div class="meta">Postleitzahl · Text · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.</div></li>
-<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen.</div></li>
+<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis.</div></li>
 <li class="step level-0"><span class="num">24</span> <span class="q">In welchem Ort wohnen Sie?</span><div class="meta">Wohnort · Text · Pflicht</div></li>
 </ol>
 <h4>Kontakt (freiwillig)</h4>
@@ -615,7 +616,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>ec2cb19b3e9fef9e4bd272c28294eee448ef5e6f21ac144870a662e06d0c4f01</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>6883c814fbbb369f786d62bc2fd1cdb9fbb780232c761c1ef3051bb3d55a0d36</code></p>
 <p><strong>Diese Fassung gilt für „Datum der Vorlage“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen übermittelt keine Steuererklärung. Er dokumentiert die Zustimmung zu genau der vorgelegten Fassung (§ 87d AO).</li>

@@ -330,6 +330,39 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
   des Unterzeichners stammt. Sie belegt „existierte spätestens zum Ablagezeitpunkt“, nicht aber den
   Zeitpunkt der Unterschrift.
 
+## 10. Prüfungen der Eingaben (Feldgrenzen, 03.11.2026)
+
+Grundsatz (Tobias 03.11.2026): **Unmögliches wird abgelehnt, Ungewöhnliches nur angemerkt.** Längen
+begrenzt schon das Eingabefeld; die Prüfung lehnt Längeres zusätzlich ab.
+
+- **Längen** nach den Datenbausteinen der DEÜV (DSME, Datenbausteine DBNA, DBGB, DBAN, gültig ab
+  01.01.2026): Familien-, Vor- und Geburtsname 30, Titel 20, Geburts- und Wohnort 34, Straße 33,
+  Hausnummer 9, Postleitzahl im Ausland 10, Anschriftenzusatz 40 Zeichen. Name der Kontoinhaberin
+  oder des Kontoinhabers 70 Zeichen (SEPA-Überweisung, Feld „Name“ mit höchstens 70 Zeichen).
+- **Zeichen** nach dem Fehlerkatalog derselben Datenbausteine (z. B. DBNA014/020/022,
+  DBAN156, DBAN174/176) – **nur als Hinweis**: Die Meldung prüft selbst, und ein Name, wie er im Pass
+  steht, wird nie abgelehnt.
+- **Versicherungsnummer** gegen Geburtsdatum, Geburtsname und Geschlecht (Gemeinsames Rundschreiben
+  Meldeverfahren 17.06.2026 Tz. 3.1.1.2–3.1.1.4): Stellen 3–8 Geburtsdatum (Tag und Monat 00 oder
+  der Tag + 32 sind möglich), Stelle 9 Anfangsbuchstabe des Geburtsnamens im Zeitpunkt der Vergabe
+  (Umlaute umgesetzt), Seriennummer 00–49 Männer, 50–99 Frauen, divers und unbestimmt. **Nur ein
+  Hinweis** (Tobias 03.11.2026): Die Nummer bleibt nach einer Namensänderung oder einer späteren
+  Korrektur gleich. Die Prüfziffer bleibt ein Fehler.
+- **Postleitzahl im Ausland:** Anlage 18 „Prüfungen der ausländischen Postleitzahl“ des
+  Rundschreibens Meldeverfahren (Version 7.00 vom 24.06.2021; DBAN026) legt für 27 Staaten das Format
+  fest – als Hinweis.
+- **BIC** nach ISO 9362 (8 oder 11 Stellen, Stellen 5–6 das Land); passt das Land nicht zur IBAN, gibt
+  es einen Hinweis.
+- **Grad der Behinderung** nur in Zehnergraden ab 20 (§ 152 Abs. 1 SGB IX).
+- **Kennzeichen** nach § 9 Abs. 1 FZV mit Anlage 1: Unterscheidungszeichen 1–3 Buchstaben,
+  Erkennungsnummer 1–2 Buchstaben ohne Umlaute und eine Zahl von 1 bis 9999,
+  gegebenenfalls E (Elektrofahrzeug) oder H (Oldtimer).
+- **Arbeitszeit:** höchstens 24 Stunden am Tag, 168 in der Woche, 366 Arbeitstage im Jahr
+  (unmöglich darüber); ein Hinweis über 10 Stunden am Tag und 48 Stunden in der Woche (§ 3 ArbZG: werktäglich 8,
+  höchstens 10 Stunden; sechs Werktage).
+- **Geburtsdatum** frühestens 150 Jahre vor dem Jahr der Formularfassung und spätestens an ihrem
+  Ende (feste Daten je Fassung: 01.01.1876 bis 31.12.2026).
+
 ## Quellen
 
 - DEÜV-Tabellen (abgerufen 30.10.2026 von www.gkv-datenaustausch.de, unverändert übernommen):

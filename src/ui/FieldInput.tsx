@@ -191,6 +191,8 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
     spellCheck: false,
     autoCorrect: 'off',
     'aria-labelledby': `${id}-label`,
+    // The length limit is enforced while typing; normalisation refuses longer text from elsewhere.
+    ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength }),
     onChange: (event: { target: { value: string } }) => onText(event.target.value),
   };
   if (field.multiline) return <textarea {...common} rows={4} />;

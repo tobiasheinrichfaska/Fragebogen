@@ -1210,3 +1210,124 @@ describe('master data by case', () => {
     );
   });
 });
+
+describe('field limits (validation package 2026-11-03)', () => {
+  const hours = (extra: Partial<FieldDefinition>): FieldDefinition => ({
+    id: 'stunden',
+    role: 'person',
+    type: 'number',
+    label: 'Stunden',
+    required: false,
+    purpose: 'T',
+    decimals: 2,
+    ...extra,
+  });
+  const withField = (field: FieldDefinition) => {
+    const d = definition();
+    d.sections[0]?.fields.push(field);
+    return checkFormDefinition(d);
+  };
+
+  it('accepts sensible limits', () => {
+    expect(withField(hours({ min: 0.5, max: 24, step: 0.25, warnAbove: 10 }))).toEqual([]);
+    const d = definition();
+    Object.assign(fieldAt(d, 0, 0), { maxLength: 30, deuevRule: 'familienname' });
+    Object.assign(fieldAt(d, 0, 1), { minDate: '1876-01-01', maxDate: '2026-12-31' });
+    expect(checkFormDefinition(d)).toEqual([]);
+  });
+
+  it.each<[string, Partial<FieldDefinition>, string, string]>([
+    ['more decimals than the field', { max: 24.125 }, 'max', 'more decimal places'],
+    ['a negative bound of an unsigned field', { min: -1 }, 'min', 'not signed'],
+    ['max below min', { min: 10, max: 5 }, 'max', 'below "min"'],
+    ['a step of 0', { step: 0 }, 'step', 'above 0'],
+    ['warnAbove not below max', { max: 24, warnAbove: 24 }, 'warnAbove', 'below "max"'],
+  ])('reports %s', (_label, extra, key, message) => {
+    expect(withField(hours(extra))).toContainEqual({
+      path: `$.sections[0].fields[6].${key}`,
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it('allows a negative bound on a signed field', () => {
+    expect(withField(hours({ signed: true, min: -40, max: 40 }))).toEqual([]);
+  });
+
+  it.each<[string, (d: FormDefinition) => void, string, string]>([
+    [
+      'max on a text field',
+      (d) => void Object.assign(fieldAt(d, 0, 0), { max: 3 }),
+      'fields[0].max',
+      'only number fields',
+    ],
+    [
+      'maxLength on a date field',
+      (d) => void Object.assign(fieldAt(d, 0, 1), { maxLength: 10 }),
+      'fields[1].maxLength',
+      'only text fields',
+    ],
+    [
+      'deuevRule on a tax id',
+      (d) => void Object.assign(fieldAt(d, 0, 2), { deuevRule: 'vorname' }),
+      'fields[2].deuevRule',
+      'only text fields',
+    ],
+    [
+      'minDate on a text field',
+      (d) => void Object.assign(fieldAt(d, 0, 0), { minDate: '2026-01-01' }),
+      'fields[0].minDate',
+      'only date fields',
+    ],
+    [
+      'an impossible maxDate',
+      (d) => void Object.assign(fieldAt(d, 0, 1), { maxDate: '2026-02-30' }),
+      'fields[1].maxDate',
+      'not a calendar date',
+    ],
+    [
+      'maxDate before minDate',
+      (d) => void Object.assign(fieldAt(d, 0, 1), { minDate: '2026-02-01', maxDate: '2026-01-31' }),
+      'fields[1].maxDate',
+      'before "minDate"',
+    ],
+  ])('reports %s', (_label, mutate, path, message) => {
+    const d = definition();
+    mutate(d);
+    expect(checkFormDefinition(d)).toContainEqual({
+      path: `$.sections[0].${path}`,
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it.each<[string, unknown, string]>([
+    ['maxLength', 0, 'integer ≥ 1'],
+    ['maxLength', 2.5, 'integer'],
+    ['deuevRule', 'nachname', 'expected one of'],
+    ['minDate', '1.1.2026', 'must match'],
+  ])('decodes %s strictly (%j)', (key, value, message) => {
+    const result = parseFormDefinition(
+      rawWith(['sections', 0, 'fields', key === 'minDate' ? 1 : 0, key], value),
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.issues).toContainEqual({
+      path: expect.stringContaining(key),
+      message: expect.stringContaining(message),
+    });
+  });
+
+  it('decodes number bounds as JSON numbers only', () => {
+    const raw = rawWith(['sections', 0, 'fields', 0, 'type'], 'number') as {
+      sections: { fields: Record<string, unknown>[] }[];
+    };
+    const first = raw.sections[0]?.fields[0];
+    if (first) first.max = '24';
+    const result = parseFormDefinition(raw);
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.issues).toContainEqual({
+      path: '$.sections[0].fields[0].max',
+      message: 'expected a number',
+    });
+  });
+});

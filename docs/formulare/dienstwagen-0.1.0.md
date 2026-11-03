@@ -8,7 +8,7 @@
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
-| Definition (SHA-256) | c0dd7003e97deac222182f6172d189772a1bab8be25e844169ab5d4eb569cf3b |
+| Definition (SHA-256) | 0646cd09226eb1c402cba8dfdd9bee557f06c00d59e2089b8edb9239deed9775 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -27,15 +27,15 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Firma des Arbeitgebers (agFirma)<br>Hilfe: So, wie sie auf dem Briefkopf steht. | Arbeitgeber | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung |
-| Familienname der beschäftigten Person (agFamilienname) | Arbeitgeber | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
-| Vornamen der beschäftigten Person (agVorname) | Arbeitgeber | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
+| Familienname der beschäftigten Person (agFamilienname) | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
+| Vornamen der beschäftigten Person (agVorname) | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
 | Personalnummer (agPersonalnummer)<br>Hilfe: Nur wenn schon vergeben. | Arbeitgeber | Text | immer | optional | Zuordnung in der Lohnabrechnung |
 
 ### 2. Fahrzeug
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Amtliches Kennzeichen (agKennzeichen) | Arbeitgeber | Text | immer | Pflicht | Zuordnung |
+| Amtliches Kennzeichen (agKennzeichen)<br>Hilfe: Zum Beispiel „KA-AB 1234“, bei einem Elektrofahrzeug „KA-AB 1234E“. | Arbeitgeber | Text, amtliches Kennzeichen | immer | Pflicht | Zuordnung |
 | Marke und Modell (agFahrzeug) | Arbeitgeber | Text | immer | Pflicht | Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR) |
 | Datum der Erstzulassung (agErstzulassung)<br>Hilfe: Zulassungsbescheinigung Teil I, Feld B. | Arbeitgeber | Datum | immer | Pflicht | Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR) |
 | Kauf- oder Leasingbeginn beim Arbeitgeber (agAnschaffung)<br>Hilfe: Entscheidet bei Elektro- und Hybridfahrzeugen, welche Grenzen gelten. | Arbeitgeber | Datum | immer | Pflicht | Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR) |
@@ -62,8 +62,8 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname? | Beschäftigte Person | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
-| Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen? | Beschäftigte Person | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
+| Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
+| Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
 | Fahrten zwischen Wohnung und erster Tätigkeitsstätte (fahrtenWohnung)<br>Frage: Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte? | Beschäftigte Person | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Fahrten von der Meldeanschrift (wohnungMeldeanschrift)<br>Frage: Fahren Sie von Ihrer Meldeanschrift aus? | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Anschrift der Wohnung, von der Sie fahren (wohnungAnschrift) | Beschäftigte Person | Text | erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist<br>Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung. | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |

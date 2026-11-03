@@ -8,7 +8,7 @@
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum der Vorlage“ ab 01.01.2026 |
-| Definition (SHA-256) | ec2cb19b3e9fef9e4bd272c28294eee448ef5e6f21ac144870a662e06d0c4f01 |
+| Definition (SHA-256) | 6883c814fbbb369f786d62bc2fd1cdb9fbb780232c761c1ef3051bb3d55a0d36 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung. |
 | Empfänger | Kanzlei |
@@ -27,14 +27,14 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Mandantennummer (mandantennummer)<br>Frage: Mandantennummer | Kanzlei | Text; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
+| Mandantennummer (mandantennummer)<br>Frage: Mandantennummer | Kanzlei | Text, nur Ziffern; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
 | Vor- und Familienname der Mandantin oder des Mandanten (mandantNameKanzlei) | Kanzlei | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Mandantin oder des Mandanten |
-| Steuerjahr (steuerjahr)<br>Hilfe: Zum Beispiel 2025. | Kanzlei | Text | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
+| Steuerjahr (steuerjahr)<br>Hilfe: Zum Beispiel 2025. | Kanzlei | Text, Jahr (4 Ziffern) | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Erklärungen (erklaerungen)<br>Frage: Welche Erklärungen werden freigegeben?<br>Hilfe: Je Steuerjahr eine Freigabe; mehrere Erklärungen desselben Jahres sind möglich. | Kanzlei | Mehrfachauswahl: Einkommensteuer, Umsatzsteuer, Gewerbesteuer, Feststellungserklärung, sonstige Erklärung | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Art der Erklärung (erklaerungArt) | Kanzlei | Auswahl: erstmalige Erklärung, berichtigte Erklärung | immer | Pflicht | Berichtigung nach § 153 AO erkennbar |
 | Veranlagungsart (veranlagung) | Kanzlei | Auswahl: Einzelveranlagung, Zusammenveranlagung (§ 26b EStG), Einzelveranlagung von Ehegatten (§ 26a EStG) | erst wenn bei „Erklärungen“ „Einkommensteuer“ angekreuzt ist<br>Warum: Eine Veranlagungsart gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner freigibt. | Pflicht | Entscheidet, ob auch der Ehegatte oder Lebenspartner freigeben muss (§ 25 Abs. 3 Satz 2 EStG) |
 | Vor- und Familienname des Ehegatten oder Lebenspartners (ehegatteNameKanzlei) | Kanzlei | Text | erst wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist<br>Warum: Nur bei Zusammenveranlagung gibt der Ehegatte oder Lebenspartner mit frei; dafür nennt die Kanzlei seinen Namen. | Pflicht | Zuordnung; Abgleich mit der Angabe des Ehegatten |
-| Steuernummer (steuernummer) | Kanzlei | Text | immer | optional | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
+| Steuernummer (steuernummer) | Kanzlei | Text, Steuernummer (10 bis 13 Ziffern) | immer | optional | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Voraussichtliches Ergebnis laut Steuerberechnung (ergebnis)<br>Hilfe: Vorausberechnung; maßgeblich ist der Bescheid. | Kanzlei | Auswahl: Erstattung, Nachzahlung, ausgeglichen, keine Berechnung | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Betrag laut Steuerberechnung (betrag)<br>Hilfe: Summe aus Einkommensteuer, Solidaritätszuschlag und Kirchensteuer. | Kanzlei | Betrag in Euro | erst wenn bei „Voraussichtliches Ergebnis laut Steuerberechnung“ „Erstattung“ oder „Nachzahlung“ gewählt ist<br>Warum: Nur bei einer Erstattung oder Nachzahlung gibt es einen Betrag laut Steuerberechnung; er bezeichnet die vorgelegte Fassung (§ 87d Abs. 3 AO). | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Vorgelegte Unterlagen (vorgelegt) | Kanzlei | Mehrfachauswahl: Formularansicht aller Anlagen, Steuerberechnung, Liste der übernommenen Daten Dritter (eDaten), Erläuterungsschreiben, Sonstiges | immer | Pflicht | Nachweis der „leicht nachprüfbaren Form“ (§ 87d Abs. 3 AO) |

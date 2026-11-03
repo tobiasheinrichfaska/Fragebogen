@@ -4,6 +4,7 @@
 import { normalizeCalendar } from './calendar';
 import { evaluateCondition } from './conditions';
 import { isIsoMonth, parseIsoDate } from './dates';
+import { deuevHints } from './deuevZeichen';
 import { accept, reject, type Checked, type IssueCode } from './issues';
 import { isPlainObject, isWellFormed } from './jcs';
 import type {
@@ -126,9 +127,30 @@ export function normalizeNumber(raw: string, field: FieldDefinition): Checked<st
     const digits = decimals > 0 ? `${integer}.${fraction.padEnd(decimals, '0')}` : integer;
     const zero = /^[0.]+$/.test(digits);
     if (negative && !zero && field.signed !== true) return reject('number.negative');
-    return accept(negative && !zero ? `-${digits}` : digits);
+    return withinBounds(negative && !zero ? `-${digits}` : digits, field);
   }
   return reject('number.format');
+}
+
+/** The bounds of a number field: refused outside min/max or off the step, a hint above warnAbove. */
+function withinBounds(value: string, field: FieldDefinition): Checked<string> {
+  const amount = Number(value);
+  if (field.min !== undefined && amount < field.min) return reject('number.belowMin');
+  if (field.max !== undefined && amount > field.max) return reject('number.aboveMax');
+  if (field.step !== undefined) {
+    const steps = (amount - (field.min ?? 0)) / field.step;
+    if (Math.abs(steps - Math.round(steps)) > 1e-9) return reject('number.step');
+  }
+  const unusual = field.warnAbove !== undefined && amount > field.warnAbove;
+  return accept(value, unusual ? ['number.unusual'] : []);
+}
+
+/** The earliest and latest day of a date field. */
+function withinDates(checked: Checked<IsoDate>, field: FieldDefinition): Checked<IsoDate> {
+  if (!checked.ok) return checked;
+  if (field.minDate !== undefined && checked.value < field.minDate) return reject('date.tooEarly');
+  if (field.maxDate !== undefined && checked.value > field.maxDate) return reject('date.tooLate');
+  return checked;
 }
 
 const GERMAN_MONTH = /^(\d{1,2})[./,](\d{4})$|^(\d{2})(\d{4})$/;
@@ -178,6 +200,43 @@ const TEXT_FORMAT_CHECKS: Readonly<Record<TextFormat, (text: string) => Checked<
     return at > 0 && localOk && domainOk && compact.length <= 254
       ? accept(`${local}@${domain}`)
       : reject('email.format');
+  },
+  // BIC (ISO 9362): 4 letters for the bank, 2 for the country, 2 letters or digits for the place,
+  // optionally 3 for the branch; stored compact in capitals.
+  bic: (text) => {
+    const compact = text.replace(/\s/g, '').toUpperCase();
+    return /^[A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?$/.test(compact)
+      ? accept(compact)
+      : reject('bic.format');
+  },
+  // Steuernummer as the tax office writes it (e.g. 93815/08152, 181/815/08155) or in the 13-digit
+  // ELSTER form: 10 to 13 digits with slashes, spaces or hyphens; stored as written.
+  steuernummer: (text) => {
+    const digits = text.replace(/[\s/-]/g, '');
+    return /^[\d\s/-]+$/.test(text) && /^\d{10,13}$/.test(digits)
+      ? accept(text)
+      : reject('steuernummer.format');
+  },
+  // A year with four digits (e.g. the tax year).
+  jahr: (text) => {
+    const compact = text.replace(/\s/g, '');
+    return /^(19|20|21)\d{2}$/.test(compact) ? accept(compact) : reject('jahr.format');
+  },
+  // Digits only (e.g. a client number).
+  ziffern: (text) => {
+    const compact = text.replace(/\s/g, '');
+    return /^\d+$/.test(compact) ? accept(compact) : reject('ziffern.format');
+  },
+  // Number plate (§ 9 Abs. 1 FZV, Anlage 1): 1 to 3 letters for the district, then 1 or 2 letters
+  // without umlauts and a number 1 to 9999, optionally E (electric) or H (historic); stored as
+  // "KA-AB 1234".
+  kfzKennzeichen: (text) => {
+    const match = /^([A-ZÄÖÜ]{1,3})[\s-]+([A-Z]{1,2})\s?([1-9]\d{0,3})([EH]?)$/.exec(
+      text.trim().toUpperCase(),
+    );
+    return match
+      ? accept(`${match[1] ?? ''}-${match[2] ?? ''} ${match[3] ?? ''}${match[4] ?? ''}`)
+      : reject('kennzeichen.format');
   },
   // A count in half steps such as the Kinderfreibetragszähler: "4", "4,5" (stored with a comma).
   halbeSchritte: (text) => {
@@ -243,16 +302,20 @@ function fromText(
 
 const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
   text: fromText((text, field) => {
+    if (field.maxLength !== undefined && [...text].length > field.maxLength) {
+      return reject('text.tooLong');
+    }
     if (field.textFormat !== undefined) return TEXT_FORMAT_CHECKS[field.textFormat](text);
+    const hints = field.deuevRule === undefined ? [] : deuevHints(field.deuevRule, text);
     // Suggestions from an earlier answer are only offered; nothing to check here.
     if (field.suggestionsFrom === undefined || !REFERENCE_LISTS[field.suggestionsFrom]) {
-      return accept(text);
+      return accept(text, hints);
     }
     // A list entry is stored by its exact name; anything else is free text with a warning.
     const found = listOptionFor(suggestionsOf(field), text);
-    return found ? accept(found.label) : accept(text, ['list.freeEntry']);
+    return found ? accept(found.label, hints) : accept(text, ['list.freeEntry', ...hints]);
   }),
-  date: fromText(normalizeDate),
+  date: fromText((text, field) => withinDates(normalizeDate(text), field)),
   money: fromText(normalizeMoney),
   number: fromText(normalizeNumber),
   month: fromText(normalizeMonth),

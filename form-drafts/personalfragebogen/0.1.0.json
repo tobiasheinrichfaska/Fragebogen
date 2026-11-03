@@ -44,6 +44,8 @@
           "id": "familienname",
           "role": "person",
           "type": "text",
+          "maxLength": 30,
+          "deuevRule": "familienname",
           "label": "Familienname",
           "question": "Wie lautet Ihr Familienname?",
           "help": "So, wie er in Ihrem Ausweis steht – ohne Titel wie „Dr.“ und ohne Vorsatzwort wie „von“; nach diesen fragen wir gleich gesondert.",
@@ -54,6 +56,8 @@
           "id": "vorname",
           "role": "person",
           "type": "text",
+          "maxLength": 30,
+          "deuevRule": "vorname",
           "label": "Vornamen",
           "question": "Wie lauten Ihre Vornamen?",
           "help": "Alle Vornamen, wie in Ihrem Ausweis.",
@@ -75,6 +79,8 @@
           "id": "titel",
           "role": "person",
           "type": "text",
+          "maxLength": 20,
+          "deuevRule": "titel",
           "label": "Titel",
           "question": "Welchen akademischen Grad oder Titel führen Sie im Namen?",
           "help": "Zum Beispiel „Dr.“ oder „Prof. Dr.“ – so, wie er in Ihrem Ausweis steht.",
@@ -151,6 +157,8 @@
           "id": "geburtsname",
           "role": "person",
           "type": "text",
+          "maxLength": 30,
+          "deuevRule": "familienname",
           "label": "Geburtsname",
           "question": "Wie lautet Ihr Geburtsname?",
           "required": true,
@@ -165,6 +173,8 @@
           "id": "geburtsdatum",
           "role": "person",
           "type": "date",
+          "minDate": "1876-01-01",
+          "maxDate": "2026-12-31",
           "label": "Geburtsdatum",
           "question": "Wann sind Sie geboren?",
           "help": "Zum Beispiel 17.05.1990.",
@@ -202,6 +212,8 @@
           "id": "geburtsort",
           "role": "person",
           "type": "text",
+          "maxLength": 34,
+          "deuevRule": "geburtsort",
           "label": "Geburtsort (Stadt oder Gemeinde)",
           "question": "In welcher Stadt oder Gemeinde sind Sie geboren?",
           "help": "Nur der Ort, so wie er in Ihrem Ausweis steht – zum Beispiel „Karlsruhe“.",
@@ -294,7 +306,7 @@
           "required": true,
           "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
           "initial": false,
-          "help": "Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nicht."
+          "help": "Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis."
         },
         {
           "id": "anschriftStaat",
@@ -316,6 +328,8 @@
           "id": "strassenname",
           "role": "person",
           "type": "text",
+          "maxLength": 33,
+          "deuevRule": "strasse",
           "label": "Straße",
           "question": "In welcher Straße wohnen Sie?",
           "required": true,
@@ -326,6 +340,8 @@
           "id": "hausnummer",
           "role": "person",
           "type": "text",
+          "maxLength": 9,
+          "deuevRule": "hausnummer",
           "label": "Hausnummer",
           "question": "Welche Hausnummer hat die Anschrift?",
           "help": "Mit Zusatz, zum Beispiel „12a“. Leer lassen, wenn die Anschrift keine Hausnummer hat.",
@@ -342,6 +358,7 @@
           "id": "anschriftZusatz",
           "role": "person",
           "type": "text",
+          "maxLength": 40,
           "label": "Anschriftenzusatz",
           "question": "Gibt es einen Zusatz zur Anschrift?",
           "help": "Zum Beispiel „bei Müller“ oder „Hinterhaus“. Sonst leer lassen.",
@@ -374,6 +391,8 @@
           "id": "postleitzahlAusland",
           "role": "person",
           "type": "text",
+          "maxLength": 10,
+          "deuevRule": "plzAusland",
           "label": "Postleitzahl (Ausland)",
           "question": "Wie lautet die Postleitzahl?",
           "help": "So, wie sie in Ihrem Wohnstaat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
@@ -383,12 +402,14 @@
             "field": "anschriftAusland",
             "equals": true
           },
-          "because": "Postleitzahlen im Ausland haben andere Formate; sie werden bei einer Anschrift im Ausland ohne Prüfung übernommen."
+          "because": "Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis."
         },
         {
           "id": "wohnort",
           "role": "person",
           "type": "text",
+          "maxLength": 34,
+          "deuevRule": "wohnort",
           "label": "Wohnort",
           "question": "In welchem Ort wohnen Sie?",
           "required": true,
@@ -470,6 +491,7 @@
           "id": "bic",
           "role": "person",
           "type": "text",
+          "textFormat": "bic",
           "label": "BIC",
           "question": "Wie lautet die BIC Ihrer Bank?",
           "help": "Nur für ein Konto außerhalb Deutschlands. Im SEPA-Raum genügt meist die IBAN; nennen Sie die BIC, wenn Ihre Bank sie angibt.",
@@ -514,6 +536,7 @@
           "id": "kontoinhaber",
           "role": "person",
           "type": "text",
+          "maxLength": 70,
           "label": "Name der Kontoinhaberin oder des Kontoinhabers",
           "question": "Auf wessen Namen lautet das Konto?",
           "help": "Vor- und Familienname, wie bei der Bank hinterlegt.",
@@ -865,7 +888,9 @@
             "equals": "student"
           },
           "because": "Die Werkstudentenregel (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III) gilt nur für eingeschriebene Studierende. Ihre Voraussetzungen – ordentliches Studium, kein Urlaubssemester, höchstens 20 Wochenstunden – werden deshalb nur bei ihnen gefragt.",
-          "decimals": 0
+          "decimals": 0,
+          "min": 1,
+          "max": 99
         },
         {
           "id": "studienendeErwartet",
@@ -936,6 +961,7 @@
               "required": true,
               "purpose": "Werkstudentenregel: Versicherungsfreiheit in KV, PV und AV (§ 6 Abs. 1 Nr. 3 SGB V, § 27 Abs. 4 Nr. 2 SGB III)",
               "decimals": 2,
+              "max": 168,
               "unit": "Std."
             },
             {
@@ -1354,6 +1380,7 @@
           },
           "because": "Hauptberuflich Selbständige sind in einer Beschäftigung nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); ob die Selbständigkeit hauptberuflich ist, zeigen Stunden und Einkommen.",
           "decimals": 2,
+          "max": 168,
           "unit": "Std."
         },
         {
@@ -1494,6 +1521,7 @@
           },
           "because": "Bei einer Erwerbsminderungsrente muss die tägliche Arbeitszeit unter 3 bzw. 6 Stunden bleiben; sonst ist die Rente gefährdet.",
           "decimals": 2,
+          "max": 24,
           "unit": "Std."
         }
       ]
@@ -1609,6 +1637,7 @@
               "required": false,
               "purpose": "Zusammenrechnung mehrerer Beschäftigungen (§ 8 Abs. 2 SGB IV), Gesamtentgelt im Übergangsbereich und Beitragsbemessungsgrenze (§ 22 Abs. 2 SGB IV), einheitliche Befreiung von der Rentenversicherung",
               "decimals": 2,
+              "max": 168,
               "unit": "Std."
             },
             {
@@ -1729,6 +1758,7 @@
               "required": false,
               "purpose": "Zeitgrenzen der kurzfristigen Beschäftigung (3 Monate oder 70 Arbeitstage im Kalenderjahr, § 8 Abs. 1 Nr. 2 SGB IV); Erklärung zu Vorbeschäftigungen (§ 8 Abs. 2 Nr. 7 BVV)",
               "decimals": 0,
+              "max": 366,
               "unit": "Tage"
             },
             {
@@ -2763,7 +2793,8 @@
               "help": "Nur bei Zwillingen oder Mehrlingen: Wie viele Kinder sind an diesem Tag geboren? Sonst leer lassen.",
               "required": false,
               "purpose": "Zahl der Kinder unter 25 für den Beitrag zur Pflegeversicherung (§ 55 Abs. 3a SGB XI), ohne Namen der Kinder",
-              "decimals": 0
+              "decimals": 0,
+              "min": 2
             },
             {
               "id": "kindVerhaeltnis",
@@ -3052,6 +3083,7 @@
           "id": "agSteuernummer",
           "role": "arbeitgeber",
           "type": "text",
+          "textFormat": "steuernummer",
           "label": "Steuernummer des Arbeitgebers",
           "question": "Wie lautet die Steuernummer des Arbeitgebers?",
           "help": "Die Steuernummer des Betriebsstättenfinanzamts für die Lohnsteuer.",
@@ -3068,6 +3100,7 @@
           "id": "agFamilienname",
           "role": "arbeitgeber",
           "type": "text",
+          "maxLength": 30,
           "label": "Familienname der beschäftigten Person",
           "question": "Wie lautet der Familienname der beschäftigten Person?",
           "required": true,
@@ -3077,6 +3110,7 @@
           "id": "agVorname",
           "role": "arbeitgeber",
           "type": "text",
+          "maxLength": 30,
           "label": "Vornamen der beschäftigten Person",
           "question": "Wie lauten die Vornamen der beschäftigten Person?",
           "required": true,
@@ -3554,7 +3588,9 @@
               "label": "Ausbildungsjahr",
               "required": true,
               "purpose": "Ausbildungsvergütung",
-              "decimals": 0
+              "decimals": 0,
+              "min": 1,
+              "max": 5
             },
             {
               "id": "avBetrag",
@@ -3908,6 +3944,7 @@
           },
           "because": "Nur eine kurzfristige Aushilfe ist an 3 Monate oder 70 Arbeitstage im Kalenderjahr gebunden (§ 8 Abs. 1 Nr. 2 SGB IV); dafür werden Ende, Arbeitstage und eine Rahmenvereinbarung gebraucht.",
           "decimals": 0,
+          "max": 366,
           "unit": "Tage"
         },
         {
@@ -4000,6 +4037,8 @@
           },
           "because": "Werkstudenten und Studierende in einem freiwilligen Praktikum sind nur bis 20 Wochenstunden in der Vorlesungszeit frei (Rundschreiben Studenten und Praktikanten Tz. A 1.2.4 a); allein in den Semesterferien gilt die Grenze nicht.",
           "decimals": 2,
+          "max": 168,
+          "warnAbove": 48,
           "unit": "Std."
         },
         {
@@ -4579,6 +4618,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4594,6 +4635,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4609,6 +4652,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4624,6 +4669,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4639,6 +4686,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4654,6 +4703,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4669,6 +4720,8 @@
           },
           "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4685,6 +4738,8 @@
           },
           "because": "Bei wechselnden Tagen, Gleitzeit oder Vertrauensarbeitszeit gibt es keine festen Tagesstunden; dann zählen die Wochenstunden.",
           "decimals": 2,
+          "max": 168,
+          "warnAbove": 48,
           "unit": "Std."
         },
         {
@@ -4701,6 +4756,7 @@
           },
           "because": "Ohne feste Wochentage braucht der Urlaubsanspruch die durchschnittlichen Arbeitstage pro Woche.",
           "decimals": 1,
+          "max": 7,
           "unit": "Tage"
         },
         {
@@ -4733,6 +4789,7 @@
           },
           "because": "Bei Schichtarbeit wiederholt sich die Arbeitszeit erst über mehrere Wochen; Urlaub und Entgeltfortzahlung werden über den ganzen Zyklus berechnet.",
           "decimals": 0,
+          "max": 366,
           "unit": "Tage"
         },
         {
@@ -4765,6 +4822,7 @@
           },
           "because": "Bei festen Monatsstunden ist die Monatssumme die vereinbarte Arbeitszeit.",
           "decimals": 2,
+          "max": 744,
           "unit": "Std."
         },
         {
@@ -4781,6 +4839,7 @@
           },
           "because": "Bei Jahresarbeitszeit gilt die Vereinbarung für das ganze Jahr; Urlaub und Entgelt werden daraus berechnet.",
           "decimals": 2,
+          "max": 8784,
           "unit": "Std."
         },
         {
@@ -4797,6 +4856,7 @@
           },
           "because": "Bei Jahresarbeitszeit gilt die Vereinbarung für das ganze Jahr; Urlaub und Entgelt werden daraus berechnet.",
           "decimals": 0,
+          "max": 366,
           "unit": "Tage"
         },
         {
@@ -4814,6 +4874,8 @@
           },
           "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "decimals": 2,
+          "max": 168,
+          "warnAbove": 48,
           "unit": "Std."
         },
         {
@@ -4858,6 +4920,7 @@
           },
           "because": "Nur wenn eine Mindest- oder Höchstarbeitszeit vereinbart ist, braucht es die Stundenzahl (§ 12 Abs. 2 TzBfG).",
           "decimals": 2,
+          "max": 168,
           "unit": "Std."
         },
         {
@@ -4874,6 +4937,8 @@
           },
           "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "decimals": 2,
+          "max": 24,
+          "warnAbove": 10,
           "unit": "Std."
         },
         {
@@ -4890,6 +4955,7 @@
           },
           "because": "Bei Arbeit auf Abruf regelt § 12 TzBfG Wochenstunden, Abrufspanne und Mindesteinsatz; die erwarteten Stunden zeigen, ob die Minijob-Grenze hält.",
           "decimals": 2,
+          "max": 744,
           "unit": "Std."
         },
         {
@@ -4986,6 +5052,8 @@
           },
           "because": "Nur bei Altersteilzeit gelten eine eigene Personengruppe und der steuerfreie Aufstockungsbetrag (§ 3 Nr. 28 EStG); dafür werden Modell, Zeitraum und die frühere Arbeitszeit gebraucht.",
           "decimals": 2,
+          "max": 168,
+          "warnAbove": 48,
           "unit": "Std."
         },
         {
@@ -5036,6 +5104,7 @@
           "because": "Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb.",
           "purpose": "Urlaubsverwaltung (§ 3 BUrlG, Arbeitsvertrag, Tarif)",
           "decimals": 1,
+          "max": 366,
           "unit": "Tage"
         },
         {
@@ -5466,7 +5535,10 @@
             "in": ["schwerbehindert", "gleichgestellt"]
           },
           "because": "Nur bei Schwerbehinderung oder Gleichstellung gehören Grad der Behinderung und Gültigkeit in das Verzeichnis des Arbeitgebers (§ 163 SGB IX).",
-          "decimals": 0
+          "decimals": 0,
+          "min": 20,
+          "max": 100,
+          "step": 10
         },
         {
           "id": "agSbGueltigAb",
@@ -6517,6 +6589,33 @@
         ]
       },
       "message": "Der Arbeitgeber gibt Firmen- oder Selbstzahler an, die Person ist aber nicht gesetzlich versichert: klären."
+    },
+    {
+      "id": "versicherungsnummerWeichtAb",
+      "test": {
+        "fn": "versicherungsnummerWeichtAb",
+        "args": ["versicherungsnummer", "geburtsdatum", "geburtsname", "familienname", "geschlecht"]
+      },
+      "message": "Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. Das kann richtig sein – die Nummer bleibt auch nach einer Namensänderung oder einer späteren Korrektur gleich –, bitte aber mit dem Sozialversicherungsausweis vergleichen.",
+      "source": "§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1"
+    },
+    {
+      "id": "bicPasstNichtZurIban",
+      "test": {
+        "fn": "bicPasstNichtZurIban",
+        "args": ["iban", "bic"]
+      },
+      "message": "Das Land im BIC passt nicht zum Land der IBAN. Bitte BIC und IBAN vergleichen.",
+      "source": "ISO 9362; ISO 13616"
+    },
+    {
+      "id": "plzAuslandFormat",
+      "test": {
+        "fn": "plzAuslandFormat",
+        "args": ["anschriftStaat", "postleitzahlAusland"]
+      },
+      "message": "Die Postleitzahl hat nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. Bitte prüfen.",
+      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 18"
     }
   ],
   "validity": {

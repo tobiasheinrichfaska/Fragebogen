@@ -1,0 +1,32 @@
+// Formats of postcodes abroad by Länderkennzeichen: Gemeinsames Rundschreiben „Meldeverfahren zur
+// Sozialversicherung“, Anlage 18 „Prüfungen der ausländischen Postleitzahl“ (Version 7.00, 24.06.2021;
+// DBAN026). N stands for a digit, A for a letter, anything else for itself.
+export const PLZ_FORMATE: Readonly<Record<string, readonly [land: string, format: string]>> = {
+  A: ['Österreich', 'NNNN'],
+  B: ['Belgien', 'NNNN'],
+  CDN: ['Kanada', 'ANA NAN'],
+  CH: ['Schweiz', 'NNNN'],
+  DK: ['Dänemark', 'NNNN'],
+  F: ['Frankreich', 'NNNNN'],
+  NL: ['Niederlande', 'NNNN AA'],
+  PL: ['Polen', 'NN-NNN'],
+  CZ: ['Tschechien', 'NNN NN'],
+  L: ['Luxemburg', 'NNNN'],
+  BG: ['Bulgarien', 'NNNN'],
+  EST: ['Estland', 'NNNNN'],
+  GR: ['Griechenland', 'NNN NN'],
+  E: ['Spanien', 'NNNNN'],
+  HR: ['Kroatien', 'NNNNN'],
+  I: ['Italien', 'NNNNN'],
+  CY: ['Zypern', 'NNNN'],
+  LV: ['Lettland', 'NNNN'],
+  LT: ['Litauen', 'NNNNN'],
+  H: ['Ungarn', 'NNNN'],
+  M: ['Malta', 'AAA NNNN'],
+  P: ['Portugal', 'NNNN-NNN'],
+  RO: ['Rumänien', 'NNNNNN'],
+  SLO: ['Slowenien', 'NNNN'],
+  SK: ['Slowakei', 'NNN NN'],
+  FIN: ['Finnland', 'NNNNN'],
+  S: ['Schweden', 'NNN NN'],
+};

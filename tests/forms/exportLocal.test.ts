@@ -15,6 +15,7 @@ import { buildLugImport, neededInputs, type LugEntries } from '../../src/logic/l
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import {
+  definitionFiles,
   DRAFTS_DIR,
   FIXTURE_FORMS_DIR,
   FORMS_DIR,
@@ -25,7 +26,7 @@ import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const FILE = join(__dirname, '..', '..', 'config', 'export.local.json');
 const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
-const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.2.0.json')));
+const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '0.3.0.json')));
 const sofortFrozen = registeredFrom(
   readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')),
 );
@@ -110,6 +111,23 @@ describe.skipIf(!existsSync(FILE))('local export mappings (config/export.local.j
     }
     // The frozen Sofortmeldung 0.1.0 (street with number, nationality as text) has none.
     expect(mappings.some((m) => mappingFor(m, sofortFrozen.definition))).toBe(false);
+  });
+
+  it('has a mapping for every shipped version of a mapped form (2026-11-03: 0.3.0 had none)', () => {
+    const mapped = new Set(mappings.map((m) => m.form));
+    const shipped = [...definitionFiles(FORMS_DIR), ...definitionFiles(DRAFTS_DIR)]
+      .filter((file) => file.file.endsWith('.json'))
+      .map((file) => registeredFrom(readJson(file.path)).definition)
+      .filter((definition) => mapped.has(definition.id));
+    const without = shipped
+      .filter((definition) => !mappings.some((m) => mappingFor(m, definition)))
+      .map((definition) => `${definition.id} ${definition.version}`);
+    expect(without).toEqual([]);
+    for (const definition of shipped) {
+      for (const mapping of mappings.filter((m) => mappingFor(m, definition))) {
+        expect(checkExportMapping(mapping, definition), definition.version).toEqual([]);
+      }
+    }
   });
 
   it('asks for wage type and health insurer, and writes a complete file once they are entered', () => {

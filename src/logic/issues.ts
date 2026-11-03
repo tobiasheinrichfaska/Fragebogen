@@ -7,6 +7,9 @@ export type IssueCode =
   | 'type.unsupported'
   | 'date.format'
   | 'date.invalid'
+  | 'date.tooEarly'
+  | 'date.tooLate'
+  | 'text.tooLong'
   | 'money.format'
   | 'money.decimals'
   | 'money.tooLarge'
@@ -14,6 +17,10 @@ export type IssueCode =
   | 'number.decimals'
   | 'number.negative'
   | 'number.tooLarge'
+  | 'number.belowMin'
+  | 'number.aboveMax'
+  | 'number.step'
+  | 'number.unusual'
   | 'month.format'
   | 'month.invalid'
   | 'plz.format'
@@ -21,6 +28,14 @@ export type IssueCode =
   | 'halbeSchritte.format'
   | 'telefon.format'
   | 'email.format'
+  | 'bic.format'
+  | 'steuernummer.format'
+  | 'jahr.format'
+  | 'ziffern.format'
+  | 'kennzeichen.format'
+  | 'deuev.zeichen'
+  | 'deuev.anfang'
+  | 'deuev.ende'
   | 'validity.outside'
   | 'iban.format'
   | 'iban.length'
@@ -52,6 +67,9 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'date.format':
     'Bitte das Datum als TT.MM.JJJJ eingeben (am Handy genügen die Ziffern, z. B. 17051990).',
   'date.invalid': 'Dieses Datum gibt es nicht.',
+  'date.tooEarly': 'Das Datum liegt zu weit zurück – frühestens {minDate}.',
+  'date.tooLate': 'Das Datum liegt zu spät – spätestens {maxDate}.',
+  'text.tooLong': 'Höchstens {maxLength} Zeichen.',
   'money.format': 'Bitte einen Betrag wie 1.234,56 eingeben.',
   'money.decimals': 'Bitte höchstens zwei Nachkommastellen angeben.',
   'money.tooLarge': 'Der Betrag ist zu groß.',
@@ -59,6 +77,10 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'number.decimals': 'Bitte nicht so viele Nachkommastellen angeben.',
   'number.negative': 'Hier ist keine negative Zahl möglich.',
   'number.tooLarge': 'Die Zahl ist zu groß.',
+  'number.belowMin': 'Mindestens {min}.',
+  'number.aboveMax': 'Höchstens {max}.',
+  'number.step': 'Nur in Schritten von {step} möglich.',
+  'number.unusual': 'Ungewöhnlich hoher Wert – bitte prüfen.',
   'month.format':
     'Bitte einen Monat wie 03.2026 eingeben (am Handy genügen die Ziffern, z. B. 032026).',
   'month.invalid': 'Diesen Monat gibt es nicht.',
@@ -68,6 +90,20 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'telefon.format':
     'Bitte eine Telefonnummer mit Vorwahl eingeben, zum Beispiel 0721 123456 oder +49 721 123456.',
   'email.format': 'Bitte eine E-Mail-Adresse wie name@beispiel.de eingeben.',
+  'bic.format':
+    'Der BIC hat 8 oder 11 Stellen: 4 Buchstaben für die Bank, 2 für das Land, 2 Zeichen für den Ort und gegebenenfalls 3 für die Filiale.',
+  'steuernummer.format':
+    'Die Steuernummer hat 10 bis 13 Ziffern, auch mit Schrägstrichen oder Leerzeichen geschrieben.',
+  'jahr.format': 'Bitte ein Jahr mit vier Ziffern angeben, zum Beispiel 2025.',
+  'ziffern.format': 'Bitte nur Ziffern eingeben.',
+  'kennzeichen.format':
+    'Das Kennzeichen hat die Form „KA-AB 1234“: bis zu 3 Buchstaben für den Ort, 1 oder 2 Buchstaben und eine Zahl bis 9999, gegebenenfalls E oder H.',
+  'deuev.zeichen':
+    'Hinweis: Die Meldung zur Sozialversicherung nimmt hier nur bestimmte Zeichen an – Buchstaben, Leerzeichen, Bindestrich und je nach Angabe Punkt, Hochkomma, Ziffern oder Klammern. Bitte prüfen.',
+  'deuev.anfang':
+    'Hinweis: Für die Meldung zur Sozialversicherung muss die Angabe mit einem Buchstaben beginnen (nicht mit „ß“). Bitte prüfen.',
+  'deuev.ende':
+    'Hinweis: So darf die Angabe für die Meldung zur Sozialversicherung nicht enden. Bitte prüfen.',
   'validity.outside':
     'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung. Unterschreiben und weitergeben lässt sich der Fragebogen so nicht; bitte die Fassung verwenden, die für dieses Datum gilt.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
@@ -109,4 +145,30 @@ export function accept<T>(value: T, warnings: readonly IssueCode[] = []): Checke
 
 export function reject<T = never>(issue: IssueCode): Checked<T> {
   return { ok: false, issue };
+}
+
+/** The bounds a message may name; from the field definition. */
+export interface IssueBounds {
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  step?: number;
+  minDate?: string;
+  maxDate?: string;
+}
+
+const germanNumber = (value: number | undefined) =>
+  value === undefined ? '' : String(value).replace('.', ',');
+const germanDay = (value: string | undefined) =>
+  value === undefined ? '' : value.split('-').reverse().join('.');
+
+/** The German message of an issue, with the field's bounds filled in (e.g. „Höchstens 30 Zeichen.“). */
+export function issueMessage(issue: IssueCode, bounds: IssueBounds = {}): string {
+  return ISSUE_MESSAGES[issue]
+    .replace('{maxLength}', germanNumber(bounds.maxLength))
+    .replace('{min}', germanNumber(bounds.min))
+    .replace('{max}', germanNumber(bounds.max))
+    .replace('{step}', germanNumber(bounds.step))
+    .replace('{minDate}', germanDay(bounds.minDate))
+    .replace('{maxDate}', germanDay(bounds.maxDate));
 }

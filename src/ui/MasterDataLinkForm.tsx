@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react';
 import { APP_CONFIG } from '../config';
 import { editValue } from '../logic/display';
 import { latestForms, type FormRegistry } from '../logic/formRegistry';
-import { ISSUE_MESSAGES, type IssueCode } from '../logic/issues';
+import { ISSUE_MESSAGES, issueMessage, type IssueBounds, type IssueCode } from '../logic/issues';
 import { storedValue, type MasterData } from '../logic/masterData';
 import {
   masterDataCatalog,
@@ -58,8 +58,8 @@ function keptOf(catalog: MasterDataCatalog, record: MasterData | undefined): Mas
   );
 }
 
-const issueText = (issue: string) =>
-  ISSUE_MESSAGES[issue as IssueCode] ?? 'Diese Angabe ist ungültig.';
+const issueText = (issue: string, bounds?: IssueBounds) =>
+  issue in ISSUE_MESSAGES ? issueMessage(issue as IssueCode, bounds) : 'Diese Angabe ist ungültig.';
 
 export function MasterDataLinkForm({ registry, initial }: Props) {
   const forms = useMemo(() => latestForms(registry), [registry]);
@@ -79,7 +79,7 @@ export function MasterDataLinkForm({ registry, initial }: Props) {
       const result = masterDataInput(entry, raw);
       if (result.ok) {
         if (result.value !== null) record[entry.key] = result.value;
-      } else errors.set(entry.key, issueText(result.issue));
+      } else errors.set(entry.key, issueText(result.issue, entry.field));
     }
   }
   const link =

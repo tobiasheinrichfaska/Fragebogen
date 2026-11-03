@@ -78,8 +78,26 @@ export const TEXT_FORMATS = [
   'halbeSchritte',
   'telefon',
   'email',
+  'bic',
+  'steuernummer',
+  'jahr',
+  'ziffern',
+  'kfzKennzeichen',
 ] as const;
 export type TextFormat = (typeof TEXT_FORMATS)[number];
+
+/** Character rules of the DEÜV data fields (deuevZeichen.ts), checked as hints. */
+export const DEUEV_RULES = [
+  'familienname',
+  'vorname',
+  'titel',
+  'geburtsort',
+  'wohnort',
+  'strasse',
+  'hausnummer',
+  'plzAusland',
+] as const;
+export type DeuevRule = (typeof DEUEV_RULES)[number];
 
 export interface ChoiceOption {
   id: string;
@@ -195,6 +213,25 @@ export interface FieldDefinition {
   quickAnswers?: QuickAnswer[];
   /** `text` only: a named format the answer must have, e.g. a German postcode. */
   textFormat?: TextFormat;
+  /**
+   * `text` only: at most this many characters — the input field takes no more, and longer text (e.g.
+   * from a file) is refused; e.g. 30 for a name in the DEÜV report.
+   */
+  maxLength?: number;
+  /** `text` only: the character rules of a DEÜV data field, checked as hints, never refused. */
+  deuevRule?: DeuevRule;
+  /** `number` only: the smallest value. */
+  min?: number;
+  /** `number` only: the largest value. */
+  max?: number;
+  /** `number` only: the step from `min` (or 0), e.g. 10 for the Grad der Behinderung. */
+  step?: number;
+  /** `number` only: above this a hint asks to check the value (e.g. more than 10 hours a day). */
+  warnAbove?: number;
+  /** `date` only: the earliest day. */
+  minDate?: IsoDate;
+  /** `date` only: the latest day. */
+  maxDate?: IsoDate;
   /** `number` only: unit shown after the value, e.g. "Std.", "km", "kWh". */
   unit?: string;
   /** `number` only: decimal places, 0 (default), 1 or 2; stored with exactly that many. */

@@ -15,7 +15,7 @@ import {
   zeitgrenze,
   type ShortTermJob,
 } from './kurzfristig';
-import { optionsOf, validityByName, validityNote, validOn } from './options';
+import { listCodesOf, optionsOf, validityByName, validityNote, validOn } from './options';
 import type {
   CheckHint,
   FieldDefinition,
@@ -32,6 +32,7 @@ import {
   RECHENGROESSEN,
   UEBERGANGSBEREICH_OBERGRENZE,
 } from './data/rechengroessen';
+import { PLZ_FORMATE } from './data/plzFormate';
 import { monthAfter, regelaltersgrenze } from './regelaltersgrenze';
 
 export interface HintResult {
@@ -1095,8 +1096,128 @@ const andereBeschaeftigungAusbildung: HintTest = {
   },
 };
 
+const SV_SHAPE = /^\d{8}[A-Z]\d{3}$/;
+/** The first letter of each part of a name, umlauts and accents resolved ("Özdemir" → O). */
+const initials = (name: string) =>
+  name
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toUpperCase()
+    .split(/[\s-]+/)
+    .map((part) => part.charAt(0))
+    .filter((letter) => /^[A-Z]$/.test(letter));
+
+/**
+ * The Versicherungsnummer against birth date, Geburtsname and gender (Gemeinsames Rundschreiben
+ * Meldeverfahren 17.06.2026 Tz. 3.1.1.2–3.1.1.4). The number is given once and kept, so only a
+ * hint. Allowed without a hint: day or month 00 (no birth date in the passport), the day raised by
+ * 32 or 64 (serial numbers used up), the initial of a later part of the name (a Vorsatzwort such as
+ * „von“ comes first), a name whose first letter is not a Latin one.
+ */
+const versicherungsnummerWeichtAb: HintTest = {
+  args: ['svNumber', 'date', 'text', 'text', 'choice'],
+  describe: ([number = '', birth = '', birthName = '', name = '', gender = '']) =>
+    `„${number}“ nicht zu „${birth}“, „${birthName}“ (sonst „${name}“) oder „${gender}“ passt`,
+  run: ([number, birth, birthName, name, gender]) => {
+    if (typeof number !== 'string' || !SV_SHAPE.test(number)) return undefined;
+    const detail: string[] = [];
+    if (typeof birth === 'string' && isIsoDate(birth)) {
+      const [day, month, year] = [number.slice(2, 4), number.slice(4, 6), number.slice(6, 8)];
+      const born = Number(birth.slice(8, 10));
+      const dayFits = day === '00' || [0, 32, 64].some((plus) => Number(day) === born + plus);
+      const monthFits = month === '00' || month === birth.slice(5, 7);
+      if (!dayFits || !monthFits || year !== birth.slice(2, 4)) {
+        detail.push(
+          `Geburtsdatum in der Versicherungsnummer: ${day}.${month}.${year}; angegeben: ${formatGermanDate(birth)}.`,
+        );
+      }
+    }
+    const nameAtBirth = typeof birthName === 'string' ? birthName : name;
+    if (typeof nameAtBirth === 'string') {
+      const letters = initials(nameAtBirth);
+      const letter = number.charAt(8);
+      if (letters.length > 0 && !letters.includes(letter)) {
+        detail.push(
+          `Buchstabe in der Versicherungsnummer: ${letter}; Anfangsbuchstabe des Geburtsnamens: ${letters[0] ?? ''}.`,
+        );
+      }
+    }
+    if (typeof gender === 'string') {
+      const serial = Number(number.slice(9, 11));
+      const male = gender === 'maennlich';
+      if (male !== serial < 50) {
+        detail.push(
+          `Seriennummer ${number.slice(9, 11)}: ${serial < 50 ? '00 bis 49 (Männer)' : '50 bis 99 (Frauen, divers, unbestimmt)'}.`,
+        );
+      }
+    }
+    return { holds: detail.length > 0, detail };
+  },
+};
+
+// Territories whose banks have IBANs of another country (SWIFT IBAN Registry): a BIC of Jersey or
+// Réunion fits a GB or FR IBAN.
+const IBAN_GEBIETE: Readonly<Record<string, readonly string[]>> = {
+  FI: ['AX'],
+  FR: ['BL', 'GF', 'GP', 'MF', 'MQ', 'NC', 'PF', 'PM', 'RE', 'TF', 'WF', 'YT'],
+  GB: ['GG', 'IM', 'JE'],
+};
+
+/** The country of a BIC (its 5th and 6th character, ISO 9362) against that of the IBAN. */
+const bicPasstNichtZurIban: HintTest = {
+  args: ['iban', 'text'],
+  describe: ([iban = '', bic = '']) => `das Land von „${bic}“ nicht zu „${iban}“ passt`,
+  run: ([iban, bic]) => {
+    if (typeof iban !== 'string' || typeof bic !== 'string' || bic.length < 6) return undefined;
+    const [ibanLand, bicLand] = [iban.slice(0, 2), bic.slice(4, 6)];
+    const fits = bicLand === ibanLand || (IBAN_GEBIETE[ibanLand] ?? []).includes(bicLand);
+    return {
+      holds: !fits,
+      detail: fits ? [] : [`Land im BIC: ${bicLand}; Land der IBAN: ${ibanLand}.`],
+    };
+  },
+};
+
+// The formats hold only N, A, spaces and hyphens, none of them special in a pattern.
+const PLZ_PATTERNS = new Map(
+  Object.entries(PLZ_FORMATE).map(([sign, [, format]]) => [
+    sign,
+    new RegExp(`^${format.replace(/N/g, '\\d').replace(/A/g, '[A-Z]')}$`),
+  ]),
+);
+const example = (format: string) =>
+  [...format]
+    .map((c, i) => (c === 'N' ? String((i + 1) % 10) : c === 'A' ? 'ABCDEFGH'.charAt(i) : c))
+    .join('');
+
+/** A postcode abroad against the format of its state (DEÜV Anlage 18, DBAN026). */
+const plzAuslandFormat: HintTest = {
+  args: ['choice', 'text'],
+  describe: ([state = '', plz = '']) =>
+    `„${plz}“ nicht dem Format der Postleitzahlen von „${state}“ entspricht`,
+  run: ([state, plz]) => {
+    if (typeof state !== 'string' || typeof plz !== 'string') return undefined;
+    const sign = listCodesOf('deuevStaaten2025', state).laenderkennzeichen ?? '';
+    const pattern = PLZ_PATTERNS.get(sign);
+    const format = PLZ_FORMATE[sign]?.[1];
+    if (!pattern || format === undefined) return undefined;
+    const fits = pattern.test(plz.toUpperCase());
+    return {
+      holds: !fits,
+      detail: fits
+        ? []
+        : [
+            `Format in ${state}: ${format} (N = Ziffer, A = Buchstabe), zum Beispiel ${example(format)}.`,
+          ],
+    };
+  },
+};
+
 export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   andereBeschaeftigungAusbildung,
+  versicherungsnummerWeichtAb,
+  bicPasstNichtZurIban,
+  plzAuslandFormat,
   werkstudentenprivileg,
   werkstudentenprivilegNachArbeitszeit,
   geringfuegigEntlohnt,

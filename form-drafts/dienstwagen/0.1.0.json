@@ -41,6 +41,7 @@
           "id": "agFamilienname",
           "role": "arbeitgeber",
           "type": "text",
+          "maxLength": 30,
           "label": "Familienname der beschäftigten Person",
           "required": true,
           "purpose": "Zuordnung; Abgleich mit der Angabe der Person"
@@ -49,6 +50,7 @@
           "id": "agVorname",
           "role": "arbeitgeber",
           "type": "text",
+          "maxLength": 30,
           "label": "Vornamen der beschäftigten Person",
           "required": true,
           "purpose": "Zuordnung; Abgleich mit der Angabe der Person"
@@ -72,6 +74,8 @@
           "id": "agKennzeichen",
           "role": "arbeitgeber",
           "type": "text",
+          "textFormat": "kfzKennzeichen",
+          "help": "Zum Beispiel „KA-AB 1234“, bei einem Elektrofahrzeug „KA-AB 1234E“.",
           "label": "Amtliches Kennzeichen",
           "required": true,
           "purpose": "Zuordnung"
@@ -347,6 +351,7 @@
           "id": "familienname",
           "role": "person",
           "type": "text",
+          "maxLength": 30,
           "label": "Familienname",
           "question": "Wie lautet Ihr Familienname?",
           "required": true,
@@ -356,6 +361,7 @@
           "id": "vorname",
           "role": "person",
           "type": "text",
+          "maxLength": 30,
           "label": "Vornamen",
           "question": "Wie lauten Ihre Vornamen?",
           "required": true,

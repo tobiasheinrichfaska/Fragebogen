@@ -18,7 +18,7 @@ import {
   type InterviewStep,
   type InterviewSummary,
 } from './interview';
-import { ISSUE_MESSAGES, type IssueCode } from './issues';
+import { ISSUE_MESSAGES, issueMessage, type IssueCode } from './issues';
 import { applyMasterData, type MasterData, type MasterDataFills } from './masterData';
 import { displayValue } from './display';
 import { activeExclusions } from './hints';
@@ -100,7 +100,10 @@ export function transitionMessage(
   const label = (id: string) => fields.get(id)?.label ?? id;
   if (result.code === 'invalidValue') {
     const [fieldId = '', issue = ''] = result.detail;
-    const text = ISSUE_MESSAGES[issue as IssueCode] ?? TRANSITION_MESSAGES.invalidValue;
+    const text =
+      issue in ISSUE_MESSAGES
+        ? issueMessage(issue as IssueCode, fields.get(fieldId))
+        : TRANSITION_MESSAGES.invalidValue;
     return { message: text, detail: [label(fieldId)] };
   }
   if (result.code === 'fixedByOtherRole') {

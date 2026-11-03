@@ -53,6 +53,7 @@
           "id": "mandantennummer",
           "role": "arbeitgeber",
           "type": "text",
+          "textFormat": "ziffern",
           "label": "Mandantennummer",
           "required": true,
           "purpose": "Zuordnung bei der lohnabrechnenden Stelle",
@@ -69,7 +70,9 @@
           "question": "Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?",
           "help": "Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen.",
           "masterData": "abgabetag",
-          "decimals": 0
+          "decimals": 0,
+          "min": 1,
+          "max": 31
         },
         {
           "id": "ansprechpartner",
@@ -259,6 +262,7 @@
               },
               "because": "Bei Stundenlohn rechnet die Lohnabrechnung mit den ausgefallenen Stunden; bei festem Entgelt genügen die Tage.",
               "decimals": 2,
+              "max": 744,
               "unit": "Std.",
               "carryOver": false
             },
@@ -276,6 +280,7 @@
               },
               "because": "Bei Stundenlohn wird die Entgeltfortzahlung nach den ausgefallenen Stunden berechnet; bei festem Entgelt genügen die Tage.",
               "decimals": 2,
+              "max": 744,
               "unit": "Std.",
               "carryOver": false
             }

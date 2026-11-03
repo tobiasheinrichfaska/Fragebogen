@@ -207,6 +207,7 @@ describe('check hints — definition rules', () => {
     expect(Object.keys(HINT_TESTS).sort()).toEqual([
       'ab55Jahren',
       'andereBeschaeftigungAusbildung',
+      'bicPasstNichtZurIban',
       'geringfuegigEntlohnt',
       'geringfuegigNebenKurzfristigen',
       'hoechstensGeringfuegigkeitsgrenze',
@@ -221,6 +222,7 @@ describe('check hints — definition rules', () => {
       'kurzfristigGegebenBisGeringfuegigkeitsgrenze',
       'listeneintragNichtGueltig',
       'minijobNebenHauptbeschaeftigung',
+      'plzAuslandFormat',
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',
       'regelaltersgrenzeNichtErreicht',
@@ -228,6 +230,7 @@ describe('check hints — definition rules', () => {
       'ueberBeitragsbemessungsgrenze',
       'ueberGeringfuegigkeitsgrenze',
       'ueberMassgeblicheJahresarbeitsentgeltgrenze',
+      'versicherungsnummerWeichtAb',
       'weitererMinijobNebenJaegFreierHauptbeschaeftigung',
       'weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze',
       'weitererMinijobUeberJaeg',
@@ -956,5 +959,142 @@ describe('found by the insurer cases', () => {
     expect(run('6000.00')).toBe(false);
     // Above already without it: the other case (KV-free main job).
     expect(run('7000.00')).toBe(false);
+  });
+});
+
+describe('the Versicherungsnummer against the person (Tobias 2026-11-03: only a hint)', () => {
+  // 65 170590 M 520: born 17.05.1990, Geburtsname with M, serial 52 (a woman). Fictitious.
+  const run = (
+    number: string,
+    birth: string,
+    birthName: string | null,
+    name: string,
+    gender: string,
+  ) => HINT_TESTS.versicherungsnummerWeichtAb?.run([number, birth, birthName, name, gender]);
+
+  it('is quiet when date, initial and serial fit', () => {
+    expect(run('65170590M520', '1990-05-17', null, 'Muster', 'weiblich')).toEqual({
+      holds: false,
+      detail: [],
+    });
+    expect(run('65170590M520', '1990-05-17', 'Meyer', 'Schulz', 'divers')?.holds).toBe(false);
+    expect(run('65170590M520', '1990-05-17', 'Meyer', 'Schulz', 'unbestimmt')?.holds).toBe(false);
+    expect(run('65170590M020', '1990-05-17', 'Meyer', 'Schulz', 'maennlich')?.holds).toBe(false);
+  });
+
+  it('names a birth date that differs', () => {
+    expect(run('65170590M520', '1990-05-18', null, 'Muster', 'weiblich')?.detail).toEqual([
+      'Geburtsdatum in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.',
+    ]);
+    expect(run('65170591M520', '1990-05-17', null, 'Muster', 'weiblich')?.holds).toBe(true);
+    expect(run('65170690M520', '1990-05-17', null, 'Muster', 'weiblich')?.holds).toBe(true);
+  });
+
+  it('accepts the dates the Rundschreiben allows (Tz. 3.1.1.2)', () => {
+    // Serial numbers used up: the day raised by 32, if need be twice.
+    expect(run('65490590M520', '1990-05-17', null, 'Muster', 'weiblich')?.holds).toBe(false);
+    expect(run('65810590M520', '1990-05-17', null, 'Muster', 'weiblich')?.holds).toBe(false);
+    // No day or month in the passport.
+    expect(run('65000590M520', '1990-05-17', null, 'Muster', 'weiblich')?.holds).toBe(false);
+    expect(run('65000090M520', '1990-05-17', null, 'Muster', 'weiblich')?.holds).toBe(false);
+  });
+
+  it('takes the Geburtsname, else the Familienname, with umlauts resolved', () => {
+    expect(run('65170590M520', '1990-05-17', 'Schulz', 'Muster', 'weiblich')?.detail).toEqual([
+      'Buchstabe in der Versicherungsnummer: M; Anfangsbuchstabe des Geburtsnamens: S.',
+    ]);
+    expect(run('65170590O520', '1990-05-17', null, 'Özdemir', 'weiblich')?.holds).toBe(false);
+    expect(run('65170590E520', '1990-05-17', 'Écrivain', 'Muster', 'weiblich')?.holds).toBe(false);
+    // A Vorsatzwort comes first; the initial of a later part of the name is no hint either.
+    expect(run('65170590M520', '1990-05-17', 'von Müller', 'Schulz', 'weiblich')?.holds).toBe(
+      false,
+    );
+    expect(run('65170590M520', '1990-05-17', 'Lang-Müller', 'Schulz', 'weiblich')?.holds).toBe(
+      false,
+    );
+    // Not a Latin letter: nothing to compare.
+    expect(run('65170590M520', '1990-05-17', 'Øster', 'Schulz', 'weiblich')?.holds).toBe(false);
+  });
+
+  it('compares the serial with the gender (Tz. 3.1.1.4)', () => {
+    expect(run('65170590M520', '1990-05-17', null, 'Muster', 'maennlich')?.detail).toEqual([
+      'Seriennummer 52: 50 bis 99 (Frauen, divers, unbestimmt).',
+    ]);
+    expect(run('65170590M490', '1990-05-17', null, 'Muster', 'weiblich')?.detail).toEqual([
+      'Seriennummer 49: 00 bis 49 (Männer).',
+    ]);
+  });
+
+  it('lists every difference and skips missing answers', () => {
+    expect(run('65170590M520', '1991-05-17', 'Schulz', 'Muster', 'maennlich')?.detail).toHaveLength(
+      3,
+    );
+    expect(
+      HINT_TESTS.versicherungsnummerWeichtAb?.run([null, null, null, null, null]),
+    ).toBeUndefined();
+    expect(
+      HINT_TESTS.versicherungsnummerWeichtAb?.run(['65170590M520', null, null, null, null]),
+    ).toEqual({ holds: false, detail: [] });
+  });
+
+  it('is a check hint of the Personalfragebogen, not an error of the field', () => {
+    const q = answers({
+      geburtsdatum: '18.05.1990',
+      familienname: 'Muster',
+      geschlecht: 'weiblich',
+      versicherungsnummer: '65 170590 M 520',
+    });
+    expect(ids(q)).toContain('versicherungsnummerWeichtAb');
+  });
+});
+
+describe('the BIC against the IBAN', () => {
+  const run = (iban: string, bic: string) => HINT_TESTS.bicPasstNichtZurIban?.run([iban, bic]);
+
+  it('compares the country of the BIC (ISO 9362) with that of the IBAN', () => {
+    expect(run('DE02120300000000202051', 'BYLADEM1001')).toEqual({ holds: false, detail: [] });
+    expect(run('DE02120300000000202051', 'BYLADEM1')?.holds).toBe(false);
+    expect(run('AT611904300234573201', 'BYLADEM1')).toEqual({
+      holds: true,
+      detail: ['Land im BIC: DE; Land der IBAN: AT.'],
+    });
+  });
+
+  it('knows the territories with IBANs of another country', () => {
+    expect(run('GB29NWBK60161331926819', 'ABCDJESHXXX')?.holds).toBe(false);
+    expect(run('FR1420041010050500013M02606', 'ABCDRERRXXX')?.holds).toBe(false);
+    expect(run('FI2112345600000785', 'ABCDAXAA')?.holds).toBe(false);
+    expect(run('DE02120300000000202051', 'ABCDJESHXXX')?.holds).toBe(true);
+  });
+
+  it('skips missing answers', () => {
+    expect(HINT_TESTS.bicPasstNichtZurIban?.run([null, 'BYLADEM1'])).toBeUndefined();
+    expect(HINT_TESTS.bicPasstNichtZurIban?.run(['DE02120300000000202051', null])).toBeUndefined();
+  });
+});
+
+describe('the postcode abroad (DEÜV Anlage 18)', () => {
+  const run = (state: string, plz: string) => HINT_TESTS.plzAuslandFormat?.run([state, plz]);
+
+  it('checks the format of the states in Anlage 18', () => {
+    expect(run('Niederlande', '1234 AB')).toEqual({ holds: false, detail: [] });
+    expect(run('Niederlande', '1234 ab')?.holds).toBe(false);
+    expect(run('Polen', '00-950')?.holds).toBe(false);
+    expect(run('Malta', 'VLT 1117')?.holds).toBe(false);
+    expect(run('Kanada', 'K1A 0B1')?.holds).toBe(false);
+    expect(run('Österreich', '1010')?.holds).toBe(false);
+    expect(run('Österreich', '10101')).toEqual({
+      holds: true,
+      detail: ['Format in Österreich: NNNN (N = Ziffer, A = Buchstabe), zum Beispiel 1234.'],
+    });
+    expect(run('Niederlande', '1234AB')?.detail).toEqual([
+      'Format in Niederlande: NNNN AA (N = Ziffer, A = Buchstabe), zum Beispiel 1234 FG.',
+    ]);
+    expect(run('Polen', '00950')?.holds).toBe(true);
+  });
+
+  it('says nothing for a state without a format', () => {
+    expect(run('Türkei', '34000 ABC')).toBeUndefined();
+    expect(HINT_TESTS.plzAuslandFormat?.run([null, '1234'])).toBeUndefined();
   });
 });

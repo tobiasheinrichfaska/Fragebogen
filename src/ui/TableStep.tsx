@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { displayValue, editValue } from '../logic/display';
 import { pageColumns, type InterviewStep } from '../logic/interview';
-import { ISSUE_MESSAGES } from '../logic/issues';
+import { issueMessage } from '../logic/issues';
 import type { FieldDefinition, FieldValue } from '../logic/model';
 import {
   columnShown,
@@ -110,7 +110,10 @@ export function TableStep({ session, field, step, onSession }: Props) {
       setError({
         ...(check.row === undefined ? {} : { row: check.row }),
         ...(check.column === undefined ? {} : { column: check.column }),
-        text: ISSUE_MESSAGES[check.issue],
+        text: issueMessage(
+          check.issue,
+          field.columns?.find((candidate) => candidate.id === check.column),
+        ),
       });
       return;
     }
