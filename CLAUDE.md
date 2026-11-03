@@ -1046,6 +1046,24 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**Hand-over 2026-11-04 (start here):** Pushed through f34d9d2; working tree clean; public app at
+d41c797 (Sofortmeldung 1.0.0 productive), test folder at f34d9d2. Audit report with all decisions:
+`reports/2026-11-03_22-51-59_audit-report.md`. **Awaiting Tobias:** (a) review of the Austritt draft
+(`docs/formulare/austritt-0.1.0.md`); (b) answers on Gesellschafterbeschluss/Vollständigkeitserklärung
+(one form or two; paper signature for the Ein-Personen-GmbH, § 48 Abs. 3 GmbHG; e-signature + max
+3 signers for the VE). **Build queue (decisions already made, see research):** 1. Eigenbeleg
+(expenses + cash events; Bewirtung selectable with a clear warning — his call against the research;
+≥ 250 € check hint; typed issue date; optional Belegnummer), 2. SEPA-Mandat (simple e-signature
+suffices — his call; formats `glaeubigerId`/`mandatsreferenz` are in src/logic with tests), 3. SEPA-Beauftragung (client authorizes the Kanzlei to grant mandates to Einzugsstellen; separate
+form; acceptance is each Kasse's call → notice), 4. Steuerfreigabe rework (consent names the
+declaration transmitted on date X; the Kanzlei presets which transmissions appear and how many sign,
+1–n via fixed roles + requiredIf; the Kanzlei's AGB always firmly appended to the PDF — copyrighted,
+so local config like the LuG mapping, hash into the seal). **Research reports (local, gitignored):**
+`.tmp/research/{kuendigung,eigenbeleg,vollstaendigkeitserklaerung,gesellschafterbeschluss}.md` —
+KapESt correction therein: due at the day of inflow (§ 44 Abs. 1 S. 5 EStG), not the 10th of the
+next month. Uploads: `deploy/upload.ps1 -Ziel test|oeffentlich -OhneRueckfrage` (committed state
+only; production needs Tobias's explicit OK each time).
+
 Steps 0 (foundation), 1 (PDF spike, `docs/spike-pdf.md`), 2 (canonicalisation, normalisation,
 validators, form definition decoder, registry) and 3 (seal, transitions, strict file decoder,
 graded verification, tamper matrix, golden files) 4a (transmission rules: no transmission without
