@@ -77,9 +77,12 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
   stehen.
 - Beim Datum steht **„Dieses Datum gibt es nicht.“**
 - Nach einer korrekten Eingabe geht es mit „Weiter“ normal weiter.
-- Schritt 3: Angenommen; in der Zusammenfassung steht „02.11.2026“. _Nicht offensichtlich:_ Die
-  Tastatur am Handy zeigt Ziffern mit einem Komma; auch „02,11,2026“ geht (iPhone-Testbericht vom
-  01.11.2026: vorher ließ sich dort kein Datum eingeben).
+- Schritt 3: Das leere Feld zeigt grau „TT.MM.JJJJ“. Jede Ziffer ersetzt einen grauen Buchstaben,
+  die Punkte stehen schon da und bleiben: nach „0211“ steht „02.11“ schwarz und „.JJJJ“ grau im
+  Feld, am Ende „02.11.2026“. _Nicht offensichtlich:_ Die Tastatur am Handy zeigt nur Ziffern und
+  ein Komma (das iPhone bietet Webseiten keine Zifferntastatur mit Punkt). Ein getipptes Komma
+  erscheint sofort als Punkt, so geht auch „2,11,2026“ → „2.11.2026“; bei einstelligem Tag
+  verschwindet die graue Vorgabe (iPhone-Testberichte vom 01.11. und 04.11.2026).
 
 ---
 
@@ -363,3 +366,32 @@ einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ 
   gemerkte Fragebogen weg (Meldung „… länger als 7 Tage … gelöscht“). In einer heruntergeladenen Kopie (`file://`) merkt sich die App nichts; ein privates Fenster
   vergisst beim Schließen alles. Kann der Browser gar nichts speichern, sagt die App das beim
   ersten Merken.
+
+---
+
+## MT-118: Datum im Kalender des Geräts wählen
+
+**Einstieg:** Auf einem **iPhone** (Safari) und, wenn vorhanden, einem **Android-Handy** (Chrome)
+den Testordner öffnen und einen neuen Fragebogen „Personalfragebogen: Angaben für die
+Sofortmeldung“ beginnen.
+
+**Voraussetzungen:** Keine.
+
+**Schritte:**
+
+1. **„Ich bin: Arbeitgeber“** und bis zur Frage **„An welchem Tag beginnt die Beschäftigung?“**
+   antworten.
+2. Tippen Sie auf den **Kalender-Knopf** rechts neben dem Feld und wählen Sie einen Tag.
+3. Später, als **„Beschäftigte Person“**, beim **Geburtsdatum** wieder den Kalender-Knopf tippen
+   und als Jahr `1965` einstellen.
+
+**Erwartet:**
+
+- Schritt 2: Es öffnet sich der Datumswähler des Geräts; der gewählte Tag steht danach als
+  „TT.MM.JJJJ“ im Feld (z. B. „09.11.2026“). Steht schon ein gültiges Datum im Feld, öffnet der
+  Kalender auf diesem Tag.
+- Schritt 3: _Nicht offensichtlich:_ Auf dem iPhone kommt man zum Jahr über einen Tipp auf
+  **„Monat Jahr ›“** oben im Kalender – dann erscheinen Drehräder für Monat und Jahr; 1965 ist mit
+  wenigen Wischern erreicht. Auf Android tippt man im Kalender oben auf die **Jahreszahl** und
+  bekommt eine Jahresliste. Tage nach heute sind beim Geburtsdatum grau und nicht wählbar.
+- Die Seite zoomt beim Öffnen des Kalenders **nicht** heran.

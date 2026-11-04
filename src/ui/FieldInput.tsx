@@ -4,6 +4,7 @@ import { answerSuggestions } from '../logic/answerSuggestions';
 import type { PartData } from '../logic/form';
 import type { FieldDefinition, FieldType, FieldValue, FormDefinition } from '../logic/model';
 import { stepHalfSteps } from '../logic/normalize';
+import { TYPED_MASKS, typedText } from '../logic/typing';
 import { ISSUE_MESSAGES } from '../logic/issues';
 import {
   listOptionFor,
@@ -15,13 +16,14 @@ import {
   validityNote,
 } from '../logic/options';
 import { CalendarInput } from './CalendarInput';
+import { DateEntry } from './DateEntry';
 import { INPUT_MODE, isTextLike } from './fieldKinds';
 import { SearchSelect } from './SearchSelect';
 
+// Dates and months show their mask instead (logic/typing.ts); it stays the placeholder for screen readers.
 const PLACEHOLDER: Partial<Record<FieldType, string>> = {
-  date: 'TT.MM.JJJJ',
+  ...TYPED_MASKS,
   money: '0,00',
-  month: 'MM.JJJJ',
   iban: 'DE00 0000 0000 0000 0000 00',
 };
 
@@ -193,7 +195,8 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
     'aria-labelledby': `${id}-label`,
     // The length limit is enforced while typing; normalisation refuses longer text from elsewhere.
     ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength }),
-    onChange: (event: { target: { value: string } }) => onText(event.target.value),
+    onChange: (event: { target: { value: string } }) =>
+      onText(typedText(field.type, event.target.value)),
   };
   if (field.multiline) return <textarea {...common} rows={4} />;
   if (field.textFormat === 'halbeSchritte') {
@@ -221,7 +224,7 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
       </div>
     );
   }
-  return (
+  const input = (
     <input
       {...common}
       type="text"
@@ -246,5 +249,11 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
         if (event.key === 'Enter') onSubmit();
       }}
     />
+  );
+  if (TYPED_MASKS[field.type] === undefined) return input;
+  return (
+    <DateEntry field={field} text={text} onText={onText}>
+      {input}
+    </DateEntry>
   );
 }
