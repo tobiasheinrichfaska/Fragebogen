@@ -1,4 +1,4 @@
-// Check hints (Prüfhinweise) for the lohnabrechnende Stelle (research 2026-10-30): the app collects
+// Check hints (Prüfhinweise) for the recipient of the questionnaire (research 2026-10-30): the app collects
 // the facts, people decide the status. A hint combines answers of any roles and named tests (pure
 // functions, e.g. the Regelaltersgrenze from the birth date). Informational only — hints never
 // block and are never sealed, so verification stays independent of other roles.

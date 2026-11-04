@@ -68,7 +68,7 @@ export function InterviewScreen(props: Props) {
         <Banner
           message={{
             tone: 'warning',
-            text: 'Für diesen Sonderfall ist der Fragebogen nicht gedacht – er weiß nicht, welche Angaben dafür nötig sind. Abschließen und Weitergeben sind gesperrt; bitte wenden Sie sich an die lohnabrechnende Stelle.',
+            text: `Für diesen Sonderfall ist der Fragebogen nicht gedacht – er weiß nicht, welche Angaben dafür nötig sind. Abschließen und Weitergeben sind gesperrt; bitte fragen Sie bei der Stelle nach, die den Fragebogen bekommt (hier: ${session.form.definition.recipient.label}).`,
             detail: outOfScopeOf(session),
           }}
         />

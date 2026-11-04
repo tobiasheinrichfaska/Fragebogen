@@ -119,7 +119,7 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   outsideValidity:
     'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
   outOfScope:
-    'Für diesen Sonderfall ist der Fragebogen nicht gedacht. Abschließen und Weitergeben sind gesperrt; bitte die lohnabrechnende Stelle fragen.',
+    'Für diesen Sonderfall ist der Fragebogen nicht gedacht. Abschließen und Weitergeben sind gesperrt; bitte bei der Stelle nachfragen, die den Fragebogen bekommt.',
 };
 
 export type Transition =

@@ -668,7 +668,7 @@ Alle übrigen Angaben sind unabhängig.
 
 Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen. Verknüpft wird nur auf menschliche Entscheidung.
 
-## Prüfhinweise für die lohnabrechnende Stelle
+## Prüfhinweise für den Empfänger (Lohnabrechnende Stelle)
 
 Nur Hinweise: Sie blockieren nichts und werden nicht unterschrieben. Sie erscheinen bei der Zusammenführung, sobald alle genannten Teile vorliegen.
 

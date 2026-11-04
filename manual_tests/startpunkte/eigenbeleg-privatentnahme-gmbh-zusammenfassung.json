@@ -1,0 +1,29 @@
+{
+  "id": "eigenbeleg-privatentnahme-gmbh-zusammenfassung",
+  "title": "Eigenbeleg – Privatentnahme bei einer GmbH ausgefüllt, in der Zusammenfassung",
+  "form": "eigenbeleg",
+  "parts": [
+    {
+      "role": "aussteller",
+      "answers": {
+        "firma": "Beispiel GmbH",
+        "mandantennummer": "99999",
+        "ausstellerName": "Erika Musterfrau",
+        "vorgangsart": "privatentnahme",
+        "rechtsform": "kapitalgesellschaft",
+        "hinweisKapitalgesellschaft": "verstanden",
+        "vorgangsdatum": "15.10.2026",
+        "entnahmeAus": "kasse",
+        "entnahmePerson": "Erika Musterfrau",
+        "geldBetrag": "200,00",
+        "kassenbuchGeld": true,
+        "belegnummer": "EB-2026-002",
+        "ausstellungsdatum": "16.10.2026"
+      }
+    }
+  ],
+  "open": {
+    "role": "aussteller",
+    "at": "summary"
+  }
+}

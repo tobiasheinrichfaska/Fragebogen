@@ -1,0 +1,19 @@
+{
+  "id": "eigenbeleg-vorgangsart-offen",
+  "title": "Eigenbeleg – Unternehmen und Name eingetragen, offen ist die Art des Vorgangs",
+  "form": "eigenbeleg",
+  "parts": [
+    {
+      "role": "aussteller",
+      "answers": {
+        "firma": "Beispiel GmbH",
+        "mandantennummer": "99999",
+        "ausstellerName": "Erika Musterfrau"
+      }
+    }
+  ],
+  "open": {
+    "role": "aussteller",
+    "at": "vorgangsart"
+  }
+}

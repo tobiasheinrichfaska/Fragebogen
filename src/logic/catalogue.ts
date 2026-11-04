@@ -410,7 +410,7 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
   if ((definition.checkHints ?? []).length > 0) {
     lines.push(
       '',
-      '## Prüfhinweise für die lohnabrechnende Stelle',
+      `## Prüfhinweise für den Empfänger (${definition.recipient.label})`,
       '',
       'Nur Hinweise: Sie blockieren nichts und werden nicht unterschrieben. Sie erscheinen bei der ' +
         'Zusammenführung, sobald alle genannten Teile vorliegen.',

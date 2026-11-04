@@ -1,0 +1,11 @@
+{
+  "id": "kanzlei-eigenbeleg-bewirtung",
+  "title": "Kanzlei – ein unterschriebener Eigenbeleg über eine Bewirtung ist eingegangen",
+  "inbox": [
+    {
+      "name": "Eigenbeleg_Bewirtung.pdf",
+      "from": "eigenbeleg-bewirtung-unterschrieben"
+    }
+  ],
+  "open": "kanzlei"
+}

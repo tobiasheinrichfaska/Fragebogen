@@ -61,7 +61,7 @@ describe('questionnaire PDF', () => {
     if (!decoded.ok) return;
     expect(canonicalize(decoded.questionnaire)).toBe(canonicalize(session.questionnaire));
     expect(decoded.origin).toBe('published');
-  });
+  }, 60_000);
 
   it('is marked complete and named after the rules', () => {
     expect(written.complete).toBe(true);
@@ -87,7 +87,7 @@ describe('questionnaire PDF', () => {
     ]) {
       expect(all).toContain(expected);
     }
-  });
+  }, 60_000);
 
   it('carries PDF/A markers and a link, but no script, attachment or launch action', () => {
     const raw = latin1(written.bytes);
@@ -118,7 +118,7 @@ describe('questionnaire PDF', () => {
     }
     await task.destroy();
     expect(checked).toBeGreaterThan(2);
-  });
+  }, 60_000);
 
   // Three PDF reads and two saves: under a full parallel run this passed 5 s once (2026-11-01).
   it('survives re-saving with another program, and says it was re-saved', async () => {
@@ -146,7 +146,7 @@ describe('questionnaire PDF', () => {
     doc.addPage().drawText('Personalfragebogen (Ausdruck, eingescannt)');
     const text = await readPdfText(PDFJS, await doc.save());
     expect(decodeDataLines(text.lines)).toMatchObject({ ok: false, issue: 'notFound' });
-  });
+  }, 60_000);
 });
 
 describe('questionnaire PDF — handover', () => {

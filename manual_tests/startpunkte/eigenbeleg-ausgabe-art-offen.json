@@ -1,0 +1,20 @@
+{
+  "id": "eigenbeleg-ausgabe-art-offen",
+  "title": "Eigenbeleg – Ausgabe, offen ist nur, wofür bezahlt wurde",
+  "form": "eigenbeleg",
+  "parts": [
+    {
+      "role": "aussteller",
+      "answers": {
+        "firma": "Beispiel Malerbetrieb",
+        "ausstellerName": "Erika Musterfrau",
+        "vorgangsart": "ausgabe",
+        "vorgangsdatum": "15.10.2026"
+      }
+    }
+  ],
+  "open": {
+    "role": "aussteller",
+    "at": "artAusgabe"
+  }
+}

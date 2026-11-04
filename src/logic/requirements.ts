@@ -151,7 +151,7 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
     'Das Alter am Tag der Unterschrift lässt sich nicht bestimmen. Bitte das Geburtsdatum prüfen.',
   roleMissing: 'Ein erforderlicher Teil fehlt noch.',
   outOfScope:
-    'Für diesen Sonderfall ist der Fragebogen nicht gedacht; er kann so nicht weitergegeben werden. Bitte die lohnabrechnende Stelle fragen.',
+    'Für diesen Sonderfall ist der Fragebogen nicht gedacht; er kann so nicht weitergegeben werden. Bitte bei der Stelle nachfragen, die den Fragebogen bekommt.',
   outsideValidity:
     'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
   partsNotLinked:

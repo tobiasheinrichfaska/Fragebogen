@@ -1,0 +1,35 @@
+{
+  "id": "eigenbeleg-bewirtung-zusammenfassung",
+  "title": "Eigenbeleg – Bewirtung über 250,00 € ausgefüllt, in der Zusammenfassung",
+  "form": "eigenbeleg",
+  "parts": [
+    {
+      "role": "aussteller",
+      "answers": {
+        "firma": "Beispiel Malerbetrieb",
+        "ausstellerName": "Erika Musterfrau",
+        "vorgangsart": "ausgabe",
+        "vorgangsdatum": "15.10.2026",
+        "artAusgabe": "bewirtung",
+        "bewirtungHinweis": "verstanden",
+        "bewirtungOrt": "gaststaette",
+        "grundOhneOriginal": "verloren",
+        "zweitschrift": "vergeblich",
+        "zahlungsempfaenger": "Gasthaus Beispiel",
+        "ortDerAusgabe": "Musterstadt",
+        "leistung": "Mittagessen für 3 Personen",
+        "bewirtungAnlass": "Besprechung Auftrag Musterstraße",
+        "bewirtungTeilnehmer": "Erika Musterfrau\nMax Mustermann, Beispiel GmbH",
+        "inEuro": true,
+        "betrag": "250,00",
+        "zahlungsart": "bar",
+        "kassenbuch": true,
+        "ausstellungsdatum": "16.10.2026"
+      }
+    }
+  ],
+  "open": {
+    "role": "aussteller",
+    "at": "summary"
+  }
+}
