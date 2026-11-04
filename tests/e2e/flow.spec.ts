@@ -240,6 +240,40 @@ test('a master-data link made on the start page fills the next questionnaire', a
   await expectClean(page, found);
 });
 
+test('the dots of a date show before they are typed (the iPhone keypad has none)', async ({
+  page,
+}) => {
+  // iPhone test reports 2026-11-04: the keypad offers digits and a comma only, and nothing showed
+  // that the digits alone are enough.
+  const found = await guard(page);
+  await page.goto(pathToFileURL(APP).href);
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await answerUntilSummary(page, 'agBeschaeftigungsbeginn');
+  const input = page.locator('.question .masked input');
+  const mask = page.locator('.question .mask');
+  await input.fill('');
+  await expect(mask).toHaveText('TT.MM.JJJJ');
+  await input.pressSequentially('0211');
+  await expect(input).toHaveValue('02.11');
+  await expect(mask).toHaveText('02.11.JJJJ');
+  await input.pressSequentially('2026');
+  await expect(input).toHaveValue('02.11.2026');
+  await expect(mask).toHaveCount(0);
+  await input.fill('');
+  await input.pressSequentially('2,11,2026');
+  await expect(input).toHaveValue('2.11.2026');
+
+  // The device's date picker (tests cannot tap the native wheels; they set its value).
+  const picker = page.getByLabel('Datum im Kalender wählen');
+  await expect(picker).toHaveValue('2026-11-02');
+  await picker.fill('2026-11-09');
+  await expect(input).toHaveValue('09.11.2026');
+  await press(page, 'Weiter');
+  await expect.poll(() => heading(page)).not.toBe('An welchem Tag beginnt die Beschäftigung?');
+  await expectClean(page, found);
+});
+
 test('the Content-Security-Policy refuses a request to the internet', async ({ page }) => {
   await guard(page);
   await page.goto(pathToFileURL(APP).href);
