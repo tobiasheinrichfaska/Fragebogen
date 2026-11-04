@@ -58,6 +58,28 @@ und lädt sie **vor** der App hoch – der Ordner ist also nie offen. Die IP-Adr
 - Voraussetzung: PuTTY (`psftp.exe`) und Node.js; der eingebaute Windows-OpenSSH-Client liest nur den
   Schlüssel des Servers.
 
+## Weitere Ziele nur auf diesem PC (`deploy/.local/upload.local.json`)
+
+Ein anderes Projekt kann denselben Zugang nutzen, ohne in diesem öffentlichen Repo vorzukommen: Seine
+Ziele stehen nur in `deploy/.local/upload.local.json` (gitignored), im selben Format wie
+`deploy/upload.json`, mit diesen Zusätzen:
+
+| Feld       | Bedeutung                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| `root`     | absoluter Ordner auf diesem PC, aus dem die `from`-Dateien kommen (der Build des anderen Projekts) |
+| `testers`  | eigene Testerliste in `deploy/.local/`, z. B. `deploy/.local/tester-projekt.json`                  |
+| `authName` | Name im Anmeldefenster des Browsers                                                                |
+| `frames`   | `"self"`: Seiten des Ordners dürfen einander einbetten (z. B. eine Testseite um ihre App)          |
+
+Ein lokales Ziel ersetzt nie eines aus `deploy/upload.json`, und mit `root` gibt es kein `build` –
+das andere Projekt baut selbst. Das Werkzeug meldet dann den Git-Stand jenes Projekts. Jeder
+geschützte Ordner bekommt `noindex`.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel <lokales Ziel>
+node deploy/testers.ts neu <Name> --datei=deploy/.local/tester-projekt.json   # Tester dieses Ordners
+```
+
 ## Tester des Testordners
 
 ```powershell

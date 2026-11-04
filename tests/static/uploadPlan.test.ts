@@ -17,7 +17,8 @@ import {
   remoteDirectoryOf,
   type UploadSpec,
 } from '../../deploy/uploadPlan';
-import { expandFolders, foldersOf } from '../../deploy/uploadPlan';
+import { expandFolders, foldersOf, mergeLocalSpec } from '../../deploy/uploadPlan';
+import { TESTERS_FILE, testersFileOf } from '../../deploy/testers';
 
 describe('folders in the upload list', () => {
   const list = (folder: string) =>
@@ -450,5 +451,124 @@ describe('deploy/upload.ps1', () => {
     const keyscan = script.indexOf('ssh-keyscan.exe -p');
     expect(plink).toBeGreaterThan(0);
     expect(keyscan).toBeGreaterThan(plink);
+  });
+});
+
+// Local targets (2026-11-04): another project's build in its own protected folder, with its own tester
+// list — named only in the gitignored deploy/.local/upload.local.json, never in this public repo.
+describe('local upload targets', () => {
+  const LOCAL = {
+    targets: {
+      nebenprojekt: {
+        description: 'Nebenprojekt',
+        folder: 'Nebenprojekt',
+        access: 'ipOrLogin',
+        root: 'C:/projekte/nebenprojekt/dist/hosted',
+        testers: 'deploy/.local/tester-nebenprojekt.json',
+        authName: 'Nebenprojekt - Test',
+        frames: 'self',
+        files: [{ from: 'index.html', to: 'index.html', verify: true }],
+      },
+    },
+  };
+
+  it('are read from the local file and join the repo targets', () => {
+    const local = parseUploadSpec(LOCAL, 'local');
+    expect(local.ok).toBe(true);
+    const merged = local.ok ? mergeLocalSpec(SPEC, local.spec) : local;
+    expect(merged.ok && Object.keys(merged.spec.targets)).toEqual([
+      'oeffentlich',
+      'kanzlei',
+      'test',
+      'falsch',
+      'nebenprojekt',
+    ]);
+    expect(merged.ok && merged.spec.forbidden).toEqual(SPEC.forbidden);
+  });
+
+  it('never replace a target of the repo', () => {
+    const local = parseUploadSpec({ targets: { test: LOCAL.targets.nebenprojekt } }, 'local');
+    const merged = local.ok ? mergeLocalSpec(SPEC, local.spec) : local;
+    expect(merged.ok ? '' : merged.problems.join(' ')).toContain(
+      '„test“ steht schon in deploy/upload.json',
+    );
+  });
+
+  const base = LOCAL.targets.nebenprojekt;
+  it.each([
+    [
+      '"root" in the repo file',
+      { ...base },
+      'repo',
+      '"root" nur in deploy/.local/upload.local.json',
+    ],
+    ['a relative root', { ...base, root: 'dist/hosted' }, 'local', 'absoluter Ordner'],
+    ['a root with ".."', { ...base, root: 'C:/projekte/../geheim' }, 'local', 'absoluter Ordner'],
+    ['a root with a build', { ...base, build: 'build' }, 'local', 'kein "build"'],
+    [
+      'a tester list elsewhere',
+      { ...base, testers: 'config/t.json' },
+      'local',
+      '"testers" liegt in',
+    ],
+    ['other frames', { ...base, frames: '*' }, 'local', '"frames" ist "self"'],
+    ['an auth name with quotes', { ...base, authName: 'a"b' }, 'local', '"authName"'],
+  ] as const)('refuse %s', (_name, target, origin, problem) => {
+    const parsed = parseUploadSpec({ targets: { x: target }, forbidden: [] }, origin);
+    expect(parsed.ok ? '' : parsed.problems.join(' ')).toContain(problem);
+  });
+
+  it('report the other project as the source and name it in the password dialog', () => {
+    const local = parseUploadSpec(LOCAL, 'local');
+    const merged = local.ok ? mergeLocalSpec(SPEC, local.spec) : local;
+    if (!merged.ok) throw new Error(merged.problems.join(' '));
+    const login = { directory: '/home/www/public/Nebenprojekt', htpasswd: 'sanne:$6$x\n' };
+    const app = files({ 'index.html': 'App' });
+    const plan = planUpload(merged.spec, 'nebenprojekt', app, [], IPS, login);
+    expect(plan).toMatchObject({ ok: true, source: 'C:/projekte/nebenprojekt/dist/hosted' });
+    const rules = plan.ok ? (plan.generated[1]?.content ?? '') : '';
+    expect(rules).toContain('AuthName "Nebenprojekt - Test"\n');
+    expect(rules).toContain('AuthUserFile "/home/www/public/Nebenprojekt/.htpasswd"\n');
+  });
+});
+
+describe('access rules of a protected folder', () => {
+  it('keep it out of search indexes', () => {
+    for (const access of ['ip', 'ipOrLogin'] as const) {
+      expect(accessRules(access, IPS)).toContain(
+        'Header always set X-Robots-Tag "noindex, nofollow"\n',
+      );
+    }
+  });
+
+  it('let its pages frame each other only with frames "self"', () => {
+    const framed = accessRules('ipOrLogin', IPS, undefined, { frames: 'self' });
+    expect(framed).toContain(
+      `Content-Security-Policy "frame-ancestors 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"`,
+    );
+    expect(framed).toContain('X-Frame-Options "SAMEORIGIN"');
+    expect(accessRules('ipOrLogin', IPS)).not.toContain('frame-ancestors');
+  });
+
+  it("keep the name of the test folder's password dialog", () => {
+    const login = { directory: '/x', htpasswd: 'a:b\n' };
+    expect(accessRules('ipOrLogin', IPS, login)).toContain('AuthName "Fragebogen - Testbereich"\n');
+  });
+});
+
+describe('the tester list of a command', () => {
+  it("is the test folder's, or one named with --datei below deploy/.local/", () => {
+    expect(testersFileOf(['neu', 'anna'])).toBe(TESTERS_FILE);
+    expect(testersFileOf(['neu', 'anna', '--datei=deploy/.local/tester-nebenprojekt.json'])).toBe(
+      'deploy/.local/tester-nebenprojekt.json',
+    );
+  });
+
+  it.each([
+    '--datei=config/tester.json',
+    '--datei=deploy/.local/../x.json',
+    '--datei=deploy/.local/a/b.json',
+  ])('refuses %s', (arg) => {
+    expect(testersFileOf([arg])).toBeUndefined();
   });
 });

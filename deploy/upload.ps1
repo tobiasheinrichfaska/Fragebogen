@@ -304,6 +304,11 @@ try {
 
   $spec = Get-Content -Raw -Encoding UTF8 (Join-Path $PSScriptRoot 'upload.json') | ConvertFrom-Json
   $target = $spec.targets.$Ziel
+  # Further targets (another project's build) only in the gitignored local file — uploadPlan.ts checks them.
+  $localSpecPath = Join-Path $localDir 'upload.local.json'
+  if (-not $target -and (Test-Path $localSpecPath)) {
+    $target = (Get-Content -Raw -Encoding UTF8 $localSpecPath | ConvertFrom-Json).targets.$Ziel
+  }
   if (-not $target) { throw ('Unbekanntes Ziel „' + $Ziel + '“.') }
   if ($target.build -and -not $OhneBuild -and -not $Probelauf) {
     Write-Host "Baue die App (npm run $($target.build)) …"
@@ -325,8 +330,10 @@ try {
   $plan = Get-Plan $known
 
   $place = (@($settings.ordner, $plan.folder) | Where-Object { $_ }) -join '/'
-  $commit = (Invoke-Native { & git.exe -C $root rev-parse --short HEAD }) -join ''
-  $dirty = [bool](Invoke-Native { & git.exe -C $root status --porcelain })
+  # A target with "root" reports the git state of that project, not of this repo.
+  $gitRoot = if ($plan.source) { $plan.source } else { $root }
+  $commit = (Invoke-Native { & git.exe -C $gitRoot rev-parse --short HEAD }) -join ''
+  $dirty = [bool](Invoke-Native { & git.exe -C $gitRoot status --porcelain })
   $fileList = (@($plan.generated | ForEach-Object { "  $($_.to)  (Zugriffsregeln, erzeugt)" }) +
     @($plan.files | ForEach-Object { "  $($_.to)  ($([math]::Round($_.bytes / 1KB)) KB, SHA-256 $($_.sha256.Substring(0, 12))…)" })) -join "`n"
   $notes = if ($plan.notes) { "`n`n" + ($plan.notes -join "`n") } else { '' }

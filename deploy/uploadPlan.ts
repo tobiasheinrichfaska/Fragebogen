@@ -37,6 +37,17 @@ export interface UploadTarget {
    */
   allowMapping?: boolean;
   files: UploadFile[];
+  /** Name in the browser's password dialog of an `ipOrLogin` folder. */
+  authName?: string;
+  /** "self": the folder's pages may frame each other (a test page around its app). */
+  frames?: 'self';
+  /** The folder's own tester list (default deploy/.local/tester.json), always below deploy/.local/. */
+  testers?: string;
+  /**
+   * Only for a target from deploy/.local/upload.local.json: the absolute local folder its "from" paths
+   * start in — another project's build, kept out of this public repo.
+   */
+  root?: string;
 }
 
 export interface UploadSpec {
@@ -67,6 +78,8 @@ export type Plan =
       files: PlannedFile[];
       generated: GeneratedFile[];
       notes: string[];
+      /** The local folder of a target with "root" (its git state is the one reported). */
+      source?: string;
     }
   | { ok: false; problems: string[] };
 
@@ -85,13 +98,29 @@ export const isIpAddress = (text: string): boolean => IPV4.test(text) || IPV6.te
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-export function parseUploadSpec(raw: unknown): Parsed {
+const LOCAL_ROOT = /^[A-Za-z]:[\\/](?!.*(?:^|[\\/])\.\.(?:[\\/]|$))[^"\r\n]*$/;
+export const LOCAL_SPEC_FILE = 'deploy/.local/upload.local.json';
+
+/**
+ * deploy/upload.json ("repo"), or the gitignored deploy/.local/upload.local.json ("local") with
+ * further targets — only those may name a "root" outside this repo; "forbidden" is optional there.
+ */
+export function parseUploadSpec(raw: unknown, origin: 'repo' | 'local' = 'repo'): Parsed {
   const problems: string[] = [];
-  if (!isObject(raw) || !isObject(raw.targets) || !Array.isArray(raw.forbidden)) {
-    return { ok: false, problems: ['deploy/upload.json braucht "targets" und "forbidden".'] };
+  const file = origin === 'repo' ? 'deploy/upload.json' : LOCAL_SPEC_FILE;
+  if (
+    !isObject(raw) ||
+    !isObject(raw.targets) ||
+    (origin === 'repo' && !Array.isArray(raw.forbidden))
+  ) {
+    return {
+      ok: false,
+      problems: [`${file} braucht "targets"${origin === 'repo' ? ' und "forbidden"' : ''}.`],
+    };
   }
-  const forbidden = raw.forbidden.filter((p): p is string => typeof p === 'string');
-  if (forbidden.length !== raw.forbidden.length) problems.push('"forbidden" enthält keinen Text.');
+  const rawForbidden = Array.isArray(raw.forbidden) ? raw.forbidden : [];
+  const forbidden = rawForbidden.filter((p): p is string => typeof p === 'string');
+  if (forbidden.length !== rawForbidden.length) problems.push('"forbidden" enthält keinen Text.');
   const targets: Record<string, UploadTarget> = {};
   for (const [name, target] of Object.entries(raw.targets)) {
     if (
@@ -115,6 +144,35 @@ export function parseUploadSpec(raw: unknown): Parsed {
       problems.push(
         `Ziel „${name}“: Die Zuordnung zum Lohnprogramm nie in einen öffentlichen Ordner.`,
       );
+    }
+    if (target.root !== undefined) {
+      if (origin !== 'local') {
+        problems.push(`Ziel „${name}“: "root" nur in ${LOCAL_SPEC_FILE}.`);
+      } else if (typeof target.root !== 'string' || !LOCAL_ROOT.test(target.root)) {
+        problems.push(
+          `Ziel „${name}“: "root" ist ein absoluter Ordner auf diesem PC (z. B. C:/…), ohne "..".`,
+        );
+      }
+      if (target.build !== undefined) {
+        problems.push(`Ziel „${name}“: mit "root" kein "build" – das andere Projekt baut selbst.`);
+      }
+    }
+    if (
+      target.testers !== undefined &&
+      (typeof target.testers !== 'string' ||
+        !target.testers.startsWith('deploy/.local/') ||
+        !SAFE_PATH.test(target.testers))
+    ) {
+      problems.push(`Ziel „${name}“: "testers" liegt in deploy/.local/.`);
+    }
+    if (target.frames !== undefined && target.frames !== 'self') {
+      problems.push(`Ziel „${name}“: "frames" ist "self" oder fehlt.`);
+    }
+    if (
+      target.authName !== undefined &&
+      (typeof target.authName !== 'string' || !/^[^"\r\n]{1,60}$/.test(target.authName))
+    ) {
+      problems.push(`Ziel „${name}“: "authName" ist ein kurzer Text ohne Anführungszeichen.`);
     }
     const files: UploadFile[] = [];
     for (const file of target.files) {
@@ -142,9 +200,31 @@ export function parseUploadSpec(raw: unknown): Parsed {
       access: access ?? 'ip',
       ...(target.allowMapping === true ? { allowMapping: true } : {}),
       files,
+      ...(typeof target.authName === 'string' ? { authName: target.authName } : {}),
+      ...(target.frames === 'self' ? { frames: 'self' as const } : {}),
+      ...(typeof target.testers === 'string' ? { testers: target.testers } : {}),
+      ...(typeof target.root === 'string' ? { root: target.root } : {}),
     };
   }
   return problems.length > 0 ? { ok: false, problems } : { ok: true, spec: { targets, forbidden } };
+}
+
+/** The repo's targets plus the local ones; a local target never replaces one of the repo. */
+export function mergeLocalSpec(repo: UploadSpec, local: UploadSpec): Parsed {
+  const clash = Object.keys(local.targets).filter((name) => name in repo.targets);
+  if (clash.length > 0) {
+    return {
+      ok: false,
+      problems: clash.map((name) => `Ziel „${name}“ steht schon in deploy/upload.json.`),
+    };
+  }
+  return {
+    ok: true,
+    spec: {
+      targets: { ...repo.targets, ...local.targets },
+      forbidden: [...repo.forbidden, ...local.forbidden],
+    },
+  };
 }
 
 /**
@@ -202,10 +282,31 @@ const SERVER_DIRECTORY = /^\/[A-Za-z0-9._\-/]+$/;
  * login, other addresses get Apache's password dialog — only over HTTPS, so a password never
  * travels unencrypted before the redirect.
  */
-export function accessRules(access: Access, ips: readonly string[], login?: Login): string {
+export interface RuleOptions {
+  authName?: string;
+  frames?: 'self';
+}
+
+export function accessRules(
+  access: Access,
+  ips: readonly string[],
+  login?: Login,
+  options: RuleOptions = {},
+): string {
   const head = [
     '# Generated by deploy/upload.ps1 from the local list of the Kanzlei IP addresses',
     '# (and the testers). Do not edit on the server; the next upload replaces it.',
+    // A protected folder never belongs in a search index; with frames "self" its pages may frame each
+    // other — this replaces the subdomain's "frame-ancestors 'none'" for this folder only.
+    '<IfModule mod_headers.c>',
+    '  Header always set X-Robots-Tag "noindex, nofollow"',
+    ...(options.frames === 'self'
+      ? [
+          `  Header always set Content-Security-Policy "frame-ancestors 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"`,
+          '  Header always set X-Frame-Options "SAMEORIGIN"',
+        ]
+      : []),
+    '</IfModule>',
   ];
   if (access !== 'ipOrLogin' || !login) {
     return [...head, `Require ip ${ips.join(' ')}`, ''].join('\n');
@@ -213,7 +314,7 @@ export function accessRules(access: Access, ips: readonly string[], login?: Logi
   return [
     ...head,
     'AuthType Basic',
-    'AuthName "Fragebogen - Testbereich"',
+    `AuthName "${options.authName ?? 'Fragebogen - Testbereich'}"`,
     `AuthUserFile "${login.directory}/.htpasswd"`,
     '<RequireAll>',
     "  Require expr %{HTTPS} == 'on'",
@@ -295,11 +396,20 @@ export function planUpload(
     folder: target.folder,
     access: target.access,
     files,
+    ...(target.root ? { source: target.root } : {}),
     // The password file goes up before the rules that name it.
     generated: [
       ...(withLogin ? [{ to: '.htpasswd', content: withLogin.htpasswd }] : []),
       ...(protectedFolder
-        ? [{ to: '.htaccess', content: accessRules(target.access, ips, withLogin) }]
+        ? [
+            {
+              to: '.htaccess',
+              content: accessRules(target.access, ips, withLogin, {
+                ...(target.authName ? { authName: target.authName } : {}),
+                ...(target.frames ? { frames: target.frames } : {}),
+              }),
+            },
+          ]
         : []),
     ],
     notes:
@@ -372,18 +482,27 @@ function cli(args: readonly string[]): unknown {
   const targetName = args[0] ?? '';
   const remote = option(args, '--remote');
   const ips = (option(args, '--ips') ?? '').split(/[\s,;]+/).filter(Boolean);
-  const parsed = parseUploadSpec(
-    JSON.parse(readFileSync(join(root, 'deploy/upload.json'), 'utf8')),
-  );
+  let parsed = parseUploadSpec(JSON.parse(readFileSync(join(root, 'deploy/upload.json'), 'utf8')));
   if (!parsed.ok) return parsed;
-  const local = join(root, 'config/export.local.json');
-  const markers = existsSync(local) ? mappingMarkers(JSON.parse(readFileSync(local, 'utf8'))) : [];
+  const localSpec = join(root, LOCAL_SPEC_FILE);
+  if (existsSync(localSpec)) {
+    const local = parseUploadSpec(JSON.parse(readFileSync(localSpec, 'utf8')), 'local');
+    if (!local.ok) return local;
+    parsed = mergeLocalSpec(parsed.spec, local.spec);
+    if (!parsed.ok) return parsed;
+  }
+  const mapping = join(root, 'config/export.local.json');
+  const markers = existsSync(mapping)
+    ? mappingMarkers(JSON.parse(readFileSync(mapping, 'utf8')))
+    : [];
+  // A target with "root" reads its files from that folder, every other one from this repo.
+  const base = parsed.spec.targets[targetName]?.root ?? root;
   const read = (path: string) => {
-    const full = join(root, path);
+    const full = join(base, path);
     return existsSync(full) && statSync(full).isFile() ? readFileSync(full) : undefined;
   };
   const list = (folder: string) => {
-    const full = join(root, folder);
+    const full = join(base, folder);
     if (!existsSync(full) || !statSync(full).isDirectory()) return undefined;
     return readdirSync(full, { recursive: true, withFileTypes: true })
       .filter((entry) => entry.isFile())
@@ -399,7 +518,7 @@ function cli(args: readonly string[]): unknown {
     ),
   };
   const directory = option(args, '--pfad');
-  const testersFile = join(root, TESTERS_FILE);
+  const testersFile = join(root, spec.targets[targetName]?.testers ?? TESTERS_FILE);
   const login =
     directory === undefined
       ? undefined
@@ -422,7 +541,7 @@ function cli(args: readonly string[]): unknown {
     writeFileSync(path, file.content);
     return { local: path, to: file.to };
   });
-  puts.push(...plan.files.map((file) => ({ local: join(root, file.from), to: file.to })));
+  puts.push(...plan.files.map((file) => ({ local: join(base, file.from), to: file.to })));
   const prepare = prepareBatch(remote, plan.folder, foldersOf(plan.files));
   return {
     ...plan,
