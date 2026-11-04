@@ -92,7 +92,12 @@ stehen beim Geburtsdatum.
 **Erwartet:**
 
 - Schritt 1: Die Versicherungsnummer wird angenommen, **ohne** Fehler – sie hat eine gültige
-  Prüfziffer, auch wenn sie nicht ganz zum Geburtsdatum passt.
+  Prüfziffer, auch wenn sie nicht ganz zum Geburtsdatum passt. _Ab Fassung 1.1.0 (Testordner):_
+  Gleich nach „Weiter“ steht oben gelb „Die Versicherungsnummer passt nicht ganz … Geburtsdatum in
+  der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“; in der Zusammenfassung steht er oben
+  unter **„Bitte prüfen:“** mit **„ändern“**. Abschließen bleibt möglich.
+- Schritt 2: _Ab Fassung 1.1.0:_ Auch die Postleitzahl `1234AB` meldet sich gleich nach „Weiter“
+  gelb und steht unter „Bitte prüfen:“.
 - Schritt 3: In der Karte des Fragebogens steht „Prüfhinweise:“ mit
   - „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. …
     Geburtsdatum in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“ und der Fundstelle
@@ -130,3 +135,29 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
 - Schritt 2: Bei 25 **„Nur in Schritten von 10 möglich.“**, bei 10 **„Mindestens 20.“**, 30 wird
   angenommen.
 - Schritt 3: In der Zusammenfassung steht „KA-AB 1234E“.
+
+---
+
+## MT-117: Buchstabe der Versicherungsnummer passt nicht zum Geburtsnamen
+
+**Einstieg:** [Ab dem Geburtsdatum öffnen](start:sofortmeldung-person-ab-geburtsdatum) – die Person
+„Erika Musterfrau“ ist bis zum Geburtsort ausgefüllt.
+
+**Schritte:**
+
+1. Gehen Sie mit **„Zurück“** zu „Ist Ihr Geburtsname derselbe wie Ihr Familienname?“, wählen Sie
+   **„Nein“** und geben Sie als Geburtsnamen `Schmidt` ein.
+2. Geburtsdatum `17.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`,
+   **„Weiter“**.
+3. Gehen Sie bis zur Zusammenfassung und klicken Sie dort unter „Bitte prüfen:“ auf **„ändern“**.
+
+**Erwartet:**
+
+- Schritt 2: Oben erscheint gelb „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum,
+  Geburtsname oder Geschlecht. … Buchstabe in der Versicherungsnummer: M; Anfangsbuchstabe des
+  Geburtsnamens: S.“ Es geht trotzdem weiter.
+- Schritt 3: Die Zusammenfassung zeigt den Hinweis **oben** (nicht erst nach dem Scrollen); „ändern“
+  führt zur Versicherungsnummer.
+- _Nicht offensichtlich:_ Das kann richtig sein (die Nummer bleibt nach einer Namensänderung gleich);
+  deshalb sperrt der Hinweis nichts. Hinweise, die nur die Kanzlei betreffen (z. B. zur Rente),
+  sieht die Person nicht.

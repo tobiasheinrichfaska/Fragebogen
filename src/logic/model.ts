@@ -343,6 +343,13 @@ export interface CheckHint {
   message: string;
   /** Legal source shown with the hint, e.g. "§ 8 Abs. 1 Nr. 2 SGB IV". */
   source?: string;
+  /**
+   * Also shown to the one filling in (Tobias 2026-11-04: an SV number that does not fit the birth
+   * name went unnoticed): right after an answer the hint reads, and at the top of the summary — a
+   * warning that never blocks. Only for hints that read the answers of one role and that a person
+   * can act on, not for the Kanzlei's own notes.
+   */
+  showWhileFilling?: boolean;
 }
 
 /** One rule of a derivation: the first rule whose condition and test hold gives the value. */
@@ -420,6 +427,13 @@ export interface FormDefinition {
    * valid on that day. Mandatory in drafts (test); the frozen 0.1.0 test version has none.
    */
   validity?: FormValidity;
+  /**
+   * When this version was last revised, local wall time `YYYY-MM-DDTHH:MM` (Tobias 2026-11-04:
+   * "zuletzt überarbeitet am … um …" as a footer). Set by `npm run catalogue` whenever a draft
+   * differs from the last commit; part of the definition hash, so it travels with the data. Mandatory
+   * in drafts (test); versions frozen before 2026-11-04 have none.
+   */
+  revised?: string;
   /** What this questionnaire does not cover — shown to every station, in the PDF and the docs. */
   limits?: string[];
   /**

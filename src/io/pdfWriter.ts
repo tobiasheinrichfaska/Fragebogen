@@ -4,13 +4,14 @@
 // and the data pages — the package as text lines and as QR codes for the paper path. Target
 // PDF/A-2u. Every page carries "Fragebogen-ID · Daten · Formular · Seite x von y".
 import { PDFDocument, PDFString, rgb, type PDFFont, type PDFPage, type RGB } from '@cantoo/pdf-lib';
-import { describeValidity } from '../logic/validity';
+import { describeRevised, describeValidity } from '../logic/validity';
 import { derive } from '../logic/derivations';
 import fontkit from '@cantoo/fontkit';
 import { APP_VERSION } from '../appInfo';
 import type { AppConfig } from '../logic/appConfig';
 import { buildPackage, ORIGIN_MESSAGES, packageText, type FormOrigin } from '../logic/dataPackage';
 import { encodeDataLines } from '../logic/dataPages';
+import { formatGermanDate } from '../logic/dates';
 import { displayValue } from '../logic/display';
 import { fileNameFor } from '../logic/fileNames';
 import { isTestVersion, registryOf, type RegisteredForm } from '../logic/formRegistry';
@@ -253,6 +254,7 @@ export async function writeQuestionnairePdf(
       config.kanzleiName,
       `Fragebogen-ID ${id}`,
       `Formular ${definition.id} ${definition.version}${isTestVersion(definition.version) ? ' (Testfassung)' : ''}`,
+      describeRevised(definition),
     ]
       .filter(Boolean)
       .join(' · '),
@@ -602,7 +604,7 @@ export async function writeQuestionnairePdf(
   const pages = doc.getPages();
   pages.forEach((page, i) => {
     page.drawText(
-      `Fragebogen-ID ${id.slice(0, 8)} · Daten ${block.sha256.slice(0, 8)} · Formular ${definition.id} ${definition.version} · Seite ${i + 1} von ${pages.length}`,
+      `Fragebogen-ID ${id.slice(0, 8)} · Daten ${block.sha256.slice(0, 8)} · Formular ${definition.id} ${definition.version}${definition.revised ? ` · Stand ${formatGermanDate(definition.revised.slice(0, 10))} ${definition.revised.slice(11, 16)}` : ''} · Seite ${i + 1} von ${pages.length}`,
       { x: MARGIN, y: 28, size: 7.5, font: fonts.sans, color: MUTED },
     );
   });

@@ -44,7 +44,8 @@ describe('source files', () => {
         });
     }
     expect(findings).toEqual([]);
-  });
+    // Reads every source file; under a full parallel run it took more than the 5 s default.
+  }, 60_000);
 
   it('detects what it guards against', () => {
     const samples = [0xad, 0xa0, 0x200b, 0xfeff, 0x2028, 0x301, 0x85].map((cp) =>

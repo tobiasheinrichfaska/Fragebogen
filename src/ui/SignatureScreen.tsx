@@ -137,7 +137,7 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
         <p>{definition.signatureBasis ?? SIGNATURE_POLICY_LABELS[definition.signaturePolicy]}</p>
       </details>
       <div className="nav">
-        <button type="button" onClick={onBack}>
+        <button type="button" className="back" onClick={onBack}>
           Zurück zur Zusammenfassung
         </button>
         <button type="button" className="primary" disabled={!ready} onClick={complete}>

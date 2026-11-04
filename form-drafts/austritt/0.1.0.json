@@ -1,6 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
+  "revised": "2026-11-04T18:13",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",

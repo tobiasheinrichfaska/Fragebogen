@@ -133,11 +133,23 @@ describe('Sofortmeldung 1.1.0: texts', () => {
     expect(text).toContain('höchstens 7 Tage');
   });
 
+  it('shows the SV number and the foreign postcode hints to the person while filling', () => {
+    expect(
+      (definition.checkHints ?? []).filter((h) => h.showWhileFilling).map((h) => h.id),
+    ).toEqual(['versicherungsnummerWeichtAb', 'plzAuslandFormat']);
+  });
+
   it('changes nothing else against 1.0.0 but the sector, the exclusion and these texts', () => {
     const strip = (d: typeof definition) => ({
       ...d,
       version: '',
+      revised: '',
       exclusions: [],
+      checkHints: (d.checkHints ?? []).map((h) => {
+        const rest = { ...h };
+        delete rest.showWhileFilling;
+        return rest;
+      }),
       infoBlocks: d.infoBlocks.map((b) => ({ ...b, text: '', asOf: '' })),
       sections: d.sections.map((s) => ({
         ...s,

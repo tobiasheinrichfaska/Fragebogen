@@ -20,6 +20,11 @@ ausgeschlossen.
 - `appAddress` wird in jede PDF gedruckt und verlinkt.
 - `explainerBase` und der im Formular eingefrorene Pfad ergeben den Link zum Erklärvideo, zum
   Beispiel `…/erklaervideos/sofortmeldung/versicherungsnummer`.
+- `colors` (freiwillig) übernimmt die Farben der Kanzlei-Homepage: `accent` (Knöpfe, Links, gewählte
+  Antwort; Pflicht, sobald `colors` da ist), `chosenBg` (Hintergrund einer gewählten Antwort),
+  `infoBg` (Hinweiskästen), `accentDark` (Hauptfarbe im dunklen Modus), je als `#rrggbb`. Der Build
+  lehnt eine Farbe ab, auf der Text nicht lesbar bliebe (Kontrast unter 4,5 : 1). Beispiel:
+  `"colors": { "accent": "#1f5fa8", "chosenBg": "#e4eefa" }`.
 - `testAddress` setzt auf der Startseite den Link „Testbereich (für Tester)“: ein einfacher relativer
   Pfad wie `test/` (Buchstaben, Ziffern, `-`, `_`, `/`) oder eine `https://`-Adresse. Er erscheint nur,
   wenn die App über https läuft – in einer heruntergeladenen Datei führte er ins Leere.

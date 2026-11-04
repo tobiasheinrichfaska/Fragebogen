@@ -1,7 +1,7 @@
 // App frame: start, overview ("Wer füllt jetzt aus?"), interview, signature, completion. All state
 // is in memory (session.ts); files are the way out. Only the hosted app keeps unsaved changes in
 // this browser for a while (logic/resume.ts). Rules come from the logic layer.
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { APP_NAME, APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
@@ -17,7 +17,14 @@ import {
   parseMasterDataFragment,
   type ParsedMasterDataLink,
 } from '../logic/masterDataLink';
-import { resumeAction, resumeAllowed, type ResumeRead, type ResumeRecord } from '../logic/resume';
+import {
+  resumeAction,
+  resumeAllowed,
+  resumePackageText,
+  resumeRecord,
+  type ResumeRead,
+  type ResumeRecord,
+} from '../logic/resume';
 import {
   enterRole,
   fillMasterData,
@@ -40,6 +47,7 @@ import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
 import { createPdf, fromPackageText, openAnyFile, type OpenResult } from './pdfActions';
 import { ResumeOffer } from './ResumeOffer';
+import { describeRevised } from '../logic/validity';
 
 type Screen =
   | { kind: 'start' }
@@ -56,6 +64,10 @@ const RESUME_NOTES: Partial<Record<ResumeRead['kind'], BannerMessage>> = {
   expired: {
     tone: 'info',
     text: 'Ein angefangener Fragebogen war länger als 7 Tage in diesem Browser gemerkt und wurde gelöscht.',
+  },
+  outdated: {
+    tone: 'info',
+    text: 'Ein angefangener Fragebogen aus einer älteren Fassung der App ließ sich nicht übernehmen und wurde gelöscht. Gespeicherte Dateien sind davon nicht betroffen.',
   },
   damaged: {
     tone: 'warning',
@@ -167,31 +179,41 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
   }, []);
 
   useEffect(() => {
-    if (resumeRead.kind === 'expired' || resumeRead.kind === 'damaged') clearResume();
+    if (resumeRead.kind !== 'none' && resumeRead.kind !== 'found') clearResume();
   }, [resumeRead]);
 
-  // Keeps unsaved changes in this browser; a PDF, an interim file, closing or discarding removes
-  // them. Debounced: the package is rebuilt at most every 300 ms.
+  const storageRefused = useRef(false);
+  // Keeps unsaved changes in this browser, written at once on every change (a delayed save lost the
+  // last answer when the page closed, 2026-11-04); a PDF, an interim file, closing or discarding
+  // removes them. Only the questionnaire is written — the form comes from the app by its hash.
   useEffect(() => {
     const action = resumeAction({ allowed: storage, offerOpen: offer !== undefined, session });
     if (action === 'none') return;
-    if (action === 'clear') {
+    if (action === 'clear' || !session) {
       clearResume();
       return;
     }
-    const current = session;
-    if (!current) return;
-    const timer = setTimeout(() => {
-      const text = packageText(buildPackage(current.questionnaire, current.form));
-      if (!saveResume(current.form.definition.title, text, new Date().toISOString())) {
+    const carried = registry.byHash(session.form.definitionHash) !== undefined;
+    const saved = saveResume(
+      resumeRecord({
+        title: session.form.definition.title,
+        definitionHash: session.form.definitionHash,
+        questionnaire: session.questionnaire,
+        ...(carried ? {} : { definition: session.form.definition }),
+        savedAt: new Date().toISOString(),
+      }),
+    );
+    if (!saved && !storageRefused.current) {
+      // Said once, after this render: the browser refuses (full, blocked) and keeps nothing.
+      storageRefused.current = true;
+      queueMicrotask(() =>
         setResumeNote({
           tone: 'warning',
-          text: 'Dieser Browser kann den Fragebogen nicht für später merken (zum Beispiel im privaten Fenster). Bitte bei einer Unterbrechung „Zwischenstand speichern“.',
-        });
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [session, offer, storage]);
+          text: 'Dieser Browser kann den Fragebogen nicht für später merken (zum Beispiel bei gesperrtem Speicher). Bitte bei einer Unterbrechung „Zwischenstand speichern“.',
+        }),
+      );
+    }
+  }, [session, offer, storage, registry]);
 
   useEffect(() => {
     if (!session?.dirty) return;
@@ -385,8 +407,18 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
   const continueResumed = () => {
     if (!offer) return;
     const now = new Date().toISOString();
+    const text = resumePackageText(offer, (hash) => registry.byHash(hash)?.definition);
+    if (text === undefined) {
+      clearResume();
+      setOffer(undefined);
+      setBanner({
+        tone: 'error',
+        text: `Der angefangene Fragebogen „${offer.title}“ lässt sich nicht fortsetzen: Diese Fassung der App enthält sein Formular nicht mehr. Er wurde aus dem Browser gelöscht.`,
+      });
+      return;
+    }
     const opened = fromPackageText(
-      offer.packageText,
+      text,
       registry,
       { local: now, utc: now, source: 'same-device' },
       ['Angefangener Fragebogen aus diesem Browser fortgesetzt.'],
@@ -543,6 +575,15 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
         {APP_NAME} {APP_VERSION}
         {APP_CONFIG.kanzleiName ? ` · ${APP_CONFIG.kanzleiName}` : ''} · läuft vollständig auf
         diesem Gerät
+        {session && (
+          <>
+            <br />
+            Formular {session.form.definition.id} {session.form.definition.version}
+            {describeRevised(session.form.definition)
+              ? ` · ${describeRevised(session.form.definition)}`
+              : ''}
+          </>
+        )}
       </footer>
     </main>
   );

@@ -115,8 +115,9 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 - In der Zusammenfassung stehen zwei Kästen: **„Bitte bestätigen Sie noch diese Hinweise:“** mit
   „Hinweis: Ausweispapiere mitführen …“ und dem Knopf **„ansehen und bestätigen“** (er führt zum
   Hinweis, „Zurück zur Zusammenfassung“ führt zurück), und **„Übersprungen: …“** mit der
-  Versicherungsnummer und den Knöpfen **„beantworten“** und **„leer lassen“**. Bei einer
-  Pflichtangabe steht „(Pflicht)“ und es gibt nur „beantworten“.
+  Versicherungsnummer und den Knöpfen **„beantworten“** und **„leer lassen“**. Fehlt eine
+  Pflichtangabe, steht sie ganz oben unter **„Diese Pflichtangaben fehlen noch:“** mit
+  **„beantworten“** – direkt dorthin, ohne Scrollen.
 - _Nicht offensichtlich:_ Fehlt beim Nachholen über „beantworten“ noch eine weitere Angabe, gibt es
   neben „Zurück zur Zusammenfassung“ den Knopf **„Zur nächsten fehlenden Angabe“**.
 - Schritt 5: Die Versicherungsnummer verschwindet aus „Übersprungen“ und bleibt leer.

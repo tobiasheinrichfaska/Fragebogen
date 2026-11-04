@@ -32,6 +32,13 @@ function shown(field: FieldDefinition | undefined, value: string): string {
   return formatGermanDate(value);
 }
 
+/** "zuletzt überarbeitet am 04.11.2026 um 17:20" — or undefined for versions frozen without one. */
+export function describeRevised(definition: Pick<FormDefinition, 'revised'>): string | undefined {
+  const revised = definition.revised;
+  if (revised === undefined) return undefined;
+  return `zuletzt überarbeitet am ${formatGermanDate(revised.slice(0, 10))} um ${revised.slice(11, 16)}`;
+}
+
 /** "gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026" — or undefined. */
 export function describeValidity(definition: FormDefinition): string | undefined {
   const validity = definition.validity;

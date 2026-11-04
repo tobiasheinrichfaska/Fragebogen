@@ -1,4 +1,4 @@
-import { explainerUrl, parseAppConfig } from './appConfig';
+import { colorVariables, contrastRatio, explainerUrl, parseAppConfig } from './appConfig';
 
 describe('parseAppConfig', () => {
   it('takes the help pages as a relative folder, so each hosted folder links to its own', () => {
@@ -69,5 +69,44 @@ describe('explainerUrl', () => {
   it('gives nothing without a base or a path', () => {
     expect(explainerUrl({}, 'a')).toBeUndefined();
     expect(explainerUrl({ explainerBase: 'https://example.org' }, undefined)).toBeUndefined();
+  });
+});
+
+describe('Kanzlei colours (Tobias 2026-11-04: like the homepage)', () => {
+  it('measures contrast as WCAG 2 does', () => {
+    expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 5);
+    expect(contrastRatio('#777777', '#777777')).toBe(1);
+    expect(contrastRatio('#ffffff', '#000000')).toBe(contrastRatio('#000000', '#ffffff'));
+  });
+
+  it('takes readable colours and turns them into the stylesheet variables', () => {
+    const parsed = parseAppConfig({
+      colors: { accent: '#A6192E', chosenBg: '#f8e6e9', infoBg: '#f0f2fb', accentDark: '#e8838f' },
+    });
+    expect(parsed.ok).toBe(true);
+    expect(colorVariables(parsed.ok ? parsed.config.colors : undefined)).toEqual({
+      '--kanzlei-accent': '#a6192e',
+      '--kanzlei-chosen-bg': '#f8e6e9',
+      '--kanzlei-info-bg': '#f0f2fb',
+      '--kanzlei-accent-dark': '#e8838f',
+    });
+    expect(colorVariables(undefined)).toEqual({});
+  });
+
+  it.each([
+    ['a light accent white text cannot be read on', { accent: '#f4a6b0' }, 'contrast'],
+    ['a dark answer background', { accent: '#a6192e', chosenBg: '#5c5a5a' }, 'contrast'],
+    [
+      'a dark-mode accent too dark for the dark page',
+      { accent: '#a6192e', accentDark: '#8c1121' },
+      'contrast',
+    ],
+    ['a colour that is no #rrggbb', { accent: 'red' }, ''],
+    ['colours without the accent', { infoBg: '#f0f2fb' }, 'required'],
+    ['an unknown colour', { accent: '#a6192e', logo: '#000000' }, ''],
+  ])('refuses %s', (_name, colors, message) => {
+    const parsed = parseAppConfig({ colors });
+    expect(parsed.ok).toBe(false);
+    expect(JSON.stringify(parsed)).toContain(message);
   });
 });

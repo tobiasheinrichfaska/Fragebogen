@@ -6,6 +6,13 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+import { sealed, type ResumeRecord } from '../../src/logic/resume';
+
+const withoutCheck = (record: ResumeRecord): Omit<ResumeRecord, 'check'> => {
+  const body: Omit<ResumeRecord, 'check'> & { check?: string } = { ...record };
+  delete body.check;
+  return body;
+};
 
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
 const ORIGIN = 'https://fragebogen.test';
@@ -62,6 +69,24 @@ test('a closed page offers the interrupted questionnaire and continues it', asyn
   expect(foreign).toEqual([]);
 });
 
+test('an answer given right before the page closes is kept', async ({ page }) => {
+  // Regression 2026-11-04 (1 of 48 runs): the save waited 300 ms, a page closed earlier lost the
+  // last answer. Now it is written at once when the page is hidden or closed.
+  await serve(page);
+  await page.goto(`${ORIGIN}/`);
+  await page
+    .getByRole('button', { name: /Personalfragebogen: Angaben für die Sofortmeldung/ })
+    .click();
+  await page.getByRole('button', { name: /^Ich bin: Arbeitgeber/ }).click();
+  await page.locator('.question input').first().fill('Sofort Bau GmbH');
+  await page.getByRole('button', { name: 'Weiter', exact: true }).click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await page.getByRole('button', { name: 'Weitermachen' }).click();
+  await page.getByRole('button', { name: /^Zur Zusammenfassung/ }).click();
+  await expect(page.locator('main')).toContainText('Sofort Bau GmbH');
+});
+
 test('discarding removes it from the browser; nothing is offered again', async ({ page }) => {
   await serve(page);
   await startEmployer(page);
@@ -89,8 +114,16 @@ test('a record older than 7 days is dropped with a note', async ({ page }) => {
   await serve(page);
   await startEmployer(page);
   await expect.poll(() => stored(page)).not.toBeNull();
-  // Move the clock eight days ahead; the record keeps its time and its check.
-  await page.clock.install({ time: Date.now() + 8 * 24 * 60 * 60 * 1000 });
+  // The same record, saved eight days ago (with its check), is what the reloaded page finds.
+  const record = JSON.parse((await stored(page)) ?? '{}') as ResumeRecord;
+  const aged = sealed({
+    ...withoutCheck(record),
+    savedAt: new Date(Date.parse(record.savedAt) - 8 * 24 * 60 * 60 * 1000).toISOString(),
+  });
+  await page.addInitScript(([key, value]) => localStorage.setItem(key, value), [
+    'fragebogen-angefangen',
+    JSON.stringify(aged),
+  ] as const);
   await page.reload();
   await expect(page.locator('main')).toContainText('länger als 7 Tage');
   await expect(page.getByRole('heading', { name: 'Angefangener Fragebogen gefunden' })).toHaveCount(

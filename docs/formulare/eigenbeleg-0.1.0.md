@@ -8,7 +8,8 @@
 | Formular | eigenbeleg, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag des Vorgangs“ ab 01.01.2025 |
-| Definition (SHA-256) | 5c04a3c7bb35b2bcaeb322b0a5fb3ce8321f046f570239df837c58c52ebd5324 |
+| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
+| Definition (SHA-256) | be86f8dc82284dd39e0174d123bdf1d8a5f7dff1a24e492c5fd062132465e1db |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Eigenbelege schreibt kein Gesetz eine Form vor. Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Für den digitalen Bewirtungs-Eigenbeleg lässt die Finanzverwaltung eine elektronische Unterschrift oder Genehmigung genügen, wenn der Zeitpunkt aufgezeichnet wird und die Angaben nicht unbemerkt geändert werden können (BMF-Schreiben vom 19.11.2025 Rn. 19, 22). Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung). |
 | Empfänger | Buchhaltung oder Kanzlei |

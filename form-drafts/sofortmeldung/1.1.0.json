@@ -1,6 +1,7 @@
 {
   "id": "sofortmeldung",
   "version": "1.1.0",
+  "revised": "2026-11-04T18:13",
   "title": "Personalfragebogen: Angaben für die Sofortmeldung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -633,7 +634,8 @@
         "args": ["versicherungsnummer", "geburtsdatum", "geburtsname", "familienname", "geschlecht"]
       },
       "message": "Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. Das kann richtig sein – die Nummer bleibt auch nach einer Namensänderung oder einer späteren Korrektur gleich –, bitte aber mit dem Sozialversicherungsausweis vergleichen.",
-      "source": "§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1"
+      "source": "§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1",
+      "showWhileFilling": true
     },
     {
       "id": "plzAuslandFormat",
@@ -642,7 +644,8 @@
         "args": ["anschriftStaat", "postleitzahlAusland"]
       },
       "message": "Die Postleitzahl hat nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. Bitte prüfen.",
-      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 18"
+      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 18",
+      "showWhileFilling": true
     }
   ],
   "exclusions": [

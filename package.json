@@ -19,7 +19,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "npm run build && npm run build:test && playwright test",
-    "catalogue": "vitest run tests/forms/catalogue.test.ts tests/forms/flowPlan.test.ts tests/forms/svQualitaet.test.ts tests/forms/svVorgaben.test.ts tests/hilfe/hilfeSeiten.test.ts --update",
+    "catalogue": "node deploy/stampRevised.ts && vitest run tests/forms/catalogue.test.ts tests/forms/flowPlan.test.ts tests/forms/svQualitaet.test.ts tests/forms/svVorgaben.test.ts tests/hilfe/hilfeSeiten.test.ts --update",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",

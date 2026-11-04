@@ -21,7 +21,7 @@ import {
 import { ISSUE_MESSAGES, issueMessage, type IssueCode } from './issues';
 import { applyMasterData, type MasterData, type MasterDataFills } from './masterData';
 import { displayValue } from './display';
-import { activeExclusions } from './hints';
+import { activeExclusions, fillingHints } from './hints';
 import type {
   FieldId,
   Questionnaire,
@@ -471,11 +471,18 @@ export function answer(session: Session, fieldId: string, raw: unknown): Session
     session,
     setValue(session.questionnaire, session.form, role, fieldId, raw),
   );
-  if (!result.ok || !session.masterData) return result;
+  if (!result.ok) return result;
+  // Hints for the one filling in that read this answer (e.g. an SV number that does not fit the
+  // birth name): a warning, never a refusal.
+  const checks = fillingHints(result.session.questionnaire, session.form.definition, role)
+    .filter((hint) => hint.fields.includes(fieldId))
+    .map((hint) => [hint.message, ...hint.detail].join(' '));
+  const warnings = [...result.warnings, ...checks];
+  if (!session.masterData) return ok(result.session, warnings);
   // An answer may open a question the link can fill (e.g. the wage tax of a Minijob).
   const filled = fillMasterData(result.session, session.masterData.record);
-  if (!filled.ok) return result;
-  return ok(filled.session, [...result.warnings, ...filled.skipped]);
+  if (!filled.ok) return ok(result.session, warnings);
+  return ok(filled.session, [...warnings, ...filled.skipped]);
 }
 
 export function defer(session: Session, fieldId: string): SessionResult {
