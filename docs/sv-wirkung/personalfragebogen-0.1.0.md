@@ -6,7 +6,7 @@
 > gefragt wird. Die Regeln selbst stehen im zweiten Teil, in der Reihenfolge, in der sie gelten
 > (die erste zutreffende Regel gibt den Wert).
 
-76 Angaben wirken auf mindestens einen Vorschlag.
+77 Angaben wirken auf mindestens einen Vorschlag.
 
 ## Je Angabe
 
@@ -72,7 +72,8 @@
 | Beschäftigung | Ist das Arbeitsverhältnis befristet? (`agBefristet`) | arbeitgeber | Personengruppe: 110, 190, 109, 106; KV: 0, 6, 3; RV: 0, 5, 1; AV: 0; PV: 0; Kennzeichen Übergangsbereich: 0; Stelle 9 (Vertragsform): 1, 2, 3, 4 | Befristet bis |
 | Beschäftigung | Befristet bis (`agBefristetBis`) | arbeitgeber | Personengruppe: 106, 110, 190; KV: 0, 3; RV: 0; AV: 0; PV: 0; Kennzeichen Übergangsbereich: 0 | – |
 | Beschäftigung | Vollzeit oder Teilzeit (`agArbeitszeitform`) | arbeitgeber | Stelle 9 (Vertragsform): 1, 2, 3, 4 | – |
-| Arbeitszeit | Arbeitszeitmodell (`agArbeitszeitmodell`) | arbeitgeber | Personengruppe: 103, 190, 109, 106; KV: 1, 0, 6; RV: 5, 1; AV: 0; PV: 0; Kennzeichen Übergangsbereich: 0; Stelle 9 (Vertragsform): 1, 2 | Wochenstunden, Stunden am Montag, Stunden am Dienstag, Stunden am Mittwoch, Stunden am Donnerstag, Stunden am Freitag, Stunden am Samstag, Stunden am Sonntag, Vereinbarte Wochenstunden bei Arbeit auf Abruf, Monatsstunden, Jahresstunden |
+| Arbeitszeit | Arbeitszeitmodell (`agArbeitszeitmodell`) | arbeitgeber | Personengruppe: 103, 190, 109, 106; KV: 1, 0, 6; RV: 5, 1; AV: 0; PV: 0; Kennzeichen Übergangsbereich: 0; Stelle 9 (Vertragsform): 1, 2 | Wochenstunden, Stunden am Montag, Stunden am Dienstag, Stunden am Mittwoch, Stunden am Donnerstag, Stunden am Freitag, Stunden am Samstag, Stunden am Sonntag, Vereinbarte Wochenstunden bei Arbeit auf Abruf, Monatsstunden, Jahresstunden, Feste Arbeitstage |
+| Arbeitszeit | Feste Arbeitstage (`agArbeitstageFest`) | arbeitgeber | – | Stunden am Montag, Stunden am Dienstag, Stunden am Mittwoch, Stunden am Donnerstag, Stunden am Freitag, Stunden am Samstag, Stunden am Sonntag |
 | Arbeitszeit | Stunden am Montag (`agStdMo`) | arbeitgeber | Personengruppe: 106; KV: 0; AV: 0; PV: 0 | – |
 | Arbeitszeit | Stunden am Dienstag (`agStdDi`) | arbeitgeber | Personengruppe: 106; KV: 0; AV: 0; PV: 0 | – |
 | Arbeitszeit | Stunden am Mittwoch (`agStdMi`) | arbeitgeber | Personengruppe: 106; KV: 0; AV: 0; PV: 0 | – |

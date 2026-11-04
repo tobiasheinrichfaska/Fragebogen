@@ -112,9 +112,10 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
 
 **Schritte:**
 
-1. Bis „Wie ist die Arbeitszeit vereinbart?“ gehen, „feste Stunden an festen Wochentagen“ wählen
-   und bei „Wie viele Stunden arbeitet die Person am Montag?“ `25` eingeben, **„Weiter“**; dann
-   `11`, **„Weiter“**.
+1. Bis „Wie ist die Arbeitszeit vereinbart?“ gehen, „feste Stunden an festen Wochentagen“ wählen,
+   bei „An welchen Wochentagen arbeitet die Person?“ **Montag** und **Freitag** ankreuzen, und bei
+   „Wie viele Stunden arbeitet die Person am Montag?“ `25` eingeben, **„Weiter“**; dann `11`,
+   **„Weiter“**. Beim Freitag ohne Eingabe **„Weiter“** versuchen.
 2. Bei „Hat die Person Ihnen eine Schwerbehinderung oder Gleichstellung mitgeteilt …?“ „einem
    schwerbehinderten Menschen gleichgestellt“ wählen. Beim Grad der Behinderung `25` eingeben,
    **„Weiter“**; dann `10`; dann `30`.
@@ -124,7 +125,8 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
 **Erwartet:**
 
 - Schritt 1: Bei 25 steht rot **„Höchstens 24.“**; bei 11 geht es weiter, oben erscheint
-  „Ungewöhnlich hoher Wert – bitte prüfen.“
+  „Ungewöhnlich hoher Wert – bitte prüfen.“ Gefragt werden nur Montag und Freitag; beim Freitag
+  geht es ohne Stunden **nicht** weiter (Pflicht, weil angekreuzt).
 - Schritt 2: Bei 25 **„Nur in Schritten von 10 möglich.“**, bei 10 **„Mindestens 20.“**, 30 wird
   angenommen.
 - Schritt 3: In der Zusammenfassung steht „KA-AB 1234E“.

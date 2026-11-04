@@ -4604,125 +4604,245 @@
           ]
         },
         {
+          "id": "agArbeitstageFest",
+          "role": "arbeitgeber",
+          "type": "multiChoice",
+          "label": "Feste Arbeitstage",
+          "question": "An welchen Wochentagen arbeitet die Person?",
+          "help": "Kreuzen Sie jeden Tag an, an dem die Person regelmäßig arbeitet. Danach fragt der Fragebogen die Stunden nur für diese Tage.",
+          "required": true,
+          "purpose": "Arbeitstage je Woche für Urlaub und Entgeltfortzahlung (§ 4 EntgFG); welche Stunden je Tag nötig sind",
+          "showIf": {
+            "field": "agArbeitszeitmodell",
+            "equals": "festeTage"
+          },
+          "because": "Nur bei festen Stunden an festen Wochentagen stehen die Arbeitstage fest.",
+          "options": [
+            {
+              "id": "mo",
+              "label": "Montag"
+            },
+            {
+              "id": "di",
+              "label": "Dienstag"
+            },
+            {
+              "id": "mi",
+              "label": "Mittwoch"
+            },
+            {
+              "id": "do",
+              "label": "Donnerstag"
+            },
+            {
+              "id": "fr",
+              "label": "Freitag"
+            },
+            {
+              "id": "sa",
+              "label": "Samstag"
+            },
+            {
+              "id": "so",
+              "label": "Sonntag"
+            }
+          ]
+        },
+        {
           "id": "agStdMo",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Montag",
           "question": "Wie viele Stunden arbeitet die Person am Montag?",
-          "help": "Leer lassen, wenn an diesem Tag nicht gearbeitet wird.",
-          "required": false,
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "mo"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "min": 0.25
         },
         {
           "id": "agStdDi",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Dienstag",
-          "required": false,
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "di"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "question": "Wie viele Stunden arbeitet die Person am Dienstag?",
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "min": 0.25
         },
         {
           "id": "agStdMi",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Mittwoch",
-          "required": false,
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "mi"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "question": "Wie viele Stunden arbeitet die Person am Mittwoch?",
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "min": 0.25
         },
         {
           "id": "agStdDo",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Donnerstag",
-          "required": false,
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "do"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "question": "Wie viele Stunden arbeitet die Person am Donnerstag?",
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "min": 0.25
         },
         {
           "id": "agStdFr",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Freitag",
-          "required": false,
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "fr"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "question": "Wie viele Stunden arbeitet die Person am Freitag?",
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "min": 0.25
         },
         {
           "id": "agStdSa",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Samstag",
-          "required": false,
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "sa"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "question": "Wie viele Stunden arbeitet die Person am Samstag?",
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "min": 0.25
         },
         {
           "id": "agStdSo",
           "role": "arbeitgeber",
           "type": "number",
           "label": "Stunden am Sonntag",
-          "required": false,
+          "required": true,
           "purpose": "Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel",
           "showIf": {
-            "field": "agArbeitszeitmodell",
-            "equals": "festeTage"
+            "all": [
+              {
+                "field": "agArbeitszeitmodell",
+                "equals": "festeTage"
+              },
+              {
+                "field": "agArbeitstageFest",
+                "contains": "so"
+              }
+            ]
           },
-          "because": "Bei festen Stunden an festen Wochentagen ergeben die Stunden je Tag die Arbeitstage und die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
+          "because": "Nur für einen angekreuzten Arbeitstag: Die Stunden je Tag ergeben die Wochenstunden für Urlaub, Entgeltfortzahlung und Minijob-Grenze.",
           "decimals": 2,
           "max": 24,
           "warnAbove": 10,
-          "unit": "Std."
+          "unit": "Std.",
+          "question": "Wie viele Stunden arbeitet die Person am Sonntag?",
+          "help": "Pflicht, weil dieser Tag als Arbeitstag angekreuzt ist. Arbeitet die Person an dem Tag doch nicht, nehmen Sie das Kreuz bei den Arbeitstagen zurück.",
+          "min": 0.25
         },
         {
           "id": "agWochenstunden",

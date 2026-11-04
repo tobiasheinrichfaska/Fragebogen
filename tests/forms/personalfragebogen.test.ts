@@ -151,9 +151,13 @@ describe('Personalfragebogen draft — questions per variant', () => {
 
   it('shows the employer only the fields of the chosen working-time model', () => {
     const base = { agArbeitszeitmodell: 'festeTage' };
-    expect(visible('arbeitgeber', base)).toEqual(
-      expect.arrayContaining(['agStdMo', 'agStdFr', 'agStdSo']),
-    );
+    // Tobias 2026-11-04: first the working days (ticked), then the hours of exactly those days.
+    expect(visible('arbeitgeber', base)).toContain('agArbeitstageFest');
+    expect(visible('arbeitgeber', base)).not.toContain('agStdMo');
+    const ticked = visible('arbeitgeber', { ...base, agArbeitstageFest: ['mo', 'fr'] });
+    expect(ticked).toEqual(expect.arrayContaining(['agStdMo', 'agStdFr']));
+    expect(ticked).not.toContain('agStdDi');
+    expect(ticked).not.toContain('agStdSo');
     expect(visible('arbeitgeber', base)).not.toContain('agAbrufWochenstunden');
     const abruf = visible('arbeitgeber', {
       agArbeitszeitmodell: 'abruf',
