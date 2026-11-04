@@ -1,0 +1,1020 @@
+{
+  "id": "eigenbeleg",
+  "version": "0.1.0",
+  "title": "Eigenbeleg: Ausgabe ohne Originalbeleg, Entnahme, Einlage oder Geldtransit",
+  "signaturePolicy": "electronic",
+  "signatureBasis": "Für Eigenbelege schreibt kein Gesetz eine Form vor. Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Für den digitalen Bewirtungs-Eigenbeleg lässt die Finanzverwaltung eine elektronische Unterschrift oder Genehmigung genügen, wenn der Zeitpunkt aufgezeichnet wird und die Angaben nicht unbemerkt geändert werden können (BMF-Schreiben vom 19.11.2025 Rn. 19, 22). Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung).",
+  "roles": [
+    {
+      "id": "aussteller",
+      "label": "Ausstellende Person",
+      "stationHeading": "Eigenbeleg des Unternehmens",
+      "confirmationText": "Ich versichere, dass der Vorgang so stattgefunden hat, wie ich ihn beschrieben habe, und dass meine Angaben richtig sind. Bei einer Ausgabe liegt mir kein verwendbarer Originalbeleg vor, und ich reiche die Ausgabe nicht ein zweites Mal ein.",
+      "signature": "required",
+      "signerNameField": "ausstellerName"
+    }
+  ],
+  "recipient": { "label": "Buchhaltung oder Kanzlei" },
+  "sections": [
+    {
+      "id": "unternehmen",
+      "title": "Unternehmen und ausstellende Person",
+      "fields": [
+        {
+          "id": "firma",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Unternehmen",
+          "question": "Für welches Unternehmen stellen Sie den Eigenbeleg aus?",
+          "help": "So, wie es auf Ihren Rechnungen oder im Handelsregister steht.",
+          "required": true,
+          "purpose": "Belegempfänger; Zuordnung zum Unternehmen (GoBD Rz. 77)",
+          "masterData": "firma"
+        },
+        {
+          "id": "mandantennummer",
+          "role": "aussteller",
+          "type": "text",
+          "textFormat": "ziffern",
+          "label": "Mandantennummer",
+          "question": "Wie lautet Ihre Mandantennummer?",
+          "help": "Steht auf Schreiben Ihrer Kanzlei und im Lesezeichen-Link. Nicht zur Hand? Dann lassen Sie das Feld leer.",
+          "required": false,
+          "purpose": "Zuordnung in der Kanzlei",
+          "masterData": "mandantennummer"
+        },
+        {
+          "id": "ausstellerName",
+          "role": "aussteller",
+          "type": "text",
+          "maxLength": 60,
+          "label": "Ausgestellt von",
+          "question": "Wer stellt den Eigenbeleg aus?",
+          "help": "Ihr Vor- und Familienname. Sie unterschreiben am Ende.",
+          "required": true,
+          "purpose": "Verantwortlicher Aussteller (GoBD Rz. 77); Name der unterschreibenden Person"
+        }
+      ]
+    },
+    {
+      "id": "vorgang",
+      "title": "Art und Tag des Vorgangs",
+      "fields": [
+        {
+          "id": "vorgangsart",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Art des Vorgangs",
+          "question": "Was möchten Sie mit diesem Eigenbeleg belegen?",
+          "help": "Eine Ausgabe des Betriebs, zu der Ihnen kein Beleg vorliegt, oder Geld, das aus dem Betrieb genommen, in den Betrieb gegeben oder zwischen Kasse und Bank bewegt wurde. Haben Sie eine Ausgabe des Betriebs privat bezahlt und den Beleg noch, geben Sie einfach den Beleg ab.",
+          "required": true,
+          "purpose": "Art des Geschäftsvorfalls: Ausgaben (§ 4 Abs. 4 EStG), Entnahmen und Einlagen (§ 4 Abs. 1 Satz 2 und 8 EStG) und Geldtransit werden verschieden gebucht",
+          "options": [
+            { "id": "ausgabe", "label": "eine Ausgabe ohne Originalbeleg" },
+            {
+              "id": "privatentnahme",
+              "label": "eine Privatentnahme: Geld, das für private Zwecke aus dem Betrieb genommen wurde"
+            },
+            {
+              "id": "einlage",
+              "label": "eine Einlage: privates Geld, das in den Betrieb gegeben wurde"
+            },
+            {
+              "id": "geldtransit",
+              "label": "einen Geldtransit: Geld zwischen Kasse und Bank oder zwischen zwei Kassen des Betriebs"
+            }
+          ]
+        },
+        {
+          "id": "rechtsform",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Rechtsform des Unternehmens",
+          "question": "Welche Rechtsform hat das Unternehmen?",
+          "help": "Davon hängt ab, wie das Geld gebucht wird. Wenn Sie unsicher sind: Ihre Kanzlei kennt die Rechtsform.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "in": ["privatentnahme", "einlage"] },
+          "because": "Privatentnahmen und Einlagen gibt es bei Einzelunternehmen und Personengesellschaften. In einer Kapitalgesellschaft ist Geld, das jemand für sich herausnimmt oder privat hineingibt, ein Geschäft mit der Gesellschaft – etwa ein Darlehen, eine verdeckte Gewinnausschüttung oder eine verdeckte Einlage (§ 8 Abs. 3 Satz 2 und 3 KStG).",
+          "purpose": "Einordnung von Entnahme und Einlage (§ 4 Abs. 1 Satz 2 und 8 EStG; § 8 Abs. 3 Satz 2 und 3 KStG)",
+          "masterData": "rechtsform",
+          "options": [
+            {
+              "id": "einzelunternehmen",
+              "label": "Einzelunternehmen (auch Freiberufler und eingetragene Kaufleute)"
+            },
+            {
+              "id": "personengesellschaft",
+              "label": "Personengesellschaft (z. B. GbR, OHG, KG, auch GmbH & Co. KG)"
+            },
+            { "id": "kapitalgesellschaft", "label": "Kapitalgesellschaft (GmbH, UG oder AG)" },
+            { "id": "andere", "label": "eine andere (z. B. Verein oder Genossenschaft)" }
+          ]
+        },
+        {
+          "id": "hinweisKapitalgesellschaft",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Hinweis zur Kapitalgesellschaft",
+          "question": "Bitte beachten Sie: In einer GmbH, UG oder AG gehört das Geld der Gesellschaft.",
+          "help": "Eine Privatentnahme oder Einlage wie bei einem Einzelunternehmen gibt es dort nicht. Nimmt eine Gesellschafterin oder ein Gesellschafter Geld heraus oder gibt es hinein, bucht die Kanzlei das in der Regel auf ein Verrechnungskonto oder als Darlehen. Ohne klare Vereinbarung kann eine Entnahme steuerlich als verdeckte Gewinnausschüttung gelten. Sie können den Eigenbeleg trotzdem ausstellen; Ihre Kanzlei klärt die Buchung mit Ihnen.",
+          "required": true,
+          "showIf": { "field": "rechtsform", "equals": "kapitalgesellschaft" },
+          "because": "Nur in einer Kapitalgesellschaft ist eine Privatentnahme oder Einlage in Wahrheit ein Geschäft mit der Gesellschaft (§ 8 Abs. 3 Satz 2 und 3 KStG).",
+          "purpose": "Nachweis, dass die ausstellende Person auf die Folgen hingewiesen wurde",
+          "options": [{ "id": "verstanden", "label": "Verstanden" }]
+        },
+        {
+          "id": "vorgangsdatum",
+          "role": "aussteller",
+          "type": "date",
+          "maxDate": "today",
+          "label": "Tag des Vorgangs",
+          "question": "An welchem Tag wurde bezahlt oder das Geld bewegt?",
+          "help": "Bei einer Ausgabe der Tag der Zahlung, sonst der Tag, an dem das Geld entnommen, eingelegt oder gebracht wurde. Er bestimmt, in welchen Monat der Vorgang gehört.",
+          "required": true,
+          "purpose": "Belegdatum, Pflichtangabe (GoBD Rz. 77; § 146 Abs. 1 Satz 1 AO); Stichtag der Gültigkeit dieser Fassung"
+        }
+      ]
+    },
+    {
+      "id": "ausgabeArt",
+      "title": "Art der Ausgabe",
+      "fields": [
+        {
+          "id": "artAusgabe",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Art der Ausgabe",
+          "question": "Wofür wurde bezahlt?",
+          "help": "Wählen Sie das Passendste. Für manche Ausgaben genügt ein Eigenbeleg nicht – dann sagt Ihnen der Fragebogen, was stattdessen nötig ist.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur bei einer Ausgabe; einige Ausgaben haben eigene Nachweisregeln (§ 4 Abs. 5 Satz 1 Nr. 1, 2 und 5, Abs. 7 EStG; § 50 Abs. 1 EStDV).",
+          "purpose": "Einordnung der Ausgabe; Sonderfälle mit eigenen Nachweisregeln erkennen (§ 4 Abs. 5 Satz 1 Nr. 1, 2 und 5, Abs. 7 EStG; § 50 Abs. 1 EStDV)",
+          "options": [
+            { "id": "parken", "label": "eine Parkgebühr" },
+            { "id": "fahrkarte", "label": "eine Fahrkarte (Bus, Bahn, Taxi)" },
+            { "id": "trinkgeld", "label": "ein Trinkgeld, außer bei einer Bewirtung" },
+            { "id": "porto", "label": "Porto oder Versand" },
+            { "id": "material", "label": "Material, Büro- oder Verbrauchsbedarf" },
+            {
+              "id": "fahrzeug",
+              "label": "Kraftstoff, Wäsche, Pflege oder Reparatur eines Fahrzeugs des Betriebs"
+            },
+            { "id": "gebuehr", "label": "eine Gebühr, einen Eintritt oder eine Maut" },
+            {
+              "id": "anschaffung",
+              "label": "einen Gegenstand, der länger genutzt wird (z. B. ein Gerät)"
+            },
+            { "id": "geschenk", "label": "ein Geschenk an einen Geschäftspartner" },
+            { "id": "bewirtung", "label": "ein Essen oder Getränke mit Gästen (Bewirtung)" },
+            { "id": "eigeneVerpflegung", "label": "Ihre eigene Verpflegung auf einer Reise" },
+            { "id": "kilometer", "label": "Fahrten mit einem privaten Fahrzeug" },
+            { "id": "lohn", "label": "eine Zahlung an Beschäftigte oder Aushilfen" },
+            { "id": "spende", "label": "eine Spende" },
+            { "id": "sonstiges", "label": "etwas anderes" }
+          ]
+        },
+        {
+          "id": "geschenkEmpfaenger",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Empfänger des Geschenks",
+          "question": "Wer hat das Geschenk bekommen?",
+          "help": "Vor- und Familienname der Person und ihr Unternehmen.",
+          "required": true,
+          "showIf": { "field": "artAusgabe", "equals": "geschenk" },
+          "because": "Bei Geschenken muss der Name des Empfängers aus dem Beleg hervorgehen (R 4.11 Abs. 2 Satz 1 EStR).",
+          "purpose": "Name des Empfängers auf dem Buchungsbeleg (R 4.11 Abs. 2 Satz 1 EStR); Freigrenze je Empfänger (§ 4 Abs. 5 Satz 1 Nr. 1 EStG); gesonderte Aufzeichnung (§ 4 Abs. 7 EStG)"
+        },
+        {
+          "id": "fahrtenbuch",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "Fahrtenbuch für das Fahrzeug",
+          "question": "Wird für dieses Fahrzeug ein Fahrtenbuch geführt?",
+          "help": "Wenn Sie es nicht wissen: Ihre Kanzlei weiß es.",
+          "required": true,
+          "showIf": { "field": "artAusgabe", "equals": "fahrzeug" },
+          "because": "Wer ein Fahrtenbuch führt, muss alle Kosten des Fahrzeugs durch Belege nachweisen (§ 6 Abs. 1 Nr. 4 Satz 3 EStG).",
+          "purpose": "Prüfhinweis zur Fahrtenbuchmethode (§ 6 Abs. 1 Nr. 4 Satz 3 EStG)"
+        },
+        {
+          "id": "bewirtungHinweis",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Hinweis zur Bewirtung",
+          "question": "Wichtig bei einer Bewirtung: Ohne die Rechnung der Gaststätte ist die Ausgabe nicht abziehbar.",
+          "help": "Für ein Essen oder Getränke mit Gästen in einem Restaurant, Café oder einer anderen Gaststätte verlangt das Gesetz deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 EStG). Sie muss von der Kasse gedruckt sein. Ein selbst erstellter Beleg wie dieser ersetzt sie nicht – ohne sie zählt die Ausgabe überhaupt nicht als Betriebsausgabe. Bitten Sie die Gaststätte deshalb zuerst um eine Zweitschrift der Rechnung. Eine Bewirtung in Ihrer eigenen Wohnung ist in der Regel privat und keine Betriebsausgabe. Sie können den Eigenbeleg trotzdem ausstellen; Ihre Kanzlei prüft ihn.",
+          "required": true,
+          "showIf": { "field": "artAusgabe", "equals": "bewirtung" },
+          "because": "Nur bei einer Bewirtung: Ohne die maschinell erstellte Rechnung der Gaststätte ist die Ausgabe vom Abzug ausgeschlossen (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; R 4.10 Abs. 8 EStR; BMF-Schreiben vom 19.11.2025 Rn. 13), eine Bewirtung in der eigenen Wohnung ist in der Regel privat (R 4.10 Abs. 6 Satz 8 EStR).",
+          "purpose": "Nachweis, dass die ausstellende Person auf die Folgen hingewiesen wurde",
+          "options": [{ "id": "verstanden", "label": "Verstanden" }]
+        },
+        {
+          "id": "bewirtungOrt",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Art des Orts der Bewirtung",
+          "question": "Wo fand die Bewirtung statt?",
+          "required": true,
+          "showIf": { "field": "artAusgabe", "equals": "bewirtung" },
+          "because": "Nur bei einer Bewirtung: Der Ort entscheidet über den Nachweis (Rechnung der Gaststätte, § 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG) und darüber, ob die Ausgabe privat ist (R 4.10 Abs. 6 Satz 8 EStR).",
+          "purpose": "Ort der Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG); Prüfhinweise zum Nachweis",
+          "options": [
+            {
+              "id": "gaststaette",
+              "label": "in einem Restaurant, Café oder einer anderen Gaststätte"
+            },
+            { "id": "wohnung", "label": "in Ihrer eigenen Wohnung" },
+            { "id": "betrieb", "label": "in den Räumen des Betriebs" },
+            { "id": "andererOrt", "label": "an einem anderen Ort" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "original",
+      "title": "Warum es keinen Originalbeleg gibt",
+      "fields": [
+        {
+          "id": "grundOhneOriginal",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Grund ohne Originalbeleg",
+          "question": "Warum gibt es keinen Originalbeleg?",
+          "help": "Geschäfte mit elektronischer Kasse müssen einen Beleg ausgeben – fragen Sie zuerst dort nach.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Ein Eigenbeleg ist nur zulässig, wenn kein fremder Beleg vorhanden ist (GoBD Rz. 61); das betrifft nur Ausgaben.",
+          "purpose": "Zulässigkeit des Eigenbelegs (GoBD Rz. 61); Belegausgabepflicht bei elektronischen Kassen (§ 146a Abs. 2 AO)",
+          "options": [
+            {
+              "id": "keinBeleg",
+              "label": "Es gab keinen Beleg (z. B. Automat ohne Quittung, Trinkgeld)"
+            },
+            {
+              "id": "einbehalten",
+              "label": "Der Beleg wurde einbehalten (z. B. Parkschein an der Ausfahrt)"
+            },
+            { "id": "verweigert", "label": "Der Empfänger hat keinen Beleg ausgestellt" },
+            { "id": "verloren", "label": "Der Beleg ist verloren gegangen" },
+            { "id": "unleserlich", "label": "Der Beleg ist unleserlich oder beschädigt" },
+            { "id": "andererGrund", "label": "aus einem anderen Grund" }
+          ]
+        },
+        {
+          "id": "grundErlaeuterung",
+          "role": "aussteller",
+          "type": "text",
+          "multiline": true,
+          "label": "Erläuterung zum fehlenden Beleg",
+          "question": "Was ist genau passiert?",
+          "help": "Kurz in eigenen Worten. Bei „aus einem anderen Grund“ ist die Angabe Pflicht.",
+          "required": false,
+          "showIf": { "field": "grundOhneOriginal", "answered": true },
+          "requiredIf": { "field": "grundOhneOriginal", "equals": "andererGrund" },
+          "because": "Nur bei einer Ausgabe ohne Originalbeleg. Ein anderer Grund muss beschrieben werden, sonst lässt sich nicht beurteilen, ob ein Eigenbeleg zulässig ist (GoBD Rz. 61).",
+          "purpose": "Erläuterung des Geschäftsvorfalls (GoBD Rz. 77)"
+        },
+        {
+          "id": "originalRestLiegtBei",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "Unleserlicher Beleg liegt bei",
+          "question": "Geben Sie den unleserlichen Beleg zusammen mit diesem Eigenbeleg ab?",
+          "help": "Auch ein verblasster Bon stützt Ihre Angaben. Werfen Sie ihn nicht weg.",
+          "required": true,
+          "showIf": { "field": "grundOhneOriginal", "equals": "unleserlich" },
+          "because": "Nur ein beschädigter Beleg kann noch beigelegt werden.",
+          "purpose": "Belegfunktion: urschriftlich bzw. als Kopie der Urschrift belegen (GoBD Rz. 61)"
+        },
+        {
+          "id": "zweitschrift",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Zweitschrift angefragt",
+          "question": "Haben Sie um eine Zweitschrift gebeten?",
+          "help": "Eine Zweitschrift des Ausstellers ersetzt das Original besser als ein Eigenbeleg; mit ihr ist oft auch der Vorsteuerabzug möglich.",
+          "required": true,
+          "showIf": { "field": "grundOhneOriginal", "in": ["verloren", "unleserlich"] },
+          "because": "Nur ein verlorener oder beschädigter Beleg lässt sich beim Aussteller neu anfordern.",
+          "purpose": "Vorrang der Zweitschrift (UStAE 15.11 Abs. 1 Satz 4)",
+          "options": [
+            { "id": "erhalten", "label": "Ja, ich habe eine Zweitschrift bekommen" },
+            { "id": "vergeblich", "label": "Ja, aber ohne Erfolg" },
+            {
+              "id": "nichtMoeglich",
+              "label": "Nein, das ist nicht möglich (z. B. Aussteller unbekannt)"
+            },
+            { "id": "nein", "label": "Nein" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ausgabe",
+      "title": "Die Ausgabe",
+      "fields": [
+        {
+          "id": "zahlungsempfaenger",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Zahlungsempfänger",
+          "question": "An wen wurde bezahlt?",
+          "help": "Name des Geschäfts, des Automatenbetreibers, des Verkehrsbetriebs oder der Person – so genau wie möglich.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur eine Ausgabe hat einen Zahlungsempfänger.",
+          "purpose": "Name des Vertragspartners, soweit zumutbar (GoBD Rz. 37, 77)"
+        },
+        {
+          "id": "ortDerAusgabe",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Ort",
+          "question": "Wo war das?",
+          "help": "Ort, bei Parkhäusern oder Automaten auch die Straße; bei einer Bewirtung Name und Anschrift des Lokals oder der Ort.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur bei einer Ausgabe; der Ort macht sie nachvollziehbar.",
+          "purpose": "Nachvollziehbarkeit des Geschäftsvorfalls (§ 145 Abs. 1 Satz 2 AO); Ort einer Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG)"
+        },
+        {
+          "id": "leistung",
+          "role": "aussteller",
+          "type": "text",
+          "maxLength": 200,
+          "label": "Gekauft oder bezahlt",
+          "question": "Was wurde gekauft oder bezahlt?",
+          "help": "Menge und Art, z. B. „2 Stunden Parken“ oder „3 Packungen Druckerpapier“.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur bei einer Ausgabe.",
+          "purpose": "Hinreichende Erläuterung des Geschäftsvorfalls (GoBD Rz. 77)"
+        },
+        {
+          "id": "betrieblicherAnlass",
+          "role": "aussteller",
+          "type": "text",
+          "multiline": true,
+          "label": "Betrieblicher Anlass",
+          "question": "Wofür wurde die Ausgabe im Betrieb gebraucht?",
+          "help": "Zum Beispiel: „Kundentermin bei der Beispiel GmbH in Musterstadt“.",
+          "required": true,
+          "showIf": {
+            "all": [
+              { "field": "vorgangsart", "equals": "ausgabe" },
+              { "not": { "field": "artAusgabe", "equals": "bewirtung" } }
+            ]
+          },
+          "because": "Nur bei einer Ausgabe; bei einer Bewirtung wird stattdessen deren Anlass gefragt.",
+          "purpose": "Betriebliche Veranlassung (§ 4 Abs. 4 EStG; GoBD Rz. 61)"
+        },
+        {
+          "id": "bewirtungAnlass",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Anlass der Bewirtung",
+          "question": "Was war der geschäftliche Anlass der Bewirtung?",
+          "help": "Möglichst genau, z. B. „Besprechung des Auftrags Neubau Musterstraße mit der Beispiel GmbH“.",
+          "required": true,
+          "showIf": { "field": "artAusgabe", "equals": "bewirtung" },
+          "because": "Den Anlass einer Bewirtung verlangt das Gesetz schriftlich (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG).",
+          "purpose": "Anlass der Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG)"
+        },
+        {
+          "id": "bewirtungTeilnehmer",
+          "role": "aussteller",
+          "type": "text",
+          "multiline": true,
+          "label": "Teilnehmende der Bewirtung",
+          "question": "Wer hat an der Bewirtung teilgenommen?",
+          "help": "Alle Personen mit Namen, auch Sie selbst; bei Geschäftspartnern auch ihr Unternehmen. Eine Person je Zeile.",
+          "required": true,
+          "showIf": { "field": "artAusgabe", "equals": "bewirtung" },
+          "because": "Die Teilnehmer einer Bewirtung verlangt das Gesetz schriftlich (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG).",
+          "purpose": "Teilnehmer der Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG)"
+        },
+        {
+          "id": "inEuro",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "In Euro bezahlt",
+          "question": "Wurde in Euro bezahlt?",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur bei einer Ausgabe; Geldbewegungen des Betriebs werden in Euro erfasst.",
+          "purpose": "Währungsangabe (GoBD Rz. 77)"
+        },
+        {
+          "id": "waehrung",
+          "role": "aussteller",
+          "type": "text",
+          "maxLength": 20,
+          "label": "Währung",
+          "question": "In welcher Währung?",
+          "help": "Zum Beispiel CHF oder US-Dollar.",
+          "required": true,
+          "showIf": { "field": "inEuro", "equals": false },
+          "because": "Nur bei einer fremden Währung.",
+          "purpose": "Währungsangabe bei Fremdwährung (GoBD Rz. 77)"
+        },
+        {
+          "id": "betragFremdwaehrung",
+          "role": "aussteller",
+          "type": "number",
+          "decimals": 2,
+          "label": "Betrag in der fremden Währung",
+          "question": "Wie viel wurde in dieser Währung bezahlt?",
+          "required": true,
+          "showIf": { "field": "inEuro", "equals": false },
+          "because": "Nur bei einer fremden Währung.",
+          "purpose": "Betrag und Kurs bei Fremdwährung (GoBD Rz. 77)"
+        },
+        {
+          "id": "betrag",
+          "role": "aussteller",
+          "type": "money",
+          "label": "Betrag in Euro",
+          "question": "Wie viel wurde bezahlt, in Euro?",
+          "help": "Der ganze gezahlte Betrag, so wie er ist. Die Umsatzsteuer wird nicht herausgerechnet – aus einem Eigenbeleg ist kein Vorsteuerabzug möglich. Bei fremder Währung: der Betrag laut Kontoauszug oder umgerechnet zum Tageskurs.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur bei einer Ausgabe; Geldbewegungen haben eine eigene Frage nach dem Betrag.",
+          "purpose": "Zu buchender Betrag, Pflichtangabe (GoBD Rz. 77); kein Vorsteuerabzug ohne Rechnung (§ 15 Abs. 1 Satz 1 Nr. 1 Satz 2 UStG)"
+        },
+        {
+          "id": "umrechnung",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Umrechnung in Euro",
+          "question": "Wie wurde in Euro umgerechnet?",
+          "required": false,
+          "showIf": { "field": "inEuro", "equals": false },
+          "because": "Nur bei einer fremden Währung.",
+          "purpose": "Wechselkurs bei Fremdwährung (GoBD Rz. 77)",
+          "quickAnswers": [
+            { "label": "Betrag laut Kontoauszug", "value": "Betrag laut Kontoauszug" },
+            { "label": "Umgerechnet zum Tageskurs", "value": "Umgerechnet zum Tageskurs" }
+          ]
+        },
+        {
+          "id": "zahlungsart",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Zahlungsart",
+          "question": "Wie wurde bezahlt?",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "ausgabe" },
+          "because": "Nur bei einer Ausgabe.",
+          "purpose": "Zahlungsart (GoBD Rz. 79); Buchung über Kasse, Bank oder als Einlage; tägliche Kassenaufzeichnung (§ 146 Abs. 1 Satz 2 AO)",
+          "options": [
+            { "id": "bar", "label": "bar aus der Kasse des Betriebs" },
+            { "id": "barPrivat", "label": "bar aus eigener Tasche" },
+            { "id": "karte", "label": "mit einer Karte des Betriebs" },
+            { "id": "ueberweisung", "label": "per Überweisung vom Konto des Betriebs" },
+            { "id": "privatUnbar", "label": "mit privater Karte oder von einem privaten Konto" },
+            { "id": "bezahldienst", "label": "über einen Bezahldienst im Internet oder per App" }
+          ]
+        },
+        {
+          "id": "zahlungsnachweis",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "Zahlungsnachweis liegt bei",
+          "question": "Geben Sie einen Zahlungsnachweis mit ab (Kontoauszug, Kartenbeleg, Bestätigung des Bezahldienstes)?",
+          "help": "Dieser Fragebogen kann keine Dateien anhängen. Geben Sie den Nachweis zusammen mit der PDF ab und schreiben Sie die Belegnummer darauf, wenn Sie eine vergeben.",
+          "required": true,
+          "showIf": {
+            "field": "zahlungsart",
+            "in": ["karte", "ueberweisung", "privatUnbar", "bezahldienst"]
+          },
+          "because": "Nur eine unbare Zahlung lässt sich durch einen Kontoauszug oder Kartenbeleg nachweisen.",
+          "purpose": "Nachweis der Zahlung; Zuordnung mehrerer Belege zu einer Buchung (GoBD Rz. 71)"
+        },
+        {
+          "id": "kassenbuch",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "Ausgabe im Kassenbuch",
+          "question": "Steht die Ausgabe am Tag der Zahlung im Kassenbuch?",
+          "help": "Barausgaben müssen täglich aufgezeichnet werden.",
+          "required": true,
+          "showIf": { "field": "zahlungsart", "equals": "bar" },
+          "because": "Nur Zahlungen aus der Kasse des Betriebs stehen im Kassenbuch (§ 146 Abs. 1 Satz 2 AO).",
+          "purpose": "Tägliche Kassenaufzeichnung (§ 146 Abs. 1 Satz 2 AO; GoBD Rz. 48)"
+        }
+      ]
+    },
+    {
+      "id": "geld",
+      "title": "Entnahme, Einlage oder Geldtransit",
+      "fields": [
+        {
+          "id": "entnahmeAus",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Entnommen aus",
+          "question": "Woher wurde das Geld entnommen?",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "privatentnahme" },
+          "because": "Nur bei einer Privatentnahme; davon hängt ab, ob sie ins Kassenbuch gehört (§ 146 Abs. 1 Satz 2 AO).",
+          "purpose": "Buchung über Kasse oder Bank; Aufzeichnung jeder Entnahme (GoBD Rz. 37)",
+          "options": [
+            { "id": "kasse", "label": "bar aus der Kasse des Betriebs" },
+            { "id": "konto", "label": "vom Bankkonto des Betriebs" }
+          ]
+        },
+        {
+          "id": "einlageIn",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Eingelegt in",
+          "question": "Wohin wurde das Geld eingelegt?",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "einlage" },
+          "because": "Nur bei einer Einlage; davon hängt ab, ob sie ins Kassenbuch gehört (§ 146 Abs. 1 Satz 2 AO).",
+          "purpose": "Buchung über Kasse oder Bank; Aufzeichnung jeder Einlage (GoBD Rz. 37)",
+          "options": [
+            { "id": "kasse", "label": "bar in die Kasse des Betriebs" },
+            { "id": "konto", "label": "auf das Bankkonto des Betriebs" }
+          ]
+        },
+        {
+          "id": "geldtransitRichtung",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Richtung des Geldtransits",
+          "question": "Von wo nach wo wurde das Geld gebracht?",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "geldtransit" },
+          "because": "Nur bei einem Geldtransit; Abgang und Zugang werden je einmal gebucht (GoBD Rz. 41).",
+          "purpose": "Buchung von Abgang und Zugang; Kassenaufzeichnung (§ 146 Abs. 1 Satz 2 AO)",
+          "options": [
+            {
+              "id": "kasseZuBank",
+              "label": "aus der Kasse auf das Bankkonto (Einzahlung bei der Bank)"
+            },
+            {
+              "id": "bankZuKasse",
+              "label": "vom Bankkonto in die Kasse (Abhebung bei der Bank oder am Automaten)"
+            },
+            { "id": "kasseZuKasse", "label": "aus einer Kasse in eine andere Kasse des Betriebs" }
+          ]
+        },
+        {
+          "id": "kassenBezeichnung",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Kasse",
+          "question": "Welche Kasse war es?",
+          "help": "Nur nötig, wenn der Betrieb mehrere Kassen führt, z. B. „Kasse Filiale Nord“.",
+          "required": false,
+          "showIf": {
+            "any": [
+              { "field": "entnahmeAus", "equals": "kasse" },
+              { "field": "einlageIn", "equals": "kasse" },
+              { "field": "geldtransitRichtung", "in": ["kasseZuBank", "bankZuKasse"] }
+            ]
+          },
+          "because": "Nur wenn Bargeld in eine Kasse kommt oder sie verlässt.",
+          "purpose": "Zuordnung zum Kassenbuch der richtigen Kasse (§ 146 Abs. 1 Satz 2 AO)"
+        },
+        {
+          "id": "transitKassen",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Von Kasse zu Kasse",
+          "question": "Aus welcher Kasse in welche Kasse?",
+          "help": "Zum Beispiel „Hauptkasse → Kasse Filiale Nord“.",
+          "required": true,
+          "showIf": { "field": "geldtransitRichtung", "equals": "kasseZuKasse" },
+          "because": "Nur bei einem Wechsel zwischen zwei Kassen; beide Kassenbücher zeigen ihn.",
+          "purpose": "Zuordnung zu beiden Kassenbüchern (§ 146 Abs. 1 Satz 2 AO; GoBD Rz. 41)"
+        },
+        {
+          "id": "entnahmePerson",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Entnommen von",
+          "question": "Wer hat das Geld für private Zwecke entnommen?",
+          "help": "Vor- und Familienname. Bei einer Personengesellschaft die Gesellschafterin oder der Gesellschafter, für die oder den entnommen wurde.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "privatentnahme" },
+          "because": "Nur bei einer Privatentnahme; die Entnahme wird der Person zugeordnet, für die sie erfolgt.",
+          "purpose": "Zuordnung der Entnahme (§ 4 Abs. 1 Satz 2 EStG; GoBD Rz. 37)"
+        },
+        {
+          "id": "einlagePerson",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Eingelegt von",
+          "question": "Wer hat das Geld eingelegt?",
+          "help": "Vor- und Familienname. Bei einer Personengesellschaft die Gesellschafterin oder der Gesellschafter, aus deren oder dessen Privatvermögen das Geld kommt.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "einlage" },
+          "because": "Nur bei einer Einlage; die Einlage wird der Person zugeordnet, von der sie kommt.",
+          "purpose": "Zuordnung der Einlage (§ 4 Abs. 1 Satz 8 EStG; GoBD Rz. 37)"
+        },
+        {
+          "id": "transitPerson",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Gebracht von",
+          "question": "Wer hat das Geld gebracht oder abgeholt?",
+          "help": "Die Person, die das Bargeld zur Bank, von der Bank oder zur anderen Kasse gebracht hat.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "geldtransit" },
+          "because": "Nur bei einem Geldtransit; Bargeld unterwegs muss jemandem zugeordnet sein.",
+          "purpose": "Nachvollziehbarkeit des Geschäftsvorfalls (§ 145 Abs. 1 Satz 2 AO)"
+        },
+        {
+          "id": "geldBetrag",
+          "role": "aussteller",
+          "type": "money",
+          "label": "Betrag in Euro",
+          "question": "Wie viel Geld war es, in Euro?",
+          "help": "Der genaue Betrag.",
+          "required": true,
+          "showIf": {
+            "field": "vorgangsart",
+            "in": ["privatentnahme", "einlage", "geldtransit"]
+          },
+          "because": "Nur bei einer Entnahme, einer Einlage oder einem Geldtransit; eine Ausgabe hat eine eigene Frage nach dem Betrag.",
+          "purpose": "Zu buchender Betrag, Pflichtangabe (GoBD Rz. 77)"
+        },
+        {
+          "id": "entnahmeZweck",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Zweck der Entnahme",
+          "question": "Wofür wurde das Geld entnommen?",
+          "help": "Was Sie privat mit dem Geld machen, müssen Sie nicht angeben. Haben Sie sich damit aber eine Ausgabe erstattet, die Sie privat für den Betrieb bezahlt hatten, schreiben Sie das hier – dann ist es keine Privatentnahme.",
+          "required": false,
+          "showIf": { "field": "vorgangsart", "equals": "privatentnahme" },
+          "because": "Nur bei einer Privatentnahme; freiwillig, weil der private Zweck die Buchung nicht ändert.",
+          "purpose": "Abgrenzung der Privatentnahme von einer Erstattung betrieblicher Auslagen (§ 4 Abs. 1 Satz 2 EStG)"
+        },
+        {
+          "id": "einlageHerkunft",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Herkunft des Geldes",
+          "question": "Woher stammt das eingelegte Geld?",
+          "help": "Zum Beispiel „vom privaten Girokonto abgehoben“ oder „private Ersparnisse“. Das zeigt, dass das Geld aus dem Privatvermögen kommt und keine Einnahme des Betriebs ist.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "einlage" },
+          "because": "Nur bei einer Einlage: Sie verändert den Gewinn nicht und muss deshalb von einer Einnahme zu unterscheiden sein (§ 4 Abs. 1 Satz 1 und 8 EStG).",
+          "purpose": "Abgrenzung der Einlage von Betriebseinnahmen (§ 4 Abs. 1 Satz 1 und 8 EStG; GoBD Rz. 37)"
+        },
+        {
+          "id": "transitGrund",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Grund des Geldtransits",
+          "question": "Warum wurde das Geld gebracht?",
+          "help": "Kurz, z. B. „Tageseinnahmen zur Bank gebracht“ oder „Wechselgeld für die Filiale“.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "geldtransit" },
+          "because": "Nur bei einem Geldtransit; der Grund erklärt, warum Bargeld bewegt wurde.",
+          "purpose": "Hinreichende Erläuterung des Geschäftsvorfalls (GoBD Rz. 77)"
+        },
+        {
+          "id": "kassenbuchGeld",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "Betrag im Kassenbuch",
+          "question": "Ist der Betrag am selben Tag im Kassenbuch eingetragen?",
+          "help": "Bargeld, das in die Kasse kommt oder sie verlässt, muss täglich aufgezeichnet werden – bei einem Wechsel zwischen zwei Kassen in beiden Kassenbüchern.",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "entnahmeAus", "equals": "kasse" },
+              { "field": "einlageIn", "equals": "kasse" },
+              { "field": "geldtransitRichtung", "answered": true }
+            ]
+          },
+          "because": "Nur wenn eine Kasse beteiligt ist: Kasseneinnahmen und Kassenausgaben sind täglich festzuhalten (§ 146 Abs. 1 Satz 2 AO).",
+          "purpose": "Tägliche Kassenaufzeichnung (§ 146 Abs. 1 Satz 2 AO; GoBD Rz. 48)"
+        },
+        {
+          "id": "bankbeleg",
+          "role": "aussteller",
+          "type": "boolean",
+          "label": "Beleg der Bank liegt bei",
+          "question": "Geben Sie den Beleg der Bank oder den Kontoauszug mit ab?",
+          "help": "Zum Beispiel die Einzahlungsquittung oder den Beleg des Geldautomaten. Dieser Fragebogen kann keine Dateien anhängen; geben Sie den Beleg zusammen mit der PDF ab.",
+          "required": true,
+          "showIf": { "field": "geldtransitRichtung", "in": ["kasseZuBank", "bankZuKasse"] },
+          "because": "Nur ein Geldtransit zwischen Kasse und Bank hat einen Beleg der Bank.",
+          "purpose": "Nachweis des Zugangs bzw. Abgangs auf dem Bankkonto; Zuordnung mehrerer Belege zu einer Buchung (GoBD Rz. 71)"
+        }
+      ]
+    },
+    {
+      "id": "beleg",
+      "title": "Angaben zum Eigenbeleg",
+      "fields": [
+        {
+          "id": "belegnummer",
+          "role": "aussteller",
+          "type": "text",
+          "maxLength": 36,
+          "label": "Belegnummer",
+          "question": "Welche Nummer bekommt dieser Eigenbeleg?",
+          "help": "Wenn Sie Eigenbelege selbst fortlaufend nummerieren, z. B. EB-2026-001: höchstens 36 Zeichen, am besten nur Großbuchstaben, Ziffern und Bindestrich. Lassen Sie das Feld leer, vergibt die Kanzlei die Nummer beim Buchen.",
+          "required": false,
+          "purpose": "Eindeutige Belegnummer (GoBD Rz. 77); Zuordnung zur Buchung (GoBD Rz. 71)"
+        },
+        {
+          "id": "ausstellungsdatum",
+          "role": "aussteller",
+          "type": "date",
+          "maxDate": "today",
+          "label": "Datum des Eigenbelegs",
+          "question": "Welches Datum hat dieser Eigenbeleg?",
+          "help": "In der Regel heute. Den genauen Zeitpunkt der Unterschrift hält die App zusätzlich fest.",
+          "required": true,
+          "purpose": "Zeitnahe Erstellung (GoBD Rz. 46); Prüfhinweise zur Reihenfolge der Daten"
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "wannEigenbeleg",
+      "role": "aussteller",
+      "title": "Wann ein Eigenbeleg hilft",
+      "text": "Ein Eigenbeleg ist ein Notbehelf. Er belegt eine Ausgabe, zu der Sie keinen Beleg bekommen haben oder deren Beleg fehlt, oder Geld, das aus dem Betrieb genommen, in den Betrieb gegeben oder zwischen Kasse und Bank bewegt wurde. Fragen Sie bei einer Ausgabe zuerst beim Zahlungsempfänger nach einem Beleg oder einer Zweitschrift; das ist fast immer besser.\n\nFür Spenden, Löhne, die eigene Verpflegung auf Reisen und Fahrten mit dem privaten Fahrzeug genügt ein Eigenbeleg nicht. Bei einer Bewirtung in einer Gaststätte ersetzt er deren Rechnung nicht.",
+      "asOf": "2026-11-04",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "keineVorsteuer",
+      "role": "aussteller",
+      "title": "Keine Vorsteuer",
+      "text": "Aus einem Eigenbeleg können Sie keine Umsatzsteuer als Vorsteuer abziehen, auch nicht bei kleinen Beträgen; dafür braucht es eine Rechnung des Verkäufers (§ 15 Abs. 1 Satz 1 Nr. 1 Satz 2 UStG). Geben Sie bei einer Ausgabe deshalb den ganzen gezahlten Betrag an.",
+      "asOf": "2026-11-04",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "aufbewahrung",
+      "role": "aussteller",
+      "title": "Aufbewahren und abgeben",
+      "text": "Die PDF dieses Fragebogens ist Ihr Beleg. Bewahren Sie sie unverändert als Datei auf, acht Jahre lang (§ 147 Abs. 1 Nr. 4, Abs. 3 AO). Zahlungsnachweise, Belege der Bank und unleserliche Originale geben Sie zusammen mit der PDF ab; dieser Fragebogen kann keine Dateien anhängen.",
+      "asOf": "2026-11-04",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "richtigkeit",
+      "role": "aussteller",
+      "title": "Richtige Angaben",
+      "text": "Ein Eigenbeleg muss stimmen. Wer Belege ausstellt, die nicht stimmen, kann eine Ordnungswidrigkeit begehen (§ 379 Abs. 1 Satz 1 Nr. 1 AO). Viele oder hohe Eigenbelege fallen bei einer Betriebsprüfung auf; bei Zweifeln an der Buchführung darf das Finanzamt schätzen (§ 158 Abs. 2, § 162 Abs. 2 AO).\n\nBargeld, das in die Kasse kommt oder sie verlässt, gehört am selben Tag ins Kassenbuch (§ 146 Abs. 1 Satz 2 AO).",
+      "asOf": "2026-11-04",
+      "acknowledgement": "read"
+    }
+  ],
+  "consistencyRules": [],
+  "matchKeys": [],
+  "legalNotes": [
+    "Dieser Eigenbeleg ist keine Rechnung im Sinne des Umsatzsteuergesetzes und berechtigt nicht zum Vorsteuerabzug.",
+    "Privatentnahmen und Einlagen sind weder Betriebsausgaben noch Betriebseinnahmen; sie ändern den Gewinn nicht (§ 4 Abs. 1 Satz 1 EStG).",
+    "Der Fragebogen ist keine Steuer- oder Rechtsberatung. Ob eine Ausgabe als Betriebsausgabe abziehbar ist und wie eine Entnahme, eine Einlage oder ein Geldtransit gebucht wird, entscheidet die Buchhaltung oder Kanzlei im Einzelfall."
+  ],
+  "validity": { "field": "vorgangsdatum", "from": "2025-01-01" },
+  "limits": [
+    "Ein Vorgang je Eigenbeleg: eine Ausgabe oder eine Geldbewegung; kein Sammelbeleg.",
+    "Geldbewegungen nur als Geld in Euro. Nicht abgedeckt sind Sachentnahmen (z. B. Waren für den privaten Bedarf), die private Nutzung von Gegenständen des Betriebs und Sacheinlagen.",
+    "Keine Einnahmen: Erlöse ohne Beleg gehören in die Kassen- oder Erlösaufzeichnung.",
+    "Keine Aufteilung in Nettobetrag und Umsatzsteuer; kein Vorsteuerabzug.",
+    "Nicht für eigene Verpflegung auf Reisen, Fahrten mit privaten Fahrzeugen, Löhne und Spenden. Eine Bewirtung lässt sich erfassen, die fehlende Rechnung einer Gaststätte ersetzt der Eigenbeleg aber nicht.",
+    "Nicht gedacht als Bewirtungsbeleg zu einer vorhandenen Rechnung der Gaststätte.",
+    "Dateien lassen sich nicht anhängen; Zahlungsnachweise, Belege der Bank und beschädigte Originale werden getrennt abgegeben.",
+    "Der Fragebogen vergibt keine Belegnummern und prüft nicht, ob eine Nummer schon benutzt wurde.",
+    "Eine fremde Währung nimmt er nur bei Ausgaben auf, als Angabe; er rechnet nicht um.",
+    "Der Fragebogen kontiert und bucht nicht. Wie eine Entnahme oder Einlage bei einer Kapitalgesellschaft zu behandeln ist, klärt die Kanzlei."
+  ],
+  "exclusions": [
+    {
+      "id": "eigeneVerpflegung",
+      "when": { "field": "artAusgabe", "equals": "eigeneVerpflegung" },
+      "message": "Ihre eigene Verpflegung auf Reisen wird mit Pauschalen in der Reisekostenabrechnung berücksichtigt, nicht mit einem Eigenbeleg.",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 5 EStG i. V. m. § 9 Abs. 4a EStG"
+    },
+    {
+      "id": "kilometer",
+      "when": { "field": "artAusgabe", "equals": "kilometer" },
+      "message": "Fahrten mit einem privaten Fahrzeug gehören in eine Aufstellung der Fahrten (Reisekosten), nicht in einen Eigenbeleg."
+    },
+    {
+      "id": "lohn",
+      "when": { "field": "artAusgabe", "equals": "lohn" },
+      "message": "Zahlungen an Beschäftigte oder Aushilfen laufen über die Lohnabrechnung, nicht über einen Eigenbeleg.",
+      "source": "§ 41 Abs. 1 Satz 1 EStG"
+    },
+    {
+      "id": "spende",
+      "when": { "field": "artAusgabe", "equals": "spende" },
+      "message": "Für eine Spende brauchen Sie eine Zuwendungsbestätigung des Empfängers; ein Eigenbeleg genügt nicht.",
+      "source": "§ 50 Abs. 1 EStDV"
+    },
+    {
+      "id": "zweitschriftErhalten",
+      "when": { "field": "zweitschrift", "equals": "erhalten" },
+      "message": "Mit einer Zweitschrift brauchen Sie keinen Eigenbeleg – geben Sie die Zweitschrift ab.",
+      "source": "GoBD Rz. 61; UStAE 15.11 Abs. 1 Satz 4"
+    }
+  ],
+  "checkHints": [
+    {
+      "id": "ohneVorsteuer",
+      "when": { "field": "vorgangsart", "equals": "ausgabe" },
+      "message": "Ohne Vorsteuer buchen: Ein Eigenbeleg ist keine Rechnung.",
+      "source": "§ 15 Abs. 1 Satz 1 Nr. 1 Satz 2 UStG; UStAE 15.2a Abs. 1a"
+    },
+    {
+      "id": "hoherBetrag",
+      "when": { "field": "betrag", "greaterThan": "249.99" },
+      "message": "Eigenbeleg über eine Ausgabe ab 250 €: Belastbarkeit prüfen und beim Mandanten nach einer Rechnung oder Zweitschrift fragen.",
+      "source": "Prüfgrenze in Anlehnung an § 33 UStDV, Kleinbetragsrechnung bis 250 €"
+    },
+    {
+      "id": "zweitschriftNichtVersucht",
+      "when": { "field": "zweitschrift", "equals": "nein" },
+      "message": "Keine Zweitschrift angefragt; mit ihr wäre ein Vorsteuerabzug möglich.",
+      "source": "UStAE 15.11 Abs. 1 Satz 4"
+    },
+    {
+      "id": "originalRestFehlt",
+      "when": { "field": "originalRestLiegtBei", "equals": false },
+      "message": "Der unleserliche Originalbeleg wird nicht mit abgegeben.",
+      "source": "GoBD Rz. 61"
+    },
+    {
+      "id": "ticketAbrufbar",
+      "when": {
+        "all": [
+          { "field": "artAusgabe", "in": ["fahrkarte", "parken"] },
+          { "field": "grundOhneOriginal", "equals": "verloren" }
+        ]
+      },
+      "message": "Fahrschein oder Parkbeleg verloren: App- und Online-Tickets lassen sich meist neu abrufen; ein Fahrausweis gilt als Rechnung.",
+      "source": "§ 34 Abs. 1 UStDV"
+    },
+    {
+      "id": "geschenkGesondert",
+      "when": { "field": "artAusgabe", "equals": "geschenk" },
+      "message": "Geschenk: gesondert aufzeichnen; Freigrenze von 50 € je Empfänger und Wirtschaftsjahr prüfen (brutto, da keine Vorsteuer).",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 1, Abs. 7 EStG; R 4.10 Abs. 3 EStR"
+    },
+    {
+      "id": "geschenkUeberFreigrenze",
+      "when": {
+        "all": [
+          { "field": "artAusgabe", "equals": "geschenk" },
+          { "field": "betrag", "greaterThan": "50" }
+        ]
+      },
+      "message": "Geschenk über 50 €: Schon dieses Geschenk übersteigt die Freigrenze; nicht abziehbar.",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 1 EStG; R 4.10 Abs. 3 Satz 2 EStR"
+    },
+    {
+      "id": "fahrtenbuchBelege",
+      "when": { "field": "fahrtenbuch", "equals": true },
+      "message": "Fahrtenbuchmethode: Die Gesamtkosten müssen belegt sein; ein Eigenbeleg kann den Nachweis schwächen.",
+      "source": "§ 6 Abs. 1 Nr. 4 Satz 3 EStG"
+    },
+    {
+      "id": "anschaffung",
+      "when": { "field": "artAusgabe", "equals": "anschaffung" },
+      "message": "Anschaffung: Anlagevermögen und Grenze für geringwertige Wirtschaftsgüter prüfen (ohne abziehbare Vorsteuer, hier brutto).",
+      "source": "GoBD Rz. 81; § 6 Abs. 2 Satz 1 EStG"
+    },
+    {
+      "id": "bewirtung",
+      "when": { "field": "artAusgabe", "equals": "bewirtung" },
+      "message": "Bewirtung per Eigenbeleg: Ort, Tag, Teilnehmende, Anlass und Höhe stehen im Beleg; Nachweis und Abzug prüfen, gesondert aufzeichnen.",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2, Abs. 7 EStG"
+    },
+    {
+      "id": "bewirtungGaststaette",
+      "when": { "field": "bewirtungOrt", "equals": "gaststaette" },
+      "message": "Bewirtung in einer Gaststätte ohne deren Rechnung: Die Rechnung ist beizufügen, ein Eigenbeleg ersetzt sie nicht; ohne maschinell erstellte und registrierte Rechnung ist die Ausgabe nicht abziehbar. Zweitschrift beim Betrieb anfordern lassen.",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; R 4.10 Abs. 8 EStR; BMF-Schreiben vom 19.11.2025 Rn. 13"
+    },
+    {
+      "id": "bewirtungWohnung",
+      "when": { "field": "bewirtungOrt", "equals": "wohnung" },
+      "message": "Bewirtung in der eigenen Wohnung: in der Regel Kosten der Lebensführung, keine Betriebsausgabe.",
+      "source": "R 4.10 Abs. 6 Satz 8 EStR; § 12 Nr. 1 EStG"
+    },
+    {
+      "id": "fremdwaehrungOhneUmrechnung",
+      "when": {
+        "all": [
+          { "field": "inEuro", "equals": false },
+          { "field": "umrechnung", "answered": false }
+        ]
+      },
+      "message": "Fremde Währung ohne Angabe zur Umrechnung: Kurs prüfen.",
+      "source": "GoBD Rz. 77"
+    },
+    {
+      "id": "privatBezahlt",
+      "when": { "field": "zahlungsart", "in": ["barPrivat", "privatUnbar"] },
+      "message": "Privat bezahlt: als Einlage buchen; bei einer Kapitalgesellschaft über das Verrechnungskonto der Gesellschafterin oder des Gesellschafters, bei Beschäftigten als Erstattung ihrer Auslage.",
+      "source": "§ 4 Abs. 1 Satz 8 EStG; GoBD Rz. 37"
+    },
+    {
+      "id": "unbarZuordnen",
+      "when": { "field": "zahlungsart", "in": ["karte", "ueberweisung", "bezahldienst"] },
+      "message": "Unbar vom Betrieb bezahlt: den Eigenbeleg der Bank-, Karten- oder Bezahldienstbuchung zuordnen, nicht zusätzlich buchen.",
+      "source": "GoBD Rz. 41, 71"
+    },
+    {
+      "id": "keinZahlungsnachweis",
+      "when": { "field": "zahlungsnachweis", "equals": false },
+      "message": "Unbar bezahlt, aber kein Zahlungsnachweis beigefügt.",
+      "source": "GoBD Rz. 79"
+    },
+    {
+      "id": "kassenbuchFehlt",
+      "when": { "field": "kassenbuch", "equals": false },
+      "message": "Barausgabe nicht am Zahltag im Kassenbuch: Kassenbuch prüfen.",
+      "source": "§ 146 Abs. 1 Satz 2 AO; GoBD Rz. 48"
+    },
+    {
+      "id": "privatentnahmeKapitalgesellschaft",
+      "when": {
+        "all": [
+          { "field": "vorgangsart", "equals": "privatentnahme" },
+          { "field": "rechtsform", "equals": "kapitalgesellschaft" }
+        ]
+      },
+      "message": "Kapitalgesellschaft: keine Privatentnahme. Auszahlung an eine Gesellschafterin oder einen Gesellschafter als Darlehen, Verrechnung oder Gehalt klären; ohne klare Vereinbarung verdeckte Gewinnausschüttung prüfen.",
+      "source": "§ 8 Abs. 3 Satz 2 KStG"
+    },
+    {
+      "id": "einlageKapitalgesellschaft",
+      "when": {
+        "all": [
+          { "field": "vorgangsart", "equals": "einlage" },
+          { "field": "rechtsform", "equals": "kapitalgesellschaft" }
+        ]
+      },
+      "message": "Kapitalgesellschaft: keine Einlage wie bei einem Einzelunternehmen. Zahlung einer Gesellschafterin oder eines Gesellschafters als Darlehen, Verrechnung oder verdeckte Einlage klären.",
+      "source": "§ 8 Abs. 3 Satz 3 KStG"
+    },
+    {
+      "id": "rechtsformAndere",
+      "when": { "field": "rechtsform", "equals": "andere" },
+      "message": "Andere Rechtsform (z. B. Verein oder Genossenschaft): Eine Privatentnahme oder Einlage passt in der Regel nicht; den Vorgang klären."
+    },
+    {
+      "id": "geldUeberKonto",
+      "when": {
+        "any": [
+          { "field": "entnahmeAus", "equals": "konto" },
+          { "field": "einlageIn", "equals": "konto" }
+        ]
+      },
+      "message": "Über das Bankkonto: Der Kontoauszug zeigt die Zahlung; den Eigenbeleg der Bankbuchung zuordnen, nicht zusätzlich buchen.",
+      "source": "GoBD Rz. 41, 71"
+    },
+    {
+      "id": "geldtransitBuchen",
+      "when": { "field": "vorgangsart", "equals": "geldtransit" },
+      "message": "Geldtransit: über das Geldtransitkonto buchen, Abgang und Zugang je einmal; weder Einnahme noch Ausgabe und nicht doppelt aus Kassenbuch und Kontoauszug.",
+      "source": "GoBD Rz. 41"
+    },
+    {
+      "id": "kassenbuchGeldFehlt",
+      "when": { "field": "kassenbuchGeld", "equals": false },
+      "message": "Bargeld nicht am selben Tag im Kassenbuch: Kassenbuch prüfen.",
+      "source": "§ 146 Abs. 1 Satz 2 AO; GoBD Rz. 48"
+    },
+    {
+      "id": "keinBankbeleg",
+      "when": { "field": "bankbeleg", "equals": false },
+      "message": "Geldtransit ohne Beleg der Bank: mit dem Kontoauszug abgleichen."
+    },
+    {
+      "id": "belegnummerFehlt",
+      "when": { "field": "belegnummer", "answered": false },
+      "message": "Keine Belegnummer angegeben: beim Buchen eine vergeben."
+    },
+    {
+      "id": "spaeterErstellt",
+      "test": { "fn": "inSpaeteremMonat", "args": ["ausstellungsdatum", "vorgangsdatum"] },
+      "message": "Eigenbeleg erst in einem späteren Monat erstellt: zeitnah? Kassenbuch und Voranmeldung des Monats prüfen.",
+      "source": "GoBD Rz. 46, 47"
+    },
+    {
+      "id": "ausstellungVorVorgang",
+      "test": { "fn": "spaeterAls", "args": ["vorgangsdatum", "ausstellungsdatum"] },
+      "message": "Der Vorgang liegt nach dem Datum des Eigenbelegs: Daten prüfen."
+    }
+  ]
+}
