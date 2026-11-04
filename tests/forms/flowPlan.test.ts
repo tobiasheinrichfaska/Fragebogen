@@ -108,13 +108,14 @@ describe('flow plan of the Personalfragebogen', () => {
   it('shows only the newest version of each form', () => {
     // Sofortmeldung 0.1.0 was withdrawn when 0.2.0 was published (Tobias 2026-11-01); the test
     // versions 0.2.0–0.4.0 stay next to the first production version 1.0.0 (2026-11-03) while
-    // questionnaires of them are on their way.
+    // questionnaires of them are on their way; the draft 1.1.0 (2026-11-04) is the newest.
     const sofort = entries.filter((entry) => entry.form.definition.id === 'sofortmeldung');
-    expect(sofort.map((entry) => entry.form.definition.version)).toEqual(['1.0.0']);
+    expect(sofort.map((entry) => entry.form.definition.version)).toEqual(['1.1.0']);
     expect(sofort[0]?.older).toEqual([
       '0.2.0 (eingefroren)',
       '0.3.0 (eingefroren)',
       '0.4.0 (eingefroren)',
+      '1.0.0 (eingefroren)',
     ]);
   });
 

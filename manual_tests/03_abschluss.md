@@ -145,12 +145,12 @@ stehen in der Zusammenfassung des Arbeitgebers. Ohne Testbereich: MT-11 bis zur 
 
 **Erwartet:**
 
-- Der Link endet auf `#stammdaten=1&formular=sofortmeldung&betriebsnummer=…&firma=…`. Er enthält
-  **keine** Daten der Person.
+- Der Link endet auf `#stammdaten=1&formular=sofortmeldung&betriebsnummer=…&branche=bau&firma=…`
+  (die Reihenfolge der Teile kann anders sein). Er enthält **keine** Daten der Person.
 - Schritt 2: Der Link öffnet gleich einen **neuen Fragebogen** „Personalfragebogen: Angaben für die
   Sofortmeldung“ bei „Wer füllt jetzt aus?“, mit dem Hinweis „Neuer Fragebogen … aus Ihrem
   Lesezeichen“. Nach „Ich bin: Arbeitgeber“ erscheint „Stammdaten aus Ihrem Lesezeichen übernommen.
-  Bitte prüfen.“, und Firma und Betriebsnummer sind schon beantwortet.
+  Bitte prüfen.“, und Firma, Betriebsnummer und Wirtschaftsbereich sind schon beantwortet.
 - Nach Schritt 3 meldet die App, dass die Stammdaten nicht übernommen werden konnten, mit dem Grund
   („Die Betriebsnummer hat genau 8 Ziffern.“).
 - _Nicht offensichtlich:_ Der Link nennt das Formular, aber keine Fassung. Ein Link aus einem früheren

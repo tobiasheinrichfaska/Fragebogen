@@ -62,88 +62,14 @@ wird aber nicht mit unterschrieben.</p>
 <li><span class="swatch" style="background:var(--taken);border-color:var(--taken-line)"></span>Legt eine andere Station fest</li>
 </ul>
 <ol>
-<li><a href="#sofortmeldung-1.0.0">Personalfragebogen: Angaben für die Sofortmeldung 1.0.0</a> <span class="muted">– Veröffentlicht (Testfassung)</span></li>
 <li><a href="#austritt-0.1.0">Austritt: Angaben zum Ende der Beschäftigung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#dienstwagen-0.1.0">Dienstwagen: Überlassung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#eigenbeleg-0.1.0">Eigenbeleg: Ausgabe ohne Originalbeleg, Entnahme, Einlage oder Geldtransit 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
+<li><a href="#sofortmeldung-1.1.0">Personalfragebogen: Angaben für die Sofortmeldung 1.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 </ol>
-<h2 id="sofortmeldung-1.0.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">1.0.0</span></h2>
-<p class="meta">Veröffentlicht (Testfassung) · Definition <code>d2913484400f5d73c26685a65bcdcaf5cee5c163d3d0b4f5856280ce38d264cd</code></p>
-<p class="meta">Ersetzt die ältere Fassung 0.2.0 (eingefroren), 0.3.0 (eingefroren), 0.4.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
-<p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
-<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.</li>
-<li>Der Hinweis auf die Mitführungspflicht wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die Aushändigung.</li>
-<li>Er fragt nur, was die Sofortmeldung braucht; die übrigen Angaben für die Lohnabrechnung folgen im Personalfragebogen.</li>
-</ul></div>
-<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
-<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
-<li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
-<li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
-</ul></div>
-<section class="station" id="sofortmeldung-1.0.0-person">
-<h3>Station: Beschäftigte Person</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)“.</p>
-<h4>Angaben der beschäftigten Person</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">3</span> <span class="q">Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?</span><div class="meta">Titel, Vorsatzwort oder Namenszusatz · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4, Nr. 5, Nr. 6 ab.</div><div class="meta">Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.</div></li>
-<li class="step level-1"><span class="num">4</span> <span class="q">Welchen akademischen Grad oder Titel führen Sie im Namen?</span><div class="meta">Titel · Text · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
-<li class="step level-1"><span class="num">5</span> <span class="q">Wie lautet das Vorsatzwort Ihres Namens?</span><div class="meta">Vorsatzwort · Auswahl: aus der Liste „Vorsatzworte“ (188 Einträge; DEÜV-Rundschreiben, Anlage 6 (Stand 18.03.2026, mit den Schreibweisen vom 08.08.2007)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
-<li class="step level-1"><span class="num">6</span> <span class="q">Wie lautet der Namenszusatz?</span><div class="meta">Namenszusatz · Auswahl: aus der Liste „Namenszusätze“ (70 Einträge; DEÜV-Rundschreiben, Anlage 7 (Stand 04.05.2006)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
-<li class="step level-0 decision"><span class="num">7</span> <span class="q">Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?</span><div class="meta">Ist Ihr Geburtsname gleich Ihrem Familiennamen? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div><div class="meta">Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.</div></li>
-<li class="step level-1"><span class="num">8</span> <span class="q">Wie lautet Ihr Geburtsname?</span><div class="meta">Geburtsname · Text · Pflicht</div><div class="when">Gefragt erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 7).</div><div class="why">Warum: Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest.</div></li>
-<li class="step level-0"><span class="num">9</span> <span class="q">Wann sind Sie geboren?</span><div class="meta">Geburtsdatum · Datum · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">10</span> <span class="q">Sind Sie in Deutschland geboren?</span><div class="meta">In Deutschland geboren? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 11 ab.</div><div class="meta">Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel in der DDR geboren ist, antwortet mit Ja.</div></li>
-<li class="step level-1"><span class="num">11</span> <span class="q">In welchem Staat sind Sie geboren?</span><div class="meta">Geburtsland · Text: Vorschläge aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „In Deutschland geboren?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 10).</div><div class="why">Warum: Wer in Deutschland geboren ist, braucht kein Geburtsland anzugeben; es steht dann fest.</div></li>
-<li class="step level-0"><span class="num">12</span> <span class="q">In welcher Stadt oder Gemeinde sind Sie geboren?</span><div class="meta">Geburtsort (Stadt oder Gemeinde) · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">13</span> <span class="q">Welches Geschlecht ist bei Ihnen eingetragen?</span><div class="meta">Geschlecht · Auswahl: männlich · weiblich · divers · unbestimmt · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">14</span> <span class="q">Haben Sie die deutsche Staatsangehörigkeit?</span><div class="meta">Deutsche Staatsangehörigkeit? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 15 ab.</div><div class="meta">Auch wenn Sie daneben noch eine andere haben: Dann antworten Sie mit Ja.</div></li>
-<li class="step level-1"><span class="num">15</span> <span class="q">Welche Staatsangehörigkeit haben Sie?</span><div class="meta">Staatsangehörigkeit · Text: Vorschläge aus der Liste „Staatsangehörigkeiten außer der deutschen“ (203 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „Deutsche Staatsangehörigkeit?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 14).</div><div class="why">Warum: Wer die deutsche Staatsangehörigkeit hat, gibt nur diese an; sie geht bei den Meldungen vor.</div></li>
-<li class="step level-0"><span class="num">16</span> <span class="q">Wie lautet Ihre Versicherungsnummer der Rentenversicherung?</span><div class="meta">Versicherungsnummer der Rentenversicherung (falls bekannt) · Versicherungsnummer · optional</div></li>
-</ol>
-<h4>Anschrift</h4>
-<ol class="flow">
-<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis.</div></li>
-<li class="step level-1"><span class="num">18</span> <span class="q">In welchem Staat liegt Ihre Anschrift?</span><div class="meta">Staat · Auswahl: aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.</div></li>
-<li class="step level-0"><span class="num">19</span> <span class="q">In welcher Straße wohnen Sie?</span><div class="meta">Straße · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">20</span> <span class="q">Welche Hausnummer hat die Anschrift?</span><div class="meta">Hausnummer · Text · optional</div></li>
-<li class="step level-0"><span class="num">21</span> <span class="q">Gibt es einen Zusatz zur Anschrift?</span><div class="meta">Anschriftenzusatz · Text · optional</div></li>
-<li class="step level-1"><span class="num">22</span> <span class="q">Wie lautet Ihre Postleitzahl?</span><div class="meta">Postleitzahl · Text · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.</div></li>
-<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis.</div></li>
-<li class="step level-0"><span class="num">24</span> <span class="q">In welchem Ort wohnen Sie?</span><div class="meta">Wohnort · Text · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<section class="station" id="sofortmeldung-1.0.0-vertretung">
-<h3>Station: Gesetzliche Vertretung</h3>
-<p class="meta">Wird gebraucht: nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist · unterschreibt</p>
-<p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.</p>
-<h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
-<section class="station" id="sofortmeldung-1.0.0-arbeitgeber">
-<h3>Station: Arbeitgeber</h3>
-<p class="meta">Wird gebraucht: immer · schließt ab, Unterschrift freiwillig</p>
-<h4>Angaben des Arbeitgebers</h4>
-<ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet die Firma des Arbeitgebers?</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lautet die Betriebsnummer?</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
-<li class="step level-0"><span class="num">6</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
-</ol>
-<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
-</section>
 <h2 id="austritt-0.1.0">Austritt: Angaben zum Ende der Beschäftigung <span class="muted">0.1.0</span></h2>
 <p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>0d39a5a0f8d68e39813125e787f08c71ede21822681fa5b176f8c365954e90e1</code></p>
 <p><strong>Diese Fassung gilt für „Ende des Arbeitsverhältnisses“ ab 01.01.2026.</strong></p>
@@ -492,7 +418,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="personalfragebogen-0.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>25f03c06fe8a6bf12a0d2c53844df6c4dd64b93150c6158167448c1faf8a1b60</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>6bd3e1263f5927b676f4ff4429224bbb3068bf9f3444227510282be45f6df50d</code></p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.</li>
@@ -540,7 +466,7 @@ wird aber nicht mit unterschrieben.</p>
 <li class="step level-0 decision"><span class="num">7</span> <span class="q">Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?</span><div class="meta">Ist Ihr Geburtsname gleich Ihrem Familiennamen? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div><div class="meta">Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.</div></li>
 <li class="step level-1"><span class="num">8</span> <span class="q">Wie lautet Ihr Geburtsname?</span><div class="meta">Geburtsname · Text · Pflicht</div><div class="when">Gefragt erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 7).</div><div class="why">Warum: Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest.</div></li>
 <li class="step level-0 decision"><span class="num">9</span> <span class="q">Wann sind Sie geboren?</span><div class="meta">Geburtsdatum · Datum · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 35, Nr. 55, Nr. 56, Nr. 90, Nr. 101, Nr. 102 ab.</div><div class="meta">Zum Beispiel 17.05.1990.</div></li>
-<li class="step level-0 decision"><span class="num">10</span> <span class="q">Sind Sie in Deutschland geboren?</span><div class="meta">In Deutschland geboren? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 11 ab.</div><div class="meta">Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel in der DDR geboren ist, antwortet mit Ja.</div></li>
+<li class="step level-0 decision"><span class="num">10</span> <span class="q">Sind Sie in Deutschland geboren?</span><div class="meta">In Deutschland geboren? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 11 ab.</div><div class="meta">Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel vor 1990 in den neuen Bundesländern geboren ist, antwortet mit Ja.</div></li>
 <li class="step level-1"><span class="num">11</span> <span class="q">In welchem Staat sind Sie geboren?</span><div class="meta">Geburtsland · Text: Vorschläge aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „In Deutschland geboren?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 10).</div><div class="why">Warum: Wer in Deutschland geboren ist, braucht kein Geburtsland anzugeben; es steht dann fest.</div></li>
 <li class="step level-0"><span class="num">12</span> <span class="q">In welcher Stadt oder Gemeinde sind Sie geboren?</span><div class="meta">Geburtsort (Stadt oder Gemeinde) · Text · Pflicht</div></li>
 <li class="step level-0"><span class="num">13</span> <span class="q">Welches Geschlecht ist bei Ihnen eingetragen?</span><div class="meta">Geschlecht · Auswahl: männlich · weiblich · divers · unbestimmt · Pflicht</div></li>
@@ -853,6 +779,84 @@ wird aber nicht mit unterschrieben.</p>
 <ol class="flow">
 <li class="step level-1"><span class="num">123</span> <span class="q">An welchem Tag ist der unterschriebene Befreiungsantrag bei Ihnen eingegangen?</span><div class="meta">Befreiungsantrag eingegangen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Arbeitspapiere, die vorliegen“ „Befreiungsantrag Rentenversicherung im Minijob (Papieroriginal)“ angekreuzt ist (hängt ab von Nr. 122).</div><div class="why">Warum: Erst wenn der Befreiungsantrag auf Papier vorliegt, gibt es ein Eingangsdatum; mit ihm beginnt die Befreiung (§ 6 Abs. 4 SGB VI, § 8 Abs. 2 Nr. 4a BVV).</div></li>
 <li class="step level-1"><span class="num">124</span> <span class="q">An welchem Tag ist die unterschriebene Verzichtserklärung bei Ihnen eingegangen?</span><div class="meta">Verzichtserklärung eingegangen am · Datum · Pflicht</div><div class="when">Gefragt erst wenn bei „Arbeitspapiere, die vorliegen“ „Verzicht auf die Rentenversicherungsfreiheit (Papieroriginal)“ angekreuzt ist (hängt ab von Nr. 122).</div><div class="why">Warum: Erst wenn die Verzichtserklärung auf Papier vorliegt, gibt es ein Eingangsdatum; der Verzicht wirkt für die Zukunft (§ 5 Abs. 4 Satz 2 SGB VI).</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<h2 id="sofortmeldung-1.1.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">1.1.0</span></h2>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>39d53d8a5d73647e6fc178565e93fb1ba67bfd2cc9a689d77663f838b61d5245</code></p>
+<p class="meta">Ersetzt die ältere Fassung 0.2.0 (eingefroren), 0.3.0 (eingefroren), 0.4.0 (eingefroren), 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
+<p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
+<div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
+<li>Der Fragebogen ist nicht die Sofortmeldung selbst: Die Meldung an die Rentenversicherung (§ 28a Abs. 4 SGB IV) erstattet die lohnabrechnende Stelle mit diesen Angaben spätestens bei Beschäftigungsaufnahme.</li>
+<li>Der Hinweis auf die Mitführungspflicht wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die Aushändigung.</li>
+<li>Er fragt nur, was die Sofortmeldung braucht; die übrigen Angaben für die Lohnabrechnung folgen im Personalfragebogen.</li>
+</ul></div>
+<div class="limits"><h3>Sonderfälle: Abschließen und Weitergeben gesperrt</h3><ul>
+<li>Eine Sofortmeldung ist nur in den genannten Wirtschaftsbereichen vorgeschrieben. Für diesen Betrieb ist der Fragebogen nicht gedacht. Gesperrt, wenn bei „Wirtschaftsbereich“ „keiner dieser Bereiche“ gewählt ist.</li>
+</ul></div>
+<div class="order"><h3>Reihenfolge der Stationen</h3><ul>
+<li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
+<li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+<li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
+</ul></div>
+<section class="station" id="sofortmeldung-1.1.0-person">
+<h3>Station: Beschäftigte Person</h3>
+<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p>Zuerst die Hinweise: „Datenschutzhinweis“, „Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)“.</p>
+<h4>Angaben der beschäftigten Person</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">3</span> <span class="q">Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?</span><div class="meta">Titel, Vorsatzwort oder Namenszusatz · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4, Nr. 5, Nr. 6 ab.</div><div class="meta">Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.</div></li>
+<li class="step level-1"><span class="num">4</span> <span class="q">Welchen akademischen Grad oder Titel führen Sie im Namen?</span><div class="meta">Titel · Text · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
+<li class="step level-1"><span class="num">5</span> <span class="q">Wie lautet das Vorsatzwort Ihres Namens?</span><div class="meta">Vorsatzwort · Auswahl: aus der Liste „Vorsatzworte“ (188 Einträge; DEÜV-Rundschreiben, Anlage 6 (Stand 18.03.2026, mit den Schreibweisen vom 08.08.2007)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
+<li class="step level-1"><span class="num">6</span> <span class="q">Wie lautet der Namenszusatz?</span><div class="meta">Namenszusatz · Auswahl: aus der Liste „Namenszusätze“ (70 Einträge; DEÜV-Rundschreiben, Anlage 7 (Stand 04.05.2006)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
+<li class="step level-0 decision"><span class="num">7</span> <span class="q">Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen „‹Familienname›“?</span><div class="meta">Ist Ihr Geburtsname gleich Ihrem Familiennamen? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 8 ab.</div><div class="meta">Der Geburtsname ist der Familienname, den Sie bei Ihrer Geburt hatten.</div></li>
+<li class="step level-1"><span class="num">8</span> <span class="q">Wie lautet Ihr Geburtsname?</span><div class="meta">Geburtsname · Text · Pflicht</div><div class="when">Gefragt erst wenn „Ist Ihr Geburtsname gleich Ihrem Familiennamen?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 7).</div><div class="why">Warum: Der Geburtsname ist nur dann eine eigene Angabe, wenn er vom Familiennamen abweicht; sonst steht er schon fest.</div></li>
+<li class="step level-0"><span class="num">9</span> <span class="q">Wann sind Sie geboren?</span><div class="meta">Geburtsdatum · Datum · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">10</span> <span class="q">Sind Sie in Deutschland geboren?</span><div class="meta">In Deutschland geboren? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 11 ab.</div><div class="meta">Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel vor 1990 in den neuen Bundesländern geboren ist, antwortet mit Ja.</div></li>
+<li class="step level-1"><span class="num">11</span> <span class="q">In welchem Staat sind Sie geboren?</span><div class="meta">Geburtsland · Text: Vorschläge aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „In Deutschland geboren?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 10).</div><div class="why">Warum: Wer in Deutschland geboren ist, braucht kein Geburtsland anzugeben; es steht dann fest.</div></li>
+<li class="step level-0"><span class="num">12</span> <span class="q">In welcher Stadt oder Gemeinde sind Sie geboren?</span><div class="meta">Geburtsort (Stadt oder Gemeinde) · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">13</span> <span class="q">Welches Geschlecht ist bei Ihnen eingetragen?</span><div class="meta">Geschlecht · Auswahl: männlich · weiblich · divers · unbestimmt · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">14</span> <span class="q">Haben Sie die deutsche Staatsangehörigkeit?</span><div class="meta">Deutsche Staatsangehörigkeit? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 15 ab.</div><div class="meta">Auch wenn Sie daneben noch eine andere haben: Dann antworten Sie mit Ja.</div></li>
+<li class="step level-1"><span class="num">15</span> <span class="q">Welche Staatsangehörigkeit haben Sie?</span><div class="meta">Staatsangehörigkeit · Text: Vorschläge aus der Liste „Staatsangehörigkeiten außer der deutschen“ (203 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)), freie Eingabe mit Hinweis · Pflicht</div><div class="when">Gefragt erst wenn „Deutsche Staatsangehörigkeit?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 14).</div><div class="why">Warum: Wer die deutsche Staatsangehörigkeit hat, gibt nur diese an; sie geht bei den Meldungen vor.</div></li>
+<li class="step level-0"><span class="num">16</span> <span class="q">Wie lautet Ihre Versicherungsnummer der Rentenversicherung?</span><div class="meta">Versicherungsnummer der Rentenversicherung (falls bekannt) · Versicherungsnummer · optional</div></li>
+</ol>
+<h4>Anschrift</h4>
+<ol class="flow">
+<li class="step level-0 decision"><span class="num">17</span> <span class="q">Liegt die Anschrift im Ausland?</span><div class="meta">Liegt die Anschrift im Ausland? · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 18, Nr. 22, Nr. 23 ab.</div><div class="meta">Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis.</div></li>
+<li class="step level-1"><span class="num">18</span> <span class="q">In welchem Staat liegt Ihre Anschrift?</span><div class="meta">Staat · Auswahl: aus der Liste „Staaten und Gebiete außer Deutschland“ (258 Einträge; DEÜV-Rundschreiben, Anlage 8 Teil A (Stand 11.09.2025)) · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn.</div></li>
+<li class="step level-0"><span class="num">19</span> <span class="q">In welcher Straße wohnen Sie?</span><div class="meta">Straße · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">20</span> <span class="q">Welche Hausnummer hat die Anschrift?</span><div class="meta">Hausnummer · Text · optional</div></li>
+<li class="step level-0"><span class="num">21</span> <span class="q">Gibt es einen Zusatz zur Anschrift?</span><div class="meta">Anschriftenzusatz · Text · optional</div></li>
+<li class="step level-1"><span class="num">22</span> <span class="q">Wie lautet Ihre Postleitzahl?</span><div class="meta">Postleitzahl · Text · Pflicht</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Nein“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt.</div></li>
+<li class="step level-1"><span class="num">23</span> <span class="q">Wie lautet die Postleitzahl?</span><div class="meta">Postleitzahl (Ausland) · Text · optional</div><div class="when">Gefragt erst wenn „Liegt die Anschrift im Ausland?“ mit „Ja“ beantwortet ist (hängt ab von Nr. 17).</div><div class="why">Warum: Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis.</div></li>
+<li class="step level-0"><span class="num">24</span> <span class="q">In welchem Ort wohnen Sie?</span><div class="meta">Wohnort · Text · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="sofortmeldung-1.1.0-vertretung">
+<h3>Station: Gesetzliche Vertretung</h3>
+<p class="meta">Wird gebraucht: nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist · unterschreibt</p>
+<p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.</p>
+<h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="sofortmeldung-1.1.0-arbeitgeber">
+<h3>Station: Arbeitgeber</h3>
+<p class="meta">Wird gebraucht: immer · schließt ab, Unterschrift freiwillig</p>
+<h4>Angaben des Arbeitgebers</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet die Firma des Arbeitgebers?</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lautet die Betriebsnummer?</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
+<li class="step level-0"><span class="num">3</span> <span class="q">In welchem Wirtschaftsbereich arbeitet die Person?</span><div class="meta">Wirtschaftsbereich · Auswahl: Baugewerbe · Gaststätten- und Beherbergungsgewerbe · Personenbeförderungsgewerbe · Speditions-, Transport- und damit verbundenes Logistikgewerbe, auch plattformbasierte Lieferdienste · Schaustellergewerbe · Gebäudereinigungsgewerbe · Auf- und Abbau von Messen und Ausstellungen · Fleischwirtschaft (ohne Fleischerhandwerk) · Prostitutionsgewerbe · Wach- und Sicherheitsgewerbe · Friseur- und Kosmetikgewerbe · keiner dieser Bereiche · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">6</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
+<li class="step level-0"><span class="num">7</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>

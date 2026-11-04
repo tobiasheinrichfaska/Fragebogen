@@ -35,13 +35,20 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 1. Klicken Sie auf **„Ich bin: Arbeitgeber“**.
 2. Beantworten Sie jede Frage und klicken Sie jeweils **„Weiter“**. Geben Sie **genau diese
    Werte** ein: Firma „Beispiel Bau GmbH“, Betriebsnummer **„1234 5671“ mit dem Leerzeichen in der
-   Mitte** (geprüft wird, dass die App es entfernt), Familienname „Musterfrau“, Vornamen „Erika“,
+   Mitte** (geprüft wird, dass die App es entfernt), Wirtschaftsbereich **„Baugewerbe“**,
+   Familienname „Musterfrau“, Vornamen „Erika“,
    Personalnummer leer lassen, Tag der Beschäftigungsaufnahme „02.11.2026“.
 
 **Erwartet:**
 
 - Es erscheint **eine Frage je Bildschirm**, mit Hilfetext darunter.
-- Oben läuft ein Fortschrittsbalken („… von etwa 6 Fragen beantwortet“).
+- Oben läuft ein Fortschrittsbalken („… von etwa 7 Fragen beantwortet“).
+- Direkt nach der Betriebsnummer kommt „In welchem Wirtschaftsbereich arbeitet die Person?“ mit
+  elf Bereichen und „keiner dieser Bereiche“. _Nicht offensichtlich:_ Wählen Sie probeweise „keiner
+  dieser Bereiche“, erscheint oben der Warnkasten „Für diesen Sonderfall ist der Fragebogen nicht
+  gedacht …“ mit „Eine Sofortmeldung ist nur in den genannten Wirtschaftsbereichen vorgeschrieben.“;
+  mit „Baugewerbe“ verschwindet er wieder. Die Frage gibt es ab Fassung 1.1.0 (Testordner); die
+  öffentliche Fassung 1.0.0 hat sie nicht.
 - Bei einer Pflichtfrage ohne Antwort ist **„Weiter“ ausgegraut**. Bei der Personalnummer
   (freiwillig) geht „Weiter“ auch ohne Antwort.
 - Nach der letzten Frage erscheint die **Zusammenfassung** mit allen Antworten und je einem Link
@@ -96,6 +103,10 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 **Erwartet:**
 
 - Die beiden Hinweise kommen **vor** der ersten Frage.
+- _Nicht offensichtlich (ab Fassung 1.1.0):_ Der Hinweis „Ausweispapiere mitführen“ ist kurz und
+  zählt **keine** Wirtschaftsbereiche mehr auf – die Branche hat der Arbeitgeber gewählt. Im
+  Datenschutzhinweis steht, dass sich die Online-Fassung einen angefangenen Fragebogen höchstens
+  7 Tage merkt.
 - _Nicht offensichtlich:_ Beim Papierhinweis steht ein Satz, dass Sie erst bestätigen sollen, wenn
   Sie das Papier erhalten haben. Weitermachen geht trotzdem.
 - Nach „Vorerst überspringen“ springt das Interview zur nächsten Frage. _Nicht offensichtlich:_ Der
