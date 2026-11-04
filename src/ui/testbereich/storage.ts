@@ -1,6 +1,6 @@
 // The tester's run survives a reload or a closed tab: kept in this browser's storage, test folder
 // only (no personal data — results, times, comments and the tester's name). The questionnaire app
-// itself still stores nothing.
+// keeps only an interrupted questionnaire (logic/resume.ts).
 import { decodeRun, emptyRun, type TestRun } from '../../logic/testRun';
 
 const KEY = 'fragebogen-testlauf';

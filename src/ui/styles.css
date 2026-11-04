@@ -142,6 +142,11 @@ h3 {
   padding-left: 1.25rem;
 }
 
+.banner .banner-actions {
+  justify-content: flex-start;
+  margin-top: 0.75rem;
+}
+
 .banner-warning {
   border-color: var(--warning-border);
   background: var(--warning-bg);

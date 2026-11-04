@@ -1,7 +1,8 @@
 # Fragebogen
 
 Fragebögen als **eine einzige HTML-Datei**, die vollständig lokal im Browser läuft. Es gibt keinen
-Server, keine Übertragung und keine Speicherung im Browser.
+Server und keine Übertragung; nur die Online-Fassung merkt sich einen angefangenen Fragebogen
+höchstens 7 Tage im Browser.
 
 > **Status:** in Entwicklung (v0.1.0, Projektgerüst). Noch keine Fragebögen nutzbar.
 
@@ -44,7 +45,11 @@ Mieterselbstauskunft.
 
 - Die App sendet nichts. Eine strenge Content-Security-Policy verbietet Netzverbindungen; sie kommt
   mit Schritt 10.
-- Sie speichert nichts im Browser. Einen Zwischenstand speichern Sie ausdrücklich als Datei.
+- Einen Zwischenstand speichern Sie ausdrücklich als Datei. Nur die Online-Fassung (https) merkt
+  sich ungesicherte Angaben im Browser dieses Geräts, damit eine versehentliche Unterbrechung nichts
+  kostet – bis die PDF oder ein Zwischenstand gespeichert ist, der Fragebogen verworfen wird, oder
+  höchstens 7 Tage. Kein Cookie: Nichts davon geht an den Server. Eine heruntergeladene Kopie
+  (`file://`) speichert nichts.
 - Wird die Datei von einer Webseite geladen, liefert der Server nur die Datei aus. Alle Eingaben
   bleiben auf dem Gerät.
 

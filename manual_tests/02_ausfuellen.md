@@ -330,3 +330,35 @@ ab 0.2.0, Rolle „Beschäftigte Person“.
 - Schritt 2: Die Startseite erscheint mit „Der Fragebogen wurde verworfen.“ _Nicht offensichtlich:_
   Die Abfrage kommt immer, auch direkt nach „Zwischenstand speichern“; schon heruntergeladene Dateien
   bleiben auf dem Gerät.
+
+---
+
+## MT-116: Versehentlich geschlossen – angefangenen Fragebogen fortsetzen
+
+**Einstieg:** Den **Testordner im Browser** öffnen (https, nicht als heruntergeladene Datei) und
+einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ beginnen.
+
+**Voraussetzungen:** Kein privates Fenster. Gut auch auf dem Handy.
+
+**Schritte:**
+
+1. **„Ich bin: Arbeitgeber“**, Firma `Beispiel Bau GmbH` eingeben und **„Weiter“**.
+2. Schließen Sie den Tab (oder den ganzen Browser) – eine Warnung „Seite verlassen?“ dürfen Sie
+   bestätigen.
+3. Öffnen Sie den Testordner neu.
+4. Klicken Sie **„Fortsetzen“**, dann beim Arbeitgeber **„Weitermachen“**.
+5. Klicken Sie **„Fragebogen verwerfen“** und bestätigen Sie. Öffnen Sie den Testordner noch einmal
+   neu.
+
+**Erwartet:**
+
+- Schritt 3: Oben steht **„Angefangener Fragebogen gefunden“** mit dem Formular, Datum und Uhrzeit
+  und den Knöpfen **„Löschen“** und **„Fortsetzen“**.
+- Schritt 4: Die Meldung sagt „Angefangener Fragebogen aus diesem Browser fortgesetzt.“; der
+  Arbeitgeber steht auf „begonnen, nicht abgeschlossen“, die Firma ist eingetragen.
+- Schritt 5: Danach wird **nichts** mehr angeboten – verworfen heißt auch aus dem Browser gelöscht.
+- _Nicht offensichtlich:_ Nach „PDF erstellen“ oder „Zwischenstand speichern“ merkt sich der Browser
+  nichts mehr, bis Sie wieder etwas ändern – die Datei ist dann die Sicherung. Nach 7 Tagen ist der
+  gemerkte Fragebogen weg (Meldung „… länger als 7 Tage … gelöscht“). In einer heruntergeladenen Kopie (`file://`) merkt sich die App nichts; ein privates Fenster
+  vergisst beim Schließen alles. Kann der Browser gar nichts speichern, sagt die App das beim
+  ersten Merken.

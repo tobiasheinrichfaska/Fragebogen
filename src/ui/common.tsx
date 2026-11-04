@@ -1,6 +1,7 @@
 // Small shared UI pieces: message banner, explainer link, multi-line notice text.
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { APP_CONFIG } from '../config';
+import { downloadFile, shareFile, type OutFile } from '../io/files';
 import { explainerUrl } from '../logic/appConfig';
 import type { FormDefinition } from '../logic/model';
 import { describeValidity } from '../logic/validity';
@@ -9,11 +10,31 @@ export interface BannerMessage {
   tone: 'error' | 'warning' | 'info' | 'success';
   text: string;
   detail?: readonly string[];
+  /** A file just written: "Teilen" / "Speichern" where its delivery offers them. */
+  file?: OutFile;
 }
 
 export function Banner({ message, onClose }: { message: BannerMessage; onClose?: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shareNote, setShareNote] = useState<string>();
+  const file = message.file;
+  const offers = file !== undefined && (file.delivery.share || file.delivery.save);
+  useEffect(() => {
+    // On a phone the banner sits above the button that wrote the file; bring it into view.
+    if (offers) ref.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [offers, message]);
+  const share = async () => {
+    if (!file) return;
+    const outcome = await shareFile(file);
+    setShareNote(
+      outcome === 'downloaded'
+        ? 'Teilen hat nicht geklappt; die Datei wurde stattdessen heruntergeladen.'
+        : undefined,
+    );
+  };
   return (
     <div
+      ref={ref}
       className={`banner banner-${message.tone}`}
       role={message.tone === 'error' ? 'alert' : 'status'}
     >
@@ -26,6 +47,24 @@ export function Banner({ message, onClose }: { message: BannerMessage; onClose?:
             ))}
           </ul>
         )}
+        {file && offers && (
+          <div className="nav banner-actions">
+            {file.delivery.share && (
+              <button type="button" className="primary" onClick={() => void share()}>
+                Teilen
+              </button>
+            )}
+            {file.delivery.save && (
+              <button
+                type="button"
+                onClick={() => downloadFile(file.name, file.content, file.mime)}
+              >
+                Speichern
+              </button>
+            )}
+          </div>
+        )}
+        {shareNote && <p className="muted">{shareNote}</p>}
       </div>
       {onClose && (
         <button type="button" className="link" onClick={onClose} aria-label="Meldung schließen">

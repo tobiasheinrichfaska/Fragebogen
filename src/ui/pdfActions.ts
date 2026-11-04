@@ -8,7 +8,7 @@ import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
 import { APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
 import { deviceNow, type DeviceNow } from '../io/environment';
-import { downloadFile, readFileBytes } from '../io/files';
+import { handOut, readFileBytes } from '../io/files';
 import {
   editClues,
   EDIT_CLUE_MESSAGES,
@@ -80,10 +80,11 @@ export async function createPdf(
       },
       { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
     );
-    downloadFile(result.fileName, result.bytes, 'application/pdf');
+    const file = handOut(result.fileName, result.bytes, 'application/pdf');
     return {
       session: markSaved(session),
       message: {
+        file,
         tone: 'success',
         text: result.complete
           ? `PDF „${result.fileName}“ erstellt: vollständig. Bitte die Datei selbst weitergeben oder in der Personalakte ablegen.`
@@ -115,8 +116,9 @@ export async function createSheetPdf(
       { ...input, config: APP_CONFIG, created: { local: now.local, utc: now.utc } },
       { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
     );
-    downloadFile(result.fileName, result.bytes, 'application/pdf');
+    const file = handOut(result.fileName, result.bytes, 'application/pdf');
     return {
+      file,
       tone: 'success',
       text: `Erfassungsblatt „${result.fileName}“ erstellt (${result.pages} Seiten) – zur Ablage in der Personalakte.`,
     };
@@ -140,8 +142,9 @@ export async function createTestReportPdf(
       { run, cases, appVersion: APP_VERSION, created: { local: now.local, utc: now.utc } },
       { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
     );
-    downloadFile(result.fileName, result.bytes, 'application/pdf');
+    const file = handOut(result.fileName, result.bytes, 'application/pdf');
     return {
+      file,
       tone: 'success',
       text: `Testbericht „${result.fileName}“ erstellt (${result.pages} Seiten). Bitte per E-Mail an die Kanzlei schicken.`,
     };

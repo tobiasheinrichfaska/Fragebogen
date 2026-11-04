@@ -12,7 +12,8 @@ getipptem Namen unterschrieben).
 **Schritte:**
 
 1. Klicken Sie **„PDF erstellen“**.
-2. Öffnen Sie die heruntergeladene Datei in einem PDF-Programm (Acrobat Reader, Edge, Vorschau).
+2. Öffnen Sie die heruntergeladene Datei in einem PDF-Programm (Acrobat Reader, Edge, Vorschau). Am
+   Handy oder Tablet: erst **„Speichern“** in der Meldung (siehe MT-37).
 
 **Erwartet:**
 
@@ -165,3 +166,31 @@ Scan-to-PDF).
 - Der Browser öffnet die Adresse der App. Gedruckt ist die Adresse ebenfalls lesbar.
 - _Nicht offensichtlich:_ Ohne konfigurierte Adresse (Fassung aus dem öffentlichen Repo) fehlt die
   Zeile ganz.
+
+---
+
+## MT-37: PDF auf dem Handy oder Tablet teilen
+
+**Einstieg:** Auf einem Android-Handy (Chrome) oder iPhone/iPad (Safari) den Testordner öffnen,
+[Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig).
+
+**Voraussetzungen:** Ein Handy oder Tablet mit Touch-Bildschirm; eine App zum Weitergeben (E-Mail,
+Messenger oder Cloud-Speicher).
+
+**Schritte:**
+
+1. Tippen Sie **„PDF erstellen“**.
+2. Tippen Sie in der grünen Meldung **„Teilen“** und wählen Sie eine App, z. B. E-Mail. Brechen Sie
+   vor dem Senden ab oder senden Sie an sich selbst.
+3. Tippen Sie in derselben Meldung **„Speichern“**.
+
+**Erwartet:**
+
+- Schritt 1: Die PDF öffnet sich **nicht** von selbst. Die Seite rückt zur grünen Meldung „PDF … erstellt“
+  mit den Knöpfen **„Teilen“** und **„Speichern“**.
+- Schritt 2: Das Teilen-Menü des Geräts geht auf; in der gewählten App hängt die PDF mit ihrem
+  Dateinamen (`Sofortmeldung_…_vollstaendig.pdf`) an. _Nicht offensichtlich:_ Brechen Sie das
+  Teilen-Menü ab, passiert nichts weiter – kein Download, keine Fehlermeldung.
+- Schritt 3: Die PDF wird wie bisher heruntergeladen (Android: Download-Hinweis; iPhone: „Laden“).
+- _Nicht offensichtlich:_ Am PC lädt „PDF erstellen“ wie bisher sofort herunter; „Speichern“ gibt es
+  dort nicht, „Teilen“ nur, wenn der Browser Dateien teilen kann (z. B. Edge unter Windows).

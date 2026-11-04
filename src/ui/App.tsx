@@ -1,11 +1,13 @@
 // App frame: start, overview ("Wer füllt jetzt aus?"), interview, signature, completion. All state
-// is in memory (session.ts); files are the only way out. Rules come from the logic layer.
+// is in memory (session.ts); files are the way out. Only the hosted app keeps unsaved changes in
+// this browser for a while (logic/resume.ts). Rules come from the logic layer.
 import { useEffect, useMemo, useState } from 'react';
 import { APP_NAME, APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
 import { InputTracker, newQuestionnaireId } from '../io/environment';
-import { downloadFile } from '../io/files';
+import { handOut } from '../io/files';
+import { clearResume, loadResume, saveResume } from '../io/resumeStore';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import type { Inbox } from '../logic/kanzlei';
 import { fileNameFor } from '../logic/fileNames';
@@ -15,6 +17,7 @@ import {
   parseMasterDataFragment,
   type ParsedMasterDataLink,
 } from '../logic/masterDataLink';
+import { resumeAction, resumeAllowed, type ResumeRead, type ResumeRecord } from '../logic/resume';
 import {
   enterRole,
   fillMasterData,
@@ -35,7 +38,8 @@ import { MasterDataLinkForm } from './MasterDataLinkForm';
 import { RolesScreen } from './RolesScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
-import { createPdf, openAnyFile, type OpenResult } from './pdfActions';
+import { createPdf, fromPackageText, openAnyFile, type OpenResult } from './pdfActions';
+import { ResumeOffer } from './ResumeOffer';
 
 type Screen =
   | { kind: 'start' }
@@ -47,6 +51,17 @@ type Screen =
   | { kind: 'stammdaten' };
 
 const tracker = new InputTracker();
+
+const RESUME_NOTES: Partial<Record<ResumeRead['kind'], BannerMessage>> = {
+  expired: {
+    tone: 'info',
+    text: 'Ein angefangener Fragebogen war länger als 7 Tage in diesem Browser gemerkt und wurde gelöscht.',
+  },
+  damaged: {
+    tone: 'warning',
+    text: 'Ein angefangener Fragebogen in diesem Browser war beschädigt und wurde gelöscht. Gespeicherte Dateien sind davon nicht betroffen.',
+  },
+};
 
 /** A questionnaire prepared by a start link of the test area, opened in its interview. */
 export interface PreparedStart {
@@ -129,6 +144,17 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
   const [screen, setScreen] = useState<Screen>(
     start ? { kind: START_SCREENS[start.screen] } : { kind: linked ? 'roles' : 'start' },
   );
+  // An interrupted questionnaire of this browser (hosted app only); read once at the start.
+  const storage = useMemo(() => resumeAllowed(location.protocol), []);
+  const [resumeRead] = useState<ResumeRead>(() =>
+    storage ? loadResume(new Date().toISOString()) : { kind: 'none' },
+  );
+  const [offer, setOffer] = useState<ResumeRecord | undefined>(() =>
+    resumeRead.kind === 'found' ? resumeRead.record : undefined,
+  );
+  const [resumeNote, setResumeNote] = useState<BannerMessage | undefined>(
+    () => RESUME_NOTES[resumeRead.kind],
+  );
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
   const [banner, setBanner] = useState<BannerMessage | undefined>(() =>
@@ -139,6 +165,33 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
     tracker.start();
     return () => tracker.stop();
   }, []);
+
+  useEffect(() => {
+    if (resumeRead.kind === 'expired' || resumeRead.kind === 'damaged') clearResume();
+  }, [resumeRead]);
+
+  // Keeps unsaved changes in this browser; a PDF, an interim file, closing or discarding removes
+  // them. Debounced: the package is rebuilt at most every 300 ms.
+  useEffect(() => {
+    const action = resumeAction({ allowed: storage, offerOpen: offer !== undefined, session });
+    if (action === 'none') return;
+    if (action === 'clear') {
+      clearResume();
+      return;
+    }
+    const current = session;
+    if (!current) return;
+    const timer = setTimeout(() => {
+      const text = packageText(buildPackage(current.questionnaire, current.form));
+      if (!saveResume(current.form.definition.title, text, new Date().toISOString())) {
+        setResumeNote({
+          tone: 'warning',
+          text: 'Dieser Browser kann den Fragebogen nicht für später merken (zum Beispiel im privaten Fenster). Bitte bei einer Unterbrechung „Zwischenstand speichern“.',
+        });
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [session, offer, storage]);
 
   useEffect(() => {
     if (!session?.dirty) return;
@@ -223,13 +276,14 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
   const saveInterim = () => {
     if (!session) return;
     const { questionnaire, form } = session;
-    downloadFile(
+    const file = handOut(
       fileNameFor(form.definition.id, questionnaire.questionnaireId, 'interim'),
       packageText(buildPackage(questionnaire, form)),
       'application/json',
     );
     setSession(markSaved(session));
     setBanner({
+      file,
       tone: 'success',
       text: 'Zwischenstand gespeichert. Die Datei enthält alle Angaben – bitte sicher aufbewahren.',
     });
@@ -297,6 +351,7 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
       return;
     }
     setSession(undefined);
+    clearResume();
     // Drop the master-data fragment as well and start from a clean page.
     location.replace(location.pathname + location.search);
   };
@@ -327,6 +382,42 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
     setBanner({ tone: 'success', text: 'Der Fragebogen wurde verworfen.' });
   };
 
+  const continueResumed = () => {
+    if (!offer) return;
+    const now = new Date().toISOString();
+    const opened = fromPackageText(
+      offer.packageText,
+      registry,
+      { local: now, utc: now, source: 'same-device' },
+      ['Angefangener Fragebogen aus diesem Browser fortgesetzt.'],
+    );
+    setOffer(undefined);
+    setResumeNote(undefined);
+    if (opened.kind !== 'session') {
+      clearResume();
+      setBanner(opened.message);
+      return;
+    }
+    // Still saved nowhere else: kept in the browser until a PDF or an interim file exists.
+    setSession({ ...opened.session, dirty: true });
+    setScreen({ kind: 'roles' });
+    setBanner(opened.message);
+  };
+
+  const deleteResumed = () => {
+    if (
+      !confirm(
+        'Den angefangenen Fragebogen aus diesem Browser löschen?\n\nDas lässt sich nicht rückgängig machen. Bereits gespeicherte Dateien bleiben erhalten.',
+      )
+    ) {
+      return;
+    }
+    clearResume();
+    setOffer(undefined);
+    setResumeNote(undefined);
+    setBanner({ tone: 'success', text: 'Der angefangene Fragebogen wurde gelöscht.' });
+  };
+
   const role = session?.role;
   const roleLabel = session?.form.definition.roles.find((r) => r.id === role)?.label;
 
@@ -353,6 +444,10 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
         </div>
       </header>
 
+      {offer && (
+        <ResumeOffer record={offer} onContinue={continueResumed} onDelete={deleteResumed} />
+      )}
+      {resumeNote && <Banner message={resumeNote} onClose={() => setResumeNote(undefined)} />}
       {banner && <Banner message={banner} onClose={() => setBanner(undefined)} />}
 
       {screen.kind === 'start' && (

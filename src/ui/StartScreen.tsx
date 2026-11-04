@@ -11,6 +11,7 @@ import { DRAFT_HASHES } from '../io/bundledForms';
 import { describeValidity } from '../logic/validity';
 import { Card } from './common';
 import { TEST_AREA } from './testbereich/catalogue';
+import { resumeAllowed } from '../logic/resume';
 
 // Only on the hosted app: in a downloaded file a relative link would lead nowhere, and the test
 // folder build does not link to itself.
@@ -105,8 +106,9 @@ export function StartScreen({
       </Card>
       <Card title="Ihre Daten bleiben auf diesem Gerät">
         <p>
-          Diese Seite sendet keine Daten ins Internet und speichert nichts im Browser. Ergebnis ist
-          eine Datei, die Sie selbst weitergeben.
+          {resumeAllowed(location.protocol)
+            ? 'Diese Seite sendet keine Daten ins Internet. Einen angefangenen Fragebogen merkt sich dieser Browser, bis die PDF erstellt oder er verworfen ist, höchstens 7 Tage. Ergebnis ist eine Datei, die Sie selbst weitergeben.'
+            : 'Diese Seite sendet keine Daten ins Internet und speichert nichts im Browser. Ergebnis ist eine Datei, die Sie selbst weitergeben.'}
         </p>
         <button type="button" className="danger" onClick={onClearAll}>
           Alle Daten auf diesem Gerät löschen
