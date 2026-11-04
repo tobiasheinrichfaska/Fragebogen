@@ -1,6 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "0.1.0",
+  "revised": "2026-11-04T18:13",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -6717,7 +6718,8 @@
         "args": ["versicherungsnummer", "geburtsdatum", "geburtsname", "familienname", "geschlecht"]
       },
       "message": "Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. Das kann richtig sein – die Nummer bleibt auch nach einer Namensänderung oder einer späteren Korrektur gleich –, bitte aber mit dem Sozialversicherungsausweis vergleichen.",
-      "source": "§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1"
+      "source": "§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1",
+      "showWhileFilling": true
     },
     {
       "id": "bicPasstNichtZurIban",
@@ -6726,7 +6728,8 @@
         "args": ["iban", "bic"]
       },
       "message": "Das Land im BIC passt nicht zum Land der IBAN. Bitte BIC und IBAN vergleichen.",
-      "source": "ISO 9362; ISO 13616"
+      "source": "ISO 9362; ISO 13616",
+      "showWhileFilling": true
     },
     {
       "id": "plzAuslandFormat",
@@ -6735,7 +6738,8 @@
         "args": ["anschriftStaat", "postleitzahlAusland"]
       },
       "message": "Die Postleitzahl hat nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. Bitte prüfen.",
-      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 18"
+      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 18",
+      "showWhileFilling": true
     }
   ],
   "validity": {

@@ -8,6 +8,7 @@
 | Formular | sofortmeldung, Version 0.4.0 |
 | Status | Eingefrorene Testfassung (0.x): darf vor dem ersten Release gelöscht werden, solange kein echter Fragebogen damit ausgefüllt wurde |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026 |
+| Stand | nicht angegeben |
 | Definition (SHA-256) | 952f09f3844c811a667eadba670bf65690d7e16896436cd6f709e71df9a8a506 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber. |

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { displayValue, editValue } from '../logic/display';
 import { fillPlaceholders } from '../logic/display';
 import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
+import { fillingHints } from '../logic/hints';
 import { interviewProgress } from '../logic/interview';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
@@ -166,7 +167,12 @@ function Nav({
   const choice = nextChoice(session);
   return (
     <div className="nav">
-      <button type="button" disabled={first} onClick={() => onSession(previousStep(session))}>
+      <button
+        type="button"
+        className="back"
+        disabled={first}
+        onClick={() => onSession(previousStep(session))}
+      >
         Zurück
       </button>
       {onDefer && (
@@ -368,17 +374,63 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
     return key !== undefined && Object.hasOwn(own, key.key) ? [key.label] : [];
   });
   const fromOthers = Object.keys(masterData).filter((key) => !Object.hasOwn(own, key)).length;
+  // Missing required answers stand at the top with their link; "Übersprungen" keeps the rest.
+  const voluntaryDeferred = summary.deferred.filter((id) => !summary.missingRequired.includes(id));
+  const checks = fillingHints(session.questionnaire, definition, role);
 
   return (
     <Card title="Zusammenfassung">
       {summary.missingRequired.length > 0 && (
-        <Banner
-          message={{
-            tone: 'warning',
-            text: 'Diese Pflichtangaben fehlen noch:',
-            detail: summary.missingRequired.map(label),
-          }}
-        />
+        <div className="skipped missing" role="group" aria-label="Fehlende Pflichtangaben">
+          <p>
+            <strong>Diese Pflichtangaben fehlen noch:</strong>
+          </p>
+          <ul>
+            {summary.missingRequired.map((id) => (
+              <li key={id}>
+                <span>{label(id)}</span>
+                <button
+                  type="button"
+                  className="link"
+                  onClick={() => onSession(editFromSummary(session, id))}
+                >
+                  beantworten
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {checks.length > 0 && (
+        <div className="skipped checks" role="group" aria-label="Bitte prüfen">
+          <p>
+            <strong>Bitte prüfen:</strong> Das kann richtig sein; abschließen können Sie trotzdem.
+          </p>
+          <ul>
+            {checks.map((check) => {
+              const target = check.fields.find((id) => visible.has(id));
+              return (
+                <li key={check.id}>
+                  <span>
+                    {check.message}
+                    {check.detail.length > 0 && (
+                      <span className="muted"> {check.detail.join(' ')}</span>
+                    )}
+                  </span>
+                  {target !== undefined && (
+                    <button
+                      type="button"
+                      className="link"
+                      onClick={() => onSession(editFromSummary(session, target))}
+                    >
+                      ändern
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
       {summary.outsideValidity && (
         <Banner
@@ -413,14 +465,14 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
           </ul>
         </div>
       )}
-      {summary.deferred.length > 0 && (
+      {voluntaryDeferred.length > 0 && (
         <div className="skipped" role="group" aria-label="Übersprungene Fragen">
           <p>
-            <strong>Übersprungen:</strong> Beantworten Sie diese Fragen jetzt oder lassen Sie
-            freiwillige leer.
+            <strong>Übersprungen:</strong> Beantworten Sie diese freiwilligen Fragen jetzt oder
+            lassen Sie sie leer.
           </p>
           <ul>
-            {summary.deferred.map((id) => {
+            {voluntaryDeferred.map((id) => {
               const required = summary.missingRequired.includes(id);
               return (
                 <li key={id}>
@@ -545,7 +597,7 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
       )}
 
       <div className="nav">
-        <button type="button" onClick={() => onSession(previousStep(session))}>
+        <button type="button" className="back" onClick={() => onSession(previousStep(session))}>
           Zurück
         </button>
         <button type="button" onClick={onSaveInterim}>

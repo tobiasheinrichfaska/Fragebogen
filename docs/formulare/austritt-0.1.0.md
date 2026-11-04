@@ -8,7 +8,8 @@
 | Formular | austritt, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Ende des Arbeitsverhältnisses“ ab 01.01.2026 |
-| Definition (SHA-256) | 0d39a5a0f8d68e39813125e787f08c71ede21822681fa5b176f8c365954e90e1 |
+| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
+| Definition (SHA-256) | c8634cd6df5c3e4f09ab6739b4f5824458214f9563ec1e7e28d620b4453eaeb2 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht. |
 | Empfänger | Lohnabrechnende Stelle |

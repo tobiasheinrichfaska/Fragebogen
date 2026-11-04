@@ -1,6 +1,7 @@
 {
   "id": "eigenbeleg",
   "version": "0.1.0",
+  "revised": "2026-11-04T18:13",
   "title": "Eigenbeleg: Ausgabe ohne Originalbeleg, Entnahme, Einlage oder Geldtransit",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für Eigenbelege schreibt kein Gesetz eine Form vor. Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Für den digitalen Bewirtungs-Eigenbeleg lässt die Finanzverwaltung eine elektronische Unterschrift oder Genehmigung genügen, wenn der Zeitpunkt aufgezeichnet wird und die Angaben nicht unbemerkt geändert werden können (BMF-Schreiben vom 19.11.2025 Rn. 19, 22). Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung).",

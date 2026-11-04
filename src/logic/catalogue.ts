@@ -11,7 +11,7 @@ import { describeFieldRules, fieldsById } from './form';
 import { isTestVersion, type RegisteredForm } from './formRegistry';
 import { describeRule } from './derivations';
 import { optionsOf, REFERENCE_LISTS } from './options';
-import { describeValidity } from './validity';
+import { describeRevised, describeValidity } from './validity';
 import type {
   AcknowledgementKind,
   DateBound,
@@ -302,6 +302,7 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
         ['Formular', `${definition.id}, Version ${definition.version}`],
         ['Status', statusLabel(status, definition.version)],
         ['Gültigkeit', describeValidity(definition) ?? 'nicht angegeben'],
+        ['Stand', describeRevised(definition) ?? 'nicht angegeben'],
         ['Definition (SHA-256)', form.definitionHash],
         ['Unterschrift', SIGNATURE_POLICY_LABELS[definition.signaturePolicy]],
         ...(definition.signatureBasis === undefined
@@ -419,7 +420,8 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
         (definition.checkHints ?? []).map(
           (hint) =>
             `„${hint.message}“ – ${describeHint(hint, definition)}` +
-            (hint.source === undefined ? '' : ` (${hint.source})`),
+            (hint.source === undefined ? '' : ` (${hint.source})`) +
+            (hint.showWhileFilling ? ' – wird auch der ausfüllenden Person angezeigt' : ''),
         ),
       ),
     );

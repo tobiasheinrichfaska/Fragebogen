@@ -1507,6 +1507,32 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
   return [...results, ...fromRoleHints(questionnaire, definition, valueOf)];
 }
 
+/** The fields a hint reads: its condition's fields, then its test's arguments, each once. */
+export function hintFields(hint: Pick<CheckHint, 'when' | 'test'>): FieldId[] {
+  const ids: FieldId[] = [...(hint.test?.args ?? [])];
+  if (hint.when) forEachLeaf(hint.when, '$', (leaf) => ids.push(leaf.field));
+  return [...new Set(ids)];
+}
+
+/**
+ * The hints marked `showWhileFilling` that hold for the role filling in, on its current part (a
+ * draft included) — for the warning after an answer and the top of the summary. Never blocks.
+ */
+export function fillingHints(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  role: RoleId,
+): (HintResult & { fields: FieldId[] })[] {
+  const own = (definition.checkHints ?? []).filter(
+    (hint) =>
+      hint.showWhileFilling === true && [...rolesOf(hint, definition)].every((r) => r === role),
+  );
+  const fields = new Map(own.map((hint) => [hint.id, hintFields(hint)]));
+  return holding(own, valuesOf(questionnaire, definition), () =>
+    Boolean(currentPart(questionnaire, role)),
+  ).map((result) => ({ ...result, fields: fields.get(result.id) ?? [] }));
+}
+
 /**
  * A field another role decides (fromRole) that differs from that role's answer — e.g. the person
  * signed before the employer changed the kind of wage tax. An own extra option ("Weiß ich nicht")

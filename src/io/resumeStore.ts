@@ -1,6 +1,6 @@
 // The browser storage for an interrupted questionnaire (rules in logic/resume.ts). Every access is
 // guarded: a private window or blocked storage simply keeps nothing.
-import { readResume, resumeRecord, type ResumeRead } from '../logic/resume';
+import { readResume, type ResumeRead, type ResumeRecord } from '../logic/resume';
 
 const KEY = 'fragebogen-angefangen';
 
@@ -13,9 +13,9 @@ export function loadResume(nowUtc: string): ResumeRead {
 }
 
 /** false when the browser refuses (full, private window, blocked). */
-export function saveResume(title: string, packageText: string, nowUtc: string): boolean {
+export function saveResume(record: ResumeRecord): boolean {
   try {
-    localStorage.setItem(KEY, JSON.stringify(resumeRecord(title, packageText, nowUtc)));
+    localStorage.setItem(KEY, JSON.stringify(record));
     return true;
   } catch {
     return false;

@@ -19,6 +19,7 @@ import {
   type Derivation,
   type DerivationRule,
   type FieldDefinition,
+  type FieldId,
   type FieldType,
   type FormDefinition,
   type FormValidity,
@@ -83,10 +84,14 @@ export const FORM_KEYS = [
   'checkHints',
   'signatureBasis',
   'validity',
+  'revised',
   'limits',
   'exclusions',
   'derivations',
 ] as const;
+
+/** Local wall time of the last revision, e.g. 2026-11-04T17:20. */
+const REVISED = /^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d$/;
 
 export const ROLE_KEYS = [
   'id',
@@ -137,6 +142,11 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
       : d.array(o.checkHints, `${path}.checkHints`, (v, p) => decodeCheckHint(d, v, p), 1);
   const validity =
     o.validity === undefined ? undefined : decodeValidity(d, o.validity, `${path}.validity`);
+  const revised =
+    o.revised === undefined ? undefined : d.string(o.revised, `${path}.revised`, REVISED);
+  if (revised !== undefined && !isIsoDate(revised.slice(0, 10))) {
+    d.report(`${path}.revised`, 'not a calendar day');
+  }
   const exclusions =
     o.exclusions === undefined
       ? undefined
@@ -180,6 +190,7 @@ function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | un
     ...(checkHints === undefined ? {} : { checkHints }),
     ...(signatureBasis === undefined ? {} : { signatureBasis }),
     ...(validity === undefined ? {} : { validity }),
+    ...(revised === undefined ? {} : { revised }),
     ...(limits === undefined ? {} : { limits }),
     ...(exclusions === undefined ? {} : { exclusions }),
     ...(derivations === undefined ? {} : { derivations }),
@@ -194,13 +205,17 @@ function decodeHintTest(d: Decoder, raw: unknown, path: string): CheckHint['test
 }
 
 function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | undefined {
-  const o = d.object(raw, path, ['id', 'when', 'test', 'message', 'source']);
+  const o = d.object(raw, path, ['id', 'when', 'test', 'message', 'source', 'showWhileFilling']);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
   const when = o.when === undefined ? undefined : decodeCondition(d, o.when, `${path}.when`, 0);
   const test = o.test === undefined ? undefined : decodeHintTest(d, o.test, `${path}.test`);
   const message = d.string(o.message, `${path}.message`);
   const source = o.source === undefined ? undefined : d.string(o.source, `${path}.source`);
+  const showWhileFilling =
+    o.showWhileFilling === undefined
+      ? undefined
+      : d.boolean(o.showWhileFilling, `${path}.showWhileFilling`);
   if (id === undefined || message === undefined) return undefined;
   return {
     id,
@@ -208,6 +223,7 @@ function decodeCheckHint(d: Decoder, raw: unknown, path: string): CheckHint | un
     ...(test === undefined ? {} : { test }),
     message,
     ...(source === undefined ? {} : { source }),
+    ...(showWhileFilling === undefined ? {} : { showWhileFilling }),
   };
 }
 
@@ -1574,8 +1590,27 @@ function hintListRules(
       });
       if (problem) report(`${path}.test`, problem);
     }
+    if (hint.showWhileFilling) {
+      // The one filling in sees the hint: it may read only that role's own answers, no table column.
+      const read = [...(hint.when ? leafFields(hint.when) : []), ...(hint.test?.args ?? [])].map(
+        (id) => fields.get(id),
+      );
+      const roles = new Set(read.map((target) => (target?.isColumn ? '' : target?.field.role)));
+      if (roles.size !== 1 || roles.has('') || roles.has(undefined)) {
+        report(
+          `${path}.showWhileFilling`,
+          'a hint shown while filling reads the answers of one role only',
+        );
+      }
+    }
   });
 }
+
+const leafFields = (condition: Condition): FieldId[] => {
+  const ids: FieldId[] = [];
+  forEachLeaf(condition, '$', (leaf) => ids.push(leaf.field));
+  return ids;
+};
 
 /**
  * fromRole: another role's top-level field of the same type, itself not taken from a third role;

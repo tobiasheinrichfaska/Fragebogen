@@ -8,7 +8,8 @@
 | Formular | sofortmeldung, Version 1.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026 |
-| Definition (SHA-256) | 39d53d8a5d73647e6fc178565e93fb1ba67bfd2cc9a689d77663f838b61d5245 |
+| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
+| Definition (SHA-256) | 77cb18d0a28f5284fb8779d63d81b9e387f99fc60034dea926e52df6a06249f3 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -142,8 +143,8 @@ Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen.
 
 Nur Hinweise: Sie blockieren nichts und werden nicht unterschrieben. Sie erscheinen bei der Zusammenführung, sobald alle genannten Teile vorliegen.
 
-- „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. Das kann richtig sein – die Nummer bleibt auch nach einer Namensänderung oder einer späteren Korrektur gleich –, bitte aber mit dem Sozialversicherungsausweis vergleichen.“ – wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ nicht zu „Geburtsdatum“, „Geburtsname“ (sonst „Familienname“) oder „Geschlecht“ passt (§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1)
-- „Die Postleitzahl hat nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. Bitte prüfen.“ – wenn „Postleitzahl (Ausland)“ nicht dem Format der Postleitzahlen von „Staat“ entspricht (Gemeinsames Rundschreiben Meldeverfahren, Anlage 18)
+- „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. Das kann richtig sein – die Nummer bleibt auch nach einer Namensänderung oder einer späteren Korrektur gleich –, bitte aber mit dem Sozialversicherungsausweis vergleichen.“ – wenn „Versicherungsnummer der Rentenversicherung (falls bekannt)“ nicht zu „Geburtsdatum“, „Geburtsname“ (sonst „Familienname“) oder „Geschlecht“ passt (§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1) – wird auch der ausfüllenden Person angezeigt
+- „Die Postleitzahl hat nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. Bitte prüfen.“ – wenn „Postleitzahl (Ausland)“ nicht dem Format der Postleitzahlen von „Staat“ entspricht (Gemeinsames Rundschreiben Meldeverfahren, Anlage 18) – wird auch der ausfüllenden Person angezeigt
 
 ## Was dieser Fragebogen nicht abdeckt
 

@@ -4,10 +4,11 @@
   --fg: #1d2330;
   --muted: #5b6474;
   --border: #d7dce4;
-  --accent: #1f5fa8;
+  /* The Kanzlei colours (config "colors") override the neutral palette. */
+  --accent: var(--kanzlei-accent, #1f5fa8);
   --accent-fg: #ffffff;
-  --chosen-bg: #e4eefa;
-  --info-bg: #eef4fb;
+  --chosen-bg: var(--kanzlei-chosen-bg, #e4eefa);
+  --info-bg: var(--kanzlei-info-bg, #eef4fb);
   --info-border: #c9dbf0;
   --warning-bg: #fff6e5;
   --warning-border: #f0d39a;
@@ -34,7 +35,7 @@
     --fg: #e6e9ef;
     --muted: #a3abb9;
     --border: #313844;
-    --accent: #7fb0ea;
+    --accent: var(--kanzlei-accent-dark, #7fb0ea);
     --accent-fg: #0d1320;
     --chosen-bg: #1f3048;
     --info-bg: #1c2633;
@@ -56,7 +57,7 @@
   --fg: #e6e9ef;
   --muted: #a3abb9;
   --border: #313844;
-  --accent: #7fb0ea;
+  --accent: var(--kanzlei-accent-dark, #7fb0ea);
   --accent-fg: #0d1320;
   --chosen-bg: #1f3048;
   --info-bg: #1c2633;
@@ -229,6 +230,12 @@ textarea {
   font-size: 1.1rem;
 }
 
+/*
+ * Button rows (Tobias 2026-11-04: "Platziere die Buttons immer an der gleichen Stelle"): "Zurück"
+ * always left, the main action (.primary) always right, the others in between — whatever the
+ * order in the markup. On a phone the back button and the main action share the bottom row and
+ * the others stand above them in full width; in the interview that row stays at the screen bottom.
+ */
 .nav {
   display: flex;
   flex-wrap: wrap;
@@ -237,9 +244,53 @@ textarea {
   margin-top: 1.5rem;
 }
 
+.nav > .back {
+  order: -1;
+  margin-right: auto;
+}
+
+.nav > .primary {
+  order: 10;
+}
+
+@media (max-width: 600px) {
+  .nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .nav > * {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .nav > .back {
+    grid-column: 1;
+    order: 9;
+    margin-right: 0;
+  }
+
+  .nav > .primary {
+    grid-column: 2;
+    order: 10;
+  }
+
+  .interview .nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    margin-inline: -0.25rem;
+    padding: 0.5rem 0.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+}
+
 .interview-head progress {
   width: 100%;
   height: 0.5rem;
+  accent-color: var(--accent);
 }
 
 .question h2 {

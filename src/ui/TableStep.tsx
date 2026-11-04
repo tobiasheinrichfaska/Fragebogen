@@ -240,7 +240,12 @@ export function TableStep({ session, field, step, onSession }: Props) {
         )}
       </div>
       <div className="nav">
-        <button type="button" disabled={first} onClick={() => onSession(previousStep(session))}>
+        <button
+          type="button"
+          className="back"
+          disabled={first}
+          onClick={() => onSession(previousStep(session))}
+        >
           Zurück
         </button>
         {!page && rows.length === 0 && step.state !== 'deferred' && (
