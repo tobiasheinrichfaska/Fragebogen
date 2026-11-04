@@ -1085,7 +1085,14 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-**Hand-over 2026-11-04 evening (start here):** pushed through c141ecb + this session's later
+**Hand-over 2026-11-04 night (start here):** pushed and uploaded to the test folder through e49d141
+(date fields: grey mask „TT.MM.JJJJ“, dots by themselves, comma → dot, calendar button with the
+device's picker — iPhone test report; MT-12, MT-118 to test on a real iPhone). Colours like the
+Kanzlei homepage and buttons at the same place are done (70b71b1). The other session's `deploy/`
+edits are committed (4269bf5). Everything below from the evening hand-over still holds except those
+two "next" items.
+
+**Hand-over 2026-11-04 evening:** pushed through c141ecb + this session's later
 commits; test folder uploaded (testers dg, louis, thomas, kiana, tom, nora, friederike added; passwords
 only in the chat). Done today: Eigenbeleg draft 0.1.0 (+ start points MT-110–115), Sofortmeldung draft
 1.1.0 (sector `agBranche` in the link, short ID-papers notice, birth example neue Bundesländer —
