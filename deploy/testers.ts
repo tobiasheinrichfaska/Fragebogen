@@ -2,6 +2,7 @@
 // Kanzlei PC, uploaded as an Apache .htpasswd. Only password hashes are kept (deploy/.local/,
 // gitignored); a new password is shown once. CLI for deploy/tester.ps1:
 //   node deploy/testers.ts liste | neu <name> | passwort <name> | sperren <name> | entsperren <name> | loeschen <name>
+//   … --datei=deploy/.local/<list>.json   (the tester list of another protected folder)
 import { createHash, randomBytes } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -235,15 +236,29 @@ export function changeTesters(
 
 export const TESTERS_FILE = 'deploy/.local/tester.json';
 
+/**
+ * The tester list a command works on: "--datei=deploy/.local/<list>.json" (the list of another
+ * protected folder, see "testers" in the upload targets) or the test folder's own.
+ */
+export function testersFileOf(args: readonly string[]): string | undefined {
+  const given = args.find((arg) => arg.startsWith('--datei='))?.slice('--datei='.length);
+  if (given === undefined) return TESTERS_FILE;
+  return /^deploy\/\.local\/[A-Za-z0-9._-]+\.json$/.test(given) ? given : undefined;
+}
+
 function cli(args: readonly string[]): unknown {
   // "--passwort-stdin": the password typed in the window comes on stdin, never on a command line.
   const own = args.includes('--passwort-stdin')
     ? passwordFromStdin(readFileSync(0, 'utf8'))
     : undefined;
   const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-  const path = join(root, TESTERS_FILE);
+  const file = testersFileOf(args);
+  if (!file) return { ok: false, message: '--datei=deploy/.local/<Name>.json' };
+  const path = join(root, file);
   const testers = existsSync(path) ? parseTesters(JSON.parse(readFileSync(path, 'utf8'))) : [];
-  const [action = 'liste', name = ''] = args.filter((arg) => arg !== '--passwort-stdin');
+  const [action = 'liste', name = ''] = args.filter(
+    (arg) => arg !== '--passwort-stdin' && !arg.startsWith('--datei='),
+  );
   const list = (all: readonly Tester[]) =>
     all.map(({ name: n, created, locked }) => ({ name: n, created, locked: locked === true }));
   if (action === 'liste') return { ok: true, testers: list(testers) };
