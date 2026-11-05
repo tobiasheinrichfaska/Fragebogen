@@ -125,6 +125,21 @@ describe('the form a link opens (Tobias 2026-11-03)', () => {
     });
   });
 
+  // 2026-11-05: sepa-mandat was the first form id with a hyphen; the link checked it like a field
+  // id and refused every link of that form ("Der Link enthält eine unbekannte oder ungültige Angabe").
+  it('writes and reads a form id with a hyphen, as form ids allow', () => {
+    const made = masterDataFragment({ glaeubigerId: 'DE98ZZZ09999999999' }, 'sepa-mandat');
+    expect(made).toEqual({
+      ok: true,
+      fragment: '#stammdaten=1&formular=sepa-mandat&glaeubigerId=DE98ZZZ09999999999',
+    });
+    expect(made.ok && parseMasterDataFragment(made.fragment)).toEqual({
+      ok: true,
+      data: { glaeubigerId: 'DE98ZZZ09999999999' },
+      form: 'sepa-mandat',
+    });
+  });
+
   it('keeps links without a form as they were', () => {
     expect(parseMasterDataFragment('#stammdaten=1&firma=X')).toEqual({
       ok: true,
@@ -135,6 +150,8 @@ describe('the form a link opens (Tobias 2026-11-03)', () => {
   it.each([
     ['#stammdaten=1&formular=a&formular=b', 'duplicateKey'],
     ['#stammdaten=1&formular=Sofort-Meldung', 'invalidKey'],
+    ['#stammdaten=1&formular=sepa--mandat', 'invalidKey'],
+    ['#stammdaten=1&formular=-sepa', 'invalidKey'],
     ['#stammdaten=1&formular=', 'invalidKey'],
   ])('refuses %s', (hash, issue) => {
     expect(parseMasterDataFragment(hash)).toMatchObject({ ok: false, issue });

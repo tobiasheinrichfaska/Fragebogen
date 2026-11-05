@@ -1,6 +1,11 @@
 import { QUESTIONNAIRE_ID, fill, linkedForm, ok } from '../../tests/support/sample';
-import { applyMasterData, masterDataOf } from './masterData';
-import type { Questionnaire } from './model';
+import {
+  applyMasterData,
+  masterDataOf,
+  masterDataRoleLabels,
+  masterDataRolesText,
+} from './masterData';
+import type { FieldDefinition, FormDefinition, Questionnaire } from './model';
 import { createQuestionnaire, currentPart, startPart } from './questionnaire';
 
 const form = linkedForm();
@@ -22,6 +27,40 @@ describe('masterDataOf', () => {
   it('leaves out unanswered fields and fields without a key', () => {
     expect(masterDataOf(definition, 'arbeitgeber', dataOf(employerDraft()))).toEqual({});
     expect(masterDataOf(definition, 'person', { nachname: 'Musterfrau' })).toEqual({});
+  });
+});
+
+describe('masterDataRoleLabels', () => {
+  // 2026-11-05: the link texts said "beim Arbeitgeber" also for the Kanzlei's SEPA-Mandat.
+  it('names the roles whose fields carry master data, in role order', () => {
+    expect(masterDataRoleLabels(definition)).toEqual(['Arbeitgeber']);
+    expect(masterDataRolesText(definition)).toBe('„Arbeitgeber“');
+  });
+
+  it('joins two roles and names none for a form without master data', () => {
+    // Every field a key: the person and the employer carry master data, the guardian has no fields.
+    const both: FormDefinition = {
+      ...definition,
+      sections: definition.sections.map((section) => ({
+        ...section,
+        fields: section.fields.map((field) => ({ ...field, masterData: `k${field.id}` })),
+      })),
+    };
+    expect(masterDataRolesText(both)).toBe('„Beschäftigte Person“ und „Arbeitgeber“');
+    const none: FormDefinition = {
+      ...definition,
+      sections: definition.sections.map((section) => ({
+        ...section,
+        fields: section.fields.map(
+          (field) =>
+            Object.fromEntries(
+              Object.entries(field).filter(([key]) => key !== 'masterData'),
+            ) as unknown as FieldDefinition,
+        ),
+      })),
+    };
+    expect(masterDataRoleLabels(none)).toEqual([]);
+    expect(masterDataRolesText(none)).toBe('');
   });
 });
 

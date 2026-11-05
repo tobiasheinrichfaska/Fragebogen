@@ -47,6 +47,7 @@ import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
 import { createPdf, fromPackageText, openAnyFile, type OpenResult } from './pdfActions';
 import { ResumeOffer } from './ResumeOffer';
+import { masterDataRolesText } from '../logic/masterData';
 import { describeRevised } from '../logic/validity';
 
 type Screen =
@@ -134,7 +135,7 @@ function startBanner(
   return linked
     ? {
         tone: 'info',
-        text: `Neuer Fragebogen „${linked.definition.title}“ aus Ihrem Lesezeichen. Die Angaben zum Betrieb aus dem Link sind beim Arbeitgeber schon eingetragen.`,
+        text: `Neuer Fragebogen „${linked.definition.title}“ aus Ihrem Lesezeichen. Die Angaben aus dem Link stehen schon im Teil ${masterDataRolesText(linked.definition)}.`,
       }
     : {
         tone: 'warning',

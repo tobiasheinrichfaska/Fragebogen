@@ -7,7 +7,7 @@ import { APP_CONFIG } from '../config';
 import { editValue } from '../logic/display';
 import { latestForms, type FormRegistry } from '../logic/formRegistry';
 import { ISSUE_MESSAGES, issueMessage, type IssueBounds, type IssueCode } from '../logic/issues';
-import { storedValue, type MasterData } from '../logic/masterData';
+import { masterDataRolesText, storedValue, type MasterData } from '../logic/masterData';
 import {
   masterDataCatalog,
   masterDataExclusions,
@@ -232,7 +232,7 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
               {MASTER_DATA_LINK_MAX_LENGTH.toLocaleString('de-DE')} Zeichen. Legen Sie den Link als
               Lesezeichen an oder geben Sie ihn weiter.{' '}
               {opened
-                ? `Geöffnet beginnt er einen neuen Fragebogen „${opened.definition.title}“; die Angaben zum Betrieb sind beim Arbeitgeber schon eingetragen.`
+                ? `Geöffnet beginnt er einen neuen Fragebogen „${opened.definition.title}“; die Angaben aus dem Link stehen dort schon im Teil ${masterDataRolesText(opened.definition)}.`
                 : 'Geöffnet trägt er die Angaben in jeden neuen Fragebogen ein.'}
             </p>
           </>
