@@ -1112,8 +1112,8 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-**Hand-over 2026-11-05:** SEPA-Mandat **1.0.0 in production** (Tobias: „schalte das Sepa-Mandat gleich
-live“): Kanzlei first with its Stammdaten-Link (creditor data, Zahlungsart), „Wer hat zu zahlen?“,
+**Hand-over 2026-11-05:** SEPA-Mandat **1.0.0 in production** — public app and test folder uploaded at
+f2ab3e1 (with all app changes since d41c797) (Tobias: „schalte das Sepa-Mandat gleich live“): Kanzlei first with its Stammdaten-Link (creditor data, Zahlungsart), „Wer hat zu zahlen?“,
 Kontoinhaber identisch/abweichend (his two paper templates), the Kanzlei may enter address and bank
 details, address with the abroad switch as in the Personalfragebogen; MT-119–127. „Als Link
 weitergeben“ for questionnaires with few values (`src/logic/transferLink.ts`). The test report names
