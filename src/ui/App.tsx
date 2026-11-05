@@ -14,6 +14,7 @@ import { fileNameFor } from '../logic/fileNames';
 import type { FormRegistry, RegisteredForm } from '../logic/formRegistry';
 import {
   MASTER_DATA_LINK_MESSAGES,
+  masterDataLinkBase,
   parseMasterDataFragment,
   type ParsedMasterDataLink,
 } from '../logic/masterDataLink';
@@ -45,9 +46,16 @@ import { MasterDataLinkForm } from './MasterDataLinkForm';
 import { RolesScreen } from './RolesScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { StartScreen } from './StartScreen';
-import { createPdf, fromPackageText, openAnyFile, type OpenResult } from './pdfActions';
+import {
+  createPdf,
+  fromPackageText,
+  fromTransferLink,
+  openAnyFile,
+  type OpenResult,
+} from './pdfActions';
 import { ResumeOffer } from './ResumeOffer';
 import { masterDataRolesText } from '../logic/masterData';
+import { transferOffer } from '../logic/transferLink';
 import { describeRevised } from '../logic/validity';
 
 type Screen =
@@ -144,6 +152,12 @@ function startBanner(
 }
 
 function Workspace({ registry, start }: { registry: FormRegistry; start?: PreparedStart }) {
+  // A link that passes a questionnaire on opens it like a file read in (Tobias 2026-11-05).
+  const transferred = useMemo(
+    () => (start ? undefined : fromTransferLink(location.hash, registry)),
+    [registry, start],
+  );
+  const received = transferred?.kind === 'session' ? transferred.session : undefined;
   const remembered = useMemo(() => parseMasterDataFragment(location.hash), []);
   // A bookmark link that names a form opens a new questionnaire of its newest version at once.
   const linked = useMemo(
@@ -152,10 +166,15 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
     [registry, remembered, start],
   );
   const [session, setSession] = useState<Session | undefined>(
-    () => start?.session ?? (linked ? startSession(linked, newQuestionnaireId()) : undefined),
+    () =>
+      start?.session ??
+      received ??
+      (linked ? startSession(linked, newQuestionnaireId()) : undefined),
   );
   const [screen, setScreen] = useState<Screen>(
-    start ? { kind: START_SCREENS[start.screen] } : { kind: linked ? 'roles' : 'start' },
+    start
+      ? { kind: START_SCREENS[start.screen] }
+      : { kind: received || linked ? 'roles' : 'start' },
   );
   // An interrupted questionnaire of this browser (hosted app only); read once at the start.
   const storage = useMemo(() => resumeAllowed(location.protocol), []);
@@ -170,9 +189,14 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
   );
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
-  const [banner, setBanner] = useState<BannerMessage | undefined>(() =>
-    startBanner(start, remembered, linked),
+  const [banner, setBanner] = useState<BannerMessage | undefined>(
+    () => transferred?.message ?? startBanner(start, remembered, linked),
   );
+
+  // The answers of a link stay out of the address bar once read: a reload does not read them again.
+  useEffect(() => {
+    if (transferred) history.replaceState(null, '', location.pathname + location.search);
+  }, [transferred]);
 
   useEffect(() => {
     tracker.start();
@@ -569,6 +593,12 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
           onOverview={() => setScreen({ kind: 'roles' })}
           onSaveInterim={saveInterim}
           onPdf={() => void pdf()}
+          transfer={transferOffer(
+            session.questionnaire,
+            session.form,
+            masterDataLinkBase(location.href, APP_CONFIG.appAddress),
+          )}
+          onLinkCopied={() => setSession(markSaved(session))}
         />
       )}
 

@@ -203,6 +203,65 @@ test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on t
   await expectClean(page, found);
 });
 
+/** The public build at an https address, served by Playwright itself; anything else is refused. */
+const ORIGIN = 'https://fragebogen.test';
+async function serveHosted(page: Page): Promise<string[]> {
+  const html = readFileSync(APP);
+  const foreign: string[] = [];
+  await page.route('**/*', (route) => {
+    const url = route.request().url().split('#')[0] ?? '';
+    if (url === `${ORIGIN}/`) {
+      return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
+    }
+    if (!/^(data|blob):/.test(url)) foreign.push(url);
+    return route.abort();
+  });
+  page.on('dialog', (dialog) => void dialog.accept());
+  return foreign;
+}
+
+test('the employer part passes on as a link and opens on another device (Tobias 2026-11-05)', async ({
+  page,
+  browser,
+}) => {
+  const foreign = await serveHosted(page);
+  await page.goto(`${ORIGIN}/`);
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await answerUntilSummary(page);
+  await press(page, 'Weiter zum Abschluss');
+  await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
+  await press(page, 'Ohne Unterschrift abschließen');
+  await press(page, 'Abschließen');
+  await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
+  const link = await page.getByLabel('Link zur Weitergabe').inputValue();
+  expect(link).toMatch(/^https:\/\/fragebogen\.test\/#weitergabe=1&pruef=[0-9a-f]{16}&daten=/);
+
+  const other = await browser.newContext();
+  const device = await other.newPage();
+  const foreignThere = await serveHosted(device);
+  await device.goto(link);
+  await expect(device.locator('main')).toContainText(
+    'Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.',
+  );
+  await expect(device.locator('main')).toContainText('Aus einem Link zur Weitergabe geöffnet.');
+  await expect(device.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  // The answers do not stay in the address bar.
+  expect(device.url()).toBe(`${ORIGIN}/`);
+  await press(device, 'Ich bin: Beschäftigte Person');
+  await expect(device.locator('.card h2').first()).not.toHaveText('Wer füllt jetzt aus?');
+
+  // A cut-off link (a hash change alone would not reload the page).
+  await device.goto('about:blank');
+  await device.goto(link.slice(0, -30));
+  await expect(device.locator('main')).toContainText(
+    'Link zur Weitergabe: Der Link ist unvollständig oder beschädigt',
+  );
+  await other.close();
+  expect(foreign).toEqual([]);
+  expect(foreignThere).toEqual([]);
+});
+
 test('a master-data link made on the start page fills the next questionnaire', async ({ page }) => {
   const found = await guard(page);
   await page.goto(pathToFileURL(APP).href);

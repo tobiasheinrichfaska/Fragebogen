@@ -29,6 +29,11 @@ import { assembleQrPayloads, QR_MESSAGES } from '../logic/qrParts';
 import { BLOCKER_MESSAGES, transmissionBlockers } from '../logic/requirements';
 import { markSaved, sessionFromFile, type Arrival, type Session } from '../logic/session';
 import type { TestRun } from '../logic/testRun';
+import {
+  parseTransferFragment,
+  TRANSFER_LINK_MESSAGES,
+  transferPackageText,
+} from '../logic/transferLink';
 import { FINDING_MESSAGES, verifyQuestionnaire } from '../logic/verify';
 import type { BannerMessage } from './common';
 
@@ -253,6 +258,39 @@ export function fromQr(
       detail: assembled.detail,
     },
   };
+}
+
+/**
+ * Opens a link that passes a questionnaire on (Tobias 2026-11-05) like a file read in; undefined
+ * when the hash is no such link. Its SHA-256 is that of the package text, as for a file.
+ */
+export function fromTransferLink(hash: string, registry: FormRegistry): OpenResult | undefined {
+  const parsed = parseTransferFragment(hash);
+  if (parsed === undefined) return undefined;
+  const opened = parsed.ok
+    ? transferPackageText(parsed.questionnaireText, (h) => registry.byHash(h)?.definition)
+    : parsed;
+  if (!opened.ok) {
+    return {
+      kind: 'error',
+      message: {
+        tone: 'error',
+        text: `Link zur Weitergabe: ${TRANSFER_LINK_MESSAGES[opened.issue]}`,
+      },
+    };
+  }
+  const received = deviceNow();
+  return fromPackageText(
+    opened.text,
+    registry,
+    {
+      local: received.local,
+      utc: received.utc,
+      source: 'file',
+      fileSha256: sha256Hex(new TextEncoder().encode(opened.text)),
+    },
+    ['Aus einem Link zur Weitergabe geöffnet.'],
+  );
 }
 
 /**

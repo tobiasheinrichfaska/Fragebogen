@@ -1,22 +1,29 @@
-// The master-data link as text to bookmark or send, with a copy button and inline feedback.
+// A link as text to bookmark or send (master data, or a questionnaire passed on), with a copy
+// button and inline feedback.
 import { useState } from 'react';
 
-export function MasterDataLink({ url }: { url: string }) {
+export function MasterDataLink({
+  url,
+  label = 'Stammdaten-Link',
+  onCopied,
+}: {
+  url: string;
+  label?: string;
+  onCopied?: () => void;
+}) {
   const [copied, setCopied] = useState<'ok' | 'manual' | undefined>();
   return (
     <>
       <div className="master-link">
-        <input
-          readOnly
-          value={url}
-          onFocus={(event) => event.target.select()}
-          aria-label="Stammdaten-Link"
-        />
+        <input readOnly value={url} onFocus={(event) => event.target.select()} aria-label={label} />
         <button
           type="button"
           onClick={() => {
             navigator.clipboard.writeText(url).then(
-              () => setCopied('ok'),
+              () => {
+                setCopied('ok');
+                onCopied?.();
+              },
               () => setCopied('manual'),
             );
           }}
