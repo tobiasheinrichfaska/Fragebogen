@@ -1085,6 +1085,11 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**Test report 2026-11-05** (`import/archiv/2026-11-05/`, tester without name, app 0.1.0): 12 rated,
+all passed (MT-10–16, 19, 26, 116, 118, 30); MT-01, MT-17, MT-50 begun but not rated; comments only
+„für AN sehr einfach“ (MT-10). The report names no device or browser, so it does not show whether
+MT-12/MT-118 ran on an iPhone.
+
 **Hand-over 2026-11-04 night (start here):** pushed and uploaded to the test folder through e49d141
 (date fields: grey mask „TT.MM.JJJJ“, dots by themselves, comma → dot, calendar button with the
 device's picker — iPhone test report; MT-12, MT-118 to test on a real iPhone). Colours like the
