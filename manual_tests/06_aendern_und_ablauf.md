@@ -352,8 +352,8 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
   Sofortmeldung““. Der Hinweis darunter sagt, dass der Link nur das Formular nennt, keine Fassung.
 - Schritt 2: Sofort ein **neuer, leerer Fragebogen** „Personalfragebogen: Angaben für die
   Sofortmeldung“ bei „Wer füllt jetzt aus?“ – ohne Umweg über die Startseite. Oben: „Neuer
-  Fragebogen … aus Ihrem Lesezeichen. Die Angaben zum Betrieb aus dem Link sind beim Arbeitgeber
-  schon eingetragen.“
+  Fragebogen … aus Ihrem Lesezeichen. Die Angaben aus dem Link stehen schon im Teil
+  „Arbeitgeber“.“
 - Schritt 3: Die Startseite wie früher; Firma und Betriebsnummer stehen trotzdem in jedem neuen
   Fragebogen beim Arbeitgeber.
 - Schritt 4: Gelb: „Ihr Lesezeichen soll einen neuen Fragebogen „personalfragebogen“ öffnen; diese

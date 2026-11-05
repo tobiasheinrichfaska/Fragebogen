@@ -374,6 +374,7 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
     return key !== undefined && Object.hasOwn(own, key.key) ? [key.label] : [];
   });
   const fromOthers = Object.keys(masterData).filter((key) => !Object.hasOwn(own, key)).length;
+  const roleLabel = definition.roles.find((r) => r.id === role)?.label ?? role;
   // Missing required answers stand at the top with their link; "Übersprungen" keeps the rest.
   const voluntaryDeferred = summary.deferred.filter((id) => !summary.missingRequired.includes(id));
   const checks = fillingHints(session.questionnaire, definition, role);
@@ -578,12 +579,12 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
             <>
               <p className="muted">
                 Legen Sie diesen Link als Lesezeichen an. Er beginnt beim nächsten Mal gleich einen
-                neuen Fragebogen „{definition.title}“, und diese Angaben zum Betrieb sind dann schon
+                neuen Fragebogen „{definition.title}“, und diese Angaben sind dann schon
                 eingetragen: {ownLabels.join(', ')}.
                 {fromOthers > 0
                   ? ` Weitere ${String(fromOthers)} Angaben aus Ihrem bisherigen Link bleiben erhalten.`
                   : ''}{' '}
-                Der Link enthält keine Daten der beschäftigten Person.
+                {`Der Link enthält nur Angaben aus dem Teil „${roleLabel}“.`}
               </p>
               <MasterDataLink url={`${location.href.split('#')[0] ?? ''}${link.fragment}`} />
             </>

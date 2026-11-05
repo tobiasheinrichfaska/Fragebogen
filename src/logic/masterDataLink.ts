@@ -5,7 +5,7 @@
 // A fragment never reaches the server, but it stays in bookmarks and the browser history, which
 // is acceptable for the employer's own data only. Parsing is strict and all-or-nothing; the
 // result is still untrusted and goes through applyMasterData (setValue) like typed input.
-import { ID } from './formDefinition';
+import { FORM_ID, ID } from './formDefinition';
 import type { MasterData } from './masterData';
 import { MASTER_DATA_FORM_KEY } from './model';
 
@@ -53,7 +53,7 @@ export function masterDataFragment(data: MasterData, form?: string): MasterDataL
   }
   const params = new URLSearchParams([[MARKER, MASTER_DATA_LINK_VERSION]]);
   if (form !== undefined) {
-    if (!ID.test(form)) return { ok: false, issue: 'invalidKey', detail: [form] };
+    if (!FORM_ID.test(form)) return { ok: false, issue: 'invalidKey', detail: [form] };
     params.append(MASTER_DATA_FORM_KEY, form);
   }
   for (const [key, value] of entries) {
@@ -112,7 +112,7 @@ export function parseMasterDataFragment(hash: string): ParsedMasterDataLink {
   const forms = params.getAll(MASTER_DATA_FORM_KEY);
   const form = forms[0];
   if (forms.length > 1) return { ok: false, issue: 'duplicateKey', detail: [MASTER_DATA_FORM_KEY] };
-  if (form !== undefined && !ID.test(form)) {
+  if (form !== undefined && !FORM_ID.test(form)) {
     return { ok: false, issue: 'invalidKey', detail: [MASTER_DATA_FORM_KEY] };
   }
   const keys = [...new Set(params.keys())].filter(

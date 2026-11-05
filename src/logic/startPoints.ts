@@ -12,7 +12,7 @@
 import { buildPackage, packageText } from './dataPackage';
 import { Decoder, type DecodeIssue } from './decode';
 import { fieldsOfRole } from './form';
-import { ID } from './formDefinition';
+import { FORM_ID, ID } from './formDefinition';
 import type { RegisteredForm } from './formRegistry';
 import { sha256Hex } from './hash';
 import { addToInbox, EMPTY_INBOX, type Inbox } from './kanzlei';
@@ -85,7 +85,7 @@ export function parseStartPoint(raw: unknown): StartPointParse {
   const o = d.object(raw, '$', ['id', 'title', 'form', 'parts', 'open']);
   const id = o && d.string(o.id, '$.id', START_ID);
   const title = o && d.string(o.title, '$.title');
-  const form = o && d.string(o.form, '$.form', ID);
+  const form = o && d.string(o.form, '$.form', FORM_ID);
   const parts =
     o &&
     d.array(

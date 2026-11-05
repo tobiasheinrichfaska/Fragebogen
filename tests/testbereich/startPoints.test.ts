@@ -227,4 +227,16 @@ describe('start links in the test texts', () => {
       }).ok,
     ).toBe(false);
   });
+
+  // 2026-11-05: the form was checked like a field id, so a start point of "sepa-mandat" was refused.
+  it('names a form whose id has a hyphen', () => {
+    const point = {
+      id: 'a',
+      title: 't',
+      parts: [{ role: 'kanzlei', answers: {} }],
+      open: { role: 'kanzlei', at: 'summary' },
+    };
+    expect(parseStartPoint({ ...point, form: 'sepa-mandat' }).ok).toBe(true);
+    expect(parseStartPoint({ ...point, form: 'Sepa-Mandat' }).ok).toBe(false);
+  });
 });

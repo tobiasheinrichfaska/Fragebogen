@@ -37,6 +37,28 @@ export interface MasterDataKey {
   options?: readonly string[];
 }
 
+/**
+ * Labels of the roles that carry master data, in role order — whom a link prefills: the employer
+ * in the Sofortmeldung, the Kanzlei in the SEPA-Mandat (2026-11-05: the texts said "Arbeitgeber").
+ */
+export function masterDataRoleLabels(definition: FormDefinition): string[] {
+  const owners = new Set(
+    definition.sections
+      .flatMap((section) => section.fields)
+      .filter((field) => masterDataKeysOf(field).length > 0)
+      .map((field) => field.role),
+  );
+  return definition.roles.filter((role) => owners.has(role.id)).map((role) => role.label);
+}
+
+/** Those roles quoted for a sentence ("… stehen schon im Teil „Arbeitgeber“"): „A“ und „B“. */
+export function masterDataRolesText(definition: FormDefinition): string {
+  const labels = masterDataRoleLabels(definition).map((label) => `„${label}“`);
+  return labels.length <= 1
+    ? (labels[0] ?? '')
+    : `${labels.slice(0, -1).join(', ')} und ${labels[labels.length - 1] ?? ''}`;
+}
+
 export function masterDataKeysOf(field: FieldDefinition): MasterDataKey[] {
   if (field.masterData !== undefined) return [{ key: field.masterData, label: field.label }];
   return (field.masterDataCases ?? []).map((entry) => ({
