@@ -3,7 +3,13 @@
 // the self-reported platform for the system note. Everything here is what the device says.
 import { APP_VERSION } from '../appInfo';
 import type { InputType, SystemNote } from '../logic/model';
-import { platformFromClientHints, platformFromUserAgent, type Platform } from '../logic/userAgent';
+import {
+  deviceDescription,
+  deviceKind,
+  platformFromClientHints,
+  platformFromUserAgent,
+  type Platform,
+} from '../logic/userAgent';
 
 function randomBytes(count: number): Uint8Array {
   return crypto.getRandomValues(new Uint8Array(count));
@@ -62,6 +68,19 @@ function platform(): { platform: Platform; source: SystemNote['uaSource'] } {
     return { platform: platformFromClientHints(data.brands, data.platform), source: 'ua-ch' };
   }
   return { platform: platformFromUserAgent(navigator.userAgent), source: 'ua-string' };
+}
+
+/** What the browser says about this device, for the test report (Tobias 2026-11-05). */
+export function deviceForReport(): string {
+  const { platform: p } = platform();
+  return deviceDescription(
+    deviceKind(navigator.userAgent, p.os, navigator.maxTouchPoints || 0),
+    p,
+    {
+      width: screen.width,
+      height: screen.height,
+    },
+  );
 }
 
 export function systemNoteFor(now: DeviceNow, inputTypes: readonly InputType[]): SystemNote {

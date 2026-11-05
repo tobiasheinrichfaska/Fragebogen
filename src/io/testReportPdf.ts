@@ -20,6 +20,8 @@ export interface TestReportInput {
   /** `version`: the current caseVersion — a result given for an older text is marked. */
   cases: readonly { id: string; title: string; area: string; version?: string }[];
   appVersion: string;
+  /** Device kind, browser and screen as the browser reports them (`deviceDescription`). */
+  device: string;
   /** Device time of creation. */
   created: { local: string; utc: string };
 }
@@ -55,8 +57,9 @@ export async function writeTestReportPdf(
   layout.text('Testbericht Fragebogen-Test', { font: fonts.bold, size: 16, gap: 2 });
   layout.text(
     `Tester: ${tester} · erstellt am ${formatLocalDateTime(input.created.local)} laut Gerät · App ${input.appVersion}`,
-    { ...small, gap: 6 },
+    { ...small, gap: 2 },
   );
+  layout.text(`Gerät laut Browser: ${input.device}`, { ...small, gap: 6 });
   layout.text(
     `Getestet: ${totals.tested} (bestanden ${totals.byResult.bestanden}, teilweise ${totals.byResult.teilweise}, ` +
       `nicht bestanden ${totals.byResult.nichtBestanden}) · Zeit gemessen ${totals.measuredMinutes} Min., ` +

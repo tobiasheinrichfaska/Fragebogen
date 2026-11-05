@@ -148,7 +148,11 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 4: Name, Ergebnisse und Kommentare sind noch da. _Nicht offensichtlich:_ In einem privaten
   Fenster warnt die Seite, dass sie nichts speichern kann.
 - Schritt 5: Eine PDF „Testbericht_<Name>_<Datum>.pdf“ mit Ergebnis, Beginn, Ende, gemessener und
-  korrigierter Dauer, Kommentar und Summen; nicht bearbeitete Tests fehlen darin.
+  korrigierter Dauer, Kommentar und Summen; nicht bearbeitete Tests fehlen darin. Oben steht
+  „Gerät laut Browser: …“, z. B. „Windows-Computer · Edge 142 · Bildschirm 1920 × 1080“; am Handy
+  (Schritt 8) „iPhone · Safari …“ oder „Android-Smartphone · Chrome …“. _Nicht offensichtlich:_ Ein
+  iPad meldet sich in Safari wie ein Mac; die App erkennt es an der Touch-Bedienung und schreibt
+  „iPad“.
 - Schritt 6: Der Wechsel zur App und zurück verliert keine Eingaben in der App.
 - Schritt 6 (Liste): MT-10 öffnet sich. MT-01 zeigt oben „Nicht im Testbereich: …“ mit Grund und steht
   in der Liste mit „– nicht im Testbereich“.

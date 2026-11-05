@@ -1,4 +1,9 @@
-import { platformFromClientHints, platformFromUserAgent } from './userAgent';
+import {
+  deviceDescription,
+  deviceKind,
+  platformFromClientHints,
+  platformFromUserAgent,
+} from './userAgent';
 
 describe('platformFromUserAgent', () => {
   it.each<[string, string, string, string]>([
@@ -78,5 +83,55 @@ describe('platformFromClientHints', () => {
       browser: 'unbekannt',
       browserVersion: 'unbekannt',
     });
+  });
+});
+
+describe('deviceKind (test report, 2026-11-05)', () => {
+  const IPHONE =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1';
+  const MAC =
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15';
+  const ANDROID_PHONE =
+    'Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36';
+  const ANDROID_TABLET =
+    'Mozilla/5.0 (Linux; Android 14; SM-X710) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
+  const WINDOWS =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0';
+
+  it.each<[string, string, number, string]>([
+    [IPHONE, 'iOS', 5, 'iPhone'],
+    // iPadOS Safari asks for the desktop page and reports a Mac; only touch tells it apart.
+    [MAC, 'macOS', 5, 'iPad'],
+    [MAC, 'macOS', 0, 'macOS-Computer'],
+    [ANDROID_PHONE, 'Android', 5, 'Android-Smartphone'],
+    [ANDROID_TABLET, 'Android', 5, 'Android-Tablet'],
+    [WINDOWS, 'Windows', 10, 'Windows-Computer'],
+    ['', 'unbekannt', 0, 'Gerät unbekannt'],
+  ])('%s with %s and %i touch points', (ua, os, touch, kind) => {
+    expect(deviceKind(ua, os, touch)).toBe(kind);
+  });
+
+  it('describes kind, browser and screen for the report', () => {
+    expect(
+      deviceDescription(
+        'iPhone',
+        { os: 'iOS', browser: 'Safari', browserVersion: '18' },
+        { width: 390, height: 844 },
+      ),
+    ).toBe('iPhone · Safari 18 · Bildschirm 390 × 844');
+    expect(
+      deviceDescription('Gerät unbekannt', {
+        os: 'unbekannt',
+        browser: 'unbekannt',
+        browserVersion: 'unbekannt',
+      }),
+    ).toBe('Gerät unbekannt · Browser unbekannt');
+    expect(
+      deviceDescription(
+        'Windows-Computer',
+        { os: 'Windows', browser: 'Edge', browserVersion: 'unbekannt' },
+        { width: 0, height: 0 },
+      ),
+    ).toBe('Windows-Computer · Edge');
   });
 });
