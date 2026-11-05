@@ -71,3 +71,33 @@ export function platformFromClientHints(
     browserVersion: chosen?.version.split('.')[0] || UNKNOWN,
   };
 }
+
+/**
+ * The kind of device for a test report (Tobias 2026-11-05: the report named no device, so nobody
+ * could tell whether a test ran on an iPhone). An iPad's Safari reports a Mac; only touch gives it
+ * away. Android says "Mobile" on phones only.
+ */
+export function deviceKind(userAgent: string, os: string, maxTouchPoints: number): string {
+  if (/iPhone|iPod/.test(userAgent)) return 'iPhone';
+  if (/iPad/.test(userAgent) || (/Macintosh/.test(userAgent) && maxTouchPoints > 1)) return 'iPad';
+  if (/Android/.test(userAgent))
+    return /Mobile/.test(userAgent) ? 'Android-Smartphone' : 'Android-Tablet';
+  return os === UNKNOWN ? 'Gerät unbekannt' : `${os}-Computer`;
+}
+
+/** "iPhone · Safari 18 · Bildschirm 390 × 844" — what the browser says, for the test report. */
+export function deviceDescription(
+  kind: string,
+  platform: Platform,
+  screen?: { width: number; height: number },
+): string {
+  const browser =
+    platform.browser === UNKNOWN
+      ? 'Browser unbekannt'
+      : `${platform.browser} ${platform.browserVersion === UNKNOWN ? '' : platform.browserVersion}`.trim();
+  const size =
+    screen && screen.width > 0 && screen.height > 0
+      ? ` · Bildschirm ${Math.round(screen.width)} × ${Math.round(screen.height)}`
+      : '';
+  return `${kind} · ${browser}${size}`;
+}

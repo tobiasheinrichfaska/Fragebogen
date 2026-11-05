@@ -48,6 +48,7 @@ describe('test report as PDF', () => {
         run,
         cases: CASES,
         appVersion: '0.1.0',
+        device: 'iPhone · Safari 18 · Bildschirm 390 × 844',
         created: { local: '2026-11-01T11:00:00.000+01:00', utc: '2026-11-01T10:00:00.000Z' },
       },
       FONTS,
@@ -64,6 +65,8 @@ describe('test report as PDF', () => {
     const all = text.lines.join('\n');
     for (const expected of [
       'Tester: Erika Mustermann · erstellt am 01.11.2026, 11:00 Uhr laut Gerät · App 0.1.0',
+      // 2026-11-05: the report named no device, so an iPhone test could not be told apart.
+      'Gerät laut Browser: iPhone · Safari 18 · Bildschirm 390 × 844',
       'Getestet: 2 (bestanden 1, teilweise 1, nicht bestanden 0)',
       'MT-13 Hinweise und „Vorerst überspringen“ (Person)',
       'Ergebnis: teilweise · Beginn 10:00 Uhr · Ende 10:07 Uhr · gemessen 8 Min. · korrigiert 5 Min. (gezählt 5 Min.)',

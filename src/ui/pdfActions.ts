@@ -7,7 +7,7 @@ import sansUrl from '../../assets/fonts/NotoSans-Regular.subset.ttf?inline';
 import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
 import { APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
-import { deviceNow, type DeviceNow } from '../io/environment';
+import { deviceForReport, deviceNow, type DeviceNow } from '../io/environment';
 import { handOut, readFileBytes } from '../io/files';
 import {
   editClues,
@@ -144,7 +144,13 @@ export async function createTestReportPdf(
   try {
     const now = deviceNow();
     const result = await writeTestReportPdf(
-      { run, cases, appVersion: APP_VERSION, created: { local: now.local, utc: now.utc } },
+      {
+        run,
+        cases,
+        appVersion: APP_VERSION,
+        device: deviceForReport(),
+        created: { local: now.local, utc: now.utc },
+      },
       { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
     );
     const file = handOut(result.fileName, result.bytes, 'application/pdf');
