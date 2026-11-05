@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { masterDataOf, mergedMasterData, type MasterData } from '../../src/logic/masterData';
 import {
+  catalogEntries,
+  entriesOutside,
   masterDataCatalog,
   masterDataExclusions,
   masterDataInput,
@@ -238,6 +240,57 @@ describe('the master-data catalogue of all forms', () => {
     const catalog = masterDataCatalog(latest(allForms));
     expect(unknownMasterDataKeys(catalog, { firma: 'A', kuenftig: 'B' })).toEqual(['kuenftig']);
   });
+});
+
+describe('the link screen asks first what the link opens (Tobias 2026-11-05)', () => {
+  const sepa = latest(allForms).find((f) => f.definition.id === 'sepa-mandat');
+  if (!sepa) throw new Error('no SEPA-Mandat');
+  const all = masterDataCatalog(latest(allForms));
+  const one = masterDataCatalog([sepa]);
+
+  it('shows only the data of the chosen form, its sections without the form title', () => {
+    expect(catalogEntries(one).map((entry) => entry.key)).toEqual([
+      'glaeubigerName',
+      'glaeubigerStrasse',
+      'glaeubigerPlzOrt',
+      'glaeubigerLand',
+      'glaeubigerId',
+      'lastschriftZahlungsart',
+    ]);
+    expect(one.groups.map((group) => group.title)).toEqual([
+      'Zahlungsempfänger',
+      'Vertrag und Mandatsreferenz',
+    ]);
+    expect(all.groups.map((group) => group.title)).toContain(
+      'Zahlungsempfänger (SEPA-Basislastschriftmandat)',
+    );
+  });
+
+  it('names the data of other forms that stay out of that link', () => {
+    const outside = entriesOutside(all, one).map((entry) => entry.key);
+    expect(outside).toEqual(expect.arrayContaining(['betriebsnummer', 'firma']));
+    expect(outside).not.toContain('glaeubigerId');
+    expect(outside.length + catalogEntries(one).length).toBe(catalogEntries(all).length);
+    expect(entriesOutside(all, all)).toEqual([]);
+  });
+});
+
+describe('a link of the Kanzlei carries no data of a single Mandant (Tobias 2026-11-05)', () => {
+  // The Steuerfreigabe draft had the Mandantennummer as master datum of the Kanzlei — the
+  // Kanzlei's bookmark would have carried one client's number into every questionnaire.
+  it.each(allForms.map((f) => [`${f.definition.id} ${f.definition.version}`, f] as const))(
+    '%s',
+    (_name, registered) => {
+      const keys = registered.definition.sections
+        .flatMap((section) => section.fields)
+        .filter((field) => field.role === 'kanzlei')
+        .flatMap((field) => [
+          ...(field.masterData === undefined ? [] : [field.masterData]),
+          ...(field.masterDataCases ?? []).map((c) => c.key),
+        ]);
+      expect(keys.filter((key) => /^mandant/i.test(key))).toEqual([]);
+    },
+  );
 });
 
 describe('what the firm data exclude before any person is asked', () => {

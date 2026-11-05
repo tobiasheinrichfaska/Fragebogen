@@ -81,7 +81,12 @@ function stepHtml(step: FlowStep): string {
   } else if (step.dependsOn.length > 0) {
     lines.push(`<div class="when">Pflicht hängt ab von ${numbers(step.dependsOn)}.</div>`);
   }
-  if (step.fromRole) {
+  if (step.fromRole && step.proposed) {
+    lines.push(
+      `<div class="taken">Belegt die andere Station vor (${esc(step.fromRole)}): Liegt ihr ` +
+        'abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div>',
+    );
+  } else if (step.fromRole) {
     lines.push(
       `<div class="taken">Legt die andere Station fest (${esc(step.fromRole)}): Liegt ihr ` +
         'abgeschlossener Teil schon vor, wird die Angabe übernommen und nicht gefragt.</div>',

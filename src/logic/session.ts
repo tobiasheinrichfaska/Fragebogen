@@ -38,6 +38,7 @@ import {
   currentPart,
   deferQuestion,
   fixedByOtherRoles,
+  proposedByOtherRoles,
   withAcknowledged,
   leaveQuestionEmpty,
   latestSealed,
@@ -247,6 +248,22 @@ export function roleStates(session: Session): RoleState[] {
       canReopen: part?.seal !== undefined && reopenPart(questionnaire, form, role.id).ok,
     };
   });
+}
+
+/**
+ * The role a questionnaire passed on opens in at once (Tobias 2026-11-05): when every part so far
+ * only prefills (`prefills`, e.g. the Kanzlei in the SEPA-Mandat) and exactly one unconditional
+ * role has no part yet; otherwise undefined and the overview asks who fills in.
+ */
+export function roleToFillNext(session: Session): RoleId | undefined {
+  const { questionnaire, form } = session;
+  const roles = form.definition.roles;
+  const withPart = roles.filter((role) => currentPart(questionnaire, role.id));
+  if (withPart.length === 0 || withPart.some((role) => role.prefills !== true)) return undefined;
+  const open = roles.filter(
+    (role) => role.prefills !== true && !role.requiredIf && !currentPart(questionnaire, role.id),
+  );
+  return open.length === 1 ? open[0]?.id : undefined;
 }
 
 /** Continues an existing draft at its first open question (or the summary). */
@@ -634,6 +651,20 @@ export function fillMasterData(
 }
 
 /** Whether the answer to this question is still the one the master-data link filled in. */
+/**
+ * The role whose proposal (`fromRole.changeable`) the field still holds unchanged, e.g. the IBAN
+ * the Kanzlei prefilled; undefined once the answer was changed.
+ */
+export function proposedBy(session: Session, fieldId: FieldId): string | undefined {
+  const role = session.role;
+  if (role === undefined) return undefined;
+  const { definition } = session.form;
+  const proposal = proposedByOtherRoles(session.questionnaire, definition, role).get(fieldId);
+  const value = currentPart(session.questionnaire, role)?.data[fieldId] ?? null;
+  if (!proposal || JSON.stringify(proposal.value) !== JSON.stringify(value)) return undefined;
+  return definition.roles.find((other) => other.id === proposal.from)?.label ?? proposal.from;
+}
+
 export function filledFromLink(session: Session, fieldId: FieldId): boolean {
   const role = session.role;
   if (role === undefined) return false;

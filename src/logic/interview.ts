@@ -5,9 +5,25 @@
 // Answers that no longer apply stay in the draft (they come back if the condition holds again)
 // and are only dropped at signing; the summary lists them so this never happens unseen.
 import { fieldDependencies } from './dependencies';
-import { describeFieldRules, fieldStates, infoBlocksOfRole, type PartData } from './form';
+import { editValue, suggestedText } from './display';
+import {
+  describeFieldRules,
+  fieldsById,
+  fieldStates,
+  infoBlocksOfRole,
+  visibility,
+  type PartData,
+} from './form';
 import { isPlainObject } from './jcs';
-import type { FieldDefinition, FieldId, FieldValue, FormDefinition, Part, RoleId } from './model';
+import type {
+  FieldDefinition,
+  FieldId,
+  FieldValue,
+  FormDefinition,
+  IsoDate,
+  Part,
+  RoleId,
+} from './model';
 import { describeValidity, outsideValidity } from './validity';
 
 export type QuestionState = 'answered' | 'deferred' | 'open';
@@ -209,6 +225,35 @@ export function stepAfterEdit(
     .slice(from + 1)
     .find((step) => step.kind === 'question' && step.state === 'open' && opened.has(step.fieldId));
   return next ?? steps[steps.length - 1] ?? { kind: 'summary', key: 'summary' };
+}
+
+/**
+ * What a question's input box shows first: the answer as typed, or — never answered, not even left
+ * empty on purpose (null) — the field's `suggestedText`: the first template whose placeholders all
+ * hold a visible answer, for a date `today`.
+ */
+export function initialInput(
+  definition: FormDefinition,
+  field: FieldDefinition,
+  data: PartData,
+  today: IsoDate,
+): { text: string; suggested: boolean } {
+  const value = data[field.id];
+  if (value === undefined && field.suggestedText !== undefined) {
+    const fields = fieldsById(definition);
+    const visible = visibility(definition, field.role, data);
+    const shown = (id: string) => (visible.get(id) === true ? data[id] : undefined);
+    for (const template of [field.suggestedText].flat()) {
+      const text =
+        field.type === 'date'
+          ? template === 'today'
+            ? editValue(field, today)
+            : undefined
+          : suggestedText(template, (id) => fields.get(id), shown);
+      if (text !== undefined) return { text, suggested: true };
+    }
+  }
+  return { text: editValue(field, value), suggested: false };
 }
 
 /** Where to continue, e.g. after loading an interim state: the first open question, else the summary. */

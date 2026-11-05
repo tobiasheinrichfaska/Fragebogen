@@ -1557,9 +1557,13 @@ function fromRoleHints(
       continue;
     const ownRole = roleOf(definition, field.role)?.label ?? field.role;
     const fromRole = roleOf(definition, from.role)?.label ?? from.role;
+    // A proposal the role was free to change is news for the other role, not a contradiction.
     results.push({
       id: `fromRole:${field.id}`,
-      message: `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decided)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
+      message:
+        from.changeable === true
+          ? `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decided)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
+          : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decided)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
       detail: [],
     });
   }

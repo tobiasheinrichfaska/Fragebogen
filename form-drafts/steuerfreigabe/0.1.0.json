@@ -1,7 +1,7 @@
 {
   "id": "steuerfreigabe",
   "version": "0.1.0",
-  "revised": "2026-11-04T18:13",
+  "revised": "2026-11-05T15:14",
   "title": "Freigabe zur elektronischen Übermittlung einer Steuererklärung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -52,8 +52,7 @@
           "label": "Mandantennummer",
           "question": "Mandantennummer",
           "required": false,
-          "purpose": "Zuordnung in der Kanzlei",
-          "masterData": "mandantennummer"
+          "purpose": "Zuordnung in der Kanzlei"
         },
         {
           "id": "mandantNameKanzlei",

@@ -206,6 +206,16 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
             .map((q) => `„${q.label}“${q.value === null ? ' (leer lassen)' : ''}`)
             .join(', ')}`,
         ]),
+    ...(field.suggestedText === undefined
+      ? []
+      : [
+          `Vorschlag im Eingabefeld: ${[field.suggestedText]
+            .flat()
+            .map((text) =>
+              field.type === 'date' ? 'das heutige Datum' : shownPlaceholders(definition, text),
+            )
+            .join(', sonst ')}`,
+        ]),
     ...(field.explainer === undefined ? [] : [`Erklärvideo: ${field.explainer}`]),
   ].join('\n');
   const source = field.fromRole && fieldsById(definition).get(field.fromRole.field);
@@ -213,8 +223,11 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
     input,
     ...(field.fromRole && source
       ? [
-          `Legt ${roleLabel(definition, field.fromRole.role)} fest („${source.label}“): liegt dessen ` +
-            'abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt',
+          field.fromRole.changeable === true
+            ? `Belegt ${roleLabel(definition, field.fromRole.role)} vor („${source.label}“): liegt ` +
+              'dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar'
+            : `Legt ${roleLabel(definition, field.fromRole.role)} fest („${source.label}“): liegt dessen ` +
+              'abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt',
         ]
       : []),
     ...(field.because === undefined ? [] : [`Warum: ${field.because}`]),
@@ -274,6 +287,7 @@ function dependencyTree(definition: FormDefinition): string[] {
 }
 
 function roleRequired(definition: FormDefinition, role: RoleDefinition): string {
+  if (role.prefills === true) return 'freiwillig – belegt nur Angaben der anderen vor';
   if (!role.requiredIf) return 'immer';
   const condition = ROLE_CONDITIONS[role.requiredIf.kind](role.requiredIf, definition);
   return role.because === undefined ? condition : `${condition}\nWarum: ${role.because}`;

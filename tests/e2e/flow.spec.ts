@@ -271,12 +271,24 @@ test('a master-data link made on the start page fills the next questionnaire', a
   await page.goto(pathToFileURL(APP).href);
   await press(page, 'Stammdaten-Link erstellen oder ändern');
   const form = page.locator('.master-link-form');
+  // First what the link opens, then only that form's data (Tobias 2026-11-05).
+  await expect(form).toContainText('Wählen Sie zuerst, was der Link öffnen soll.');
+  await expect(form.locator('#master-firma')).toHaveCount(0);
+  await form.locator('#master-opens').selectOption('sofortmeldung');
   await form.locator('#master-firma').fill('Beispiel Bau GmbH');
   await form.locator('#master-betriebsnummer').fill('1234 567X');
   await expect(form).toContainText('Bitte erst die markierten Angaben berichtigen.');
   await form.locator('#master-betriebsnummer').fill('1234 5671');
   const link = form.getByLabel('Stammdaten-Link');
-  // By default the link opens a new Sofortmeldung (Tobias 2026-11-03); the start page is a choice.
+  await expect(link).toHaveValue(
+    /#stammdaten=1&formular=sofortmeldung&betriebsnummer=12345671&firma=Beispiel\+Bau\+GmbH$/,
+  );
+  // The SEPA-Mandat has none of these data: they stay out of its link, and the page says so.
+  await form.locator('#master-opens').selectOption('sepa-mandat');
+  await expect(form.locator('#master-firma')).toHaveCount(0);
+  await expect(form).toContainText('Nicht in diesem Link, weil sie zu anderen Formularen gehören:');
+  await expect(link).toHaveValue(/#stammdaten=1&formular=sepa-mandat$/);
+  // The start page takes the data of every form.
   await form.locator('#master-opens').selectOption('');
   await expect(link).toHaveValue(
     /#stammdaten=1&betriebsnummer=12345671&firma=Beispiel\+Bau\+GmbH$/,

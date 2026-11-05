@@ -1,11 +1,11 @@
 // The interview of the role at the device: one step per screen (notice, question, summary).
 // All rules live in the logic layer (session.ts, interview.ts); this only renders and dispatches.
 import { useState } from 'react';
-import { displayValue, editValue } from '../logic/display';
-import { fillPlaceholders } from '../logic/display';
+import { todayIso } from '../logic/clock';
+import { displayValue, fillPlaceholders } from '../logic/display';
 import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { fillingHints } from '../logic/hints';
-import { interviewProgress } from '../logic/interview';
+import { initialInput, interviewProgress } from '../logic/interview';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
 import { MASTER_DATA_LINK_MESSAGES, masterDataFragment } from '../logic/masterDataLink';
@@ -25,6 +25,7 @@ import {
   noticeFromSummary,
   outOfScopeOf,
   previousStep,
+  proposedBy,
   skipToMissing,
   stepsFor,
   summaryOf,
@@ -211,9 +212,15 @@ function QuestionStep({
   const part =
     session.role === undefined ? undefined : currentPart(session.questionnaire, session.role);
   const value = field ? part?.data[field.id] : undefined;
-  const [text, setText] = useState(field ? editValue(field, value) : '');
+  const [first] = useState(() =>
+    field
+      ? initialInput(session.form.definition, field, part?.data ?? {}, todayIso())
+      : { text: '', suggested: false },
+  );
+  const [text, setText] = useState(first.text);
   const [error, setError] = useState<string | undefined>();
   if (!field) return null;
+  const proposer = proposedBy(session, field.id);
   const inputId = `field-${field.id}`;
   const textLike = isTextLike(field);
   const empty = textLike ? text.trim() === '' : value === undefined || value === null;
@@ -294,6 +301,12 @@ function QuestionStep({
         {field.help !== undefined && <p className="help">{said(field.help)}</p>}
         {filledFromLink(session, field.id) && (
           <p className="link-note">Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.</p>
+        )}
+        {first.suggested && text === first.text && (
+          <p className="link-note">Vorschlag aus Ihren Angaben – Sie können ihn ändern.</p>
+        )}
+        {proposer !== undefined && (
+          <p className="link-note">Vorbelegt von {proposer} – bitte prüfen.</p>
         )}
         <Explainer path={field.explainer} />
         <FieldInput
@@ -539,6 +552,12 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
                       >
                         ändern
                       </button>
+                    )}
+                    {!fixed.has(field.id) && proposedBy(session, field.id) !== undefined && (
+                      <span className="muted">
+                        {' '}
+                        (vorbelegt von: {proposedBy(session, field.id)})
+                      </span>
                     )}
                   </dd>
                 </div>
