@@ -1,0 +1,955 @@
+{
+  "id": "sepa-mandat",
+  "version": "1.0.0",
+  "revised": "2026-11-05T11:49",
+  "title": "SEPA-Basislastschriftmandat",
+  "signaturePolicy": "electronic",
+  "signatureBasis": "Für ein SEPA-Lastschriftmandat schreibt das Gesetz keine besondere Form vor. Deshalb unterschreiben Sie hier mit einer einfachen elektronischen Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Das Mandat gilt nur für die Angaben, die Sie vor dem Unterschreiben in der Zusammenfassung sehen.",
+  "recipient": {
+    "label": "Kanzlei"
+  },
+  "roles": [
+    {
+      "id": "kanzlei",
+      "label": "Kanzlei (Zahlungsempfänger)",
+      "stationHeading": "Angaben des Zahlungsempfängers",
+      "confirmationText": "Wir legen das Lastschriftmandat mit diesen Angaben zum Zahlungsempfänger und zum Vertrag vor.",
+      "signature": "none"
+    },
+    {
+      "id": "kontoinhaber",
+      "label": "Kontoinhaberin oder Kontoinhaber",
+      "stationHeading": "Mandat der Kontoinhaberin oder des Kontoinhabers",
+      "confirmationText": "Ich erteile das SEPA-Basislastschriftmandat mit den Angaben oben.",
+      "signature": "required"
+    },
+    {
+      "id": "mitinhaber",
+      "label": "Zweite Kontoinhaberin oder zweiter Kontoinhaber",
+      "stationHeading": "Mandat der zweiten Kontoinhaberin oder des zweiten Kontoinhabers",
+      "confirmationText": "Ich erteile das SEPA-Basislastschriftmandat mit den Angaben oben.",
+      "signature": "required",
+      "requiredIf": {
+        "kind": "answer",
+        "when": {
+          "field": "zweiteUnterschrift",
+          "equals": true
+        }
+      },
+      "because": "Dürfen über das Konto nur beide Inhaber gemeinsam verfügen, braucht auch das Mandat beide Unterschriften.",
+      "signerNameField": "mitinhaberName"
+    }
+  ],
+  "sections": [
+    {
+      "id": "zahlungsempfaenger",
+      "title": "Zahlungsempfänger",
+      "fields": [
+        {
+          "id": "glaeubigerName",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Name des Zahlungsempfängers",
+          "help": "So, wie er im Mandat stehen soll. Am einfachsten aus Ihrem Stammdaten-Link.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Zahlungsempfänger im Mandat (SEPA-Regelwerk)",
+          "masterData": "glaeubigerName"
+        },
+        {
+          "id": "glaeubigerStrasse",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Straße und Hausnummer des Zahlungsempfängers",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Anschrift des Zahlungsempfängers im Mandat (SEPA-Regelwerk)",
+          "masterData": "glaeubigerStrasse"
+        },
+        {
+          "id": "glaeubigerPlzOrt",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Postleitzahl und Ort des Zahlungsempfängers",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Anschrift des Zahlungsempfängers im Mandat (SEPA-Regelwerk)",
+          "masterData": "glaeubigerPlzOrt"
+        },
+        {
+          "id": "glaeubigerLand",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Land des Zahlungsempfängers",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Anschrift des Zahlungsempfängers im Mandat (SEPA-Regelwerk)",
+          "masterData": "glaeubigerLand",
+          "quickAnswers": [
+            {
+              "label": "Deutschland",
+              "value": "Deutschland"
+            }
+          ]
+        },
+        {
+          "id": "glaeubigerId",
+          "role": "kanzlei",
+          "type": "text",
+          "textFormat": "glaeubigerId",
+          "label": "Gläubiger-Identifikationsnummer",
+          "help": "Sie steht in der Mitteilung der Deutschen Bundesbank über die Vergabe, zum Beispiel DE98ZZZ09999999999.",
+          "required": true,
+          "purpose": "Kennung des Zahlungsempfängers im Mandat und in jeder Lastschrift (SEPA-Regelwerk)",
+          "masterData": "glaeubigerId"
+        }
+      ]
+    },
+    {
+      "id": "vertrag",
+      "title": "Vertrag und Mandatsreferenz",
+      "fields": [
+        {
+          "id": "mandantennummer",
+          "role": "kanzlei",
+          "type": "text",
+          "textFormat": "ziffern",
+          "label": "Mandantennummer",
+          "required": false,
+          "purpose": "Zuordnung in der Kanzlei"
+        },
+        {
+          "id": "mandantName",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Zahlungspflichtig (Vertrag mit)",
+          "question": "Wer hat zu zahlen?",
+          "help": "Vor- und Familienname oder Firma der Mandantin oder des Mandanten, deren Rechnungen eingezogen werden.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Vertrag, dessen Rechnungen eingezogen werden; Zuordnung des Mandats"
+        },
+        {
+          "id": "kontoinhaberArt",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Kontoinhaber",
+          "question": "Ist die Kontoinhaberin oder der Kontoinhaber identisch mit {mandantName} oder abweichend?",
+          "help": "Abweichend zum Beispiel beim Konto des Ehegatten, der Eltern oder einer Firma: Dann erteilt die Kontoinhaberin oder der Kontoinhaber das Mandat für den Vertrag mit {mandantName} und nennt den eigenen Namen.",
+          "required": true,
+          "initial": "identisch",
+          "purpose": "Kennzeichnet einen vom Zahlungspflichtigen abweichenden Kontoinhaber (Vordruck „vom Kontoinhaber abweichender Schuldner“)",
+          "options": [
+            {
+              "id": "identisch",
+              "label": "identisch – wer zu zahlen hat, ist selbst Kontoinhaberin oder Kontoinhaber"
+            },
+            {
+              "id": "abweichend",
+              "label": "abweichend – das Konto gehört einer anderen Person"
+            }
+          ]
+        },
+        {
+          "id": "zahlungsart",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Zahlungsart",
+          "question": "Gilt das Mandat für wiederkehrende Zahlungen oder für eine einmalige?",
+          "help": "Für laufende Rechnungen wiederkehrend. Die Banken verlangen diese Angabe im Mandat.",
+          "required": true,
+          "initial": "wiederkehrend",
+          "purpose": "Pflichtangabe des Mandats: Kennzeichnung als einmalige oder wiederkehrende Zahlung (Bedingungen der Banken für die SEPA-Basislastschrift, Nr. 2.2.1)",
+          "masterData": "lastschriftZahlungsart",
+          "options": [
+            {
+              "id": "wiederkehrend",
+              "label": "wiederkehrende Zahlungen"
+            },
+            {
+              "id": "einmalig",
+              "label": "eine einmalige Zahlung"
+            }
+          ]
+        },
+        {
+          "id": "mandatsreferenz",
+          "role": "kanzlei",
+          "type": "text",
+          "textFormat": "mandatsreferenz",
+          "label": "Mandatsreferenz",
+          "help": "Je Mandat eine eigene, höchstens 35 Zeichen. Steht sie noch nicht fest, lassen Sie das Feld leer: Dann teilen Sie sie vor der ersten Abbuchung mit.",
+          "required": false,
+          "purpose": "Kennung des Mandats in jeder Lastschrift (SEPA-Regelwerk)",
+          "quickAnswers": [
+            {
+              "label": "Wird separat mitgeteilt",
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kontoVorab",
+      "title": "Angaben zum Konto, die die Kanzlei einträgt",
+      "fields": [
+        {
+          "id": "kontoVorab",
+          "role": "kanzlei",
+          "type": "multiChoice",
+          "label": "Von der Kanzlei eingetragen",
+          "question": "Welche Angaben zum Konto tragen Sie schon ein?",
+          "help": "Zum Beispiel aus den Stammdaten des Mandanten. Was Sie eintragen, steht im Mandat fest; die Kontoinhaberin oder der Kontoinhaber wird danach nicht gefragt. Was Sie nicht ankreuzen, trägt sie oder er selbst ein.",
+          "required": false,
+          "purpose": "Entscheidet, welche Angaben zum Konto die Kanzlei vorbelegt",
+          "options": [
+            {
+              "id": "nameAnschrift",
+              "label": "Anschrift der Kontoinhaberin oder des Kontoinhabers (bei einem abweichenden Kontoinhaber auch der Name)"
+            },
+            {
+              "id": "bankverbindung",
+              "label": "Bankverbindung (Bank, IBAN, BIC)"
+            }
+          ]
+        },
+        {
+          "id": "khName",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Name der Kontoinhaberin oder des Kontoinhabers",
+          "help": "So, wie die Bank das Konto führt; bei einem Konto einer Firma oder eines Vereins dessen Name.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "all": [
+              {
+                "field": "kontoVorab",
+                "contains": "nameAnschrift"
+              },
+              {
+                "field": "kontoinhaberArt",
+                "equals": "abweichend"
+              }
+            ]
+          },
+          "because": "Nur bei einem abweichenden Kontoinhaber, wenn die Kanzlei Name und Anschrift einträgt; sonst ist es der Name bei „Wer hat zu zahlen?“."
+        }
+      ]
+    },
+    {
+      "id": "khAnschrift",
+      "title": "Anschrift der Kontoinhaberin oder des Kontoinhabers (von der Kanzlei)",
+      "fields": [
+        {
+          "id": "khAnschriftAusland",
+          "role": "kanzlei",
+          "type": "boolean",
+          "label": "Liegt die Anschrift der Kontoinhaberin oder des Kontoinhabers im Ausland?",
+          "help": "Davon hängt ab, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis.",
+          "required": true,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "kontoVorab",
+            "contains": "nameAnschrift"
+          },
+          "because": "Nur wenn die Kanzlei Name und Anschrift einträgt."
+        },
+        {
+          "id": "khAnschriftStaat",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Staat",
+          "question": "In welchem Staat liegt die Anschrift?",
+          "help": "Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste.",
+          "required": true,
+          "optionsFrom": "deuevStaatenAusland2025",
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "khAnschriftAusland",
+            "equals": true
+          },
+          "because": "Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn."
+        },
+        {
+          "id": "khStrasse",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Straße und Hausnummer",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "kontoVorab",
+            "contains": "nameAnschrift"
+          },
+          "because": "Nur wenn die Kanzlei Name und Anschrift einträgt."
+        },
+        {
+          "id": "khPostleitzahl",
+          "role": "kanzlei",
+          "type": "text",
+          "textFormat": "postleitzahlDe",
+          "label": "Postleitzahl",
+          "help": "5 Ziffern.",
+          "required": true,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "khAnschriftAusland",
+            "equals": false
+          },
+          "because": "Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt."
+        },
+        {
+          "id": "khPostleitzahlAusland",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Postleitzahl (Ausland)",
+          "help": "So, wie sie in dem Staat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
+          "required": false,
+          "maxLength": 10,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "khAnschriftAusland",
+            "equals": true
+          },
+          "because": "Postleitzahlen im Ausland haben andere Formate; für einige Staaten prüft die App das Format als Hinweis.",
+          "quickAnswers": [
+            {
+              "label": "Keine Postleitzahl",
+              "value": null
+            }
+          ]
+        },
+        {
+          "id": "khOrt",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Ort",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "kontoVorab",
+            "contains": "nameAnschrift"
+          },
+          "because": "Nur wenn die Kanzlei Name und Anschrift einträgt."
+        }
+      ]
+    },
+    {
+      "id": "khBank",
+      "title": "Bankverbindung (von der Kanzlei)",
+      "fields": [
+        {
+          "id": "khKreditinstitut",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Name des Kreditinstituts",
+          "required": false,
+          "maxLength": 70,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "kontoVorab",
+            "contains": "bankverbindung"
+          },
+          "because": "Nur wenn die Kanzlei die Bankverbindung einträgt."
+        },
+        {
+          "id": "khIban",
+          "role": "kanzlei",
+          "type": "iban",
+          "label": "IBAN",
+          "required": true,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "field": "kontoVorab",
+            "contains": "bankverbindung"
+          },
+          "because": "Nur wenn die Kanzlei die Bankverbindung einträgt."
+        },
+        {
+          "id": "khBic",
+          "role": "kanzlei",
+          "type": "text",
+          "textFormat": "bic",
+          "label": "BIC",
+          "help": "Nur für ein Konto außerhalb Deutschlands, wenn die Bank sie angibt.",
+          "required": false,
+          "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
+          "showIf": {
+            "all": [
+              {
+                "field": "khIban",
+                "answered": true
+              },
+              {
+                "not": {
+                  "field": "khIban",
+                  "startsWith": "DE"
+                }
+              }
+            ]
+          },
+          "because": "Für ein deutsches Konto genügt die IBAN; für ein Konto im Ausland kann die Lastschrift die BIC brauchen.",
+          "quickAnswers": [
+            {
+              "label": "Nicht nötig",
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mandat",
+      "title": "Mandat",
+      "fields": [
+        {
+          "id": "zahlungsempfaenger",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Zahlungsempfänger",
+          "question": "An wen erteilen Sie das Mandat?",
+          "help": "Den Namen nennt Ihnen die Kanzlei, zum Beispiel in ihrem Anschreiben.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Zahlungsempfänger im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "glaeubigerName"
+          },
+          "because": "Den Zahlungsempfänger nennt die Kanzlei; liegt ihr Teil vor, steht er hier fest und wird nicht gefragt."
+        },
+        {
+          "id": "zahlungsempfaengerGlaeubigerId",
+          "role": "kontoinhaber",
+          "type": "text",
+          "textFormat": "glaeubigerId",
+          "label": "Gläubiger-Identifikationsnummer",
+          "question": "Wie lautet die Gläubiger-Identifikationsnummer des Zahlungsempfängers?",
+          "help": "Sie steht im Anschreiben der Kanzlei, zum Beispiel DE98ZZZ09999999999.",
+          "required": true,
+          "purpose": "Kennung des Zahlungsempfängers im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "glaeubigerId"
+          },
+          "because": "Die Gläubiger-Identifikationsnummer nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt."
+        },
+        {
+          "id": "vertragMit",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Zahlungspflichtig (Vertrag mit)",
+          "question": "Wer hat zu zahlen?",
+          "help": "Vor- und Familienname oder Firma der Mandantin oder des Mandanten bei {zahlungsempfaenger}, deren Rechnungen eingezogen werden – auch dann, wenn das Konto jemand anderem gehört.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Vertrag, dessen Rechnungen eingezogen werden",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "mandantName"
+          },
+          "because": "Für welchen Vertrag das Mandat gilt, nennt die Kanzlei; liegt ihr Teil vor, steht er hier fest und wird nicht gefragt."
+        },
+        {
+          "id": "mandatKontoinhaberArt",
+          "role": "kontoinhaber",
+          "type": "choice",
+          "label": "Kontoinhaber",
+          "question": "Ist die Kontoinhaberin oder der Kontoinhaber identisch mit {vertragMit} oder abweichend?",
+          "required": true,
+          "purpose": "Kennzeichnet einen vom Zahlungspflichtigen abweichenden Kontoinhaber",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "kontoinhaberArt"
+          },
+          "because": "Ob der Kontoinhaber abweicht, sagt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "identisch",
+              "label": "identisch – wer zu zahlen hat, ist selbst Kontoinhaberin oder Kontoinhaber"
+            },
+            {
+              "id": "abweichend",
+              "label": "abweichend – das Konto gehört einer anderen Person"
+            }
+          ]
+        },
+        {
+          "id": "mandatZahlungsart",
+          "role": "kontoinhaber",
+          "type": "choice",
+          "label": "Zahlungsart",
+          "question": "Gilt das Mandat für wiederkehrende Zahlungen oder für eine einmalige?",
+          "required": true,
+          "purpose": "Pflichtangabe des Mandats: einmalige oder wiederkehrende Zahlung (Bedingungen der Banken für die SEPA-Basislastschrift, Nr. 2.2.1)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "zahlungsart"
+          },
+          "because": "Die Zahlungsart legt die Kanzlei fest; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "wiederkehrend",
+              "label": "wiederkehrende Zahlungen"
+            },
+            {
+              "id": "einmalig",
+              "label": "eine einmalige Zahlung"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kontoinhaberAngaben",
+      "title": "Kontoinhaberin oder Kontoinhaber",
+      "fields": [
+        {
+          "id": "kontoinhaberName",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Vor- und Familienname (Kontoinhaber)",
+          "question": "Wie heißt die Kontoinhaberin oder der Kontoinhaber?",
+          "help": "So, wie die Bank das Konto führt; bei einem Konto einer Firma oder eines Vereins dessen Name.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Zahler im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khName"
+          },
+          "because": "Ist die Kontoinhaberin oder der Kontoinhaber identisch, ist es der Name bei „Wer hat zu zahlen?“; nur ein abweichender Kontoinhaber nennt den eigenen Namen. Hat die Kanzlei ihn eingetragen, steht er fest und wird nicht gefragt.",
+          "showIf": {
+            "field": "mandatKontoinhaberArt",
+            "equals": "abweichend"
+          }
+        },
+        {
+          "id": "kontoinhaberEmail",
+          "role": "kontoinhaber",
+          "type": "text",
+          "textFormat": "email",
+          "label": "E-Mail für die Ankündigung der Abbuchungen",
+          "question": "An welche E-Mail-Adresse soll die Kanzlei die Abbuchungen vorher ankündigen?",
+          "help": "Die Kanzlei kündigt jede Abbuchung mit Betrag und Tag vorher an – bei einem abweichenden Kontoinhaber Ihnen, nicht nur der Mandantin oder dem Mandanten. Ohne E-Mail-Adresse kommt die Ankündigung per Post.",
+          "required": false,
+          "purpose": "Vorabankündigung jeder Lastschrift an den Kontoinhaber (SEPA-Regelwerk für die Basislastschrift, Abschnitte 4.1 und 4.3)",
+          "showIf": {
+            "field": "mandatKontoinhaberArt",
+            "equals": "abweichend"
+          },
+          "because": "Die Vorabankündigung geht an den Kontoinhaber; ist er nicht der Zahlungspflichtige, erhält er die Rechnungen nicht und braucht sie gesondert.",
+          "quickAnswers": [
+            {
+              "label": "Lieber per Post",
+              "value": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "anschrift",
+      "title": "Anschrift",
+      "fields": [
+        {
+          "id": "anschriftAusland",
+          "role": "kontoinhaber",
+          "type": "boolean",
+          "label": "Liegt die Anschrift im Ausland?",
+          "help": "Diese Frage steht am Anfang der Anschrift, weil davon abhängt, wie nach Staat und Postleitzahl gefragt wird: Eine deutsche Postleitzahl hat 5 Ziffern und wird geprüft, eine ausländische nur für einige Staaten und nur als Hinweis.",
+          "required": true,
+          "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khAnschriftAusland"
+          },
+          "because": "Hat die Kanzlei die Anschrift eingetragen, steht sie fest und wird nicht gefragt."
+        },
+        {
+          "id": "anschriftStaat",
+          "role": "kontoinhaber",
+          "type": "choice",
+          "label": "Staat",
+          "question": "In welchem Staat liegt die Anschrift?",
+          "help": "Tippen Sie die ersten Buchstaben und wählen Sie aus der Liste.",
+          "required": true,
+          "optionsFrom": "deuevStaatenAusland2025",
+          "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": true
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khAnschriftStaat"
+          },
+          "because": "Bei einer Anschrift in Deutschland steht der Staat fest; nur eine Anschrift im Ausland braucht ihn. Hat die Kanzlei ihn eingetragen, wird er nicht gefragt."
+        },
+        {
+          "id": "kontoinhaberStrasse",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Straße und Hausnummer",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khStrasse"
+          },
+          "because": "Hat die Kanzlei die Anschrift eingetragen, steht sie fest und wird nicht gefragt."
+        },
+        {
+          "id": "postleitzahl",
+          "role": "kontoinhaber",
+          "type": "text",
+          "textFormat": "postleitzahlDe",
+          "label": "Postleitzahl",
+          "help": "5 Ziffern.",
+          "required": true,
+          "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": false
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khPostleitzahl"
+          },
+          "because": "Eine deutsche Postleitzahl hat immer 5 Ziffern und wird darauf geprüft. Deshalb wird sie nur bei einer Anschrift in Deutschland so gefragt. Hat die Kanzlei sie eingetragen, wird sie nicht gefragt."
+        },
+        {
+          "id": "postleitzahlAusland",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Postleitzahl (Ausland)",
+          "help": "So, wie sie in dem Staat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
+          "required": false,
+          "maxLength": 10,
+          "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
+          "showIf": {
+            "field": "anschriftAusland",
+            "equals": true
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khPostleitzahlAusland"
+          },
+          "because": "Postleitzahlen im Ausland haben andere Formate; für einige Staaten prüft die App das Format als Hinweis. Hat die Kanzlei sie eingetragen, wird sie nicht gefragt.",
+          "quickAnswers": [
+            {
+              "label": "Keine Postleitzahl",
+              "value": null
+            }
+          ]
+        },
+        {
+          "id": "kontoinhaberOrt",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Ort",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khOrt"
+          },
+          "because": "Hat die Kanzlei die Anschrift eingetragen, steht sie fest und wird nicht gefragt."
+        }
+      ]
+    },
+    {
+      "id": "bankverbindung",
+      "title": "Bankverbindung",
+      "fields": [
+        {
+          "id": "kreditinstitut",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Name des Kreditinstituts",
+          "question": "Bei welcher Bank ist das Konto?",
+          "required": false,
+          "maxLength": 70,
+          "purpose": "Zuordnung des Kontos; für den Einzug genügt die IBAN",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khKreditinstitut"
+          },
+          "because": "Hat die Kanzlei die Bank eingetragen, steht sie fest und wird nicht gefragt."
+        },
+        {
+          "id": "iban",
+          "role": "kontoinhaber",
+          "type": "iban",
+          "label": "IBAN",
+          "question": "Von welchem Konto soll abgebucht werden?",
+          "help": "Die IBAN steht zum Beispiel auf der Bankkarte, im Online-Banking oder auf einem Kontoauszug.",
+          "required": true,
+          "purpose": "Konto, von dem die Lastschriften eingezogen werden",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khIban"
+          },
+          "because": "Hat die Kanzlei die IBAN eingetragen, steht sie fest und wird nicht gefragt."
+        },
+        {
+          "id": "bic",
+          "role": "kontoinhaber",
+          "type": "text",
+          "textFormat": "bic",
+          "label": "BIC",
+          "question": "Wie lautet die BIC der Bank?",
+          "help": "Nur für ein Konto außerhalb Deutschlands. Im SEPA-Raum genügt meist die IBAN; nennen Sie die BIC, wenn Ihre Bank sie angibt.",
+          "required": false,
+          "showIf": {
+            "all": [
+              {
+                "field": "iban",
+                "answered": true
+              },
+              {
+                "not": {
+                  "field": "iban",
+                  "startsWith": "DE"
+                }
+              }
+            ]
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "khBic"
+          },
+          "because": "Für ein deutsches Konto genügt die IBAN. Für ein Konto im Ausland, vor allem außerhalb des Europäischen Wirtschaftsraums, kann die Lastschrift die BIC brauchen. Hat die Kanzlei sie eingetragen, wird sie nicht gefragt.",
+          "purpose": "Einzug von einem Konto im Ausland",
+          "quickAnswers": [
+            {
+              "label": "Nicht nötig",
+              "value": null
+            }
+          ]
+        },
+        {
+          "id": "zweiteUnterschrift",
+          "role": "kontoinhaber",
+          "type": "boolean",
+          "label": "Zweite Unterschrift nötig",
+          "question": "Dürfen über das Konto nur zwei Personen gemeinsam verfügen?",
+          "help": "Zum Beispiel ein Gemeinschaftskonto, für das die Bank beide Unterschriften verlangt. Dann unterschreibt die zweite Person das Mandat auch. Darf jede allein verfügen, antworten Sie „Nein“.",
+          "required": true,
+          "initial": false,
+          "purpose": "Entscheidet, ob eine zweite Kontoinhaberin oder ein zweiter Kontoinhaber unterschreibt"
+        }
+      ]
+    },
+    {
+      "id": "ortDatum",
+      "title": "Ort und Datum",
+      "fields": [
+        {
+          "id": "unterschriftOrt",
+          "role": "kontoinhaber",
+          "type": "text",
+          "label": "Ort",
+          "question": "Wo unterschreiben Sie?",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Ort der Unterschrift im Mandat"
+        },
+        {
+          "id": "unterschriftDatum",
+          "role": "kontoinhaber",
+          "type": "date",
+          "label": "Datum",
+          "question": "Datum der Unterschrift",
+          "required": true,
+          "maxDate": "today",
+          "purpose": "Datum der Unterschrift (Ausstellungsdatum des Mandats, das jede Lastschrift nennt); Stichtag dieser Fassung"
+        }
+      ]
+    },
+    {
+      "id": "mitinhaberAngaben",
+      "title": "Zweite Kontoinhaberin oder zweiter Kontoinhaber",
+      "fields": [
+        {
+          "id": "mitinhaberName",
+          "role": "mitinhaber",
+          "type": "text",
+          "label": "Ihr Vor- und Familienname",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Unterschrift mit Namen"
+        },
+        {
+          "id": "mitinhaberZahlungsempfaenger",
+          "role": "mitinhaber",
+          "type": "text",
+          "label": "Zahlungsempfänger",
+          "question": "An wen erteilen Sie das Mandat?",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Zahlungsempfänger im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "glaeubigerName"
+          },
+          "because": "Den Zahlungsempfänger nennt die Kanzlei; liegt ihr Teil vor, steht er hier fest und wird nicht gefragt."
+        },
+        {
+          "id": "mitinhaberGlaeubigerId",
+          "role": "mitinhaber",
+          "type": "text",
+          "textFormat": "glaeubigerId",
+          "label": "Gläubiger-Identifikationsnummer",
+          "question": "Wie lautet die Gläubiger-Identifikationsnummer des Zahlungsempfängers?",
+          "required": true,
+          "purpose": "Kennung des Zahlungsempfängers im Mandat (SEPA-Regelwerk)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "glaeubigerId"
+          },
+          "because": "Die Gläubiger-Identifikationsnummer nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt."
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "mandatstext",
+      "role": "kontoinhaber",
+      "title": "SEPA-Basislastschriftmandat",
+      "text": "Ich/Wir ermächtige(n) den in diesem Mandat genannten Zahlungsempfänger, Zahlungen von meinem/unserem Konto mittels Lastschrift einzuziehen. Zugleich weise(n) ich/wir mein/unser Kreditinstitut an, die von dem Zahlungsempfänger auf mein/unser Konto gezogenen Lastschriften einzulösen.\n\nHinweis: Ich kann/Wir können innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem/unserem Kreditinstitut vereinbarten Bedingungen.\n\nZahlungsempfänger, Gläubiger-Identifikationsnummer und Mandatsreferenz stehen in den Angaben der Kanzlei; Sie sehen sie vor dem Unterschreiben in der Zusammenfassung. Fehlt dort die Mandatsreferenz, teilt die Kanzlei sie Ihnen vor der ersten Abbuchung mit.",
+      "asOf": "2026-11-05",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "datenschutz",
+      "role": "kontoinhaber",
+      "title": "Datenschutz",
+      "text": "Verantwortlich ist die Kanzlei, die Ihnen dieses Mandat vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Sie verwendet Ihre Angaben, um mit Ihrem Mandat ihre Rechnungen per Lastschrift einzuziehen (Art. 6 Abs. 1 Buchst. b DSGVO), und gibt sie dafür an ihre Bank weiter. Zahlen Sie für den Vertrag einer anderen Person, geschieht das zur Erfüllung dieses Vertrags (Art. 6 Abs. 1 Buchst. f DSGVO). Sie bewahrt das Mandat auf, solange es gilt, und danach, solange sie es zum Nachweis braucht. Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
+      "asOf": "2026-11-05",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "mandatstextMitinhaber",
+      "role": "mitinhaber",
+      "title": "SEPA-Basislastschriftmandat",
+      "text": "Ich/Wir ermächtige(n) den in diesem Mandat genannten Zahlungsempfänger, Zahlungen von meinem/unserem Konto mittels Lastschrift einzuziehen. Zugleich weise(n) ich/wir mein/unser Kreditinstitut an, die von dem Zahlungsempfänger auf mein/unser Konto gezogenen Lastschriften einzulösen.\n\nHinweis: Ich kann/Wir können innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem/unserem Kreditinstitut vereinbarten Bedingungen.\n\nZahlungsempfänger, Gläubiger-Identifikationsnummer und Mandatsreferenz stehen in den Angaben der Kanzlei, das Konto in den Angaben der ersten Kontoinhaberin oder des ersten Kontoinhabers; Sie sehen beides vor dem Unterschreiben in der Zusammenfassung.",
+      "asOf": "2026-11-05",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "datenschutzMitinhaber",
+      "role": "mitinhaber",
+      "title": "Datenschutz",
+      "text": "Verantwortlich ist die Kanzlei, die Ihnen dieses Mandat vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Sie verwendet Ihre Angaben, um mit Ihrem Mandat ihre Rechnungen per Lastschrift einzuziehen (Art. 6 Abs. 1 Buchst. b DSGVO), und gibt sie dafür an ihre Bank weiter. Zahlen Sie für den Vertrag einer anderen Person, geschieht das zur Erfüllung dieses Vertrags (Art. 6 Abs. 1 Buchst. f DSGVO). Sie bewahrt das Mandat auf, solange es gilt, und danach, solange sie es zum Nachweis braucht. Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
+      "asOf": "2026-11-05",
+      "acknowledgement": "read"
+    }
+  ],
+  "consistencyRules": [
+    {
+      "kind": "equal",
+      "fields": ["glaeubigerName", "zahlungsempfaenger"],
+      "message": "Der Zahlungsempfänger im Mandat weicht von den Angaben der Kanzlei ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["glaeubigerId", "zahlungsempfaengerGlaeubigerId"],
+      "message": "Die Gläubiger-Identifikationsnummer im Mandat weicht von den Angaben der Kanzlei ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["mandantName", "vertragMit"],
+      "message": "Der Vertrag, für den das Mandat gilt, weicht von den Angaben der Kanzlei ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["kontoinhaberArt", "mandatKontoinhaberArt"],
+      "message": "Ob der Kontoinhaber abweicht, ist im Mandat anders angegeben als bei der Kanzlei."
+    },
+    {
+      "kind": "equal",
+      "fields": ["zahlungsart", "mandatZahlungsart"],
+      "message": "Die Zahlungsart im Mandat weicht von den Angaben der Kanzlei ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["glaeubigerName", "mitinhaberZahlungsempfaenger"],
+      "message": "Der Zahlungsempfänger im Mandat der zweiten Kontoinhaberin oder des zweiten Kontoinhabers weicht von den Angaben der Kanzlei ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["glaeubigerId", "mitinhaberGlaeubigerId"],
+      "message": "Die Gläubiger-Identifikationsnummer im Mandat der zweiten Kontoinhaberin oder des zweiten Kontoinhabers weicht von den Angaben der Kanzlei ab."
+    }
+  ],
+  "matchKeys": [
+    {
+      "label": "Vertrag mit",
+      "fields": {
+        "kanzlei": "mandantName",
+        "kontoinhaber": "vertragMit"
+      }
+    }
+  ],
+  "legalNotes": [
+    "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung).",
+    "Die Erstattung einer Lastschrift kann innerhalb von acht Wochen ab der Belastung verlangt werden (§ 675x Abs. 2 und 4 BGB).",
+    "Der Zahlungsempfänger kündigt jede Lastschrift vorher mit Betrag und Fälligkeit an; ohne andere Vereinbarung mindestens 14 Kalendertage vor der Fälligkeit (SEPA-Regelwerk für die Basislastschrift, Abschnitt 4.3).",
+    "Reicht der Zahlungsempfänger 36 Monate lang keine Lastschrift auf dieses Mandat ein – gerechnet ab der letzten eingereichten, auch wenn sie zurückgegeben wurde –, muss er es löschen; für weitere Lastschriften braucht es dann ein neues Mandat (SEPA-Regelwerk für die Basislastschrift, Abschnitt 4.2).",
+    "Dieses Mandat gilt für die SEPA-Basislastschrift, nicht für die SEPA-Firmenlastschrift."
+  ],
+  "partLinks": [["kanzlei", "kontoinhaber"]],
+  "validity": {
+    "field": "unterschriftDatum",
+    "from": "2026-01-01"
+  },
+  "checkHints": [
+    {
+      "id": "bicPasstNichtZurIban",
+      "test": {
+        "fn": "bicPasstNichtZurIban",
+        "args": ["iban", "bic"]
+      },
+      "message": "Das Land im BIC passt nicht zum Land der IBAN. Bitte BIC und IBAN vergleichen.",
+      "source": "ISO 9362; ISO 13616",
+      "showWhileFilling": true
+    },
+    {
+      "id": "plzAuslandFormat",
+      "test": {
+        "fn": "plzAuslandFormat",
+        "args": ["anschriftStaat", "postleitzahlAusland"]
+      },
+      "message": "Die Postleitzahl hat nicht das übliche Format dieses Staats. Bitte prüfen.",
+      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 18",
+      "showWhileFilling": true
+    },
+    {
+      "id": "abweichenderKontoinhaber",
+      "when": {
+        "field": "mandatKontoinhaberArt",
+        "equals": "abweichend"
+      },
+      "message": "Abweichender Kontoinhaber: Die Vorabankündigung jeder Lastschrift geht an den Kontoinhaber (Anschrift oder E-Mail im Mandat), nicht nur an den Zahlungspflichtigen. In der Lastschrift kann der Zahlungspflichtige als abweichender Zahlungspflichtiger (Ultimate Debtor) stehen.",
+      "source": "SEPA-Regelwerk für die Basislastschrift, Abschnitte 4.1, 4.3 und 4.8.21"
+    }
+  ],
+  "limits": [
+    "Der Fragebogen zieht kein Geld ein und gibt nichts an eine Bank weiter; er dokumentiert das Mandat.",
+    "Nur SEPA-Basislastschrift. Für die SEPA-Firmenlastschrift gilt ein eigenes Mandat, das auch die Bank des Zahlers bestätigt.",
+    "Die Kanzlei füllt zuerst aus. Wer als Kontoinhaber ohne ihren Teil beginnt, trägt Zahlungsempfänger und Gläubiger-Identifikationsnummer selbst ein; weichen sie später von den Angaben der Kanzlei ab, zeigt die App einen Widerspruch.",
+    "Was die Kanzlei zum Konto einträgt, steht im Mandat fest. Stimmt etwas nicht, ändert die Kanzlei ihren Teil in einer neuen Fassung.",
+    "Die Bedingungen der Banken verlangen das Mandat „schriftlich oder in der mit der Bank vereinbarten Art und Weise“. Ob eine Bank die Unterschrift in dieser App als schriftlich ansieht, regelt diese App nicht; im Zweifel bleibt das Papier.",
+    "Höchstens zwei Kontoinhaber unterschreiben; verlangt ein Konto mehr Unterschriften, bleibt das Papier.",
+    "Die Mandatsreferenz prüft die App nur auf Länge und Zeichen; ob sie eindeutig ist, weiß nur der Zahlungsempfänger."
+  ]
+}

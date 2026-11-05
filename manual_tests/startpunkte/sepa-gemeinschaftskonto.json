@@ -18,10 +18,10 @@
     {
       "role": "kontoinhaber",
       "answers": {
-        "kontoinhaberName": "Erika Musterfrau",
+        "anschriftAusland": false,
         "kontoinhaberStrasse": "Musterstraße 5",
-        "kontoinhaberPlzOrt": "12345 Musterstadt",
-        "kontoinhaberLand": "Deutschland",
+        "postleitzahl": "12345",
+        "kontoinhaberOrt": "Musterstadt",
         "kreditinstitut": "Beispielbank",
         "iban": "DE89 3704 0044 0532 0130 00",
         "zweiteUnterschrift": true,
