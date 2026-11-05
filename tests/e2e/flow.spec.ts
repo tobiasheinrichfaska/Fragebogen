@@ -157,7 +157,11 @@ async function download(page: Page, button: string, path: string): Promise<strin
 
 test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on this device', async ({
   page,
+  browserName,
 }, testInfo) => {
+  // WebKit writes and reads the PDF several times slower: 1.5 to 3.3 min for the same code
+  // (2026-11-05), so the 180 s limit failed under load although nothing was wrong.
+  test.slow(browserName === 'webkit', 'PDF written and read again in WebKit');
   const found = await guard(page);
   await page.goto(pathToFileURL(APP).href);
   await expect(page.locator('main')).toContainText('Neuer Fragebogen');

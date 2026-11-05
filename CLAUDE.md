@@ -150,8 +150,8 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/support/sample.ts`                                    | Shared fictitious scenarios (person signs, employer seals + chains, Kanzlei/DATEV receipt; second version; minor + guardian on form 1.1.0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `tests/golden/`                                              | Golden questionnaires (`beispiel-<version>/*.json`, never edited; `README.md`) + `golden.test.ts` (decode, verdicts, byte-identical rebuild)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `src/logic/*.test.ts`                                        | Unit tests next to each module (RFC 8785 vectors, FIPS vectors, check digits, idempotence property tests, definition mutation tables)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `forms/`                                                     | Published form definitions `forms/<id>/<version>.json` (`sofortmeldung/0.2.0.json`, test version, published 2026-11-01; `sofortmeldung/0.3.0.json`, test version with the field limits, and `0.4.0`, birth date up to today, both published 2026-11-03; `sofortmeldung/1.0.0.json`, the first production version, 2026-11-03), `published.json` (frozen hashes), `README.md` (freeze and removal rules, German)                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `form-drafts/`                                               | Drafts under expert review, same layout (`personalfragebogen`, `steuerfreigabe`, `dienstwagen`, `lohnmeldung`, `austritt`, `eigenbeleg`, `sepa-mandat` 0.1.0; `sofortmeldung` 1.1.0); never bundled into the public app; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `forms/`                                                     | Published form definitions `forms/<id>/<version>.json` (`sofortmeldung/0.2.0.json`, test version, published 2026-11-01; `sofortmeldung/0.3.0.json`, test version with the field limits, and `0.4.0`, birth date up to today, both published 2026-11-03; `sofortmeldung/1.0.0.json`, the first production version, 2026-11-03; `sepa-mandat/1.0.0.json`, production 2026-11-05), `published.json` (frozen hashes), `README.md` (freeze and removal rules, German)                                                                                                                                                                                                                                                                                                                                                                  |
+| `form-drafts/`                                               | Drafts under expert review, same layout (`personalfragebogen`, `steuerfreigabe`, `dienstwagen`, `lohnmeldung`, `austritt`, `eigenbeleg` 0.1.0; `sofortmeldung` 1.1.0); never bundled into the public app; publishing = move to `forms/` + add the hash; `README.md` (German)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `docs/formulare/`                                            | Generated field catalogues `<id>-<version>.md` for every form and draft (`npm run catalogue`; never edit by hand), `README.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `tests/support/formFiles.ts`                                 | Reads `forms/` and `form-drafts/` (lazy, so misnamed files are reported)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `tests/forms/formDrafts.test.ts`                             | Guards `form-drafts/`: valid, filed by id/version, not yet published, newer than published versions, field ids stable                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -791,14 +791,20 @@ Key design decisions (details in `docs/plan.md`):
   Kanzlei part needs ~1,200, the Sofortmeldung employer part ~1,100; the complete Sofortmeldung
   with a drawn signature (~2,100) stays PDF only.
 
-- **SEPA-Mandat draft (2026-11-05):** the Kanzlei's „Stammdaten für das nächste Mal“ link also carries
-  the client's Mandantennummer and Mandatsreferenz — bookmark the standard link (creditor only), not
-  that one. Account-holder address as the paper's three lines (no PLZ check, no abroad switch). At
-  most two account holders. Whether the Kanzlei's bank accepts an electronically signed mandate is
-  its Inkassovereinbarung (open question to Tobias). The 14-day pre-notification and the 36-month
-  expiry in `legalNotes` are SEPA rulebook rules not checked against the rulebook text. Fixed with it:
-  a form id with a hyphen broke the master-data link and start points (`FORM_ID`, tests); link
-  texts said „Arbeitgeber“ for every form (`masterDataRolesText`).
+- **SEPA-Mandat 1.0.0 (production 2026-11-05):** at most two account holders. What the Kanzlei enters
+  about the account (address, for a deviating holder also the name; bank details — `kontoVorab`) is
+  fixed for the holder (fromRole); a wrong value needs a new Kanzlei version. Check hints (BIC country,
+  foreign PLZ format) read the holder's fields, so the Kanzlei sees no hint while typing its own
+  entries. For an identical holder („identisch“) the holder name is the payer's (`vertragMit`) and not
+  asked again. The payer's bank conditions ask for the mandate „schriftlich oder in der mit der Bank
+  vereinbarten Art und Weise“ (e.g. Sparkasse conditions Nr. 2.2.1) — whether the in-app signature
+  counts is not settled (limit text); a contested authorisation can be refunded for 13 months
+  (§ 676b Abs. 2 BGB). Pre-notification 14 days and the 36-month rule checked against the EPC SDD
+  Core Rulebook 2025 v1.1 (sections 4.3, 4.2); a deviating holder gets the pre-notification (4.1),
+  hence `kontoinhaberEmail` and the Kanzlei hint `abweichenderKontoinhaber`. The Kanzlei's paper
+  template lacks the required „einmalig/wiederkehrend“ (`zahlungsart`). Only Kanzlei standard data in
+  its Stammdaten-Link (Tobias: no client data there). Not yet: Mandatsreferenz suggested from the
+  Mandantennummer (needs a form key → version 1.1.0); the link screen choosing the form first.
 
 - **2026-11-04:** frozen versions (Sofortmeldung ≤ 1.0.0) carry no `revised`, so they show no
   „zuletzt überarbeitet“. „Teilen“ needs a browser that shares files (Web Share API); an interim
@@ -1106,12 +1112,15 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-**Hand-over 2026-11-05:** SEPA-Mandat draft 0.1.0 (Kanzlei first with its Stammdaten-Link, account
-holder signs, joint account; MT-119–124) and „Als Link weitergeben“ for questionnaires with few
-values (`src/logic/transferLink.ts`, Tobias: „soweit eine Eingabe nur wenige Werte enthält … als
-Link“). Open for Tobias: does the Kanzlei's bank accept electronically signed mandates
-(Inkassovereinbarung); review of the SEPA draft (`docs/formulare/sepa-mandat-0.1.0.md`). The test report now names
-the device („Gerät laut Browser: iPhone · Safari 18 · Bildschirm 390 × 844“).
+**Hand-over 2026-11-05:** SEPA-Mandat **1.0.0 in production** (Tobias: „schalte das Sepa-Mandat gleich
+live“): Kanzlei first with its Stammdaten-Link (creditor data, Zahlungsart), „Wer hat zu zahlen?“,
+Kontoinhaber identisch/abweichend (his two paper templates), the Kanzlei may enter address and bank
+details, address with the abroad switch as in the Personalfragebogen; MT-119–127. „Als Link
+weitergeben“ for questionnaires with few values (`src/logic/transferLink.ts`). The test report names
+the device. **Next (asked by Tobias):** Mandatsreferenz suggested automatically (`{mandantennummer}`
+
+- running number, form version 1.1.0); Stammdaten-Link screen: choose the form first, then show only
+  its keys. Steuerfreigabe draft still has the client's Mandantennummer as master data (same issue).
 
 **Test report 2026-11-05** (`import/archiv/2026-11-05/`, tester without name, app 0.1.0): 12 rated,
 all passed (MT-10–16, 19, 26, 116, 118, 30); MT-01, MT-17, MT-50 begun but not rated; comments only
@@ -1180,7 +1189,7 @@ word order) and 5b (review applied: all birth/address data, preselected yes/no q
 `masterData`, `partLinks` + `partsNotLinked`), master data as bookmark link (decision C) and 5c
 (interview logic: `interview.ts`, `dependencies.ts`, `deferQuestion`, `question`/`help` texts,
 interview-order rule; Sofortmeldung question and help texts drafted) done. Published since 2026-11-01:
-Sofortmeldung **1.0.0** in production since 2026-11-03 (test versions 0.2.0–0.4.0 still registered; catalogues in `docs/formulare/`); the Personalfragebogen stays a draft in the
+Sofortmeldung **1.0.0** in production since 2026-11-03 (test versions 0.2.0–0.4.0 still registered; catalogues in `docs/formulare/`), SEPA-Mandat **1.0.0** since 2026-11-05; the Personalfragebogen stays a draft in the
 test folder.
 
 **Drafts awaiting Tobias's review:** Austritt (`form-drafts/austritt/0.1.0.json`, 2026-11-03: one role

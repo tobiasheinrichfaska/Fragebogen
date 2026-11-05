@@ -1,7 +1,6 @@
-# 12 – SEPA-Basislastschriftmandat (Entwurf)
+# 12 – SEPA-Basislastschriftmandat
 
-Voraussetzung für alle Fälle: die **Fassung mit den Formular-Entwürfen** – im Testbereich schon geladen;
-lokal `npm run build:preview`, Datei `dist-preview/index.html`. Nur erfundene Daten verwenden;
+Produktiv seit 05.11.2026 (Fassung 1.0.0) – im Testbereich und in der App der Kanzlei. Nur erfundene Daten verwenden;
 `DE98ZZZ09999999999` ist die Test-Gläubiger-ID der Deutschen Bundesbank. Der Ablauf: Die Kanzlei füllt
 zuerst aus (ihre Standardangaben aus ihrem Stammdaten-Link), dann die Kontoinhaberin oder der
 Kontoinhaber.
@@ -45,20 +44,26 @@ Gläubiger-ID der Kanzlei sind eingetragen; Sie stehen bei der Mandantennummer.
 
 **Schritte:**
 
-1. Mandantennummer `10001`, **„Weiter“**. Bei „Für den Vertrag mit wem gilt das Mandat?“
-   `Erika Musterfrau`, **„Weiter“**.
-2. Bei „Mandatsreferenz“ **„Wird separat mitgeteilt“** klicken.
+1. Mandantennummer `10001`, **„Weiter“**. Bei „Wer hat zu zahlen?“ `Erika Musterfrau`, **„Weiter“**.
+   Bei „Ist die Kontoinhaberin oder der Kontoinhaber identisch … oder abweichend?“ und bei der
+   Zahlungsart jeweils **„Weiter“**.
+2. Bei „Mandatsreferenz“ **„Wird separat mitgeteilt“** klicken. Bei „Welche Angaben zum Konto tragen
+   Sie schon ein?“ nichts ankreuzen, **„Weiter“**.
 3. In der Zusammenfassung den Abschnitt **„Stammdaten für das nächste Mal“** lesen.
 4. **„Weiter zum Abschluss“**, Häkchen setzen, **„Abschließen“**.
 
 **Erwartet:**
 
-- Schritt 2: Es geht ohne Mandatsreferenz weiter zur Zusammenfassung; dort steht bei
-  „Mandatsreferenz“ „–“.
+- Schritt 1: Vorgewählt sind „identisch – wer zu zahlen hat, ist selbst Kontoinhaberin oder
+  Kontoinhaber“ und „wiederkehrende Zahlungen“ – die Banken verlangen die Angabe „einmalig oder
+  wiederkehrend“ im Mandat.
+- Schritt 2: Es geht ohne Mandatsreferenz und ohne Angaben zum Konto weiter zur Zusammenfassung; dort
+  steht bei „Mandatsreferenz“ „–“.
 - Schritt 3: Der Text nennt die Angaben, die der Link beim nächsten Mal einträgt, und endet mit „Der
   Link enthält nur Angaben aus dem Teil „Kanzlei (Zahlungsempfänger)“.“ – nicht mehr mit
-  „beschäftigten Person“. _Nicht offensichtlich:_ Die **Mandantennummer** steht mit in diesem Link;
-  als Lesezeichen für alle Mandanten taugt deshalb der Link aus MT-119, nicht dieser.
+  „beschäftigten Person“. _Nicht offensichtlich:_ **Mandantennummer und Mandatsreferenz fehlen** in
+  der Aufzählung und im Link – sie gelten nur für diesen Mandanten. Der Link taugt deshalb als
+  Lesezeichen für alle Mandanten (seit 05.11.2026).
 - Schritt 4: Die Abschluss-Seite bietet **keine** Unterschrift an, nur den Knopf „Abschließen“ – der
   Zahlungsempfänger unterschreibt ein Mandat nicht. Danach: „Kanzlei (Zahlungsempfänger):
   abgeschlossen“ mit „Gerät weitergeben – zur Übersicht“ und „PDF erstellen“, darunter **„Als Link
@@ -74,8 +79,9 @@ Teil abgeschlossen (mit Mandatsreferenz `100010000001`); Sie stehen bei „Wer f
 **Schritte:**
 
 1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“** wählen und die beiden Hinweise lesen.
-2. Ausfüllen: Name `Erika Musterfrau`, Straße `Musterstraße 5`, `12345 Musterstadt`, Land
-   **„Deutschland“**, Bank `Beispielbank`, IBAN `DE89 3704 0044 0532 0130 00`, „Dürfen über das Konto
+2. Ausfüllen: „Liegt die Anschrift im Ausland?“ **„Nein“**, Straße
+   `Musterstraße 5`, Postleitzahl `1234` (vier Ziffern) und dann `12345`, Ort `Musterstadt`, Bank
+   `Beispielbank`, IBAN `DE89 3704 0044 0532 0130 00`, „Dürfen über das Konto
    nur zwei Personen gemeinsam verfügen?“ **„Nein“** (vorgewählt), Ort `Musterstadt`, Datum: die
    Ziffern von heute.
 3. Die Zusammenfassung durchsehen.
@@ -86,10 +92,13 @@ Teil abgeschlossen (mit Mandatsreferenz `100010000001`); Sie stehen bei „Wer f
 
 - Schritt 1: Der erste Hinweis ist der Mandatstext („Ich/Wir ermächtige(n) den in diesem Mandat
   genannten Zahlungsempfänger …“, mit der Acht-Wochen-Frist); der zweite der Datenschutz.
-- Schritt 2: _Nicht offensichtlich:_ Nach Zahlungsempfänger, Gläubiger-ID und Vertrag wird **nicht**
-  gefragt – die erste Frage ist der Name. Eine BIC wird bei einer deutschen IBAN nicht gefragt.
-- Schritt 3: Oben im Abschnitt „Mandat“ stehen „Musterkanzlei Beispiel“, `DE98ZZZ09999999999` und
-  „Erika Musterfrau“, jeweils mit „festgelegt von: Kanzlei (Zahlungsempfänger)“ und **ohne**
+- Schritt 2: _Nicht offensichtlich:_ Nach Zahlungsempfänger, Gläubiger-ID, wer zu zahlen hat,
+  Kontoinhaber und Zahlungsart wird **nicht** gefragt; auch nicht nach dem Namen – bei „identisch“ ist
+  es der Name bei „Wer hat zu zahlen?“. Die erste Frage ist die Anschrift. Die Postleitzahl mit vier Ziffern wird
+  abgelehnt (5 Ziffern), wie im Personalfragebogen. Eine BIC wird bei einer deutschen IBAN nicht
+  gefragt.
+- Schritt 3: Oben im Abschnitt „Mandat“ stehen „Musterkanzlei Beispiel“, `DE98ZZZ09999999999`,
+  „Erika Musterfrau“, „identisch …“ und „wiederkehrende Zahlungen“, jeweils mit „festgelegt von: Kanzlei (Zahlungsempfänger)“ und **ohne**
   „ändern“. Darunter folgt „Angaben: Kanzlei (Zahlungsempfänger) (abgeschlossen, nur lesen)“ mit
   Anschrift und Mandatsreferenz `100010000001`.
 - Schritt 4: Die PDF zeigt beide Teile; im Teil der Kontoinhaberin stehen Zahlungsempfänger,
@@ -133,7 +142,7 @@ Kontoinhaberin oder Kontoinhaber“** wählen.
 **Erwartet:**
 
 - Schritt 1: _Nicht offensichtlich:_ Ohne den Teil der Kanzlei fragt das Mandat Zahlungsempfänger,
-  Gläubiger-ID und Vertrag selbst – ein Mandat ohne Zahlungsempfänger lässt sich nicht unterschreiben.
+  Gläubiger-ID, Vertrag und Zahlungsart selbst – ein Mandat ohne Zahlungsempfänger lässt sich nicht unterschreiben.
 - Schritt 2: Die Eingabe wird mit einem Hinweis auf die falsche Prüfziffer abgelehnt.
 - Schritt 3: Oben stehen die fehlenden Pflichtangaben mit Link, darunter „Zahlungsempfänger“;
   „Weiter zum Abschluss“ ist gesperrt.
@@ -170,3 +179,81 @@ Kontoinhaberin oder Kontoinhaber“** wählen.
   die fertige Sofortmeldung) bietet keinen Link an; dort steht „Für einen Link sind es zu viele
   Angaben. Bitte die PDF weitergeben.“ Der Link enthält alle Angaben wie die PDF – nur an die Person
   schicken, die als Nächstes ausfüllt.
+
+---
+
+## MT-125: Die Kanzlei trägt die Angaben zum Konto selbst ein
+
+**Einstieg:** [Kanzlei beim Vertrag öffnen](start:sepa-kanzlei-vertrag-offen) – wie MT-120.
+
+**Schritte:**
+
+1. Mandantennummer `10001`, Vertrag `Erika Musterfrau`, Zahlungsart **„Weiter“**, Mandatsreferenz
+   `100010000001`.
+2. Bei „Welche Angaben zum Konto tragen Sie schon ein?“ **nur „Bankverbindung (Bank, IBAN, BIC)“**
+   ankreuzen, **„Weiter“**; Bank `Beispielbank`, IBAN `DE89 3704 0044 0532 0130 00`.
+3. Abschließen (**„Weiter zum Abschluss“**, Häkchen, **„Abschließen“**), **„Gerät weitergeben – zur
+   Übersicht“**, **„Ich bin: Kontoinhaberin oder Kontoinhaber“**, die Hinweise lesen.
+4. Bis zur Zusammenfassung ausfüllen (Anschrift in Deutschland, Ort, Datum).
+5. Die Gegenprobe: MT-120 noch einmal öffnen und beide Kästchen ankreuzen; zusätzlich „Liegt die
+   Anschrift … im Ausland?“ **„Nein“**, `Musterstraße 5`, `12345`, `Musterstadt` eintragen;
+   abschließen und als Kontoinhaberin weitermachen.
+
+**Erwartet:**
+
+- Schritt 2: Erst nach dem Kreuz fragt die App nach Bank und IBAN; ohne Kreuz fragt sie nichts zum
+  Konto.
+- Schritt 4: _Nicht offensichtlich:_ Bank und IBAN werden **nicht** gefragt; in der Zusammenfassung
+  stehen sie mit „festgelegt von: Kanzlei (Zahlungsempfänger)“ und ohne „ändern“. Die Anschrift fragt
+  die App wie in MT-121.
+- Schritt 5: Die Kanzlei wird nach keinem Namen gefragt – bei „identisch“ ist es der Name bei „Wer hat
+  zu zahlen?“.
+- Schritt 5 (Kontoinhaberin): Gefragt werden nur noch „Dürfen über das Konto nur zwei Personen gemeinsam verfügen?“,
+  Ort und Datum. Stimmt eine Angabe der Kanzlei nicht, kann die Kontoinhaberin sie nicht ändern – die
+  Kanzlei beginnt dann eine neue Fassung ihres Teils.
+
+---
+
+## MT-126: Anschrift im Ausland
+
+**Einstieg:** [Mandat zum Ausfüllen öffnen](start:sepa-kanzlei-abgeschlossen) – wie MT-121.
+
+**Schritte:**
+
+1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**, die Hinweise lesen.
+2. „Liegt die Anschrift im Ausland?“ **„Ja“**, beim Staat `Öster` tippen und **„Österreich“** wählen,
+   Straße `Beispielgasse 3`, Postleitzahl `123`, Ort `Wien`.
+
+**Erwartet:**
+
+- Schritt 2: Nach dem Staat wird gefragt, nach der deutschen Postleitzahl nicht. Die Postleitzahl
+  `123` wird angenommen; gleich danach erscheint der Hinweis „Die Postleitzahl hat nicht das übliche
+  Format dieses Staats. Bitte prüfen.“ (Österreich: 4 Ziffern). _Nicht offensichtlich:_ Der Hinweis
+  sperrt nichts – wie im Personalfragebogen.
+
+---
+
+## MT-127: Abweichender Kontoinhaber
+
+**Einstieg:** [Kanzlei beim Vertrag öffnen](start:sepa-kanzlei-vertrag-offen) – wie MT-120.
+
+**Schritte:**
+
+1. Mandantennummer `10001`, „Wer hat zu zahlen?“ `Beispiel GmbH`, beim Kontoinhaber **„abweichend – das
+   Konto gehört einer anderen Person“**, Zahlungsart und Mandatsreferenz **„Weiter“**, bei den Angaben
+   zum Konto nichts ankreuzen; abschließen, **„Gerät weitergeben – zur Übersicht“**.
+2. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**, die Hinweise lesen, Name `Erika Musterfrau`, bei der
+   E-Mail-Adresse `erika@example.org`, dann weiter wie in MT-121 bis zur Unterschrift.
+3. **„PDF erstellen“**, dann **„Fragebogen schließen“**, **„Eingänge zusammenführen“** und diese PDF
+   einlesen.
+
+**Erwartet:**
+
+- Schritt 1: _Nicht offensichtlich:_ Bei „abweichend“ fragt die Kanzlei-Seite **nicht** nach dem Namen
+  des Kontoinhabers, solange nichts angekreuzt ist – den trägt der Kontoinhaber selbst ein (wie euer
+  Vordruck „vom Kontoinhaber abweichender Schuldner“).
+- Schritt 2: Die App fragt den **Namen** der Kontoinhaberin und eine **E-Mail-Adresse für die Ankündigung
+  der Abbuchungen** (oder „Lieber per Post“): Die Vorabankündigung geht an den Kontoinhaber, nicht nur
+  an die Firma, die zahlen muss. Im Abschnitt „Mandat“ steht „Beispiel GmbH“ als zahlungspflichtig.
+- Schritt 3: In der Kanzlei steht der Prüfhinweis „Abweichender Kontoinhaber: Die Vorabankündigung
+  jeder Lastschrift geht an den Kontoinhaber …“; ohne Widerspruch.

@@ -18,5 +18,10 @@
     "id": "sofortmeldung",
     "version": "1.0.0",
     "definitionHash": "d2913484400f5d73c26685a65bcdcaf5cee5c163d3d0b4f5856280ce38d264cd"
+  },
+  {
+    "id": "sepa-mandat",
+    "version": "1.0.0",
+    "definitionHash": "11f4f83e5e43dec1018cac4aa10493d93c84832a6da4fa17457e2c488bb4fa89"
   }
 ]
