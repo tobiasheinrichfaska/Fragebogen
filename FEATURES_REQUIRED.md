@@ -39,6 +39,7 @@ the named automated test (the audit re-runs them); unchecked paths are guarded b
 - [ ] **Import the PDF** — data recovered from the data pages; verdict "unverändert seit Unterschrift"
 - [ ] **Tampered PDF** — verdict names the changed fields (or "Datensatz verändert, Feldvergleich nicht möglich")
 - [ ] **Scanned PDF / PDF without data pages** — rejected with a clear German message, unless its QR codes can be read
+- [ ] **Pass on as a link** (2026-11-05) — after closing a part with few values (e.g. the Kanzlei part of the SEPA-Mandat, the employer part of the Sofortmeldung) the done screen offers a link of at most 2,000 characters instead of the PDF; opening it on another device verifies the parts like a PDF, opens „Wer füllt jetzt aus?“ and clears the answers from the address bar; a cut-off link or an unknown form version is refused with a German message; a complete questionnaire with a drawn signature stays PDF only
 - [ ] **Paper path via QR codes** — a scan or a phone photo of the printed PDF is read back from the QR codes on the data pages and verified like the PDF; missing or unreadable codes are named
 - [ ] **Explainer videos** — a field or notice with a configured video shows a link that opens outside the app (https only, never embedded)
 - [ ] **Complete own part, seal or sign** — receipt with the imported part's hash is part of the seal

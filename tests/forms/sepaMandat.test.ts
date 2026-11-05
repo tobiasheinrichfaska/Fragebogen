@@ -5,7 +5,8 @@
 // adds a second signer. Fictitious data; DE98ZZZ09999999999 is the Bundesbank's test number.
 import { join } from 'node:path';
 import { contradictions } from '../../src/logic/consistency';
-import type { RegisteredForm } from '../../src/logic/formRegistry';
+import { decodePackage } from '../../src/logic/dataPackage';
+import { registryOf, type RegisteredForm } from '../../src/logic/formRegistry';
 import type { MasterData } from '../../src/logic/masterData';
 import { checkHints } from '../../src/logic/hints';
 import { currentPart } from '../../src/logic/questionnaire';
@@ -17,12 +18,20 @@ import {
   fillMasterData,
   filledFromLink,
   seal,
+  sessionFromFile,
   startSession,
   stepsFor,
   summaryOf,
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
+import {
+  TRANSFER_LINK_MAX_LENGTH,
+  parseTransferFragment,
+  transferFragment,
+  transferPackageText,
+} from '../../src/logic/transferLink';
+import { verifyQuestionnaire } from '../../src/logic/verify';
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, QUESTIONNAIRE_ID } from '../support/sample';
 
@@ -243,5 +252,32 @@ describe('bank details and formats', () => {
 
   it('refuses a signing date in the future', () => {
     expect(answer(holder(), 'unterschriftDatum', '01.01.2099').ok).toBe(false);
+  });
+});
+
+describe('passing the Kanzlei part on as a link (Tobias 2026-11-05)', () => {
+  it('fits in a link, and the account holder opens it verified, ready to fill', () => {
+    const kanzlei = kanzleiSealed({ mandatsreferenz: '100010000001' });
+    const made = transferFragment(kanzlei.questionnaire);
+    if (!made.ok) throw new Error(`${made.issue} ${made.length}`);
+    expect(made.fragment.length).toBeLessThan(TRANSFER_LINK_MAX_LENGTH);
+    const parsed = parseTransferFragment(made.fragment);
+    if (!parsed?.ok) throw new Error('not parsed');
+    const opened = transferPackageText(parsed.questionnaireText, (hash) =>
+      hash === form.definitionHash ? form.definition : undefined,
+    );
+    if (!opened.ok) throw new Error(opened.issue);
+    const registry = registryOf([form]);
+    const decoded = decodePackage(JSON.parse(opened.text), registry);
+    if (!decoded.ok) throw new Error(JSON.stringify(decoded.issues));
+    expect(verifyQuestionnaire(decoded.questionnaire, { registry }).level).toBe('ok');
+    const holder = must(
+      enterRole(
+        sessionFromFile(decoded, { local: AT.local, utc: AT.utc, source: 'file' }),
+        'kontoinhaber',
+      ),
+    );
+    expect(value(holder, 'kontoinhaber', 'zahlungsempfaenger')).toBe('Musterkanzlei Beispiel');
+    expect(questions(holder)[0]).toBe('kontoinhaberName');
   });
 });

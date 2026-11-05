@@ -61,7 +61,8 @@ Gläubiger-ID der Kanzlei sind eingetragen; Sie stehen bei der Mandantennummer.
   als Lesezeichen für alle Mandanten taugt deshalb der Link aus MT-119, nicht dieser.
 - Schritt 4: Die Abschluss-Seite bietet **keine** Unterschrift an, nur den Knopf „Abschließen“ – der
   Zahlungsempfänger unterschreibt ein Mandat nicht. Danach: „Kanzlei (Zahlungsempfänger):
-  abgeschlossen“ mit „Gerät weitergeben – zur Übersicht“ und „PDF erstellen“.
+  abgeschlossen“ mit „Gerät weitergeben – zur Übersicht“ und „PDF erstellen“, darunter **„Als Link
+  weitergeben“** mit einem Link und „Kopieren“ (weiter in MT-124).
 
 ---
 
@@ -136,3 +137,36 @@ Kontoinhaberin oder Kontoinhaber“** wählen.
 - Schritt 2: Die Eingabe wird mit einem Hinweis auf die falsche Prüfziffer abgelehnt.
 - Schritt 3: Oben stehen die fehlenden Pflichtangaben mit Link, darunter „Zahlungsempfänger“;
   „Weiter zum Abschluss“ ist gesperrt.
+
+---
+
+## MT-124: Den Teil der Kanzlei als Link statt als PDF weitergeben
+
+**Einstieg:** Sie machen direkt nach MT-120 weiter (Abschluss-Seite der Kanzlei).
+
+**Voraussetzungen:** MT-120.
+
+**Schritte:**
+
+1. Unter **„Als Link weitergeben“** auf **„Kopieren“** klicken.
+2. Ein **privates Fenster** öffnen (wie ein anderes Gerät) und den Link dort in die Adresszeile
+   einfügen.
+3. Auf die Adresszeile achten, dann **„Ich bin: Kontoinhaberin oder Kontoinhaber“** wählen und bis
+   zur Zusammenfassung ausfüllen wie in MT-121.
+4. Im privaten Fenster den Link noch einmal einfügen, dabei aber die letzten 20 Zeichen löschen.
+
+**Erwartet:**
+
+- Schritt 1: „Link kopiert.“ Der Link ist gut 1.000 Zeichen lang und enthält `#weitergabe=1`.
+- Schritt 2: Der Fragebogen öffnet sich mit „Geprüft: Alle abgeschlossenen Teile sind unverändert seit
+  ihrem Abschluss.“ und „Aus einem Link zur Weitergabe geöffnet.“, bei „Wer füllt jetzt aus?“; die
+  Kanzlei ist abgeschlossen.
+- Schritt 3: _Nicht offensichtlich:_ Die Adresszeile zeigt **nur noch die Adresse der App**, ohne den
+  langen Teil hinter „#“ – die Angaben bleiben nicht in der Adresszeile stehen. Zahlungsempfänger und
+  Gläubiger-ID werden nicht gefragt (wie MT-121).
+- Schritt 4: Rot: „Link zur Weitergabe: Der Link ist unvollständig oder beschädigt – vielleicht wurde
+  er beim Kopieren abgeschnitten. …“ – nichts wird halb übernommen.
+- _Nicht offensichtlich:_ Ein Fragebogen mit vielen Angaben oder einer gezeichneten Unterschrift (z. B.
+  die fertige Sofortmeldung) bietet keinen Link an; dort steht „Für einen Link sind es zu viele
+  Angaben. Bitte die PDF weitergeben.“ Der Link enthält alle Angaben wie die PDF – nur an die Person
+  schicken, die als Nächstes ausfüllt.
