@@ -53,6 +53,7 @@ function narrowed(field: FieldDefinition, options: readonly string[] | undefined
 /**
  * The latest version of every form, the form with the most keys first; each key sits in the
  * section of the first form that has it, so the employer data of the Personalfragebogen lead.
+ * For a single form (the link opens it) the sections need no form title.
  */
 export function masterDataCatalog(forms: readonly RegisteredForm[]): MasterDataCatalog {
   const definitions = forms
@@ -82,7 +83,7 @@ export function masterDataCatalog(forms: readonly RegisteredForm[]): MasterDataC
         forms: [definition.title],
       };
       entries.set(key, { entry, signature: signatureOf(shape) });
-      const title = `${section} (${definition.title})`;
+      const title = definitions.length === 1 ? section : `${section} (${definition.title})`;
       const group = groups.get(title) ?? { title, entries: [] };
       group.entries.push(entry);
       groups.set(title, group);
@@ -119,9 +120,27 @@ export function masterDataInput(
   };
 }
 
+/** The catalogue's entries in order. */
+export function catalogEntries(catalog: MasterDataCatalog): MasterDataEntry[] {
+  return catalog.groups.flatMap((group) => group.entries);
+}
+
+/**
+ * Entries of the whole app that a form's catalogue leaves out (Tobias 2026-11-05: the link is
+ * chosen for one form first, then only its data are shown) — values typed or read in for them
+ * stay out of that link and are named.
+ */
+export function entriesOutside(
+  all: MasterDataCatalog,
+  shown: MasterDataCatalog,
+): MasterDataEntry[] {
+  const keys = new Set(catalogEntries(shown).map((entry) => entry.key));
+  return catalogEntries(all).filter((entry) => !keys.has(entry.key));
+}
+
 /** Keys of the record no form of this app uses (kept in the link, shown as such). */
 export function unknownMasterDataKeys(catalog: MasterDataCatalog, record: MasterData): string[] {
-  const known = new Set(catalog.groups.flatMap((group) => group.entries.map((e) => e.key)));
+  const known = new Set(catalogEntries(catalog).map((entry) => entry.key));
   return Object.keys(record)
     .filter((key) => !known.has(key))
     .sort();

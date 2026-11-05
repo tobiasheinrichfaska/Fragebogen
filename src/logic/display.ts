@@ -122,6 +122,25 @@ export function fillPlaceholders(
   });
 }
 
+/**
+ * A field's `suggestedText` with every placeholder replaced by that answer as it would be typed;
+ * undefined while one of them is unanswered, so nothing half is proposed.
+ */
+export function suggestedText(
+  template: string,
+  fieldOf: (id: string) => FieldDefinition | undefined,
+  valueOf: (id: string) => FieldValue | undefined,
+): string | undefined {
+  let complete = true;
+  const text = template.replace(PLACEHOLDER, (match, id: string) => {
+    const field = fieldOf(id);
+    const value = valueOf(id);
+    if (!field || value === undefined || value === null) complete = false;
+    return `${match.startsWith(' ') ? ' ' : ''}${field ? editValue(field, value) : ''}`;
+  });
+  return complete && text.trim() !== '' ? text : undefined;
+}
+
 /** The value as people read it; unanswered → "–". */
 export function displayValue(field: FieldDefinition, value: FieldValue | undefined): string {
   if (value === undefined || value === null) return EMPTY_VALUE;

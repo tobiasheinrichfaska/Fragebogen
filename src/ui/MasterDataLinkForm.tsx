@@ -5,10 +5,12 @@
 import { useMemo, useState } from 'react';
 import { APP_CONFIG } from '../config';
 import { editValue } from '../logic/display';
-import { latestForms, type FormRegistry } from '../logic/formRegistry';
+import { latestForms, type FormRegistry, type RegisteredForm } from '../logic/formRegistry';
 import { ISSUE_MESSAGES, issueMessage, type IssueBounds, type IssueCode } from '../logic/issues';
 import { masterDataRolesText, storedValue, type MasterData } from '../logic/masterData';
 import {
+  catalogEntries,
+  entriesOutside,
   masterDataCatalog,
   masterDataExclusions,
   masterDataInput,
@@ -63,11 +65,37 @@ function keptOf(catalog: MasterDataCatalog, record: MasterData | undefined): Mas
 const issueText = (issue: string, bounds?: IssueBounds) =>
   issue in ISSUE_MESSAGES ? issueMessage(issue as IssueCode, bounds) : 'Diese Angabe ist ungültig.';
 
+const isEmpty = (raw: unknown) => raw === null || (typeof raw === 'string' && raw.trim() === '');
+
+/** The select's value while nothing is chosen; no form id can be "#". */
+const NOT_CHOSEN = '#';
+
+/**
+ * What a read link opens: its form while this app has it, the start page for a link without one;
+ * undefined = still to choose.
+ */
+function opensOf(
+  forms: readonly RegisteredForm[],
+  data: MasterData | undefined,
+  form: string | undefined,
+): string | undefined {
+  if (form !== undefined) {
+    return forms.some((f) => f.definition.id === form) ? form : undefined;
+  }
+  return data === undefined ? undefined : '';
+}
+
 export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
   const forms = useMemo(() => latestForms(registry), [registry]);
-  // Which new questionnaire the link opens (Tobias 2026-11-03); "" = the start page.
-  const [opens, setOpens] = useState(() => initialForm ?? forms[0]?.definition.id ?? '');
+  // What the link opens is chosen first, then only that form's data are shown (Tobias 2026-11-05);
+  // "" = the start page with the data of every form, undefined = not chosen yet.
+  const [opens, setOpens] = useState(() => opensOf(forms, initial, initialForm));
   const catalog = useMemo(() => masterDataCatalog(forms), [forms]);
+  const opened = forms.find((form) => form.definition.id === opens);
+  const shown = useMemo(
+    () => (opened ? masterDataCatalog([opened]) : opens === '' ? catalog : undefined),
+    [catalog, opened, opens],
+  );
   const [inputs, setInputs] = useState<Inputs>(() => inputsOf(catalog, initial));
   // Keys this app does not know (e.g. from a newer version) stay in the link unchanged.
   const [kept, setKept] = useState<MasterData>(() => keptOf(catalog, initial));
@@ -76,22 +104,23 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
 
   const record: MasterData = { ...kept };
   const errors = new Map<string, string>();
-  for (const group of catalog.groups) {
-    for (const entry of group.entries) {
-      const raw = inputs[entry.key] ?? null;
-      if (raw === null || (typeof raw === 'string' && raw.trim() === '')) continue;
-      const result = masterDataInput(entry, raw);
-      if (result.ok) {
-        if (result.value !== null) record[entry.key] = result.value;
-      } else errors.set(entry.key, issueText(result.issue, entry.field));
-    }
+  for (const entry of shown ? catalogEntries(shown) : []) {
+    const raw = inputs[entry.key] ?? null;
+    if (isEmpty(raw)) continue;
+    const result = masterDataInput(entry, raw);
+    if (result.ok) {
+      if (result.value !== null) record[entry.key] = result.value;
+    } else errors.set(entry.key, issueText(result.issue, entry.field));
   }
+  // Values of other forms' data stay out of this link — named, never dropped silently.
+  const left = shown
+    ? entriesOutside(catalog, shown).filter((entry) => !isEmpty(inputs[entry.key] ?? null))
+    : [];
   const link =
-    errors.size === 0 && (Object.keys(record).length > 0 || opens !== '')
+    opens !== undefined && errors.size === 0 && (Object.keys(record).length > 0 || opens !== '')
       ? masterDataFragment(record, opens === '' ? undefined : opens)
       : undefined;
-  const opened = forms.find((form) => form.definition.id === opens);
-  const exclusions = masterDataExclusions(forms, record);
+  const exclusions = shown ? masterDataExclusions(opened ? [opened] : forms, record) : [];
   const base = masterDataLinkBase(location.href, APP_CONFIG.appAddress);
 
   const readPasted = () => {
@@ -108,13 +137,18 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
       setMessage({ tone: 'warning', text: 'Das ist kein Stammdaten-Link dieser App.' });
       return;
     }
+    const now = opensOf(forms, parsed.data, parsed.form);
     setInputs(inputsOf(catalog, parsed.data));
     setKept(keptOf(catalog, parsed.data));
-    setOpens(parsed.form ?? '');
+    setOpens(now);
     setPasted('');
     setMessage({
-      tone: 'success',
-      text: `Link eingelesen: ${String(Object.keys(parsed.data).length)} Angaben. Sie können sie jetzt ändern.`,
+      tone: now === undefined ? 'warning' : 'success',
+      text:
+        `Link eingelesen: ${String(Object.keys(parsed.data).length)} Angaben. Sie können sie jetzt ändern.` +
+        (now === undefined
+          ? ' Das Formular, das der Link öffnet, gibt es in dieser App nicht – bitte wählen Sie, was der Link öffnen soll.'
+          : ''),
     });
   };
 
@@ -132,9 +166,10 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
         />
       )}
       <p>
-        Der Link enthält nur Angaben zum Betrieb, keine Daten von Beschäftigten. Leere Angaben
-        bleiben im Fragebogen offen. Jede Angabe ist nur eine Vorbelegung: Wer den Fragebogen
-        ausfüllt, sieht sie und kann sie ändern.
+        Der Link enthält nur Stammdaten – Angaben, die in jedem Fragebogen gleich sind, etwa zum
+        Betrieb oder zur Kanzlei –, keine Daten einzelner Personen. Leere Angaben bleiben im
+        Fragebogen offen. Jede Angabe ist nur eine Vorbelegung: Wer den Fragebogen ausfüllt, sieht
+        sie und kann sie ändern.
       </p>
       <div className="master-entry">
         <label htmlFor="master-paste">Vorhandenen Link einfügen (optional)</label>
@@ -152,7 +187,35 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
       </div>
       {message && <Banner message={message} onClose={() => setMessage(undefined)} />}
 
-      {catalog.groups.map((group) => (
+      <div className="master-entry">
+        <label htmlFor="master-opens" className="master-question">
+          Was soll der Link öffnen?
+        </label>
+        <select
+          id="master-opens"
+          value={opens ?? NOT_CHOSEN}
+          onChange={(event) => setOpens(event.target.value)}
+        >
+          {opens === undefined && (
+            <option value={NOT_CHOSEN} disabled>
+              Bitte wählen …
+            </option>
+          )}
+          {forms.map((form) => (
+            <option key={form.definition.id} value={form.definition.id}>
+              einen neuen Fragebogen „{form.definition.title}“
+            </option>
+          ))}
+          <option value="">die Startseite (das Formular wählt man dort)</option>
+        </select>
+        <p className="help">
+          Danach zeigt die Seite nur die Angaben, die dieses Formular nutzt; für die Startseite die
+          aller Formulare. Der Link nennt nur das Formular, keine Fassung: Er öffnet immer die
+          neueste Fassung, auch nach einer Aktualisierung der App.
+        </p>
+      </div>
+
+      {shown?.groups.map((group) => (
         <div key={group.title} className="summary-section">
           <h3>{group.title}</h3>
           {group.entries.map((entry) => (
@@ -166,6 +229,19 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
           ))}
         </div>
       ))}
+      {opened && shown?.groups.length === 0 && (
+        <p className="muted">
+          „{opened.definition.title}“ hat keine Stammdaten: Der Link öffnet nur einen neuen
+          Fragebogen.
+        </p>
+      )}
+
+      {left.length > 0 && (
+        <p className="muted">
+          Nicht in diesem Link, weil sie zu anderen Formularen gehören:{' '}
+          {left.map((entry) => `${entry.question} (${entry.forms.join(', ')})`).join('; ')}.
+        </p>
+      )}
 
       {Object.keys(kept).length > 0 && (
         <p className="muted">
@@ -190,33 +266,15 @@ export function MasterDataLinkForm({ registry, initial, initialForm }: Props) {
 
       <div className="summary-section">
         <h3>Ihr Link</h3>
-        <div className="master-entry">
-          <label htmlFor="master-opens" className="master-question">
-            Was soll der Link öffnen?
-          </label>
-          <select
-            id="master-opens"
-            value={opens}
-            onChange={(event) => setOpens(event.target.value)}
-          >
-            {forms.map((form) => (
-              <option key={form.definition.id} value={form.definition.id}>
-                einen neuen Fragebogen „{form.definition.title}“
-              </option>
-            ))}
-            <option value="">die Startseite (das Formular wählt man dort)</option>
-          </select>
-          <p className="help">
-            Der Link nennt nur das Formular, keine Fassung: Er öffnet immer die neueste Fassung,
-            auch nach einer Aktualisierung der App.
-          </p>
-        </div>
+        {opens === undefined && (
+          <p className="muted">Wählen Sie zuerst, was der Link öffnen soll.</p>
+        )}
         {errors.size > 0 && (
           <p className="field-error" role="alert">
             Bitte erst die markierten Angaben berichtigen.
           </p>
         )}
-        {errors.size === 0 && link === undefined && (
+        {opens !== undefined && errors.size === 0 && link === undefined && (
           <p className="muted">Sobald eine Angabe ausgefüllt ist, erscheint hier der Link.</p>
         )}
         {link?.ok === false && (

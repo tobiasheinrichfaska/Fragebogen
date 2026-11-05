@@ -294,7 +294,8 @@ export function completenessGaps(questionnaire: Questionnaire, form: RegisteredF
   const { definition } = form;
   const gaps = transmissionBlockers(questionnaire, form).filter((b) => b.code !== 'nothingSealed');
   for (const role of definition.roles) {
-    if (role.requiredIf || currentPart(questionnaire, role.id)) continue;
+    // A role that only prefills is never missing (SEPA-Mandat, Tobias 2026-11-05).
+    if (role.requiredIf || role.prefills === true || currentPart(questionnaire, role.id)) continue;
     gaps.push({ code: 'roleMissing', role: role.id, detail: [role.label] });
   }
   const label = (role: RoleId) => definition.roles.find((r) => r.id === role)?.label ?? role;

@@ -32,6 +32,7 @@ import {
   leaveRole,
   markSaved,
   reopen,
+  roleToFillNext,
   startNewVersion,
   startSession,
   takeOver,
@@ -157,7 +158,13 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
     () => (start ? undefined : fromTransferLink(location.hash, registry)),
     [registry, start],
   );
-  const received = transferred?.kind === 'session' ? transferred.session : undefined;
+  const received = useMemo(() => {
+    const session = transferred?.kind === 'session' ? transferred.session : undefined;
+    // Only prefilled so far (the Kanzlei in the SEPA-Mandat): straight into the role left to fill.
+    const role = session && roleToFillNext(session);
+    const entered = session && role !== undefined ? enterRole(session, role) : undefined;
+    return entered?.ok ? { session: entered.session, entered: true } : session && { session };
+  }, [transferred]);
   const remembered = useMemo(() => parseMasterDataFragment(location.hash), []);
   // A bookmark link that names a form opens a new questionnaire of its newest version at once.
   const linked = useMemo(
@@ -168,13 +175,13 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
   const [session, setSession] = useState<Session | undefined>(
     () =>
       start?.session ??
-      received ??
+      received?.session ??
       (linked ? startSession(linked, newQuestionnaireId()) : undefined),
   );
   const [screen, setScreen] = useState<Screen>(
     start
       ? { kind: START_SCREENS[start.screen] }
-      : { kind: received || linked ? 'roles' : 'start' },
+      : { kind: received?.entered ? 'interview' : received || linked ? 'roles' : 'start' },
   );
   // An interrupted questionnaire of this browser (hosted app only); read once at the start.
   const storage = useMemo(() => resumeAllowed(location.protocol), []);

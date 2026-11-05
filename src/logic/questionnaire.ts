@@ -270,14 +270,35 @@ export function fixedByOtherRoles(
   definition: FormDefinition,
   role: RoleId,
 ): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
-  const fixed = new Map<FieldId, { value: FieldValue; from: RoleId }>();
+  return fromOtherRoles(questionnaire, definition, role, false);
+}
+
+/**
+ * The answers other roles only propose (`fromRole.changeable`, e.g. the account data the Kanzlei
+ * prefills): copied into fields never answered, then the role's own answers.
+ */
+export function proposedByOtherRoles(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  role: RoleId,
+): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
+  return fromOtherRoles(questionnaire, definition, role, true);
+}
+
+function fromOtherRoles(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  role: RoleId,
+  changeable: boolean,
+): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
+  const found = new Map<FieldId, { value: FieldValue; from: RoleId }>();
   for (const field of fieldsOfRole(definition, role)) {
-    if (!field.fromRole) continue;
+    if (!field.fromRole || (field.fromRole.changeable === true) !== changeable) continue;
     const { role: from, field: source } = field.fromRole;
     const value = latestSealed(questionnaire, from)?.data[source] ?? null;
-    if (value !== null) fixed.set(field.id, { value, from });
+    if (value !== null) found.set(field.id, { value, from });
   }
-  return fixed;
+  return found;
 }
 
 /**
@@ -292,8 +313,13 @@ export function adoptFromOtherRoles(
 ): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[] } {
   const draft = currentPart(questionnaire, role);
   const fixed = fixedByOtherRoles(questionnaire, form.definition, role);
+  const proposed = proposedByOtherRoles(questionnaire, form.definition, role);
   const unchanged = { questionnaire, adopted: [], replaced: [] };
-  if (!matchesForm(questionnaire, form) || draft?.status !== 'draft' || fixed.size === 0) {
+  if (
+    !matchesForm(questionnaire, form) ||
+    draft?.status !== 'draft' ||
+    fixed.size + proposed.size === 0
+  ) {
     return unchanged;
   }
   const adopted: FieldId[] = [];
@@ -306,10 +332,16 @@ export function adoptFromOtherRoles(
     adopted.push(id);
     data[id] = value;
   }
+  // A proposal never overwrites: an answer, even one left empty on purpose, is the role's own.
+  for (const [id, { value }] of proposed) {
+    if (data[id] !== undefined) continue;
+    adopted.push(id);
+    data[id] = value;
+  }
   if (adopted.length === 0) return unchanged;
   const updated = withDeferred(
     { ...draft, data },
-    (draft.deferred ?? []).filter((id) => !fixed.has(id)),
+    (draft.deferred ?? []).filter((id) => !adopted.includes(id)),
   );
   const versions = [...versionsOf(questionnaire, role)];
   versions[versions.length - 1] = updated;

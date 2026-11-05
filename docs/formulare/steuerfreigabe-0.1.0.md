@@ -8,8 +8,8 @@
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum der Vorlage“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
-| Definition (SHA-256) | d603eb4a01a23252b01d9ab7248debd689fdbe0080bf174464bb353e5a32dd23 |
+| Stand | zuletzt überarbeitet am 05.11.2026 um 15:14 |
+| Definition (SHA-256) | 7ff8853cbcb0c2d6ff8a00a69901f47a9f1764f14be43cecd6b537300a41dea9 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung. |
 | Empfänger | Kanzlei |
@@ -28,7 +28,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Mandantennummer (mandantennummer)<br>Frage: Mandantennummer | Kanzlei | Text, nur Ziffern; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
+| Mandantennummer (mandantennummer)<br>Frage: Mandantennummer | Kanzlei | Text, nur Ziffern | immer | optional | Zuordnung in der Kanzlei |
 | Vor- und Familienname der Mandantin oder des Mandanten (mandantNameKanzlei) | Kanzlei | Text | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Mandantin oder des Mandanten |
 | Steuerjahr (steuerjahr)<br>Hilfe: Zum Beispiel 2025. | Kanzlei | Text, Jahr (4 Ziffern) | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |
 | Erklärungen (erklaerungen)<br>Frage: Welche Erklärungen werden freigegeben?<br>Hilfe: Je Steuerjahr eine Freigabe; mehrere Erklärungen desselben Jahres sind möglich. | Kanzlei | Mehrfachauswahl: Einkommensteuer, Umsatzsteuer, Gewerbesteuer, Feststellungserklärung, sonstige Erklärung | immer | Pflicht | Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO) |

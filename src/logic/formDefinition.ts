@@ -102,6 +102,7 @@ export const ROLE_KEYS = [
   'requiredIf',
   'because',
   'signerNameField',
+  'prefills',
 ] as const;
 
 function decodeForm(d: Decoder, raw: unknown, path: string): FormDefinition | undefined {
@@ -310,6 +311,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     o.signerNameField === undefined
       ? undefined
       : d.string(o.signerNameField, `${path}.signerNameField`, ID);
+  const prefills = o.prefills === undefined ? undefined : d.boolean(o.prefills, `${path}.prefills`);
   if (
     id === undefined ||
     label === undefined ||
@@ -328,6 +330,7 @@ function decodeRole(d: Decoder, raw: unknown, path: string): RoleDefinition | un
     ...(requiredIf === undefined ? {} : { requiredIf }),
     ...(roleBecause === undefined ? {} : { because: roleBecause }),
     ...(signerNameField === undefined ? {} : { signerNameField }),
+    ...(prefills === undefined ? {} : { prefills }),
   };
 }
 
@@ -383,6 +386,7 @@ export const FIELD_KEYS = [
   'carryOver',
   'carryRowsIf',
   'quickAnswers',
+  'suggestedText',
   'textFormat',
   'maxLength',
   'deuevRule',
@@ -509,6 +513,12 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
           },
           1,
         );
+  const suggestedText =
+    o.suggestedText === undefined
+      ? undefined
+      : typeof o.suggestedText === 'string'
+        ? d.string(o.suggestedText, `${path}.suggestedText`)
+        : d.array(o.suggestedText, `${path}.suggestedText`, (v, p) => d.string(v, p), 1);
   const textFormat =
     o.textFormat === undefined
       ? undefined
@@ -578,6 +588,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(carryOver === undefined ? {} : { carryOver }),
     ...(carryRowsIf === undefined ? {} : { carryRowsIf }),
     ...(quickAnswers === undefined ? {} : { quickAnswers }),
+    ...(suggestedText === undefined ? {} : { suggestedText }),
     ...(textFormat === undefined ? {} : { textFormat }),
     ...(maxLength === undefined ? {} : { maxLength }),
     ...(deuevRule === undefined ? {} : { deuevRule }),
@@ -611,11 +622,14 @@ function decodeFromRole(
   fieldPath: string,
 ): FieldDefinition['fromRole'] | undefined {
   const path = `${fieldPath}.fromRole`;
-  const o = d.object(raw, path, ['role', 'field']);
+  const o = d.object(raw, path, ['role', 'field', 'changeable']);
   if (!o) return undefined;
   const role = d.string(o.role, `${path}.role`, ID);
   const field = d.string(o.field, `${path}.field`, ID);
-  return role === undefined || field === undefined ? undefined : { role, field };
+  const changeable =
+    o.changeable === undefined ? undefined : d.boolean(o.changeable, `${path}.changeable`);
+  if (role === undefined || field === undefined) return undefined;
+  return { role, field, ...(changeable === undefined ? {} : { changeable }) };
 }
 
 function decodeOption(d: Decoder, raw: unknown, path: string): ChoiceOption | undefined {
@@ -977,6 +991,7 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
       'masterData',
       'masterDataCases',
       'computed',
+      'suggestedText',
     ] as const) {
       if (isColumn && field[key] !== undefined)
         report(`${path}.${key}`, `table columns cannot have ${key}`);
@@ -1019,6 +1034,20 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     for (const key of ['maxLength', 'deuevRule'] as const) {
       if (field[key] !== undefined && field.type !== 'text') {
         report(`${path}.${key}`, `only text fields have ${key}`);
+      }
+    }
+    if (field.suggestedText !== undefined) {
+      const at = `${path}.suggestedText`;
+      const templates = [field.suggestedText].flat();
+      if (field.type === 'date') {
+        if (templates.some((template) => template !== 'today')) {
+          report(at, 'a date field can only suggest "today"');
+        }
+      } else if (field.type !== 'text') {
+        report(at, 'only text and date fields suggest an answer');
+      }
+      if (field.masterData !== undefined || field.masterDataCases !== undefined) {
+        report(at, 'a master-data field is filled from the link, not suggested');
       }
     }
     for (const key of ['minDate', 'maxDate'] as const) {
@@ -1283,6 +1312,13 @@ function roles({ definition, fields, report }: CheckContext): void {
     if (!hasFields && role.signature === 'none') {
       report(path, `role "${role.id}" has neither fields nor a signature`);
     }
+    if (role.prefills === true) {
+      if (role.signature !== 'none') report(`${path}.prefills`, 'a prefilling role does not sign');
+      if (role.requiredIf) report(`${path}.prefills`, 'a prefilling role is never conditional');
+      if (definition.roles.every((other) => other.prefills === true)) {
+        report(`${path}.prefills`, 'another role must fill in what it prefills');
+      }
+    }
   });
 }
 
@@ -1339,13 +1375,18 @@ function initialValues({ fields, report }: CheckContext): void {
   }
 }
 
-/** `{fieldId}` in question and help texts names an earlier field of the same role. */
+/** `{fieldId}` in question, help and suggested texts names an earlier field of the same role. */
 function placeholders({ definition, report }: CheckContext): void {
   const seen = new Map<string, FieldDefinition>();
   definition.sections.forEach((section, s) => {
     section.fields.forEach((field, f) => {
-      for (const key of ['question', 'help'] as const) {
-        for (const id of placeholderIds(field[key] ?? '')) {
+      const texts = [
+        ['question', field.question ?? ''],
+        ['help', field.help ?? ''],
+        ...[field.suggestedText ?? []].flat().map((text) => ['suggestedText', text] as const),
+      ] as const;
+      for (const [key, text] of texts) {
+        for (const id of placeholderIds(text)) {
           const target = seen.get(id);
           if (!target) {
             report(`$.sections[${s}].fields[${f}].${key}`, `"{${id}}" must name an earlier field`);

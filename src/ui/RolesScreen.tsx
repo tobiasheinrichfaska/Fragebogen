@@ -29,6 +29,14 @@ const STATE_LABEL: Readonly<Record<RoleState['state'], string>> = {
   signed: 'unterschrieben',
 };
 
+// A role that only prefills (Kanzlei in the SEPA-Mandat) is never "offen" (Tobias 2026-11-05).
+const PREFILL_LABEL: Readonly<Record<RoleState['state'], string>> = {
+  missing: 'nichts vorbelegt (freiwillig)',
+  draft: 'Vorbelegung begonnen, nicht abgeschlossen',
+  sealed: 'vorbelegt',
+  signed: 'vorbelegt',
+};
+
 export function RolesScreen(props: Props) {
   const {
     session,
@@ -48,7 +56,9 @@ export function RolesScreen(props: Props) {
     (gap) => !blockers.some((b) => b.code === gap.code && b.role === gap.role),
   );
   const anySealed = states.some((s) => s.state === 'sealed' || s.state === 'signed');
-  const anyOpen = states.some((s) => s.state === 'missing' || s.state === 'draft');
+  const anyOpen = states.some(
+    (s) => s.role.prefills !== true && (s.state === 'missing' || s.state === 'draft'),
+  );
   return (
     <>
       <Card title="Wer füllt jetzt aus?">
@@ -66,7 +76,7 @@ export function RolesScreen(props: Props) {
                 <div>
                   <strong>{state.role.label}</strong>
                   <span className={`state state-${state.state}`}>
-                    {STATE_LABEL[state.state]}
+                    {(state.role.prefills === true ? PREFILL_LABEL : STATE_LABEL)[state.state]}
                     {state.version !== undefined ? ` (Fassung ${state.version})` : ''}
                   </span>
                   {note && <p className="muted">{note}</p>}
@@ -85,7 +95,9 @@ export function RolesScreen(props: Props) {
                     <>
                       {state.canReopen && (
                         <button type="button" onClick={() => onReopen(state.role.id)}>
-                          Unterschrift zurücknehmen
+                          {state.state === 'signed'
+                            ? 'Unterschrift zurücknehmen'
+                            : 'Abschluss zurücknehmen'}
                         </button>
                       )}
                       <button type="button" onClick={() => onNewVersion(state.role.id)}>

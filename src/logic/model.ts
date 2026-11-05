@@ -53,6 +53,13 @@ export interface RoleDefinition {
    * (legal guardian) can only sign with a typed name — the name is mandatory either way.
    */
   signerNameField?: FieldId;
+  /**
+   * The role only prefills answers for the others (Tobias 2026-11-05: the Kanzlei in the
+   * SEPA-Mandat): its part is never missing, the overview says "vorbelegt" instead of "offen", and a
+   * questionnaire passed on with only such parts opens straight in the one role left to fill. No
+   * signature, no `requiredIf`.
+   */
+  prefills?: boolean;
 }
 
 export const FIELD_TYPES = [
@@ -186,9 +193,11 @@ export interface FieldDefinition {
    * The answer is decided by another role (e.g. the kind of wage tax by the employer): while that
    * role's sealed part holds a value, it is copied into this field and the field is fixed (not
    * asked); without it, the field is asked like any other. Same type; a choice must offer every
-   * option of the other field.
+   * option of the other field. `changeable`: only proposed — copied into the never answered field
+   * when the role is entered, asked with it and free to change (e.g. the account data the Kanzlei
+   * prefills); a changed value is a check hint for the other role, not a contradiction.
    */
-  fromRole?: { role: RoleId; field: FieldId };
+  fromRole?: { role: RoleId; field: FieldId; changeable?: boolean };
   /** Columns of a repeat group (table); v1: same role as the table, no conditions. */
   columns?: FieldDefinition[];
   /** Tables only: what one row is called on screen, e.g. "Kind" → "Kind 1", "Kind 2". */
@@ -220,6 +229,14 @@ export interface FieldDefinition {
    * typed answer (normalised like any input); null leaves an optional field empty.
    */
   quickAnswers?: QuickAnswer[];
+  /**
+   * An answer the input box proposes while the field was never answered (Tobias 2026-11-05):
+   * `text` fields from earlier answers of the same role, e.g. `{mandantennummer}0000001` for the
+   * Mandatsreferenz — proposed only when every `{fieldId}` holds a visible answer; several
+   * templates are tried in turn (e.g. the deviating holder's name, else the payer's); `date` fields
+   * only `today`. Stored like typed text once the person moves on, and can be changed or left empty.
+   */
+  suggestedText?: string | string[];
   /** `text` only: a named format the answer must have, e.g. a German postcode. */
   textFormat?: TextFormat;
   /**

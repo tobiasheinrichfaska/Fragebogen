@@ -24,7 +24,10 @@
         "kontoinhaberOrt": "Musterstadt",
         "kreditinstitut": "Beispielbank",
         "iban": "DE89 3704 0044 0532 0130 00",
-        "zweiteUnterschrift": true,
+        "weitereKontoinhaber": true,
+        "weitererKontoinhaberName": "Max Mustermann",
+        "verfuegung": "gemeinsam",
+        "unterzeichnerName": "Erika Musterfrau",
         "unterschriftOrt": "Musterstadt",
         "unterschriftDatum": "02.11.2026"
       },

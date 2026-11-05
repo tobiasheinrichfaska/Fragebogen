@@ -29,6 +29,8 @@ export interface FlowStep {
   because?: string;
   /** Another station decides the answer, e.g. "Arbeitgeber: „Art der Lohnsteuer“". */
   fromRole?: string;
+  /** The other station only proposes it (`fromRole.changeable`): asked with it, free to change. */
+  proposed?: boolean;
   /** Numbers of the questions this answer opens or makes required. */
   opens: number[];
   /** Help text of a decision point: it often says why the question comes first. */
@@ -198,6 +200,7 @@ function stationOf(definition: FormDefinition, role: RoleDefinition): FlowStatio
       ...(field.fromRole && source
         ? { fromRole: `${roleLabel(definition, field.fromRole.role)}: „${source.label}“` }
         : {}),
+      ...(field.fromRole?.changeable === true ? { proposed: true } : {}),
       opens: numbered([...(dependencies.get(field.id)?.enables ?? []), ...requiredBy(field.id)]),
       ...(field.help !== undefined &&
       ((dependencies.get(field.id)?.enables.length ?? 0) > 0 || requiredBy(field.id).length > 0)

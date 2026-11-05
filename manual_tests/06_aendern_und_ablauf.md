@@ -240,41 +240,48 @@ Projekt.
 **Schritte:**
 
 1. Auf der Startseite **„Stammdaten-Link erstellen oder ändern …“** klicken.
-2. Bei der Firma `Beispiel Gastro GmbH` eingeben, bei der Betriebsnummer `1234 567X`.
-3. Die Betriebsnummer auf `1234 5671` berichtigen.
-4. Bei **„Lohnsteuer bei Minijobs“** „pauschal 2 % (Minijob)“ wählen, bei **„Abwälzung der
+2. Bei **„Was soll der Link öffnen?“** „einen neuen Fragebogen „Personalfragebogen: Angaben für die
+   Lohnabrechnung““ wählen.
+3. Bei der Firma `Beispiel Gastro GmbH` eingeben, bei der Betriebsnummer `1234 567X`.
+4. Die Betriebsnummer auf `1234 5671` berichtigen.
+5. Bei **„Lohnsteuer bei Minijobs“** „pauschal 2 % (Minijob)“ wählen, bei **„Abwälzung der
    Pauschalsteuer bei Minijobs“** „Ja“; bei **„Lohnsteuer bei kurzfristigen Aushilfen“** „pauschal
-   25 % (kurzfristige Aushilfe)“, bei der Abwälzung für Aushilfen „Nein“; bei der Mandantennummer
-   `99999`.
-5. Beim Privathaushalt „Ja“ wählen; danach bei der besonderen Betriebsart „knappschaftlicher
+   25 % (kurzfristige Aushilfe)“, bei der Abwälzung für Aushilfen „Nein“.
+6. Beim Privathaushalt „Ja“ wählen; danach bei der besonderen Betriebsart „knappschaftlicher
    Betrieb (Bergbau)“; danach bei der Seeschifffahrt „Ja“.
-6. Alle drei zurücksetzen (Privathaushalt „Nein“, Betriebsart „Nein, keine davon“, Seeschifffahrt
-   „Nein“). Unter „Ihr Link“ bei **„Was soll der Link öffnen?“** „einen neuen Fragebogen
-   „Personalfragebogen: Angaben für die Lohnabrechnung““ wählen und **„Kopieren“** klicken.
-7. Zur Startseite, **„Eingänge zusammenführen …“** öffnen, unten **„Stammdaten-Link erstellen oder
+7. Alle drei zurücksetzen (Privathaushalt „Nein“, Betriebsart „Nein, keine davon“, Seeschifffahrt
+   „Nein“). Bei „Was soll der Link öffnen?“ kurz „SEPA-Basislastschriftmandat“ wählen, dann wieder
+   den Personalfragebogen; **„Kopieren“** klicken.
+8. Zur Startseite, **„Eingänge zusammenführen …“** öffnen, unten **„Stammdaten-Link erstellen oder
    ändern“** aufklappen, den kopierten Link bei „Vorhandenen Link einfügen“ einfügen und
    **„Einlesen“** klicken.
 
 **Erwartet:**
 
-- Schritt 1: Jede Angabe steht nur einmal da, auch wenn mehrere Formulare sie nutzen („Genutzt in:
-  …“). _Nicht offensichtlich:_ In der öffentlichen Fassung gibt es nur Firma und Betriebsnummer;
-  Lohnsteuer, Tarifvertrag und die Angaben der Monatsmeldung erscheinen nur mit den Entwürfen
-  (Testbereich).
-- Schritt 2: Unter der Betriebsnummer steht der Grund der Ablehnung, und unter „Ihr Link“ steht
+- Schritt 1: _Nicht offensichtlich:_ Zuerst steht **nur** die Frage „Was soll der Link öffnen?“
+  („Bitte wählen …“) und unter „Ihr Link“ „Wählen Sie zuerst, was der Link öffnen soll.“ – noch
+  keine Angaben (seit 05.11.2026).
+- Schritt 2: Jetzt erscheinen nur die Angaben, die der Personalfragebogen nutzt, die Überschriften
+  ohne Formularnamen (z. B. „Angaben des Arbeitgebers“). _Nicht offensichtlich:_ In der öffentlichen
+  Fassung gibt es den Personalfragebogen nicht; er steht nur mit den Entwürfen (Testbereich) in der
+  Auswahl.
+- Schritt 3: Unter der Betriebsnummer steht der Grund der Ablehnung, und unter „Ihr Link“ steht
   „Bitte erst die markierten Angaben berichtigen.“ statt eines Links.
-- Schritt 3: Der Link erscheint mit „… von 2.000 Zeichen“.
-- Schritt 4: Bei „Lohnsteuer bei Minijobs“ gibt es nur ELStAM, pauschal 2 %, pauschal 20 % und
+- Schritt 4: Der Link erscheint mit „… von 2.000 Zeichen“.
+- Schritt 5: Bei „Lohnsteuer bei Minijobs“ gibt es nur ELStAM, pauschal 2 %, pauschal 20 % und
   „prüfen lassen“, bei den Aushilfen nur ELStAM, 25 %, 5 % und „prüfen lassen“.
-- Schritt 5: Ein Kasten „Was diese Angaben bewirken“ erscheint:
+- Schritt 6: Ein Kasten „Was diese Angaben bewirken“ erscheint:
   - beim Privathaushalt „Je nach den Angaben zur Person macht die App keine Vorschläge – Minijob oder
     kurzfristige Beschäftigung im Privathaushalt …“;
   - bei der Knappschaft „Die App macht für diesen Betrieb keine Vorschläge – Beschäftigung in einem
     knappschaftlichen Betrieb …“;
   - bei der Seeschifffahrt „… Beschäftigung an Bord eines Seeschiffs …“ (je nach Person).
-- Schritt 6: Der Kasten verschwindet. Der Link beginnt mit `#stammdaten=1&formular=personalfragebogen`.
-- Schritt 7: „Link eingelesen: … Angaben“, alle Antworten aus Schritt 2–4 stehen wieder da. Die
-  Liste der Eingänge bleibt unverändert.
+- Schritt 7: Der Kasten verschwindet. Beim SEPA-Mandat sind Firma und Lohnsteuer weg; darunter steht
+  „Nicht in diesem Link, weil sie zu anderen Formularen gehören: …“ mit diesen Angaben, und der Link
+  endet auf `formular=sepa-mandat`. Zurück beim Personalfragebogen stehen alle Antworten wieder da;
+  der Link beginnt mit `#stammdaten=1&formular=personalfragebogen`.
+- Schritt 8: „Link eingelesen: … Angaben“; der Personalfragebogen ist gewählt, alle Antworten aus
+  Schritt 3–5 stehen wieder da. Die Liste der Eingänge bleibt unverändert.
 
 ---
 
@@ -324,7 +331,8 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
 
 - Schritt 1: Der Text nennt die Angaben dieses Fragebogens, darunter „Lohnsteuer bei Minijobs“, und
   „Weitere … Angaben aus Ihrem bisherigen Link bleiben erhalten.“ Der Link enthält weiterhin
-  `mandantennummer=99999` und `lohnsteuerAushilfe=pauschal25`. Er enthält keine Daten der Person.
+  `lohnsteuerAushilfe=pauschal25` (die Regel für Aushilfen, obwohl gerade ein Minijob gewählt ist).
+  Er enthält keine Daten der Person.
 - Schritt 2: Oben erscheint „Stammdaten-Link: Dieser Stammdaten-Link stammt aus einer anderen
   Version der App und kann nicht gelesen werden.“ Die App zeigt die Startseite; ein neuer
   Fragebogen beginnt ohne vorbelegte Firma.
@@ -338,8 +346,9 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
 
 **Schritte:**
 
-1. Firma `Beispiel Bau GmbH`, Betriebsnummer `1234 5671` eingeben. Unter „Ihr Link“ bei **„Was soll
-   der Link öffnen?“** nachsehen, was gewählt ist; **„Kopieren“**.
+1. Bei **„Was soll der Link öffnen?“** nachsehen, was gewählt ist; dann „einen neuen Fragebogen
+   „Personalfragebogen: Angaben für die Sofortmeldung““ wählen. Firma `Beispiel Bau GmbH`,
+   Betriebsnummer `1234 5671` eingeben; **„Kopieren“**.
 2. Den Link in einem neuen Tab öffnen.
 3. Im ersten Tab „die Startseite (das Formular wählt man dort)“ wählen, kopieren und in einem neuen
    Tab öffnen.
@@ -348,14 +357,17 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
 
 **Erwartet:**
 
-- Schritt 1: Vorgewählt ist „einen neuen Fragebogen „Personalfragebogen: Angaben für die
-  Sofortmeldung““. Der Hinweis darunter sagt, dass der Link nur das Formular nennt, keine Fassung.
+- Schritt 1: Gewählt ist noch nichts („Bitte wählen …“). Der Hinweis darunter sagt, dass die Seite
+  danach nur die Angaben dieses Formulars zeigt und dass der Link nur das Formular nennt, keine
+  Fassung.
 - Schritt 2: Sofort ein **neuer, leerer Fragebogen** „Personalfragebogen: Angaben für die
   Sofortmeldung“ bei „Wer füllt jetzt aus?“ – ohne Umweg über die Startseite. Oben: „Neuer
   Fragebogen … aus Ihrem Lesezeichen. Die Angaben aus dem Link stehen schon im Teil
   „Arbeitgeber“.“
-- Schritt 3: Die Startseite wie früher; Firma und Betriebsnummer stehen trotzdem in jedem neuen
-  Fragebogen beim Arbeitgeber.
+- Schritt 3: Im ersten Tab erscheinen jetzt die Angaben **aller** Formulare; jede steht nur einmal
+  da, auch wenn mehrere Formulare sie nutzen („Genutzt in: …“), die Überschriften mit dem
+  Formularnamen in Klammern. Der neue Tab zeigt die Startseite wie früher; Firma und Betriebsnummer
+  stehen trotzdem in jedem neuen Fragebogen beim Arbeitgeber.
 - Schritt 4: Gelb: „Ihr Lesezeichen soll einen neuen Fragebogen „personalfragebogen“ öffnen; diese
   Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.“ – die Startseite erscheint.
   _Nicht offensichtlich:_ Der Link öffnet immer die neueste Fassung des Formulars; er bleibt auch
