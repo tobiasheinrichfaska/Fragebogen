@@ -1,17 +1,17 @@
 // The foreign postcode is required unless the state has none (Tobias 2026-11-06, test report
 // MT-126: "Wieso ist die PLZ Ausland freiwillig?") — the set of states without a known postcode
-// system, the condition `inSet` and the drafts that ask a foreign address.
+// system, the condition `inSet` and the forms that ask a foreign address.
 import { join } from 'node:path';
 import { evaluateCondition } from '../../src/logic/conditions';
 import { fieldStates, fieldsById } from '../../src/logic/form';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
 import type { FieldValue, FormDefinition } from '../../src/logic/model';
 import { optionsOf, REFERENCE_LISTS, REFERENCE_SETS } from '../../src/logic/options';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 
 const SET = 'staatenOhnePostleitzahl2026';
-const draft = (folder: string, version: string) =>
-  registeredFrom(readJson(join(DRAFTS_DIR, folder, `${version}.json`))).definition;
+const definitionOf = (dir: string, folder: string, version: string) =>
+  registeredFrom(readJson(join(dir, folder, `${version}.json`))).definition;
 
 describe('the states without a known postcode system', () => {
   const set = REFERENCE_SETS[SET];
@@ -47,7 +47,7 @@ describe('the condition inSet', () => {
   });
 
   it('is refused for an unknown set, a field of another list and a field that is no choice', () => {
-    const base = draft('sepa-mandat', '1.1.0');
+    const base = definitionOf(FORMS_DIR, 'sepa-mandat', '1.1.0');
     const problems = (change: (d: FormDefinition) => void) => {
       const d = structuredClone(base);
       change(d);
@@ -77,11 +77,11 @@ describe('the condition inSet', () => {
 });
 
 describe.each([
-  ['sepa-mandat', '1.1.0', 'kontoinhaber'],
-  ['sofortmeldung', '1.1.0', 'person'],
-  ['personalfragebogen', '0.1.0', 'person'],
-])('the foreign postcode in %s %s', (folder, version, role) => {
-  const definition = draft(folder, version);
+  ['sepa-mandat', '1.1.0', 'kontoinhaber', FORMS_DIR],
+  ['sofortmeldung', '1.1.0', 'person', DRAFTS_DIR],
+  ['personalfragebogen', '0.1.0', 'person', DRAFTS_DIR],
+])('the foreign postcode in %s %s', (folder, version, role, dir) => {
+  const definition = definitionOf(dir, folder, version);
   const field = fieldsById(definition).get('postleitzahlAusland');
   const state = (staat: string | null) =>
     fieldStates(definition, role, { anschriftAusland: true, anschriftStaat: staat }).get(

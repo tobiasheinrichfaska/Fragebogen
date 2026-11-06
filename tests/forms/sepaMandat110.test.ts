@@ -1,8 +1,9 @@
-// SEPA-Mandat draft 1.1.0 (Tobias 2026-11-05): the Kanzlei only prefills — it is never "offen", a
-// link with its part opens straight in the account holder's part, and the holder may change what
-// the Kanzlei entered about the account (never the creditor, contract, kind of payment, client
-// number or Mandatsreferenz). The Mandatsreferenz is proposed from the Mandantennummer, the signer
-// is named (two holders), place and date of signing are proposed. Fictitious data.
+// SEPA-Mandat 1.1.0 (Tobias 2026-11-05, production 2026-11-06): the Kanzlei only prefills — it is
+// never "offen", a link with its part opens straight in the account holder's part, and the holder
+// may change what the Kanzlei entered about the account (never the creditor, contract, kind of
+// payment, client number or Mandatsreferenz). The Mandatsreferenz is proposed from the
+// Mandantennummer, the signer is named (two holders), place and date of signing are proposed.
+// Fictitious data.
 import { join } from 'node:path';
 import { contradictions } from '../../src/logic/consistency';
 import { decodePackage } from '../../src/logic/dataPackage';
@@ -35,12 +36,10 @@ import {
   transferFragment,
   transferPackageText,
 } from '../../src/logic/transferLink';
-import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form: RegisteredForm = registeredFrom(
-  readJson(join(DRAFTS_DIR, 'sepa-mandat', '1.1.0.json')),
-);
+const form: RegisteredForm = registeredFrom(readJson(join(FORMS_DIR, 'sepa-mandat', '1.1.0.json')));
 const published = registeredFrom(readJson(join(FORMS_DIR, 'sepa-mandat', '1.0.0.json')));
 const AT = { local: '2026-11-05T10:00:00.000+01:00', utc: '2026-11-05T09:00:00.000Z' };
 const TODAY = '2026-11-05';
@@ -129,7 +128,7 @@ function throughLink(kanzlei: Session): Session {
   return sessionFromFile(decoded, { local: AT.local, utc: AT.utc, source: 'file' });
 }
 
-describe('the draft', () => {
+describe('the form', () => {
   it('is a newer version of the production form', () => {
     expect(form.definition.version).toBe('1.1.0');
     expect(published.definition.version).toBe('1.0.0');
@@ -438,7 +437,7 @@ describe('definition rules for prefilling roles and changeable answers', () => {
   });
 
   it('reads "changeable" as yes/no and nothing else in fromRole', () => {
-    const raw = structuredClone(readJson(join(DRAFTS_DIR, 'sepa-mandat', '1.1.0.json'))) as {
+    const raw = structuredClone(readJson(join(FORMS_DIR, 'sepa-mandat', '1.1.0.json'))) as {
       sections: { fields: { id: string; fromRole?: Record<string, unknown> }[] }[];
     };
     const iban = raw.sections.flatMap((s) => s.fields).find((f) => f.id === 'iban');

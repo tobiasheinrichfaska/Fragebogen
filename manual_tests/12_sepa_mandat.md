@@ -1,7 +1,7 @@
 # 12 – SEPA-Basislastschriftmandat
 
-Produktiv seit 05.11.2026 (Fassung 1.0.0) in der App der Kanzlei. **Im Testbereich steht schon die
-Fassung 1.1.0 (Entwurf)**; die Fälle unten beschreiben sie. Neu in 1.1.0: Die Kanzlei belegt nur vor
+Produktiv seit 05.11.2026, **Fassung 1.1.0 seit 06.11.2026** in der App der Kanzlei und im
+Testbereich; die Fälle unten beschreiben sie. Neu in 1.1.0: Die Kanzlei belegt nur vor
 – sie ist nie „offen“, ein Link mit ihrem Teil öffnet beim Mandanten gleich dessen Teil, und die
 Angaben zum Konto kann der Mandant ändern. Die Mandatsreferenz wird aus der Mandantennummer
 vorgeschlagen, Ort und Datum der Unterschrift auch; wer unterschreibt, wird genannt (auch bei zwei
