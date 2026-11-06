@@ -24,6 +24,7 @@ import {
   roleToFillNext,
   seal,
   sessionFromFile,
+  signingOverview,
   startSession,
   stepsFor,
   type Session,
@@ -367,6 +368,38 @@ describe('who signs (Tobias 2026-11-05)', () => {
     }
     const done = must(sealed(second, 'd4', 'Max Mustermann'));
     expect(completenessGaps(done.questionnaire, form)).toEqual([]);
+  });
+});
+
+describe('what the signature covers stands above the confirmation (MT-122, Tobias 2026-11-06)', () => {
+  it('shows the own answers as sealed and the Kanzlei part, so "mit den Angaben oben" is true', () => {
+    let holder = answerAll(must(enterRole(kanzleiSealed(ACCOUNT), 'kontoinhaber')), SIGNING);
+    for (const id of ['mandatstext', 'datenschutz']) holder = acknowledge(holder, id, true);
+    const overview = signingOverview(holder);
+    if (!overview) throw new Error('no overview');
+    const own = new Map(overview.own.flatMap((s) => s.rows).map((r) => [r.fieldId, r.value]));
+    expect(own.get('zahlungsempfaenger')).toBe('Musterkanzlei Beispiel');
+    expect(own.get('iban')).toBe('DE89 3704 0044 0532 0130 00');
+    expect(own.get('unterzeichnerName')).toBe('Erika Musterfrau');
+    // Hidden for an identical holder, so not sealed — and not shown.
+    expect(own.has('kontoinhaberName')).toBe(false);
+    expect(overview.own.map((s) => s.title)).toEqual([
+      'Mandat',
+      'Kontoinhaberin oder Kontoinhaber',
+      'Anschrift',
+      'Bankverbindung',
+      'Unterschrift',
+    ]);
+    expect(overview.others.map((o) => o.label)).toEqual(['Kanzlei (Zahlungsempfänger)']);
+    const kanzlei = overview.others[0]?.sections.flatMap((s) => s.rows) ?? [];
+    expect(kanzlei.find((r) => r.fieldId === 'glaeubigerId')?.value).toBe('DE98ZZZ09999999999');
+    for (const role of form.definition.roles.filter((r) => r.signature === 'required')) {
+      expect(role.confirmationText).toMatch(/mit den Angaben oben\.$/);
+    }
+  });
+
+  it('has nothing to show without a draft', () => {
+    expect(signingOverview(startSession(form, QUESTIONNAIRE_ID))).toBeUndefined();
   });
 });
 

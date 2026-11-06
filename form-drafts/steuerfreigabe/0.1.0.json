@@ -1,7 +1,7 @@
 {
   "id": "steuerfreigabe",
   "version": "0.1.0",
-  "revised": "2026-11-06T08:41",
+  "revised": "2026-11-06T09:11",
   "title": "Freigabe zur elektronischen Übermittlung einer Steuererklärung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -12,21 +12,21 @@
       "id": "kanzlei",
       "label": "Kanzlei",
       "stationHeading": "Vorlage der Kanzlei",
-      "confirmationText": "Wir haben die in der Zusammenfassung bezeichnete Fassung der Steuererklärung zur Prüfung vorgelegt.",
+      "confirmationText": "Wir haben die oben bezeichnete Fassung der Steuererklärung zur Prüfung vorgelegt.",
       "signature": "required"
     },
     {
       "id": "mandant",
       "label": "Mandantin oder Mandant",
       "stationHeading": "Freigabe",
-      "confirmationText": "Ich bestätige meine Angaben und meine Entscheidung aus der Zusammenfassung.",
+      "confirmationText": "Ich bestätige meine Angaben und meine Entscheidung oben.",
       "signature": "required"
     },
     {
       "id": "ehegatte",
       "label": "Ehegatte oder Lebenspartner",
       "stationHeading": "Freigabe des Ehegatten oder Lebenspartners",
-      "confirmationText": "Ich bestätige meine Angaben und meine Entscheidung aus der Zusammenfassung.",
+      "confirmationText": "Ich bestätige meine Angaben und meine Entscheidung oben.",
       "signature": "required",
       "requiredIf": {
         "kind": "answer",

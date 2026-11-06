@@ -11,6 +11,8 @@ MT-11 bis zur Zusammenfassung.
 **Schritte:**
 
 1. Klicken Sie **„Weiter zum Abschluss“**.
+   - **Danach:** _Nicht offensichtlich:_ Oben steht unter „Das schließen Sie ab:“ alles, was Sie
+     abschließen, nach Abschnitten – ohne „ändern“; ändern geht mit „Zurück zur Zusammenfassung“.
 2. Setzen Sie das Häkchen **„Ich bestätige die Angaben des Arbeitgebers.“**
 3. Wählen Sie **„Ohne Unterschrift abschließen“** und klicken Sie **„Abschließen“**.
    - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Beim Arbeitgeber ist die Unterschrift

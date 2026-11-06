@@ -4,7 +4,7 @@
 // immutable Session; time, nonce and device data come from the io layer. Nothing is persisted:
 // the user saves files.
 import type { FormOrigin } from './dataPackage';
-import { fieldsById, infoBlocksOfRole } from './form';
+import { fieldsById, infoBlocksOfRole, sealableData } from './form';
 import type { RegisteredForm } from './formRegistry';
 import {
   interviewSteps,
@@ -24,6 +24,8 @@ import { displayValue } from './display';
 import { activeExclusions, fillingHints } from './hints';
 import type {
   FieldId,
+  FieldValue,
+  FormDefinition,
   Questionnaire,
   RoleDefinition,
   RoleId,
@@ -548,6 +550,57 @@ export function acknowledge(session: Session, infoBlockId: string, confirmed: bo
     questionnaire,
     acknowledged: { ...session.acknowledged, [role]: ids },
     dirty: session.dirty || questionnaire !== session.questionnaire,
+  };
+}
+
+/** One section of what a signature covers: the answers as people read them. */
+export interface OverviewSection {
+  title: string;
+  rows: { fieldId: FieldId; label: string; value: string }[];
+}
+
+export interface SigningOverview {
+  /** The answers the seal covers (hidden ones are left out, as at sealing), by section. */
+  own: OverviewSection[];
+  /** The other roles' sealed parts whose receipt the seal confirms. */
+  others: { role: string; label: string; sections: OverviewSection[] }[];
+}
+
+function sectionsOf(
+  definition: FormDefinition,
+  role: RoleId,
+  data: Readonly<Record<FieldId, FieldValue>>,
+): OverviewSection[] {
+  return definition.sections.flatMap((section) => {
+    const rows = section.fields
+      .filter((field) => field.role === role && field.id in data)
+      .map((field) => ({
+        fieldId: field.id,
+        label: field.label,
+        value: displayValue(field, data[field.id] ?? null),
+      }));
+    return rows.length === 0 ? [] : [{ title: section.title, rows }];
+  });
+}
+
+/**
+ * Everything the signature covers, shown above the confirmation (Tobias 2026-11-06: "es soll alles
+ * gesehen werden, beim Unterschreiben, damit 'oben' stimmt"): the active role's answers as they will
+ * be sealed, then the other roles' sealed parts.
+ */
+export function signingOverview(session: Session): SigningOverview | undefined {
+  const role = session.role;
+  const part = role === undefined ? undefined : currentPart(session.questionnaire, role);
+  if (role === undefined || part?.status !== 'draft') return undefined;
+  const { definition } = session.form;
+  return {
+    own: sectionsOf(definition, role, sealableData(definition, role, part.data)),
+    others: definition.roles.flatMap((other) => {
+      const sealed = other.id === role ? undefined : latestSealed(session.questionnaire, other.id);
+      if (!sealed) return [];
+      const sections = sectionsOf(definition, other.id, sealed.data);
+      return sections.length === 0 ? [] : [{ role: other.id, label: other.label, sections }];
+    }),
   };
 }
 

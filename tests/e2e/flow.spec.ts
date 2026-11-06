@@ -276,6 +276,13 @@ test('the overview offers PDF and link right under the roles (test report 2026-1
   await press(page, 'Ich bin: Arbeitgeber');
   await answerUntilSummary(page);
   await press(page, 'Weiter zum Abschluss');
+  // Everything the closing covers stands above the confirmation (MT-122, Tobias 2026-11-06).
+  const overview = page.getByLabel('Was Sie abschließen');
+  await expect(overview).toContainText('Beispiel Bau GmbH');
+  const confirmation = page.locator('label.confirm');
+  expect((await overview.boundingBox())?.y ?? 1).toBeLessThan(
+    (await confirmation.boundingBox())?.y ?? 0,
+  );
   await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
   await press(page, 'Ohne Unterschrift abschließen');
   await press(page, 'Abschließen');
