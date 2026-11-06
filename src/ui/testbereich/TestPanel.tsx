@@ -9,12 +9,16 @@ import {
   RESULT_LABELS,
   changedSince,
   correctDuration,
+  forReport,
+  markReported,
   measuredMinutes,
+  reportCounts,
   resetTest,
   setComment,
   setResult,
   startTest,
   totalsOf,
+  unmarkReported,
   type TestEntry,
   type TestRun,
 } from '../../logic/testRun';
@@ -56,6 +60,7 @@ export function TestPanel({
   const shown = TEST_CASES.filter((c) => area === '' || c.area === area);
   const current = TEST_CASES.find((c) => c.id === selected);
   const totals = totalsOf(run);
+  const counts = reportCounts(run);
   const intro = TEST_FILES.find((file) => file.area === area)?.intro ?? [];
   const refs: RefHandler = {
     open: (id) => setSelected(id),
@@ -67,7 +72,7 @@ export function TestPanel({
   const report = async () => {
     setBanner(
       await createTestReportPdf(
-        run,
+        forReport(run),
         TEST_CASES.map((c) => ({
           id: c.id,
           title: plain(c.title),
@@ -156,6 +161,7 @@ export function TestPanel({
                     <span>
                       <strong>{c.id}</strong> <Inline text={c.title} />
                       {result && <span className="muted"> – {RESULT_LABELS[result]}</span>}
+                      {run.entries[c.id]?.reported && <span className="muted"> · berichtet</span>}
                       {changedSince(run.entries[c.id], caseVersion(c)) && (
                         <span className="test-changed"> – geändert seit Ihrem Test</span>
                       )}
@@ -173,6 +179,7 @@ export function TestPanel({
               Getestet: <strong>{totals.tested}</strong> von {TEST_CASES.length} · bestanden{' '}
               {totals.byResult.bestanden}, teilweise {totals.byResult.teilweise}, nicht bestanden{' '}
               {totals.byResult.nichtBestanden} · Zeit {totals.countedMinutes} Min.
+              {counts.reported > 0 ? ` · im nächsten Bericht: ${String(counts.open)}` : ''}
             </p>
             <label className="test-field">
               Gesamteindruck (freiwillig)
@@ -188,7 +195,24 @@ export function TestPanel({
             <p className="muted">
               Die PDF enthält Ihre Ergebnisse, Zeiten und Kommentare – bitte per E-Mail an die
               Kanzlei schicken. Ihre Eingaben in der App kommen nicht hinein.
+              {counts.reported > 0
+                ? ` ${counts.reported} schon berichtete Tests fehlen darin; sie stehen in der Liste weiter als erledigt.`
+                : ''}
             </p>
+            <div className="nav">
+              <button
+                type="button"
+                disabled={counts.open === 0}
+                onClick={() => update(markReported(run, deviceNow().local))}
+              >
+                Erledigte Tests aus dem nächsten Bericht nehmen
+              </button>
+              {counts.reported > 0 && (
+                <button type="button" className="link" onClick={() => update(unmarkReported(run))}>
+                  Alle wieder in den Bericht nehmen
+                </button>
+              )}
+            </div>
           </div>
         </>
       )}

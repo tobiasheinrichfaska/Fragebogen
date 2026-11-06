@@ -5,12 +5,16 @@ import {
   countedMinutes,
   decodeRun,
   emptyRun,
+  forReport,
+  markReported,
   measuredMinutes,
+  reportCounts,
   resetTest,
   setComment,
   setResult,
   startTest,
   totalsOf,
+  unmarkReported,
 } from '../../src/logic/testRun';
 
 const T0 = '2026-11-01T09:00:00.000Z';
@@ -122,5 +126,60 @@ describe('a test rewritten after the result', () => {
     });
     expect(stored.entries['MT-1']?.version).toBe('abcdef012345');
     expect(stored.entries['MT-2']).not.toHaveProperty('version');
+  });
+});
+
+describe('tests taken out of the next report (Tobias 2026-11-06)', () => {
+  const done = () => {
+    let run = setResult(emptyRun(), 'MT-119', 'bestanden', at(1));
+    run = setResult(run, 'MT-120', 'teilweise', at(2));
+    return startTest(run, 'MT-121', at(3)); // begun, no result yet
+  };
+
+  it('marks every test with a result; the list keeps them done, the report leaves them out', () => {
+    const run = markReported(done(), at(10));
+    expect(run.entries['MT-119']).toMatchObject({ result: 'bestanden', reported: at(10) });
+    expect(run.entries['MT-121']?.reported).toBeUndefined();
+    expect(reportCounts(run)).toEqual({ open: 0, reported: 2 });
+    expect(Object.keys(forReport(run).entries)).toEqual(['MT-121']);
+    expect(totalsOf(run).tested).toBe(2);
+    expect(totalsOf(forReport(run)).tested).toBe(0);
+  });
+
+  it('keeps the first mark when marked again', () => {
+    const run = markReported(markReported(done(), at(10)), at(20));
+    expect(run.entries['MT-120']?.reported).toBe(at(10));
+  });
+
+  it('brings a test back into the report when its result, comment or duration changes', () => {
+    const marked = markReported(done(), at(10));
+    expect(setResult(marked, 'MT-119', 'nichtBestanden', at(11)).entries['MT-119']?.reported).toBe(
+      undefined,
+    );
+    expect(setComment(marked, 'MT-120', 'neu').entries['MT-120']?.reported).toBeUndefined();
+    expect(setComment(marked, 'MT-120', '').entries['MT-120']?.reported).toBe(at(10));
+    expect(correctDuration(marked, 'MT-120', 5).entries['MT-120']?.reported).toBeUndefined();
+    expect(resetTest(marked, 'MT-119').entries['MT-119']).toEqual({ comment: '' });
+  });
+
+  it('takes every mark back', () => {
+    const run = unmarkReported(markReported(done(), at(10)));
+    expect(reportCounts(run)).toEqual({ open: 2, reported: 0 });
+    expect(Object.keys(forReport(run).entries).sort()).toEqual(['MT-119', 'MT-120', 'MT-121']);
+  });
+
+  it('reads a stored mark back, only on a test with a result', () => {
+    const stored = JSON.parse(JSON.stringify(markReported(done(), at(10)))) as unknown;
+    expect(decodeRun(stored).entries['MT-119']?.reported).toBe(at(10));
+    const odd = {
+      tester: '',
+      comment: '',
+      entries: {
+        'MT-1': { comment: '', reported: at(10) },
+        'MT-2': { comment: '', result: 'bestanden', reported: 'gestern' },
+      },
+    };
+    expect(decodeRun(odd).entries['MT-1']?.reported).toBeUndefined();
+    expect(decodeRun(odd).entries['MT-2']?.reported).toBeUndefined();
   });
 });

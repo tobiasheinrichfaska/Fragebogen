@@ -4,6 +4,7 @@
 import { NAMENSZUSAETZE, STAATEN, STAATSANGEHOERIGKEITEN, VORSATZWORTE } from './data/deuevListen';
 import { formatGermanDate } from './dates';
 import { KRANKENKASSEN } from './data/krankenkassen';
+import { STAATEN_OHNE_POSTLEITZAHL } from './data/staatenOhnePostleitzahl';
 import type { ChoiceOption, FieldDefinition } from './model';
 
 export interface ReferenceList {
@@ -11,6 +12,26 @@ export interface ReferenceList {
   source: string;
   options: readonly ChoiceOption[];
 }
+
+/** A fixed subset of a reference list's entries, for conditions (`inSet`). */
+export interface ReferenceSet {
+  title: string;
+  /** The reference list whose entries (option ids) the set holds. */
+  list: string;
+  source: string;
+  keys: readonly string[];
+}
+
+/** Sets of reference-list entries; the id carries the Stand, like the lists. */
+export const REFERENCE_SETS: Readonly<Record<string, ReferenceSet>> = {
+  staatenOhnePostleitzahl2026: {
+    title: 'Staaten ohne Postleitzahlen',
+    list: 'deuevStaatenAusland2025',
+    source:
+      'Weltpostverein (UPU) und Postunternehmen der Staaten, Stand 11/2026 (docs/quellen-staaten-ohne-postleitzahl.md)',
+    keys: STAATEN_OHNE_POSTLEITZAHL,
+  },
+};
 
 const plain = (values: readonly string[]): ChoiceOption[] =>
   values.map((value) => ({ id: value, label: value }));
