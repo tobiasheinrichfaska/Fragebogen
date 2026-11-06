@@ -23,5 +23,10 @@
     "id": "sepa-mandat",
     "version": "1.0.0",
     "definitionHash": "11f4f83e5e43dec1018cac4aa10493d93c84832a6da4fa17457e2c488bb4fa89"
+  },
+  {
+    "id": "sepa-mandat",
+    "version": "1.1.0",
+    "definitionHash": "962b251944221382e0a4b97188dfa641ab3728cfa8eb0c5fa8b237a12b470998"
   }
 ]
