@@ -1154,3 +1154,30 @@ button.start-link {
   font-size: 1.1rem;
   letter-spacing: 0.05em;
 }
+
+.password-option {
+  margin: 0.75rem 0;
+}
+
+/* "Geschützte PDF": the password of a protected PDF while it is read */
+.password-dialog {
+  width: min(28rem, calc(100% - 2rem));
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.password-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+
+.password-dialog h2 {
+  margin-top: 0;
+}
+
+.password-dialog input {
+  width: 100%;
+  box-sizing: border-box;
+}

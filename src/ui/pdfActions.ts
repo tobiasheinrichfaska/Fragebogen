@@ -1,7 +1,8 @@
 // PDF out and in for the UI. Out: only without transmission blockers (no transmission without
 // signature), one PDF with data pages and QR codes. In: the data pages of an original PDF, or —
 // for a print-out — the QR codes of a scanned PDF or of photos, collected over several files.
-// Every import is verified and the result shown; what was checked is said plainly.
+// Every import is verified and the result shown; what was checked is said plainly. A PDF may be
+// protected by a password (Tobias 2026-11-06): asked for while it is read, never stored.
 import boldUrl from '../../assets/fonts/NotoSans-SemiBold.subset.ttf?inline';
 import sansUrl from '../../assets/fonts/NotoSans-Regular.subset.ttf?inline';
 import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
@@ -13,9 +14,11 @@ import {
   editClues,
   EDIT_CLUE_MESSAGES,
   imageFileToRgba,
+  passwordIssue,
   readPdfText,
   renderPdfPages,
   type PdfJsLike,
+  type PdfText,
 } from '../io/pdfReader';
 import { writeQuestionnairePdf } from '../io/pdfWriter';
 import { writeSheetPdf, type SheetPdfInput } from '../io/sheetPdf';
@@ -25,6 +28,7 @@ import { decodePackage, ORIGIN_MESSAGES } from '../logic/dataPackage';
 import { DATA_LINES_MESSAGES, decodeDataLines } from '../logic/dataPages';
 import { registryOf, type FormRegistry } from '../logic/formRegistry';
 import { sha256Hex } from '../logic/hash';
+import { pdfPasswordCandidates } from '../logic/passwords';
 import { assembleQrPayloads, QR_MESSAGES } from '../logic/qrParts';
 import { BLOCKER_MESSAGES, transmissionBlockers } from '../logic/requirements';
 import { markSaved, sessionFromFile, type Arrival, type Session } from '../logic/session';
@@ -60,6 +64,7 @@ function pdfjs(): Promise<PdfJsLike> {
 
 export async function createPdf(
   session: Session,
+  password?: string,
 ): Promise<{ session: Session; message: BannerMessage }> {
   const blockers = transmissionBlockers(session.questionnaire, session.form);
   if (blockers.length > 0) {
@@ -83,6 +88,7 @@ export async function createPdf(
         origin: session.origin,
         config: APP_CONFIG,
         created: { local: now.local, utc: now.utc },
+        ...(password === undefined ? {} : { password }),
       },
       { sans: dataUrlBytes(sansUrl), bold: dataUrlBytes(boldUrl), mono: dataUrlBytes(monoUrl) },
     );
@@ -92,11 +98,14 @@ export async function createPdf(
       message: {
         file,
         tone: 'success',
-        text: result.complete
-          ? `PDF „${result.fileName}“ erstellt: vollständig. Bitte die Datei selbst weitergeben oder in der Personalakte ablegen.`
-          : `PDF „${result.fileName}“ erstellt – zur Weitergabe an die nächste Station. Sie enthält alle bisherigen Teile.`,
+        text: result.protected
+          ? `PDF „${result.fileName}“ erstellt, mit Kennwort geschützt – zur Weitergabe an die nächste Station. Das Kennwort bitte auf einem anderen Weg weitergeben als die Datei.`
+          : result.complete
+            ? `PDF „${result.fileName}“ erstellt: vollständig. Bitte die Datei selbst weitergeben oder in der Personalakte ablegen.`
+            : `PDF „${result.fileName}“ erstellt – zur Weitergabe an die nächste Station. Sie enthält alle bisherigen Teile.`,
         detail: [
           `${result.pages} Seiten, davon die letzten mit ${result.qrCodes} QR-Codes für den Papierweg.`,
+          ...(result.protected ? [PROTECTED_PDF_NOTE] : []),
         ],
       },
     };
@@ -311,6 +320,42 @@ export function fromTransferText(
   );
 }
 
+/** What a protected PDF is not: an archive copy. */
+export const PROTECTED_PDF_NOTE =
+  'Mit Kennwort ist die PDF keine PDF/A. Zur Ablage erstellt die Kanzlei nach dem Einlesen eine PDF ohne Kennwort.';
+
+/** Asks for the password of a protected file; undefined when the person gives up. */
+export type AskPassword = (fileName: string, wrong: boolean) => Promise<string | undefined>;
+
+/**
+ * The text of a PDF; a protected one asks for its password until one fits (tried as typed and in
+ * the form the app proposes) or the person gives up.
+ */
+async function readPdfAsked(
+  library: PdfJsLike,
+  bytes: Uint8Array,
+  fileName: string,
+  ask: AskPassword | undefined,
+): Promise<{ text: PdfText; password?: string } | 'cancelled'> {
+  try {
+    return { text: await readPdfText(library, bytes) };
+  } catch (error) {
+    if (passwordIssue(error) === undefined) throw error;
+  }
+  if (ask === undefined) return 'cancelled';
+  for (let wrong = false; ; wrong = true) {
+    const typed = await ask(fileName, wrong);
+    if (typed === undefined) return 'cancelled';
+    for (const password of pdfPasswordCandidates(typed)) {
+      try {
+        return { text: await readPdfText(library, bytes, password), password };
+      } catch (error) {
+        if (passwordIssue(error) !== 'wrong') throw error;
+      }
+    }
+  }
+}
+
 /**
  * Reads any file this app writes — interim JSON, PDF (data pages, else the QR codes of a scan) or a
  * photo of QR codes, together with codes collected from earlier photos.
@@ -319,6 +364,7 @@ export async function openAnyFile(
   file: File,
   registry: FormRegistry,
   collected: readonly Uint8Array[],
+  ask?: AskPassword,
 ): Promise<{ result: OpenResult; fileSha256?: string; received: DeviceNow }> {
   const received = deviceNow();
   const read = await readFileBytes(file);
@@ -332,7 +378,7 @@ export async function openAnyFile(
     ? fromPackageText(new TextDecoder().decode(read.bytes), registry, arrival, [
         'Zwischenstand geöffnet.',
       ])
-    : await openPdfOrImage(file, read.bytes, registry, arrival, collected);
+    : await openPdfOrImage(file, read.bytes, registry, arrival, collected, ask);
   return { result, fileSha256, received };
 }
 
@@ -343,6 +389,7 @@ export async function openPdfOrImage(
   registry: FormRegistry,
   arrival: Arrival,
   collected: readonly Uint8Array[],
+  ask?: AskPassword,
 ): Promise<OpenResult> {
   try {
     const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
@@ -351,12 +398,23 @@ export async function openPdfOrImage(
       return fromQr([...collected, ...readQrCodes(image)], registry, arrival, QR_MESSAGES.noCodes);
     }
     const library = await pdfjs();
-    const text = await readPdfText(library, bytes);
+    const read = await readPdfAsked(library, bytes, file.name, ask);
+    if (read === 'cancelled') {
+      return {
+        kind: 'error',
+        message: {
+          tone: 'error',
+          text: `„${file.name}“ ist mit einem Kennwort geschützt. Ohne das Kennwort lässt sich die PDF nicht öffnen.`,
+        },
+      };
+    }
+    const { text, password } = read;
     const lines = decodeDataLines(text.lines);
     if (lines.ok) {
       const clues = editClues(bytes, text.producer).map((clue) => EDIT_CLUE_MESSAGES[clue]);
       return fromPackageText(lines.text, registry, arrival, [
         'Geprüft wurden die Datenseiten, nicht der sichtbare Text.',
+        ...(password === undefined ? [] : ['Die PDF war mit einem Kennwort geschützt.']),
         ...clues,
       ]);
     }
@@ -367,7 +425,9 @@ export async function openPdfOrImage(
       };
     }
     // No text data pages: a scan or a print-to-PDF. Look for the QR codes on the pages.
-    const payloads = (await renderPdfPages(library, bytes)).flatMap(readQrCodes);
+    const payloads = (await renderPdfPages(library, bytes, undefined, password)).flatMap(
+      readQrCodes,
+    );
     return fromQr([...collected, ...payloads], registry, arrival, DATA_LINES_MESSAGES.notFound);
   } catch (error) {
     return {

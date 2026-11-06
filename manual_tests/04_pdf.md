@@ -199,3 +199,53 @@ Messenger oder Cloud-Speicher).
 
 - _Nicht offensichtlich:_ Am PC lädt „PDF erstellen“ wie bisher sofort herunter; „Speichern“ gibt es
   dort nicht, „Teilen“ nur, wenn der Browser Dateien teilen kann (z. B. Edge unter Windows).
+
+---
+
+## MT-132: PDF mit Kennwort weitergeben und wieder einlesen
+
+**Einstieg:** [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen) –
+Sie stehen bei „Wer füllt jetzt aus?“.
+
+**Schritte:**
+
+1. In der Übersicht unter „Stand“ das Häkchen **„Mit Kennwort schützen (PDF und Link)“** setzen.
+   - **Danach:** Ein Feld „Kennwort“ mit drei Vierergruppen aus kleinen Buchstaben und Ziffern (etwa
+     „k7qm-2xrp-9fha“), „Kopieren“ und **„Neues Kennwort“**. Der Hinweis darunter sagt, dass ein
+     PDF-Programm das Kennwort genau so will, klein und mit Bindestrichen.
+2. Das Kennwort auf einem Zettel notieren und **„PDF erstellen“** klicken.
+   - **Danach:** Grün: „PDF „Sofortmeldung_…_Weitergabe.pdf“ erstellt, mit Kennwort geschützt – …“,
+     darunter „Mit Kennwort ist die PDF keine PDF/A. Zur Ablage erstellt die Kanzlei nach dem
+     Einlesen eine PDF ohne Kennwort.“
+3. Die heruntergeladene PDF in einem PDF-Programm öffnen (Edge, Acrobat Reader, Vorschau).
+   - **Danach:** Das Programm fragt nach einem Kennwort.
+4. Das Kennwort genau wie notiert eingeben: klein und mit Bindestrichen.
+   - **Danach:** Die PDF zeigt die Angaben des Arbeitgebers wie ohne Kennwort. _Nicht
+     offensichtlich:_ In den Dokumenteigenschaften stehen Titel und Fragebogen-ID auch ohne Kennwort
+     lesbar – die Angaben selbst sind verschlüsselt.
+5. In der App **„Fragebogen schließen“**, dann auf der Startseite **„Datei öffnen …“** und die PDF
+   wählen.
+   - **Danach:** Ein Fenster **„Geschützte PDF“** mit dem Dateinamen und dem Feld „Kennwort“.
+6. <kbd>falsch-falsch</kbd> tippen und **„Öffnen“** klicken.
+   - **Danach:** Rot im Fenster: „Das Kennwort passt nicht zu dieser PDF. Bitte prüfen Sie es und
+     geben Sie es noch einmal ein.“
+7. Das Feld leeren, das notierte Kennwort in **Großbuchstaben und ohne Bindestriche** tippen und
+   **„Öffnen“** klicken.
+   - **Danach:** Der Fragebogen öffnet; die Meldung nennt „Geprüft: Alle abgeschlossenen Teile sind
+     unverändert seit ihrem Abschluss.“ und „Die PDF war mit einem Kennwort geschützt.“ _Nicht
+     offensichtlich:_ **Kein** Hinweis „mit einem anderen Programm neu gespeichert“.
+8. **„Fragebogen schließen“**, **„Datei öffnen …“**, dieselbe PDF wählen und im Fenster
+   **„Abbrechen“** klicken.
+   - **Danach:** Rot: „„Sofortmeldung_…_Weitergabe.pdf“ ist mit einem Kennwort geschützt. Ohne das
+     Kennwort lässt sich die PDF nicht öffnen.“
+9. Weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“**, dann **„Dateien hinzufügen
+   …“** und dieselbe PDF wählen.
+   - **Danach:** Auch hier das Fenster „Geschützte PDF“; mit dem Kennwort wird die Datei eingelesen.
+
+**Erwartet:**
+
+- _Nicht offensichtlich:_ Die PDF für die Personalakte, die die Kanzlei nach dem Zusammenführen
+  erstellt, hat nie ein Kennwort – sie bleibt PDF/A für die Ablage.
+- Öffnet ein PDF-Programm die PDF auch mit dem richtigen Kennwort nicht, bitte Programm und Version
+  melden. Bekannt: Die in Windows eingebaute PDF-Schnittstelle, die manche ältere Programme nutzen,
+  kann AES-256 nicht öffnen.

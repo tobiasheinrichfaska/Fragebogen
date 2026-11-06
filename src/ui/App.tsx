@@ -59,6 +59,7 @@ import { ResumeOffer } from './ResumeOffer';
 import { masterDataRolesText } from '../logic/masterData';
 import { parseTransferFragment, transferOffer } from '../logic/transferLink';
 import { UnlockLinkScreen } from './UnlockLinkScreen';
+import { usePasswordDialog } from './usePasswordDialog';
 import { describeRevised } from '../logic/validity';
 
 type Screen =
@@ -243,6 +244,7 @@ function Workspace({
   );
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
+  const { dialog: passwordDialog, ask: askPassword } = usePasswordDialog();
   const [banner, setBanner] = useState<BannerMessage | undefined>(
     () => transferred?.message ?? startBanner(start, remembered, linked),
   );
@@ -392,7 +394,7 @@ function Workspace({
 
   /** Reads a PDF, interim file or photo; photos of a print-out are collected until complete. */
   const readOpened = async (file: File): Promise<OpenResult | undefined> => {
-    const { result: opened } = await openAnyFile(file, registry, collected);
+    const { result: opened } = await openAnyFile(file, registry, collected, askPassword);
     if (opened.kind === 'partial') {
       setCollected(opened.collected);
       setBanner(opened.message);
@@ -435,9 +437,9 @@ function Workspace({
     });
   };
 
-  const pdf = async () => {
+  const pdf = async (password?: string) => {
     if (!session) return;
-    const result = await createPdf(session);
+    const result = await createPdf(session, password);
     setSession(result.session);
     setBanner(result.message);
   };
@@ -560,6 +562,7 @@ function Workspace({
       )}
       {resumeNote && <Banner message={resumeNote} onClose={() => setResumeNote(undefined)} />}
       {banner && <Banner message={banner} onClose={() => setBanner(undefined)} />}
+      {passwordDialog}
 
       {screen.kind === 'start' && (
         <StartScreen
@@ -607,7 +610,7 @@ function Workspace({
           onReopen={(r) => continueRole(reopen(session, r))}
           onSaveInterim={saveInterim}
           onTakeOver={(f) => void takeOverFile(f)}
-          onPdf={() => void pdf()}
+          onPdf={(password) => void pdf(password)}
           onClose={close}
           onDiscard={discard}
           transfer={transferOffer(
@@ -652,7 +655,7 @@ function Workspace({
           role={screen.role}
           onOverview={() => setScreen({ kind: 'roles' })}
           onSaveInterim={saveInterim}
-          onPdf={() => void pdf()}
+          onPdf={(password) => void pdf(password)}
           transfer={transferOffer(
             session.questionnaire,
             session.form,

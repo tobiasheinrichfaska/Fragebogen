@@ -3,6 +3,7 @@
 // the self-reported platform for the system note. Everything here is what the device says.
 import { APP_VERSION } from '../appInfo';
 import type { InputType, SystemNote } from '../logic/model';
+import { PASSWORD_LENGTH, proposedPassword } from '../logic/passwords';
 import {
   deviceDescription,
   deviceKind,
@@ -16,6 +17,11 @@ function randomBytes(count: number): Uint8Array {
 }
 
 const hex = (bytes: Uint8Array) => [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+/** The password the app proposes for a link or a PDF passed on (logic/passwords.ts). */
+export function newPassword(): string {
+  return proposedPassword(randomBytes(PASSWORD_LENGTH));
+}
 
 /** Lower-case UUID v4. */
 export function newQuestionnaireId(): string {

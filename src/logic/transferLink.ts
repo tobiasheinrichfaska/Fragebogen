@@ -74,31 +74,6 @@ export const TRANSFER_LOCK = {
   additionalData: 'Fragebogen Weitergabe 2',
 } as const;
 
-/** Letters and digits that cannot be mistaken for one another when read out (no l/1, no o/0). */
-export const TRANSFER_PASSWORD_ALPHABET = 'abcdefghijkmnpqrstuvwxyz23456789';
-/** Characters of a password: 12 of 32 = 60 bits, three groups of four. */
-export const TRANSFER_PASSWORD_LENGTH = 12;
-
-/** The password the app proposes, from random bytes (one character per byte, unbiased: 32 | 256). */
-export function transferPassword(random: Uint8Array): string {
-  if (random.length < TRANSFER_PASSWORD_LENGTH) throw new Error('not enough random bytes');
-  const chars = Array.from(random.slice(0, TRANSFER_PASSWORD_LENGTH), (byte) =>
-    TRANSFER_PASSWORD_ALPHABET.charAt(byte & 31),
-  );
-  return [0, 4, 8].map((start) => chars.slice(start, start + 4).join('')).join('-');
-}
-
-/**
- * What the key is derived from: the password without case, spaces and hyphens, since it is
- * often read out on the phone or typed on a phone that capitalises the first letter.
- */
-export function passwordKeyText(typed: string): string {
-  return typed
-    .normalize('NFC')
-    .toLowerCase()
-    .replace(/[\s-]+/g, '');
-}
-
 export interface LockedTransfer {
   salt: Uint8Array<ArrayBuffer>;
   iv: Uint8Array<ArrayBuffer>;

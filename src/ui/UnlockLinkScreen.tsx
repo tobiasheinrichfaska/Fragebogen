@@ -4,8 +4,8 @@
 import { useState } from 'react';
 import { APP_NAME } from '../appInfo';
 import { lockAvailable, unlockTransfer } from '../io/transferLock';
+import { passwordKeyText } from '../logic/passwords';
 import {
-  passwordKeyText,
   TRANSFER_LINK_MESSAGES,
   type LockedTransfer,
   type TransferLinkIssue,

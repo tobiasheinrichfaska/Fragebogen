@@ -1,6 +1,6 @@
 // "Wer füllt jetzt aus?" — the overview of the questionnaire: every role with its state, what
 // still blocks passing it on and what the recipient still misses.
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   BLOCKER_MESSAGES,
   completenessGaps,
@@ -11,6 +11,7 @@ import {
 import { roleStates, type RoleState, type Session } from '../logic/session';
 import type { TransferOffer } from '../logic/transferLink';
 import { Banner, Card, FormScope } from './common';
+import { PasswordOption } from './PasswordOption';
 import { TransferLinkSection } from './TransferLinkSection';
 
 interface Props {
@@ -20,7 +21,7 @@ interface Props {
   onReopen: (role: string) => void;
   onSaveInterim: () => void;
   onTakeOver: (file: File) => void;
-  onPdf: () => void;
+  onPdf: (password: string | undefined) => void;
   onClose: () => void;
   onDiscard: () => void;
   transfer: TransferOffer;
@@ -57,6 +58,7 @@ export function RolesScreen(props: Props) {
     onLinkCopied,
   } = props;
   const input = useRef<HTMLInputElement>(null);
+  const [password, setPassword] = useState<string | undefined>();
   const states = roleStates(session);
   const blockers = transmissionBlockers(session.questionnaire, session.form);
   const gaps = completenessGaps(session.questionnaire, session.form).filter(
@@ -174,6 +176,9 @@ export function RolesScreen(props: Props) {
             }}
           />
         )}
+        {anySealed && blockers.length === 0 && (
+          <PasswordOption password={password} onChange={setPassword} />
+        )}
         <div className="nav">
           <button type="button" onClick={onSaveInterim}>
             Zwischenstand speichern
@@ -182,7 +187,7 @@ export function RolesScreen(props: Props) {
             type="button"
             className="primary"
             disabled={!anySealed || blockers.length > 0}
-            onClick={onPdf}
+            onClick={() => onPdf(password)}
           >
             PDF erstellen
           </button>
@@ -193,7 +198,7 @@ export function RolesScreen(props: Props) {
             Fragebogen verwerfen
           </button>
         </div>
-        <TransferLinkSection transfer={transfer} onLinkCopied={onLinkCopied} />
+        <TransferLinkSection transfer={transfer} password={password} onLinkCopied={onLinkCopied} />
       </Card>
       <Card title="Gültigkeit und Grenzen">
         <FormScope definition={session.form.definition} />

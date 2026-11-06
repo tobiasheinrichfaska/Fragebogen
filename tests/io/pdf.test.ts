@@ -4,12 +4,19 @@
 import { readFileSync } from 'node:fs';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { editClues, groupLines, readPdfText, type PdfJsLike } from '../../src/io/pdfReader';
+import {
+  editClues,
+  groupLines,
+  passwordIssue,
+  readPdfText,
+  type PdfJsLike,
+} from '../../src/io/pdfReader';
 import { printable, writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
 import { decodePackage } from '../../src/logic/dataPackage';
 import { decodeDataLines } from '../../src/logic/dataPages';
 import { registryOf } from '../../src/logic/formRegistry';
 import { canonicalize } from '../../src/logic/jcs';
+import { pdfPasswordCandidates } from '../../src/logic/passwords';
 import type { Session } from '../../src/logic/session';
 import {
   completeSofortmeldung,
@@ -158,6 +165,80 @@ describe('questionnaire PDF — handover', () => {
     expect(decoded.ok).toBe(true);
     expect(text.lines.join('\n')).toContain('Zur Weitergabe an die nächste Station.');
   }, 60_000);
+});
+
+describe('questionnaire PDF with a password (Tobias 2026-11-06)', () => {
+  const PASSWORD = 'k7qm-2xrp-9fha';
+  const session = employerOnly();
+  let written: Awaited<ReturnType<typeof write>>;
+  beforeAll(async () => {
+    written = await writeQuestionnairePdf(
+      {
+        questionnaire: session.questionnaire,
+        form: session.form,
+        origin: 'published',
+        config: {},
+        created: CREATED,
+        password: PASSWORD,
+      },
+      FONTS,
+    );
+  }, 60_000);
+
+  it('is encrypted with AES-256 and claims no PDF/A, which forbids encryption', () => {
+    expect(written.protected).toBe(true);
+    const raw = latin1(written.bytes);
+    expect(raw).toContain('/Encrypt');
+    expect(raw).toMatch(/\/V 5/);
+    expect(raw).toMatch(/\/R 6/);
+    expect(raw).toContain('/AESV3');
+    expect(raw).not.toMatch(/pdfaid/);
+    // The streams (pages, data pages) are encrypted, the strings stay plain and say so: title,
+    // Fragebogen-ID and producer read back right instead of as garbage.
+    expect(raw).toMatch(/\/StmF \/StdCF/);
+    expect(raw).toMatch(/\/StrF \/Identity/);
+    for (const forbidden of ['/JavaScript', '/JS ', '/EmbeddedFile', '/Launch']) {
+      expect(raw).not.toContain(forbidden);
+    }
+  });
+
+  it('opens only with the password, then gives the questionnaire back', async () => {
+    await expect(readPdfText(PDFJS, written.bytes)).rejects.toSatisfy(
+      (error) => passwordIssue(error) === 'needed',
+    );
+    await expect(readPdfText(PDFJS, written.bytes, 'k7qm-2xrp-9fhb')).rejects.toSatisfy(
+      (error) => passwordIssue(error) === 'wrong',
+    );
+    const text = await readPdfText(PDFJS, written.bytes, PASSWORD);
+    const lines = decodeDataLines(text.lines);
+    if (!lines.ok) throw new Error(lines.issue);
+    const decoded = decodePackage(JSON.parse(lines.text), registryOf([sofortmeldung]));
+    if (!decoded.ok) throw new Error(JSON.stringify(decoded.issues));
+    expect(canonicalize(decoded.questionnaire)).toBe(canonicalize(session.questionnaire));
+    expect(text.producer).toMatch(/^Fragebogen \d+\.\d+\.\d+/);
+    expect(editClues(written.bytes, text.producer)).toEqual([]);
+  }, 60_000);
+
+  it('opens with the password typed in capitals and without hyphens, as the app tries it', async () => {
+    const tried = pdfPasswordCandidates('K7QM2XRP9FHA');
+    expect(tried).toContain(PASSWORD);
+    const opened = await Promise.allSettled(tried.map((p) => readPdfText(PDFJS, written.bytes, p)));
+    expect(opened.map((o) => o.status)).toEqual(
+      tried.map((p) => (p === PASSWORD ? 'fulfilled' : 'rejected')),
+    );
+  }, 60_000);
+
+  it('opens with pdf-lib too, as another PDF program would', async () => {
+    const reloaded = await PDFDocument.load(written.bytes, { password: PASSWORD });
+    expect(reloaded.getPageCount()).toBe(written.pages);
+  }, 60_000);
+
+  it('names no password matter for other errors', () => {
+    expect(passwordIssue(new Error('kaputt'))).toBeUndefined();
+    expect(passwordIssue(undefined)).toBeUndefined();
+    expect(passwordIssue({ name: 'PasswordException', code: 1 })).toBe('needed');
+    expect(passwordIssue({ name: 'PasswordException', code: 2 })).toBe('wrong');
+  });
 });
 
 describe('printable', () => {
