@@ -38,7 +38,8 @@ test('a start link opens the Sofortmeldung ready to sign', async ({ page }) => {
 
 test('a start link opens the Personalfragebogen at the decisive question', async ({ page }) => {
   const found = await openCase(page, 'MT-96');
-  await page.getByRole('button', { name: '▶ Aushilfe vorbereitet öffnen' }).click();
+  // The case opens the same start link again for its counter-checks (small steps, 2026-11-06).
+  await page.getByRole('button', { name: '▶ Aushilfe vorbereitet öffnen' }).first().click();
   await expect(heading(page)).toContainText('Wie ist die Beschäftigung vorgesehen?');
   await expectQuiet(page, found);
 });

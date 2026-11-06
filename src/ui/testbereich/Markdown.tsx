@@ -1,9 +1,9 @@
 // Renders the test texts (inline Markdown, paragraphs, lists, code) as React elements — never HTML.
 // A reference to another test ("MT-10") becomes a button that opens it, when the page knows it. In
 // the steps a value to enter gets a copy button, a value to type by hand (<kbd>) none, and each
-// step shows its expectations right there (Tobias 2026-11-06).
+// step shows what it brings right under it (Tobias 2026-11-06).
 import { useState } from 'react';
-import { inlineMarkdown, STEP_NOTE_LABELS, type Block } from '../../logic/manualTests';
+import { inlineMarkdown, STEP_NOTE_LABEL, type Block } from '../../logic/manualTests';
 
 export interface RefHandler {
   open: (id: string) => void;
@@ -128,15 +128,10 @@ export function Blocks({
           if (!notes) return <li key={j}>{inline(item, copy)}</li>;
           return (
             <li key={j} className="test-step">
-              {notes.before.map((text, k) => (
-                <p key={`b${k}`} className="step-note step-before">
-                  <strong>{STEP_NOTE_LABELS.before}:</strong> {inline(text)}
-                </p>
-              ))}
               <p className="step-do">{inline(item, copy)}</p>
-              {notes.after.map((text, k) => (
-                <p key={`a${k}`} className="step-note step-after">
-                  <strong>{STEP_NOTE_LABELS.after}:</strong> {inline(text)}
+              {notes.map((text, k) => (
+                <p key={k} className="step-note step-after">
+                  <strong>{STEP_NOTE_LABEL}:</strong> {inline(text)}
                 </p>
               ))}
             </li>

@@ -18,16 +18,18 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 
 **Schritte:**
 
-1. Bei „Familienname“ 35 Buchstaben tippen, zum Beispiel <kbd>Abcdefghij</kbd> dreimal und dann
-   <kbd>Klmno</kbd>.
-   - **Achten Sie gleich auf:** Nach 30 Zeichen nimmt das Feld nichts mehr an; die letzten fünf
-     Buchstaben erscheinen nicht.
-2. Das Feld leeren und dasselbe mit Einfügen (Strg+V bzw. Einsetzen am Handy) eines 35 Zeichen
-   langen Texts versuchen, zum Beispiel `AbcdefghijAbcdefghijAbcdefghijKlmno`.
+1. Bei „Familienname“ dreimal <kbd>Abcdefghij</kbd> tippen.
+   - **Danach:** Im Feld stehen 30 Zeichen.
+2. Weiter tippen: <kbd>Klmno</kbd>.
+   - **Danach:** Das Feld nimmt nichts mehr an; die fünf Buchstaben erscheinen nicht.
+3. Das Feld leeren und einen 35 Zeichen langen Text einfügen (Strg+V bzw. Einsetzen am Handy):
+   `AbcdefghijAbcdefghijAbcdefghijKlmno`.
    - **Danach:** _Nicht offensichtlich:_ Beim Einfügen schneidet der Browser den Text nach 30
-     Zeichen ab, ohne Meldung. Bitte in der Zusammenfassung prüfen, dass genau die ersten 30
-     Zeichen stehen.
-3. **„Weiter“**.
+     Zeichen ab, ohne Meldung.
+4. **„Weiter“** klicken, die übrigen Fragen beliebig beantworten und mit **„Weiter“** bis zur
+   Zusammenfassung gehen.
+   - **Danach:** In der Zusammenfassung steht beim Familiennamen genau „AbcdefghijAbcdefghijAbcdefghij“
+     – die ersten 30 Zeichen.
 
 **Erwartet:**
 
@@ -38,7 +40,8 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 
 ## MT-105: Ungewöhnliche Zeichen im Namen sind nur ein Hinweis
 
-**Einstieg:** wie MT-104.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen
+Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Beschäftigte Person“.
 
 **Schritte:**
 
@@ -48,20 +51,28 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
      die Angabe für die Meldung zur Sozialversicherung nicht enden“.
 2. Mit **„Zurück“** zurück, `Müller` eingeben und **„Weiter“**.
    - **Danach:** kein Hinweis.
-3. Bei „Hausnummer“ `-12` eingeben und **„Weiter“**.
+3. Mit **„Zurück“** zurück, `O'Brien` eingeben und **„Weiter“**.
+   - **Danach:** _Nicht offensichtlich:_ **kein** Hinweis.
+4. Mit **„Zurück“** zurück, `Nguyễn` eingeben und **„Weiter“**.
+   - **Danach:** **kein** Hinweis.
+5. Mit **„Zurück“** zurück, `Müller-Lüdenscheidt` eingeben und **„Weiter“**.
+   - **Danach:** **kein** Hinweis.
+6. Mit **„Weiter“** bis „Hausnummer“ gehen, die Fragen dazwischen beliebig beantworten.
+7. Bei „Hausnummer“ `-12` eingeben und **„Weiter“**.
    - **Danach:** Hinweis „… muss die Angabe mit einem Buchstaben beginnen …“; die Hausnummer wird
      trotzdem übernommen.
 
 **Erwartet:**
 
-- _Nicht offensichtlich:_ Namen wie `O'Brien`, `Nguyễn` oder `Müller-Lüdenscheidt` geben **keinen**
-  Hinweis. Ein Name, wie er im Pass steht, wird nie abgelehnt.
+- _Nicht offensichtlich:_ Ein Name, wie er im Pass steht, wird nie abgelehnt.
 
 ---
 
 ## MT-106: Geburtsdatum außerhalb der Grenzen
 
-**Einstieg:** wie MT-104, bis „Geburtsdatum“.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen
+Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Beschäftigte Person“ und
+beantworten die Fragen bis „Geburtsdatum“ beliebig.
 
 **Schritte:**
 
@@ -87,21 +98,25 @@ stehen beim Geburtsdatum.
 
 **Schritte:**
 
-1. Geburtsdatum `18.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`,
-   **„Weiter“**.
+1. Geburtsdatum `18.05.1990` eingeben und **„Weiter“**.
+2. Mit **„Weiter“** bis zum Geschlecht gehen (die Fragen dazwischen sind vorausgefüllt), „weiblich“
+   wählen und **„Weiter“**.
+3. Mit **„Weiter“** bis zur Versicherungsnummer gehen, `65 170590 M 520` eingeben und **„Weiter“**.
    - **Danach:** Die Versicherungsnummer wird angenommen, **ohne** Fehler – sie hat eine gültige
      Prüfziffer, auch wenn sie nicht ganz zum Geburtsdatum passt. _Ab Fassung 1.1.0 (Testordner):_
      Gleich nach „Weiter“ steht oben gelb „Die Versicherungsnummer passt nicht ganz … Geburtsdatum
      in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“
-2. Bei „Liegt die Anschrift im Ausland?“ **„Ja“**, Staat „Niederlande“, Postleitzahl `1234AB`;
-   Straße, Hausnummer und Wohnort beliebig.
-   - **Achten Sie gleich auf:** _Ab Fassung 1.1.0:_ Auch die Postleitzahl `1234AB` meldet sich
-     gleich nach „Weiter“ gelb.
-3. Bis zur Zusammenfassung gehen, unterschreiben, **„PDF erstellen“**.
-   - **Achten Sie gleich auf:** _Ab Fassung 1.1.0:_ In der Zusammenfassung steht der Hinweis zur
+4. Bei „Liegt die Anschrift im Ausland?“ **„Ja“** wählen, als Staat „Niederlande“; Straße und
+   Hausnummer beliebig, den Anschriftenzusatz leer lassen.
+5. Bei der Postleitzahl `1234AB` eingeben und **„Weiter“**.
+   - **Danach:** _Ab Fassung 1.1.0:_ Auch die Postleitzahl meldet sich gleich nach „Weiter“ gelb.
+6. Den Wohnort beliebig eintragen und bis zur Zusammenfassung gehen.
+   - **Danach:** _Ab Fassung 1.1.0:_ In der Zusammenfassung steht der Hinweis zur
      Versicherungsnummer oben unter **„Bitte prüfen:“** mit **„ändern“**; auch die Postleitzahl
-     steht unter „Bitte prüfen:“. Abschließen bleibt möglich.
-4. **„Gerät weitergeben – zur Übersicht“**, in der Übersicht unter „Stand“ **„Fragebogen
+     steht unter „Bitte prüfen:“.
+7. Unterschreiben und **„PDF erstellen“**.
+   - **Danach:** Abschließen bleibt trotz der Hinweise möglich.
+8. **„Gerät weitergeben – zur Übersicht“**, in der Übersicht unter „Stand“ **„Fragebogen
    schließen“**. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen
    …“** klicken und die PDF einlesen.
    - **Danach:** In der Karte des Fragebogens steht „Prüfhinweise:“ mit zwei Hinweisen: „Die
@@ -110,11 +125,27 @@ stehen beim Geburtsdatum.
      „§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1“; und „Die Postleitzahl hat
      nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. …
      Format in Niederlande: NNNN AA (N = Ziffer, A = Buchstabe), zum Beispiel 1234 FG.“
+9. Für die Gegenprobe noch einmal
+   [Ab dem Geburtsdatum öffnen](start:sofortmeldung-person-ab-geburtsdatum) klicken.
+10. Geburtsdatum diesmal `17.05.1990` eingeben und **„Weiter“**.
+11. Mit **„Weiter“** bis zum Geschlecht gehen, „weiblich“ wählen und **„Weiter“**.
+12. Mit **„Weiter“** bis zur Versicherungsnummer gehen, `65 170590 M 520` eingeben und **„Weiter“**.
+    - **Danach:** Kein Hinweis zur Versicherungsnummer.
+13. Bei „Liegt die Anschrift im Ausland?“ **„Ja“** wählen, als Staat „Niederlande“; Straße und
+    Hausnummer beliebig, den Anschriftenzusatz leer lassen.
+14. Bei der Postleitzahl diesmal `1234 AB` (mit Leerzeichen) eingeben und **„Weiter“**.
+    - **Danach:** Kein Hinweis zur Postleitzahl.
+15. Den Wohnort beliebig eintragen, bis zur Zusammenfassung gehen, unterschreiben und **„PDF
+    erstellen“**.
+16. **„Gerät weitergeben – zur Übersicht“**, in der Übersicht unter „Stand“ **„Fragebogen
+    schließen“**. Auf der Startseite im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken
+    und die eben erstellte PDF einlesen.
+    - **Danach:** Beide Prüfhinweise – zur Versicherungsnummer und zur Postleitzahl – sind
+      verschwunden.
 
 **Erwartet:**
 
-- _Nicht offensichtlich:_ Mit Geburtsdatum `17.05.1990` und Postleitzahl `1234 AB` (mit Leerzeichen)
-  verschwinden beide Hinweise. Hinweise blockieren nichts.
+- _Nicht offensichtlich:_ Hinweise blockieren nichts.
 
 ---
 
@@ -126,26 +157,31 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
 **Schritte:**
 
 1. Bis „Wie ist die Arbeitszeit vereinbart?“ gehen, „feste Stunden an festen Wochentagen“ wählen,
-   bei „An welchen Wochentagen arbeitet die Person?“ „Montag“ und „Freitag“ ankreuzen,
+   **„Weiter“**.
+2. Bei „An welchen Wochentagen arbeitet die Person?“ „Montag“ und „Freitag“ ankreuzen,
    **„Weiter“**.
    - **Danach:** Gefragt werden nur Montag und Freitag.
-2. Bei „Wie viele Stunden arbeitet die Person am Montag?“ `25` eingeben, **„Weiter“**.
+3. Bei „Wie viele Stunden arbeitet die Person am Montag?“ `25` eingeben, **„Weiter“**.
    - **Danach:** Rot **„Höchstens 24.“**
-3. `11` eingeben, **„Weiter“**.
+4. `11` eingeben, **„Weiter“**.
    - **Danach:** Es geht weiter, oben erscheint „Ungewöhnlich hoher Wert – bitte prüfen.“
-4. Beim Freitag ohne Eingabe **„Weiter“** versuchen.
+5. Beim Freitag ohne Eingabe **„Weiter“** versuchen.
    - **Danach:** Ohne Stunden geht es **nicht** weiter (Pflicht, weil angekreuzt).
-5. Bei „Hat die Person Ihnen eine Schwerbehinderung oder Gleichstellung mitgeteilt …?“ „einem
-   schwerbehinderten Menschen gleichgestellt“ wählen. Beim Grad der Behinderung `25` eingeben,
-   **„Weiter“**.
+6. Beim Freitag `4` eingeben, **„Weiter“**.
+   - **Danach:** Es geht weiter.
+7. Mit **„Weiter“** bis „Hat die Person Ihnen eine Schwerbehinderung oder Gleichstellung mitgeteilt
+   …?“ gehen und dort „einem schwerbehinderten Menschen gleichgestellt“ wählen, **„Weiter“**.
+8. Beim Grad der Behinderung `25` eingeben, **„Weiter“**.
    - **Danach:** **„Nur in Schritten von 10 möglich.“**
-6. `10` eingeben, **„Weiter“**.
+9. `10` eingeben, **„Weiter“**.
    - **Danach:** **„Mindestens 20.“**
-7. `30` eingeben, **„Weiter“**.
-   - **Danach:** 30 wird angenommen.
-8. Im Entwurf „Dienstwagen“ als Arbeitgeber beim „Amtlichen Kennzeichen“ `ka ab 1234e` eingeben und
-   bis zur Zusammenfassung gehen.
-   - **Danach:** In der Zusammenfassung steht „KA-AB 1234E“.
+10. `30` eingeben, **„Weiter“**.
+    - **Danach:** 30 wird angenommen.
+11. Auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen
+    „Dienstwagen: Überlassung“ (Entwurf) als „Arbeitgeber“ starten.
+12. Firma und Namen beliebig eintragen, beim „Amtlichen Kennzeichen“ `ka ab 1234e` eingeben und
+    die übrigen Fragen beliebig beantworten, bis zur Zusammenfassung.
+    - **Danach:** In der Zusammenfassung steht „KA-AB 1234E“.
 
 ---
 
@@ -156,16 +192,21 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
 
 **Schritte:**
 
-1. Gehen Sie mit **„Zurück“** zu „Ist Ihr Geburtsname derselbe wie Ihr Familienname?“, wählen Sie
-   **„Nein“** und geben Sie als Geburtsnamen `Schmidt` ein.
-2. Geburtsdatum `17.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`,
-   **„Weiter“**.
+1. Gehen Sie mit **„Zurück“** zu „Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen
+   …?“, wählen Sie **„Nein“** und klicken Sie **„Weiter“**.
+2. Geben Sie als Geburtsnamen `Schmidt` ein und klicken Sie **„Weiter“**.
+3. Geben Sie als Geburtsdatum `17.05.1990` ein und klicken Sie **„Weiter“**.
+4. Gehen Sie mit **„Weiter“** bis zum Geschlecht (die Fragen dazwischen sind vorausgefüllt), wählen
+   Sie „weiblich“ und klicken Sie **„Weiter“**.
+5. Gehen Sie mit **„Weiter“** bis zur Versicherungsnummer, geben Sie `65 170590 M 520` ein und
+   klicken Sie **„Weiter“**.
    - **Danach:** Oben erscheint gelb „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum,
      Geburtsname oder Geschlecht. … Buchstabe in der Versicherungsnummer: M; Anfangsbuchstabe des
      Geburtsnamens: S.“ Es geht trotzdem weiter.
-3. Gehen Sie bis zur Zusammenfassung und klicken Sie dort unter „Bitte prüfen:“ auf **„ändern“**.
-   - **Achten Sie gleich auf:** Die Zusammenfassung zeigt den Hinweis **oben** (nicht erst nach dem
-     Scrollen).
+6. Füllen Sie die Anschrift beliebig aus und gehen Sie bis zur Zusammenfassung.
+   - **Danach:** Die Zusammenfassung zeigt den Hinweis **oben** unter „Bitte prüfen:“ (nicht erst
+     nach dem Scrollen).
+7. Klicken Sie dort unter „Bitte prüfen:“ auf **„ändern“**.
    - **Danach:** „ändern“ führt zur Versicherungsnummer.
 
 **Erwartet:**

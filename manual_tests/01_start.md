@@ -46,9 +46,9 @@ Dieser Handtest bleibt für echte Geräte und Browser._
      `https://…/test/`, als Datei `file:…` – und ggf. ein Eintrag mit `data:`. _Nicht
      offensichtlich:_ Ein Eintrag „favicon“ mit `data:,` ist gewollt. Er verhindert, dass der
      Browser ein Symbol aus dem Internet nachlädt.
-2. Beginnen Sie einen Fragebogen und beantworten Sie einige Fragen.
-   - **Achten Sie gleich auf:** Beim Ausfüllen kommt im Reiter „Netzwerk“ **keine** weitere Anfrage
-     dazu.
+2. Beginnen Sie mit **„Personalfragebogen: Angaben für die Sofortmeldung“** einen Fragebogen und
+   beantworten Sie einige Fragen.
+   - **Danach:** Im Reiter „Netzwerk“ ist beim Ausfüllen **keine** weitere Anfrage dazugekommen.
 3. Trennen Sie jetzt den Rechner vom Internet (WLAN aus bzw. Netzwerkkabel ziehen) und füllen Sie
    weiter aus.
    - **Danach:** Die App arbeitet ohne Internet weiter. _Nicht offensichtlich:_ Nur die Links „Wo

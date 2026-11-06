@@ -18,24 +18,27 @@ bestätigt, Familienname und Vornamen eingegeben.
    - **Danach:** Die Zusammenfassung erscheint sofort. Oben unter „Das fehlt noch, bevor Sie
      abschließen können:“ stehen die noch fehlenden Pflichtangaben, je mit „beantworten“, und noch
      nicht bestätigte Hinweise („Bestätigung: …“ mit „ansehen und bestätigen“).
-2. Bei „Vornamen“ auf **„ändern“** tippen, den Namen ändern, **„Weiter“**.
-   - **Achten Sie gleich auf:** Der Knopf heißt hier **„Zurück zur Zusammenfassung“** (statt
-     „Weiter“).
-   - **Danach:** Er führt zur Zusammenfassung – nicht zur nächsten Frage.
-3. Bei „Rente“ auf **„ändern“** tippen und **„Ja“** wählen.
+2. Bei „Vornamen“ auf **„ändern“** tippen.
+   - **Danach:** Die Frage nach den Vornamen erscheint. Der Knopf heißt hier **„Zurück zur
+     Zusammenfassung“** (statt „Weiter“).
+3. Die Vornamen ändern und **„Zurück zur Zusammenfassung“** tippen.
+   - **Danach:** Der Knopf führt zur Zusammenfassung – nicht zur nächsten Frage.
+4. Bei „Rente“ auf **„ändern“** tippen und **„Ja“** wählen.
    - **Danach:** Erst kommen genau die Fragen, die die Änderung neu geöffnet hat (Art der Rente,
-     Rente seit) – dort heißt der Knopf „Weiter“. _Nicht offensichtlich:_ Folgefragen, die schon
-     beantwortet sind, werden übersprungen.
-4. Die Art der Rente wählen und „Rente seit“ eingeben, **„Weiter“**.
-   - **Achten Sie gleich auf:** Bei der letzten dieser Fragen heißt der Knopf wieder „Zurück zur
-     Zusammenfassung“.
-5. Bei „Krankenversicherung“ auf **„ändern“**, „privat“ wählen und die Folgefragen beantworten, bis
+     Rente seit). Bei der Art der Rente heißt der Knopf „Weiter“. _Nicht offensichtlich:_
+     Folgefragen, die schon beantwortet sind, werden übersprungen.
+5. Die Art der Rente wählen.
+   - **Danach:** „Rente seit“ erscheint. Bei dieser letzten der neu geöffneten Fragen heißt der
+     Knopf wieder **„Zurück zur Zusammenfassung“**.
+6. „Rente seit“ eingeben und **„Zurück zur Zusammenfassung“** tippen.
+   - **Danach:** Die Zusammenfassung erscheint.
+7. Bei „Krankenversicherung“ auf **„ändern“**, „privat“ wählen und die Folgefragen beantworten, bis
    die Frage nach Beiträgen für Angehörige mit eigenem privatem Vertrag kommt. (Diese Folgefragen
    gibt es nur, wenn bei „Vereinbarte Art der Beschäftigung“ weder Minijob noch Aushilfe gewählt
    ist – siehe MT-86.)
-6. Dort **„Ja“** tippen, dann **„Zurück“**.
+8. Dort **„Ja“** tippen, dann **„Zurück“**.
    - **Danach:** „Ja“ ist markiert.
-7. **„Auswahl aufheben“** tippen.
+9. **„Auswahl aufheben“** tippen.
    - **Danach:** Nichts ist mehr markiert, die Frage bleibt stehen, und der Link verschwindet. Den
      Link gibt es nur bei **freiwilligen** Ja/Nein- und Auswahlfragen; eine Pflichtantwort lässt
      sich nur durch eine andere ersetzen.
@@ -86,16 +89,23 @@ bestätigt, Familienname und Vornamen eingegeben.
 
 1. Als **Arbeitgeber** den Teil ausfüllen: „Vorgesehene Art der Beschäftigung“ = „Minijob“, „Art der
    Lohnsteuer“ = „pauschal 2 % (Minijob)“. Abschließen.
-2. Auf demselben Gerät „Ich bin: Beschäftigte Person“ wählen. Bei „Was haben Sie mit Ihrem
+2. Auf demselben Gerät **„Ich bin: Beschäftigte Person“** wählen. Bei „Was haben Sie mit Ihrem
    Arbeitgeber vereinbart?“ **„einen Minijob“** wählen und weiter bis zur Zusammenfassung.
-   - **Achten Sie gleich auf:** Die Frage „Wie wird Ihre Beschäftigung versteuert?“ kommt
-     **nicht**; die Frage nach dem ersten oder weiteren Dienstverhältnis (Steuerklasse) fehlt.
-   - **Danach:** Die Zusammenfassung zeigt „Art der Lohnsteuer: pauschal 2 % (Minijob)“ mit dem
-     Vermerk **„festgelegt von: Arbeitgeber“** und ohne „ändern“.
-3. Gegenprobe: einen neuen Personalfragebogen beginnen, **zuerst** die beschäftigte Person ausfüllen
-   und dort „einen Minijob“ wählen.
-   - **Danach:** Ohne Arbeitgeberteil fragt der Fragebogen die Person selbst. Bei „pauschal …“
-     entfällt die Steuerklassen-Frage, bei „Weiß ich nicht.“ kommt sie vorsorglich.
+   - **Danach:** Unterwegs kam die Frage „Wie wird Ihre Beschäftigung versteuert?“ **nicht**; auch
+     die Frage nach dem ersten oder weiteren Dienstverhältnis (Steuerklasse) fehlte.
+3. In der Zusammenfassung die Zeile „Art der Lohnsteuer“ suchen.
+   - **Danach:** Dort steht „Art der Lohnsteuer: pauschal 2 % (Minijob)“ mit dem Vermerk
+     **„festgelegt von: Arbeitgeber“** und ohne „ändern“.
+4. Gegenprobe: einen neuen Personalfragebogen beginnen und **zuerst** die beschäftigte Person
+   ausfüllen: **„Ich bin: Beschäftigte Person“** wählen, bei „Was haben Sie mit Ihrem Arbeitgeber
+   vereinbart?“ „einen Minijob“ wählen und weitergehen.
+   - **Danach:** Ohne Arbeitgeberteil fragt der Fragebogen die Person selbst: Nach der
+     Steuer-Identifikationsnummer kommt „Wie wird Ihre Beschäftigung versteuert?“.
+5. Dort „pauschal 2 % (Minijob)“ wählen.
+   - **Danach:** Die Steuerklassen-Frage („Welches Dienstverhältnis ist diese Beschäftigung für die
+     Lohnsteuer?“) entfällt.
+6. **„Zurück“** tippen und „Weiß ich nicht.“ wählen.
+   - **Danach:** Jetzt kommt die Steuerklassen-Frage vorsorglich.
 
 **Erwartet:**
 
@@ -251,64 +261,75 @@ Projekt.
      Überschriften ohne Formularnamen (z. B. „Angaben des Arbeitgebers“). _Nicht offensichtlich:_
      In der öffentlichen Fassung gibt es den Personalfragebogen nicht; er steht nur mit den
      Entwürfen (Testbereich) in der Auswahl.
-3. Bei der Firma `Beispiel Gastro GmbH` eingeben, bei der Betriebsnummer `1234 567X`.
-   - **Achten Sie gleich auf:** Unter der Betriebsnummer steht der Grund der Ablehnung, und unter
-     „Ihr Link“ steht „Bitte erst die markierten Angaben berichtigen.“ statt eines Links.
-4. Die Betriebsnummer auf `1234 5671` berichtigen.
-   - **Achten Sie gleich auf:** Der Link erscheint mit „… von 2.000 Zeichen“.
-5. Bei **„Lohnsteuer bei Minijobs“** „pauschal 2 % (Minijob)“ wählen, bei **„Abwälzung der
-   Pauschalsteuer bei Minijobs“** „Ja“; bei **„Lohnsteuer bei kurzfristigen Aushilfen“** „pauschal
-   25 % (kurzfristige Aushilfe)“, bei der Abwälzung für Aushilfen „Nein“.
-   - **Achten Sie gleich auf:** Bei „Lohnsteuer bei Minijobs“ gibt es nur ELStAM, pauschal 2 %,
-     pauschal 20 % und „prüfen lassen“, bei den Aushilfen nur ELStAM, 25 %, 5 % und „prüfen
-     lassen“.
-6. Beim Privathaushalt „Ja“ wählen; danach bei der besonderen Betriebsart „knappschaftlicher
-   Betrieb (Bergbau)“; danach bei der Seeschifffahrt „Ja“.
-   - **Danach:** Ein Kasten „Was diese Angaben bewirken“ erscheint: beim Privathaushalt „Je nach
-     den Angaben zur Person macht die App keine Vorschläge – Minijob oder kurzfristige Beschäftigung
-     im Privathaushalt …“; bei der Knappschaft „Die App macht für diesen Betrieb keine Vorschläge –
-     Beschäftigung in einem knappschaftlichen Betrieb …“; bei der Seeschifffahrt „… Beschäftigung
-     an Bord eines Seeschiffs …“ (je nach Person).
-7. Alle drei zurücksetzen (Privathaushalt „Nein“, Betriebsart „Nein, keine davon“, Seeschifffahrt
-   „Nein“).
-   - **Danach:** Der Kasten verschwindet.
-8. Bei „Was soll der Link öffnen?“ kurz „SEPA-Basislastschriftmandat“ wählen.
-   - **Danach:** Beim SEPA-Mandat sind Firma und Lohnsteuer weg; darunter steht „Nicht in diesem
-     Link, weil sie zu anderen Formularen gehören: …“ mit diesen Angaben, und der Link endet auf
-     `formular=sepa-mandat`.
-9. Wieder den Personalfragebogen wählen; **„Kopieren“** klicken.
-   - **Danach:** Zurück beim Personalfragebogen stehen alle Antworten wieder da; der Link beginnt
-     mit `#stammdaten=1&formular=personalfragebogen`.
-10. Zur Startseite; dort weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“**
+3. Bei der Firma `Beispiel Gastro GmbH` eingeben.
+4. Bei der Betriebsnummer `1234 567X` eingeben.
+   - **Danach:** Unter der Betriebsnummer steht der Grund der Ablehnung, und unter „Ihr Link“ steht
+     „Bitte erst die markierten Angaben berichtigen.“ statt eines Links.
+5. Die Betriebsnummer auf `1234 5671` berichtigen.
+   - **Danach:** Der Link erscheint mit „… von 2.000 Zeichen“.
+6. Bei **„Lohnsteuer bei Minijobs“** die Auswahl ansehen.
+   - **Danach:** Es gibt nur ELStAM, pauschal 2 %, pauschal 20 % und „prüfen lassen“.
+7. Dort „pauschal 2 % (Minijob)“ wählen, bei **„Abwälzung der Pauschalsteuer bei Minijobs“** „Ja“.
+8. Bei **„Lohnsteuer bei kurzfristigen Aushilfen“** die Auswahl ansehen.
+   - **Danach:** Es gibt nur ELStAM, 25 %, 5 % und „prüfen lassen“.
+9. Dort „pauschal 25 % (kurzfristige Aushilfe)“ wählen, bei der Abwälzung für Aushilfen „Nein“.
+10. Beim Privathaushalt „Ja“ wählen.
+    - **Danach:** Ein Kasten „Was diese Angaben bewirken“ erscheint mit „Je nach den Angaben zur
+      Person macht die App keine Vorschläge – Minijob oder kurzfristige Beschäftigung im
+      Privathaushalt …“.
+11. Bei der besonderen Betriebsart „knappschaftlicher Betrieb (Bergbau)“ wählen.
+    - **Danach:** Im Kasten kommt dazu: „Die App macht für diesen Betrieb keine Vorschläge –
+      Beschäftigung in einem knappschaftlichen Betrieb …“.
+12. Bei der Seeschifffahrt „Ja“ wählen.
+    - **Danach:** Im Kasten kommt dazu: „… Beschäftigung an Bord eines Seeschiffs …“ (je nach
+      Person).
+13. Alle drei zurücksetzen (Privathaushalt „Nein“, Betriebsart „Nein, keine davon“, Seeschifffahrt
+    „Nein“).
+    - **Danach:** Der Kasten verschwindet.
+14. Bei „Was soll der Link öffnen?“ kurz „SEPA-Basislastschriftmandat“ wählen.
+    - **Danach:** Beim SEPA-Mandat sind Firma und Lohnsteuer weg; darunter steht „Nicht in diesem
+      Link, weil sie zu anderen Formularen gehören: …“ mit diesen Angaben, und der Link endet auf
+      `formular=sepa-mandat`.
+15. Bei „Was soll der Link öffnen?“ wieder den Personalfragebogen wählen.
+    - **Danach:** Zurück beim Personalfragebogen stehen alle Antworten wieder da.
+16. **„Kopieren“** klicken.
+    - **Danach:** Der Link beginnt mit `#stammdaten=1&formular=personalfragebogen`.
+17. Zur Startseite; dort weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“**
     öffnen, unten **„Stammdaten-Link erstellen oder ändern“** aufklappen, den kopierten Link bei
     „Vorhandenen Link einfügen“ einfügen und **„Einlesen“** klicken.
     - **Danach:** „Link eingelesen: … Angaben“; der Personalfragebogen ist gewählt, alle Antworten
-      aus Schritt 3–5 stehen wieder da. Die Liste der Eingänge bleibt unverändert.
+      aus Schritt 3–9 stehen wieder da. Die Liste der Eingänge bleibt unverändert.
 
 ---
 
 ## MT-100: Lohnsteuer-Regel aus dem Link erscheint mit der Frage
 
 **Einstieg:** Sie öffnen den Link aus MT-99 in einem neuen Tab – er beginnt gleich einen neuen
-Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wählen „Ich bin: Arbeitgeber“.
+Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 **Voraussetzungen:** MT-99 (der kopierte Link).
 
 **Schritte:**
 
-1. Bis **„Wie ist die Beschäftigung vorgesehen?“** gehen und „Minijob (bis 603 € im Monat)“ wählen.
-   - **Achten Sie gleich auf:** Beim Beginnen erscheint „Stammdaten aus Ihrem Lesezeichen
-     übernommen. Bitte prüfen.“; Firma und Betriebsnummer sind schon beantwortet.
-2. Bei **„Wie soll die Lohnsteuer erhoben werden?“** und bei der Abwälzung jeweils **„Weiter“**.
-   - **Achten Sie gleich auf:** Die Lohnsteuer-Frage erscheint mit „pauschal 2 % (Minijob)“ gewählt
-     und dem Hinweis „Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.“; die Abwälzung folgt
-     mit „Ja“. _Nicht offensichtlich:_ Die Fragen werden trotzdem gezeigt – der Link belegt nur
-     vor, er beantwortet nichts ungesehen.
-3. Zurück zur Beschäftigungsart, „kurzfristige Aushilfe …“ wählen und wieder bis zur Lohnsteuer
-   gehen.
-   - **Danach:** Jetzt ist „pauschal 25 % (kurzfristige Aushilfe)“ vorbelegt, die Abwälzung „Nein“.
-4. Die Lohnsteuer auf „nach den Lohnsteuermerkmalen (ELStAM)“ ändern; zurück zur Beschäftigungsart
-   und wieder „Minijob“ wählen.
+1. **„Ich bin: Arbeitgeber“** wählen.
+   - **Danach:** Oben erscheint „Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.“
+2. Bis **„Wie ist die Beschäftigung vorgesehen?“** gehen.
+   - **Danach:** Unterwegs waren Firma und Betriebsnummer schon beantwortet.
+3. Dort „Minijob (bis 603 € im Monat)“ wählen und weiter bis **„Wie soll die Lohnsteuer erhoben
+   werden?“** gehen.
+   - **Danach:** Die Lohnsteuer-Frage erscheint mit „pauschal 2 % (Minijob)“ gewählt und dem Hinweis
+     „Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.“ _Nicht offensichtlich:_ Die Fragen
+     werden trotzdem gezeigt – der Link belegt nur vor, er beantwortet nichts ungesehen.
+4. **„Weiter“** tippen.
+   - **Danach:** Die Frage nach der Abwälzung folgt mit „Ja“.
+5. Bei der Abwälzung **„Weiter“** tippen. Dann zurück zur Beschäftigungsart gehen, „kurzfristige
+   Aushilfe …“ wählen und wieder bis zur Lohnsteuer gehen.
+   - **Danach:** Jetzt ist „pauschal 25 % (kurzfristige Aushilfe)“ vorbelegt.
+6. **„Weiter“** tippen.
+   - **Danach:** Die Abwälzung ist mit „Nein“ vorbelegt.
+7. **„Zurück“** tippen und die Lohnsteuer auf „nach den Lohnsteuermerkmalen (ELStAM)“ ändern.
+8. Zurück zur Beschäftigungsart gehen, wieder „Minijob (bis 603 € im Monat)“ wählen und bis zur
+   Lohnsteuer gehen.
    - **Danach:** „ELStAM“ bleibt stehen, ohne den Hinweis „Vorbelegt …“: Was Sie geändert haben,
      überschreibt der Link nicht mehr.
 
@@ -342,25 +363,31 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
 
 **Schritte:**
 
-1. Bei **„Was soll der Link öffnen?“** nachsehen, was gewählt ist; dann „einen neuen Fragebogen
-   „Personalfragebogen: Angaben für die Sofortmeldung““ wählen. Firma `Beispiel Bau GmbH`,
-   Betriebsnummer `1234 5671` eingeben; **„Kopieren“**.
-   - **Achten Sie gleich auf:** Gewählt ist noch nichts („Bitte wählen …“). Der Hinweis darunter
-     sagt, dass die Seite danach nur die Angaben dieses Formulars zeigt und dass der Link nur das
-     Formular nennt, keine Fassung.
-2. Den Link in einem neuen Tab öffnen.
+1. Die Frage **„Was soll der Link öffnen?“** ansehen.
+   - **Danach:** Gewählt ist noch nichts („Bitte wählen …“). Der Hinweis darunter sagt, dass die
+     Seite danach nur die Angaben dieses Formulars zeigt und dass der Link nur das Formular nennt,
+     keine Fassung.
+2. Dort „einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung““ wählen. Firma
+   `Beispiel Bau GmbH`, Betriebsnummer `1234 5671` eingeben; **„Kopieren“**.
+3. Den Link in einem neuen Tab öffnen.
    - **Danach:** Sofort ein **neuer, leerer Fragebogen** „Personalfragebogen: Angaben für die
      Sofortmeldung“ bei „Wer füllt jetzt aus?“ – ohne Umweg über die Startseite. Oben: „Neuer
      Fragebogen … aus Ihrem Lesezeichen. Die Angaben aus dem Link stehen schon im Teil
      „Arbeitgeber“.“
-3. Im ersten Tab „die Startseite (das Formular wählt man dort)“ wählen, kopieren und in einem neuen
-   Tab öffnen.
-   - **Danach:** Im ersten Tab erscheinen jetzt die Angaben **aller** Formulare; jede steht nur
-     einmal da, auch wenn mehrere Formulare sie nutzen („Genutzt in: …“), die Überschriften mit dem
-     Formularnamen in Klammern. Der neue Tab zeigt die Startseite wie früher; Firma und
-     Betriebsnummer stehen trotzdem in jedem neuen Fragebogen beim Arbeitgeber.
-4. In der öffentlichen App (nicht im Testbereich) einen Link mit `formular=personalfragebogen` öffnen
-   (z. B. den Link aus MT-99).
+4. Im ersten Tab bei „Was soll der Link öffnen?“ „die Startseite (das Formular wählt man dort)“
+   wählen.
+   - **Danach:** Jetzt erscheinen die Angaben **aller** Formulare; jede steht nur einmal da, auch
+     wenn mehrere Formulare sie nutzen („Genutzt in: …“), die Überschriften mit dem Formularnamen in
+     Klammern.
+5. **„Kopieren“** klicken und den Link in einem neuen Tab öffnen.
+   - **Danach:** Der neue Tab zeigt die Startseite wie früher.
+6. Im neuen Tab einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“
+   beginnen und **„Ich bin: Arbeitgeber“** wählen.
+   - **Danach:** Firma und Betriebsnummer stehen trotzdem schon da: Der Link trägt sie in jeden
+     neuen Fragebogen beim Arbeitgeber ein.
+7. In der öffentlichen App (nicht im Testbereich) einen Link mit `formular=personalfragebogen`
+   öffnen: an die Adresse der öffentlichen App `#stammdaten=1&formular=personalfragebogen` anhängen
+   und die Seite neu laden (F5).
    - **Danach:** Gelb: „Ihr Lesezeichen soll einen neuen Fragebogen „personalfragebogen“ öffnen;
      diese Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.“ – die Startseite
      erscheint. _Nicht offensichtlich:_ Der Link öffnet immer die neueste Fassung des Formulars; er
@@ -374,21 +401,22 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
 
 **Schritte:**
 
-1. Bei „Telefonnummer“ `12345` eingeben und **„Weiter“** tippen; dann `0721 123456`.
-   - **Achten Sie gleich auf:** Die falsche Eingabe wird mit einem Hinweis abgelehnt
-     (Telefonnummer mit Vorwahl); die richtige geht weiter.
-2. Bei „E-Mail-Adresse“ `erika.beispiel.de` eingeben und **„Weiter“** tippen; dann
-   `Erika@Beispiel.DE`.
-   - **Achten Sie gleich auf:** Die falsche Eingabe wird mit einem Hinweis abgelehnt (E-Mail wie
-     name@beispiel.de); die richtige geht weiter.
-   - **Danach:** _Nicht offensichtlich:_ Die E-Mail wird als `Erika@beispiel.de` gespeichert – der
-     Teil nach dem @ in Kleinbuchstaben, der Teil davor wie eingegeben.
-3. Bis „Vereinbarte Art der Beschäftigung“ weitergehen und „einen Minijob“ wählen; bei
-   „Krankenversicherung“ „privat“ wählen.
+1. Bei „Telefonnummer“ `12345` eingeben und **„Weiter“** tippen.
+   - **Danach:** Die Eingabe wird mit einem Hinweis abgelehnt (Telefonnummer mit Vorwahl).
+2. Die Telefonnummer auf `0721 123456` ändern und **„Weiter“** tippen.
+   - **Danach:** Die Nummer wird angenommen, es geht weiter.
+3. Bei „E-Mail-Adresse“ `erika.beispiel.de` eingeben und **„Weiter“** tippen.
+   - **Danach:** Die Eingabe wird mit einem Hinweis abgelehnt (E-Mail wie name@beispiel.de).
+4. Die E-Mail-Adresse auf `Erika@Beispiel.DE` ändern und **„Weiter“** tippen.
+   - **Danach:** Die Adresse wird angenommen, es geht weiter. _Nicht offensichtlich:_ Die E-Mail
+     wird als `Erika@beispiel.de` gespeichert – der Teil nach dem @ in Kleinbuchstaben, der Teil
+     davor wie eingegeben.
+5. Bis „Vereinbarte Art der Beschäftigung“ weitergehen und „einen Minijob“ wählen.
+6. Bis „Krankenversicherung“ weitergehen und „privat“ wählen.
    - **Danach:** Nach „privat“ folgt nur die Frage nach dem Versicherungsunternehmen. Bescheinigung
      für den Zuschuss, Stand 2002, die letzten fünf Jahre, frühere Befreiung und letzte gesetzliche
      Krankenkasse kommen im Minijob **nicht** (kein Zuschuss, keine Versicherungspflicht).
-4. Über „App neu starten“ einen neuen Personalfragebogen als **„Arbeitgeber“** beginnen und die
+7. Über „App neu starten“ einen neuen Personalfragebogen als **„Arbeitgeber“** beginnen und die
    Fragen bis „Besondere Fälle“ durchgehen.
    - **Danach:** Der Arbeitgeber wird einmal gefragt, ob sein Betrieb Beschäftigte mit
      Sozialversicherung in einem anderen Staat hat (vorbelegt „Nein“; steht danach im
@@ -407,22 +435,25 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ – und wä
 
 **Schritte:**
 
-1. Geburtsdatum `17.05.2005` eingeben; bei „Was machen Sie hauptsächlich …“ „Schülerin oder Schüler“
-   wählen und weitergehen.
-   - **Achten Sie gleich auf:** Man kann nur **einen** Status wählen.
+1. Geburtsdatum `17.05.2005` eingeben und bis „Was machen Sie hauptsächlich …“ weitergehen.
+   - **Danach:** Bei dieser Frage kann man nur **einen** Status wählen.
+2. „Schülerin oder Schüler“ wählen und weitergehen.
    - **Danach:** Es kommen „Beziehen Sie eine Rente?“ (vorbelegt „Nein“) und die Schulart, aber
      keine Fragen nach Grundsicherungsgeld, Elternzeit oder Pension.
-2. Über **„Zur Zusammenfassung“** den Status auf „im Ruhestand (Rente oder Pension)“ ändern und
+3. Über **„Zur Zusammenfassung“** den Status auf „im Ruhestand (Rente oder Pension)“ ändern und
    weitergehen.
    - **Danach:** Jetzt kommt „Beziehen Sie eine Pension …?“; Grundsicherungsgeld wird nicht
      gefragt.
-3. Das Geburtsdatum nacheinander auf `01.06.1958`, `15.03.1960` und `01.01.1965` ändern und jeweils
-   die folgenden Fragen ansehen.
-   - **Danach:** Nur bei `15.03.1960` fragt der Fragebogen „Haben Sie zu Beginn dieser Beschäftigung
-     die Regelaltersgrenze … erreicht?“ (Ja / Nein / Weiß ich nicht). _Nicht offensichtlich:_ Bei
-     `01.06.1958` gilt sie als erreicht (es erscheinen die Fragen zur Aktivrente), bei `01.01.1965`
-     als nicht erreicht – ohne Rückfrage; die Grenzen hängen an der Fassung für einen Beginn im
+4. Das Geburtsdatum auf `01.06.1958` ändern und die folgenden Fragen ansehen.
+   - **Danach:** _Nicht offensichtlich:_ Die Frage nach der Regelaltersgrenze kommt **nicht** – sie
+     gilt ohne Rückfrage als erreicht; es erscheinen die Fragen zur Aktivrente.
+5. Das Geburtsdatum auf `15.03.1960` ändern und die folgenden Fragen ansehen.
+   - **Danach:** Jetzt fragt der Fragebogen „Haben Sie zu Beginn dieser Beschäftigung die
+     Regelaltersgrenze … erreicht?“ (Ja / Nein / Weiß ich nicht).
+6. Das Geburtsdatum auf `01.01.1965` ändern und die folgenden Fragen ansehen.
+   - **Danach:** _Nicht offensichtlich:_ Die Frage kommt wieder **nicht** – die Regelaltersgrenze
+     gilt ohne Rückfrage als nicht erreicht. Die Grenzen hängen an der Fassung für einen Beginn im
      Jahr 2026.
-4. Den Status auf „Arbeitnehmerin oder Arbeitnehmer …“ ändern.
+7. Den Status auf „Arbeitnehmerin oder Arbeitnehmer …“ ändern.
    - **Danach:** Jetzt kommen „Grundsicherungsgeld?“ und „Elternzeit bei einem anderen
      Arbeitgeber?“.

@@ -13,10 +13,14 @@ MT-11 bis zur Zusammenfassung.
 1. Klicken Sie **„Weiter zum Abschluss“**.
    - **Danach:** _Nicht offensichtlich:_ Oben steht unter „Das schließen Sie ab:“ alles, was Sie
      abschließen, nach Abschnitten – ohne „ändern“; ändern geht mit „Zurück zur Zusammenfassung“.
+   - **Danach:** _Nicht offensichtlich:_ Beim Arbeitgeber ist die Unterschrift freiwillig: Es gibt
+     die Wahl **„Ohne Unterschrift abschließen“**. Bei der beschäftigten Person gibt es sie
+     **nicht** (MT-21, Schritt 2).
 2. Setzen Sie das Häkchen **„Ich bestätige die Angaben des Arbeitgebers.“**
-3. Wählen Sie **„Ohne Unterschrift abschließen“** und klicken Sie **„Abschließen“**.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Beim Arbeitgeber ist die Unterschrift
-     freiwillig. Bei der beschäftigten Person gibt es „Ohne Unterschrift abschließen“ **nicht**.
+3. Wählen Sie **„Ohne Unterschrift abschließen“**.
+   - **Danach:** Der Knopf unten heißt jetzt **„Abschließen“** statt „Unterschreiben und
+     abschließen“.
+4. Klicken Sie **„Abschließen“**.
    - **Danach:** Es erscheint **„Arbeitgeber: abgeschlossen“** mit Datum, Uhrzeit, Systemvermerk
      (Betriebssystem, Browser, Eingabeart) und einem langen **Prüfwert**.
 
@@ -37,32 +41,46 @@ in der Zusammenfassung der Person.
    nur lesen)“**.
    - **Danach:** Der Arbeitgeber-Kasten zeigt Firma, Betriebsnummer und den Tag der
      Beschäftigungsaufnahme. Die Person kann diese Angaben nicht ändern.
-2. Klicken Sie **„Weiter zum Abschluss“** und setzen Sie das Häkchen **„Ich versichere, dass meine
-   Angaben richtig und vollständig sind.“**
-3. Unterschreiben Sie im gestrichelten Feld. Probieren Sie auch **„Unterschrift löschen“** und
-   unterschreiben Sie erneut.
-   - **Achten Sie gleich auf:** Die Linie folgt dem Finger oder Stift ohne Versatz. Auf Tablet und
-     Handy scrollt die Seite beim Unterschreiben **nicht** mit.
-   - **Achten Sie gleich auf:** „Unterschreiben und abschließen“ ist erst aktiv, wenn Häkchen
+2. Klicken Sie **„Weiter zum Abschluss“**.
+   - **Danach:** „Unterschreiben und abschließen“ ist ausgegraut. _Nicht offensichtlich:_ Die Wahl
+     „Ohne Unterschrift abschließen“ gibt es hier **nicht** – bei der beschäftigten Person ist die
+     Unterschrift Pflicht (beim Arbeitgeber freiwillig, MT-20).
+3. Setzen Sie das Häkchen **„Ich versichere, dass meine Angaben richtig und vollständig sind.“**
+   - **Danach:** „Unterschreiben und abschließen“ bleibt ausgegraut – es fehlt noch die
+     Unterschrift.
+4. Unterschreiben Sie im gestrichelten Feld.
+   - **Danach:** Die Linie folgt dem Finger oder Stift ohne Versatz. Auf Tablet und Handy scrollt die
+     Seite beim Unterschreiben **nicht** mit.
+   - **Danach:** „Unterschreiben und abschließen“ ist jetzt aktiv – es ist erst aktiv, wenn Häkchen
      **und** Unterschrift da sind.
-4. Klicken Sie **„Unterschreiben und abschließen“**.
+5. Klicken Sie **„Unterschrift löschen“**.
+   - **Danach:** Das Feld ist wieder leer, und „Unterschreiben und abschließen“ ist wieder
+     ausgegraut.
+6. Tippen Sie nur einmal kurz ins Feld (ein einzelner Punkt) und klicken Sie
+   **„Unterschreiben und abschließen“**.
+   - **Danach:** Es erscheint „Die Unterschrift ist leer oder ungültig.“ mit dem Zusatz „Die
+     gezeichnete Unterschrift ist zu kurz. Bitte vollständig unterschreiben.“; nichts wird
+     abgeschlossen. _Nicht offensichtlich:_ Ein einzelner Punkt oder ein winziger Strich wird
+     abgelehnt. Das schützt vor versehentlichem Antippen.
+7. Klicken Sie **„Unterschrift löschen“** und unterschreiben Sie vollständig.
+   - **Danach:** „Unterschreiben und abschließen“ ist wieder aktiv.
+8. Klicken Sie **„Unterschreiben und abschließen“**.
+   - **Danach:** „Beschäftigte Person: abgeschlossen“ mit „Unterschrieben am …“.
+9. Klicken Sie **„Gerät weitergeben – zur Übersicht“**.
    - **Danach:** Die Übersicht zeigt bei beiden Rollen „unterschrieben“ bzw. „abgeschlossen“ und im
      Kasten „Stand“ grün **„Vollständig: alle erforderlichen Teile liegen vor und sind
      verknüpft.“**
-
-**Erwartet:**
-
-- _Nicht offensichtlich:_ Ein einzelner Punkt oder ein winziger Strich wird abgelehnt („Die
-  gezeichnete Unterschrift ist zu kurz. Bitte vollständig unterschreiben.“). Das schützt vor versehentlichem Antippen.
 
 ---
 
 ## MT-22: Getippter Name statt Zeichnung
 
 **Einstieg:** [Zum Unterschreiben öffnen](start:sofortmeldung-zum-unterschreiben), dann **„Weiter zum
-Abschluss“** und das Häkchen setzen – oder direkt nach MT-21 Schritt 2.
+Abschluss“** und das Häkchen setzen – oder direkt nach MT-21 Schritt 3.
 
-**Voraussetzungen:** Wie MT-21 bis Schritt 2.
+**Voraussetzungen:** Die Person steht auf der Abschluss-Seite („Weiter zum Abschluss“ geklickt), das
+Häkchen **„Ich versichere, dass meine Angaben richtig und vollständig sind.“** ist gesetzt (MT-21
+bis Schritt 3).
 
 **Schritte:**
 
@@ -70,7 +88,8 @@ Abschluss“** und das Häkchen setzen – oder direkt nach MT-21 Schritt 2.
 2. Klicken Sie **„Unterschreiben und abschließen“**.
    - **Danach:** Rot erscheint „Die Unterschrift ist leer oder ungültig.“ mit dem Zusatz „Bitte den
      vollständigen Namen eintippen.“; nichts wird abgeschlossen.
-3. Geben Sie `Erika Musterfrau` ein und schließen Sie ab.
+3. Ändern Sie den Namen auf `Erika Musterfrau` und klicken Sie
+   **„Unterschreiben und abschließen“**.
    - **Danach:** Mit vollem Namen klappt der Abschluss.
 
 ---
@@ -113,15 +132,26 @@ hat mit getipptem Namen unterschrieben, der Arbeitgeber hat noch nichts ausgefü
 1. Klicken Sie in der Übersicht bei der Person **„Unterschrift zurücknehmen“**.
    - **Danach:** Der Teil der Person ist wieder „begonnen, nicht abgeschlossen“; die alte
      Unterschrift ist weg.
-2. Schließen Sie erneut ab. Lassen Sie dann den Arbeitgeber ausfüllen und abschließen.
+2. Schließen Sie bei der Person erneut ab: **„Weitermachen“**, **„Weiter zum Abschluss“**, das
+   Häkchen setzen, **„Namen tippen“**, `Erika Musterfrau` eingeben und
+   **„Unterschreiben und abschließen“** klicken.
+3. Lassen Sie den Arbeitgeber ausfüllen: **„Gerät weitergeben – zur Übersicht“**,
+   **„Ich bin: Arbeitgeber“**, dann Firma `Beispiel Bau GmbH`, Betriebsnummer `12345671`,
+   Wirtschaftsbereich **„Baugewerbe“** (nur ab Fassung 1.1.0 gefragt), Familienname `Musterfrau`,
+   Vornamen `Erika`, Personalnummer leer, Tag der Beschäftigungsaufnahme `02.11.2026` – bei den
+   Feldern jeweils **„Weiter“** – bis zur Zusammenfassung.
+4. Schließen Sie beim Arbeitgeber ab: **„Weiter zum Abschluss“**, das Häkchen
+   **„Ich bestätige die Angaben des Arbeitgebers.“**, **„Ohne Unterschrift abschließen“** und
+   **„Abschließen“**.
+5. Klicken Sie **„Gerät weitergeben – zur Übersicht“**.
    - **Danach:** _Nicht offensichtlich:_ Bei der Person gibt es „Unterschrift zurücknehmen“ **nicht
      mehr**, weil der Arbeitgeber diese Fassung schon bestätigt hat. Nur noch „Neue Fassung
      beginnen“ geht. Beim Arbeitgeber steht „Abschluss zurücknehmen“, wenn er ohne Unterschrift
      abgeschlossen hat (mit Unterschrift „Unterschrift zurücknehmen“).
-3. Klicken Sie bei der Person auf **„Neue Fassung beginnen“**.
+6. Klicken Sie bei der Person auf **„Neue Fassung beginnen“**.
    - **Danach:** „Neue Fassung beginnen“ öffnet direkt die Zusammenfassung mit allen bisherigen
      Antworten.
-4. Ändern Sie eine Angabe und unterschreiben Sie.
+7. Ändern Sie eine Angabe und unterschreiben Sie.
    - **Danach:** Bei der Person steht „unterschrieben (Fassung 2)“, und der Kasten „Stand“ ist
      weiterhin vollständig, weil die neue Fassung den Teil des Arbeitgebers bestätigt.
 

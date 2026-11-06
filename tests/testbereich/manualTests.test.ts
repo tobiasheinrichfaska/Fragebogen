@@ -112,8 +112,8 @@ describe('parseManualTests', () => {
 
 describe('expectations at the steps (Tobias 2026-11-06)', () => {
   const blocks = blocksOf([
-    '1. Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.',
-    '   - **Achten Sie gleich auf:** Sofort erscheint ein Fehler',
+    '1. Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben und **„Weiter“**.',
+    '   - **Danach:** Ein Fehler erscheint',
     '     (Prüfziffer falsch).',
     '2. **„Kopieren“** klicken und den Link',
     '   in einem neuen Tab öffnen.',
@@ -125,19 +125,19 @@ describe('expectations at the steps (Tobias 2026-11-06)', () => {
     '  - eingerückt bleibt im Punkt',
   ]);
 
-  it('hangs the expectations on their step, before or after it', () => {
+  it('hangs what a step brings right under it', () => {
     expect(blocks[0]).toEqual({
       kind: 'list',
       ordered: true,
       items: [
-        'Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.',
+        'Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben und **„Weiter“**.',
         '**„Kopieren“** klicken und den Link in einem neuen Tab öffnen.',
         'Ohne Erwartung.',
       ],
       notes: [
-        { before: ['Sofort erscheint ein Fehler (Prüfziffer falsch).'], after: [] },
-        { before: [], after: ['„Link kopiert.“', 'Der Fragebogen öffnet sich.'] },
-        { before: [], after: [] },
+        ['Ein Fehler erscheint (Prüfziffer falsch).'],
+        ['„Link kopiert.“', 'Der Fragebogen öffnet sich.'],
+        [],
       ],
     });
   });
@@ -153,12 +153,12 @@ describe('expectations at the steps (Tobias 2026-11-06)', () => {
     ]);
   });
 
-  it('reads every text of a step, the expectations in their order', () => {
+  it('reads every text of a step, the expectations after it', () => {
     const first = blocks[0];
     if (!first) throw new Error('no block');
     expect(textsOf(first)).toEqual([
-      'Sofort erscheint ein Fehler (Prüfziffer falsch).',
-      'Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.',
+      'Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben und **„Weiter“**.',
+      'Ein Fehler erscheint (Prüfziffer falsch).',
       '**„Kopieren“** klicken und den Link in einem neuen Tab öffnen.',
       '„Link kopiert.“',
       'Der Fragebogen öffnet sich.',
@@ -195,6 +195,19 @@ describe('manual_tests/ as the catalogue', () => {
       })
       .map((c) => c.id);
     expect(incomplete).toEqual([]);
+  });
+
+  // Tobias 2026-11-06 (second report): a note to watch for before a step did not help — a wrong
+  // input is a step of its own with the error as its result, the right input the next step.
+  it('has no note before a step, only results after it', () => {
+    const raw = readdirSync(DIR)
+      .filter((name) => /^\d\d_.+\.md$/.test(name))
+      .flatMap((name) =>
+        readFileSync(join(DIR, name), 'utf8')
+          .split(/\r?\n/)
+          .flatMap((line, i) => (/Achten Sie gleich auf/.test(line) ? [`${name}:${i + 1}`] : [])),
+      );
+    expect(raw).toEqual([]);
   });
 
   // Tobias 2026-11-06: what a step brings stands at that step, not in a list further down.

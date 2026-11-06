@@ -1098,11 +1098,6 @@ button.start-link {
   font-size: 0.95em;
 }
 
-.step-before {
-  border-left-color: var(--warning-border);
-  background: var(--warning-bg);
-}
-
 .step-after {
   border-left-color: var(--success-border);
   background: var(--success-bg);
