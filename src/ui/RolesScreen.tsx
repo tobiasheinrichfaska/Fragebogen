@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import {
   BLOCKER_MESSAGES,
   completenessGaps,
+  PASS_ON_TEXTS,
   requirementText,
   transmissionBlockers,
 } from '../logic/requirements';
@@ -145,7 +146,7 @@ export function RolesScreen(props: Props) {
           <Banner
             message={{
               tone: 'warning',
-              text: 'Noch nicht weitergeben:',
+              text: PASS_ON_TEXTS.blocked,
               detail: blockers.map(
                 (b) =>
                   `${BLOCKER_MESSAGES[b.code]}${b.detail.length ? ` (${b.detail.join(', ')})` : ''}`,
@@ -157,7 +158,7 @@ export function RolesScreen(props: Props) {
           <Banner
             message={{
               tone: 'info',
-              text: 'Kann an die nächste Station weitergegeben werden. Für die Lohnabrechnung fehlt noch:',
+              text: PASS_ON_TEXTS.gaps,
               detail: gaps.map(
                 (g) =>
                   `${BLOCKER_MESSAGES[g.code]}${g.detail.length ? ` (${g.detail.join(', ')})` : ''}`,
@@ -169,7 +170,7 @@ export function RolesScreen(props: Props) {
           <Banner
             message={{
               tone: 'success',
-              text: 'Vollständig: alle erforderlichen Teile liegen vor und sind verknüpft.',
+              text: PASS_ON_TEXTS.complete,
             }}
           />
         )}

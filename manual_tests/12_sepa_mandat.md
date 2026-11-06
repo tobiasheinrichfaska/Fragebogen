@@ -24,23 +24,28 @@ Deutschen Bundesbank.
      Firma oder Betriebsnummer. **Mandantennummer und Mandatsreferenz fehlen**: Sie gelten nur für
      einen Mandanten und gehören nicht in das Lesezeichen der Kanzlei.
 2. Im Abschnitt **„Zahlungsempfänger“** eintragen: Name `Musterkanzlei Beispiel`, Straße
-   `Beispielweg 1`, Postleitzahl und Ort `12345 Musterstadt`, Land `Deutschland`, Gläubiger-ID
-   `DE97ZZZ09999999999`.
-   - **Achten Sie gleich auf:** Bei der Gläubiger-ID erscheint sofort ein Fehler (Prüfziffer
-     falsch); unter „Ihr Link“ steht „Bitte erst die markierten Angaben berichtigen.“
-3. Die Gläubiger-ID auf `de98 zzz 0999 9999 999` ändern.
-   - **Achten Sie gleich auf:** Der Fehler verschwindet. _Nicht offensichtlich:_ Kleinbuchstaben
-     und Leerzeichen sind erlaubt; gespeichert wird `DE98ZZZ09999999999`.
-4. **„Kopieren“** klicken.
-   - **Danach:** Der Link enthält `formular=sepa-mandat`; es erscheint **keine** Meldung „Der Link
-     enthält eine unbekannte oder ungültige Angabe.“
-5. Den Link in einem neuen Tab öffnen und die Übersicht ansehen.
+   `Beispielweg 1`, Postleitzahl und Ort `12345 Musterstadt`, Land `Deutschland`.
+   - **Danach:** Unter „Ihr Link“ steht ein Link.
+3. Bei der Gläubiger-ID `DE97ZZZ09999999999` eintragen.
+   - **Danach:** Bei der Gläubiger-ID steht ein Fehler (Prüfziffer falsch); unter „Ihr Link“ steht
+     „Bitte erst die markierten Angaben berichtigen.“ statt des Links.
+4. Die Gläubiger-ID auf `de98 zzz 0999 9999 999` ändern.
+   - **Danach:** Der Fehler verschwindet, der Link ist wieder da. _Nicht offensichtlich:_
+     Kleinbuchstaben und Leerzeichen sind erlaubt; gespeichert wird `DE98ZZZ09999999999`.
+5. **„Kopieren“** klicken.
+   - **Danach:** „Link kopiert.“ Der Link enthält `formular=sepa-mandat`; es erscheint **keine**
+     Meldung „Der Link enthält eine unbekannte oder ungültige Angabe.“
+6. Den Link in einem neuen Tab öffnen.
    - **Danach:** Oben steht „Neuer Fragebogen „SEPA-Basislastschriftmandat“ aus Ihrem Lesezeichen
      …“. In der Übersicht steht die Kanzlei mit **„nichts vorbelegt (freiwillig)“**, nicht mit
      „noch offen“.
-6. **„Ich bin: Kanzlei (Zahlungsempfänger)“** wählen.
-   - **Danach:** Name, Anschrift, Land und Gläubiger-ID sind vorbelegt, jeweils mit „Vorbelegt aus
-     Ihrem Stammdaten-Link – bitte prüfen.“; die Fragen werden trotzdem gezeigt.
+7. **„Ich bin: Kanzlei (Zahlungsempfänger)“** wählen.
+   - **Danach:** Die erste Frage, der Name des Zahlungsempfängers, steht schon mit `Musterkanzlei
+Beispiel` da, darunter „Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.“
+8. Viermal **„Weiter“** klicken.
+   - **Danach:** Anschrift, Land und Gläubiger-ID sind ebenso vorbelegt, jeweils mit „Vorbelegt aus
+     Ihrem Stammdaten-Link – bitte prüfen.“; die Fragen werden trotzdem gezeigt. Danach kommt die
+     Mandantennummer, leer.
 
 ---
 
@@ -51,30 +56,39 @@ Gläubiger-ID der Kanzlei sind eingetragen; Sie stehen bei der Mandantennummer.
 
 **Schritte:**
 
-1. Mandantennummer `10001`, **„Weiter“**. Bei „Wer hat zu zahlen?“ `Erika Musterfrau`, **„Weiter“**.
-   - **Danach:** Bei „Ist die Kontoinhaberin oder der Kontoinhaber identisch … oder abweichend?“ ist
-     „identisch – wer zu zahlen hat, ist selbst Kontoinhaberin oder Kontoinhaber“ vorgewählt.
-2. Beim Kontoinhaber und bei der Zahlungsart jeweils **„Weiter“**.
-   - **Achten Sie gleich auf:** Bei der Zahlungsart ist „wiederkehrende Zahlungen“ vorgewählt – die
-     Banken verlangen die Angabe „einmalig oder wiederkehrend“ im Mandat.
-   - **Danach:** _Nicht offensichtlich:_ Bei „Mandatsreferenz“ steht im Feld schon
-     `100010000001` (Mandantennummer und laufende Nummer `0000001`) mit „Vorschlag aus Ihren
-     Angaben – Sie können ihn ändern.“
-3. **„Wird separat mitgeteilt“** klicken. Bei „Welche Angaben zum Konto tragen Sie schon ein?“ nichts
-   ankreuzen, **„Weiter“**.
-   - **Danach:** Es geht ohne Mandatsreferenz und ohne Angaben zum Konto weiter zur
-     Zusammenfassung.
-4. Mit **„Zurück“** noch einmal zur Mandatsreferenz, dann **„Weiter“** bis zur Zusammenfassung.
-   - **Danach:** Das Feld war **leer** – eine bewusst leer gelassene Antwort schlägt die App nicht
-     noch einmal vor. In der Zusammenfassung steht bei „Mandatsreferenz“ „–“.
-5. In der Zusammenfassung den Abschnitt **„Stammdaten für das nächste Mal“** lesen.
+1. Mandantennummer `10001` eintragen, **„Weiter“**.
+   - **Danach:** Gefragt wird „Wer hat zu zahlen?“.
+2. `Erika Musterfrau` eintragen, **„Weiter“**.
+   - **Danach:** Bei „Ist die Kontoinhaberin oder der Kontoinhaber identisch mit „Erika Musterfrau“
+     oder abweichend?“ ist „identisch – wer zu zahlen hat, ist selbst Kontoinhaberin oder
+     Kontoinhaber“ vorgewählt.
+3. **„Weiter“** klicken.
+   - **Danach:** Bei der Zahlungsart ist „wiederkehrende Zahlungen“ vorgewählt – die Banken verlangen
+     die Angabe „einmalig oder wiederkehrend“ im Mandat.
+4. **„Weiter“** klicken.
+   - **Danach:** _Nicht offensichtlich:_ Bei „Mandatsreferenz“ steht im Feld schon `100010000001`
+     (Mandantennummer und laufende Nummer `0000001`) mit „Vorschlag aus Ihren Angaben – Sie können
+     ihn ändern.“
+5. **„Wird separat mitgeteilt“** klicken.
+   - **Danach:** Gefragt wird „Welche Angaben zum Konto tragen Sie schon ein?“, nichts ist
+     angekreuzt.
+6. Nichts ankreuzen, **„Weiter“**.
+   - **Danach:** Die Zusammenfassung erscheint, ohne Fragen zum Konto; bei „Mandatsreferenz“ steht
+     „–“.
+7. Zweimal **„Zurück“** klicken.
+   - **Danach:** Bei der Mandatsreferenz ist das Feld **leer** – eine bewusst leer gelassene Antwort
+     schlägt die App nicht noch einmal vor.
+8. Zweimal **„Weiter“** klicken und in der Zusammenfassung den Abschnitt **„Stammdaten für das
+   nächste Mal“** lesen.
    - **Danach:** Der Text nennt die Angaben, die der Link beim nächsten Mal einträgt, und endet mit
      „Der Link enthält nur Angaben aus dem Teil „Kanzlei (Zahlungsempfänger)“.“ **Mandantennummer
      und Mandatsreferenz fehlen** in der Aufzählung und im Link.
-6. **„Weiter zum Abschluss“**, Häkchen setzen, **„Abschließen“**.
-   - **Achten Sie gleich auf:** Die Abschluss-Seite bietet **keine** Unterschrift an, nur den Knopf
-     „Abschließen“ – der Zahlungsempfänger unterschreibt ein Mandat nicht.
-   - **Danach:** Darunter **„Als Link weitergeben“** mit einem Link und „Kopieren“.
+9. **„Weiter zum Abschluss“** klicken.
+   - **Danach:** Oben steht unter „Das schließen Sie ab:“ alles, was Sie abschließen. Die Seite bietet
+     **keine** Unterschrift an, nur den Knopf „Abschließen“ – der Zahlungsempfänger unterschreibt ein
+     Mandat nicht.
+10. Häkchen setzen, **„Abschließen“**.
+    - **Danach:** Darunter **„Als Link weitergeben“** mit einem Link und „Kopieren“.
 
 ---
 
@@ -89,39 +103,54 @@ füllt jetzt aus?“.
 1. Die Übersicht ansehen.
    - **Danach:** Die Kanzlei steht mit **„vorbelegt (Fassung 1)“**, nicht mit „abgeschlossen“ oder
      „noch offen“; der Knopf heißt „Abschluss zurücknehmen“ (nicht „Unterschrift zurücknehmen“).
-     _Nicht offensichtlich:_ Gleich unter den Rollen steht der Abschnitt „Stand“ mit „PDF
-     erstellen“, „Fragebogen schließen“ und „Als Link weitergeben“ – ohne Scrollen.
-2. **„Ich bin: Kontoinhaberin oder Kontoinhaber“** wählen und die beiden Hinweise lesen.
+     Gleich unter den Rollen steht „Stand“ mit „PDF erstellen“, „Fragebogen schließen“ und „Als Link
+     weitergeben“ und dem Satz „Kann an die nächste Station weitergegeben werden. Bis der Fragebogen
+     vollständig ist, fehlt noch: …“ – **nicht** „Für die Lohnabrechnung“.
+2. **„Ich bin: Kontoinhaberin oder Kontoinhaber“** wählen.
    - **Danach:** Der erste Hinweis ist der Mandatstext („Ich/Wir ermächtige(n) …“, mit der
-     Acht-Wochen-Frist), der zweite der Datenschutz.
-3. Kontoinhaber **„Weiter“**, „Gehört das Konto noch einer weiteren Person?“ **„Nein“**
-   (vorgewählt), „Liegt die Anschrift im Ausland?“ **„Nein“**, Straße `Musterstraße 5`.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Zahlungsempfänger, Gläubiger-ID, wer zu
-     zahlen hat und die Zahlungsart werden **nicht** gefragt. Die Frage zum Kontoinhaber steht mit
-     „identisch“ und „Vorbelegt von Kanzlei (Zahlungsempfänger) – bitte prüfen.“ da.
-4. Postleitzahl `1234` (vier Ziffern) eintragen und **„Weiter“**, dann `12345`.
-   - **Achten Sie gleich auf:** `1234` wird abgelehnt (5 Ziffern), wie im Personalfragebogen.
-5. Ort `Musterstadt`, Bank `Beispielbank`, IBAN `DE89 3704 0044 0532 0130 00`.
-   - **Danach:** Eine BIC wird bei einer deutschen IBAN nicht gefragt.
-6. Bei „Wer unterschreibt das Mandat?“, „Wo unterschreiben Sie?“ und „Datum der Unterschrift“ die
-   Felder ansehen und jeweils **„Weiter“**.
-   - **Achten Sie gleich auf:** In den Feldern stehen schon `Erika Musterfrau` (wer zu zahlen hat),
-     `Musterstadt` (Ort der Anschrift) und das heutige Datum, jeweils mit „Vorschlag aus Ihren
-     Angaben – Sie können ihn ändern.“
-7. Die Zusammenfassung durchsehen.
-   - **Danach:** Im Abschnitt „Mandat“ stehen „Musterkanzlei Beispiel“, `DE98ZZZ09999999999`,
-     „Erika Musterfrau“ und „wiederkehrende Zahlungen“ mit „festgelegt von: Kanzlei
-     (Zahlungsempfänger)“ und **ohne** „ändern“; „Kontoinhaber: identisch …“ hat „ändern (vorbelegt
-     von: Kanzlei (Zahlungsempfänger))“. Darunter „Angaben: Kanzlei (Zahlungsempfänger)
-     (abgeschlossen, nur lesen)“ mit der Mandatsreferenz `100010000001`.
-8. **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“** `Erika Musterfrau`, **„Unterschreiben und
-   abschließen“**; dann **„PDF erstellen“** und die PDF öffnen.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Über dem Häkchen steht unter „Das schließen
-     Sie ab:“ alles, was Sie unterschreiben – Ihre Angaben und darunter „Angaben: Kanzlei
-     (Zahlungsempfänger) (abgeschlossen, nur lesen)“. Deshalb stimmt der Satz am Häkchen „Ich
-     erteile das SEPA-Basislastschriftmandat mit den Angaben oben.“
-   - **Danach:** Die PDF zeigt beide Teile; an der Unterschrift der Kontoinhaberin steht ihr Name
-     „Erika Musterfrau“.
+     Acht-Wochen-Frist).
+3. Häkchen setzen, **„Weiter“**.
+   - **Danach:** Der zweite Hinweis ist der Datenschutz.
+4. Häkchen setzen, **„Weiter“**.
+   - **Danach:** _Nicht offensichtlich:_ Zahlungsempfänger, Gläubiger-ID, wer zu zahlen hat und die
+     Zahlungsart werden **nicht** gefragt. Die erste Frage ist die zum Kontoinhaber, mit
+     „identisch“ und „Vorbelegt von Kanzlei (Zahlungsempfänger) – bitte prüfen.“
+5. **„Weiter“** klicken.
+   - **Danach:** „Gehört das Konto noch einer weiteren Person?“, mit „Nein“ vorgewählt.
+6. **„Nein“** klicken.
+   - **Danach:** „Liegt die Anschrift im Ausland?“
+7. **„Nein“** klicken, Straße `Musterstraße 5`, **„Weiter“**.
+   - **Danach:** Gefragt wird die Postleitzahl.
+8. Postleitzahl `1234` (vier Ziffern) eintragen, **„Weiter“**.
+   - **Danach:** Abgelehnt mit dem Hinweis auf 5 Ziffern, wie im Personalfragebogen.
+9. Postleitzahl `12345` eintragen, **„Weiter“**.
+   - **Danach:** Gefragt wird der Ort.
+10. Ort `Musterstadt`, **„Weiter“**; Bank `Beispielbank`, **„Weiter“**; IBAN
+    `DE89 3704 0044 0532 0130 00`, **„Weiter“**.
+    - **Danach:** Eine BIC wird bei einer deutschen IBAN nicht gefragt. Bei „Wer unterschreibt das
+      Mandat?“ steht schon `Erika Musterfrau` (wer zu zahlen hat) mit „Vorschlag aus Ihren Angaben –
+      Sie können ihn ändern.“
+11. **„Weiter“** klicken.
+    - **Danach:** Bei „Wo unterschreiben Sie?“ steht schon `Musterstadt` (Ort der Anschrift) als
+      Vorschlag.
+12. **„Weiter“** klicken.
+    - **Danach:** Beim Datum der Unterschrift steht schon das heutige Datum als Vorschlag.
+13. **„Weiter“** klicken.
+    - **Danach:** Die Zusammenfassung: Im Abschnitt „Mandat“ stehen „Musterkanzlei Beispiel“,
+      `DE98ZZZ09999999999`, „Erika Musterfrau“ und „wiederkehrende Zahlungen“ mit „festgelegt von:
+      Kanzlei (Zahlungsempfänger)“ und **ohne** „ändern“; „Kontoinhaber: identisch …“ hat „ändern
+      (vorbelegt von: Kanzlei (Zahlungsempfänger))“. Darunter „Angaben: Kanzlei
+      (Zahlungsempfänger) (abgeschlossen, nur lesen)“ mit der Mandatsreferenz `100010000001`.
+14. **„Weiter zum Abschluss“** klicken.
+    - **Danach:** _Nicht offensichtlich:_ Über dem Häkchen steht unter „Das schließen Sie ab:“
+      alles, was Sie unterschreiben – Ihre Angaben und darunter „Angaben: Kanzlei
+      (Zahlungsempfänger) (abgeschlossen, nur lesen)“. Deshalb stimmt der Satz am Häkchen „Ich
+      erteile das SEPA-Basislastschriftmandat mit den Angaben oben.“
+15. Häkchen setzen, **„Namen tippen“**, `Erika Musterfrau`, **„Unterschreiben und abschließen“**.
+    - **Danach:** „Kontoinhaberin oder Kontoinhaber: abgeschlossen“ mit „Unterschrieben am …“.
+16. **„PDF erstellen“** klicken und die PDF öffnen.
+    - **Danach:** Die PDF zeigt beide Teile; an der Unterschrift der Kontoinhaberin steht ihr Name
+      „Erika Musterfrau“.
 
 ---
 
@@ -136,42 +165,44 @@ verfügen.
 1. Die Übersicht „Wer füllt jetzt aus?“ ansehen.
    - **Danach:** Die zweite Kontoinhaberin oder der zweite Kontoinhaber wird als **nötig**
      angezeigt.
-2. **„Ich bin: Zweite Kontoinhaberin oder zweiter Kontoinhaber“** wählen und die beiden Hinweise
-   lesen.
-3. Bei „Wie heißen Sie?“ das Feld ansehen, **„Weiter“**.
-   - **Achten Sie gleich auf:** Gefragt wird **nur** der Name; im Feld steht schon `Max Mustermann`
-     mit „Vorbelegt von Kontoinhaberin oder Kontoinhaber – bitte prüfen.“ Zahlungsempfänger und
-     Gläubiger-ID sind festgelegt.
-4. Die Zusammenfassung ansehen, dann **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“**
-   `Max Mustermann`, unterschreiben.
-   - **Achten Sie gleich auf:** Über dem Häkchen stehen alle Angaben: Ihr Name, darunter die
-     abgeschlossenen Teile der Kanzlei und der ersten Kontoinhaberin (mit Konto und IBAN) – „die
-     Angaben oben“ sind also wirklich oben zu sehen (seit 06.11.2026).
+2. **„Ich bin: Zweite Kontoinhaberin oder zweiter Kontoinhaber“** wählen; bei beiden Hinweisen das
+   Häkchen setzen und **„Weiter“**.
+   - **Danach:** Gefragt wird **nur** „Wie heißen Sie?“; im Feld steht schon `Max Mustermann` mit
+     „Vorbelegt von Kontoinhaberin oder Kontoinhaber – bitte prüfen.“ Zahlungsempfänger und
+     Gläubiger-ID werden nicht gefragt.
+3. **„Weiter“** klicken.
+   - **Danach:** Die Zusammenfassung.
+4. **„Weiter zum Abschluss“** klicken.
+   - **Danach:** Über dem Häkchen stehen alle Angaben: Ihr Name, darunter die abgeschlossenen Teile
+     der Kanzlei und der ersten Kontoinhaberin (mit Konto und IBAN) – „die Angaben oben“ sind also
+     wirklich oben zu sehen (seit 06.11.2026).
+5. Häkchen setzen, **„Namen tippen“**, `Max Mustermann`, **„Unterschreiben und abschließen“**.
    - **Danach:** Es fehlt keine Rolle mehr; an der zweiten Unterschrift steht „Max Mustermann“.
 
 ---
 
 ## MT-123: Ohne den Teil der Kanzlei
 
-**Einstieg:** Auf der Startseite „SEPA-Basislastschriftmandat“ neu beginnen.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“).
 
 **Schritte:**
 
-1. Die Übersicht ansehen.
-   - **Danach:** Die Kanzlei steht mit „nichts vorbelegt (freiwillig)“; unter „Stand“ fehlt sie
-     **nicht** als Teil.
-2. **„Ich bin: Kontoinhaberin oder Kontoinhaber“** wählen, die beiden Hinweise lesen, dann bei „An
-   wen erteilen Sie das Mandat?“ **„Vorerst überspringen“**.
+1. Auf der Startseite **„SEPA-Basislastschriftmandat“** wählen.
+   - **Danach:** In der Übersicht steht die Kanzlei mit „nichts vorbelegt (freiwillig)“; unter
+     „Stand“ fehlt sie **nicht** als Teil.
+2. **„Ich bin: Kontoinhaberin oder Kontoinhaber“** wählen; bei beiden Hinweisen das Häkchen setzen
+   und **„Weiter“**.
    - **Danach:** _Nicht offensichtlich:_ Ohne den Teil der Kanzlei fragt das Mandat
-     Zahlungsempfänger, Gläubiger-ID, Vertrag und Zahlungsart selbst – ein Mandat ohne
-     Zahlungsempfänger lässt sich nicht unterschreiben.
-3. Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben und **„Weiter“**.
-   - **Achten Sie gleich auf:** Die Eingabe wird mit einem Hinweis auf die falsche Prüfziffer
-     abgelehnt.
-4. Zur Zusammenfassung gehen.
+     Zahlungsempfänger, Gläubiger-ID, Vertrag und Zahlungsart selbst; die erste Frage ist „An wen
+     erteilen Sie das Mandat?“.
+3. **„Vorerst überspringen“** klicken.
+   - **Danach:** Gefragt wird die Gläubiger-Identifikationsnummer.
+4. `DE97ZZZ09999999999` eintragen, **„Weiter“**.
+   - **Danach:** Abgelehnt mit einem Hinweis auf die falsche Prüfziffer.
+5. **„Zur Zusammenfassung – alle Angaben ansehen und ändern“** klicken.
    - **Danach:** Oben steht „Das fehlt noch, bevor Sie abschließen können:“ mit den fehlenden
      Angaben, darunter „Zahlungsempfänger“, je mit „beantworten“; „Weiter zum Abschluss“ ist
-     gesperrt.
+     gesperrt – ein Mandat ohne Zahlungsempfänger lässt sich nicht unterschreiben.
 
 ---
 
@@ -185,17 +216,25 @@ Teil abgeschlossen; Sie stehen bei „Wer füllt jetzt aus?“.
 1. In der Übersicht unter „Stand“ bei **„Als Link weitergeben“** auf **„Kopieren“** klicken.
    - **Danach:** „Link kopiert.“ Der Link ist gut 1.000 Zeichen lang und enthält `#weitergabe=1`.
      _Nicht offensichtlich:_ Den Link gibt es in der Übersicht und auf der Abschluss-Seite (seit
-     06.11.2026); man muss dafür nicht direkt nach dem Abschließen weitermachen.
+     06.11.2026).
 2. Ein **privates Fenster** öffnen (wie ein anderes Gerät) und den Link dort in die Adresszeile
    einfügen.
    - **Danach:** „Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.“ und
      „Aus einem Link zur Weitergabe geöffnet.“ _Nicht offensichtlich:_ Es kommt **keine** Übersicht
      „Wer füllt jetzt aus?“ – der Fragebogen öffnet gleich im Teil der Kontoinhaberin, beim
-     Mandatstext.
-3. Auf die Adresszeile achten, dann bis zur Zusammenfassung ausfüllen wie in MT-121.
-   - **Danach:** Die Adresszeile zeigt **nur noch die Adresse der App**, ohne den langen Teil hinter
-     „#“. Zahlungsempfänger und Gläubiger-ID werden nicht gefragt (wie MT-121).
-4. Im privaten Fenster den Link noch einmal einfügen, dabei aber die letzten 20 Zeichen löschen.
+     Mandatstext. Die Adresszeile zeigt **nur noch die Adresse der App**, ohne den langen Teil hinter
+     „#“.
+3. Bei beiden Hinweisen das Häkchen setzen und **„Weiter“**.
+   - **Danach:** Zahlungsempfänger und Gläubiger-ID werden nicht gefragt; die erste Frage ist die zum
+     Kontoinhaber, mit „identisch“ vorbelegt.
+4. **„Weiter“**; bei der weiteren Person **„Nein“**; bei „Liegt die Anschrift im Ausland?“
+   **„Nein“**; Straße `Musterstraße 5`, **„Weiter“**; Postleitzahl `12345`, **„Weiter“**; Ort
+   `Musterstadt`, **„Weiter“**; Bank `Beispielbank`, **„Weiter“**; IBAN
+   `DE89 3704 0044 0532 0130 00`, **„Weiter“**.
+   - **Danach:** Bei „Wer unterschreibt das Mandat?“ steht `Erika Musterfrau` als Vorschlag.
+5. Dreimal **„Weiter“** (Name, Ort, Datum stehen als Vorschlag da).
+   - **Danach:** Die Zusammenfassung mit allen Angaben und dem Teil der Kanzlei.
+6. Im privaten Fenster den Link noch einmal einfügen, dabei aber die letzten 20 Zeichen löschen.
    - **Danach:** Rot: „Link zur Weitergabe: Der Link ist unvollständig oder beschädigt – vielleicht
      wurde er beim Kopieren abgeschnitten. …“ – nichts wird halb übernommen.
 
@@ -208,110 +247,171 @@ Teil abgeschlossen; Sie stehen bei „Wer füllt jetzt aus?“.
 
 ---
 
-## MT-125: Die Kanzlei belegt das Konto vor, die Kontoinhaberin ändert die IBAN
+## MT-125: Die Kanzlei trägt die Angaben zum Konto ein
 
-**Einstieg:** [Kanzlei beim Vertrag öffnen](start:sepa-kanzlei-vertrag-offen) – wie MT-120.
+**Einstieg:** [Kanzlei beim Vertrag öffnen](start:sepa-kanzlei-vertrag-offen) – Name, Anschrift und
+Gläubiger-ID der Kanzlei sind eingetragen; Sie stehen bei der Mandantennummer.
 
 **Schritte:**
 
-1. Mandantennummer `10001`, Vertrag `Erika Musterfrau`, Zahlungsart **„Weiter“**, Mandatsreferenz
-   (Vorschlag) **„Weiter“**.
-2. Bei „Welche Angaben zum Konto tragen Sie schon ein?“ beide Kästchen ankreuzen, **„Weiter“**;
-   „Liegt die Anschrift … im Ausland?“ **„Nein“**, Straße `Musterstraße 5`, Postleitzahl `12345`,
-   Ort `Musterstadt`, Bank `Beispielbank`, IBAN `DE89 3704 0044 0532 0130 00`.
-   - **Achten Sie gleich auf:** Erst nach dem Kreuz fragt die App nach Anschrift und Bank; ohne
-     Kreuz fragt sie nichts zum Konto. Die Kanzlei wird nach keinem Namen gefragt – bei „identisch“
-     ist es der Name bei „Wer hat zu zahlen?“.
-3. Abschließen (**„Weiter zum Abschluss“**, Häkchen, **„Abschließen“**), **„Gerät weitergeben – zur
-   Übersicht“**, **„Ich bin: Kontoinhaberin oder Kontoinhaber“**, die Hinweise lesen.
-4. Alle Fragen mit **„Weiter“** durchgehen; nur bei der IBAN `DE02 1203 0000 0000 2020 51`
-   eintragen.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Anschrift, Bank und IBAN werden
-     **gefragt**, mit den Werten der Kanzlei im Feld und „Vorbelegt von Kanzlei
-     (Zahlungsempfänger) – bitte prüfen.“ Nach der Änderung der IBAN verschwindet der Hinweis bei
-     der IBAN.
-   - **Danach:** In der Zusammenfassung stehen Anschrift und Bank mit „ändern (vorbelegt von:
-     Kanzlei (Zahlungsempfänger))“, die IBAN nur mit „ändern“.
-5. Bis zur Unterschrift weitermachen, mit getipptem Namen `Erika Musterfrau` unterschreiben; in der
-   Übersicht unter „Stand“ **„PDF erstellen“**.
-6. Unter „Stand“ **„Fragebogen schließen“**. Auf der Startseite weiter unten im Abschnitt „Kanzlei“
-   **„Eingänge zusammenführen …“** klicken und dort die PDF aus Schritt 5 einlesen.
-   - **Danach:** In der Kanzlei steht der Prüfhinweis „„IBAN“ geändert: Kanzlei
-     (Zahlungsempfänger) hatte „DE89 3704 0044 0532 0130 00“ vorbelegt, im Teil „Kontoinhaberin
-     oder Kontoinhaber“ steht jetzt „DE02 1203 0000 0000 2020 51“.“ – **kein** Widerspruch. Das
-     Mandat gilt mit der neuen IBAN.
+1. Mandantennummer `10001`, **„Weiter“**; `Erika Musterfrau`, **„Weiter“**; Kontoinhaber
+   **„Weiter“**; Zahlungsart **„Weiter“**; Mandatsreferenz (Vorschlag) **„Weiter“**.
+   - **Danach:** Gefragt wird „Welche Angaben zum Konto tragen Sie schon ein?“, nichts ist
+     angekreuzt.
+2. Nichts ankreuzen, **„Weiter“**.
+   - **Danach:** Die Zusammenfassung erscheint – ohne Kreuz fragt die App nichts zum Konto.
+3. **„Zurück“** klicken, nur **„Bankverbindung (Bank, IBAN, BIC)“** ankreuzen, **„Weiter“**.
+   - **Danach:** Jetzt fragt die App nach dem Namen der Bank – nach der Anschrift nicht.
+4. Bank `Beispielbank`, **„Weiter“**; IBAN `DE89 3704 0044 0532 0130 00`, **„Weiter“**.
+   - **Danach:** Die Zusammenfassung, mit Bank und IBAN.
+5. Bei „Von der Kanzlei eingetragen“ auf **„ändern“** klicken, zusätzlich **„Anschrift …“**
+   ankreuzen, **„Weiter“**.
+   - **Danach:** Jetzt fragt die App „Liegt die Anschrift … im Ausland?“. _Nicht offensichtlich:_
+     Nach einem Namen wird die Kanzlei nicht gefragt – bei „identisch“ ist es der Name bei „Wer hat
+     zu zahlen?“.
+6. **„Nein“**; Straße `Musterstraße 5`, **„Weiter“**; Postleitzahl `12345`, **„Weiter“**; Ort
+   `Musterstadt`, **„Weiter“**; weiter bis zur Zusammenfassung.
+   - **Danach:** Die Zusammenfassung zeigt Anschrift, Bank und IBAN.
+7. **„Weiter zum Abschluss“**, Häkchen, **„Abschließen“**.
+   - **Danach:** „Kanzlei (Zahlungsempfänger): abgeschlossen“. Wie die Kontoinhaberin diese
+     Vorbelegung sieht und ändert, prüft MT-129.
 
 ---
 
 ## MT-126: Anschrift im Ausland
 
-**Einstieg:** [Mandat zum Ausfüllen öffnen](start:sepa-kanzlei-abgeschlossen) – wie MT-121.
+**Einstieg:** [Mandat zum Ausfüllen öffnen](start:sepa-kanzlei-abgeschlossen) – die Kanzlei hat ihren
+Teil abgeschlossen, ohne Angaben zum Konto.
 
 **Schritte:**
 
-1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**, die Hinweise lesen, Kontoinhaber und weitere
-   Person **„Weiter“**.
-2. „Liegt die Anschrift im Ausland?“ **„Ja“**, beim Staat `Öster` tippen und **„Österreich“** wählen.
-   - **Danach:** Nach dem Staat wird gefragt, nach der deutschen Postleitzahl nicht.
-3. Straße `Beispielgasse 3`, Postleitzahl `123`, Ort `Wien`.
-   - **Achten Sie gleich auf:** Die Postleitzahl `123` wird angenommen; gleich danach erscheint der
-     Hinweis „Die Postleitzahl hat nicht das übliche Format dieses Staats. Bitte prüfen.“
-     (Österreich: 4 Ziffern). _Nicht offensichtlich:_ Der Hinweis sperrt nichts – wie im
-     Personalfragebogen.
-4. Bis „Wo unterschreiben Sie?“ weitergehen.
-   - **Danach:** Im Feld steht schon `Wien` als Vorschlag.
+1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**; bei beiden Hinweisen Häkchen und **„Weiter“**;
+   Kontoinhaber **„Weiter“**; bei der weiteren Person **„Nein“**.
+   - **Danach:** „Liegt die Anschrift im Ausland?“
+2. **„Ja“** klicken.
+   - **Danach:** Gefragt wird der Staat, nicht die deutsche Postleitzahl.
+3. Beim Staat `Öster` tippen und **„Österreich“** wählen, **„Weiter“**; Straße `Beispielgasse 3`,
+   **„Weiter“**.
+   - **Danach:** Gefragt wird „Postleitzahl (Ausland)“.
+4. Postleitzahl `123` eintragen, **„Weiter“**.
+   - **Danach:** Die Postleitzahl wird angenommen; dazu erscheint der Hinweis „Die Postleitzahl hat
+     nicht das übliche Format dieses Staats. Bitte prüfen.“ (Österreich: 4 Ziffern). _Nicht
+     offensichtlich:_ Der Hinweis sperrt nichts – wie im Personalfragebogen.
+5. Ort `Wien`, **„Weiter“**; Bank `Beispielbank`, **„Weiter“**; IBAN
+   `DE89 3704 0044 0532 0130 00`, **„Weiter“**; bei „Wer unterschreibt das Mandat?“ **„Weiter“**.
+   - **Danach:** Bei „Wo unterschreiben Sie?“ steht schon `Wien` als Vorschlag.
 
 ---
 
 ## MT-127: Abweichender Kontoinhaber
 
-**Einstieg:** [Kanzlei beim Vertrag öffnen](start:sepa-kanzlei-vertrag-offen) – wie MT-120.
+**Einstieg:** [Kanzlei beim Vertrag öffnen](start:sepa-kanzlei-vertrag-offen) – Name, Anschrift und
+Gläubiger-ID der Kanzlei sind eingetragen; Sie stehen bei der Mandantennummer.
 
 **Schritte:**
 
-1. Mandantennummer `10001`, „Wer hat zu zahlen?“ `Beispiel GmbH`, beim Kontoinhaber **„abweichend –
-   das Konto gehört einer anderen Person“**, Zahlungsart und Mandatsreferenz **„Weiter“**, bei den
-   Angaben zum Konto nichts ankreuzen.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Bei „abweichend“ fragt die Kanzlei-Seite
-     **nicht** nach dem Namen des Kontoinhabers, solange nichts angekreuzt ist – den trägt der
+1. Mandantennummer `10001`, **„Weiter“**; „Wer hat zu zahlen?“ `Beispiel GmbH`, **„Weiter“**.
+   - **Danach:** Gefragt wird, ob der Kontoinhaber identisch oder abweichend ist.
+2. **„abweichend – das Konto gehört einer anderen Person“** wählen; Zahlungsart **„Weiter“**;
+   Mandatsreferenz **„Weiter“**.
+   - **Danach:** Gefragt wird „Welche Angaben zum Konto tragen Sie schon ein?“.
+3. Nichts ankreuzen, **„Weiter“**.
+   - **Danach:** _Nicht offensichtlich:_ Die Zusammenfassung erscheint – die Kanzlei-Seite fragt
+     **nicht** nach dem Namen des Kontoinhabers, solange nichts angekreuzt ist; den trägt der
      Kontoinhaber selbst ein (wie der Vordruck „vom Kontoinhaber abweichender Schuldner“).
-2. Abschließen, **„Gerät weitergeben – zur Übersicht“**, **„Ich bin: Kontoinhaberin oder
-   Kontoinhaber“**, die Hinweise lesen, Kontoinhaber **„Weiter“**.
-   - **Danach:** Die App fragt den **Namen** der Kontoinhaberin und eine **E-Mail-Adresse für die
-     Ankündigung der Abbuchungen** (oder „Lieber per Post“).
-3. Name `Erika Musterfrau`, E-Mail-Adresse `erika@example.org`, dann weiter wie in MT-121 bis „Wer
-   unterschreibt das Mandat?“.
-   - **Achten Sie gleich auf:** Vorgeschlagen ist `Erika Musterfrau` (die Kontoinhaberin), nicht
-     „Beispiel GmbH“.
-4. Unterschreiben, in der Übersicht unter „Stand“ **„PDF erstellen“**, dann **„Fragebogen
-   schließen“**; auf der Startseite im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** und diese
-   PDF einlesen.
-   - **Danach:** In der Kanzlei steht der Prüfhinweis „Abweichender Kontoinhaber: Die
-     Vorabankündigung jeder Lastschrift geht an den Kontoinhaber …“; ohne Widerspruch.
+4. **„Weiter zum Abschluss“**, Häkchen, **„Abschließen“**, dann **„Gerät weitergeben – zur
+   Übersicht“**.
+   - **Danach:** Die Übersicht „Wer füllt jetzt aus?“.
+5. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**; bei beiden Hinweisen Häkchen und **„Weiter“**;
+   Kontoinhaber („abweichend“, vorbelegt) **„Weiter“**.
+   - **Danach:** Gefragt wird der **Name** der Kontoinhaberin.
+6. Name `Erika Musterfrau`, **„Weiter“**.
+   - **Danach:** Gefragt wird eine **E-Mail-Adresse für die Ankündigung der Abbuchungen** (oder
+     „Lieber per Post“).
+7. `erika@example.org`, **„Weiter“**; bei der weiteren Person **„Nein“**; Anschrift: **„Nein“**,
+   Straße `Musterstraße 5`, Postleitzahl `12345`, Ort `Musterstadt`, Bank `Beispielbank`, IBAN
+   `DE89 3704 0044 0532 0130 00`, jeweils **„Weiter“**.
+   - **Danach:** Bei „Wer unterschreibt das Mandat?“ steht `Erika Musterfrau` (die
+     Kontoinhaberin), nicht „Beispiel GmbH“.
+8. Dreimal **„Weiter“**, **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“**
+   `Erika Musterfrau`, **„Unterschreiben und abschließen“**.
+   - **Danach:** „Kontoinhaberin oder Kontoinhaber: abgeschlossen“ mit „Unterschrieben am …“.
+9. In der Übersicht unter „Stand“ **„PDF erstellen“**, dann **„Fragebogen schließen“**.
+   - **Danach:** Die Startseite.
+10. Weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken, **„Dateien
+    hinzufügen …“** und die PDF aus Schritt 9 wählen.
+    - **Danach:** In der Kanzlei steht unter „Prüfhinweise:“ „Abweichender Kontoinhaber: Die
+      Vorabankündigung jeder Lastschrift geht an den Kontoinhaber …“; ohne Widerspruch.
 
 ---
 
 ## MT-128: Zwei Kontoinhaber, jede Person darf allein – eine Unterschrift mit Namen
 
-**Einstieg:** [Mandat zum Ausfüllen öffnen](start:sepa-kanzlei-abgeschlossen) – wie MT-121.
+**Einstieg:** [Mandat zum Ausfüllen öffnen](start:sepa-kanzlei-abgeschlossen) – die Kanzlei hat ihren
+Teil abgeschlossen, ohne Angaben zum Konto.
 
 **Schritte:**
 
-1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**, die Hinweise lesen, Kontoinhaber **„Weiter“**.
-2. „Gehört das Konto noch einer weiteren Person?“ **„Ja“**.
-   - **Danach:** Es erscheinen genau die zwei Fragen nach dem Namen und nach der Verfügung.
-3. Name `Max Mustermann`, bei „Darf jede Person allein über das Konto verfügen oder nur beide
-   gemeinsam?“ **„jede Person allein – eine Unterschrift genügt“**.
-4. Anschrift und Bank wie in MT-121; bei „Wer unterschreibt das Mandat?“ `Max Mustermann` eintragen
-   (er füllt aus), Ort und Datum **„Weiter“**.
-   - **Achten Sie gleich auf:** Vorgeschlagen ist `Erika Musterfrau` (wer zu zahlen hat); der
-     eingetragene Name ersetzt den Vorschlag.
-5. Mit getipptem Namen `Max Mustermann` unterschreiben und die Übersicht ansehen.
+1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**; bei beiden Hinweisen Häkchen und **„Weiter“**;
+   Kontoinhaber **„Weiter“**.
+   - **Danach:** „Gehört das Konto noch einer weiteren Person?“
+2. **„Ja“** klicken.
+   - **Danach:** Gefragt wird der Name der weiteren Person.
+3. `Max Mustermann`, **„Weiter“**.
+   - **Danach:** Gefragt wird „Darf jede Person allein über das Konto verfügen oder nur beide
+     gemeinsam?“.
+4. **„jede Person allein – eine Unterschrift genügt“** wählen.
+   - **Danach:** „Liegt die Anschrift im Ausland?“
+5. **„Nein“**; Straße `Musterstraße 5`, Postleitzahl `12345`, Ort `Musterstadt`, Bank
+   `Beispielbank`, IBAN `DE89 3704 0044 0532 0130 00`, jeweils **„Weiter“**.
+   - **Danach:** Bei „Wer unterschreibt das Mandat?“ steht `Erika Musterfrau` (wer zu zahlen hat)
+     als Vorschlag.
+6. Den Namen auf `Max Mustermann` ändern (er füllt aus), **„Weiter“**; Ort und Datum **„Weiter“**.
+   - **Danach:** Die Zusammenfassung, bei „Name der unterschreibenden Person“ „Max Mustermann“.
+7. **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“** `Max Mustermann`, **„Unterschreiben und
+   abschließen“**, dann **„Gerät weitergeben – zur Übersicht“**.
    - **Danach:** Der Teil ist unterschrieben; die zweite Kontoinhaberin oder der zweite
      Kontoinhaber ist **nicht** nötig (grau, „Nur nötig, wenn …“). An der Unterschrift steht „Max
      Mustermann“.
-6. **„Unterschrift zurücknehmen“** beim Kontoinhaber, bis zur Unterschrift weiter und diesmal mit
-   `Erika Musterfrau` unterschreiben.
+8. Beim Kontoinhaber **„Unterschrift zurücknehmen“**, bis zur Abschluss-Seite **„Weiter“**,
+   Häkchen, **„Namen tippen“** `Erika Musterfrau`, **„Unterschreiben und abschließen“**.
    - **Danach:** _Nicht offensichtlich:_ Die Unterschrift gilt, danach erscheint aber „Der getippte
      Name weicht vom angegebenen Namen ab. Bitte prüfen.“ – getippter Name und „Wer unterschreibt
      das Mandat?“ passen nicht zusammen.
+
+---
+
+## MT-129: Die Kontoinhaberin ändert die IBAN, die die Kanzlei vorbelegt hat
+
+**Einstieg:** [Mandat mit vorbelegtem Konto öffnen](start:sepa-kanzlei-konto-vorbelegt) – die Kanzlei
+hat Anschrift, Bank und IBAN der Kontoinhaberin vorbelegt und abgeschlossen; Sie stehen bei „Wer
+füllt jetzt aus?“.
+
+**Schritte:**
+
+1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**; bei beiden Hinweisen Häkchen und **„Weiter“**;
+   Kontoinhaber **„Weiter“**; bei der weiteren Person **„Nein“**.
+   - **Danach:** „Liegt die Anschrift im Ausland?“ steht mit „Nein“ und „Vorbelegt von Kanzlei
+     (Zahlungsempfänger) – bitte prüfen.“ da.
+2. **„Nein“** klicken.
+   - **Danach:** _Nicht offensichtlich:_ Die Straße wird **gefragt**, mit `Musterstraße 5` im Feld
+     und „Vorbelegt von Kanzlei (Zahlungsempfänger) – bitte prüfen.“ – die Kontoinhaberin kann jede
+     Vorbelegung zum Konto ändern.
+3. Bei Straße, Postleitzahl, Ort und Bank jeweils **„Weiter“**.
+   - **Danach:** Die IBAN steht mit `DE89370400440532013000` und „Vorbelegt von Kanzlei
+     (Zahlungsempfänger) – bitte prüfen.“ da.
+4. Die IBAN auf `DE02 1203 0000 0000 2020 51` ändern, **„Weiter“**.
+   - **Danach:** Gefragt wird „Wer unterschreibt das Mandat?“.
+5. Dreimal **„Weiter“** (Name, Ort, Datum).
+   - **Danach:** In der Zusammenfassung stehen Anschrift und Bank mit „ändern (vorbelegt von:
+     Kanzlei (Zahlungsempfänger))“, die IBAN `DE02 1203 0000 0000 2020 51` nur mit „ändern“.
+6. **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“** `Erika Musterfrau`, **„Unterschreiben und
+   abschließen“**, dann **„Gerät weitergeben – zur Übersicht“**.
+   - **Danach:** Die Übersicht; unter „Stand“ ist **„PDF erstellen“** bereit.
+7. In der Übersicht unter „Stand“ **„PDF erstellen“**, dann **„Fragebogen schließen“**.
+   - **Danach:** Die Startseite.
+8. Weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken, **„Dateien
+   hinzufügen …“** und die PDF aus Schritt 7 wählen.
+   - **Danach:** Unter „Prüfhinweise:“ steht „„IBAN“ geändert: Kanzlei (Zahlungsempfänger) hatte
+     „DE89 3704 0044 0532 0130 00“ vorbelegt, im Teil „Kontoinhaberin oder Kontoinhaber“ steht jetzt
+     „DE02 1203 0000 0000 2020 51“.“ – **kein** Widerspruch. Das Mandat gilt mit der neuen IBAN.

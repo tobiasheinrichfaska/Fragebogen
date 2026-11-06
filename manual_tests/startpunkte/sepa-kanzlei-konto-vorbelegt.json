@@ -1,0 +1,29 @@
+{
+  "id": "sepa-kanzlei-konto-vorbelegt",
+  "title": "SEPA-Mandat – die Kanzlei hat Anschrift und Bank der Kontoinhaberin vorbelegt und abgeschlossen",
+  "form": "sepa-mandat",
+  "parts": [
+    {
+      "role": "kanzlei",
+      "answers": {
+        "glaeubigerName": "Musterkanzlei Beispiel",
+        "glaeubigerStrasse": "Beispielweg 1",
+        "glaeubigerPlzOrt": "12345 Musterstadt",
+        "glaeubigerLand": "Deutschland",
+        "glaeubigerId": "DE98ZZZ09999999999",
+        "mandantennummer": "10001",
+        "mandantName": "Erika Musterfrau",
+        "mandatsreferenz": "100010000001",
+        "kontoVorab": ["nameAnschrift", "bankverbindung"],
+        "khAnschriftAusland": false,
+        "khStrasse": "Musterstraße 5",
+        "khPostleitzahl": "12345",
+        "khOrt": "Musterstadt",
+        "khKreditinstitut": "Beispielbank",
+        "khIban": "DE89 3704 0044 0532 0130 00"
+      },
+      "seal": "unsigned"
+    }
+  ],
+  "open": "overview"
+}

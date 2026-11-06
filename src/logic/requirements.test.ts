@@ -21,6 +21,7 @@ import { createQuestionnaire, sealPart, setValue, startPart } from './questionna
 import {
   BLOCKER_MESSAGES,
   completenessGaps,
+  PASS_ON_TEXTS,
   roleRequirement,
   transmissionBlockers,
   type Blocker,
@@ -302,6 +303,15 @@ describe('BLOCKER_MESSAGES', () => {
   it('has a German sentence for every blocker', () => {
     for (const message of Object.values(BLOCKER_MESSAGES))
       expect(message).toMatch(/^[A-ZÄÖÜ].*\.$/);
+  });
+});
+
+describe('PASS_ON_TEXTS', () => {
+  // Test report 2026-11-06: the SEPA-Mandat said "Für die Lohnabrechnung fehlt noch".
+  it('fit every form: they name no recipient or program', () => {
+    for (const text of Object.values(PASS_ON_TEXTS)) {
+      expect(text).not.toMatch(/Lohn|Kanzlei|DATEV|Personalakte/);
+    }
   });
 });
 

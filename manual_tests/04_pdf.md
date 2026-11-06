@@ -15,19 +15,21 @@ getipptem Namen unterschrieben).
    - **Danach:** Die Meldung nennt den Dateinamen `Sofortmeldung_xxxxxxxx_vollstaendig.pdf` und „5
      Seiten, davon die letzten mit 7 QR-Codes“ (die Zahlen können abweichen).
    - **Danach:** _Nicht offensichtlich:_ Der Dateiname enthält keinen Personennamen.
-2. Öffnen Sie die heruntergeladene Datei in einem PDF-Programm (Acrobat Reader, Edge, Vorschau). Am
-   Handy oder Tablet: erst **„Speichern“** in der Meldung (siehe MT-37).
+2. Nur am Handy oder Tablet: Tippen Sie in der Meldung **„Speichern“** (siehe MT-37).
+3. Öffnen Sie die heruntergeladene Datei in einem PDF-Programm (Acrobat Reader, Edge, Vorschau).
    - **Danach:** Seite 1 beginnt mit **„Vollständig: alle erforderlichen Teile liegen vor und sind
      verknüpft.“** Die Angaben des Arbeitgebers sind **grau hinterlegt**.
-   - **Danach:** Es folgen die Hinweise mit „bestätigt von: Beschäftigte Person“, dann
-     **„Unterschriften und Abschlüsse“** mit der gezeichneten Unterschrift (nach dem Startlink: dem
-     getippten Namen), Systemvermerk und Prüfwert je Rolle.
-   - **Danach:** Dann das **Prüfblatt**, eine Seite **„Anlage: Daten in maschinenlesbarer Form“**
-     mit Zeichenkolonnen und eine Seite **„Anlage: Daten als QR-Codes“**.
    - **Danach:** Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 1.0.0 ·
      Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
+4. Blättern Sie weiter bis zu den Unterschriften.
+   - **Danach:** Nach den Angaben folgen die Hinweise mit „bestätigt von: Beschäftigte Person“, dann
+     **„Unterschriften und Abschlüsse“** mit der gezeichneten Unterschrift (nach dem Startlink: dem
+     getippten Namen), Systemvermerk und Prüfwert je Rolle.
    - **Danach:** _Nicht offensichtlich:_ Eine gezeichnete Unterschrift ist als Linie gesetzt
      (vergrößern bleibt scharf), nicht als Bild.
+5. Blättern Sie bis zum Ende.
+   - **Danach:** Nach den Unterschriften kommen das **Prüfblatt**, eine Seite **„Anlage: Daten in
+     maschinenlesbarer Form“** mit Zeichenkolonnen und eine Seite **„Anlage: Daten als QR-Codes“**.
 
 ---
 
@@ -63,12 +65,11 @@ und **„PDF erstellen“** oder MT-31.
 
 **Schritte:**
 
-1. Laden Sie die Seite neu (oder in der Übersicht unter „Stand“ **„Fragebogen schließen“**) und
-   klicken Sie **„Datei öffnen …“**.
-2. Wählen Sie die PDF.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Das Öffnen dauert beim ersten Mal ein bis
-     zwei Sekunden (das Lesemodul startet).
-   - **Danach:** Grün: **„Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem
+1. Laden Sie die Seite neu (oder in der Übersicht unter „Stand“ **„Fragebogen schließen“**).
+2. Klicken Sie auf der Startseite **„Datei öffnen …“** und wählen Sie die PDF.
+   - **Danach:** _Nicht offensichtlich:_ Das Öffnen dauert beim ersten Mal ein bis zwei Sekunden
+     (das Lesemodul startet).
+   - **Danach:** Dann grün: **„Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem
      Abschluss.“** mit dem Zusatz „Geprüft wurden die Datenseiten, nicht der sichtbare Text.“
    - **Danach:** Die Übersicht zeigt dieselben Zustände wie vor dem Erstellen. Bei einer
      Weitergabe-PDF kann die nächste Rolle jetzt ausfüllen.
@@ -84,8 +85,10 @@ und **„PDF erstellen“** und ein PDF-Programm.
 
 **Schritte:**
 
-1. Öffnen Sie die PDF in Acrobat, fügen Sie einen Kommentar ein und speichern Sie unter neuem Namen.
-2. Öffnen Sie diese Datei in der App.
+1. Öffnen Sie die PDF in Acrobat.
+2. Fügen Sie einen Kommentar ein.
+3. Speichern Sie die PDF unter neuem Namen.
+4. Öffnen Sie diese Datei in der App (auf der Startseite **„Datei öffnen …“**).
    - **Danach:** Gelb: „Geprüft: Alle abgeschlossenen Teile sind unverändert …“ **mit** dem
      Hinweis, dass die PDF verändert/ergänzt oder mit einem anderen Programm neu gespeichert wurde.
    - **Danach:** _Nicht offensichtlich:_ Die Daten bleiben gültig, weil die App die Datenseiten
@@ -105,16 +108,16 @@ Scan-to-PDF).
 
 1. Drucken Sie **nur die Seite mit den QR-Codes** aus (Seite „Anlage: Daten als QR-Codes“), in
    Originalgröße („Tatsächliche Größe“, nicht „An Seite anpassen“).
-2. Scannen Sie sie als PDF (300 dpi, schwarz-weiß oder Graustufen); das Blatt liegt gerade.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Legen Sie das Blatt **gerade** auf: Bei
-     einem schrägen Scan erkennt die App mehrere Codes womöglich nicht (bitte dann notieren, wie
-     schräg).
-3. Öffnen Sie den Scan in der App.
+2. Legen Sie das Blatt **gerade** auf und scannen Sie es als PDF (300 dpi, schwarz-weiß oder
+   Graustufen).
+3. Öffnen Sie den Scan in der App (auf der Startseite **„Datei öffnen …“**).
    - **Danach:** Grün oder gelb: „Geprüft: …“ mit dem Zusatz **„Gelesen aus den QR-Codes eines
      Ausdrucks. Das Original bleibt die elektronische Datei.“**
    - **Danach:** _Nicht offensichtlich:_ Die Seiten mit den Zeichenkolonnen helfen beim Scan
      **nicht** (Texterkennung ist zu unsicher); nur die QR-Codes werden gelesen.
    - **Danach:** Fehlen Codes (Seite abgeschnitten), nennt die App die fehlenden Teile.
+   - **Danach:** _Nicht offensichtlich:_ Bei einem schrägen Scan erkennt die App mehrere Codes
+     womöglich nicht (bitte dann notieren, wie schräg).
 
 ---
 
@@ -131,8 +134,10 @@ Scan-to-PDF).
 2. Öffnen Sie das Foto in der App.
    - **Danach:** Blau **„QR-Codes: 3 von 7 gelesen. Bitte ein weiteres Foto …“** mit der Liste der
      fehlenden Teile.
-3. Fotografieren Sie die übrigen Codes und öffnen Sie dieses Foto ebenfalls.
-   - **Danach:** „Geprüft: …“ wie in MT-34.
+3. Fotografieren Sie die übrigen Codes.
+4. Öffnen Sie dieses Foto ebenfalls in der App.
+   - **Danach:** Grün oder gelb: „Geprüft: …“ mit dem Zusatz **„Gelesen aus den QR-Codes eines
+     Ausdrucks. Das Original bleibt die elektronische Datei.“**
 
 **Erwartet:**
 
@@ -151,8 +156,9 @@ Scan-to-PDF).
 
 **Schritte:**
 
-1. Erstellen Sie eine PDF und öffnen Sie sie in einem PDF-Programm.
-2. Klicken Sie auf die Zeile „App: https://…“.
+1. Erstellen Sie eine PDF (in der Übersicht unter „Stand“ **„PDF erstellen“**).
+2. Öffnen Sie die PDF in einem PDF-Programm.
+3. Klicken Sie auf die Zeile „App: https://…“.
    - **Danach:** Der Browser öffnet die Adresse der App.
 
 **Erwartet:**
@@ -176,12 +182,16 @@ Messenger oder Cloud-Speicher).
 1. Tippen Sie in der Übersicht unter „Stand“ **„PDF erstellen“**.
    - **Danach:** Die PDF öffnet sich **nicht** von selbst. Die Seite rückt zur grünen Meldung „PDF …
      erstellt“ mit den Knöpfen **„Teilen“** und **„Speichern“**.
-2. Tippen Sie in der grünen Meldung **„Teilen“** und wählen Sie eine App, z. B. E-Mail. Brechen Sie
-   vor dem Senden ab oder senden Sie an sich selbst.
-   - **Danach:** Das Teilen-Menü des Geräts geht auf; in der gewählten App hängt die PDF mit ihrem
-     Dateinamen (`Sofortmeldung_…_vollstaendig.pdf`) an. _Nicht offensichtlich:_ Brechen Sie das
-     Teilen-Menü ab, passiert nichts weiter – kein Download, keine Fehlermeldung.
-3. Tippen Sie in derselben Meldung **„Speichern“**.
+2. Tippen Sie in der grünen Meldung **„Teilen“**.
+   - **Danach:** Das Teilen-Menü des Geräts geht auf.
+3. Brechen Sie das Teilen-Menü ab.
+   - **Danach:** _Nicht offensichtlich:_ Es passiert nichts weiter – kein Download, keine
+     Fehlermeldung.
+4. Tippen Sie noch einmal **„Teilen“** und wählen Sie eine App, z. B. E-Mail.
+   - **Danach:** In der gewählten App hängt die PDF mit ihrem Dateinamen
+     (`Sofortmeldung_…_vollstaendig.pdf`) an.
+5. Brechen Sie vor dem Senden ab oder senden Sie an sich selbst.
+6. Tippen Sie in derselben Meldung **„Speichern“**.
    - **Danach:** Die PDF wird wie bisher heruntergeladen (Android: Download-Hinweis; iPhone:
      „Laden“).
 

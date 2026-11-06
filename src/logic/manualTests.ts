@@ -6,27 +6,19 @@
 import { sha256Hex } from './hash';
 import { canonicalize } from './jcs';
 
-/**
- * What to expect at one step (Tobias 2026-11-06: no scrolling between instruction and expected
- * result): `before` — shown above the step, when the reaction comes at once (an error while typing);
- * `after` — shown below it, when the result can be looked at after the click.
- */
-export interface StepNotes {
-  before: string[];
-  after: string[];
-}
-
 export type Block =
   | { kind: 'text'; text: string }
-  /** `notes` only on a numbered list whose steps carry expectations, aligned with `items`. */
-  | { kind: 'list'; ordered: boolean; items: string[]; notes?: StepNotes[] }
+  /**
+   * `notes`: what each numbered step brings, right under it (Tobias 2026-11-06: no scrolling
+   * between instruction and expected result; small steps — a wrong input is a step whose note is the
+   * error, the right input the next one). Only on a numbered list with such notes, aligned with
+   * `items`.
+   */
+  | { kind: 'list'; ordered: boolean; items: string[]; notes?: string[][] }
   | { kind: 'code'; text: string };
 
-/** The labels of the indented expectation lines under a numbered step. */
-export const STEP_NOTE_LABELS: Readonly<Record<keyof StepNotes, string>> = {
-  before: 'Achten Sie gleich auf',
-  after: 'Danach',
-};
+/** The label of an indented expectation line under a numbered step: "   - **Danach:** …". */
+export const STEP_NOTE_LABEL = 'Danach';
 
 export interface CasePart {
   /** "Voraussetzungen", "Schritte", "Erwartet", …; "" for text before the first label. */
@@ -54,18 +46,15 @@ const CASE = /^## ((?:MT|L)-\d+[a-z]?): (.+)$/;
 const LABEL = /^\*\*([^*]+?):\*\*\s*(.*)$/;
 const ORDERED = /^\d+\.\s+(.*)$/;
 const BULLET = /^[-*]\s+(.*)$/;
-// "   - **Achten Sie gleich auf:** …" / "   - **Danach:** …" under a numbered step.
-const NOTE = new RegExp(
-  String.raw`^\s+[-*]\s+\*\*(${Object.values(STEP_NOTE_LABELS).join('|')}):\*\*\s*(.*)$`,
-);
+const NOTE = new RegExp(String.raw`^\s+[-*]\s+\*\*${STEP_NOTE_LABEL}:\*\*\s*(.*)$`);
 
 /** Paragraphs, lists and code fences of a run of lines. */
 export function blocksOf(lines: readonly string[]): Block[] {
   const blocks: Block[] = [];
   let paragraph: string[] = [];
-  let list: { ordered: boolean; items: string[]; notes: StepNotes[] } | undefined;
-  // The expectation an indented line continues, if the last line was one.
-  let note: { kind: keyof StepNotes; at: number } | undefined;
+  let list: { ordered: boolean; items: string[]; notes: string[][] } | undefined;
+  // Whether an indented line continues the last expectation (else the list item).
+  let inNote = false;
   let code: string[] | undefined;
   const flush = () => {
     if (paragraph.length > 0) blocks.push({ kind: 'text', text: paragraph.join(' ') });
@@ -74,11 +63,11 @@ export function blocksOf(lines: readonly string[]): Block[] {
   const closeList = () => {
     if (list) {
       const { notes, ...rest } = list;
-      const used = notes.some((n) => n.before.length > 0 || n.after.length > 0);
+      const used = notes.some((n) => n.length > 0);
       blocks.push({ kind: 'list', ...rest, ...(used ? { notes } : {}) });
     }
     list = undefined;
-    note = undefined;
+    inNote = false;
   };
   for (const raw of lines) {
     if (code) {
@@ -101,10 +90,8 @@ export function blocksOf(lines: readonly string[]): Block[] {
     }
     const expectation = list?.ordered ? NOTE.exec(line) : null;
     if (list && expectation) {
-      const kind = expectation[1] === STEP_NOTE_LABELS.before ? 'before' : 'after';
-      const step = list.notes[list.notes.length - 1];
-      step?.[kind].push(expectation[2]?.trim() ?? '');
-      note = { kind, at: (step?.[kind].length ?? 1) - 1 };
+      list.notes[list.notes.length - 1]?.push(expectation[1]?.trim() ?? '');
+      inNote = true;
       continue;
     }
     const ordered = ORDERED.exec(line);
@@ -115,14 +102,14 @@ export function blocksOf(lines: readonly string[]): Block[] {
       if (list && list.ordered !== isOrdered) closeList();
       list ??= { ordered: isOrdered, items: [], notes: [] };
       list.items.push((ordered ?? bullet)?.[1]?.trim() ?? '');
-      list.notes.push({ before: [], after: [] });
-      note = undefined;
+      list.notes.push([]);
+      inNote = false;
       continue;
     }
     if (list && /^\s+\S/.test(line)) {
       // An indented line continues the last expectation, else the last list item.
       const step = list.notes[list.notes.length - 1];
-      if (note && step) step[note.kind][note.at] += ` ${line.trim()}`;
+      if (inNote && step && step.length > 0) step[step.length - 1] += ` ${line.trim()}`;
       else list.items[list.items.length - 1] += ` ${line.trim()}`;
       continue;
     }
@@ -266,8 +253,7 @@ export function inlineMarkdown(text: string): InlineToken[] {
 export function textsOf(block: Block): string[] {
   if (block.kind !== 'list') return [block.text];
   return block.items.flatMap((item, i) => {
-    const notes = block.notes?.[i];
-    return [...(notes?.before ?? []), item, ...(notes?.after ?? [])];
+    return [item, ...(block.notes?.[i] ?? [])];
   });
 }
 

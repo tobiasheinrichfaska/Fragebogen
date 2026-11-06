@@ -50,15 +50,21 @@ Personalakte. Eine PDF aus der App.
 
 **Schritte:**
 
-1. Prüfsumme der PDF ermitteln (siehe oben) und notieren.
-2. PDF in die DATEV-Dokumentenablage bzw. Personalakte hochladen.
+1. Windows-Taste drücken, „PowerShell“ eingeben und die PowerShell öffnen.
+2. `Get-FileHash "C:\Pfad\zur\datei.pdf"` eingeben, dabei den Pfad durch den Pfad der PDF ersetzen,
+   und Enter drücken.
+   - **Danach:** Unter „Hash“ steht eine lange Zeichenfolge, die SHA-256-Prüfsumme. Notieren Sie die
+     ersten und die letzten acht Zeichen.
+3. PDF in die DATEV-Dokumentenablage bzw. Personalakte hochladen.
    - **Danach:** Bitte notieren, wo DATEV das Ablagedatum anzeigt und ob es sich nachträglich
      ändern lässt. Das Ablagedatum soll später als vertrauenswürdige Eingangszeit dienen.
-3. Dieselbe PDF wieder herunterladen bzw. auschecken und unter neuem Namen speichern.
-4. Prüfsumme der heruntergeladenen Datei ermitteln.
-   - **Danach:** Beide Prüfsummen sind **identisch**. _Nicht offensichtlich:_ Unterscheiden sich die
-     Prüfsummen, hat DATEV die Datei verändert.
-5. Die heruntergeladene Datei in der App einlesen (auf der Startseite **„Datei öffnen …“**).
+4. Dieselbe PDF wieder herunterladen bzw. auschecken und unter neuem Namen speichern.
+5. In der PowerShell `Get-FileHash "C:\Pfad\zur\datei.pdf"` eingeben, dabei den Pfad durch den
+   Pfad der heruntergeladenen Datei ersetzen, und Enter drücken.
+   - **Danach:** Unter „Hash“ steht die Prüfsumme der heruntergeladenen Datei. Beide Prüfsummen
+     sind **identisch**. _Nicht offensichtlich:_ Unterscheiden sich die Prüfsummen, hat DATEV die
+     Datei verändert.
+6. Die heruntergeladene Datei in der App einlesen (auf der Startseite **„Datei öffnen …“**).
    - **Danach:** Die App liest die Datei ohne Warnung ein. Haben sich die Prüfsummen unterschieden,
      bitte notieren, ob die App die Datei trotzdem einliest und was die Prüfanzeige meldet.
 

@@ -15,10 +15,10 @@ unterschreiben und noch einmal **„PDF erstellen“** (vollständig).
 
 1. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
 2. **„Dateien hinzufügen …“** und beide PDFs gleichzeitig auswählen (Strg gedrückt halten).
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Das Einlesen vieler PDFs dauert einige
-     Sekunden; die Schaltfläche zeigt so lange „Wird gelesen …“.
-   - **Danach:** Beide Dateien stehen in der Liste mit Formular, Version und den ersten 8 Zeichen
-     der Fragebogen-ID.
+   - **Danach:** _Nicht offensichtlich:_ Das Einlesen vieler PDFs dauert einige Sekunden; die
+     Schaltfläche zeigt so lange „Wird gelesen …“.
+   - **Danach:** Dann stehen beide Dateien in der Liste mit Formular, Version und den ersten 8
+     Zeichen der Fragebogen-ID.
    - **Danach:** Darunter **eine** Karte für den Fragebogen: „2 Datei(en)“, Hinweis „Dieselbe
      Fassung ist mehrfach eingegangen und wurde einmal übernommen. (Arbeitgeber …)“ und grün
      „Vollständig und ohne Widersprüche.“
@@ -48,8 +48,10 @@ die Kanzlei-Station mit einem eingelesenen, vollständigen Fragebogen. Oder dire
      Dateiname.
 3. **„Daten speichern (JSON)“**.
    - **Danach:** Datei „…_Kanzlei.json“ wird heruntergeladen.
-4. **„Zur Startseite“**, dort weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“**
-   klicken, die eben erstellte PDF einlesen und „Formular ansehen“.
+4. **„Zur Startseite“** klicken.
+5. Dort weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+6. **„Dateien hinzufügen …“** und die eben heruntergeladene PDF für die Personalakte wählen.
+7. In der Karte des Fragebogens **„Formular ansehen“**.
    - **Danach:** Unter „Eingangsvermerke“ stehen dieselben Vermerke wie vorher – **nicht doppelt**,
      obwohl die Datei ein zweites Mal eingegangen ist.
 
@@ -122,9 +124,9 @@ und nur vom Arbeitgeber abgeschlossen, beide PDFs einlesen.
 1. „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige Aushilfe …“; Ende `31.12.2026`, `30`
    Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
 2. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
-3. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**; auf der
-   Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken und die
-   PDF einlesen.
+3. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+4. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+5. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
    - **Danach:** In der Karte des Fragebogens steht „Prüfhinweise:“ mit u. a. „Arbeitsuchend
      gemeldet und als kurzfristige Aushilfe vorgesehen …“ und der Fundstelle.
    - **Danach:** Dazu „Laut Geburtsdatum ist die Regelaltersgrenze bei Beschäftigungsbeginn
@@ -147,13 +149,14 @@ wird die Person bezahlt?“.
 1. „festes Monatsentgelt“ `520,00 €`; „Wie ist die Beschäftigung vorgesehen?“ → „Minijob (bis
    603 € im Monat)“; Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
 2. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
-3. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**; auf der
-   Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken und die
-   PDF einlesen.
+3. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+4. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+5. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
    - **Danach:** Unter „Vorschläge (die App entscheidet nicht – bitte prüfen)“ steht
      „Personengruppe: 109 – Minijob: festes Monatsentgelt bis zur Geringfügigkeitsgrenze. 520,00 €
      im Monat; Geringfügigkeitsgrenze 2026: 603,00 €.“
-4. Die PDF für die Personalakte erstellen und das Prüfblatt ansehen.
+6. In der Karte des Fragebogens **„PDF für die Personalakte“** klicken.
+7. Die heruntergeladene PDF öffnen und das Prüfblatt ansehen.
    - **Danach:** Dasselbe steht auf dem Prüfblatt mit „(Die App entscheidet das nicht.)“.
 
 **Erwartet:**
@@ -278,24 +281,38 @@ Sofortmeldung (ab 0.2.0) mit Personalnummer und später ein Personalfragebogen d
 **Schritte:**
 
 1. Als Person bei „Gesetzliche Krankenkasse“ <kbd>tk</kbd> tippen.
-   - **Achten Sie gleich auf:** Die Liste filtert beim Tippen; „Techniker Krankenkasse“ steht oben
-     (Suchwort TK).
-2. Den Eintrag „Techniker Krankenkasse“ mit den Pfeiltasten und Enter wählen; weiter bis zum Ende,
-   unterschreiben.
-3. Zweiter Bogen: `Meine Betriebskasse` frei eintippen und **„Weiter“**.
-   - **Achten Sie gleich auf:** Unter dem Feld erscheint sofort „Nicht in der Liste. Die freie
-     Eingabe ist möglich, kann aber Rückfragen und Zusatzaufwand verursachen …“.
+   - **Danach:** Die Liste filtert beim Tippen; „Techniker Krankenkasse“ steht oben (Suchwort TK).
+2. Den Eintrag „Techniker Krankenkasse“ mit den Pfeiltasten und Enter wählen.
+3. Mit **„Weiter“** bis zum Ende, unterschreiben und in der Übersicht unter „Stand“ **„PDF
+   erstellen“**.
+4. Unter „Stand“ **„Fragebogen schließen“**.
+5. Auf der Startseite einen zweiten neuen Fragebogen „Personalfragebogen: Angaben für die
+   Lohnabrechnung“ als „Beschäftigte Person“ beginnen und bis „Gesetzliche Krankenkasse“ ausfüllen
+   (wieder „gesetzlich“).
+6. Bei „Gesetzliche Krankenkasse“ `Meine Betriebskasse` frei eintippen.
+   - **Danach:** Unter dem Feld erscheint sofort „Nicht in der Liste. Die freie Eingabe ist möglich,
+     kann aber Rückfragen und Zusatzaufwand verursachen …“.
+7. **„Weiter“** klicken.
    - **Danach:** „Weiter“ geht trotzdem.
-4. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken,
-   beide Bögen einlesen, je „Übergabe an DATEV Lohn und Gehalt“ öffnen.
-   - **Danach:** Beim ersten Bogen steht 15027365 schon im Feld „Betriebsnummer der Krankenkasse“;
-     beim zweiten ist es leer. Die Suchliste findet Kassen nach Name oder Nummer; eine fehlende
-     Kasse lässt sich mit 8 Ziffern eintippen.
-5. Mandanten-/Mitarbeiternummer und „neu anlegen“ wählen, „Importdatei herunterladen“.
-   - **Achten Sie gleich auf:** Ohne Personalnummer im Fragebogen steht am Feld „Im Fragebogen
-     nicht angegeben – bitte eintragen.“
-   - **Danach:** Vor dem Download erscheint die Sicherheitsfrage („Mitarbeiternummer … Ist sie …
-     noch frei?“); erst „Ja, geprüft – Datei herunterladen“ lädt die Datei.
+8. Mit **„Weiter“** bis zum Ende, unterschreiben und in der Übersicht unter „Stand“ **„PDF
+   erstellen“**.
+9. Unter „Stand“ **„Fragebogen schließen“**.
+10. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+11. **„Dateien hinzufügen …“** und beide PDFs gleichzeitig auswählen (Strg gedrückt halten).
+12. Beim ersten Bogen „Übergabe an DATEV Lohn und Gehalt“ öffnen.
+    - **Danach:** 15027365 steht schon im Feld „Betriebsnummer der Krankenkasse“.
+13. Beim zweiten Bogen „Übergabe an DATEV Lohn und Gehalt“ öffnen.
+    - **Danach:** Das Feld „Betriebsnummer der Krankenkasse“ ist leer. Die Suchliste findet Kassen
+      nach Name oder Nummer; eine fehlende Kasse lässt sich mit 8 Ziffern eintippen.
+14. Beim ersten Bogen das Feld „Mitarbeiternummer“ ansehen.
+    - **Danach:** Ohne Personalnummer im Fragebogen steht am Feld „Im Fragebogen nicht angegeben –
+      bitte eintragen.“
+15. Dort eine Mandantennummer und eine Mitarbeiternummer eintragen und „neu anlegen“ wählen.
+16. **„Importdatei herunterladen“** klicken.
+    - **Danach:** Vor dem Download erscheint die Sicherheitsfrage („Mitarbeiternummer … Ist sie …
+      noch frei?“); die Datei wird noch nicht heruntergeladen.
+17. **„Ja, geprüft – Datei herunterladen“** klicken.
+    - **Danach:** Erst jetzt wird die Datei heruntergeladen.
 
 ## MT-72: Kinderfreibeträge mit − und +
 
@@ -303,45 +320,71 @@ Sofortmeldung (ab 0.2.0) mit Personalnummer und später ein Personalfragebogen d
 
 **Schritte:**
 
-1. Als Person bei „Kinderfreibeträge“ dreimal **„+“**, einmal **„−“** drücken.
-   - **Achten Sie gleich auf:** Die Zahl geht 0,5 → 1 → 1,5 → 1.
-2. Dann `4,3` tippen und **„Weiter“**.
+1. Als Person bei „Kinderfreibeträge“ einmal **„+“** drücken.
+   - **Danach:** Die Zahl ist 0,5.
+2. Noch einmal **„+“** drücken.
+   - **Danach:** Die Zahl ist 1.
+3. Noch einmal **„+“** drücken.
+   - **Danach:** Die Zahl ist 1,5.
+4. Einmal **„−“** drücken.
+   - **Danach:** Die Zahl ist wieder 1.
+5. Das Feld auf `4,3` ändern und **„Weiter“** klicken.
    - **Danach:** „4,3“ wird abgelehnt („Bitte eine Zahl in halben Schritten eingeben …“).
+6. Das Feld auf `4,5` ändern und **„Weiter“** klicken.
+   - **Danach:** „4,5“ wird angenommen.
 
 **Erwartet:**
 
-- „4,5“ wird angenommen. Unter 0 geht es nicht.
+- Unter 0 geht es nicht.
 
 ---
 
 ## MT-88: Vorschläge ziehen die richtigen Schlüsse (mehrere Minijobs, berufsmäßige Aushilfe)
 
-**Einstieg:** Drei Startlinks, je einer pro Schritt.
+**Einstieg:** Drei Startlinks, je einer am Anfang einer Gruppe von Schritten: Schritt 1, 7 und 13
+(der dritte öffnet denselben vorbereiteten Fragebogen wie der zweite, für die Gegenprobe).
 
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen), Beginn 02.11.2026.
 
 **Schritte:**
 
 1. [Zweiter Minijob vorbereitet öffnen](start:personalfragebogen-zweiter-minijob-entgelt-offen) – die
-   Person hat eine andere Beschäftigung angegeben (Minijob seit 01.01.2025, 300 € im Monat). Als
-   Arbeitgeber „festes Monatsentgelt“ `450,00 €`, „Minijob (bis 603 € im Monat)“, Lohnsteuer
-   ELStAM; abschließen und **„PDF erstellen“**. Dann **„Gerät weitergeben – zur Übersicht“**, dort
-   unter „Stand“ **„Fragebogen schließen“**; auf der Startseite weiter unten im Abschnitt „Kanzlei“
-   **„Eingänge zusammenführen …“** klicken und die PDF einlesen.
+   Person hat eine andere Beschäftigung angegeben (Minijob seit 01.01.2025, 300 € im Monat); der
+   Arbeitgeber steht bei „Wie wird die Person bezahlt?“.
+2. Als Arbeitgeber „festes Monatsentgelt“ `450,00 €`; „Wie ist die Beschäftigung vorgesehen?“ →
+   „Minijob (bis 603 € im Monat)“; Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
+3. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
+4. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+5. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+6. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
    - **Danach:** Vorschlag Personengruppe **101** mit „bitte prüfen“, Beitragsgruppen **1111**,
      Kennzeichen Übergangsbereich 1 (mit „bitte prüfen“) – die beiden Minijobs liegen zusammen über
      603 € und werden zusammengerechnet (nicht 109).
-2. [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – die Person
+7. [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – die Person
    ist „arbeitslos oder arbeitsuchend gemeldet“ (Arbeitslosengeld); der Arbeitgeber steht beim
-   Monatsentgelt. `1.500,00 €` eingeben; „kurzfristige Aushilfe …“, Ende `31.12.2026`, `30`
-   Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer ELStAM; abschließen und **„PDF erstellen“**.
-   Die PDF einlesen wie in Schritt 1.
-   - **Danach:** Personengruppe **101** mit „bitte prüfen“ statt 110 – wer arbeitsuchend gemeldet
-     ist, ist berufsmäßig beschäftigt; über der Geringfügigkeitsgrenze ist die Aushilfe nicht
-     kurzfristig.
-3. Den Startlink aus Schritt 2 erneut öffnen und `500,00 €` eingeben, sonst wie Schritt 2.
-   - **Danach:** Wieder **110** / **0000** – bis zur Grenze kommt es auf die Berufsmäßigkeit nicht
-     an.
+   Monatsentgelt.
+8. Als Arbeitgeber `1.500,00 €` eingeben; „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige
+   Aushilfe …“; Ende `31.12.2026`, `30` Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer „nach
+   den Lohnsteuermerkmalen (ELStAM)“.
+9. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
+10. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+11. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+12. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
+    - **Danach:** Personengruppe **101** mit „bitte prüfen“ statt 110 – wer arbeitsuchend gemeldet
+      ist, ist berufsmäßig beschäftigt; über der Geringfügigkeitsgrenze ist die Aushilfe nicht
+      kurzfristig.
+13. Für die Gegenprobe noch einmal
+    [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – derselbe
+    vorbereitete Fragebogen noch einmal; der Arbeitgeber steht wieder beim Monatsentgelt.
+14. Als Arbeitgeber `500,00 €` eingeben; „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige
+    Aushilfe …“; Ende `31.12.2026`, `30` Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer „nach
+    den Lohnsteuermerkmalen (ELStAM)“.
+15. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
+16. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+17. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+18. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
+    - **Danach:** Wieder Personengruppe **110** und Beitragsgruppen **0000** – bis zur Grenze kommt es
+      auf die Berufsmäßigkeit nicht an.
 
 **Erwartet:**
 

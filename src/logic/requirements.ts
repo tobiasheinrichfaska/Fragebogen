@@ -131,6 +131,16 @@ export type BlockerCode =
   | 'outsideValidity'
   | 'outOfScope';
 
+/**
+ * What the overview says under "Stand" — for every form alike (test report 2026-11-06: "Für die
+ * Lohnabrechnung fehlt noch" stood on the SEPA-Mandat).
+ */
+export const PASS_ON_TEXTS = {
+  blocked: 'Noch nicht weitergeben:',
+  gaps: 'Kann an die nächste Station weitergegeben werden. Bis der Fragebogen vollständig ist, fehlt noch:',
+  complete: 'Vollständig: alle erforderlichen Teile liegen vor und sind verknüpft.',
+} as const;
+
 export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   nothingSealed: 'Es gibt noch keinen abgeschlossenen Teil, der übermittelt werden kann.',
   draftOpen: 'Ein Teil ist noch nicht abgeschlossen. Entwürfe werden nicht übermittelt.',

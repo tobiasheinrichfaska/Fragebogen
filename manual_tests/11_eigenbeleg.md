@@ -21,11 +21,12 @@ ohne Originalbeleg“ und der Tag sind eingetragen; Sie stehen bei „Wofür wur
 2. Gehen Sie mit **„Zurück“** wieder zu „Wofür wurde bezahlt?“ und wählen Sie **„ein Essen oder
    Getränke mit Gästen (Bewirtung)“**.
    - **Danach:** Der Warnkasten verschwindet.
-3. Lesen Sie die nächste Frage und klicken Sie **„Verstanden“**.
-   - **Achten Sie gleich auf:** Die nächste Frage beginnt mit „Wichtig bei einer Bewirtung: Ohne die
-     Rechnung der Gaststätte ist die Ausgabe nicht abziehbar.“ Darunter steht in einfachen Worten:
-     Rechnung der Gaststätte nötig (§ 4 Abs. 5 Satz 1 Nr. 2 EStG), Zweitschrift anfragen, Bewirtung
-     in der eigenen Wohnung in der Regel privat. Es gibt **nur einen** Knopf, „Verstanden“.
+3. Lesen Sie die nächste Frage.
+   - **Danach:** Sie beginnt mit „Wichtig bei einer Bewirtung: Ohne die Rechnung der Gaststätte ist
+     die Ausgabe nicht abziehbar.“ Darunter steht in einfachen Worten: Rechnung der Gaststätte nötig
+     (§ 4 Abs. 5 Satz 1 Nr. 2 EStG), Zweitschrift anfragen, Bewirtung in der eigenen Wohnung in der
+     Regel privat. Es gibt **nur einen** Knopf, „Verstanden“.
+4. Klicken Sie **„Verstanden“**.
    - **Danach:** _Nicht offensichtlich:_ Die Bewirtung ist **nicht** gesperrt; es geht mit „Wo fand
      die Bewirtung statt?“ weiter.
 
@@ -78,20 +79,35 @@ Eigenbeleg belegen?“.
 
 **Schritte:**
 
-1. Wählen Sie **„eine Privatentnahme …“** und bei der Rechtsform **„Kapitalgesellschaft (GmbH, UG oder
-   AG)“**.
-   - **Achten Sie gleich auf:** Die Rechtsform wird **nur** bei einer Privatentnahme oder Einlage
-     gefragt.
+1. Wählen Sie **„eine Privatentnahme …“**.
+   - **Danach:** Es kommt die Frage „Welche Rechtsform hat das Unternehmen?“. Die Rechtsform wird
+     **nur** bei einer Privatentnahme oder Einlage gefragt.
+2. Wählen Sie **„Kapitalgesellschaft (GmbH, UG oder AG)“**.
    - **Danach:** Bei der GmbH kommt der Hinweis „Bitte beachten Sie: In einer GmbH, UG oder AG gehört
      das Geld der Gesellschaft.“ mit der Erklärung zu Verrechnungskonto, Darlehen und verdeckter
      Gewinnausschüttung und nur dem Knopf „Verstanden“.
-2. Bestätigen Sie den Hinweis mit **„Verstanden“** und beantworten Sie die folgenden Fragen bis zur
-   Zusammenfassung (Tag `15.10.2026`, **„bar aus der Kasse des Betriebs“**, Betrag `200,00`, Zweck
-   leer lassen, Kassenbuch **„Ja“**, Datum des Eigenbelegs `16.10.2026`).
-   - **Achten Sie gleich auf:** Es gibt keine Fragen nach Zahlungsempfänger, Ort, Währung oder
-     Zahlungsart; der Betrag heißt „Wie viel Geld war es, in Euro?“. Der Zweck ist freiwillig.
-   - **Danach:** _Nicht offensichtlich:_ Der Eigenbeleg ist trotz GmbH nicht gesperrt; die Kanzlei
-     bekommt einen Prüfhinweis.
+3. Bestätigen Sie den Hinweis mit **„Verstanden“**.
+4. Tragen Sie bei „An welchem Tag wurde bezahlt oder das Geld bewegt?“ `15.10.2026` ein und klicken
+   Sie **„Weiter“**.
+   - **Danach:** Es geht mit „Woher wurde das Geld entnommen?“ weiter. Es gibt keine Fragen nach
+     Zahlungsempfänger, Ort, Währung oder Zahlungsart.
+5. Wählen Sie **„bar aus der Kasse des Betriebs“**.
+6. Lassen Sie „Welche Kasse war es?“ leer und klicken Sie **„Weiter“**.
+7. Tragen Sie bei „Wer hat das Geld für private Zwecke entnommen?“ `Erika Musterfrau` ein und klicken
+   Sie **„Weiter“**.
+   - **Danach:** Die Frage nach dem Betrag heißt „Wie viel Geld war es, in Euro?“.
+8. Tragen Sie `200,00` ein und klicken Sie **„Weiter“**.
+   - **Danach:** Es kommt „Wofür wurde das Geld entnommen?“ mit dem Zusatz „(freiwillig)“ – der Zweck
+     ist freiwillig.
+9. Lassen Sie den Zweck leer und klicken Sie **„Weiter“**.
+   - **Danach:** Es geht ohne Zweck weiter mit „Ist der Betrag am selben Tag im Kassenbuch
+     eingetragen?“.
+10. Antworten Sie **„Ja“**.
+11. Lassen Sie „Welche Nummer bekommt dieser Eigenbeleg?“ leer und klicken Sie **„Weiter“**.
+12. Tragen Sie bei „Welches Datum hat dieser Eigenbeleg?“ `16.10.2026` ein und klicken Sie
+    **„Weiter“**.
+    - **Danach:** Die Zusammenfassung erscheint. _Nicht offensichtlich:_ Der Eigenbeleg ist trotz
+      GmbH nicht gesperrt; die Kanzlei bekommt einen Prüfhinweis.
 
 ---
 
@@ -102,18 +118,30 @@ Eigenbeleg belegen?“.
 
 **Schritte:**
 
-1. Klicken Sie in der Zusammenfassung bei „Art des Vorgangs“ auf **„ändern“** und wählen Sie **„einen
-   Geldtransit …“**.
-2. Weiter: **„aus der Kasse auf das Bankkonto (Einzahlung bei der Bank)“**, gebracht von
-   `Max Mustermann`, Betrag `1.250,00`, Grund `Tageseinnahmen zur Bank gebracht`, Kassenbuch
-   **„Ja“**, Beleg der Bank **„Nein“**; bis zur Zusammenfassung.
-   - **Achten Sie gleich auf:** Rechtsform, Hinweis zur GmbH, „entnommen von“ und der Zweck werden
-     nicht mehr gefragt. Neu sind „Von wo nach wo wurde das Geld gebracht?“, „Wer hat das Geld
-     gebracht oder abgeholt?“ und „Geben Sie den Beleg der Bank oder den Kontoauszug mit ab?“.
-   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Der Betrag ist mit 200,00 € vorbelegt, weil
-     Entnahme und Geldtransit dasselbe Betragsfeld nutzen; überschreiben Sie ihn mit `1.250,00`.
-   - **Danach:** Die Zusammenfassung nennt die alten Antworten unter „Diese Angaben werden nicht mit
-     unterschrieben, weil ihre Voraussetzung nicht mehr gilt …“.
+1. Klicken Sie in der Zusammenfassung bei „Art des Vorgangs“ auf **„ändern“**.
+   - **Danach:** Die Frage „Was möchten Sie mit diesem Eigenbeleg belegen?“ erscheint.
+2. Wählen Sie **„einen Geldtransit …“**.
+   - **Danach:** Neu ist die Frage „Von wo nach wo wurde das Geld gebracht?“. Rechtsform und Hinweis
+     zur GmbH werden nicht mehr gefragt.
+3. Wählen Sie **„aus der Kasse auf das Bankkonto (Einzahlung bei der Bank)“**.
+4. Lassen Sie „Welche Kasse war es?“ leer und klicken Sie **„Weiter“**.
+   - **Danach:** Neu ist die Frage „Wer hat das Geld gebracht oder abgeholt?“; „entnommen von“ wird
+     nicht mehr gefragt.
+5. Tragen Sie `Max Mustermann` ein und klicken Sie **„Weiter“**.
+   - **Danach:** Es kommt „Warum wurde das Geld gebracht?“. Der Zweck der Entnahme wird nicht mehr
+     gefragt.
+6. Tragen Sie `Tageseinnahmen zur Bank gebracht` ein und klicken Sie **„Weiter“**.
+   - **Danach:** Neu ist die Frage „Geben Sie den Beleg der Bank oder den Kontoauszug mit ab?“.
+7. Antworten Sie **„Nein“**.
+   - **Danach:** Die Zusammenfassung erscheint. Sie nennt die alten Antworten unter „Diese Angaben
+     werden nicht mit unterschrieben, weil ihre Voraussetzung nicht mehr gilt …“. „Betrag im
+     Kassenbuch“ steht weiter auf „Ja“. _Nicht offensichtlich:_ Nach Betrag und Kassenbuch wurde
+     nicht noch einmal gefragt, weil sie schon beantwortet sind.
+8. Klicken Sie bei „Betrag in Euro“ auf **„ändern“**.
+   - **Danach:** _Nicht offensichtlich:_ Der Betrag ist mit 200,00 € vorbelegt, weil Entnahme und
+     Geldtransit dasselbe Betragsfeld nutzen.
+9. Überschreiben Sie den Betrag mit `1.250,00` und klicken Sie **„Zurück zur Zusammenfassung“**.
+   - **Danach:** Die Zusammenfassung zeigt den neuen Betrag.
 
 ---
 
@@ -123,11 +151,26 @@ Eigenbeleg belegen?“.
 
 **Schritte:**
 
-1. Wählen Sie **„eine Einlage …“** und bei der Rechtsform **„Einzelunternehmen“**.
-   - **Danach:** Beim Einzelunternehmen kommt **kein** Hinweis zur GmbH.
-2. Beantworten Sie die Fragen bis zur Zusammenfassung: **„bar in die Kasse des Betriebs“**, eingelegt
-   von `Erika Musterfrau`, Betrag `500,00`, Herkunft `vom privaten Girokonto abgehoben`, Kassenbuch
-   **„Nein“**, Datum des Eigenbelegs `16.10.2026`.
-   - **Achten Sie gleich auf:** Die Herkunft des Geldes ist Pflicht – ohne sie geht es nicht weiter.
-   - **Danach:** _Nicht offensichtlich:_ „Kassenbuch: Nein“ sperrt nichts; die Kanzlei bekommt nur
-     einen Prüfhinweis.
+1. Wählen Sie **„eine Einlage …“**.
+   - **Danach:** Es kommt die Frage „Welche Rechtsform hat das Unternehmen?“.
+2. Wählen Sie **„Einzelunternehmen“**.
+   - **Danach:** Beim Einzelunternehmen kommt **kein** Hinweis zur GmbH; es geht mit „An welchem Tag
+     wurde bezahlt oder das Geld bewegt?“ weiter.
+3. Tragen Sie `15.10.2026` ein und klicken Sie **„Weiter“**.
+4. Wählen Sie bei „Wohin wurde das Geld eingelegt?“ **„bar in die Kasse des Betriebs“**.
+5. Lassen Sie „Welche Kasse war es?“ leer und klicken Sie **„Weiter“**.
+6. Tragen Sie bei „Wer hat das Geld eingelegt?“ `Erika Musterfrau` ein und klicken Sie
+   **„Weiter“**.
+7. Tragen Sie als Betrag `500,00` ein und klicken Sie **„Weiter“**.
+   - **Danach:** Es kommt „Woher stammt das eingelegte Geld?“.
+8. Lassen Sie das Feld leer und versuchen Sie, **„Weiter“** zu klicken.
+   - **Danach:** **„Weiter“** lässt sich nicht anklicken: Die Herkunft des Geldes ist Pflicht – ohne
+     sie geht es nicht weiter.
+9. Tragen Sie `vom privaten Girokonto abgehoben` ein und klicken Sie **„Weiter“**.
+   - **Danach:** Es geht mit „Ist der Betrag am selben Tag im Kassenbuch eingetragen?“ weiter.
+10. Antworten Sie **„Nein“**.
+11. Lassen Sie „Welche Nummer bekommt dieser Eigenbeleg?“ leer und klicken Sie **„Weiter“**.
+12. Tragen Sie bei „Welches Datum hat dieser Eigenbeleg?“ `16.10.2026` ein und klicken Sie
+    **„Weiter“**.
+    - **Danach:** Die Zusammenfassung erscheint. _Nicht offensichtlich:_ „Kassenbuch: Nein“ sperrt
+      nichts; die Kanzlei bekommt nur einen Prüfhinweis.
