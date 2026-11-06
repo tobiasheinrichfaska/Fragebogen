@@ -133,8 +133,8 @@ Eigenbeleg belegen?“.
 6. Tragen Sie `Tageseinnahmen zur Bank gebracht` ein und klicken Sie **„Weiter“**.
    - **Danach:** Neu ist die Frage „Geben Sie den Beleg der Bank oder den Kontoauszug mit ab?“.
 7. Antworten Sie **„Nein“**.
-   - **Danach:** Die Zusammenfassung erscheint. Sie nennt die alten Antworten unter „Diese Angaben
-     werden nicht mit unterschrieben, weil ihre Voraussetzung nicht mehr gilt …“. „Betrag im
+   - **Danach:** Die Zusammenfassung erscheint. Sie nennt die alten Antworten unter „Verworfene
+     Angaben: Ihre Voraussetzung gilt nicht mehr …“. „Betrag im
      Kassenbuch“ steht weiter auf „Ja“. _Nicht offensichtlich:_ Nach Betrag und Kassenbuch wurde
      nicht noch einmal gefragt, weil sie schon beantwortet sind.
 8. Klicken Sie bei „Betrag in Euro“ auf **„ändern“**.

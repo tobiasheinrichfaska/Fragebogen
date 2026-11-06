@@ -184,16 +184,17 @@ nennt seine Rolle.
 
 ### Bedingungen (`showIf`, `requiredIf`, `requiredIf.when`, `carryRowsIf`, `checkHints[].when`)
 
-| Form                                                                    | Gilt, wenn …                                                                                |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)                                       |
-| `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                                          |
-| `{ "field": "kinderSonderfaelle", "contains": "stiefkind" }`            | die Mehrfachauswahl diese Option enthält (`contains`)                                       |
-| `{ "field": "geburtsdatum", "onOrBefore": "1959-11-02" }`               | das Datum am oder vor diesem Tag liegt (`onOrBefore`, nur Datumsfelder; leer: nie)          |
-| `{ "field": "agVorlesungszeitStunden", "greaterThan": "20" }`           | die Zahl oder der Betrag größer ist (`greaterThan`, nur Zahl- und Betragsfelder; leer: nie) |
-| `{ "field": "iban", "startsWith": "DE" }`                               | der Text mit diesem Anfang beginnt (`startsWith`, nur Textfelder, IBAN in Großbuchstaben)   |
-| `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`)                          |
-| `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                                           |
+| Form                                                                    | Gilt, wenn …                                                                                                                                                                                     |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `{ "field": "kinder", "equals": true }`                                 | Ja/Nein oder Auswahl genau diesen Wert hat (`equals`)                                                                                                                                            |
+| `{ "field": "agBeschaeftigungsart", "in": ["minijob", "kurzfristig"] }` | die Auswahl einer davon ist (`in`)                                                                                                                                                               |
+| `{ "field": "kinderSonderfaelle", "contains": "stiefkind" }`            | die Mehrfachauswahl diese Option enthält (`contains`)                                                                                                                                            |
+| `{ "field": "geburtsdatum", "onOrBefore": "1959-11-02" }`               | das Datum am oder vor diesem Tag liegt (`onOrBefore`, nur Datumsfelder; leer: nie)                                                                                                               |
+| `{ "field": "agVorlesungszeitStunden", "greaterThan": "20" }`           | die Zahl oder der Betrag größer ist (`greaterThan`, nur Zahl- und Betragsfelder; leer: nie)                                                                                                      |
+| `{ "field": "anschriftStaat", "inSet": "staatenOhnePostleitzahl2026" }` | der gewählte Eintrag einer amtlichen Liste zu einer festen Menge gehört (`inSet`, nur Auswahlfelder mit `optionsFrom` der Liste, zu der die Menge gehört; Mengen: `staatenOhnePostleitzahl2026`) |
+| `{ "field": "iban", "startsWith": "DE" }`                               | der Text mit diesem Anfang beginnt (`startsWith`, nur Textfelder, IBAN in Großbuchstaben)                                                                                                        |
+| `{ "field": "email", "answered": false }`                               | das Feld leer (`false`) oder beantwortet (`true`) ist (`answered`)                                                                                                                               |
+| `{ "not": … }`, `{ "all": [ … ] }`, `{ "any": [ … ] }`                  | Verneinung, alle, mindestens eine                                                                                                                                                                |
 
 Ein ausgeblendetes Feld zählt als unbeantwortet. Bedingungen in Feldern sehen nur Felder derselben
 Rolle; über Rollen hinweg gibt es `fromRole` (Antwort übernehmen), Rollen mit
@@ -278,7 +279,7 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
 - `showIf` nur auf frühere Felder derselben Rolle, ohne Kreise; `requiredIf` derselben Rolle, nicht auf sich selbst.
 - Jede Rolle hat Felder oder eine Unterschrift; bedingte Rollen unterschreiben.
 - `initial` nur auf immer verfügbaren Ja/Nein- oder Auswahlfeldern; nicht zusammen mit `fromRole`.
-- `quickAnswers` nur auf Eingabefeldern (auch Auswahl aus einer Liste), jeder Wert eine gültige Antwort, `null` nur bei freiwilligen.
+- `quickAnswers` nur auf Eingabefeldern (auch Auswahl aus einer Liste), jeder Wert eine gültige Antwort, `null` nicht bei `required: true` (bei `requiredIf` erscheint der Knopf nur, solange die Frage nicht Pflicht ist).
 - `optionsFrom` nur bei `choice`, nie zusammen mit `options`, nur bekannte Listen.
 - `{feldId}` in Fragen, Hilfen und `suggestedText` nur für frühere Felder derselben Rolle; `suggestedText` nur bei `text` und `date` (dort nur `"today"`), nicht in Tabellenspalten, nicht mit `masterData`.
 - `prefills` nur ohne Unterschrift und ohne `requiredIf`; mindestens eine andere Rolle füllt aus.

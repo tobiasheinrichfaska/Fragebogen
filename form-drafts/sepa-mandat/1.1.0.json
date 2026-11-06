@@ -1,7 +1,7 @@
 {
   "id": "sepa-mandat",
   "version": "1.1.0",
-  "revised": "2026-11-06T09:11",
+  "revised": "2026-11-06T12:24",
   "title": "SEPA-Basislastschriftmandat",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für ein SEPA-Lastschriftmandat schreibt das Gesetz keine besondere Form vor. Deshalb unterschreiben Sie hier mit einer einfachen elektronischen Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Das Mandat gilt nur für die Angaben, die Sie vor dem Unterschreiben in der Zusammenfassung sehen.",
@@ -310,7 +310,7 @@
           "role": "kanzlei",
           "type": "text",
           "label": "Postleitzahl (Ausland)",
-          "help": "So, wie sie in dem Staat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
+          "help": "So, wie sie in dem Staat geschrieben wird. Gibt es in dem Staat keine Postleitzahlen, klicken Sie „Keine Postleitzahl“.",
           "required": false,
           "maxLength": 10,
           "purpose": "Vorbelegung des Mandats aus den Unterlagen der Kanzlei",
@@ -318,13 +318,19 @@
             "field": "khAnschriftAusland",
             "equals": true
           },
-          "because": "Postleitzahlen im Ausland haben andere Formate; für einige Staaten prüft die App das Format als Hinweis.",
+          "because": "Postleitzahlen im Ausland haben andere Formate; für einige Staaten prüft die App das Format als Hinweis. Pflicht ist sie, außer in Staaten ohne Postleitzahlen.",
           "quickAnswers": [
             {
               "label": "Keine Postleitzahl",
               "value": null
             }
-          ]
+          ],
+          "requiredIf": {
+            "not": {
+              "field": "khAnschriftStaat",
+              "inSet": "staatenOhnePostleitzahl2026"
+            }
+          }
         },
         {
           "id": "khOrt",
@@ -689,7 +695,7 @@
           "role": "kontoinhaber",
           "type": "text",
           "label": "Postleitzahl (Ausland)",
-          "help": "So, wie sie in dem Staat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
+          "help": "So, wie sie in dem Staat geschrieben wird. Gibt es in dem Staat keine Postleitzahlen, klicken Sie „Keine Postleitzahl“.",
           "required": false,
           "maxLength": 10,
           "purpose": "Anschrift des Zahlers im Mandat (SEPA-Regelwerk)",
@@ -702,13 +708,19 @@
             "field": "khPostleitzahlAusland",
             "changeable": true
           },
-          "because": "Postleitzahlen im Ausland haben andere Formate; für einige Staaten prüft die App das Format als Hinweis. Hat die Kanzlei sie eingetragen, steht sie schon da und kann geändert werden.",
+          "because": "Postleitzahlen im Ausland haben andere Formate; für einige Staaten prüft die App das Format als Hinweis. Hat die Kanzlei sie eingetragen, steht sie schon da und kann geändert werden. Pflicht ist sie, außer in Staaten ohne Postleitzahlen.",
           "quickAnswers": [
             {
               "label": "Keine Postleitzahl",
               "value": null
             }
-          ]
+          ],
+          "requiredIf": {
+            "not": {
+              "field": "anschriftStaat",
+              "inSet": "staatenOhnePostleitzahl2026"
+            }
+          }
         },
         {
           "id": "kontoinhaberOrt",

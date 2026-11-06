@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "0.1.0",
-  "revised": "2026-11-04T18:13",
+  "revised": "2026-11-06T12:24",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -396,14 +396,26 @@
           "deuevRule": "plzAusland",
           "label": "Postleitzahl (Ausland)",
           "question": "Wie lautet die Postleitzahl?",
-          "help": "So, wie sie in Ihrem Wohnstaat geschrieben wird. Gibt es dort keine, lassen Sie das Feld leer.",
+          "help": "So, wie sie in Ihrem Wohnstaat geschrieben wird. Gibt es in dem Staat keine Postleitzahlen, klicken Sie „Keine Postleitzahl“.",
           "required": false,
           "purpose": "Stammdaten für die Lohnabrechnung; Vergabe einer Versicherungsnummer, wenn sie fehlt",
           "showIf": {
             "field": "anschriftAusland",
             "equals": true
           },
-          "because": "Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis."
+          "because": "Postleitzahlen im Ausland haben andere Formate; für die Staaten, deren Format die Meldungen zur Sozialversicherung festlegen, prüft die App es als Hinweis. Pflicht ist sie, außer in Staaten ohne Postleitzahlen.",
+          "requiredIf": {
+            "not": {
+              "field": "anschriftStaat",
+              "inSet": "staatenOhnePostleitzahl2026"
+            }
+          },
+          "quickAnswers": [
+            {
+              "label": "Keine Postleitzahl",
+              "value": null
+            }
+          ]
         },
         {
           "id": "wohnort",

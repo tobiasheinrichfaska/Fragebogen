@@ -196,6 +196,31 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
   neuen Upload des Testordners), steht er in der Liste mit „– geändert seit Ihrem Test“ und im Test
   mit der Bitte, ihn neu zu bewerten; der Testbericht vermerkt es ebenfalls.
 
+## MT-130: Erledigte Tests aus dem nächsten Bericht nehmen
+
+**Einstieg:** Der Testbereich selbst – Sie sind schon da.
+
+**Voraussetzungen:** Mindestens zwei Tests haben ein Ergebnis (z. B. aus MT-85).
+
+**Schritte:**
+
+1. **„← Zur Liste“** klicken und unter der Liste **„Testbericht als PDF“** klicken.
+   - **Danach:** Die PDF enthält alle Tests mit Ergebnis.
+2. **„Erledigte Tests aus dem nächsten Bericht nehmen“** klicken.
+   - **Danach:** _Nicht offensichtlich:_ Die Tests stehen in der Liste weiter mit ✓ und ihrem
+     Ergebnis, dazu „· berichtet“. Unter der Liste steht „· im nächsten Bericht: 0“, und der Knopf ist
+     ausgegraut.
+3. Noch einmal **„Testbericht als PDF“**.
+   - **Danach:** Die PDF enthält diese Tests nicht mehr; darunter steht der Satz „… schon berichtete
+     Tests fehlen darin; sie stehen in der Liste weiter als erledigt.“
+4. Einen der berichteten Tests öffnen und seinen Kommentar ändern, dann **„Zur Liste“**.
+   - **Danach:** „· berichtet“ fehlt bei diesem Test; „im nächsten Bericht: 1“ – eine Änderung bringt
+     ihn wieder in den Bericht.
+5. **„Alle wieder in den Bericht nehmen“** klicken.
+   - **Danach:** Kein Test zeigt mehr „· berichtet“; der nächste Bericht enthält wieder alle.
+
+---
+
 ## MT-81: Hilfeseiten „Wo finde ich …?“
 
 **Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“ und tippen bei der Steuer-Identifikationsnummer auf „Wo finde ich das?“.

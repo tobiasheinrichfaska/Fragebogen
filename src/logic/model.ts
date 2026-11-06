@@ -133,6 +133,8 @@ export type Condition =
   | { field: FieldId; startsWith: string }
   | { field: FieldId; onOrBefore: IsoDate }
   | { field: FieldId; greaterThan: string }
+  /** The chosen entry belongs to a set of a reference list (`REFERENCE_SETS`), e.g. states without postcodes. */
+  | { field: FieldId; inSet: string }
   | { not: Condition }
   | { all: Condition[] }
   | { any: Condition[] };

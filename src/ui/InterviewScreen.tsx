@@ -331,11 +331,14 @@ function QuestionStep({
         )}
         {field.quickAnswers && (
           <div className="quick-answers">
-            {field.quickAnswers.map((quick) => (
-              <button key={quick.label} type="button" onClick={() => quickAnswer(quick.value)}>
-                {quick.label}
-              </button>
-            ))}
+            {/* Leaving it empty is offered only while the question is not required right now. */}
+            {field.quickAnswers
+              .filter((quick) => quick.value !== null || !step.required)
+              .map((quick) => (
+                <button key={quick.label} type="button" onClick={() => quickAnswer(quick.value)}>
+                  {quick.label}
+                </button>
+              ))}
           </div>
         )}
         {error !== undefined && (
@@ -515,7 +518,8 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
         <Banner
           message={{
             tone: 'info',
-            text: 'Diese Angaben werden nicht mit unterschrieben, weil ihre Voraussetzung nicht mehr gilt. Sie bleiben bis zur Unterschrift gespeichert:',
+            // Tobias 2026-11-06: "verworfene Angaben" reads clearer than "nicht unterschrieben".
+            text: 'Verworfene Angaben: Ihre Voraussetzung gilt nicht mehr, deshalb fallen sie beim Unterschreiben weg. Ändern Sie die Antwort zurück, sind sie wieder da:',
             detail: summary.inactive.map((entry) => `${label(entry.fieldId)} (${entry.reason})`),
           }}
         />

@@ -21,6 +21,11 @@ export interface TestEntry {
   correctedMinutes?: number;
   /** caseVersion of the test text the result was given for (12 hex digits). */
   version?: string;
+  /**
+   * When the test was taken out of the report (ISO time): the list still shows it done, the next
+   * report leaves it out until its result, comment or duration changes.
+   */
+  reported?: string;
 }
 
 export interface TestRun {
@@ -38,6 +43,13 @@ const withEntry = (run: TestRun, id: string, entry: TestEntry): TestRun => ({
   entries: { ...run.entries, [id]: entry },
 });
 
+/** A changed entry belongs in the next report again. */
+function unreported(entry: TestEntry): TestEntry {
+  const rest: TestEntry = { ...entry };
+  delete rest.reported;
+  return rest;
+}
+
 /** "Test beginnen": starts the clock; a test begun again keeps its first start. */
 export function startTest(run: TestRun, id: string, now: string): TestRun {
   const entry = entryOf(run, id);
@@ -53,7 +65,7 @@ export function setResult(
   version?: string,
 ): TestRun {
   const entry = entryOf(run, id);
-  const rest: TestEntry = { ...entry };
+  const rest: TestEntry = unreported(entry);
   delete rest.version;
   return withEntry(run, id, {
     ...rest,
@@ -73,13 +85,17 @@ export function changedSince(entry: TestEntry | undefined, current: string): boo
 }
 
 export function setComment(run: TestRun, id: string, comment: string): TestRun {
-  return withEntry(run, id, { ...entryOf(run, id), comment });
+  const entry = entryOf(run, id);
+  return withEntry(run, id, {
+    ...(entry.comment === comment ? entry : unreported(entry)),
+    comment,
+  });
 }
 
 /** A corrected duration in whole minutes (0–600); undefined drops the correction. */
 export function correctDuration(run: TestRun, id: string, minutes: number | undefined): TestRun {
   const entry = entryOf(run, id);
-  const rest: TestEntry = { ...entry };
+  const rest: TestEntry = unreported(entry);
   delete rest.correctedMinutes;
   if (minutes === undefined) return withEntry(run, id, rest);
   const clean = Math.min(600, Math.max(0, Math.round(minutes)));
@@ -101,6 +117,43 @@ export function measuredMinutes(entry: TestEntry): number | undefined {
 /** The minutes that count: the tester's correction, else the measured ones. */
 export function countedMinutes(entry: TestEntry): number | undefined {
   return entry.correctedMinutes ?? measuredMinutes(entry);
+}
+
+/**
+ * "Erledigte Tests aus dem nächsten Bericht nehmen" (Tobias 2026-11-06): every test with a result
+ * is marked as reported now; the list keeps showing it done.
+ */
+export function markReported(run: TestRun, now: string): TestRun {
+  const entries = Object.fromEntries(
+    Object.entries(run.entries).map(([id, entry]) => [
+      id,
+      entry.result && !entry.reported ? { ...entry, reported: now } : entry,
+    ]),
+  );
+  return { ...run, entries };
+}
+
+/** "Alle wieder in den Bericht nehmen". */
+export function unmarkReported(run: TestRun): TestRun {
+  const entries = Object.fromEntries(
+    Object.entries(run.entries).map(([id, entry]) => [id, unreported(entry)]),
+  );
+  return { ...run, entries };
+}
+
+/** The run as the next report shows it: without the tests taken out of the report. */
+export function forReport(run: TestRun): TestRun {
+  const entries = Object.fromEntries(
+    Object.entries(run.entries).filter(([, entry]) => entry.reported === undefined),
+  );
+  return { ...run, entries };
+}
+
+/** How many tests with a result are not reported yet / already taken out of the report. */
+export function reportCounts(run: TestRun): { open: number; reported: number } {
+  const done = Object.values(run.entries).filter((entry) => entry.result);
+  const reported = done.filter((entry) => entry.reported !== undefined).length;
+  return { open: done.length - reported, reported };
 }
 
 export interface RunTotals {
@@ -149,6 +202,7 @@ export function decodeRun(raw: unknown): TestRun {
         ...(typeof value.version === 'string' && /^[0-9a-f]{12}$/.test(value.version)
           ? { version: value.version }
           : {}),
+        ...(result && isTime(value.reported) ? { reported: value.reported } : {}),
         ...(typeof minutes === 'number' &&
         Number.isInteger(minutes) &&
         minutes >= 0 &&

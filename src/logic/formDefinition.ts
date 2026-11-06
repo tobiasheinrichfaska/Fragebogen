@@ -694,6 +694,10 @@ export function decodeCondition(
       const greaterThan = d.string(o.greaterThan, `${path}.greaterThan`);
       return field === undefined || greaterThan === undefined ? undefined : { field, greaterThan };
     }
+    case 'inSet': {
+      const inSet = d.string(o.inSet, `${path}.inSet`, ID);
+      return field === undefined || inSet === undefined ? undefined : { field, inSet };
+    }
     default: {
       const answered = d.boolean(o.answered, `${path}.answered`);
       return field === undefined || answered === undefined ? undefined : { field, answered };
@@ -1080,8 +1084,10 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
         report(`${path}.quickAnswers`, 'only typed fields have quick answers');
         return;
       }
+      // A field required only under a condition may offer it: the button shows while it is not
+      // required (e.g. "Keine Postleitzahl" for a state without postcodes, 2026-11-06).
       if (quick.value === null) {
-        if (field.required || field.requiredIf) report(at, 'a required field cannot be left empty');
+        if (field.required) report(at, 'a required field cannot be left empty');
         return;
       }
       const normalized = normalizeFieldValue(field, quick.value);

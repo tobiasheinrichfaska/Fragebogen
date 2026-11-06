@@ -139,7 +139,7 @@ describe('Sofortmeldung 1.1.0: texts', () => {
     ).toEqual(['versicherungsnummerWeichtAb', 'plzAuslandFormat']);
   });
 
-  it('changes nothing else against 1.0.0 but the sector, the exclusion and these texts', () => {
+  it('changes nothing else against 1.0.0 but the sector, the exclusion, these texts and the foreign postcode', () => {
     const strip = (d: typeof definition) => ({
       ...d,
       version: '',
@@ -155,7 +155,15 @@ describe('Sofortmeldung 1.1.0: texts', () => {
         ...s,
         fields: s.fields
           .filter((f) => f.id !== 'agBranche')
-          .map((f) => (f.id === 'geborenInDeutschland' ? { ...f, help: '' } : f)),
+          .map((f) => (f.id === 'geborenInDeutschland' ? { ...f, help: '' } : f))
+          // The foreign postcode is required unless the state has none (Tobias 2026-11-06).
+          .map((f) => {
+            if (f.id !== 'postleitzahlAusland') return f;
+            const rest = { ...f, help: '', because: '' };
+            delete rest.requiredIf;
+            delete rest.quickAnswers;
+            return rest;
+          }),
       })),
     });
     expect(strip(definition)).toEqual(strip(previous.definition));

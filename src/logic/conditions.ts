@@ -11,7 +11,7 @@ import {
   type FieldValue,
 } from './model';
 import { formatGermanDate, isIsoDate } from './dates';
-import { optionsOf } from './options';
+import { optionsOf, REFERENCE_SETS } from './options';
 
 export type LeafCondition = Extract<Condition, { field: FieldId }>;
 export const CONDITION_OPERATORS = [
@@ -22,6 +22,7 @@ export const CONDITION_OPERATORS = [
   'startsWith',
   'onOrBefore',
   'greaterThan',
+  'inSet',
 ] as const;
 export type ConditionOperator = (typeof CONDITION_OPERATORS)[number];
 type Operand = string | boolean | readonly string[];
@@ -124,6 +125,24 @@ const OPERATORS: Readonly<Record<ConditionOperator, OperatorSpec>> = {
     describe: (label, operand) =>
       `„${label}“ über ${typeof operand === 'string' ? operand.replace('.', ',') : String(operand)} liegt`,
   },
+  // The chosen entry of a reference list belongs to a fixed set (Tobias 2026-11-06: the foreign
+  // postcode is required unless the state has none) — the set names its list and its source.
+  inSet: {
+    targets: ['choice'],
+    checkOperand: (operand, target) => {
+      const set = typeof operand === 'string' ? REFERENCE_SETS[operand] : undefined;
+      if (!set) return `unknown set "${String(operand)}"`;
+      return target.optionsFrom === set.list
+        ? undefined
+        : `the set belongs to the list "${set.list}"`;
+    },
+    evaluate: (value, operand) =>
+      typeof value === 'string' &&
+      typeof operand === 'string' &&
+      (REFERENCE_SETS[operand]?.keys.includes(value) ?? false),
+    describe: (label, operand) =>
+      `bei „${label}“ ein Eintrag gewählt ist, der zu „${typeof operand === 'string' ? (REFERENCE_SETS[operand]?.title ?? operand) : String(operand)}“ gehört`,
+  },
   answered: {
     targets: FIELD_TYPES,
     checkOperand: (operand) => (typeof operand === 'boolean' ? undefined : 'expected a boolean'),
@@ -142,6 +161,7 @@ export function leafOperator(leaf: LeafCondition): {
   if ('startsWith' in leaf) return { operator: 'startsWith', operand: leaf.startsWith };
   if ('onOrBefore' in leaf) return { operator: 'onOrBefore', operand: leaf.onOrBefore };
   if ('greaterThan' in leaf) return { operator: 'greaterThan', operand: leaf.greaterThan };
+  if ('inSet' in leaf) return { operator: 'inSet', operand: leaf.inSet };
   return { operator: 'answered', operand: leaf.answered };
 }
 

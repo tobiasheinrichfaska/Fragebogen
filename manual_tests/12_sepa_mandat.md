@@ -288,18 +288,34 @@ Teil abgeschlossen, ohne Angaben zum Konto.
 1. **„Ich bin: Kontoinhaberin oder Kontoinhaber“**; bei beiden Hinweisen Häkchen und **„Weiter“**;
    Kontoinhaber **„Weiter“**; bei der weiteren Person **„Nein“**.
    - **Danach:** „Liegt die Anschrift im Ausland?“
-2. **„Ja“** klicken.
+2. **„Nein“** klicken, Straße `Musterstraße 5`, **„Weiter“**; Postleitzahl `12345`, **„Weiter“**.
+   - **Danach:** Gefragt wird der Ort.
+3. So oft **„Zurück“** klicken, bis „Liegt die Anschrift im Ausland?“ erscheint, dann **„Ja“**.
    - **Danach:** Gefragt wird der Staat, nicht die deutsche Postleitzahl.
-3. Beim Staat `Öster` tippen und **„Österreich“** wählen, **„Weiter“**; Straße `Beispielgasse 3`,
-   **„Weiter“**.
-   - **Danach:** Gefragt wird „Postleitzahl (Ausland)“.
-4. Postleitzahl `123` eintragen, **„Weiter“**.
+4. Beim Staat `Öster` tippen und **„Österreich“** wählen, **„Weiter“**; Straße **„Weiter“**.
+   - **Danach:** Gefragt wird „Postleitzahl (Ausland)“ – **ohne** „(freiwillig)“ und **ohne** den
+     Knopf „Keine Postleitzahl“: In Österreich gibt es Postleitzahlen, die Angabe ist Pflicht
+     (seit 06.11.2026).
+5. Ohne Eingabe auf **„Weiter“** schauen.
+   - **Danach:** „Weiter“ ist ausgegraut.
+6. Postleitzahl `123` eintragen, **„Weiter“**.
    - **Danach:** Die Postleitzahl wird angenommen; dazu erscheint der Hinweis „Die Postleitzahl hat
      nicht das übliche Format dieses Staats. Bitte prüfen.“ (Österreich: 4 Ziffern). _Nicht
      offensichtlich:_ Der Hinweis sperrt nichts – wie im Personalfragebogen.
-5. Ort `Wien`, **„Weiter“**; Bank `Beispielbank`, **„Weiter“**; IBAN
+7. So oft **„Zurück“** klicken, bis der Staat gefragt wird, `Hongkong` tippen und **„Hongkong“** wählen, **„Weiter“**;
+   Straße **„Weiter“**.
+   - **Danach:** Jetzt steht bei der Postleitzahl „(freiwillig)“, und es gibt den Knopf **„Keine
+     Postleitzahl“**: Hongkong hat keine Postleitzahlen (Liste mit Quellen:
+     `docs/quellen-staaten-ohne-postleitzahl.md`).
+8. Das Feld leeren und **„Keine Postleitzahl“** klicken.
+   - **Danach:** Gefragt wird der Ort.
+9. Ort `Hongkong`, **„Weiter“**; Bank `Beispielbank`, **„Weiter“**; IBAN
    `DE89 3704 0044 0532 0130 00`, **„Weiter“**; bei „Wer unterschreibt das Mandat?“ **„Weiter“**.
-   - **Danach:** Bei „Wo unterschreiben Sie?“ steht schon `Wien` als Vorschlag.
+   - **Danach:** Bei „Wo unterschreiben Sie?“ steht schon `Hongkong` als Vorschlag.
+10. Zweimal **„Weiter“** bis zur Zusammenfassung.
+    - **Danach:** _Nicht offensichtlich:_ Ein Kasten „Verworfene Angaben: Ihre Voraussetzung gilt
+      nicht mehr, deshalb fallen sie beim Unterschreiben weg. Ändern Sie die Antwort zurück, sind sie
+      wieder da:“ nennt die deutsche Postleitzahl aus Schritt 2.
 
 ---
 
