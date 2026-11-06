@@ -116,8 +116,10 @@ füllt jetzt aus?“.
      (abgeschlossen, nur lesen)“ mit der Mandatsreferenz `100010000001`.
 8. **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“** `Erika Musterfrau`, **„Unterschreiben und
    abschließen“**; dann **„PDF erstellen“** und die PDF öffnen.
-   - **Achten Sie gleich auf:** Der Satz am Häkchen lautet „Ich erteile das
-     SEPA-Basislastschriftmandat mit den Angaben aus der Zusammenfassung.“
+   - **Achten Sie gleich auf:** _Nicht offensichtlich:_ Über dem Häkchen steht unter „Das schließen
+     Sie ab:“ alles, was Sie unterschreiben – Ihre Angaben und darunter „Angaben: Kanzlei
+     (Zahlungsempfänger) (abgeschlossen, nur lesen)“. Deshalb stimmt der Satz am Häkchen „Ich
+     erteile das SEPA-Basislastschriftmandat mit den Angaben oben.“
    - **Danach:** Die PDF zeigt beide Teile; an der Unterschrift der Kontoinhaberin steht ihr Name
      „Erika Musterfrau“.
 
@@ -142,8 +144,9 @@ verfügen.
      Gläubiger-ID sind festgelegt.
 4. Die Zusammenfassung ansehen, dann **„Weiter zum Abschluss“**, Häkchen, **„Namen tippen“**
    `Max Mustermann`, unterschreiben.
-   - **Achten Sie gleich auf:** Der Satz am Häkchen nennt „die Angaben aus der Zusammenfassung“ –
-     nicht mehr „die Angaben oben“, die dort nicht zu sehen sind.
+   - **Achten Sie gleich auf:** Über dem Häkchen stehen alle Angaben: Ihr Name, darunter die
+     abgeschlossenen Teile der Kanzlei und der ersten Kontoinhaberin (mit Konto und IBAN) – „die
+     Angaben oben“ sind also wirklich oben zu sehen (seit 06.11.2026).
    - **Danach:** Es fehlt keine Rolle mehr; an der zweiten Unterschrift steht „Max Mustermann“.
 
 ---

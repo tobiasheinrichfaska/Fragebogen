@@ -1073,6 +1073,13 @@ button.start-link {
   }
 }
 
+/* Signing: everything the signature covers stands above the confirmation (Tobias 2026-11-06). */
+.signing-overview {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
 /* Steps of a manual test: the expectation right at the step (Tobias 2026-11-06). */
 .test-step {
   margin-bottom: 0.6rem;

@@ -8,8 +8,8 @@
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum der Vorlage“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 06.11.2026 um 08:41 |
-| Definition (SHA-256) | d0f474b25f5a2315ed9196f2ae5433dc9c1d3038f79e84279e9333d133196b99 |
+| Stand | zuletzt überarbeitet am 06.11.2026 um 09:11 |
+| Definition (SHA-256) | 8de5c397a2a78427f2e0db383ee111929c8399ea58584081b9761cc0af991485 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung. |
 | Empfänger | Kanzlei |
@@ -18,9 +18,9 @@
 
 | Rolle | Unterschrift | Erforderlich | Name der unterzeichnenden Person | Bestätigungstext |
 | --- | --- | --- | --- | --- |
-| Kanzlei (kanzlei) | Pflicht | immer | – | Wir haben die in der Zusammenfassung bezeichnete Fassung der Steuererklärung zur Prüfung vorgelegt. |
-| Mandantin oder Mandant (mandant) | Pflicht | immer | – | Ich bestätige meine Angaben und meine Entscheidung aus der Zusammenfassung. |
-| Ehegatte oder Lebenspartner (ehegatte) | Pflicht | nur wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb gibt auch der andere sie frei. | aus „Ihr Vor- und Familienname“ | Ich bestätige meine Angaben und meine Entscheidung aus der Zusammenfassung. |
+| Kanzlei (kanzlei) | Pflicht | immer | – | Wir haben die oben bezeichnete Fassung der Steuererklärung zur Prüfung vorgelegt. |
+| Mandantin oder Mandant (mandant) | Pflicht | immer | – | Ich bestätige meine Angaben und meine Entscheidung oben. |
+| Ehegatte oder Lebenspartner (ehegatte) | Pflicht | nur wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb gibt auch der andere sie frei. | aus „Ihr Vor- und Familienname“ | Ich bestätige meine Angaben und meine Entscheidung oben. |
 
 ## Felder
 

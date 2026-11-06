@@ -8,8 +8,8 @@
 | Formular | sepa-mandat, Version 1.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 06.11.2026 um 08:41 |
-| Definition (SHA-256) | c3d39695c9772641ebf7f4312cffcd5a6d6d42ddb43f4a909937ca875763a57f |
+| Stand | zuletzt überarbeitet am 06.11.2026 um 09:11 |
+| Definition (SHA-256) | 720a642f412a4a4b830f3e2ad7ff77e78c3cef6e29208e593f6847f1ba9e0ae8 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für ein SEPA-Lastschriftmandat schreibt das Gesetz keine besondere Form vor. Deshalb unterschreiben Sie hier mit einer einfachen elektronischen Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Das Mandat gilt nur für die Angaben, die Sie vor dem Unterschreiben in der Zusammenfassung sehen. |
 | Empfänger | Kanzlei |
@@ -19,8 +19,8 @@
 | Rolle | Unterschrift | Erforderlich | Name der unterzeichnenden Person | Bestätigungstext |
 | --- | --- | --- | --- | --- |
 | Kanzlei (Zahlungsempfänger) (kanzlei) | keine | freiwillig – belegt nur Angaben der anderen vor | – | Wir legen das Lastschriftmandat mit diesen Angaben zum Zahlungsempfänger und zum Vertrag vor. |
-| Kontoinhaberin oder Kontoinhaber (kontoinhaber) | Pflicht | immer | aus „Name der unterschreibenden Person“ | Ich erteile das SEPA-Basislastschriftmandat mit den Angaben aus der Zusammenfassung. |
-| Zweite Kontoinhaberin oder zweiter Kontoinhaber (mitinhaber) | Pflicht | nur wenn bei „Verfügung über das Konto“ „nur beide gemeinsam – beide unterschreiben“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Dürfen über das Konto nur beide Kontoinhaber gemeinsam verfügen, braucht auch das Mandat beide Unterschriften. | aus „Ihr Vor- und Familienname“ | Ich erteile das SEPA-Basislastschriftmandat mit den Angaben aus der Zusammenfassung. |
+| Kontoinhaberin oder Kontoinhaber (kontoinhaber) | Pflicht | immer | aus „Name der unterschreibenden Person“ | Ich erteile das SEPA-Basislastschriftmandat mit den Angaben oben. |
+| Zweite Kontoinhaberin oder zweiter Kontoinhaber (mitinhaber) | Pflicht | nur wenn bei „Verfügung über das Konto“ „nur beide gemeinsam – beide unterschreiben“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Dürfen über das Konto nur beide Kontoinhaber gemeinsam verfügen, braucht auch das Mandat beide Unterschriften. | aus „Ihr Vor- und Familienname“ | Ich erteile das SEPA-Basislastschriftmandat mit den Angaben oben. |
 
 ## Felder
 

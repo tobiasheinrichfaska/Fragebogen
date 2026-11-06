@@ -1,11 +1,12 @@
-// Completing a part (step 7): confirmation text, then draw or type the signature — or, for roles
-// whose signature is optional, complete without one. The seal itself is pure logic (session.seal);
-// time, nonce and the system note come from the device.
+// Completing a part (step 7): everything the signature covers, the confirmation text below it (so
+// "mit den Angaben oben" is true, Tobias 2026-11-06), then draw or type the signature — or, for
+// roles whose signature is optional, complete without one. The seal itself is pure logic
+// (session.seal); time, nonce and the system note come from the device.
 import { useState } from 'react';
 import { deviceNow, newNonce, systemNoteFor, type InputTracker } from '../io/environment';
 import { SIGNATURE_POLICY_LABELS } from '../logic/catalogue';
 import { roleOf } from '../logic/form';
-import { seal, type Session } from '../logic/session';
+import { seal, signingOverview, type OverviewSection, type Session } from '../logic/session';
 import { encodeStrokes, type Point } from '../logic/strokes';
 import { Banner, Card, type BannerMessage } from './common';
 import { SignaturePad } from './SignaturePad';
@@ -78,9 +79,26 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
       (method === 'drawn' && strokes.length > 0) ||
       (method === 'typed' && typed.trim() !== ''));
 
+  const overview = signingOverview(session);
+
   return (
     <Card title={`Abschließen: ${role.label}`}>
       {message && <Banner message={message} onClose={() => setMessage(undefined)} />}
+      {overview && (
+        <div className="signing-overview" role="group" aria-label="Was Sie abschließen">
+          <p className="muted">Das schließen Sie ab:</p>
+          <Sections sections={overview.own} />
+          {overview.others.map((other) => (
+            <div key={other.role} className="other-role">
+              <h3>Angaben: {other.label} (abgeschlossen, nur lesen)</h3>
+              <p className="muted">
+                Mit Ihrem Abschluss bestätigen Sie, diese Fassung erhalten zu haben.
+              </p>
+              <Sections sections={other.sections} />
+            </div>
+          ))}
+        </div>
+      )}
       <label className="confirm">
         <input
           type="checkbox"
@@ -145,5 +163,25 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
         </button>
       </div>
     </Card>
+  );
+}
+
+function Sections({ sections }: { sections: readonly OverviewSection[] }) {
+  return (
+    <>
+      {sections.map((section, i) => (
+        <div key={`${section.title}-${String(i)}`} className="summary-section">
+          <h3>{section.title}</h3>
+          <dl>
+            {section.rows.map((row) => (
+              <div key={row.fieldId} className="summary-row">
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      ))}
+    </>
   );
 }

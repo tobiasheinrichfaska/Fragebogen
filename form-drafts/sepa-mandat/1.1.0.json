@@ -1,7 +1,7 @@
 {
   "id": "sepa-mandat",
   "version": "1.1.0",
-  "revised": "2026-11-06T08:41",
+  "revised": "2026-11-06T09:11",
   "title": "SEPA-Basislastschriftmandat",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für ein SEPA-Lastschriftmandat schreibt das Gesetz keine besondere Form vor. Deshalb unterschreiben Sie hier mit einer einfachen elektronischen Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Das Mandat gilt nur für die Angaben, die Sie vor dem Unterschreiben in der Zusammenfassung sehen.",
@@ -21,7 +21,7 @@
       "id": "kontoinhaber",
       "label": "Kontoinhaberin oder Kontoinhaber",
       "stationHeading": "Mandat der Kontoinhaberin oder des Kontoinhabers",
-      "confirmationText": "Ich erteile das SEPA-Basislastschriftmandat mit den Angaben aus der Zusammenfassung.",
+      "confirmationText": "Ich erteile das SEPA-Basislastschriftmandat mit den Angaben oben.",
       "signature": "required",
       "signerNameField": "unterzeichnerName"
     },
@@ -29,7 +29,7 @@
       "id": "mitinhaber",
       "label": "Zweite Kontoinhaberin oder zweiter Kontoinhaber",
       "stationHeading": "Mandat der zweiten Kontoinhaberin oder des zweiten Kontoinhabers",
-      "confirmationText": "Ich erteile das SEPA-Basislastschriftmandat mit den Angaben aus der Zusammenfassung.",
+      "confirmationText": "Ich erteile das SEPA-Basislastschriftmandat mit den Angaben oben.",
       "signature": "required",
       "requiredIf": {
         "kind": "answer",
