@@ -394,10 +394,12 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
 
   return (
     <Card title="Zusammenfassung">
-      {summary.missingRequired.length > 0 && (
+      {(summary.missingRequired.length > 0 || summary.missingNotices.length > 0) && (
+        // Everything that keeps the part from being signed, in one place at the top (test report
+        // 2026-11-06: an unconfirmed notice further down was not found).
         <div className="skipped missing" role="group" aria-label="Fehlende Pflichtangaben">
           <p>
-            <strong>Diese Pflichtangaben fehlen noch:</strong>
+            <strong>Das fehlt noch, bevor Sie abschließen können:</strong>
           </p>
           <ul>
             {summary.missingRequired.map((id) => (
@@ -409,6 +411,20 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
                   onClick={() => onSession(editFromSummary(session, id))}
                 >
                   beantworten
+                </button>
+              </li>
+            ))}
+            {summary.missingNotices.map((id) => (
+              <li key={`notice-${id}`}>
+                <span>
+                  Bestätigung: {definition.infoBlocks.find((b) => b.id === id)?.title ?? id}
+                </span>
+                <button
+                  type="button"
+                  className="link"
+                  onClick={() => onSession(noticeFromSummary(session, id))}
+                >
+                  ansehen und bestätigen
                 </button>
               </li>
             ))}
@@ -453,31 +469,6 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
             text: `Der Stichtag ${summary.outsideValidity.value} liegt außerhalb der Gültigkeit dieser Formularfassung (sie ${summary.outsideValidity.validity}). So lässt sich nicht unterschreiben; bitte die Fassung verwenden, die für diesen Tag gilt.`,
           }}
         />
-      )}
-      {summary.missingNotices.length > 0 && (
-        <div
-          className="skipped notices-missing"
-          role="group"
-          aria-label="Hinweise ohne Bestätigung"
-        >
-          <p>
-            <strong>Bitte bestätigen Sie noch diese Hinweise:</strong>
-          </p>
-          <ul>
-            {summary.missingNotices.map((id) => (
-              <li key={id}>
-                <span>{definition.infoBlocks.find((b) => b.id === id)?.title ?? id}</span>
-                <button
-                  type="button"
-                  className="link"
-                  onClick={() => onSession(noticeFromSummary(session, id))}
-                >
-                  ansehen und bestätigen
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
       )}
       {voluntaryDeferred.length > 0 && (
         <div className="skipped" role="group" aria-label="Übersprungene Fragen">

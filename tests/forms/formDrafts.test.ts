@@ -65,4 +65,16 @@ describe('form-drafts/', () => {
   it('contains nothing but definition folders and README.md', () => {
     expect(looseFiles(DRAFTS_DIR)).toEqual(['README.md']);
   });
+
+  // The signing screen shows the confirmation alone — "mit den Angaben oben" pointed at nothing
+  // (test report 2026-11-06, MT-122).
+  it.each(drafts.map((d) => [`${d.folder}/${d.file}`, d] as const))(
+    '%s confirms without pointing "oben"',
+    (_name, { path }) => {
+      const roles = registeredFrom(readJson(path)).definition.roles;
+      expect(
+        roles.filter((role) => /\boben\b/i.test(role.confirmationText)).map((r) => r.id),
+      ).toEqual([]);
+    },
+  );
 });

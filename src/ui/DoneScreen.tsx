@@ -4,9 +4,9 @@ import { roleOf } from '../logic/form';
 import { latestSealed } from '../logic/questionnaire';
 import type { Session } from '../logic/session';
 import { formatLocalDateTime } from '../logic/time';
-import { TRANSFER_LINK_MESSAGES, type TransferOffer } from '../logic/transferLink';
+import type { TransferOffer } from '../logic/transferLink';
 import { Card } from './common';
-import { MasterDataLink } from './MasterDataLink';
+import { TransferLinkSection } from './TransferLinkSection';
 
 interface Props {
   session: Session;
@@ -61,18 +61,7 @@ export function DoneScreen({
           Zwischenstand speichern
         </button>
       </div>
-      {transfer.kind === 'link' && (
-        <div className="summary-section">
-          <h3>Als Link weitergeben</h3>
-          <p className="muted">
-            Statt der PDF genügt dieser Link: Wer ihn öffnet, bekommt den Fragebogen mit allen
-            bisherigen Teilen, geprüft wie eine eingelesene PDF. Er enthält alle Angaben – schicken
-            Sie ihn nur an die Person, die als Nächstes ausfüllt.
-          </p>
-          <MasterDataLink url={transfer.url} label="Link zur Weitergabe" onCopied={onLinkCopied} />
-        </div>
-      )}
-      {transfer.kind === 'tooLong' && <p className="muted">{TRANSFER_LINK_MESSAGES.tooLong}</p>}
+      <TransferLinkSection transfer={transfer} onLinkCopied={onLinkCopied} />
     </Card>
   );
 }

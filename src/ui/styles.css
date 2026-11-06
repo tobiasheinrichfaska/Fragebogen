@@ -1073,6 +1073,60 @@ button.start-link {
   }
 }
 
+/* Steps of a manual test: the expectation right at the step (Tobias 2026-11-06). */
+.test-step {
+  margin-bottom: 0.6rem;
+}
+
+.test-step .step-do {
+  margin: 0.15rem 0;
+}
+
+.step-note {
+  margin: 0.25rem 0;
+  padding: 0.3rem 0.5rem;
+  border-left: 3px solid var(--info-border);
+  border-radius: 0.25rem;
+  background: var(--info-bg);
+  font-size: 0.95em;
+}
+
+.step-before {
+  border-left-color: var(--warning-border);
+  background: var(--warning-bg);
+}
+
+.step-after {
+  border-left-color: var(--success-border);
+  background: var(--success-bg);
+}
+
+.copy-value {
+  white-space: nowrap;
+}
+
+.copy-button {
+  margin-left: 0.2rem;
+  padding: 0 0.35rem;
+  min-height: 0;
+  font-size: 0.9em;
+  line-height: 1.4;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--surface);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.test-panel-inner kbd {
+  padding: 0 0.3rem;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 0.3rem;
+  background: var(--surface);
+  font-family: inherit;
+}
+
 .test-changed {
   color: var(--danger);
   font-weight: 600;

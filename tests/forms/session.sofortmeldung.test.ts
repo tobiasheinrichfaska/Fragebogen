@@ -8,15 +8,18 @@ import {
   acknowledge,
   answer,
   currentStep,
+  editFromSummary,
   enterRole,
   fillMasterData,
   goTo,
+  nextChoice,
   nextStep,
   previousStep,
   reopen,
   roleStates,
   seal,
   sessionFromFile,
+  skipToMissing,
   startNewVersion,
   startSession,
   summaryOf,
@@ -254,5 +257,37 @@ describe('session — Sofortmeldung on one device', () => {
       true,
     );
     expect(s.acknowledged).toEqual({ person: ['datenschutz', 'mitfuehrungspflicht'] });
+  });
+});
+
+describe('catching up from the summary (test report 2026-11-06, MT-13)', () => {
+  it('leads on to a notice not confirmed yet instead of back to the summary', () => {
+    const rest = Object.fromEntries(Object.entries(PERSON).filter(([id]) => id !== 'strasse'));
+    // Every other question answered, so only the street and the notice are missing.
+    let s = fill(acknowledge(must(enterRole(fresh(), 'person')), 'datenschutz', true), {
+      ...rest,
+      versicherungsnummer: '65 170590 M 520',
+      anschriftZusatz: 'Hinterhaus',
+    });
+    s = goTo(s, 'summary');
+    expect(summaryOf(s)).toMatchObject({
+      missingRequired: ['strasse'],
+      missingNotices: ['mitfuehrungspflicht'],
+    });
+    s = must(answer(editFromSummary(s, 'strasse'), 'strasse', 'Musterweg 1'));
+    // The last missing question answered — the unconfirmed notice is still missing.
+    const choice = nextChoice(s);
+    expect(choice.backToSummary).toBe(true);
+    expect(choice.skip).toMatchObject({ kind: 'notice', infoBlockId: 'mitfuehrungspflicht' });
+    const atNotice = skipToMissing(s);
+    expect(currentStep(atNotice)).toMatchObject({
+      kind: 'notice',
+      infoBlockId: 'mitfuehrungspflicht',
+    });
+    expect(nextChoice(atNotice).backToSummary).toBe(true);
+    // Confirmed there, nothing is missing any more: only the way back to the summary.
+    const confirmed = acknowledge(atNotice, 'mitfuehrungspflicht', true);
+    expect(nextChoice(confirmed).skip).toBeUndefined();
+    expect(summaryOf(confirmed)?.readyToSign).toBe(true);
   });
 });

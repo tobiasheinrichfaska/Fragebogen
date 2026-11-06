@@ -266,6 +266,60 @@ test('the employer part passes on as a link and opens on another device (Tobias 
   expect(foreignThere).toEqual([]);
 });
 
+test('the overview offers PDF and link right under the roles (test report 2026-11-06)', async ({
+  page,
+}) => {
+  // "Ich komme nicht mehr an das PDF": the buttons stood below "Gültigkeit und Grenzen".
+  const foreign = await serveHosted(page);
+  await page.goto(`${ORIGIN}/`);
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await answerUntilSummary(page);
+  await press(page, 'Weiter zum Abschluss');
+  await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
+  await press(page, 'Ohne Unterschrift abschließen');
+  await press(page, 'Abschließen');
+  await press(page, 'Gerät weitergeben – zur Übersicht');
+  await expect(page.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  const pdf = page.getByRole('button', { name: 'PDF erstellen' });
+  await expect(pdf).toBeEnabled();
+  await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
+  await expect(page.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=1&/);
+  const top = async (locator: ReturnType<Page['locator']>) => (await locator.boundingBox())?.y ?? 0;
+  expect(await top(pdf)).toBeLessThan(
+    await top(page.getByRole('heading', { name: 'Gültigkeit und Grenzen' })),
+  );
+  expect(foreign).toEqual([]);
+});
+
+test('"Alle Daten auf diesem Gerät löschen" always asks first (test reports 2026-11-01 and 11-06)', async ({
+  page,
+}) => {
+  const found = await guard(page);
+  page.removeAllListeners('dialog');
+  const asked: string[] = [];
+  let agree = false;
+  page.on('dialog', (dialog) => {
+    asked.push(dialog.message());
+    void (agree ? dialog.accept() : dialog.dismiss());
+  });
+  await page.goto(pathToFileURL(APP).href);
+  await press(page, 'Alle Daten auf diesem Gerät löschen');
+  await expect.poll(() => asked.length).toBe(1);
+  expect(asked[0]).toMatch(/^Alle Daten auf diesem Gerät löschen\?/);
+  // "Abbrechen" leaves everything as it was.
+  await expect(
+    page.getByRole('button', { name: 'Alle Daten auf diesem Gerät löschen' }),
+  ).toBeVisible();
+  agree = true;
+  await Promise.all([
+    page.waitForEvent('load'),
+    press(page, 'Alle Daten auf diesem Gerät löschen'),
+  ]);
+  expect(asked).toHaveLength(2);
+  await expectClean(page, found);
+});
+
 test('a master-data link made on the start page fills the next questionnaire', async ({ page }) => {
   const found = await guard(page);
   await page.goto(pathToFileURL(APP).href);

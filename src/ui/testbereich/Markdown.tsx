@@ -1,6 +1,9 @@
 // Renders the test texts (inline Markdown, paragraphs, lists, code) as React elements — never HTML.
-// A reference to another test ("MT-10") becomes a button that opens it, when the page knows it.
-import { inlineMarkdown, type Block } from '../../logic/manualTests';
+// A reference to another test ("MT-10") becomes a button that opens it, when the page knows it. In
+// the steps a value to enter gets a copy button, a value to type by hand (<kbd>) none, and each
+// step shows its expectations right there (Tobias 2026-11-06).
+import { useState } from 'react';
+import { inlineMarkdown, STEP_NOTE_LABELS, type Block } from '../../logic/manualTests';
 
 export interface RefHandler {
   open: (id: string) => void;
@@ -10,7 +13,41 @@ export interface RefHandler {
   startKnown?: (id: string) => boolean;
 }
 
-export function Inline({ text, refs }: { text: string; refs?: RefHandler }) {
+/** A value of a step with a button that copies it (it does not type it into the app). */
+function CopyValue({ text }: { text: string }) {
+  const [copied, setCopied] = useState<'ok' | 'manual' | undefined>();
+  return (
+    <span className="copy-value">
+      <code>{text}</code>
+      <button
+        type="button"
+        className="copy-button"
+        aria-label={`„${text}“ kopieren`}
+        title="Kopieren"
+        onClick={() => {
+          navigator.clipboard.writeText(text).then(
+            () => setCopied('ok'),
+            () => setCopied('manual'),
+          );
+        }}
+      >
+        {copied === 'ok' ? '✓' : '⧉'}
+      </button>
+      {copied === 'manual' && <span className="muted"> (bitte markieren und kopieren)</span>}
+    </span>
+  );
+}
+
+export function Inline({
+  text,
+  refs,
+  copy = false,
+}: {
+  text: string;
+  refs?: RefHandler;
+  /** Values (`code`) get a copy button — in the steps only. */
+  copy?: boolean;
+}) {
   return (
     <>
       {inlineMarkdown(text).map((token, i) => {
@@ -20,7 +57,17 @@ export function Inline({ text, refs }: { text: string; refs?: RefHandler }) {
           case 'em':
             return <em key={i}>{token.text}</em>;
           case 'code':
-            return <code key={i}>{token.text}</code>;
+            return copy ? (
+              <CopyValue key={i} text={token.text} />
+            ) : (
+              <code key={i}>{token.text}</code>
+            );
+          case 'kbd':
+            return (
+              <kbd key={i} title="Bitte selbst tippen">
+                {token.text}
+              </kbd>
+            );
           case 'link':
             return (
               <a key={i} href={token.href} target="_blank" rel="noopener noreferrer">
@@ -53,7 +100,18 @@ export function Inline({ text, refs }: { text: string; refs?: RefHandler }) {
   );
 }
 
-export function Blocks({ blocks, refs }: { blocks: readonly Block[]; refs?: RefHandler }) {
+export function Blocks({
+  blocks,
+  refs,
+  copy = false,
+}: {
+  blocks: readonly Block[];
+  refs?: RefHandler;
+  copy?: boolean;
+}) {
+  const inline = (text: string, withCopy = false) => (
+    <Inline text={text} copy={withCopy} {...(refs ? { refs } : {})} />
+  );
   return (
     <>
       {blocks.map((block, i) => {
@@ -64,18 +122,26 @@ export function Blocks({ blocks, refs }: { blocks: readonly Block[]; refs?: RefH
             </pre>
           );
         }
-        if (block.kind === 'text') {
+        if (block.kind === 'text') return <p key={i}>{inline(block.text, copy)}</p>;
+        const items = block.items.map((item, j) => {
+          const notes = block.notes?.[j];
+          if (!notes) return <li key={j}>{inline(item, copy)}</li>;
           return (
-            <p key={i}>
-              <Inline text={block.text} {...(refs ? { refs } : {})} />
-            </p>
+            <li key={j} className="test-step">
+              {notes.before.map((text, k) => (
+                <p key={`b${k}`} className="step-note step-before">
+                  <strong>{STEP_NOTE_LABELS.before}:</strong> {inline(text)}
+                </p>
+              ))}
+              <p className="step-do">{inline(item, copy)}</p>
+              {notes.after.map((text, k) => (
+                <p key={`a${k}`} className="step-note step-after">
+                  <strong>{STEP_NOTE_LABELS.after}:</strong> {inline(text)}
+                </p>
+              ))}
+            </li>
           );
-        }
-        const items = block.items.map((item, j) => (
-          <li key={j}>
-            <Inline text={item} {...(refs ? { refs } : {})} />
-          </li>
-        ));
+        });
         return block.ordered ? <ol key={i}>{items}</ol> : <ul key={i}>{items}</ul>;
       })}
     </>
