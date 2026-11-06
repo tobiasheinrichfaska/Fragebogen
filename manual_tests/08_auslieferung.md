@@ -34,46 +34,54 @@
 
 **Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
 
-**Voraussetzungen:** SFTP-Zugang bei IONOS (Server, Benutzer, Passwort), Ordner der Subdomain; PuTTY
-installiert.
+**Voraussetzungen:** Das Upload-Werkzeug „Auslieferung“ liegt auf dem Kanzlei-PC neben diesem Projekt
+(`..\..\private\Auslieferung`), sein Zugang `fragebogen` ist eingerichtet (sonst fragt das erste
+`npm run hochladen` die Zugangsdaten ab); PuTTY und Node.js installiert.
 
 **Schritte:**
 
-1. In VS Code im Terminal: `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf`.
-2. Im Fenster die Zugangsdaten eintragen, „Speichern“; den angezeigten Schlüssel mit „Ja“ bestätigen.
-3. Ohne `-Probelauf` erneut aufrufen und die Rückfrage „Jetzt hochladen?“ mit „Ja“ beantworten.
-4. Erneut mit `-Probelauf` aufrufen.
-5. Die Datei `deploy/.local/sftp-passwort.dpapi` in einem Editor öffnen.
-6. Eine Kleinigkeit ändern, ohne sie zu committen, und
-   `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test -OhneRueckfrage` aufrufen; dann
-   die Änderung zurücknehmen und erneut aufrufen.
+1. In VS Code im Terminal: `npm run hochladen -- -Ziel test -Probelauf`.
+2. `npm run hochladen -- -Ziel test` und die Rückfrage „Jetzt hochladen?“ mit „Ja“ beantworten.
+3. `npm run hochladen` (ohne Ziel).
+4. Die Datei `..\..\private\Auslieferung\.local\zugaenge\fragebogen\sftp-passwort.dpapi` in einem
+   Editor öffnen.
+5. Eine Kleinigkeit ändern, ohne sie zu committen, und `npm run hochladen -- -Ziel test -OhneRueckfrage`
+   aufrufen; dann die Änderung zurücknehmen und erneut aufrufen.
+6. `npm run hochladen -- -Ziel oeffentlich -Probelauf`.
 
 **Erwartet:**
 
-- Schritt 2: „Verbindung in Ordnung“ mit der Liste der Dateien; der Inhalt des Zielordners steht im
-  Terminal. Es wurde nichts hochgeladen.
-- Schritt 3: Die App wird gebaut; die Rückfrage nennt Server, Ordner, Stand (Commit) und beide Dateien.
+- Schritt 1: „Verbindung in Ordnung“ mit der Liste der Dateien und dem Vergleich mit der Seite online:
+  „index.html: online schon genau diese Datei“ oder „online anders – ein Upload ändert die Seite“. Der
+  Inhalt des Zielordners steht im Terminal. Es wurde nichts hochgeladen. _Nicht offensichtlich:_ Der
+  Probelauf baut nicht neu, er vergleicht die Dateien, wie sie auf dem PC liegen.
+- Schritt 2: Die App wird gebaut; die Rückfrage nennt Server, Ordner, Stand (Commit) und die Dateien.
   Danach: „Hochgeladen …“ und **„index.html: online identisch“**. _Nicht offensichtlich:_ Gibt es nicht
   committete Änderungen, warnt die Rückfrage davor.
-- Schritt 4: Kein Fenster mit Zugangsdaten mehr – sie sind gespeichert.
-- Schritt 5: Nur eine lange Zeichenfolge, kein lesbares Passwort.
-- Schritt 6: Es öffnet sich **kein** Fenster. Mit der Änderung bricht das Werkzeug im Terminal ab
+- Schritt 3: Meldung „Welches Ziel? Vorhanden: oeffentlich, test, mehrfachbearbeitung“, nichts wird
+  hochgeladen. _Nicht offensichtlich:_ Es gibt kein voreingestelltes Ziel mehr – die öffentliche App geht
+  nur hoch, wenn sie ausdrücklich genannt wird.
+- Schritt 4: Nur eine lange Zeichenfolge, kein lesbares Passwort.
+- Schritt 5: Es öffnet sich **kein** Fenster. Mit der Änderung bricht das Werkzeug im Terminal ab
   („Ohne Rückfrage wird nur ein committeter Stand hochgeladen …“) und lädt nichts hoch; danach steht
   im Terminal „Ohne Rückfrage: wird hochgeladen.“ und am Ende „index.html: online identisch“.
+- Schritt 6: Zeigt, ob ein Upload die öffentliche App ändern würde – vor einer Veröffentlichung, ohne
+  etwas hochzuladen.
 - _Nicht offensichtlich:_ Ein anderer Windows-Benutzer (oder ein anderer PC) kann die Datei nicht
-  entschlüsseln; dort fragt das Werkzeug neu.
+  entschlüsseln; dort fragt das Werkzeug neu. Zugang oder IP-Adressen ändern:
+  `powershell -ExecutionPolicy Bypass -File ..\..\private\Auslieferung\upload.ps1 -Einrichten -Zugang fragebogen`.
 
 ## MT-83: Test- und Kanzlei-Ordner nur von den IP-Adressen der Kanzlei
 
 **Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
 
 **Voraussetzungen:** MT-82 erledigt; im Einrichtungsfenster sind die IP-Adressen der Kanzlei
-eingetragen (`deploy\upload.ps1 -Einrichten`).
+eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 
 **Schritte:**
 
 1. Später, wenn die Mehrfachbearbeitung hochgeladen wird:
-   `powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung`, Rückfrage mit „Ja“.
+   `npm run hochladen -- -Ziel mehrfachbearbeitung`, Rückfrage mit „Ja“.
 2. Dasselbe mit `-Ziel test`.
 3. Im Büro `…/mehrfachbearbeitung/` und `…/test/` im Browser öffnen.
 4. Am Handy **ohne WLAN** (Mobilfunk) dieselben Adressen öffnen.
@@ -83,7 +91,7 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 - Schritt 1: Die Rückfrage nennt zuerst `.htaccess (Zugriffsregeln, erzeugt)`, dann `index.html`.
   Danach „index.html: online identisch“.
 - Schritt 2: Solange es keinen freigegebenen Tester gibt, zusätzlich der Hinweis „Noch kein
-  freigegebener Tester … – bis dahin nur eure IPs“.
+  freigegebener Tester … – bis dahin nur die IPs des Büros“.
 - Schritt 3: Kanzlei-App bzw. „Fragebogen-Test“ mit dem gelben Hinweis auf Formular-Entwürfe. _Nicht
   offensichtlich:_ Auch im Testordner bietet die Kanzlei-Station die Übergabe an Lohn und Gehalt an.
 - Schritt 4: **„Forbidden“** bei beiden. _Nicht offensichtlich:_ Die öffentliche App unter der
@@ -97,9 +105,9 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 
 **Schritte:**
 
-1. `powershell -ExecutionPolicy Bypass -File deploy\tester.ps1`, **„Neuer Tester …“**, Name
-   „probe.tester“, „Anlegen“. Das angezeigte Passwort notieren, „Fertig“.
-2. **„Testordner aktualisieren“**, Rückfrage mit „Ja“.
+1. `npm run tester`, **„Neuer Tester …“**, Name „probe.tester“, „Anlegen“. Das angezeigte Passwort
+   notieren, „Fertig“.
+2. **„Ordner aktualisieren“**, Rückfrage mit „Ja“.
 3. Am Handy **ohne WLAN** `https://…/test/` öffnen, mit „probe.tester“ und dem Passwort anmelden.
 4. Dieselbe Adresse mit `http://` statt `https://` öffnen.
 5. Im Fenster „probe.tester“ wählen, **„Sperren / Freigeben“**, wieder „Testordner aktualisieren“;
@@ -109,8 +117,8 @@ eingetragen (`deploy\upload.ps1 -Einrichten`).
 **Erwartet:**
 
 - Schritt 1: Das Passwort hat die Form „abcd-efgh-jkmn“ und erscheint nur dieses eine Mal.
-- Schritt 2: Die Liste nennt `.htpasswd (erzeugt)` vor `.htaccess (erzeugt)`; kein Hinweis „nur eure
-  IPs“ mehr.
+- Schritt 2: Die Liste nennt `.htpasswd (erzeugt)` vor `.htaccess (erzeugt)`; kein Hinweis „nur die
+  IPs des Büros“ mehr.
 - Schritt 3: Der Browser fragt nach Name und Passwort, danach erscheint „Fragebogen-Test“. _Nicht
   offensichtlich:_ Erscheint stattdessen „Internal Server Error“, stimmt der Pfad zur Passwortdatei
   nicht oder der Server kennt das Passwortformat nicht – bitte melden, nicht weiter probieren.

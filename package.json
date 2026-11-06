@@ -20,6 +20,8 @@
     "test:watch": "vitest",
     "test:e2e": "npm run build && npm run build:test && playwright test",
     "catalogue": "node deploy/stampRevised.ts && vitest run tests/forms/catalogue.test.ts tests/forms/flowPlan.test.ts tests/forms/svQualitaet.test.ts tests/forms/svVorgaben.test.ts tests/hilfe/hilfeSeiten.test.ts --update",
+    "hochladen": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../private/Auslieferung/upload.ps1 -Projekt .",
+    "tester": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../private/Auslieferung/tester.ps1 -Projekt . -Ziel test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",

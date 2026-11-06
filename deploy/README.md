@@ -16,83 +16,73 @@ keine Daten: Er liefert nur die Datei aus, die App sendet nichts.
 `.tmp/`. `dist-kanzlei/` (mit der lokalen Zuordnung zum Lohnprogramm) nur in den Kanzlei-Ordner, der
 allein von den IP-Adressen der Kanzlei erreichbar ist – das Upload-Werkzeug lässt es nirgends sonst zu.
 
-## Hochladen mit dem Upload-Werkzeug (SFTP)
+## Hochladen mit dem Upload-Werkzeug „Auslieferung“ (SFTP)
+
+Seit 2026-11-06 lädt das Werkzeug **Auslieferung** hoch, ein eigenes, privates Projekt auf dem
+Kanzlei-PC neben diesem Repo (`..\..\private\Auslieferung`). Dieses Repo sagt nur, **was wohin** geht:
+`deploy/upload.json`. Bis dahin lag ein eigenes Upload-Skript hier in `deploy/`.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Probelauf     # erst prüfen, nichts hochladen
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1                # öffentliche App
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test     # Testordner
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel mehrfachbearbeitung  # später
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Einrichten    # Zugang oder IPs ändern
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel test -OhneRueckfrage  # ohne Fenster
+npm run hochladen -- -Ziel oeffentlich -Probelauf     # erst prüfen, nichts hochladen
+npm run hochladen -- -Ziel oeffentlich                # öffentliche App
+npm run hochladen -- -Ziel test                       # Testordner
+npm run hochladen -- -Ziel mehrfachbearbeitung        # später
+npm run hochladen -- -Ziel test -OhneRueckfrage       # ohne Fenster
+npm run tester                                        # Tester des Testordners
 ```
 
-**Ohne Rückfrage** (`-OhneRueckfrage`, z. B. wenn niemand am Platz ist): kein Fenster, auch nicht die
-Frage „Jetzt hochladen?“; alle Meldungen nur im Terminal und im Protokoll. Das geht nur mit
-gespeichertem Zugang und gemerktem Serverschlüssel und nur für einen **committeten** Stand – sonst
-bricht das Werkzeug ab, ohne etwas hochzuladen.
+- **Es gibt kein voreingestelltes Ziel:** Ohne `-Ziel` nennt das Werkzeug die Ziele und lädt nichts
+  hoch – die öffentliche App geht nur hoch, wenn sie ausdrücklich genannt wird.
+- **Probelauf** (`-Probelauf`): prüft den Plan und die Verbindung und vergleicht die Dateien auf diesem
+  PC mit der Seite online („online schon genau diese Datei“ oder „online anders – ein Upload ändert die
+  Seite“). Er baut nicht neu und lädt nichts hoch.
+- **Ohne Rückfrage** (`-OhneRueckfrage`, z. B. wenn niemand am Platz ist): kein Fenster, auch nicht die
+  Frage „Jetzt hochladen?“; alle Meldungen nur im Terminal und im Protokoll. Das geht nur mit
+  gespeichertem Zugang und gemerktem Serverschlüssel und nur für einen **committeten** Stand – sonst
+  bricht das Werkzeug ab, ohne etwas hochzuladen.
 
-| Ziel                  | Ordner                 | Inhalt                                                                                                                  | Wer darf zugreifen                                             |
-| --------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `oeffentlich`         | Subdomain              | App (`npm run build`) und diese `.htaccess`                                                                             | alle                                                           |
-| `test`                | `test/`                | App mit Formular-Entwürfen und Übergabe an Lohn und Gehalt                                                              | IP-Adressen der Kanzlei; sonst Tester-Anmeldung (`tester.ps1`) |
-| `mehrfachbearbeitung` | `mehrfachbearbeitung/` | Kanzlei-Fassung mit Übergabe an Lohn und Gehalt – **vorerst nicht hochgeladen** (der Testordner deckt die Testphase ab) | **nur** IP-Adressen der Kanzlei                                |
+| Ziel                  | Ordner                 | Inhalt                                                                                                                  | Wer darf zugreifen                                                 |
+| --------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `oeffentlich`         | Subdomain              | App (`npm run build`) und diese `.htaccess`                                                                             | alle                                                               |
+| `test`                | `test/`                | App mit Formular-Entwürfen und Übergabe an Lohn und Gehalt                                                              | IP-Adressen der Kanzlei; sonst Tester-Anmeldung (`npm run tester`) |
+| `mehrfachbearbeitung` | `mehrfachbearbeitung/` | Kanzlei-Fassung mit Übergabe an Lohn und Gehalt – **vorerst nicht hochgeladen** (der Testordner deckt die Testphase ab) | **nur** IP-Adressen der Kanzlei                                    |
 
-Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen im Einrichtungsfenster
-und lädt sie **vor** der App hoch – der Ordner ist also nie offen. Die IP-Adressen stehen nur in
-`deploy/.local/`.
+Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen des Zugangs und lädt sie
+**vor** der App hoch – der Ordner ist also nie offen.
 
-- **Beim ersten Aufruf** fragt ein Fenster Server, Port, Benutzer, Passwort, Zielordner und die Adresse
-  der Seite ab (IONOS-Kundenbereich, SFTP-Zugang des Hosting-Pakets). Danach zeigt es den Schlüssel des
-  Servers; mit „Ja“ wird er gemerkt. Meldet sich der Server später mit einem anderen Schlüssel, bricht
-  der Upload ab.
-- **Gespeichert** wird nur auf diesem PC in `deploy/.local/` (nie im Repo): `sftp.json` (Server, Port,
-  Benutzer, Ordner, Adresse, Schlüssel des Servers), `sftp-passwort.dpapi` (das Passwort, mit Windows
-  verschlüsselt – nur dieses Windows-Konto auf diesem PC kann es lesen) und `upload-protokoll.txt`
-  (wann welcher Stand mit welchem SHA-256 hochgeladen wurde).
-- **Was hochgeladen wird**, steht in `deploy/upload.json` (Ziel `oeffentlich`: `dist/index.html` und
-  diese `.htaccess`). Vorher prüft `deploy/uploadPlan.ts`: keine Datei aus `dist-kanzlei/`,
-  `dist-preview/`, `config/` usw.; keine Seite, die die Zuordnung zum Lohnprogramm enthält.
+- **Der Zugang** `fragebogen` (Server, Port, Benutzer, Zielordner, Adresse der Seite, IP-Adressen der
+  Kanzlei, Serverpfad für die Tester-Anmeldung, Schlüssel des Servers; das Passwort mit Windows
+  verschlüsselt – nur dieses Windows-Konto auf diesem PC kann es lesen) liegt nur im Werkzeug, in seinem
+  gitignorierten `.local/zugaenge/fragebogen/`, nie in diesem Repo. Ändern:
+  `powershell -ExecutionPolicy Bypass -File ..\..\private\Auslieferung\upload.ps1 -Einrichten -Zugang fragebogen`.
+  Meldet sich der Server mit einem anderen Schlüssel als dem gemerkten, bricht der Upload ab.
+- **In diesem Repo, gitignoriert** (`deploy/.local/`): die Testerliste `tester.json` (nur Hashes) und
+  die erzeugten Zugriffsregeln (`erzeugt/<Ziel>/.htaccess`, `.htpasswd`). Das Werkzeug schreibt dorthin
+  nur, wenn Git den Ordner wirklich ignoriert.
+- **Was hochgeladen wird**, steht in `deploy/upload.json` (Ziel `oeffentlich`: `dist/index.html`, diese
+  `.htaccess` und `docs/hilfe/`). Vorher prüft das Werkzeug: keine Datei aus `dist-preview/`, `config/`,
+  `import/`, `.tmp/`, `deploy/.local/`; **keine Datei, die die Zuordnung zum Lohnprogramm enthält**
+  (die Masken aus `config/export.local.json`), außer in `test/` und `mehrfachbearbeitung/`. Fehlt die
+  Zuordnungsdatei, sagt es das. Die Prüfung nennt nur die Datei, nie den gefundenen Inhalt.
 - **Danach** lädt das Werkzeug die Seite über die Adresse und vergleicht den SHA-256 mit der
-  hochgeladenen Datei („online identisch“).
-- Voraussetzung: PuTTY (`psftp.exe`) und Node.js; der eingebaute Windows-OpenSSH-Client liest nur den
-  Schlüssel des Servers.
-
-## Weitere Ziele nur auf diesem PC (`deploy/.local/upload.local.json`)
-
-Ein anderes Projekt kann denselben Zugang nutzen, ohne in diesem öffentlichen Repo vorzukommen: Seine
-Ziele stehen nur in `deploy/.local/upload.local.json` (gitignored), im selben Format wie
-`deploy/upload.json`, mit diesen Zusätzen:
-
-| Feld       | Bedeutung                                                                                          |
-| ---------- | -------------------------------------------------------------------------------------------------- |
-| `root`     | absoluter Ordner auf diesem PC, aus dem die `from`-Dateien kommen (der Build des anderen Projekts) |
-| `testers`  | eigene Testerliste in `deploy/.local/`, z. B. `deploy/.local/tester-projekt.json`                  |
-| `authName` | Name im Anmeldefenster des Browsers                                                                |
-| `frames`   | `"self"`: Seiten des Ordners dürfen einander einbetten (z. B. eine Testseite um ihre App)          |
-
-Ein lokales Ziel ersetzt nie eines aus `deploy/upload.json`, und mit `root` gibt es kein `build` –
-das andere Projekt baut selbst. Das Werkzeug meldet dann den Git-Stand jenes Projekts. Jeder
-geschützte Ordner bekommt `noindex`.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File deploy\upload.ps1 -Ziel <lokales Ziel>
-node deploy/testers.ts neu <Name> --datei=deploy/.local/tester-projekt.json   # Tester dieses Ordners
-```
+  hochgeladenen Datei („online identisch“). Das Protokoll (wann welcher Stand mit welchem SHA-256) führt
+  das Werkzeug; das alte `deploy/.local/upload-protokoll.txt` reicht bis 2026-11-05.
+- Voraussetzung: das Werkzeug Auslieferung, PuTTY (`psftp.exe`, `plink.exe`) und Node.js.
 
 ## Tester des Testordners
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File deploy\tester.ps1
+npm run tester
 ```
 
 - Ein Fenster mit der Liste der Tester: **„Neuer Tester …“**, **„Neues Passwort“**, **„Sperren /
-  Freigeben“**, **„Löschen“** und **„Testordner aktualisieren“** (lädt den Testordner neu hoch).
+  Freigeben“**, **„Löschen“** und **„Ordner aktualisieren“** (lädt den Testordner neu hoch).
 - Ein neues Passwort erscheint **einmal** zum Kopieren; gespeichert wird nur sein Hash
   (`deploy/.local/tester.json`). Am besten getrennt von der Adresse weitergeben, z. B. am Telefon.
 - Von den IP-Adressen der Kanzlei geht der Testordner ohne Anmeldung; von anderswo fragt der Browser
-  nach Anmeldename und Passwort – nur über HTTPS. Merken übernimmt der Passwortmanager des Browsers.
-- Änderungen gelten erst nach „Testordner aktualisieren“.
+  nach Anmeldename und Passwort („Fragebogen - Testbereich“) – nur über HTTPS. Merken übernimmt der
+  Passwortmanager des Browsers.
+- Änderungen gelten erst nach „Ordner aktualisieren“.
 
 ## Was die `.htaccess` tut
 
