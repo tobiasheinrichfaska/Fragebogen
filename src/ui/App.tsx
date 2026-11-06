@@ -563,6 +563,12 @@ function Workspace({ registry, start }: { registry: FormRegistry; start?: Prepar
           onPdf={() => void pdf()}
           onClose={close}
           onDiscard={discard}
+          transfer={transferOffer(
+            session.questionnaire,
+            session.form,
+            masterDataLinkBase(location.href, APP_CONFIG.appAddress),
+          )}
+          onLinkCopied={() => setSession(markSaved(session))}
         />
       )}
       {session && screen.kind === 'interview' && (

@@ -19,9 +19,14 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 1. Notieren Sie die **Versionsnummer**. Sie steht unten auf der Startseite („Version …“).
 2. Arbeiten Sie die Testfälle der Reihe nach ab.
-3. Vergleichen Sie das Ergebnis mit „**Erwartet**“. Achten Sie besonders auf Punkte, die mit
-   _Nicht offensichtlich_ markiert sind.
-4. Notieren Sie Abweichungen mit Testfall-Nummer, Browser, Gerät und einem Bildschirmfoto. Das
+3. Was zu erwarten ist, steht direkt am Schritt: **„Achten Sie gleich auf:“** vor dem Schritt, wenn
+   die App sofort reagiert (z. B. ein Fehler beim Tippen); **„Danach:“** nach dem Schritt, wenn Sie
+   das Ergebnis nach dem Klick ansehen. Was zu keinem einzelnen Schritt gehört, steht darunter unter
+   „**Erwartet**“. Achten Sie besonders auf Punkte, die mit _Nicht offensichtlich_ markiert sind.
+4. Werte zum Eintragen haben im Testbereich ein Kopiersymbol (⧉): anklicken, dann in der App
+   einfügen. Werte, die wie eine Taste aussehen, tippen Sie bitte selbst – dort wird das Tippen
+   geprüft (z. B. die Datumsmaske).
+5. Notieren Sie Abweichungen mit Testfall-Nummer, Browser, Gerät und einem Bildschirmfoto. Das
    Bildschirmfoto darf keine echten Daten zeigen.
 
 ## Testfälle
@@ -61,6 +66,23 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 - **„Fassung mit Entwürfen“** ist im Testbereich schon geladen; der Hinweis auf
   `npm run build:preview` gilt nur für Entwickler.
 - Am Ende **„Testbericht als PDF“** und per E-Mail an die Kanzlei.
+
+## Für alle, die Tests schreiben (Format seit 06.11.2026)
+
+Unter einem nummerierten Schritt stehen, um 3 Leerzeichen eingerückt, die Erwartungen dieses
+Schritts; die Testseite zeigt sie gelb vor bzw. grün nach dem Schritt:
+
+```markdown
+1. Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.
+   - **Achten Sie gleich auf:** Sofort erscheint ein Fehler (Prüfziffer falsch).
+2. **„Kopieren“** klicken.
+   - **Danach:** „Link kopiert.“
+```
+
+- Werte zum Eintragen in Backticks (`` `…` ``) – im Schritt bekommen sie das Kopiersymbol; Werte, die
+  absichtlich getippt werden sollen, als `<kbd>…</kbd>`. Kein Fett um Backticks.
+- Unter „**Erwartet**“ steht nur, was zu keinem Schritt gehört; ein Eintrag „Schritt 3: …“ dort lässt
+  einen automatischen Test scheitern (`tests/testbereich/manualTests.test.ts`).
 
 ## Bitte nicht als Fehler melden
 

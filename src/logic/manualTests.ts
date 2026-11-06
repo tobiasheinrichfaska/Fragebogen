@@ -6,10 +6,27 @@
 import { sha256Hex } from './hash';
 import { canonicalize } from './jcs';
 
+/**
+ * What to expect at one step (Tobias 2026-11-06: no scrolling between instruction and expected
+ * result): `before` — shown above the step, when the reaction comes at once (an error while typing);
+ * `after` — shown below it, when the result can be looked at after the click.
+ */
+export interface StepNotes {
+  before: string[];
+  after: string[];
+}
+
 export type Block =
   | { kind: 'text'; text: string }
-  | { kind: 'list'; ordered: boolean; items: string[] }
+  /** `notes` only on a numbered list whose steps carry expectations, aligned with `items`. */
+  | { kind: 'list'; ordered: boolean; items: string[]; notes?: StepNotes[] }
   | { kind: 'code'; text: string };
+
+/** The labels of the indented expectation lines under a numbered step. */
+export const STEP_NOTE_LABELS: Readonly<Record<keyof StepNotes, string>> = {
+  before: 'Achten Sie gleich auf',
+  after: 'Danach',
+};
 
 export interface CasePart {
   /** "Voraussetzungen", "Schritte", "Erwartet", …; "" for text before the first label. */
@@ -37,20 +54,31 @@ const CASE = /^## ((?:MT|L)-\d+[a-z]?): (.+)$/;
 const LABEL = /^\*\*([^*]+?):\*\*\s*(.*)$/;
 const ORDERED = /^\d+\.\s+(.*)$/;
 const BULLET = /^[-*]\s+(.*)$/;
+// "   - **Achten Sie gleich auf:** …" / "   - **Danach:** …" under a numbered step.
+const NOTE = new RegExp(
+  String.raw`^\s+[-*]\s+\*\*(${Object.values(STEP_NOTE_LABELS).join('|')}):\*\*\s*(.*)$`,
+);
 
 /** Paragraphs, lists and code fences of a run of lines. */
 export function blocksOf(lines: readonly string[]): Block[] {
   const blocks: Block[] = [];
   let paragraph: string[] = [];
-  let list: { ordered: boolean; items: string[] } | undefined;
+  let list: { ordered: boolean; items: string[]; notes: StepNotes[] } | undefined;
+  // The expectation an indented line continues, if the last line was one.
+  let note: { kind: keyof StepNotes; at: number } | undefined;
   let code: string[] | undefined;
   const flush = () => {
     if (paragraph.length > 0) blocks.push({ kind: 'text', text: paragraph.join(' ') });
     paragraph = [];
   };
   const closeList = () => {
-    if (list) blocks.push({ kind: 'list', ...list });
+    if (list) {
+      const { notes, ...rest } = list;
+      const used = notes.some((n) => n.before.length > 0 || n.after.length > 0);
+      blocks.push({ kind: 'list', ...rest, ...(used ? { notes } : {}) });
+    }
     list = undefined;
+    note = undefined;
   };
   for (const raw of lines) {
     if (code) {
@@ -71,19 +99,31 @@ export function blocksOf(lines: readonly string[]): Block[] {
       flush();
       continue;
     }
+    const expectation = list?.ordered ? NOTE.exec(line) : null;
+    if (list && expectation) {
+      const kind = expectation[1] === STEP_NOTE_LABELS.before ? 'before' : 'after';
+      const step = list.notes[list.notes.length - 1];
+      step?.[kind].push(expectation[2]?.trim() ?? '');
+      note = { kind, at: (step?.[kind].length ?? 1) - 1 };
+      continue;
+    }
     const ordered = ORDERED.exec(line);
     const bullet = ordered ? undefined : BULLET.exec(line);
     if (ordered || bullet) {
       flush();
       const isOrdered = ordered !== null;
       if (list && list.ordered !== isOrdered) closeList();
-      list ??= { ordered: isOrdered, items: [] };
+      list ??= { ordered: isOrdered, items: [], notes: [] };
       list.items.push((ordered ?? bullet)?.[1]?.trim() ?? '');
+      list.notes.push({ before: [], after: [] });
+      note = undefined;
       continue;
     }
     if (list && /^\s+\S/.test(line)) {
-      // An indented line continues the last list item.
-      list.items[list.items.length - 1] += ` ${line.trim()}`;
+      // An indented line continues the last expectation, else the last list item.
+      const step = list.notes[list.notes.length - 1];
+      if (note && step) step[note.kind][note.at] += ` ${line.trim()}`;
+      else list.items[list.items.length - 1] += ` ${line.trim()}`;
       continue;
     }
     closeList();
@@ -150,7 +190,8 @@ export function caseVersion(testCase: Pick<ManualTestCase, 'title' | 'parts'>): 
 }
 
 export type InlineToken =
-  | { kind: 'text' | 'strong' | 'em' | 'code'; text: string }
+  /** `code`: a value to enter (copyable in the steps); `kbd`: one to type by hand (`<kbd>…</kbd>`). */
+  | { kind: 'text' | 'strong' | 'em' | 'code' | 'kbd'; text: string }
   | { kind: 'link'; text: string; href: string }
   /** A reference to another test ("MT-10", "MT-83/84" gives two), clickable on the test page. */
   | { kind: 'ref'; text: string; id: string }
@@ -188,7 +229,7 @@ export function testAreaOf(testCase: ManualTestCase): { offered: boolean; note?:
 }
 
 const INLINE =
-  /\*\*(.+?)\*\*|`([^`]+)`|(?<![A-Za-z0-9])_(.+?)_(?![A-Za-z0-9])|\[([^\]]+)\]\(([^)\s]+)\)/g;
+  /\*\*(.+?)\*\*|`([^`]+)`|(?<![A-Za-z0-9])_(.+?)_(?![A-Za-z0-9])|\[([^\]]+)\]\(([^)\s]+)\)|<kbd>([^<]+)<\/kbd>/g;
 
 /**
  * Bold, code, italics and links of one line; a link is kept only with an https address (relative
@@ -200,8 +241,9 @@ export function inlineMarkdown(text: string): InlineToken[] {
   for (const match of text.matchAll(INLINE)) {
     const index = match.index;
     if (index > at) tokens.push(...withRefs(text.slice(at, index)));
-    const [, strong, code, em, linkText, href] = match;
-    if (strong !== undefined) tokens.push({ kind: 'strong', text: strong });
+    const [, strong, code, em, linkText, href, kbd] = match;
+    if (kbd !== undefined) tokens.push({ kind: 'kbd', text: kbd });
+    else if (strong !== undefined) tokens.push({ kind: 'strong', text: strong });
     else if (code !== undefined) tokens.push({ kind: 'code', text: code });
     else if (em !== undefined) tokens.push({ kind: 'em', text: em });
     else if (linkText !== undefined && href !== undefined) {
@@ -220,12 +262,19 @@ export function inlineMarkdown(text: string): InlineToken[] {
   return tokens;
 }
 
+/** Every text of a block: list items with their expectations, paragraphs, code. */
+export function textsOf(block: Block): string[] {
+  if (block.kind !== 'list') return [block.text];
+  return block.items.flatMap((item, i) => {
+    const notes = block.notes?.[i];
+    return [...(notes?.before ?? []), item, ...(notes?.after ?? [])];
+  });
+}
+
 /** The start points the cases of a file link to, in order of appearance. */
 export function startLinksOf(file: ManualTestFile): string[] {
   const texts = file.cases.flatMap((testCase) =>
-    testCase.parts.flatMap((part) =>
-      part.blocks.flatMap((block) => (block.kind === 'list' ? block.items : [block.text])),
-    ),
+    testCase.parts.flatMap((part) => part.blocks.flatMap(textsOf)),
   );
   return texts.flatMap((text) =>
     inlineMarkdown(text).flatMap((token) => (token.kind === 'start' ? [token.id] : [])),

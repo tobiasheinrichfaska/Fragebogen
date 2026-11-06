@@ -8,6 +8,7 @@ import {
   inlineMarkdown,
   parseManualTests,
   testAreaOf,
+  textsOf,
 } from '../../src/logic/manualTests';
 
 const DIR = join(__dirname, '..', '..', 'manual_tests');
@@ -109,6 +110,72 @@ describe('parseManualTests', () => {
   });
 });
 
+describe('expectations at the steps (Tobias 2026-11-06)', () => {
+  const blocks = blocksOf([
+    '1. Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.',
+    '   - **Achten Sie gleich auf:** Sofort erscheint ein Fehler',
+    '     (Prüfziffer falsch).',
+    '2. **„Kopieren“** klicken und den Link',
+    '   in einem neuen Tab öffnen.',
+    '   - **Danach:** „Link kopiert.“',
+    '   - **Danach:** Der Fragebogen öffnet sich.',
+    '3. Ohne Erwartung.',
+    '',
+    '- Ein Punkt',
+    '  - eingerückt bleibt im Punkt',
+  ]);
+
+  it('hangs the expectations on their step, before or after it', () => {
+    expect(blocks[0]).toEqual({
+      kind: 'list',
+      ordered: true,
+      items: [
+        'Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.',
+        '**„Kopieren“** klicken und den Link in einem neuen Tab öffnen.',
+        'Ohne Erwartung.',
+      ],
+      notes: [
+        { before: ['Sofort erscheint ein Fehler (Prüfziffer falsch).'], after: [] },
+        { before: [], after: ['„Link kopiert.“', 'Der Fragebogen öffnet sich.'] },
+        { before: [], after: [] },
+      ],
+    });
+  });
+
+  it('leaves lists without expectations and bullet lists as they were', () => {
+    expect(blocks[1]).toEqual({
+      kind: 'list',
+      ordered: false,
+      items: ['Ein Punkt - eingerückt bleibt im Punkt'],
+    });
+    expect(blocksOf(['1. Eins', '2. Zwei'])).toEqual([
+      { kind: 'list', ordered: true, items: ['Eins', 'Zwei'] },
+    ]);
+  });
+
+  it('reads every text of a step, the expectations in their order', () => {
+    const first = blocks[0];
+    if (!first) throw new Error('no block');
+    expect(textsOf(first)).toEqual([
+      'Sofort erscheint ein Fehler (Prüfziffer falsch).',
+      'Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.',
+      '**„Kopieren“** klicken und den Link in einem neuen Tab öffnen.',
+      '„Link kopiert.“',
+      'Der Fragebogen öffnet sich.',
+      'Ohne Erwartung.',
+    ]);
+  });
+
+  it('tells a value to copy from one to type by hand', () => {
+    expect(inlineMarkdown('Datum <kbd>0211</kbd> tippen, Ort `Musterstadt`')).toEqual([
+      { kind: 'text', text: 'Datum ' },
+      { kind: 'kbd', text: '0211' },
+      { kind: 'text', text: ' tippen, Ort ' },
+      { kind: 'code', text: 'Musterstadt' },
+    ]);
+  });
+});
+
 describe('manual_tests/ as the catalogue', () => {
   const cases = files.flatMap((file) => file.cases);
 
@@ -119,13 +186,27 @@ describe('manual_tests/ as the catalogue', () => {
   });
 
   it('finds steps and expectations in every case', () => {
+    const atSteps = (c: (typeof cases)[number]) =>
+      c.parts.some((part) => part.blocks.some((block) => block.kind === 'list' && block.notes));
     const incomplete = cases
       .filter((c) => {
         const labels = c.parts.map((part) => part.label);
-        return !labels.includes('Schritte') || !labels.includes('Erwartet');
+        return !labels.includes('Schritte') || (!labels.includes('Erwartet') && !atSteps(c));
       })
       .map((c) => c.id);
     expect(incomplete).toEqual([]);
+  });
+
+  // Tobias 2026-11-06: what a step brings stands at that step, not in a list further down.
+  it('keeps no expectation of a numbered step apart from it', () => {
+    const apart = cases.flatMap((c) =>
+      c.parts
+        .filter((part) => part.label === 'Erwartet')
+        .flatMap((part) => part.blocks.flatMap(textsOf))
+        .filter((text) => /^(?:_[^_]+_\s*)?Schritte? \d/.test(text))
+        .map((text) => `${c.id}: ${text.slice(0, 40)}`),
+    );
+    expect(apart).toEqual([]);
   });
 
   // Tobias 2026-11-01 (first test report): tests that cannot run in the hosted test area say so.

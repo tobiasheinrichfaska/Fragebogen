@@ -8,7 +8,9 @@ import {
   transmissionBlockers,
 } from '../logic/requirements';
 import { roleStates, type RoleState, type Session } from '../logic/session';
+import type { TransferOffer } from '../logic/transferLink';
 import { Banner, Card, FormScope } from './common';
+import { TransferLinkSection } from './TransferLinkSection';
 
 interface Props {
   session: Session;
@@ -20,6 +22,8 @@ interface Props {
   onPdf: () => void;
   onClose: () => void;
   onDiscard: () => void;
+  transfer: TransferOffer;
+  onLinkCopied: () => void;
 }
 
 const STATE_LABEL: Readonly<Record<RoleState['state'], string>> = {
@@ -48,6 +52,8 @@ export function RolesScreen(props: Props) {
     onPdf,
     onClose,
     onDiscard,
+    transfer,
+    onLinkCopied,
   } = props;
   const input = useRef<HTMLInputElement>(null);
   const states = roleStates(session);
@@ -134,9 +140,6 @@ export function RolesScreen(props: Props) {
           </div>
         )}
       </Card>
-      <Card title="Gültigkeit und Grenzen">
-        <FormScope definition={session.form.definition} />
-      </Card>
       <Card title="Stand">
         {blockers.length > 0 && (
           <Banner
@@ -189,6 +192,10 @@ export function RolesScreen(props: Props) {
             Fragebogen verwerfen
           </button>
         </div>
+        <TransferLinkSection transfer={transfer} onLinkCopied={onLinkCopied} />
+      </Card>
+      <Card title="Gültigkeit und Grenzen">
+        <FormScope definition={session.form.definition} />
       </Card>
     </>
   );

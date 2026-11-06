@@ -185,13 +185,21 @@ export function nextMissingStep(steps: readonly InterviewStep[], key: string): I
 
 /**
  * While catching up from the summary (Tobias 2026-11-01: "beim Nachholen fehlt 'Weiter zum nächsten
- * fehlenden Feld'"): the next question without an answer after `key`, else one before it — the
- * summary only when nothing else is missing.
+ * fehlenden Feld'"): the next question without an answer or notice not yet confirmed (`unconfirmed`,
+ * test report 2026-11-06) after `key`, else one before it — the summary only when nothing else is
+ * missing.
  */
-export function missingStepAround(steps: readonly InterviewStep[], key: string): InterviewStep {
+export function missingStepAround(
+  steps: readonly InterviewStep[],
+  key: string,
+  unconfirmed: ReadonlySet<string> = new Set(),
+): InterviewStep {
   const from = steps.findIndex((step) => step.key === key);
   const missing = (step: InterviewStep) =>
-    step.kind === 'question' && step.state !== 'answered' && step.key !== key;
+    step.key !== key &&
+    (step.kind === 'question'
+      ? step.state !== 'answered'
+      : step.kind === 'notice' && unconfirmed.has(step.infoBlockId));
   return (
     steps.slice(from + 1).find(missing) ??
     steps.slice(0, Math.max(from, 0)).find(missing) ??

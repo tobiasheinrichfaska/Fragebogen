@@ -18,15 +18,19 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 
 **Schritte:**
 
-1. Bei „Familienname“ 35 Buchstaben tippen, zum Beispiel `Abcdefghij` dreimal und dann `Klmno`.
-2. Dasselbe mit Einfügen (Strg+V bzw. Einsetzen am Handy) eines 35 Zeichen langen Texts versuchen.
+1. Bei „Familienname“ 35 Buchstaben tippen, zum Beispiel <kbd>Abcdefghij</kbd> dreimal und dann
+   <kbd>Klmno</kbd>.
+   - **Achten Sie gleich auf:** Nach 30 Zeichen nimmt das Feld nichts mehr an; die letzten fünf
+     Buchstaben erscheinen nicht.
+2. Das Feld leeren und dasselbe mit Einfügen (Strg+V bzw. Einsetzen am Handy) eines 35 Zeichen
+   langen Texts versuchen, zum Beispiel `AbcdefghijAbcdefghijAbcdefghijKlmno`.
+   - **Danach:** _Nicht offensichtlich:_ Beim Einfügen schneidet der Browser den Text nach 30
+     Zeichen ab, ohne Meldung. Bitte in der Zusammenfassung prüfen, dass genau die ersten 30
+     Zeichen stehen.
 3. **„Weiter“**.
 
 **Erwartet:**
 
-- Nach 30 Zeichen nimmt das Feld nichts mehr an; die letzten fünf Buchstaben erscheinen nicht.
-- _Nicht offensichtlich:_ Beim Einfügen schneidet der Browser den Text nach 30 Zeichen ab, ohne
-  Meldung. Bitte in der Zusammenfassung prüfen, dass genau die ersten 30 Zeichen stehen.
 - Grenzen der anderen Felder: Vornamen 30, Titel 20, Geburtsname 30, Geburtsort 34, Straße 33,
   Hausnummer 9, Anschriftenzusatz 40, Wohnort 34, Postleitzahl im Ausland 10.
 
@@ -39,17 +43,17 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 **Schritte:**
 
 1. Bei „Familienname“ `Müller!` eingeben und **„Weiter“**.
+   - **Danach:** Die App geht zur nächsten Frage. Oben erscheint ein Hinweis, der mit „Hinweis: Die
+     Meldung zur Sozialversicherung nimmt hier nur bestimmte Zeichen an …“ beginnt, dazu „So darf
+     die Angabe für die Meldung zur Sozialversicherung nicht enden“.
 2. Mit **„Zurück“** zurück, `Müller` eingeben und **„Weiter“**.
+   - **Danach:** kein Hinweis.
 3. Bei „Hausnummer“ `-12` eingeben und **„Weiter“**.
+   - **Danach:** Hinweis „… muss die Angabe mit einem Buchstaben beginnen …“; die Hausnummer wird
+     trotzdem übernommen.
 
 **Erwartet:**
 
-- Schritt 1: Die App geht zur nächsten Frage. Oben erscheint ein Hinweis, der mit „Hinweis: Die
-  Meldung zur Sozialversicherung nimmt hier nur bestimmte Zeichen an …“ beginnt, dazu „So darf die
-  Angabe für die Meldung zur Sozialversicherung nicht enden“.
-- Schritt 2: kein Hinweis.
-- Schritt 3: Hinweis „… muss die Angabe mit einem Buchstaben beginnen …“; die Hausnummer wird
-  trotzdem übernommen.
 - _Nicht offensichtlich:_ Namen wie `O'Brien`, `Nguyễn` oder `Müller-Lüdenscheidt` geben **keinen**
   Hinweis. Ein Name, wie er im Pass steht, wird nie abgelehnt.
 
@@ -62,17 +66,16 @@ Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ als „Besch
 **Schritte:**
 
 1. `31.12.1875` eingeben und **„Weiter“**.
-2. Das Datum von morgen eingeben und **„Weiter“**; danach das Datum von heute.
-3. `17.05.1990` eingeben und **„Weiter“**.
-
-**Erwartet:**
-
-- Schritt 1: Unter dem Feld steht rot **„Das Datum liegt zu weit zurück – frühestens 01.01.1876.“**;
-  die Frage bleibt stehen.
-- Schritt 2: Bei morgen **„Das Datum liegt zu spät – spätestens heute.“**; das Datum von heute wird
-  angenommen. _Nicht offensichtlich:_ Die Grenze wandert mit dem Kalender – sie gilt ab Fassung 0.4.0
-  der Sofortmeldung (in 0.3.0 war sie fest der 31.12.2026).
-- Schritt 3: Angenommen, es geht weiter.
+   - **Danach:** Unter dem Feld steht rot **„Das Datum liegt zu weit zurück – frühestens
+     01.01.1876.“**; die Frage bleibt stehen.
+2. Das Datum von morgen eingeben und **„Weiter“**.
+   - **Danach:** **„Das Datum liegt zu spät – spätestens heute.“**
+3. Das Datum von heute eingeben und **„Weiter“**.
+   - **Danach:** Das Datum von heute wird angenommen. _Nicht offensichtlich:_ Die Grenze wandert
+     mit dem Kalender – sie gilt ab Fassung 0.4.0 der Sofortmeldung (in 0.3.0 war sie fest der
+     31.12.2026).
+4. Mit **„Zurück“** zurück, `17.05.1990` eingeben und **„Weiter“**.
+   - **Danach:** Angenommen, es geht weiter.
 
 ---
 
@@ -84,27 +87,32 @@ stehen beim Geburtsdatum.
 
 **Schritte:**
 
-1. Geburtsdatum `18.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`.
+1. Geburtsdatum `18.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`,
+   **„Weiter“**.
+   - **Danach:** Die Versicherungsnummer wird angenommen, **ohne** Fehler – sie hat eine gültige
+     Prüfziffer, auch wenn sie nicht ganz zum Geburtsdatum passt. _Ab Fassung 1.1.0 (Testordner):_
+     Gleich nach „Weiter“ steht oben gelb „Die Versicherungsnummer passt nicht ganz … Geburtsdatum
+     in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“
 2. Bei „Liegt die Anschrift im Ausland?“ **„Ja“**, Staat „Niederlande“, Postleitzahl `1234AB`;
-   Straße, Hausnummer und Wohnort beliebig. Unterschreiben, **„PDF erstellen“**.
-3. Die PDF in der Kanzlei-Station unter „Eingänge zusammenführen …“ einlesen.
+   Straße, Hausnummer und Wohnort beliebig.
+   - **Achten Sie gleich auf:** _Ab Fassung 1.1.0:_ Auch die Postleitzahl `1234AB` meldet sich
+     gleich nach „Weiter“ gelb.
+3. Bis zur Zusammenfassung gehen, unterschreiben, **„PDF erstellen“**.
+   - **Achten Sie gleich auf:** _Ab Fassung 1.1.0:_ In der Zusammenfassung steht der Hinweis zur
+     Versicherungsnummer oben unter **„Bitte prüfen:“** mit **„ändern“**; auch die Postleitzahl
+     steht unter „Bitte prüfen:“. Abschließen bleibt möglich.
+4. **„Gerät weitergeben – zur Übersicht“**, in der Übersicht unter „Stand“ **„Fragebogen
+   schließen“**. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen
+   …“** klicken und die PDF einlesen.
+   - **Danach:** In der Karte des Fragebogens steht „Prüfhinweise:“ mit zwei Hinweisen: „Die
+     Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. …
+     Geburtsdatum in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“ mit der Fundstelle
+     „§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1“; und „Die Postleitzahl hat
+     nicht das Format, das die Meldungen zur Sozialversicherung für diesen Staat verlangen. …
+     Format in Niederlande: NNNN AA (N = Ziffer, A = Buchstabe), zum Beispiel 1234 FG.“
 
 **Erwartet:**
 
-- Schritt 1: Die Versicherungsnummer wird angenommen, **ohne** Fehler – sie hat eine gültige
-  Prüfziffer, auch wenn sie nicht ganz zum Geburtsdatum passt. _Ab Fassung 1.1.0 (Testordner):_
-  Gleich nach „Weiter“ steht oben gelb „Die Versicherungsnummer passt nicht ganz … Geburtsdatum in
-  der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“; in der Zusammenfassung steht er oben
-  unter **„Bitte prüfen:“** mit **„ändern“**. Abschließen bleibt möglich.
-- Schritt 2: _Ab Fassung 1.1.0:_ Auch die Postleitzahl `1234AB` meldet sich gleich nach „Weiter“
-  gelb und steht unter „Bitte prüfen:“.
-- Schritt 3: In der Karte des Fragebogens steht „Prüfhinweise:“ mit
-  - „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum, Geburtsname oder Geschlecht. …
-    Geburtsdatum in der Versicherungsnummer: 17.05.90; angegeben: 18.05.1990.“ und der Fundstelle
-    „§ 2 VKVV; Gemeinsames Rundschreiben Meldeverfahren Tz. 3.1.1“;
-  - „Die Postleitzahl hat nicht das Format, das die Meldungen zur Sozialversicherung für diesen
-    Staat verlangen. … Format in Niederlande: NNNN AA (N = Ziffer, A = Buchstabe), zum Beispiel
-    1234 FG.“
 - _Nicht offensichtlich:_ Mit Geburtsdatum `17.05.1990` und Postleitzahl `1234 AB` (mit Leerzeichen)
   verschwinden beide Hinweise. Hinweise blockieren nichts.
 
@@ -118,23 +126,26 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
 **Schritte:**
 
 1. Bis „Wie ist die Arbeitszeit vereinbart?“ gehen, „feste Stunden an festen Wochentagen“ wählen,
-   bei „An welchen Wochentagen arbeitet die Person?“ **Montag** und **Freitag** ankreuzen, und bei
-   „Wie viele Stunden arbeitet die Person am Montag?“ `25` eingeben, **„Weiter“**; dann `11`,
-   **„Weiter“**. Beim Freitag ohne Eingabe **„Weiter“** versuchen.
-2. Bei „Hat die Person Ihnen eine Schwerbehinderung oder Gleichstellung mitgeteilt …?“ „einem
+   bei „An welchen Wochentagen arbeitet die Person?“ „Montag“ und „Freitag“ ankreuzen,
+   **„Weiter“**.
+   - **Danach:** Gefragt werden nur Montag und Freitag.
+2. Bei „Wie viele Stunden arbeitet die Person am Montag?“ `25` eingeben, **„Weiter“**.
+   - **Danach:** Rot **„Höchstens 24.“**
+3. `11` eingeben, **„Weiter“**.
+   - **Danach:** Es geht weiter, oben erscheint „Ungewöhnlich hoher Wert – bitte prüfen.“
+4. Beim Freitag ohne Eingabe **„Weiter“** versuchen.
+   - **Danach:** Ohne Stunden geht es **nicht** weiter (Pflicht, weil angekreuzt).
+5. Bei „Hat die Person Ihnen eine Schwerbehinderung oder Gleichstellung mitgeteilt …?“ „einem
    schwerbehinderten Menschen gleichgestellt“ wählen. Beim Grad der Behinderung `25` eingeben,
-   **„Weiter“**; dann `10`; dann `30`.
-3. Im Entwurf „Dienstwagen“ als Arbeitgeber beim „Amtlichen Kennzeichen“ `ka ab 1234e` eingeben und
+   **„Weiter“**.
+   - **Danach:** **„Nur in Schritten von 10 möglich.“**
+6. `10` eingeben, **„Weiter“**.
+   - **Danach:** **„Mindestens 20.“**
+7. `30` eingeben, **„Weiter“**.
+   - **Danach:** 30 wird angenommen.
+8. Im Entwurf „Dienstwagen“ als Arbeitgeber beim „Amtlichen Kennzeichen“ `ka ab 1234e` eingeben und
    bis zur Zusammenfassung gehen.
-
-**Erwartet:**
-
-- Schritt 1: Bei 25 steht rot **„Höchstens 24.“**; bei 11 geht es weiter, oben erscheint
-  „Ungewöhnlich hoher Wert – bitte prüfen.“ Gefragt werden nur Montag und Freitag; beim Freitag
-  geht es ohne Stunden **nicht** weiter (Pflicht, weil angekreuzt).
-- Schritt 2: Bei 25 **„Nur in Schritten von 10 möglich.“**, bei 10 **„Mindestens 20.“**, 30 wird
-  angenommen.
-- Schritt 3: In der Zusammenfassung steht „KA-AB 1234E“.
+   - **Danach:** In der Zusammenfassung steht „KA-AB 1234E“.
 
 ---
 
@@ -149,15 +160,16 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Arbe
    **„Nein“** und geben Sie als Geburtsnamen `Schmidt` ein.
 2. Geburtsdatum `17.05.1990`, Geschlecht „weiblich“, Versicherungsnummer `65 170590 M 520`,
    **„Weiter“**.
+   - **Danach:** Oben erscheint gelb „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum,
+     Geburtsname oder Geschlecht. … Buchstabe in der Versicherungsnummer: M; Anfangsbuchstabe des
+     Geburtsnamens: S.“ Es geht trotzdem weiter.
 3. Gehen Sie bis zur Zusammenfassung und klicken Sie dort unter „Bitte prüfen:“ auf **„ändern“**.
+   - **Achten Sie gleich auf:** Die Zusammenfassung zeigt den Hinweis **oben** (nicht erst nach dem
+     Scrollen).
+   - **Danach:** „ändern“ führt zur Versicherungsnummer.
 
 **Erwartet:**
 
-- Schritt 2: Oben erscheint gelb „Die Versicherungsnummer passt nicht ganz zu Geburtsdatum,
-  Geburtsname oder Geschlecht. … Buchstabe in der Versicherungsnummer: M; Anfangsbuchstabe des
-  Geburtsnamens: S.“ Es geht trotzdem weiter.
-- Schritt 3: Die Zusammenfassung zeigt den Hinweis **oben** (nicht erst nach dem Scrollen); „ändern“
-  führt zur Versicherungsnummer.
 - _Nicht offensichtlich:_ Das kann richtig sein (die Nummer bleibt nach einer Namensänderung gleich);
   deshalb sperrt der Hinweis nichts. Hinweise, die nur die Kanzlei betreffen (z. B. zur Rente),
   sieht die Person nicht.

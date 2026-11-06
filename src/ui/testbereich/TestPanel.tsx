@@ -261,7 +261,7 @@ function TestCaseView({
         .map((part, i) => (
           <section key={`${part.label}-${i}`}>
             {part.label && <h3>{part.label}</h3>}
-            <Blocks blocks={part.blocks} refs={refs} />
+            <Blocks blocks={part.blocks} refs={refs} copy={part.label === 'Schritte'} />
           </section>
         ))}
 

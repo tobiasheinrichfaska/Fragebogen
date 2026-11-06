@@ -4,7 +4,7 @@
 // immutable Session; time, nonce and device data come from the io layer. Nothing is persisted:
 // the user saves files.
 import type { FormOrigin } from './dataPackage';
-import { fieldsById } from './form';
+import { fieldsById, infoBlocksOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
 import {
   interviewSteps,
@@ -437,12 +437,16 @@ export function nextChoice(session: Session): NextChoice {
   const next = nextTarget(session);
   const backToSummary = session.editing !== undefined && next?.kind === 'summary';
   if (backToSummary) {
-    // Catching up from the summary: on to the next missing answer, wherever it is.
-    const missing = missingStepAround(stepsFor(session), session.stepKey ?? '');
+    // Catching up from the summary: on to the next missing answer or notice, wherever it is.
+    const missing = missingStepAround(
+      stepsFor(session),
+      session.stepKey ?? '',
+      unconfirmedNotices(session),
+    );
     return {
       ...(next ? { next } : {}),
       backToSummary,
-      ...(missing.kind === 'question' ? { skip: missing } : {}),
+      ...(missing.kind === 'summary' ? {} : { skip: missing }),
     };
   }
   if (next?.kind !== 'question' || next.state !== 'answered') {
@@ -459,12 +463,24 @@ export function skipToMissing(session: Session): Session {
   const steps = stepsFor(session);
   const key = session.stepKey ?? '';
   if (session.editing !== undefined) {
-    const target = missingStepAround(steps, key);
-    return target.kind === 'question'
-      ? editFromSummary(session, target.fieldId)
-      : goTo(session, target.key);
+    const target = missingStepAround(steps, key, unconfirmedNotices(session));
+    if (target.kind === 'question') return editFromSummary(session, target.fieldId);
+    if (target.kind === 'notice') return noticeFromSummary(session, target.infoBlockId);
+    return goTo(session, target.key);
   }
   return goTo(session, nextMissingStep(steps, key).key);
+}
+
+/** Notices of the active role not confirmed yet. */
+function unconfirmedNotices(session: Session): ReadonlySet<string> {
+  const role = session.role;
+  if (role === undefined) return new Set();
+  const confirmed = new Set(session.acknowledged[role] ?? []);
+  return new Set(
+    infoBlocksOfRole(session.form.definition, role)
+      .map((block) => block.id)
+      .filter((id) => !confirmed.has(id)),
+  );
 }
 
 /** "bestätigen" in the summary: to that notice, and from there back to the summary. */
