@@ -1145,6 +1145,7 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 (Tobias: „stelle nun das Sepa-Mandat live“): moved to `forms/sepa-mandat/1.1.0.json`, hash
 `962b2519…0998` in `published.json`; 1.0.0 stays registered for mandates under way. With it the
 foreign postcode rule is live for the SEPA-Mandat; the Sofortmeldung stays 1.0.0 (1.1.0 draft).
+**Public app and test folder uploaded at d720a30** („online identisch“; unit 5137, e2e 60 passed).
 
 **Hand-over 2026-11-06 afternoon:** third report of 2026-11-06 (`…_3.pdf`): the foreign
 postcode is required unless the state has none (condition `inSet`, set `staatenOhnePostleitzahl2026`,
