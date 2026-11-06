@@ -1132,9 +1132,9 @@ Auslieferung (`npm run hochladen -- -Ziel <Ziel>`, `npm run tester`; Tobias: the
 private project, the targets in each project). The old `deploy/` upload scripts and their tests are
 gone (they live on in the tool); its plans were compared with the old tool's for all three targets
 (same files, hashes, `.htaccess`, `.htpasswd`), the mapping check was probed with the real mapping. The
-dry run now also compares with the site online. The test folder was uploaded with it at this commit's
-successor (see git log; „online identisch“); the public app was **not** uploaded (it still runs
-f2ab3e1; the local state differs — Stammdaten-Link screen — so it waits for Tobias's OK). Everything of
+dry run now also compares with the site online. The test folder was uploaded with it at fe09ce2
+(„online identisch“); the public app was **not** uploaded (it still runs f2ab3e1; the local state
+differs — Stammdaten-Link screen — so it waits for Tobias's OK). Everything of
 the hand-over below still holds.
 
 **Hand-over 2026-11-05 afternoon:** SEPA-Mandat **1.1.0 draft** (test folder only; 1.0.0
