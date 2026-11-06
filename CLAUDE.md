@@ -1138,9 +1138,10 @@ screen shows everything the signature covers above the confirmation („Das schl
 has an e2e test (not reproducible, like MT-15 — asked the tester). Test page (Tobias): values in the
 steps get a copy button, `<kbd>` values are typed by hand, and every expectation stands at its step
 („Achten Sie gleich auf:“ before, „Danach:“ after; guard test in `tests/testbereich/`); all of
-`manual_tests/` converted, so every rated test shows „geändert seit Ihrem Test“. The public app still
-waits for Tobias's OK (`npm run hochladen -- -Ziel oeffentlich`); after that first public upload
-through the tool, ask before cleaning `deploy/.local/`.
+`manual_tests/` converted, so every rated test shows „geändert seit Ihrem Test“. **Public app uploaded at bb4aa99** (Tobias's OK 2026-11-06, „online
+identisch“; first public upload through the tool) — with the signing overview, the new overview,
+the master-data link screen and the catch-up fix; SEPA in production stays 1.0.0. Next: ask before
+cleaning `deploy/.local/`.
 
 **Hand-over 2026-11-06 night:** the upload now runs through the private tool
 Auslieferung (`npm run hochladen -- -Ziel <Ziel>`, `npm run tester`; Tobias: the tool as its own
