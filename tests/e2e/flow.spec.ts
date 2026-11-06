@@ -203,7 +203,72 @@ test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on t
     testInfo.outputPath('personalakte.pdf'),
   );
   expect(statSync(personnelFile).size).toBeGreaterThan(10_000);
+  // The Kanzlei's PDF for the Personalakte is never protected: PDF/A, no encryption.
+  const filed = readFileSync(personnelFile).toString('latin1');
+  expect(filed).toMatch(/pdfaid/);
+  expect(filed).not.toContain('/Encrypt');
 
+  await expectClean(page, found);
+});
+
+test('a PDF passed on with a password asks for it when read in (Tobias 2026-11-06)', async ({
+  page,
+  browserName,
+}, testInfo) => {
+  test.slow(browserName === 'webkit', 'PDF written and read again in WebKit');
+  const found = await guard(page);
+  await page.goto(pathToFileURL(APP).href);
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await answerUntilSummary(page);
+  await press(page, 'Weiter zum Abschluss');
+  await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
+  await press(page, 'Ohne Unterschrift abschließen');
+  await press(page, 'Abschließen');
+  await page.getByLabel('Mit Kennwort schützen').check();
+  const password = await page.getByLabel('Kennwort', { exact: true }).inputValue();
+  expect(password).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
+  const pdf = await download(page, 'PDF erstellen', testInfo.outputPath('geschuetzt.pdf'));
+  await expect(page.locator('main')).toContainText('mit Kennwort geschützt');
+  const raw = readFileSync(pdf).toString('latin1');
+  expect(raw).toContain('/Encrypt');
+  expect(raw).not.toMatch(/pdfaid/);
+
+  await press(page, 'Gerät weitergeben');
+  await press(page, 'Fragebogen schließen');
+  await page.locator('input[type=file]').first().setInputFiles(pdf);
+  const dialog = page.getByRole('dialog', { name: 'Geschützte PDF' });
+  await expect(dialog).toContainText('ist mit einem Kennwort geschützt');
+  await dialog.getByLabel('Kennwort').fill('falsch-falsch');
+  await press(page, 'Öffnen');
+  await expect(dialog.getByRole('alert')).toHaveText(
+    'Das Kennwort passt nicht zu dieser PDF. Bitte prüfen Sie es und geben Sie es noch einmal ein.',
+  );
+  // Typed in capitals and without hyphens: the app still finds the password.
+  await dialog.getByLabel('Kennwort').fill(password.replace(/-/g, '').toUpperCase());
+  await press(page, 'Öffnen');
+  await expect(page.locator('main')).toContainText('Die PDF war mit einem Kennwort geschützt.');
+  await expect(page.locator('main')).toContainText(
+    'Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    'mit einem anderen Programm neu gespeichert',
+  );
+
+  // Given up: the file stays unopened, and the reason is shown.
+  await press(page, 'Fragebogen schließen');
+  await page.locator('input[type=file]').first().setInputFiles(pdf);
+  await press(page, 'Abbrechen');
+  await expect(page.locator('main')).toContainText(
+    '„geschuetzt.pdf“ ist mit einem Kennwort geschützt. Ohne das Kennwort lässt sich die PDF nicht öffnen.',
+  );
+
+  // The Kanzlei inbox asks too.
+  await press(page, 'Eingänge zusammenführen');
+  await page.locator('input[type=file]').first().setInputFiles(pdf);
+  await page.getByRole('dialog', { name: 'Geschützte PDF' }).getByLabel('Kennwort').fill(password);
+  await press(page, 'Öffnen');
+  await expect(page.locator('main')).toContainText('Die PDF war mit einem Kennwort geschützt.');
   await expectClean(page, found);
 });
 

@@ -39,6 +39,7 @@ import { Banner, Card, type BannerMessage } from './common';
 import { FormView } from './FormView';
 import { LugExport } from './LugExport';
 import { MasterDataLinkForm } from './MasterDataLinkForm';
+import { usePasswordDialog } from './usePasswordDialog';
 import { createPdf, openAnyFile } from './pdfActions';
 
 interface Props {
@@ -76,6 +77,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
   const [viewing, setViewing] = useState<string | undefined>();
   const [banner, setBanner] = useState<BannerMessage | undefined>();
   const [busy, setBusy] = useState(false);
+  const { dialog: passwordDialog, ask: askPassword } = usePasswordDialog();
   const input = useRef<HTMLInputElement>(null);
   const merged = useMemo(() => mergeInbox(inbox, registry), [inbox, registry]);
   const forms = useMemo(() => inboxRegistry(registry, inbox), [inbox, registry]);
@@ -88,7 +90,12 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
     const added: FileReport[] = [];
     // One after the other: photos of one print-out add up their QR codes.
     for (const file of files) {
-      const { result, fileSha256, received } = await openAnyFile(file, registry, codes);
+      const { result, fileSha256, received } = await openAnyFile(
+        file,
+        registry,
+        codes,
+        askPassword,
+      );
       if (result.kind === 'partial') {
         codes = result.collected;
         added.push({ name: file.name, message: result.message });
@@ -163,6 +170,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
   return (
     <>
       {banner && <Banner message={banner} onClose={() => setBanner(undefined)} />}
+      {passwordDialog}
       <Card title="Kanzlei: Eingänge zusammenführen">
         <p>
           Lesen Sie alle PDFs, Zwischenstände oder Fotos ein, die zu den Fragebögen eingegangen sind

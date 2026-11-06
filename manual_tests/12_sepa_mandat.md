@@ -441,13 +441,13 @@ Teil abgeschlossen; Sie stehen bei „Wer füllt jetzt aus?“.
 
 **Schritte:**
 
-1. In der Übersicht unter „Stand“ bei „Als Link weitergeben“ das Häkchen **„Mit Kennwort schützen“**
-   setzen.
+1. In der Übersicht unter „Stand“ das Häkchen **„Mit Kennwort schützen (PDF und Link)“** setzen.
    - **Danach:** Ein Feld „Kennwort“ mit drei Vierergruppen aus kleinen Buchstaben und Ziffern (etwa
      „k7qm-2xrp-9fha“) und „Kopieren“, darunter der Hinweis, das Kennwort auf einem anderen Weg als
-     den Link weiterzugeben, und **„Neues Kennwort“**. Darunter, nach einem kurzen „Der Link wird
-     verschlüsselt …“, der Link. _Nicht offensichtlich:_ Der Link enthält jetzt `#weitergabe=2` statt
-     `#weitergabe=1`.
+     die PDF oder den Link weiterzugeben, und **„Neues Kennwort“**. Unter „Als Link weitergeben“,
+     nach einem kurzen „Der Link wird verschlüsselt …“, der Link. _Nicht offensichtlich:_ Der Link
+     enthält jetzt `#weitergabe=2` statt `#weitergabe=1`; dasselbe Kennwort gilt auch für „PDF
+     erstellen“ (MT-132).
 2. Auf **„Neues Kennwort“** klicken und das neue Kennwort auf einem Zettel notieren.
    - **Danach:** Ein anderes Kennwort; auch der Link darunter ist ein anderer.
 3. Beim Link auf **„Kopieren“** klicken.

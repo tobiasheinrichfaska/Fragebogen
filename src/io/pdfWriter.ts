@@ -3,7 +3,17 @@
 // later version, one signature line per version), the notices, the legal notes, the Prüfblatt,
 // and the data pages — the package as text lines and as QR codes for the paper path. Target
 // PDF/A-2u. Every page carries "Fragebogen-ID · Daten · Formular · Seite x von y".
-import { PDFDocument, PDFString, rgb, type PDFFont, type PDFPage, type RGB } from '@cantoo/pdf-lib';
+import {
+  PDFDict,
+  PDFDocument,
+  PDFName,
+  PDFRef,
+  PDFString,
+  rgb,
+  type PDFFont,
+  type PDFPage,
+  type RGB,
+} from '@cantoo/pdf-lib';
 import { describeRevised, describeValidity } from '../logic/validity';
 import { derive } from '../logic/derivations';
 import fontkit from '@cantoo/fontkit';
@@ -38,12 +48,15 @@ export interface PdfInput {
   config: AppConfig;
   /** Device time of creation (shown on the Prüfblatt). */
   created: { local: string; utc: string };
+  /** Protects a PDF passed on (Tobias 2026-11-06): AES-256 instead of PDF/A. */
+  password?: string;
 }
 
 export interface PdfResult {
   bytes: Uint8Array;
   fileName: string;
   complete: boolean;
+  protected: boolean;
   pages: number;
   dataLines: number;
   qrCodes: number;
@@ -609,7 +622,19 @@ export async function writeQuestionnairePdf(
     );
   });
 
-  doc.convertToPDFA({ conformance: '2U' });
+  if (input.password === undefined) {
+    doc.convertToPDFA({ conformance: '2U' });
+  } else {
+    // PDF/A forbids encryption, so a protected PDF is a plain one with AES-256 (V5/R6); the Kanzlei
+    // files the merged PDF without a password. Owner = user password: no restrictions to unlock.
+    doc.encrypt({ userPassword: input.password, ownerPassword: input.password });
+    // pdf-lib encrypts the streams only; the strings (title, Fragebogen-ID, dates, link) stay plain,
+    // so their crypt filter is Identity (ISO 32000-2, 7.6.6) — readers would else "decrypt" them into
+    // garbage (found by the test: the producer came back unreadable). The answers are in streams.
+    const encrypt = doc.context.trailerInfo.Encrypt;
+    if (!(encrypt instanceof PDFRef)) throw new Error('no encryption dictionary');
+    doc.context.lookup(encrypt, PDFDict).set(PDFName.of('StrF'), PDFName.of('Identity'));
+  }
   // Without object streams every dictionary stays readable: anyone can check that the file holds
   // no script, no attachment and no launch action (Gemeinsame Grundsätze § 9a BVV).
   const bytes = await doc.save({ useObjectStreams: false });
@@ -617,6 +642,7 @@ export async function writeQuestionnairePdf(
     bytes,
     fileName: fileNameFor(definition.id, id, complete ? 'complete' : 'handover'),
     complete,
+    protected: input.password !== undefined,
     pages: pages.length,
     dataLines: block.lines.length,
     qrCodes: payloads.length,

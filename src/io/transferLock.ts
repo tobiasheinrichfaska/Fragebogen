@@ -3,12 +3,10 @@
 // logic/transferLink.ts. The password is never stored — neither in the questionnaire nor in the
 // browser memory.
 import type { Questionnaire } from '../logic/model';
+import { passwordKeyText } from '../logic/passwords';
 import {
   lockedTransferFragment,
-  passwordKeyText,
   TRANSFER_LOCK,
-  TRANSFER_PASSWORD_LENGTH,
-  transferPassword,
   transferPlaintext,
   unlockedText,
   type LockedTransfer,
@@ -23,10 +21,6 @@ export function lockAvailable(): boolean {
     typeof globalThis.crypto?.subtle?.deriveKey === 'function' &&
     typeof globalThis.crypto.getRandomValues === 'function'
   );
-}
-
-export function newTransferPassword(): string {
-  return transferPassword(crypto.getRandomValues(new Uint8Array(TRANSFER_PASSWORD_LENGTH)));
 }
 
 async function keyFor(password: string, salt: Uint8Array<ArrayBuffer>, usage: KeyUsage) {

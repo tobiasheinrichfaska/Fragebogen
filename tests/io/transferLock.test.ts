@@ -12,12 +12,8 @@ import {
   transferPackageText,
   type LockedTransfer,
 } from '../../src/logic/transferLink';
-import {
-  lockAvailable,
-  lockTransfer,
-  newTransferPassword,
-  unlockTransfer,
-} from '../../src/io/transferLock';
+import { lockAvailable, lockTransfer, unlockTransfer } from '../../src/io/transferLock';
+import { newPassword } from '../../src/io/environment';
 import { employerOnly, sofortmeldung } from '../support/sofortmeldungSession';
 import { registryOf } from '../../src/logic/formRegistry';
 
@@ -113,7 +109,7 @@ describe('lockTransfer / unlockTransfer', () => {
   });
 
   it('proposes a fresh password each time', () => {
-    const passwords = new Set(Array.from({ length: 20 }, () => newTransferPassword()));
+    const passwords = new Set(Array.from({ length: 20 }, () => newPassword()));
     expect(passwords.size).toBe(20);
     for (const password of passwords)
       expect(password).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);

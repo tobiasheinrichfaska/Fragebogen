@@ -52,8 +52,24 @@ function open(pdfjs: PdfJsLike, bytes: Uint8Array, password?: string) {
   });
 }
 
-export async function readPdfText(pdfjs: PdfJsLike, bytes: Uint8Array): Promise<PdfText> {
-  const task = open(pdfjs, bytes);
+export type PdfPasswordIssue = 'needed' | 'wrong';
+
+/**
+ * A protected PDF (Tobias 2026-11-06): pdf.js rejects with a PasswordException — code 1 without a
+ * password, code 2 with a wrong one. Anything else is no password matter.
+ */
+export function passwordIssue(error: unknown): PdfPasswordIssue | undefined {
+  if (typeof error !== 'object' || error === null) return undefined;
+  if ((error as { name?: unknown }).name !== 'PasswordException') return undefined;
+  return (error as { code?: unknown }).code === 2 ? 'wrong' : 'needed';
+}
+
+export async function readPdfText(
+  pdfjs: PdfJsLike,
+  bytes: Uint8Array,
+  password?: string,
+): Promise<PdfText> {
+  const task = open(pdfjs, bytes, password);
   try {
     const pdf = await task.promise;
     const lines: string[] = [];
@@ -136,8 +152,9 @@ export async function renderPdfPages(
   pdfjs: PdfJsLike,
   bytes: Uint8Array,
   longestSide = 2400,
+  password?: string,
 ): Promise<RgbaImage[]> {
-  const task = open(pdfjs, bytes);
+  const task = open(pdfjs, bytes, password);
   try {
     const pdf = await task.promise;
     const images: RgbaImage[] = [];

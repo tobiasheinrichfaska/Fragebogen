@@ -11,16 +11,13 @@ import type { Questionnaire } from './model';
 import { enterRole } from './session';
 import {
   lockedTransferFragment,
-  passwordKeyText,
   TRANSFER_LINK_MAX_LENGTH,
   TRANSFER_LINK_MESSAGES,
   TRANSFER_LOCK,
-  TRANSFER_PASSWORD_ALPHABET,
   parseTransferFragment,
   transferFragment,
   transferOffer,
   transferPackageText,
-  transferPassword,
   transferPlaintext,
   unlockedText,
 } from './transferLink';
@@ -173,24 +170,6 @@ describe('a link protected by a password (Tobias 2026-11-06)', () => {
       questionnaireText: canonicalize(signed),
     });
     expect(unlockedText(bytes(40, 9))).toEqual({ ok: false, issue: 'damaged' });
-  });
-
-  it('proposes passwords of three groups of four unmistakable characters', () => {
-    expect(transferPassword(bytes(12, 0))).toBe('abcd-efgh-ijkm');
-    expect(transferPassword(bytes(12, 24))).toBe('2345-6789-abcd');
-    // One character per byte by its low five bits: every byte value is equally likely.
-    expect(transferPassword(Uint8Array.from({ length: 12 }, () => 255))).toBe('9999-9999-9999');
-    expect(TRANSFER_PASSWORD_ALPHABET).toHaveLength(32);
-    expect(new Set(TRANSFER_PASSWORD_ALPHABET).size).toBe(32);
-    expect(TRANSFER_PASSWORD_ALPHABET).not.toMatch(/[lo01]/);
-    expect(() => transferPassword(bytes(11, 0))).toThrow();
-  });
-
-  it('ignores case, spaces and hyphens of a typed password', () => {
-    for (const typed of ['k7qm-2xrp-9fha', 'K7qm-2xrp-9fha', ' k7qm 2xrp 9fha ', 'k7qm2xrp9fha']) {
-      expect(passwordKeyText(typed)).toBe('k7qm2xrp9fha');
-    }
-    expect(passwordKeyText(' - ')).toBe('');
   });
 
   it('has a German message for the password and the browser', () => {
