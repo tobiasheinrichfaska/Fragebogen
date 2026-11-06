@@ -1144,8 +1144,8 @@ postcode is required unless the state has none (condition `inSet`, set `staatenO
 research in `docs/quellen-staaten-ohne-postleitzahl.md`; SEPA 1.1.0, Sofortmeldung 1.1.0 and
 Personalfragebogen drafts; „Keine Postleitzahl“ only while not required); answers whose condition no
 longer holds are shown as „Verworfene Angaben“; test page: „Erledigte Tests aus dem nächsten Bericht
-nehmen“ (MT-130). Public app: not uploaded since bb4aa99 — the neutral „Stand“ texts and this round
-wait for Tobias's OK.
+nehmen“ (MT-130). **Public app uploaded at d0c0162** (Tobias: „go“, „online identisch“) with the neutral
+„Stand“ texts and „Verworfene Angaben“; the postcode rule lives only in the drafts.
 
 **Decided 2026-11-06 (Tobias):** once the SEPA-Mandat and the Sofortmeldung are flawless, the test
 logic moves out into its own shared tool (like the upload tool Auslieferung): `manualTests.ts`,
