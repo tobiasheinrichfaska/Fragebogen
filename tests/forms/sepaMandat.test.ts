@@ -423,7 +423,7 @@ describe('passing the Kanzlei part on as a link (Tobias 2026-11-05)', () => {
     if (!made.ok) throw new Error(`${made.issue} ${made.length}`);
     expect(made.fragment.length).toBeLessThan(TRANSFER_LINK_MAX_LENGTH);
     const parsed = parseTransferFragment(made.fragment);
-    if (!parsed?.ok) throw new Error('not parsed');
+    if (parsed?.ok !== true || parsed.kind !== 'open') throw new Error('not parsed');
     const opened = transferPackageText(parsed.questionnaireText, (hash) =>
       hash === form.definitionHash ? form.definition : undefined,
     );

@@ -266,6 +266,60 @@ test('the employer part passes on as a link and opens on another device (Tobias 
   expect(foreignThere).toEqual([]);
 });
 
+test('a link passed on with a password opens only with it (Tobias 2026-11-06)', async ({
+  page,
+  browser,
+}) => {
+  const foreign = await serveHosted(page);
+  await page.goto(`${ORIGIN}/`);
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await answerUntilSummary(page);
+  await press(page, 'Weiter zum Abschluss');
+  await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
+  await press(page, 'Ohne Unterschrift abschließen');
+  await press(page, 'Abschließen');
+  await page.getByLabel('Mit Kennwort schützen').check();
+  const password = await page.getByLabel('Kennwort', { exact: true }).inputValue();
+  expect(password).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
+  const field = page.getByLabel('Link zur Weitergabe');
+  await expect(field).toHaveValue(/#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
+  const link = await field.inputValue();
+
+  const other = await browser.newContext();
+  const device = await other.newPage();
+  const foreignThere = await serveHosted(device);
+  await device.goto(link);
+  await expect(device.getByRole('heading', { name: 'Geschützter Link' })).toBeVisible();
+  const typed = device.getByLabel('Kennwort', { exact: true });
+  await typed.fill('falsch-falsch');
+  await press(device, 'Öffnen');
+  await expect(device.getByRole('alert')).toHaveText(
+    'Das Kennwort passt nicht zu diesem Link. Bitte prüfen Sie es und geben Sie es noch einmal ein.',
+  );
+  // Read out on the phone and typed with a capital letter: still the same password.
+  await typed.fill(password.toUpperCase());
+  await press(device, 'Öffnen');
+  await expect(device.locator('main')).toContainText(
+    'Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.',
+  );
+  await expect(device.locator('main')).toContainText(
+    'Aus einem geschützten Link zur Weitergabe geöffnet.',
+  );
+  await expect(device.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  expect(device.url()).toBe(`${ORIGIN}/`);
+
+  // Set aside without the password: the app starts empty and forgets the link.
+  await device.goto('about:blank');
+  await device.goto(link);
+  await press(device, 'Ohne diesen Link weiter');
+  await expect(device.getByRole('heading', { name: 'Geschützter Link' })).toHaveCount(0);
+  expect(device.url()).toBe(`${ORIGIN}/`);
+  await other.close();
+  expect(foreign).toEqual([]);
+  expect(foreignThere).toEqual([]);
+});
+
 test('the overview offers PDF and link right under the roles (test report 2026-11-06)', async ({
   page,
 }) => {

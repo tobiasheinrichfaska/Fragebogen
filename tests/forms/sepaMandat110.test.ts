@@ -118,7 +118,7 @@ function throughLink(kanzlei: Session): Session {
   const made = transferFragment(kanzlei.questionnaire);
   if (!made.ok) throw new Error(made.issue);
   const parsed = parseTransferFragment(made.fragment);
-  if (!parsed?.ok) throw new Error('not parsed');
+  if (parsed?.ok !== true || parsed.kind !== 'open') throw new Error('not parsed');
   const opened = transferPackageText(parsed.questionnaireText, (hash) =>
     hash === form.definitionHash ? form.definition : undefined,
   );
