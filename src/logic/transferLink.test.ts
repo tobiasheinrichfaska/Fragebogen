@@ -10,12 +10,19 @@ import { parseMasterDataFragment } from './masterDataLink';
 import type { Questionnaire } from './model';
 import { enterRole } from './session';
 import {
+  lockedTransferFragment,
+  passwordKeyText,
   TRANSFER_LINK_MAX_LENGTH,
   TRANSFER_LINK_MESSAGES,
+  TRANSFER_LOCK,
+  TRANSFER_PASSWORD_ALPHABET,
   parseTransferFragment,
   transferFragment,
   transferOffer,
   transferPackageText,
+  transferPassword,
+  transferPlaintext,
+  unlockedText,
 } from './transferLink';
 import { verifyQuestionnaire } from './verify';
 
@@ -37,6 +44,7 @@ describe('transferFragment / parseTransferFragment', () => {
     expect(fragment).toMatch(/^#weitergabe=1&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
     expect(parseTransferFragment(fragment)).toEqual({
       ok: true,
+      kind: 'open',
       questionnaireText: canonicalize(signed),
     });
   });
@@ -44,7 +52,7 @@ describe('transferFragment / parseTransferFragment', () => {
   it('opens to a package that decodes and verifies like a file', () => {
     const signed = personSigned();
     const parsed = parseTransferFragment(fragmentOf(signed));
-    if (!parsed?.ok) throw new Error('not parsed');
+    if (parsed?.ok !== true || parsed.kind !== 'open') throw new Error('not parsed');
     const opened = transferPackageText(parsed.questionnaireText, carried);
     if (!opened.ok) throw new Error(opened.issue);
     const decoded = decodePackage(JSON.parse(opened.text), beispielRegistry());
@@ -100,7 +108,7 @@ describe('transferFragment / parseTransferFragment', () => {
   });
 
   it('refuses a link of another link version', () => {
-    expect(parseTransferFragment('#weitergabe=2&pruef=0&daten=x')).toEqual({
+    expect(parseTransferFragment('#weitergabe=3&pruef=0&daten=x')).toEqual({
       ok: false,
       issue: 'unknownVersion',
     });
@@ -108,6 +116,86 @@ describe('transferFragment / parseTransferFragment', () => {
       ok: false,
       issue: 'unknownVersion',
     });
+    expect(parseTransferFragment('#weitergabe=1&weitergabe=2')).toEqual({
+      ok: false,
+      issue: 'unknownVersion',
+    });
+  });
+});
+
+describe('a link protected by a password (Tobias 2026-11-06)', () => {
+  const bytes = (length: number, start: number) =>
+    Uint8Array.from({ length }, (_, i) => (start + i) % 256);
+  const locked = {
+    salt: bytes(TRANSFER_LOCK.saltBytes, 1),
+    iv: bytes(TRANSFER_LOCK.ivBytes, 50),
+    ciphertext: bytes(300, 100),
+  };
+
+  it('carries salt, nonce and ciphertext and gives them back apart', () => {
+    const made = lockedTransferFragment(locked);
+    if (!made.ok) throw new Error(made.issue);
+    expect(made.fragment).toMatch(/^#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
+    expect(parseTransferFragment(made.fragment)).toEqual({ ok: true, kind: 'locked', locked });
+  });
+
+  it('names a cut-off or altered protected link damaged before any password is asked', () => {
+    const made = lockedTransferFragment(locked);
+    if (!made.ok) throw new Error(made.issue);
+    const data = params(made.fragment).get('daten') ?? '';
+    const tiny = lockedTransferFragment({
+      ...locked,
+      ciphertext: bytes(TRANSFER_LOCK.tagBytes, 7),
+    });
+    if (!tiny.ok) throw new Error(tiny.issue);
+    for (const hash of [
+      made.fragment.slice(0, -8),
+      made.fragment.replace(
+        data,
+        `${data.slice(0, 40)}${data[40] === 'A' ? 'B' : 'A'}${data.slice(41)}`,
+      ),
+      // Nothing but salt, nonce and tag: no ciphertext at all.
+      tiny.fragment,
+    ]) {
+      expect(parseTransferFragment(hash)).toEqual({ ok: false, issue: 'damaged' });
+    }
+  });
+
+  it('is refused when it would be too long, like an open link', () => {
+    const made = lockedTransferFragment({ ...locked, ciphertext: bytes(2000, 3) });
+    expect(made).toMatchObject({ ok: false, issue: 'tooLong' });
+  });
+
+  it('encrypts the deflated questionnaire, which unlockedText reads back', () => {
+    const signed = personSigned();
+    expect(unlockedText(transferPlaintext(signed))).toEqual({
+      ok: true,
+      questionnaireText: canonicalize(signed),
+    });
+    expect(unlockedText(bytes(40, 9))).toEqual({ ok: false, issue: 'damaged' });
+  });
+
+  it('proposes passwords of three groups of four unmistakable characters', () => {
+    expect(transferPassword(bytes(12, 0))).toBe('abcd-efgh-ijkm');
+    expect(transferPassword(bytes(12, 24))).toBe('2345-6789-abcd');
+    // One character per byte by its low five bits: every byte value is equally likely.
+    expect(transferPassword(Uint8Array.from({ length: 12 }, () => 255))).toBe('9999-9999-9999');
+    expect(TRANSFER_PASSWORD_ALPHABET).toHaveLength(32);
+    expect(new Set(TRANSFER_PASSWORD_ALPHABET).size).toBe(32);
+    expect(TRANSFER_PASSWORD_ALPHABET).not.toMatch(/[lo01]/);
+    expect(() => transferPassword(bytes(11, 0))).toThrow();
+  });
+
+  it('ignores case, spaces and hyphens of a typed password', () => {
+    for (const typed of ['k7qm-2xrp-9fha', 'K7qm-2xrp-9fha', ' k7qm 2xrp 9fha ', 'k7qm2xrp9fha']) {
+      expect(passwordKeyText(typed)).toBe('k7qm2xrp9fha');
+    }
+    expect(passwordKeyText(' - ')).toBe('');
+  });
+
+  it('has a German message for the password and the browser', () => {
+    expect(TRANSFER_LINK_MESSAGES.wrongPassword).toContain('Kennwort');
+    expect(TRANSFER_LINK_MESSAGES.unlockUnavailable).toContain('PDF');
   });
 });
 

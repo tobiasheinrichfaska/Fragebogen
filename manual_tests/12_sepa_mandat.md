@@ -431,3 +431,45 @@ füllt jetzt aus?“.
    - **Danach:** Unter „Prüfhinweise:“ steht „„IBAN“ geändert: Kanzlei (Zahlungsempfänger) hatte
      „DE89 3704 0044 0532 0130 00“ vorbelegt, im Teil „Kontoinhaberin oder Kontoinhaber“ steht jetzt
      „DE02 1203 0000 0000 2020 51“.“ – **kein** Widerspruch. Das Mandat gilt mit der neuen IBAN.
+
+---
+
+## MT-131: Den Teil der Kanzlei mit Kennwort als Link weitergeben
+
+**Einstieg:** [Mandat zum Ausfüllen öffnen](start:sepa-kanzlei-abgeschlossen) – die Kanzlei hat ihren
+Teil abgeschlossen; Sie stehen bei „Wer füllt jetzt aus?“.
+
+**Schritte:**
+
+1. In der Übersicht unter „Stand“ bei „Als Link weitergeben“ das Häkchen **„Mit Kennwort schützen“**
+   setzen.
+   - **Danach:** Ein Feld „Kennwort“ mit drei Vierergruppen aus kleinen Buchstaben und Ziffern (etwa
+     „k7qm-2xrp-9fha“) und „Kopieren“, darunter der Hinweis, das Kennwort auf einem anderen Weg als
+     den Link weiterzugeben, und **„Neues Kennwort“**. Darunter, nach einem kurzen „Der Link wird
+     verschlüsselt …“, der Link. _Nicht offensichtlich:_ Der Link enthält jetzt `#weitergabe=2` statt
+     `#weitergabe=1`.
+2. Auf **„Neues Kennwort“** klicken und das neue Kennwort auf einem Zettel notieren.
+   - **Danach:** Ein anderes Kennwort; auch der Link darunter ist ein anderer.
+3. Beim Link auf **„Kopieren“** klicken.
+   - **Danach:** „Link kopiert.“
+4. Ein **privates Fenster** öffnen (wie ein anderes Gerät) und den Link dort in die Adresszeile
+   einfügen.
+   - **Danach:** Die Seite „Geschützter Link“ mit dem Feld „Kennwort“, **„Öffnen“** und „Ohne diesen
+     Link weiter“. Vom Mandat ist noch nichts zu sehen.
+5. In „Kennwort“ <kbd>falsch-falsch</kbd> tippen und **„Öffnen“** klicken.
+   - **Danach:** Rot: „Das Kennwort passt nicht zu diesem Link. Bitte prüfen Sie es und geben Sie es
+     noch einmal ein.“
+6. Das Feld leeren, das notierte Kennwort in **Großbuchstaben und ohne Bindestriche** tippen und
+   **„Öffnen“** klicken.
+   - **Danach:** „Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.“ und „Aus
+     einem geschützten Link zur Weitergabe geöffnet.“ Der Fragebogen öffnet im Teil der
+     Kontoinhaberin beim Mandatstext, die Adresszeile zeigt nur noch die Adresse der App. _Nicht
+     offensichtlich:_ Groß- und Kleinschreibung, Leerzeichen und Bindestriche spielen keine Rolle.
+7. Den Link im privaten Fenster noch einmal einfügen und **„Ohne diesen Link weiter“** klicken.
+   - **Danach:** Die Startseite der App; die Adresszeile zeigt nur noch die Adresse der App. Oben
+     kann „Angefangener Fragebogen gefunden“ stehen – das ist der Bogen aus Schritt 6.
+
+**Erwartet:**
+
+- _Nicht offensichtlich:_ Die App merkt sich das Kennwort nicht. Verlässt man die Übersicht und kommt
+  zurück, ist das Häkchen wieder aus; ein neuer geschützter Link bekommt ein neues Kennwort.

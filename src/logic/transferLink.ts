@@ -4,10 +4,18 @@
 // by its hash from the forms it carries, as the browser memory does (resume.ts); a link to a form it
 // lacks is refused with a pointer to the PDF. The opened package goes through decodePackage and the
 // seal check like any file. A fragment never reaches the web server, but the link holds every
-// answer, so — like the PDF — it goes to the next station only.
+// answer, so — like the PDF — it goes to the next station only. With a password (Tobias
+// 2026-11-06: "das sollte beim Weitergeben als Link eine Option sein") the same deflated text is
+// encrypted (version 2); the cipher itself runs in src/io/transferLock.ts.
 import { strToU8 } from 'fflate';
 import { PACKAGE_FORMAT, PACKAGE_FORMAT_VERSION } from './dataPackage';
-import { compressPackage, fromBase64Url, inflatePackage, toBase64Url } from './dataPages';
+import {
+  compressPackage,
+  fromBase64Url,
+  inflatePackage,
+  MAX_PACKAGE_BYTES,
+  toBase64Url,
+} from './dataPages';
 import type { RegisteredForm } from './formRegistry';
 import { sha256Hex } from './hash';
 import { canonicalize } from './jcs';
@@ -16,6 +24,8 @@ import { transmissionBlockers } from './requirements';
 
 const MARKER = 'weitergabe';
 export const TRANSFER_LINK_VERSION = '1';
+/** A link protected by a password; an app without it calls the link one of another version. */
+export const TRANSFER_LINK_LOCKED_VERSION = '2';
 /**
  * Longest fragment offered, as for master-data links: mail programs and messengers pass it on in
  * one piece. The Kanzlei part of the SEPA-Mandat needs about 1,200 characters.
@@ -24,7 +34,15 @@ export const TRANSFER_LINK_MAX_LENGTH = 2000;
 const DIGEST_LENGTH = 16;
 const DIGEST = /^[0-9a-f]{16}$/;
 
-export type TransferLinkIssue = 'tooLong' | 'unknownVersion' | 'damaged' | 'unknownForm';
+export type TransferLinkIssue =
+  | 'tooLong'
+  | 'unknownVersion'
+  | 'damaged'
+  | 'unknownForm'
+  | 'wrongPassword'
+  | 'noPassword'
+  | 'lockUnavailable'
+  | 'unlockUnavailable';
 
 export const TRANSFER_LINK_MESSAGES: Readonly<Record<TransferLinkIssue, string>> = {
   tooLong: 'Für einen Link sind es zu viele Angaben. Bitte die PDF weitergeben.',
@@ -34,7 +52,64 @@ export const TRANSFER_LINK_MESSAGES: Readonly<Record<TransferLinkIssue, string>>
     'Der Link ist unvollständig oder beschädigt – vielleicht wurde er beim Kopieren abgeschnitten. Bitte den ganzen Link noch einmal öffnen oder um die PDF bitten.',
   unknownForm:
     'Der Link gehört zu einer Formularfassung, die diese App nicht enthält. Bitte um die PDF bitten.',
+  wrongPassword:
+    'Das Kennwort passt nicht zu diesem Link. Bitte prüfen Sie es und geben Sie es noch einmal ein.',
+  noPassword: 'Bitte geben Sie das Kennwort ein.',
+  lockUnavailable:
+    'Dieser Browser kann hier nicht verschlüsseln. Bitte einen aktuellen Browser verwenden oder die PDF weitergeben.',
+  unlockUnavailable:
+    'Dieser Browser kann den geschützten Link nicht öffnen. Bitte einen aktuellen Browser verwenden oder um die PDF bitten.',
 };
+
+/**
+ * Key derivation and cipher of a protected link, fixed by its version so a link can never ask for
+ * weaker ones: PBKDF2-HMAC-SHA-256 with 600,000 iterations (OWASP Password Storage Cheat Sheet),
+ * AES-256-GCM with a random salt and nonce per link; the tag proves the password and the data.
+ */
+export const TRANSFER_LOCK = {
+  iterations: 600_000,
+  saltBytes: 16,
+  ivBytes: 12,
+  tagBytes: 16,
+  additionalData: 'Fragebogen Weitergabe 2',
+} as const;
+
+/** Letters and digits that cannot be mistaken for one another when read out (no l/1, no o/0). */
+export const TRANSFER_PASSWORD_ALPHABET = 'abcdefghijkmnpqrstuvwxyz23456789';
+/** Characters of a password: 12 of 32 = 60 bits, three groups of four. */
+export const TRANSFER_PASSWORD_LENGTH = 12;
+
+/** The password the app proposes, from random bytes (one character per byte, unbiased: 32 | 256). */
+export function transferPassword(random: Uint8Array): string {
+  if (random.length < TRANSFER_PASSWORD_LENGTH) throw new Error('not enough random bytes');
+  const chars = Array.from(random.slice(0, TRANSFER_PASSWORD_LENGTH), (byte) =>
+    TRANSFER_PASSWORD_ALPHABET.charAt(byte & 31),
+  );
+  return [0, 4, 8].map((start) => chars.slice(start, start + 4).join('')).join('-');
+}
+
+/**
+ * What the key is derived from: the password without case, spaces and hyphens, since it is
+ * often read out on the phone or typed on a phone that capitalises the first letter.
+ */
+export function passwordKeyText(typed: string): string {
+  return typed
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/[\s-]+/g, '');
+}
+
+export interface LockedTransfer {
+  salt: Uint8Array<ArrayBuffer>;
+  iv: Uint8Array<ArrayBuffer>;
+  /** AES-GCM output: the encrypted deflated questionnaire followed by the tag. */
+  ciphertext: Uint8Array<ArrayBuffer>;
+}
+
+/** What a protected link encrypts: the deflated questionnaire, as `daten` of an open link. */
+export function transferPlaintext(questionnaire: Questionnaire): Uint8Array<ArrayBuffer> {
+  return compressPackage(canonicalize(questionnaire)).slice();
+}
 
 export type TransferLinkResult =
   { ok: true; fragment: string } | { ok: false; issue: 'tooLong'; length: number };
@@ -53,9 +128,28 @@ export function transferFragment(questionnaire: Questionnaire): TransferLinkResu
     : { ok: true, fragment };
 }
 
+/**
+ * The fragment of a protected link: salt, nonce and ciphertext in `daten`, the start of their
+ * SHA-256 in `pruef` — so a cut-off link is told apart from a wrong password, and nothing about
+ * the answers can be read or guessed from it.
+ */
+export function lockedTransferFragment(locked: LockedTransfer): TransferLinkResult {
+  const bytes = new Uint8Array([...locked.salt, ...locked.iv, ...locked.ciphertext]);
+  const params = new URLSearchParams([
+    [MARKER, TRANSFER_LINK_LOCKED_VERSION],
+    ['pruef', sha256Hex(bytes).slice(0, DIGEST_LENGTH)],
+    ['daten', toBase64Url(bytes)],
+  ]);
+  const fragment = `#${params.toString()}`;
+  return fragment.length > TRANSFER_LINK_MAX_LENGTH
+    ? { ok: false, issue: 'tooLong', length: fragment.length }
+    : { ok: true, fragment };
+}
+
 export type ParsedTransferLink =
-  | { ok: true; questionnaireText: string }
-  | { ok: false; issue: Exclude<TransferLinkIssue, 'tooLong' | 'unknownForm'> };
+  | { ok: true; kind: 'open'; questionnaireText: string }
+  | { ok: true; kind: 'locked'; locked: LockedTransfer }
+  | { ok: false; issue: 'unknownVersion' | 'damaged' };
 
 /**
  * Reads a location hash (with or without "#"); undefined when it is no transfer link. The text is
@@ -65,7 +159,11 @@ export function parseTransferFragment(hash: string): ParsedTransferLink | undefi
   const params = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
   const versions = params.getAll(MARKER);
   if (versions.length === 0) return undefined;
-  if (versions.length > 1 || versions[0] !== TRANSFER_LINK_VERSION) {
+  const version = versions[0];
+  if (
+    versions.length > 1 ||
+    (version !== TRANSFER_LINK_VERSION && version !== TRANSFER_LINK_LOCKED_VERSION)
+  ) {
     return { ok: false, issue: 'unknownVersion' };
   }
   const digest = params.getAll('pruef');
@@ -75,7 +173,31 @@ export function parseTransferFragment(hash: string): ParsedTransferLink | undefi
   }
   const bytes = fromBase64Url(data[0] ?? '');
   if (!bytes) return { ok: false, issue: 'damaged' };
+  if (version === TRANSFER_LINK_LOCKED_VERSION) {
+    const { saltBytes, ivBytes, tagBytes } = TRANSFER_LOCK;
+    if (
+      bytes.length <= saltBytes + ivBytes + tagBytes ||
+      bytes.length > MAX_PACKAGE_BYTES ||
+      sha256Hex(bytes).slice(0, DIGEST_LENGTH) !== digest[0]
+    ) {
+      return { ok: false, issue: 'damaged' };
+    }
+    const salt = bytes.slice(0, saltBytes);
+    const iv = bytes.slice(saltBytes, saltBytes + ivBytes);
+    const ciphertext = bytes.slice(saltBytes + ivBytes);
+    return { ok: true, kind: 'locked', locked: { salt, iv, ciphertext } };
+  }
   const inflated = inflatePackage(bytes, { sha256Prefix: digest[0] ?? '' });
+  return inflated.ok
+    ? { ok: true, kind: 'open', questionnaireText: inflated.text }
+    : { ok: false, issue: 'damaged' };
+}
+
+/** The questionnaire text of a decrypted link; the tag has already proved the bytes. */
+export function unlockedText(
+  plaintext: Uint8Array,
+): { ok: true; questionnaireText: string } | { ok: false; issue: 'damaged' } {
+  const inflated = inflatePackage(plaintext, { sha256Prefix: '' });
   return inflated.ok
     ? { ok: true, questionnaireText: inflated.text }
     : { ok: false, issue: 'damaged' };
@@ -111,7 +233,10 @@ export function transferPackageText(
 }
 
 export type TransferOffer =
-  { kind: 'link'; url: string } | { kind: 'tooLong' } | { kind: 'noAddress' } | { kind: 'blocked' };
+  | { kind: 'link'; url: string; base: string; questionnaire: Questionnaire }
+  | { kind: 'tooLong' }
+  | { kind: 'noAddress' }
+  | { kind: 'blocked' };
 
 /**
  * What the done screen offers besides the PDF: a link when the questionnaire may be passed on
@@ -126,5 +251,7 @@ export function transferOffer(
   if (transmissionBlockers(questionnaire, form).length > 0) return { kind: 'blocked' };
   if (!/^https?:/.test(base)) return { kind: 'noAddress' };
   const made = transferFragment(questionnaire);
-  return made.ok ? { kind: 'link', url: `${base}${made.fragment}` } : { kind: 'tooLong' };
+  return made.ok
+    ? { kind: 'link', url: `${base}${made.fragment}`, base, questionnaire }
+    : { kind: 'tooLong' };
 }

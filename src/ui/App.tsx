@@ -51,12 +51,14 @@ import {
   createPdf,
   fromPackageText,
   fromTransferLink,
+  fromTransferText,
   openAnyFile,
   type OpenResult,
 } from './pdfActions';
 import { ResumeOffer } from './ResumeOffer';
 import { masterDataRolesText } from '../logic/masterData';
-import { transferOffer } from '../logic/transferLink';
+import { parseTransferFragment, transferOffer } from '../logic/transferLink';
+import { UnlockLinkScreen } from './UnlockLinkScreen';
 import { describeRevised } from '../logic/validity';
 
 type Screen =
@@ -118,7 +120,34 @@ export function App({ start }: { start?: PreparedStart }) {
       </main>
     );
   }
-  return <Workspace registry={BUNDLED_FORMS.registry} {...(start ? { start } : {})} />;
+  return start ? (
+    <Workspace registry={BUNDLED_FORMS.registry} start={start} />
+  ) : (
+    <LinkGate registry={BUNDLED_FORMS.registry} />
+  );
+}
+
+/** A link protected by a password asks for it first (Tobias 2026-11-06); all else goes on. */
+function LinkGate({ registry }: { registry: FormRegistry }) {
+  const [locked] = useState(() => {
+    const parsed = parseTransferFragment(location.hash);
+    return parsed?.ok && parsed.kind === 'locked' ? parsed.locked : undefined;
+  });
+  const [unlocked, setUnlocked] = useState<string | undefined>();
+  const [skipped, setSkipped] = useState(false);
+  if (locked && unlocked === undefined && !skipped) {
+    return (
+      <UnlockLinkScreen
+        locked={locked}
+        onOpened={setUnlocked}
+        onSkip={() => {
+          history.replaceState(null, '', location.pathname + location.search);
+          setSkipped(true);
+        }}
+      />
+    );
+  }
+  return <Workspace registry={registry} {...(unlocked === undefined ? {} : { unlocked })} />;
 }
 
 /** The banner a fresh start shows: start point, bookmark link that opened a form, or a link error. */
@@ -152,11 +181,29 @@ function startBanner(
       };
 }
 
-function Workspace({ registry, start }: { registry: FormRegistry; start?: PreparedStart }) {
+function Workspace({
+  registry,
+  start,
+  unlocked,
+}: {
+  registry: FormRegistry;
+  start?: PreparedStart;
+  /** The questionnaire text of a protected link, opened with its password. */
+  unlocked?: string;
+}) {
   // A link that passes a questionnaire on opens it like a file read in (Tobias 2026-11-05).
   const transferred = useMemo(
-    () => (start ? undefined : fromTransferLink(location.hash, registry)),
-    [registry, start],
+    () =>
+      start
+        ? undefined
+        : unlocked !== undefined
+          ? fromTransferText(
+              unlocked,
+              registry,
+              'Aus einem geschützten Link zur Weitergabe geöffnet.',
+            )
+          : fromTransferLink(location.hash, registry),
+    [registry, start, unlocked],
   );
   const received = useMemo(() => {
     const session = transferred?.kind === 'session' ? transferred.session : undefined;

@@ -1133,3 +1133,24 @@ button.start-link {
   color: var(--danger);
   font-weight: 600;
 }
+
+/* "Mit Kennwort schützen" under "Als Link weitergeben" and the password to read out */
+.lock-option {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.75rem 0;
+  font-weight: 600;
+}
+
+.lock-option input {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex: none;
+}
+
+.password-field input {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
