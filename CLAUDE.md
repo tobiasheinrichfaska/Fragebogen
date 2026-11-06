@@ -1155,7 +1155,8 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 **Hand-over 2026-11-06 evening (start here):** „Als Link weitergeben“ has the option „Mit Kennwort
 schützen“ (Tobias: „das sollte beim Weitergeben als Link eine Option sein“): link version 2, AES-256-GCM
 with a PBKDF2 key from a password the app proposes, page „Geschützter Link“ when opened (MT-131,
-e2e in 3 engines). **Open question to Tobias:** the same option for the PDF (pdf-lib `encrypt()`
+e2e in 3 engines). **Test folder uploaded at 321a895; the public app still runs d720a30 — upload only
+on Tobias's OK.** **Open question to Tobias:** the same option for the PDF (pdf-lib `encrypt()`
 AES-256 and pdf.js with password are proven in the spike; an encrypted PDF is no PDF/A).
 
 **Hand-over 2026-11-06 late afternoon:** SEPA-Mandat **1.1.0 in production**
