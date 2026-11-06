@@ -1169,7 +1169,8 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 ok“): one „Mit Kennwort schützen (PDF und Link)“ per screen, AES-256 PDF without PDF/A, password
 dialog „Geschützte PDF“ when read in (also in the Kanzlei inbox), the Personalakte PDF stays PDF/A
 without a password (MT-132, e2e in 3 engines). The public app got the protected link at d71e26d
-(Tobias: „ja, in die öffentliche app auch“).
+(Tobias: „ja, in die öffentliche app auch“). **Test folder uploaded at f4cb18f; the PDF option is not in
+the public app yet — upload only on Tobias's OK.**
 
 **Hand-over 2026-11-06 evening:** „Als Link weitergeben“ has the option „Mit Kennwort
 schützen“ (Tobias: „das sollte beim Weitergeben als Link eine Option sein“): link version 2, AES-256-GCM
