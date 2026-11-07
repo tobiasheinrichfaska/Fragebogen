@@ -2,7 +2,16 @@
 // carries no script, attachment or launch action, PDF/A markers are present, every data line fits
 // the page, re-saving and appended updates are survived and detected. Fictitious data.
 import { readFileSync } from 'node:fs';
-import { PDFDocument } from '@cantoo/pdf-lib';
+import {
+  PDFArray,
+  PDFDict,
+  PDFDocument,
+  PDFHexString,
+  PDFRef,
+  PDFStream,
+  PDFString,
+  type PDFObject,
+} from '@cantoo/pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {
   editClues,
@@ -34,6 +43,24 @@ const FONTS: PdfFonts = {
 const PDFJS = pdfjs as unknown as PdfJsLike;
 const CREATED = { local: '2026-10-30T10:00:00.000+01:00', utc: '2026-10-30T09:00:00.000Z' };
 const latin1 = (bytes: Uint8Array) => Buffer.from(bytes).toString('latin1');
+
+/** The raw bytes of every string in the file except the encryption dictionary's own. */
+async function stringsOutsideEncrypt(bytes: Uint8Array): Promise<Uint8Array[]> {
+  // Without updateMetadata: else pdf-lib writes its own producer and date into the loaded copy.
+  const doc = await PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false });
+  const encrypt = doc.context.trailerInfo.Encrypt;
+  const found: Uint8Array[] = [];
+  const visit = (value: PDFObject | undefined): void => {
+    if (value instanceof PDFString || value instanceof PDFHexString) found.push(value.asBytes());
+    else if (value instanceof PDFDict) value.entries().forEach(([, v]) => visit(v));
+    else if (value instanceof PDFArray) value.asArray().forEach(visit);
+    else if (value instanceof PDFStream) visit(value.dict);
+  };
+  for (const [ref, object] of doc.context.enumerateIndirectObjects()) {
+    if (!(encrypt instanceof PDFRef) || ref.objectNumber !== encrypt.objectNumber) visit(object);
+  }
+  return found;
+}
 
 async function write(session: Session, appAddress?: string) {
   return writeQuestionnairePdf(
@@ -193,14 +220,22 @@ describe('questionnaire PDF with a password (Tobias 2026-11-06)', () => {
     expect(raw).toMatch(/\/R 6/);
     expect(raw).toContain('/AESV3');
     expect(raw).not.toMatch(/pdfaid/);
-    // The streams (pages, data pages) are encrypted, the strings stay plain and say so: title,
-    // Fragebogen-ID and producer read back right instead of as garbage.
+    // Streams and strings with the same filter: Chrome's and Edge's viewer (PDFium) refuse a file
+    // whose filters differ (test report 2026-11-07: /StrF /Identity did not open in Chrome).
     expect(raw).toMatch(/\/StmF \/StdCF/);
-    expect(raw).toMatch(/\/StrF \/Identity/);
+    expect(raw).toMatch(/\/StrF \/StdCF/);
     for (const forbidden of ['/JavaScript', '/JS ', '/EmbeddedFile', '/Launch']) {
       expect(raw).not.toContain(forbidden);
     }
   });
+
+  it('encrypts every string too: title, Fragebogen-ID, dates and fonts stay unreadable', async () => {
+    const strings = await stringsOutsideEncrypt(written.bytes);
+    expect(strings.length).toBeGreaterThan(5);
+    // AES-256: a random 16-byte IV, then whole 16-byte blocks.
+    expect(strings.filter((s) => s.length < 32 || s.length % 16 !== 0)).toEqual([]);
+    expect(latin1(written.bytes)).not.toMatch(/Fragebogen \d|Adobe|Identity\)/);
+  }, 60_000);
 
   it('opens only with the password, then gives the questionnaire back', async () => {
     await expect(readPdfText(PDFJS, written.bytes)).rejects.toSatisfy(

@@ -217,7 +217,8 @@ Sie stehen bei „Wer füllt jetzt aus?“.
    - **Danach:** Grün: „PDF „Sofortmeldung_…_Weitergabe.pdf“ erstellt, mit Kennwort geschützt – …“,
      darunter „Mit Kennwort ist die PDF keine PDF/A. Zur Ablage erstellt die Kanzlei nach dem
      Einlesen eine PDF ohne Kennwort.“
-3. Die heruntergeladene PDF in einem PDF-Programm öffnen (Edge, Acrobat Reader, Vorschau).
+3. Die heruntergeladene PDF in einem PDF-Programm öffnen – auch direkt im Browser (Chrome, Edge),
+   in Acrobat Reader oder in der Vorschau.
    - **Danach:** Das Programm fragt nach einem Kennwort.
 4. Das Kennwort genau wie notiert eingeben: klein und mit Bindestrichen.
    - **Danach:** Die PDF zeigt die Angaben des Arbeitgebers wie ohne Kennwort. _Nicht
