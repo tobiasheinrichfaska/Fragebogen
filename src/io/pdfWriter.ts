@@ -4,13 +4,16 @@
 // and the data pages — the package as text lines and as QR codes for the paper path. Target
 // PDF/A-2u. Every page carries "Fragebogen-ID · Daten · Formular · Seite x von y".
 import {
+  PDFArray,
   PDFDict,
   PDFDocument,
-  PDFName,
+  PDFHexString,
   PDFRef,
+  PDFStream,
   PDFString,
   rgb,
   type PDFFont,
+  type PDFObject,
   type PDFPage,
   type RGB,
 } from '@cantoo/pdf-lib';
@@ -219,6 +222,34 @@ function strokesPath(encoded: string): string | undefined {
         (stroke.length === 1 ? ` L${(stroke[0]?.x ?? 0) + 1} ${stroke[0]?.y ?? 0}` : ''),
     )
     .join(' ');
+}
+
+/**
+ * pdf-lib encrypts the streams only; this encrypts every string with the same key (ISO 32000-2,
+ * 7.6.2), except the encryption dictionary's own. Declaring the strings plain instead
+ * (/StrF /Identity) made Chrome's and Edge's viewer (PDFium) refuse the file (test report 2026-11-07).
+ */
+function encryptStrings(doc: PDFDocument): void {
+  const security = doc.context.security;
+  const own = doc.context.trailerInfo.Encrypt;
+  if (!security || !(own instanceof PDFRef)) throw new Error('no encryption dictionary');
+  for (const [ref, object] of doc.context.enumerateIndirectObjects()) {
+    if (ref.objectNumber === own.objectNumber) continue;
+    const encrypt = security.getEncryptFn(ref.objectNumber, ref.generationNumber);
+    const sealed = (value: PDFObject): PDFObject => {
+      if (value instanceof PDFString || value instanceof PDFHexString) {
+        return PDFHexString.fromBytes(encrypt(value.asBytes()));
+      }
+      if (value instanceof PDFDict) {
+        for (const [key, inner] of value.entries()) value.set(key, sealed(inner));
+      } else if (value instanceof PDFArray) {
+        value.asArray().forEach((inner, i) => value.set(i, sealed(inner)));
+      } else if (value instanceof PDFStream) sealed(value.dict);
+      return value;
+    };
+    const result = sealed(object);
+    if (result !== object) doc.context.assign(ref, result);
+  }
 }
 
 const STATUS_TEXT = {
@@ -628,12 +659,9 @@ export async function writeQuestionnairePdf(
     // PDF/A forbids encryption, so a protected PDF is a plain one with AES-256 (V5/R6); the Kanzlei
     // files the merged PDF without a password. Owner = user password: no restrictions to unlock.
     doc.encrypt({ userPassword: input.password, ownerPassword: input.password });
-    // pdf-lib encrypts the streams only; the strings (title, Fragebogen-ID, dates, link) stay plain,
-    // so their crypt filter is Identity (ISO 32000-2, 7.6.6) — readers would else "decrypt" them into
-    // garbage (found by the test: the producer came back unreadable). The answers are in streams.
-    const encrypt = doc.context.trailerInfo.Encrypt;
-    if (!(encrypt instanceof PDFRef)) throw new Error('no encryption dictionary');
-    doc.context.lookup(encrypt, PDFDict).set(PDFName.of('StrF'), PDFName.of('Identity'));
+    // The fonts are embedded first: their dictionaries carry strings too.
+    await doc.flush();
+    encryptStrings(doc);
   }
   // Without object streams every dictionary stays readable: anyone can check that the file holds
   // no script, no attachment and no launch action (Gemeinsame Grundsätze § 9a BVV).
