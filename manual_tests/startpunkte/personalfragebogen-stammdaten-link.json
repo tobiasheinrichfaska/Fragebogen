@@ -1,0 +1,6 @@
+{
+  "id": "personalfragebogen-stammdaten-link",
+  "title": "Personalfragebogen aus dem Stammdaten-Link der Kanzlei (Beispiel Gastro GmbH, Lohnsteuer-Regeln für Minijobs und Aushilfen)",
+  "link": "stammdaten=1&formular=personalfragebogen&abwaelzungAushilfe=nein&abwaelzungMinijob=ja&betriebsnummer=12345671&firma=Beispiel+Gastro+GmbH&lohnsteuerAushilfe=pauschal25&lohnsteuerMinijob=pauschal2",
+  "open": "link"
+}

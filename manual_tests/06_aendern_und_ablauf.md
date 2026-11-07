@@ -52,9 +52,7 @@ bestätigt, Familienname und Vornamen eingegeben.
 
 ## MT-53: Überarbeiten – „Weiter“ oder „Zur nächsten fehlenden Angabe“
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ und spielen MT-50 durch – oder Sie machen direkt nach MT-50 weiter.
-
-**Voraussetzungen:** wie MT-50; einige Fragen beantwortet, das Geburtsdatum noch nicht.
+**Einstieg:** [Personalfragebogen beim Geburtsdatum öffnen](start:personalfragebogen-person-ab-geburtsdatum) – die Person hat ihre Namen eingetragen; Sie stehen bei „Wann sind Sie geboren?“.
 
 **Schritte:**
 
@@ -304,16 +302,14 @@ Projekt.
 
 ## MT-100: Lohnsteuer-Regel aus dem Link erscheint mit der Frage
 
-**Einstieg:** Sie öffnen den Link aus MT-99 in einem neuen Tab – er beginnt gleich einen neuen
-Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
-
-**Voraussetzungen:** MT-99 (der kopierte Link).
+**Einstieg:** [Mit dem Stammdaten-Link öffnen](start:personalfragebogen-stammdaten-link) – wie das Lesezeichen der Kanzlei: Firma „Beispiel Gastro GmbH“, Betriebsnummer, Lohnsteuer bei Minijobs pauschal 2 % mit Abwälzung, bei Aushilfen pauschal 25 % ohne. Die App beginnt gleich einen neuen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 **Schritte:**
 
 1. **„Ich bin: Arbeitgeber“** wählen.
    - **Danach:** Oben erscheint „Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.“
-2. Bis **„Wie ist die Beschäftigung vorgesehen?“** gehen.
+2. Mit **„Weiter“** bis **„Wie ist die Beschäftigung vorgesehen?“** gehen; bei Pflichtfragen ohne
+   Antwort (z. B. dem Namen der Person) **„Vorerst überspringen“**.
    - **Danach:** Unterwegs waren Firma und Betriebsnummer schon beantwortet.
 3. Dort „Minijob (bis 603 € im Monat)“ wählen und weiter bis **„Wie soll die Lohnsteuer erhoben
    werden?“** gehen.
@@ -337,19 +333,20 @@ Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 ## MT-101: Der Link fürs nächste Mal behält die Angaben anderer Formulare
 
-**Einstieg:** Sie machen direkt nach MT-100 weiter.
-
-**Voraussetzungen:** MT-100.
+**Einstieg:** [Mit dem Stammdaten-Link öffnen](start:personalfragebogen-stammdaten-link) – wie das Lesezeichen der Kanzlei: Firma „Beispiel Gastro GmbH“, Betriebsnummer, Lohnsteuer bei Minijobs pauschal 2 % mit Abwälzung, bei Aushilfen pauschal 25 % ohne. Die App beginnt gleich einen neuen „Personalfragebogen: Angaben für die Lohnabrechnung“.
 
 **Schritte:**
 
-1. Den Fragebogen bis zur **Zusammenfassung** durchgehen und den Abschnitt **„Stammdaten für das
-   nächste Mal“** lesen.
-   - **Danach:** Der Text nennt die Angaben dieses Fragebogens, darunter „Lohnsteuer bei Minijobs“,
-     und „Weitere … Angaben aus Ihrem bisherigen Link bleiben erhalten.“ Der Link enthält weiterhin
-     `lohnsteuerAushilfe=pauschal25` (die Regel für Aushilfen, obwohl gerade ein Minijob gewählt
-     ist). Er enthält keine Daten der Person.
-2. In der Adresszeile `stammdaten=1` in `stammdaten=2` ändern und die Seite neu laden (F5).
+1. **„Ich bin: Arbeitgeber“** wählen.
+   - **Danach:** Oben erscheint „Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.“
+2. Unten auf **„Zur Zusammenfassung – alle Angaben ansehen und ändern“** tippen und den Abschnitt
+   **„Stammdaten für das nächste Mal“** lesen.
+   - **Danach:** Der Text nennt die Angaben dieses Teils (Firma, Betriebsnummer und die vorbelegten
+     Angaben zum Betrieb wie „Privathaushalt“) und „Weitere 4 Angaben aus Ihrem bisherigen Link
+     bleiben erhalten.“ Der Link enthält weiterhin `lohnsteuerMinijob=pauschal2` und
+     `lohnsteuerAushilfe=pauschal25` – die Lohnsteuer-Regeln, obwohl in diesem Fragebogen noch keine
+     Beschäftigungsart gewählt ist. Er enthält keine Daten der Person.
+3. In der Adresszeile `stammdaten=1` in `stammdaten=2` ändern und die Seite neu laden (F5).
    - **Danach:** Oben erscheint „Stammdaten-Link: Dieser Stammdaten-Link stammt aus einer anderen
      Version der App und kann nicht gelesen werden.“ Die App zeigt die Startseite; ein neuer
      Fragebogen beginnt ohne vorbelegte Firma.

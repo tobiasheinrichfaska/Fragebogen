@@ -2,12 +2,9 @@
 
 ## MT-30: PDF erstellen (vollständig)
 
-**Einstieg:** Direkt nach MT-21 (gezeichnete Unterschrift) – oder schneller:
-[Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) (die Person hat dort mit
-getipptem Namen unterschrieben).
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat mit getipptem Namen unterschrieben.
 
-**Voraussetzungen:** MT-21 bestanden: Arbeitgeber abgeschlossen, Person unterschrieben, im Kasten
-„Stand“ steht „Vollständig“.
+**Voraussetzungen:** Im Kasten „Stand“ steht „Vollständig“.
 
 **Schritte:**
 
@@ -35,8 +32,7 @@ getipptem Namen unterschrieben).
 
 ## MT-31: PDF zur Weitergabe (noch nicht vollständig)
 
-**Einstieg:** [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen) –
-Sie stehen in der Übersicht. Ohne Testbereich: direkt nach MT-20.
+**Einstieg:** [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen) – Sie stehen in der Übersicht. Ohne Testbereich: als Arbeitgeber ausfüllen und ohne Unterschrift abschließen.
 
 **Voraussetzungen:** Nur der Arbeitgeber hat abgeschlossen; der Teil der Person ist noch nicht
 begonnen.
@@ -58,10 +54,7 @@ begonnen.
 
 ## MT-32: Die eigene PDF wieder öffnen
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig)
-und **„PDF erstellen“** oder MT-31.
-
-**Voraussetzungen:** Eine PDF aus MT-30 oder MT-31.
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben; dann unter „Stand“ **„PDF erstellen“**. Die heruntergeladene PDF ist die PDF dieses Tests.
 
 **Schritte:**
 
@@ -78,10 +71,9 @@ und **„PDF erstellen“** oder MT-31.
 
 ## MT-33: PDF in einem anderen Programm neu gespeichert
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig)
-und **„PDF erstellen“** und ein PDF-Programm.
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben; dann unter „Stand“ **„PDF erstellen“**. Die heruntergeladene PDF ist die PDF dieses Tests.
 
-**Voraussetzungen:** Eine PDF aus MT-30; Acrobat oder ein anderes PDF-Programm.
+**Voraussetzungen:** Acrobat oder ein anderes PDF-Programm.
 
 **Schritte:**
 
@@ -98,11 +90,9 @@ und **„PDF erstellen“** und ein PDF-Programm.
 
 ## MT-34: Ausdruck scannen (Papierweg)
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen eine PDF aus MT-30 – schnell: [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig)
-und **„PDF erstellen“**, einen Drucker und einen Scanner.
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben; dann unter „Stand“ **„PDF erstellen“**. Die heruntergeladene PDF ist die PDF dieses Tests.
 
-**Voraussetzungen:** Eine PDF aus MT-30, ein Drucker und ein Scanner (oder ein Kopierer mit
-Scan-to-PDF).
+**Voraussetzungen:** Ein Drucker und ein Scanner (oder ein Kopierer mit Scan-to-PDF).
 
 **Schritte:**
 
@@ -123,19 +113,21 @@ Scan-to-PDF).
 
 ## MT-35: QR-Codes mit dem Handy fotografieren
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie brauchen den Ausdruck aus MT-34 und ein Handy.
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben. Aus diesem Fragebogen erstellen und drucken Sie zuerst die Seite mit den QR-Codes.
 
-**Voraussetzungen:** Ausdruck der QR-Seite aus MT-34; Handy oder Tablet mit der gehosteten App
-(oder die Fotos per Mail an den PC).
+**Voraussetzungen:** Ein Drucker; ein Handy oder Tablet mit der gehosteten App (oder die Fotos per Mail an den PC).
 
 **Schritte:**
 
-1. Fotografieren Sie zuerst nur die **obere Reihe** der Codes, möglichst gerade von oben.
-2. Öffnen Sie das Foto in der App.
+1. Unter „Stand“ **„PDF erstellen“** klicken und die PDF öffnen.
+2. Nur die Seite mit den QR-Codes („Anlage: Daten als QR-Codes“) in Originalgröße drucken
+   („Tatsächliche Größe“, nicht „An Seite anpassen“).
+3. Fotografieren Sie zuerst nur die **obere Reihe** der Codes, möglichst gerade von oben.
+4. Öffnen Sie das Foto in der App.
    - **Danach:** Blau **„QR-Codes: 3 von 7 gelesen. Bitte ein weiteres Foto …“** mit der Liste der
      fehlenden Teile.
-3. Fotografieren Sie die übrigen Codes.
-4. Öffnen Sie dieses Foto ebenfalls in der App.
+5. Fotografieren Sie die übrigen Codes.
+6. Öffnen Sie dieses Foto ebenfalls in der App.
    - **Danach:** Grün oder gelb: „Geprüft: …“ mit dem Zusatz **„Gelesen aus den QR-Codes eines
      Ausdrucks. Das Original bleibt die elektronische Datei.“**
 
@@ -149,7 +141,7 @@ Scan-to-PDF).
 
 ## MT-36: Link zur App in der PDF
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); Sie erstellen eine PDF wie in MT-30 oder MT-31.
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – in einer App-Fassung mit der Adresse der Kanzlei (siehe Voraussetzungen). Ohne Testbereich: einen Fragebogen ausfüllen und abschließen.
 
 **Voraussetzungen:** Eine App-Fassung, in der die Kanzlei ihre Adresse konfiguriert hat
 (`config/kanzlei.local.json`, siehe `config/README.md`).

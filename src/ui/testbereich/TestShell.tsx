@@ -2,7 +2,8 @@
 // next to the app; on a narrow screen two tabs. The app stays mounted while the instructions are
 // shown, so nothing typed into it is lost. A start link of a test mounts the app afresh with a
 // prepared questionnaire (start points, Tobias 2026-11-03); opening a test asks whether to restart
-// the app with the environment that suits it.
+// the app with the environment that suits it. A link start point opens the app as its bookmark link
+// would; every other start leaves no link in the address bar for the next test.
 import { Fragment, useRef, useState, type ReactNode } from 'react';
 import { BUNDLED_FORMS } from '../../io/bundledForms';
 import { deviceNow, newNonce, newQuestionnaireId, systemNoteFor } from '../../io/environment';
@@ -17,9 +18,11 @@ import {
   buildKanzleiStart,
   buildStartPoint,
   isKanzleiStart,
+  isLinkStart,
   type StartEnvironment,
 } from '../../logic/startPoints';
 import { forReport, markReported, reportCounts, type TestRun } from '../../logic/testRun';
+import type { SystemNote } from '../../logic/model';
 import type { PreparedStart } from '../App';
 import { Banner, type BannerMessage } from '../common';
 import { createTestReportPdf } from '../pdfActions';
@@ -36,21 +39,33 @@ const plain = (text: string) =>
     .map((token) => token.text)
     .join('');
 
-/** The prepared questionnaire of a start point, or why there is none. */
-function prepare(id: string): PreparedStart | string {
+/** Everything a seal takes from the device: one label, one row of it. */
+interface Shared {
+  id: string;
+  nonces: string[];
+  now: { local: string; utc: string };
+  systemNote: SystemNote;
+}
+
+/**
+ * Form start points with one label, for as long as the page is open: the same questionnaire id,
+ * nonces, time and system note, so the second start point seals the parts it shares exactly like
+ * the first (without the shared system note the Kanzlei saw two versions, e2e 2026-11-07).
+ */
+const LABELLED = new Map<string, Shared>();
+
+/** What a start link opens: a prepared questionnaire, a bookmark link, or why there is none. */
+type Prepared = { title: string; start?: PreparedStart; link?: string };
+
+function prepare(id: string): Prepared | string {
   const point = START_POINTS.get(id);
   if (!point) return `Den Startpunkt „${id}“ gibt es nicht.`;
+  if (isLinkStart(point)) return { title: point.title, link: point.link };
   const registry = BUNDLED_FORMS.ok ? BUNDLED_FORMS.registry : undefined;
   const now = deviceNow();
-  const systemNote = systemNoteFor(now, ['keyboard']);
   // Inputs with one label share the questionnaire id and the nonces (equal parts, equal seals).
-  const shared = new Map<string, { id: string; nonces: string[] }>();
-  const envOf = (label: string | undefined): StartEnvironment => {
-    const own = (label === undefined ? undefined : shared.get(label)) ?? {
-      id: newQuestionnaireId(),
-      nonces: [],
-    };
-    if (label !== undefined) shared.set(label, own);
+  const shared = new Map<string, Shared>();
+  const envFrom = (own: Shared): StartEnvironment => {
     let next = 0;
     return {
       questionnaireId: own.id,
@@ -58,9 +73,20 @@ function prepare(id: string): PreparedStart | string {
         if (next === own.nonces.length) own.nonces.push(newNonce());
         return own.nonces[next++] ?? newNonce();
       },
-      now: { local: now.local, utc: now.utc },
-      systemNote,
+      now: own.now,
+      systemNote: own.systemNote,
     };
+  };
+  const fresh = (): Shared => ({
+    id: newQuestionnaireId(),
+    nonces: [],
+    now: { local: now.local, utc: now.utc },
+    systemNote: systemNoteFor(now, ['keyboard']),
+  });
+  const envOf = (label: string | undefined, labels = shared): StartEnvironment => {
+    const own = (label === undefined ? undefined : labels.get(label)) ?? fresh();
+    if (label !== undefined) labels.set(label, own);
+    return envFrom(own);
   };
   if (isKanzleiStart(point)) {
     const inbox = buildKanzleiStart(
@@ -73,15 +99,21 @@ function prepare(id: string): PreparedStart | string {
     if (!inbox.ok) {
       return `Der Startpunkt „${point.title}“ passt nicht mehr zum Formular:\n\n${inbox.problems.join('\n')}`;
     }
-    return { title: point.title, screen: 'kanzlei', inbox: inbox.inbox };
+    return {
+      title: point.title,
+      start: { title: point.title, screen: 'kanzlei', inbox: inbox.inbox },
+    };
   }
   const form = registry?.latest(point.form);
   if (!form) return `Das Formular „${point.form}“ ist in dieser Fassung der App nicht enthalten.`;
-  const built = buildStartPoint(point, form, envOf(undefined));
+  const built = buildStartPoint(point, form, envOf(point.questionnaire, LABELLED));
   if (!built.ok) {
     return `Der Startpunkt „${point.title}“ passt nicht mehr zum Formular:\n\n${built.problems.join('\n')}`;
   }
-  return { title: point.title, session: built.session, screen: built.screen };
+  return {
+    title: point.title,
+    start: { title: point.title, session: built.session, screen: built.screen },
+  };
 }
 
 export function TestShell({ children }: { children: (start?: PreparedStart) => ReactNode }) {
@@ -101,8 +133,15 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
     setStored(saveRun(next));
   };
 
-  const launch = (prepared: PreparedStart | undefined, showApp: boolean) => {
-    setStart(prepared);
+  const launch = (prepared: Prepared | undefined, showApp: boolean) => {
+    // The app reads a link from the address bar when it mounts: set it for a link start point,
+    // clear it for every other start, so no link carries over into the next test.
+    history.replaceState(
+      null,
+      '',
+      location.pathname + location.search + (prepared?.link ? `#${prepared.link}` : ''),
+    );
+    setStart(prepared?.start);
     setAppKey((key) => key + 1);
     if (showApp) setTab('app');
   };
@@ -122,8 +161,7 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
 
   const reset = () => {
     const problem = resetAppStorage();
-    // A link fragment (transfer or master-data link) would else fill the fresh app again.
-    history.replaceState(null, '', location.pathname + location.search);
+    // launch clears the address bar too: a link would else fill the fresh app again.
     launch(undefined, true);
     setBanner(
       problem === undefined

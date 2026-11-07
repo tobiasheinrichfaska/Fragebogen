@@ -4,17 +4,22 @@ Für diese Tests brauchen Sie PDFs aus den Tests MT-30/MT-31 (nur erfundene Date
 
 ## MT-40: Mehrere Dateien auf einmal einlesen
 
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“), Karte „Kanzlei“ → „Eingänge zusammenführen …“; Sie brauchen die PDFs aus MT-30 und MT-31.
-
-**Voraussetzungen:** Eine vollständige PDF und die PDF des Arbeitgebers zur Weitergabe **desselben**
-Fragebogens. Am schnellsten: [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen),
-**„PDF erstellen“** (Weitergabe); dann im selben Fragebogen als „Beschäftigte Person“ ausfüllen,
-unterschreiben und noch einmal **„PDF erstellen“** (vollständig).
+**Einstieg:** [Erste Datei: nur Arbeitgeber öffnen](start:sofortmeldung-zwei-dateien-arbeitgeber) – nur der Arbeitgeber hat abgeschlossen. In Schritt 2 öffnet ein zweiter Startlink **denselben** Fragebogen, dann vollständig.
 
 **Schritte:**
 
-1. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
-2. **„Dateien hinzufügen …“** und beide PDFs gleichzeitig auswählen (Strg gedrückt halten).
+1. Unter „Stand“ **„PDF erstellen“** klicken.
+   - **Danach:** Die PDF zur Weitergabe (nur der Teil des Arbeitgebers) wird heruntergeladen.
+2. [Zweite Datei: vollständig öffnen](start:sofortmeldung-zwei-dateien-vollstaendig) klicken und
+   **„Öffnen“** wählen.
+   - **Danach:** Oben steht dieselbe Fragebogen-Nummer wie eben; jetzt hat auch die Person
+     unterschrieben. _Nicht offensichtlich:_ Das gilt nur, solange die Testseite seit dem ersten
+     Startlink nicht neu geladen wurde.
+3. Unter „Stand“ **„PDF erstellen“** klicken.
+   - **Danach:** Die vollständige PDF wird heruntergeladen.
+4. Unter „Stand“ **„Fragebogen schließen“** klicken.
+5. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+6. **„Dateien hinzufügen …“** und beide PDFs gleichzeitig auswählen (Strg gedrückt halten).
    - **Danach:** _Nicht offensichtlich:_ Das Einlesen vieler PDFs dauert einige Sekunden; die
      Schaltfläche zeigt so lange „Wird gelesen …“.
    - **Danach:** Dann stehen beide Dateien in der Liste mit Formular, Version und den ersten 8
@@ -22,9 +27,9 @@ unterschreiben und noch einmal **„PDF erstellen“** (vollständig).
    - **Danach:** Darunter **eine** Karte für den Fragebogen: „2 Datei(en)“, Hinweis „Dieselbe
      Fassung ist mehrfach eingegangen und wurde einmal übernommen. (Arbeitgeber …)“ und grün
      „Vollständig und ohne Widersprüche.“
-3. Dieselbe vollständige PDF über **„Dateien hinzufügen …“** noch einmal auswählen.
+7. Dieselbe vollständige PDF über **„Dateien hinzufügen …“** noch einmal auswählen.
    - **Danach:** Die Liste wird nicht länger.
-4. **„Prüfergebnis je Datei“** aufklappen.
+8. **„Prüfergebnis je Datei“** aufklappen.
    - **Danach:** Im Prüfergebnis steht zur noch einmal gewählten Datei „Diese Datei ist schon
      eingelesen; sie zählt einmal.“
 
@@ -32,10 +37,7 @@ unterschreiben und noch einmal **„PDF erstellen“** (vollständig).
 
 ## MT-41: Formular ansehen und PDF für die Personalakte
 
-**Einstieg:** [Kanzlei mit vollständiger Sofortmeldung öffnen](start:kanzlei-sofortmeldung-vollstaendig) –
-die Kanzlei-Station mit einem eingelesenen, vollständigen Fragebogen. Oder direkt nach MT-40.
-
-**Voraussetzungen:** Startlink oder MT-40.
+**Einstieg:** [Kanzlei mit vollständiger Sofortmeldung öffnen](start:kanzlei-sofortmeldung-vollstaendig) – die Kanzlei-Station mit einem eingelesenen, vollständigen Fragebogen.
 
 **Schritte:**
 
@@ -216,16 +218,20 @@ Kanzlei (Testmandant).
 
 ## MT-69: Erfassungsblatt als PDF für die Personalakte
 
-**Einstieg:** Direkt nach MT-68 (Schritt 3 erledigt).
+**Einstieg:** [Kanzlei mit vollständigem Personalfragebogen öffnen](start:kanzlei-personalfragebogen-vollstaendig) – die Kanzlei-Station mit einem eingelesenen Personalfragebogen (Erika Musterfrau, Beginn 02.11.2026, Personalnummer 42).
 
-**Voraussetzungen:** wie MT-68, Schritt 3 erledigt.
+**Testbereich:** Die App-Schritte gehen auch dort; ohne lokale Zuordnung fehlt der Abschnitt zu Lohn und Gehalt.
+
+**Voraussetzungen:** Kanzlei-Build mit `config/export.local.json`: `npm run build:kanzlei` (für den Entwurf des Personalfragebogens die Vorschau: `npm run build:preview`).
 
 **Schritte:**
 
-1. „Erfassungsblatt als PDF“.
+1. Unter „Übergabe an DATEV Lohn und Gehalt“ als Mandantennummer `10001` und als
+   Mitarbeiternummer `42` eintragen und „neu anlegen“ wählen.
+2. „Erfassungsblatt als PDF“.
    - **Danach:** Dateiname nur mit Nummern, z. B. `Erfassungsblatt_LuG_M10001_MA42_3f2b8c1e.pdf`
      (kein Name).
-2. Die PDF öffnen.
+3. Die PDF öffnen.
    - **Danach:** Oben: Mandant, Mitarbeiter, „neu anlegen“ oder „vorhandenen Mitarbeiter
      ergänzen“, Name und Eintritt; darunter die Grundlage (Teile mit SHA-256), „Von der Kanzlei
      eingetragen“, dann alle Werte in der Reihenfolge der Masken, „Nicht übertragen …“,
@@ -341,48 +347,44 @@ Sofortmeldung (ab 0.2.0) mit Personalnummer und später ein Personalfragebogen d
 
 ## MT-88: Vorschläge ziehen die richtigen Schlüsse (mehrere Minijobs, berufsmäßige Aushilfe)
 
-**Einstieg:** Drei Startlinks, je einer am Anfang einer Gruppe von Schritten: Schritt 1, 7 und 13
-(der dritte öffnet denselben vorbereiteten Fragebogen wie der zweite, für die Gegenprobe).
+**Einstieg:** [Zweiter Minijob vorbereitet öffnen](start:personalfragebogen-zweiter-minijob-entgelt-offen) – die Person hat eine andere Beschäftigung angegeben (Minijob seit 01.01.2025, 300 € im Monat); der Arbeitgeber steht bei „Wie wird die Person bezahlt?“. Zwei weitere Startlinks folgen in Schritt 6 und 12 (der zweite für die Gegenprobe).
 
 **Voraussetzungen:** Fassung mit Entwürfen (im Testbereich schon geladen), Beginn 02.11.2026.
 
 **Schritte:**
 
-1. [Zweiter Minijob vorbereitet öffnen](start:personalfragebogen-zweiter-minijob-entgelt-offen) – die
-   Person hat eine andere Beschäftigung angegeben (Minijob seit 01.01.2025, 300 € im Monat); der
-   Arbeitgeber steht bei „Wie wird die Person bezahlt?“.
-2. Als Arbeitgeber „festes Monatsentgelt“ `450,00 €`; „Wie ist die Beschäftigung vorgesehen?“ →
+1. Als Arbeitgeber „festes Monatsentgelt“ `450,00 €`; „Wie ist die Beschäftigung vorgesehen?“ →
    „Minijob (bis 603 € im Monat)“; Lohnsteuer „nach den Lohnsteuermerkmalen (ELStAM)“.
-3. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
-4. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
-5. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
-6. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
+2. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
+3. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+4. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+5. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
    - **Danach:** Vorschlag Personengruppe **101** mit „bitte prüfen“, Beitragsgruppen **1111**,
      Kennzeichen Übergangsbereich 1 (mit „bitte prüfen“) – die beiden Minijobs liegen zusammen über
      603 € und werden zusammengerechnet (nicht 109).
-7. [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – die Person
+6. [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – die Person
    ist „arbeitslos oder arbeitsuchend gemeldet“ (Arbeitslosengeld); der Arbeitgeber steht beim
    Monatsentgelt.
-8. Als Arbeitgeber `1.500,00 €` eingeben; „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige
+7. Als Arbeitgeber `1.500,00 €` eingeben; „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige
    Aushilfe …“; Ende `31.12.2026`, `30` Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer „nach
    den Lohnsteuermerkmalen (ELStAM)“.
-9. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
-10. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
-11. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
-12. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
+8. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
+9. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+10. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+11. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
     - **Danach:** Personengruppe **101** mit „bitte prüfen“ statt 110 – wer arbeitsuchend gemeldet
       ist, ist berufsmäßig beschäftigt; über der Geringfügigkeitsgrenze ist die Aushilfe nicht
       kurzfristig.
-13. Für die Gegenprobe noch einmal
+12. Für die Gegenprobe noch einmal
     [Arbeitsuchend vorbereitet öffnen](start:personalfragebogen-arbeitslos-entgelt-offen) – derselbe
     vorbereitete Fragebogen noch einmal; der Arbeitgeber steht wieder beim Monatsentgelt.
-14. Als Arbeitgeber `500,00 €` eingeben; „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige
+13. Als Arbeitgeber `500,00 €` eingeben; „Wie ist die Beschäftigung vorgesehen?“ → „kurzfristige
     Aushilfe …“; Ende `31.12.2026`, `30` Arbeitstage, Rahmenvereinbarung „Nein“, Lohnsteuer „nach
     den Lohnsteuermerkmalen (ELStAM)“.
-15. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
-16. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
-17. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
-18. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
+14. Mit **„Weiter“** bis zur Zusammenfassung, ohne Unterschrift abschließen und **„PDF erstellen“**.
+15. **„Gerät weitergeben – zur Übersicht“**, dort unter „Stand“ **„Fragebogen schließen“**.
+16. Auf der Startseite weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“** klicken.
+17. **„Dateien hinzufügen …“** und die eben erstellte PDF wählen.
     - **Danach:** Wieder Personengruppe **110** und Beitragsgruppen **0000** – bis zur Grenze kommt es
       auf die Berufsmäßigkeit nicht an.
 

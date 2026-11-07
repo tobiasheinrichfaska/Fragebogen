@@ -1,0 +1,20 @@
+{
+  "id": "personalfragebogen-person-ab-geburtsdatum",
+  "title": "Personalfragebogen – die Person hat ihre Namen eingetragen, das Geburtsdatum fehlt noch",
+  "form": "personalfragebogen",
+  "parts": [
+    {
+      "role": "person",
+      "answers": {
+        "familienname": "Musterfrau",
+        "vorname": "Erika",
+        "namensbestandteile": false,
+        "geburtsnameWieFamilienname": true
+      }
+    }
+  ],
+  "open": {
+    "role": "person",
+    "at": "geburtsdatum"
+  }
+}

@@ -7,7 +7,7 @@ import { checkHints } from '../../src/logic/hints';
 import { answer, seal, type Session, type SessionResult } from '../../src/logic/session';
 import {
   buildStartPoint,
-  isKanzleiStart,
+  isFormStart,
   parseStartPoint,
   type StartPoint,
 } from '../../src/logic/startPoints';
@@ -27,7 +27,7 @@ const ENV = {
 function point(id: string, change?: (p: StartPoint) => void): StartPoint {
   const parsed = parseStartPoint(readJson(join(START_DIR, `${id}.json`)));
   if (!parsed.ok) throw new Error(JSON.stringify(parsed.issues));
-  if (isKanzleiStart(parsed.point)) throw new Error(`${id} is a Kanzlei start point`);
+  if (!isFormStart(parsed.point)) throw new Error(`${id} is no form start point`);
   change?.(parsed.point);
   return parsed.point;
 }

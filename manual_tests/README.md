@@ -49,23 +49,27 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Im Testbereich
 
-- **Einstieg:** Jeder Test sagt in der ersten Zeile, welchen Fragebogen Sie auf der **Startseite der
-  App** neu starten. Dorthin
-  kommen Sie jederzeit mit **„App neu starten (Startseite)“** oben im Testbereich – Ihre
-  Testergebnisse bleiben, nur die Eingaben in der App sind dann weg.
+- **Jeder Test für sich (seit 07.11.2026):** Kein Test setzt einen anderen voraus. Jeder sagt in
+  der ersten Zeile, wo er beginnt: auf der **Startseite der App**, mit einem **Startlink** oder an
+  einem anderen Ort (ein Handy, die öffentliche Adresse). Öffnen Sie einen Test, fragt die Seite, ob
+  die App dafür neu starten soll – mit genau diesem Einstieg. Ihre Testergebnisse bleiben dabei, nur
+  die Eingaben in der App sind dann weg.
 - **Startlinks (▶):** Viele Tests beginnen mit einem Knopf wie **„▶ Zum Unterschreiben öffnen“**. Er
   startet die App rechts neu, mit einem vorbereiteten Fragebogen voller erfundener Angaben – zum
   Beispiel hat der Arbeitgeber schon abgeschlossen, und Sie beginnen genau bei der Frage, um die es
   im Test geht – oder die Kanzlei-Station mit schon eingelesenen Eingängen. Für eine Gegenprobe
   öffnen Sie den Startlink einfach noch einmal. Ihre
   Testergebnisse bleiben dabei erhalten, nur die Eingaben in der App sind weg.
-- **Aufeinander aufbauende Tests:** Steht bei „Voraussetzungen“ ein anderer Test (z. B. „MT-10“),
-  ist die Nummer anklickbar; machen Sie diesen Test zuerst oder direkt davor.
+- **Verweise auf andere Tests** (z. B. „siehe MT-37“) sind anklickbar und nur zum Nachlesen; nötig
+  ist der andere Test nie.
+- **Kopfzeile:** „App neu starten“, „App vollständig zurücksetzen“ (löscht alles, was die App im
+  Browser gespeichert hat; die Testergebnisse bleiben) und „Testbericht herunterladen“.
 - **„Nicht im Testbereich“:** Manche Tests gehen nur mit der heruntergeladenen Datei oder nur am
-  Kanzlei-PC (z. B. MT-01, MT-82–84). Sie stehen ausgegraut in der Liste, mit Begründung.
+  Kanzlei-PC (z. B. MT-01, MT-82–84). Ihr Kästchen ist in der Testübersicht blasser, der Test nennt den Grund.
 - **„Fassung mit Entwürfen“** ist im Testbereich schon geladen; der Hinweis auf
   `npm run build:preview` gilt nur für Entwickler.
-- Am Ende **„Testbericht als PDF“** und per E-Mail an die Kanzlei.
+- Am Ende **„Testbericht herunterladen“** und per E-Mail an die Kanzlei. Schon gemeldete Tests
+  fehlen im nächsten Bericht, außer Sie nehmen sie beim Herunterladen mit.
 
 ## Für alle, die Tests schreiben (Format seit 06.11.2026)
 
@@ -106,14 +110,22 @@ angepasst. Das gehört zur Definition of Done.
 - Geht ein Test im Testbereich nicht, bekommt er direkt unter der Überschrift
   `**Testbereich:** nein – <Grund>`; jeder andere Text dort erscheint als Hinweis.
 - Jeder Test beginnt direkt unter der Überschrift mit `**Einstieg:**` – welchen Fragebogen man auf
-  der Startseite neu startet (im Testbereich stehen alle Fragebögen zur Wahl), oder auf welchem Test
-  er aufbaut. Ein automatischer Test prüft das.
+  der Startseite neu startet (im Testbereich stehen alle Fragebögen zur Wahl), welcher Startlink ihn
+  vorbereitet oder an welchem Ort (Gerät, öffentliche Adresse) er spielt. **Nie ein anderer Test**
+  (Tobias 2026-11-07: „Jeder Test startet mit seiner eigenen Umgebung“): Braucht ein Test eine
+  Datei, einen Ausdruck oder einen Link, erstellt er sie in seinen ersten Schritten selbst oder
+  bekommt einen Startpunkt. Ein automatischer Test prüft, dass Einstieg und Voraussetzungen keinen
+  anderen Test nennen und kein Text „nach MT-…“, „aus MT-…“ oder „wie MT-…“ verlangt.
 - **Startpunkte statt Vorlauf** (Tobias 2026-11-03: nicht jeden Bereich immer wieder befüllen): Ein
   Test, der nur einen kleinen Teil prüft, beginnt mit einem Startlink
   `[Text](start:<kennung>)`. Der Startpunkt liegt als Daten in `startpunkte/<kennung>.json`
   (Formular, Antworten je Rolle wie getippt, abgeschlossen oder offen, wo er öffnet; ein
   Kanzlei-Startpunkt nennt stattdessen Eingänge: `from` einen anderen Startpunkt, `change` geänderte
-  Antworten, gleiche `questionnaire`-Kennung = derselbe Fragebogen). Die App baut
+  Antworten, gleiche `questionnaire`-Kennung = derselbe Fragebogen). Seit 07.11.2026 auch: zwei
+  Formular-Startpunkte mit derselben `questionnaire`-Kennung bauen denselben Fragebogen (gleiche
+  Nummer, gleiches Siegel – zwei Dateien eines Fragebogens, MT-40), und ein Link-Startpunkt
+  (`"link": "stammdaten=1&…"`, `"open": "link"`) öffnet die App wie ein Stammdaten-Link der
+  Kanzlei (MT-100, MT-101). Die App baut
   ihn mit der neuesten Formularfassung; `tests/testbereich/startPoints.test.ts` prüft, dass jeder
   Startpunkt aufgeht und benutzt wird, `startPointsSv.test.ts` spielt die SV-Fälle ab ihrem
   Startpunkt durch. Nur erfundene Daten; Startpunkte gibt es nur im Testbereich.

@@ -46,27 +46,27 @@ lokal `npm run build:preview`, Datei `dist-preview/index.html`. Nur erfundene Da
 
 ## MT-95: Meldung des Vormonats einlesen
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Monatsmeldung: Lohn- und Gehaltsdaten“.
-
-**Voraussetzungen:** Eine abgeschlossene Monatsmeldung für 11.2026 als PDF (aus MT-94, unterschrieben),
-in der „Beispiel, Max“ „scheidet in diesem Monat aus: Ja“ hat.
+**Einstieg:** [Monatsmeldung November öffnen](start:monatsmeldung-november-unterschrieben) – die Meldung für 11.2026 ist unterschrieben; „Beispiel, Max“ scheidet in diesem Monat aus.
 
 **Schritte:**
 
-1. Neue Monatsmeldung beginnen und über **„Angaben aus einer anderen Datei übernehmen“** die PDF des
-   Vormonats einlesen.
+1. Unter „Stand“ **„PDF erstellen“** klicken.
+   - **Danach:** Die PDF der Meldung für 11.2026 wird heruntergeladen.
+2. Unter „Stand“ **„Fragebogen schließen“** klicken.
+3. Auf der Startseite **„Monatsmeldung: Lohn- und Gehaltsdaten“** klicken und auf „Wer füllt jetzt
+   aus?“ über **„Angaben aus einer anderen Datei übernehmen …“** die eben erstellte PDF wählen.
    - **Danach:** Die Meldung nennt die Zahl der übernommenen Angaben und „2 Hinweise schon
      bestätigt“. Die beiden Hinweise müssen nicht noch einmal bestätigt werden.
      _Nicht offensichtlich:_ Ändert sich der Text eines Hinweises in einer neuen Formularfassung,
      muss nur dieser neu bestätigt werden.
-2. Zur ersten Frage gehen, dem Abrechnungsmonat.
+4. Zur ersten Frage gehen, dem Abrechnungsmonat.
    - **Danach:** Eingetragen ist **12.2026**.
-3. Mit **„Weiter“** durch die Fragen bis „Wer war im Abrechnungsmonat beschäftigt?“ gehen.
+5. Mit **„Weiter“** durch die Fragen bis „Wer war im Abrechnungsmonat beschäftigt?“ gehen.
    - **Danach:** Unterwegs waren Firma, Mandantennummer, Ansprechperson und Lohnarten schon
      eingetragen. In der Liste der Beschäftigten steht nur Erika (Max ist ausgeschieden). Bei Erika
      steht „Im Vormonat: 14,50 €“.
-4. Erikas Stundenlohn auf `15,00` ändern und „Neue Vergütung gilt ab“ `01.12.2026` eintragen.
-5. **„Weiter“** tippen.
+6. Erikas Stundenlohn auf `15,00` ändern und „Neue Vergütung gilt ab“ `01.12.2026` eintragen.
+7. **„Weiter“** tippen.
    - **Danach:** Auf „Urlaub und Krankheit in diesem Monat“ ist Erikas Kalender leer.
-6. Bis zur Zusammenfassung weitergehen.
+8. Bis zur Zusammenfassung weitergehen.
    - **Danach:** In der Zusammenfassung steht bei Erika „Im Vormonat: 14,50 € (geändert)“.

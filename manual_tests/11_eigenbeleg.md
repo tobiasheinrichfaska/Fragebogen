@@ -57,7 +57,7 @@ eine Bewirtung über 250,00 € in einem Gasthaus ist vollständig ausgefüllt, 
 ## MT-112: Kanzlei sieht die Prüfhinweise zum Eigenbeleg
 
 **Einstieg:** [Kanzlei mit dem Eigenbeleg öffnen](start:kanzlei-eigenbeleg-bewirtung) – der
-unterschriebene Eigenbeleg aus MT-111 liegt im Eingang.
+unterschriebene Eigenbeleg über eine Bewirtung (mehr als 250,00 €) liegt im Eingang.
 
 **Schritte:**
 
