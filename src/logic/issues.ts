@@ -6,6 +6,7 @@ export type IssueCode =
   | 'value.type'
   | 'type.unsupported'
   | 'date.format'
+  | 'date.shortYear'
   | 'date.invalid'
   | 'date.tooEarly'
   | 'date.tooLate'
@@ -69,6 +70,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'type.unsupported': 'Dieser Feldtyp wird noch nicht unterstützt.',
   'date.format':
     'Bitte das Datum als TT.MM.JJJJ eingeben (am Handy genügen die Ziffern, z. B. 17051990).',
+  'date.shortYear': 'Bitte das Jahr vierstellig eingeben, z. B. 02.11.2026.',
   'date.invalid': 'Dieses Datum gibt es nicht.',
   'date.tooEarly': 'Das Datum liegt zu weit zurück – frühestens {minDate}.',
   'date.tooLate': 'Das Datum liegt zu spät – spätestens {maxDate}.',

@@ -90,6 +90,42 @@ beantworten die Fragen bis „Geburtsdatum“ beliebig.
 
 ---
 
+## MT-134: Geburtsdatum mit zweistelligem Jahr (TTMMJJ)
+
+**Einstieg:** [Ab dem Geburtsdatum öffnen](start:sofortmeldung-person-ab-geburtsdatum) – der
+Arbeitgeber hat abgeschlossen, die Person „Erika Musterfrau“ ist bis zum Geburtsort ausgefüllt; Sie
+stehen beim Geburtsdatum.
+
+**Schritte:**
+
+1. `170590` eingeben.
+   - **Danach:** Im Feld steht „17.05.90“ – die Punkte kommen von selbst.
+2. **„Weiter“** klicken.
+   - **Danach:** Angenommen, es geht weiter.
+3. **„Zurück“** klicken.
+   - **Danach:** Im Feld steht **17.05.1990** – die App hat das Jahr ergänzt.
+4. Das Feld leeren, `17.05.90` eingeben und **„Weiter“** klicken.
+   - **Danach:** Angenommen, es geht weiter.
+5. **„Zurück“** klicken, das Feld leeren und das Datum von morgen mit zweistelligem Jahr eingeben
+   (am 07.11.2026 also `081126`), dann **„Weiter“**.
+   - **Danach:** Angenommen, es geht weiter.
+6. **„Zurück“** klicken.
+   - **Danach:** Im Feld steht das Datum **100 Jahre früher** (am 07.11.2026: 08.11.1926). _Nicht
+     offensichtlich:_ Ein Geburtsdatum kann nicht in der Zukunft liegen; die App nimmt deshalb das
+     späteste passende Jahr bis heute – so reicht ein zweistelliges Jahr für ein Alter bis knapp 100
+     Jahre.
+7. Das Feld leeren, `17.05.1990` eingeben und **„Weiter“** klicken.
+   - **Danach:** Angenommen, es geht weiter.
+
+**Erwartet:**
+
+- _Nicht offensichtlich:_ Ein zweistelliges Jahr gilt nur bei Datumsfeldern, die nicht nach heute
+  liegen dürfen (Geburtsdatum, Datum der Unterschrift beim SEPA-Mandat, Daten beim Eigenbeleg).
+  Andere Daten, etwa der Beginn der Beschäftigung, verlangen das Jahr vierstellig: „Bitte das Jahr
+  vierstellig eingeben, z. B. 02.11.2026.“
+
+---
+
 ## MT-107: Prüfhinweise zu Versicherungsnummer und Postleitzahl im Ausland
 
 **Einstieg:** [Ab dem Geburtsdatum öffnen](start:sofortmeldung-person-ab-geburtsdatum) – der

@@ -61,16 +61,38 @@ function collapse(text: string): string {
 // numeric keypad of iOS has no dot (iPhone test report, 2026-11-01).
 const GERMAN_DATE = /^(\d{1,2})[.,](\d{1,2})[.,](\d{4})$/;
 const DIGITS_DATE = /^(\d{2})(\d{2})(\d{4})$/;
+const SHORT_DATE = /^(\d{1,2})[.,](\d{1,2})[.,](\d{2})$|^(\d{2})(\d{2})(\d{2})$/;
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Date: `TT.MM.JJJJ` (also `T.M.JJJJ`) or `YYYY-MM-DD` → `YYYY-MM-DD`. Two-digit years are refused. */
-export function normalizeDate(raw: string): Checked<IsoDate> {
+/**
+ * The year of a two-digit year: the latest one with these digits whose day is not after `latest`
+ * (Tobias 2026-11-07: a birth date "170590" is 17.05.1990 — ages up to about 100 years).
+ */
+function fullYear(shortYear: string, monthDay: string, latest: IsoDate): string {
+  const top = Number(latest.slice(0, 4));
+  const year = top - (top % 100) + Number(shortYear);
+  const fits = `${String(year).padStart(4, '0')}-${monthDay}` <= latest;
+  return String(fits ? year : year - 100).padStart(4, '0');
+}
+
+/**
+ * Date: `TT.MM.JJJJ` (also `T.M.JJJJ`, eight digits) or `YYYY-MM-DD` → `YYYY-MM-DD`. A two-digit
+ * year (`TT.MM.JJ`, six digits) only with `latest`, the latest day the field allows; else refused.
+ */
+export function normalizeDate(raw: string, latest?: IsoDate): Checked<IsoDate> {
   const text = raw.trim();
   const german = GERMAN_DATE.exec(text) ?? DIGITS_DATE.exec(text);
+  const short = german ? null : SHORT_DATE.exec(text);
   let iso = text;
   if (german) {
     const [, day = '', month = '', year = ''] = german;
     iso = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  } else if (short) {
+    if (latest === undefined) return reject('date.shortYear');
+    const [day = '', month = '', year = ''] =
+      short[1] === undefined ? short.slice(4, 7) : short.slice(1, 4);
+    const monthDay = `${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    iso = `${fullYear(year, monthDay, latest)}-${monthDay}`;
   }
   if (!ISO_DATE_SHAPE.test(iso)) return reject('date.format');
   return parseIsoDate(iso) ? accept(iso) : reject('date.invalid');
@@ -332,7 +354,12 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
     const found = listOptionFor(suggestionsOf(field), text);
     return found ? accept(found.label, hints) : accept(text, ['list.freeEntry', ...hints]);
   }),
-  date: fromText((text, field) => withinDates(normalizeDate(text), field)),
+  date: fromText((text, field) =>
+    withinDates(
+      normalizeDate(text, field.maxDate === undefined ? undefined : boundDay(field.maxDate)),
+      field,
+    ),
+  ),
   money: fromText(normalizeMoney),
   number: fromText(normalizeNumber),
   month: fromText(normalizeMonth),
