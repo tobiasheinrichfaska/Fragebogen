@@ -27,6 +27,7 @@ npm run hochladen -- -Ziel oeffentlich -Probelauf     # erst prüfen, nichts hoc
 npm run hochladen -- -Ziel oeffentlich                # öffentliche App
 npm run hochladen -- -Ziel test                       # Testordner
 npm run hochladen -- -Ziel mehrfachbearbeitung        # später
+npm run hochladen -- -Ziel regeln                     # nur diese .htaccess, App unverändert
 npm run hochladen -- -Ziel test -OhneRueckfrage       # ohne Fenster
 npm run tester                                        # Tester des Testordners
 ```
@@ -46,6 +47,7 @@ npm run tester                                        # Tester des Testordners
 | `oeffentlich`         | Subdomain              | App (`npm run build`) und diese `.htaccess`                                                                             | alle                                                               |
 | `test`                | `test/`                | App mit Formular-Entwürfen und Übergabe an Lohn und Gehalt                                                              | IP-Adressen der Kanzlei; sonst Tester-Anmeldung (`npm run tester`) |
 | `mehrfachbearbeitung` | `mehrfachbearbeitung/` | Kanzlei-Fassung mit Übergabe an Lohn und Gehalt – **vorerst nicht hochgeladen** (der Testordner deckt die Testphase ab) | **nur** IP-Adressen der Kanzlei                                    |
+| `regeln`              | Subdomain              | nur diese `.htaccess` – für eine Änderung der Regeln, ohne die öffentliche App neu zu bauen oder hochzuladen            | alle                                                               |
 
 Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen des Zugangs und lädt sie
 **vor** der App hoch – der Ordner ist also nie offen.
@@ -90,7 +92,10 @@ npm run tester
 - verbietet das Einbetten in fremde Seiten (`frame-ancestors 'none'`, `X-Frame-Options`);
 - schickt keine Herkunftsadresse, erlaubt keine Kamera, kein Mikrofon, keinen Standort;
 - lässt den Browser bei jedem Aufruf nach einer neuen Fassung fragen (wichtig im Betatest);
-- zeigt keine Ordnerlisten und liefert keine versteckten Dateien aus.
+- zeigt keine Ordnerlisten und liefert keine versteckten Dateien aus;
+- lässt auf der ganzen Subdomain kein Skript laufen (2026-11-07): Jede Datei mit einer Skript-Endung
+  (`.php`, `.phtml`, `.phar` …, auch groß geschrieben oder als `x.php.txt`) wird abgewiesen, bevor
+  der Server sie ausführen oder als Quelltext ausliefern könnte – auch in Unterordnern.
 
 Sie **beschränkt den Zugriff nicht** – jeder darf die Seite aufrufen. Die Content-Security-Policy mit den
 Hash-Werten von Skript und Stil steht als Meta-Tag in `index.html` selbst; die `.htaccess` ergänzt nur,

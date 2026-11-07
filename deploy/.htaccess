@@ -16,6 +16,13 @@ Options -Indexes
   Require all denied
 </FilesMatch>
 
+# Keine Skripte (2026-11-07): Auf dieser Subdomain läuft kein PHP. Jede Datei mit einer Skript-Endung –
+# auch in Unterordnern, in Großbuchstaben oder vor einer weiteren Endung wie x.php.txt – wird
+# abgewiesen, bevor der Server sie ausführen oder als Quelltext ausliefern könnte.
+<FilesMatch "(?i)\.(php[0-9]*|phtml?|phar|phps|pht|cgi|pl|py|sh|shtml)(\.|$)">
+  Require all denied
+</FilesMatch>
+
 AddDefaultCharset utf-8
 
 <IfModule mod_headers.c>

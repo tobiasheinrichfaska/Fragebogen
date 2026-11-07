@@ -39,6 +39,14 @@ describe('deploy/upload.json', () => {
     ]);
   });
 
+  it('changes the rules of the subdomain folder with "regeln" alone, never the app (2026-11-07)', () => {
+    expect(spec.targets.regeln).toMatchObject({ folder: '', access: 'public' });
+    expect(spec.targets.regeln?.files.map((f) => [f.from, f.to])).toEqual([
+      ['deploy/.htaccess', '.htaccess'],
+    ]);
+    expect(spec.targets.regeln).not.toHaveProperty('build');
+  });
+
   it('gives the test folder its own help pages (Tobias 2026-11-01)', () => {
     expect(spec.targets.test?.files.map((f) => [f.from, f.to])).toContainEqual([
       'docs/hilfe/',

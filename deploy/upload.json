@@ -32,6 +32,12 @@
       "access": "ip",
       "allowMarkers": ["mapping"],
       "files": [{ "from": "dist-kanzlei/index.html", "to": "index.html", "verify": true }]
+    },
+    "regeln": {
+      "description": "Nur die Regeln im Hauptordner der Subdomain (.htaccess) – die öffentliche App bleibt unverändert",
+      "folder": "",
+      "access": "public",
+      "files": [{ "from": "deploy/.htaccess", "to": ".htaccess" }]
     }
   },
   "forbidden": ["dist-preview/", "config/", "import/", ".tmp/", "deploy/.local/"],
