@@ -257,6 +257,30 @@ export function textsOf(block: Block): string[] {
   });
 }
 
+export type TestEnvironment =
+  /** A prepared questionnaire: the first start link of "Einstieg" (`text` = the link's text). */
+  | { kind: 'start'; id: string; text: string }
+  /** The app's start page: "Einstieg" names it, or there is no "Einstieg". */
+  | { kind: 'home' }
+  /** Elsewhere — another device, the public address, right after another test: the app stays. */
+  | { kind: 'elsewhere'; text: string };
+
+const HOME = /App neu starten|Startseite der App/;
+
+/**
+ * Where a test begins, from its "Einstieg" (Tobias 2026-11-07: asked when a test is opened, so the
+ * app restarts with the environment that suits it).
+ */
+export function testEnvironment(testCase: ManualTestCase): TestEnvironment {
+  const part = testCase.parts.find((p) => p.label === 'Einstieg');
+  if (!part) return { kind: 'home' };
+  const tokens = part.blocks.flatMap(textsOf).flatMap(inlineMarkdown);
+  const start = tokens.find((token) => token.kind === 'start');
+  if (start?.kind === 'start') return { kind: 'start', id: start.id, text: start.text };
+  const text = tokens.map((token) => token.text).join('');
+  return HOME.test(text) ? { kind: 'home' } : { kind: 'elsewhere', text };
+}
+
 /** The start points the cases of a file link to, in order of appearance. */
 export function startLinksOf(file: ManualTestFile): string[] {
   const texts = file.cases.flatMap((testCase) =>

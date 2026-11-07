@@ -23,3 +23,20 @@ export function saveRun(run: TestRun): boolean {
     return false;
   }
 }
+
+/**
+ * "App vollständig zurücksetzen" (Tobias 2026-11-07): everything the app keeps in this browser goes,
+ * the tester's run stays. Why it failed, if the browser refused.
+ */
+export function resetAppStorage(): string | undefined {
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key !== KEY) localStorage.removeItem(key);
+    }
+    sessionStorage.clear();
+    const left = Object.keys(localStorage).filter((key) => key !== KEY);
+    return left.length === 0 ? undefined : `Nicht gelöscht: ${left.join(', ')}`;
+  } catch (error) {
+    return String(error);
+  }
+}
