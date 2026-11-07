@@ -79,8 +79,7 @@
 
 **Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
 
-**Voraussetzungen:** MT-82 erledigt; im Einrichtungsfenster sind die IP-Adressen der Kanzlei
-eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
+**Voraussetzungen:** Das Upload-Werkzeug „Auslieferung“ liegt auf dem Kanzlei-PC neben diesem Projekt (`..\..\private\Auslieferung`), sein Zugang `fragebogen` ist eingerichtet; im Einrichtungsfenster sind die IP-Adressen der Kanzlei eingetragen („Zugang oder IP-Adressen ändern“).
 
 **Schritte:**
 
@@ -107,7 +106,7 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 
 **Testbereich:** nein – nur am Kanzlei-PC mit dem Upload-Werkzeug.
 
-**Voraussetzungen:** MT-83 erledigt.
+**Voraussetzungen:** Das Upload-Werkzeug „Auslieferung“ ist eingerichtet (Zugang `fragebogen`, IP-Adressen der Kanzlei eingetragen), und der Testordner ist hochgeladen (`npm run hochladen -- -Ziel test`).
 
 **Schritte:**
 
@@ -141,7 +140,7 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 
 **Einstieg:** Der Testbereich selbst – Sie sind schon da.
 
-**Voraussetzungen:** Testordner hochgeladen (MT-83/84), oder lokal `npm run build:test` und
+**Voraussetzungen:** Der Testordner ist hochgeladen, oder lokal `npm run build:test` und
 `dist-test/index.html` öffnen.
 
 **Schritte:**
@@ -182,8 +181,8 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 12. Das Häkchen wieder entfernen und die Seite neu laden.
     - **Danach:** Name, Ergebnisse und Kommentare sind noch da. _Nicht offensichtlich:_ In einem
       privaten Fenster warnt die Seite, dass sie nichts speichern kann.
-13. MT-11 öffnen und bei „Voraussetzungen“ auf **„MT-10“** klicken.
-    - **Danach:** MT-10 öffnet sich (nach der Frage zum Neustart).
+13. MT-30 öffnen und in Schritt 2 auf **„MT-37“** klicken.
+    - **Danach:** MT-37 öffnet sich (nach der Frage zum Neustart).
 14. Das Kästchen **„01“** anklicken.
     - **Danach:** _Nicht offensichtlich:_ Keine Frage zum Neustart. MT-01 zeigt oben „Nicht im
       Testbereich: …“ mit Grund; sein Kästchen ist in der Übersicht blasser.
@@ -243,10 +242,8 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
      **„App neu starten“**.
 6. **„App neu starten“** klicken.
    - **Danach:** Rechts die Startseite der App mit „Neuer Fragebogen“.
-7. Zurück zur Übersicht und das Kästchen **„69“** anklicken.
-   - **Danach:** „Einstieg: Direkt nach MT-68 (Schritt 3 erledigt).“ und „Die App kann dafür bleiben,
-     wie sie ist.“; hier ist **„App so lassen“** hervorgehoben, **„App neu starten (Startseite)“**
-     steht daneben.
+7. Zurück zur Übersicht und das Kästchen **„80“** anklicken.
+   - **Danach:** „Einstieg: Die öffentliche Adresse der App im Browser (nicht der Testbereich).“ und „Die App kann dafür bleiben, wie sie ist.“; hier ist **„App so lassen“** hervorgehoben, **„App neu starten (Startseite)“** steht daneben.
 8. **„App so lassen“** klicken.
 9. In der App einen Fragebogen beginnen, dann in der Kopfzeile **„App neu starten“** klicken.
    - **Danach:** Die Frage „App neu starten?“ mit **„Abbrechen“** und **„App neu starten“**.
@@ -265,31 +262,39 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 
 **Einstieg:** Der Testbereich selbst – Sie sind schon da.
 
-**Voraussetzungen:** Mindestens zwei Tests haben ein Ergebnis (z. B. aus MT-85), und noch kein
-Testbericht wurde in diesem Browser heruntergeladen.
+**Voraussetzungen:** In diesem Browser wurde noch kein Testbericht heruntergeladen – sonst fragt schon Schritt 4 nach den gemeldeten Tests.
 
 **Schritte:**
 
-1. In der Kopfzeile **„Testbericht herunterladen“** klicken.
+1. In der Testübersicht das Kästchen **„02“** anklicken und bei der Frage **„App so lassen“**
+   wählen.
+2. **„✓ Wie erwartet“** klicken und **„← Zurück zur Testübersicht“**.
+3. Das Kästchen **„03“** anklicken, **„App so lassen“**, dann **„✗ Klappt nicht“** und zurück zur
+   Übersicht.
+   - **Danach:** Die Kästchen „02“ (grün) und „03“ (rot) haben ein Ergebnis.
+4. In der Kopfzeile **„Testbericht herunterladen“** klicken.
    - **Danach:** Ohne Rückfrage lädt die PDF herunter; sie enthält alle Tests mit Ergebnis,
      Kommentar oder Beginn.
-2. Mit der Maus auf das Kästchen eines dieser Tests zeigen.
+5. Mit der Maus auf das Kästchen eines dieser Tests zeigen.
    - **Danach:** _Nicht offensichtlich:_ Hinter Titel und Ergebnis steht „– berichtet“. Das Kästchen
      bleibt grün bzw. rot; im geöffneten Test steht „im Testbericht vom …“.
-3. Noch einmal **„Testbericht herunterladen“** klicken.
+6. Noch einmal **„Testbericht herunterladen“** klicken.
    - **Danach:** Die Frage „Schon gemeldete Tests mitnehmen?“: wie viele Tests schon in einem früheren
      Testbericht standen und wie viele neu oder geändert sind, dazu **„Abbrechen“**, **„Ja, alle
      mitnehmen“** und **„Nein (Bericht ohne Tests)“**.
-4. **„Nein (Bericht ohne Tests)“** klicken.
+7. **„Nein (Bericht ohne Tests)“** klicken.
    - **Danach:** Die PDF enthält keinen Test, nur Kopf, Summen und den Gesamteindruck.
-5. Einen der gemeldeten Tests öffnen und seinen Kommentar ändern.
-6. In der Kopfzeile **„Testbericht herunterladen“** klicken.
+8. Einen der gemeldeten Tests öffnen und seinen Kommentar ändern.
+9. In der Kopfzeile **„Testbericht herunterladen“** klicken.
    - **Danach:** Die Frage nennt jetzt einen Test als neu oder geändert; der dritte Knopf heißt
      **„Nein, nur neue und geänderte“**.
-7. **„Nein, nur neue und geänderte“** klicken.
-   - **Danach:** Die PDF enthält nur den geänderten Test.
-8. **„Testbericht herunterladen“** klicken und **„Ja, alle mitnehmen“** wählen.
-   - **Danach:** Die PDF enthält wieder alle Tests mit Ergebnis.
+10. **„Nein, nur neue und geänderte“** klicken.
+
+- **Danach:** Die PDF enthält nur den geänderten Test.
+
+11. **„Testbericht herunterladen“** klicken und **„Ja, alle mitnehmen“** wählen.
+
+- **Danach:** Die PDF enthält wieder alle Tests mit Ergebnis.
 
 **Erwartet:**
 

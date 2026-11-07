@@ -6,7 +6,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 **Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ – genau das ist Schritt 1.
 
-**Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ im Testbereich links; als Datei: MT-01).
+**Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ in der Kopfzeile; als Datei: `index.html` per Doppelklick öffnen).
 
 **Schritte:**
 
@@ -25,9 +25,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-11: Interview des Arbeitgebers
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-10 durch – oder Sie machen direkt nach MT-10 weiter.
-
-**Voraussetzungen:** MT-10.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und stehen bei „Wer füllt jetzt aus?“.
 
 **Schritte:**
 
@@ -67,9 +65,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-12: Ungültige Eingaben
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-10 durch – oder Sie machen direkt nach MT-10 weiter (Rolle „Arbeitgeber“).
-
-**Voraussetzungen:** MT-10 – Sie stehen bei „Wer füllt jetzt aus?“.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und stehen bei „Wer füllt jetzt aus?“.
 
 **Schritte:**
 
@@ -108,9 +104,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-13: Hinweise und „Vorerst überspringen“ (Person)
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-10 durch – oder Sie machen direkt nach MT-10 weiter.
-
-**Voraussetzungen:** MT-10.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und stehen bei „Wer füllt jetzt aus?“.
 
 **Schritte:**
 
@@ -161,15 +155,12 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-14: Folgefragen und Antworten, die erhalten bleiben
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ und spielen MT-13 durch – oder Sie machen direkt nach MT-13 weiter (Interview der beschäftigten Person).
-
-**Voraussetzungen:** MT-13, Interview der Person läuft.
+**Einstieg:** [Interview der Person öffnen](start:sofortmeldung-person-ab-geburtsname) – der Arbeitgeber hat abgeschlossen, die Person hat ihre Namen eingetragen; Sie stehen bei der Frage nach dem Geburtsnamen.
 
 **Schritte:**
 
-1. Gehen Sie zur Frage **„Ist Ihr Geburtsname gleich Ihrem Familiennamen?“** – im Interview der
-   Person kommt sie kurz nach den Vornamen; aus der Zusammenfassung kommen Sie mit **„ändern“** bei
-   dieser Frage hin.
+1. Sehen Sie sich die Frage **„Ist Ihr Geburtsname gleich dem gerade angegebenen Familiennamen
+   „Musterfrau“?“** an.
    - **Danach:** Die Vorbelegung ist gesetzt: Die Geburtsnamen-Frage startet mit „Ja“.
 2. Klicken Sie **„Nein“**.
    - **Danach:** Die Frage **„Wie lautet Ihr Geburtsname?“** erscheint **direkt nach** der
@@ -199,7 +190,7 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 1. Klicken Sie in der Zusammenfassung auf **„Zwischenstand speichern“**.
    - **Danach:** Der Dateiname enthält **keinen Namen** der Person, nur die Fragebogen-Nummer.
-2. Starten Sie die App neu: im Testbereich links **„App neu starten (Startseite)“** (oder die Seite
+2. Starten Sie die App neu: in der Kopfzeile **„App neu starten“** (oder die Seite
    mit **F5** neu laden); als Datei den Browser-Tab schließen und `index.html` neu öffnen.
 3. Klicken Sie **„Datei öffnen …“** und wählen Sie die heruntergeladene Datei
    `Sofortmeldung_xxxxxxxx_Zwischenstand.json`.
@@ -257,32 +248,33 @@ Alle Tests verwenden die **Sofortmeldung** und erfundene Daten.
 
 ## MT-18: Angaben aus einer anderen Datei übernehmen
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“; dazu brauchen Sie die vollständige PDF aus MT-30.
-
-**Voraussetzungen:** Eine vollständige PDF einer Sofortmeldung liegt vor (z. B. aus MT-30).
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben. Aus diesem Fragebogen erstellen Sie zuerst die PDF, deren Angaben Sie dann übernehmen.
 
 **Schritte:**
 
-1. Startseite → **„Personalfragebogen: Angaben für die Sofortmeldung“** (ein neuer, leerer Fragebogen).
-2. Auf „Wer füllt jetzt aus?“ klicken Sie **„Angaben aus einer anderen Datei übernehmen …“** und
-   wählen die PDF aus den Voraussetzungen.
+1. Unter „Stand“ **„PDF erstellen“** klicken.
+   - **Danach:** Die vollständige PDF wird heruntergeladen.
+2. Unter „Stand“ **„Fragebogen schließen“** klicken.
+3. Startseite → **„Personalfragebogen: Angaben für die Sofortmeldung“** (ein neuer, leerer Fragebogen).
+4. Auf „Wer füllt jetzt aus?“ klicken Sie **„Angaben aus einer anderen Datei übernehmen …“** und
+   wählen die eben erstellte PDF.
    - **Danach:** Eine blaue Meldung „Angaben aus „Sofortmeldung“ übernommen …“ erscheint, mit einer
      Zeile je Rolle (z. B. „Beschäftigte Person: 14 Angaben übernommen.“). Beide Rollen stehen jetzt
      auf **„begonnen, nicht abgeschlossen“** – _nichts ist unterschrieben_, die Unterschriften der
      alten Datei werden nie übernommen.
-3. Klicken Sie bei „Beschäftigte Person“ **„Weitermachen“** und blättern Sie mit **„Weiter“** durch
+5. Klicken Sie bei „Beschäftigte Person“ **„Weitermachen“** und blättern Sie mit **„Weiter“** durch
    das Interview.
    - **Danach:** Im Interview sind die Antworten eingetragen; eine abweichende Vorbelegung (z. B.
      „Geburtsname gleich Familienname?“ = Nein) ist durch die Antwort der alten Datei ersetzt, die
      Folgefrage „Geburtsname“ ist gefüllt.
-4. Kehren Sie über **„Unterbrechen – zur Übersicht (Angaben bleiben erhalten)“** zur Übersicht
+6. Kehren Sie über **„Unterbrechen – zur Übersicht (Angaben bleiben erhalten)“** zur Übersicht
    zurück.
-5. Klicken Sie auf „Wer füllt jetzt aus?“ noch einmal
+7. Klicken Sie auf „Wer füllt jetzt aus?“ noch einmal
    **„Angaben aus einer anderen Datei übernehmen …“** und wählen Sie **dieselbe PDF**.
    - **Danach:** Gelbe Meldung „Aus „Sofortmeldung“ ließ sich nichts übernehmen.“ mit Zeilen wie
      „Beschäftigte Person: 0 Angaben übernommen, 14 vorhandene behalten (…)“ – vorhandene Antworten
      werden **nie** überschrieben.
-6. Öffnen Sie über **„Datei öffnen …“** auf der Startseite die PDF und versuchen Sie dann, dieselbe
+8. Öffnen Sie über **„Datei öffnen …“** auf der Startseite die PDF und versuchen Sie dann, dieselbe
    PDF über „Angaben aus einer anderen Datei übernehmen …“ zu übernehmen.
    - **Danach:** Rote Meldung „Das ist derselbe Fragebogen …“ – derselbe Fragebogen wird geöffnet,
      nicht übernommen.

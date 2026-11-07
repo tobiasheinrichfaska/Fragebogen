@@ -6,14 +6,18 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { compareVersions, registryOf, type RegisteredForm } from '../../src/logic/formRegistry';
-import { mergeInbox } from '../../src/logic/kanzlei';
+import { sha256Hex } from '../../src/logic/hash';
+import { addToInbox, EMPTY_INBOX, mergeInbox } from '../../src/logic/kanzlei';
 import { inlineMarkdown, parseManualTests, startLinksOf } from '../../src/logic/manualTests';
+import { parseMasterDataFragment } from '../../src/logic/masterDataLink';
 import { currentPart, latestSealed } from '../../src/logic/questionnaire';
 import { roleStates } from '../../src/logic/session';
 import {
   buildKanzleiStart,
   buildStartPoint,
+  isFormStart,
   isKanzleiStart,
+  isLinkStart,
   parseStartPoint,
   type AnyStartPoint,
   type StartEnvironment,
@@ -39,7 +43,7 @@ const all: AnyStartPoint[] = readdirSync(START_DIR)
     expect(`${parsed.point.id}.json`).toBe(name);
     return parsed.point;
   });
-const points = all.filter((point): point is StartPoint => !isKanzleiStart(point));
+const points = all.filter(isFormStart);
 const kanzlei = all.filter(isKanzleiStart);
 const byId = new Map(all.map((point) => [point.id, point]));
 
@@ -165,6 +169,73 @@ describe('start points (manual_tests/startpunkte/)', () => {
     const merged = mergeInbox(inbox, registry);
     expect(merged.groups).toHaveLength(2);
     expect(merged.proposals).toHaveLength(1);
+  });
+
+  // Tobias 2026-11-07: every test in its own environment — MT-40 needs two files of ONE
+  // questionnaire, so two start points with one label build it like the test page does.
+  it('two start points with one label are two stages of one questionnaire (MT-40)', () => {
+    const form = newest('sofortmeldung');
+    const first = points.find((p) => p.id === 'sofortmeldung-zwei-dateien-arbeitgeber');
+    const second = points.find((p) => p.id === 'sofortmeldung-zwei-dateien-vollstaendig');
+    if (!form || !first || !second) throw new Error('missing');
+    expect(first.questionnaire).toBe(second.questionnaire);
+    const env = envOf();
+    const a = buildStartPoint(first, form, env(first.questionnaire));
+    const b = buildStartPoint(second, form, env(second.questionnaire));
+    if (!a.ok || !b.ok) throw new Error('not built');
+    expect(b.session.questionnaire.questionnaireId).toBe(a.session.questionnaire.questionnaireId);
+    expect(latestSealed(b.session.questionnaire, 'arbeitgeber')).toEqual(
+      latestSealed(a.session.questionnaire, 'arbeitgeber'),
+    );
+    let inbox = EMPTY_INBOX;
+    for (const [name, questionnaire] of [
+      ['weitergabe.pdf', a.session.questionnaire],
+      ['vollstaendig.pdf', b.session.questionnaire],
+    ] as const) {
+      inbox = addToInbox(inbox, {
+        name,
+        fileSha256: sha256Hex(name),
+        questionnaire,
+        form,
+        origin: 'published',
+        received: RECEIVED,
+      }).inbox;
+    }
+    const merged = mergeInbox(inbox, registry);
+    expect(merged.groups).toHaveLength(1);
+    expect(merged.groups[0]?.conflicts ?? []).toEqual([]);
+  });
+
+  it('a link start point opens the app like the Kanzlei bookmark (MT-100, MT-101)', () => {
+    const link = all.find(isLinkStart);
+    expect(link?.id).toBe('personalfragebogen-stammdaten-link');
+    const parsed = parseMasterDataFragment(`#${link?.link ?? ''}`);
+    expect(parsed.ok && parsed.form).toBe('personalfragebogen');
+    expect(parsed.ok && parsed.data).toMatchObject({
+      firma: 'Beispiel Gastro GmbH',
+      lohnsteuerMinijob: 'pauschal2',
+      lohnsteuerAushilfe: 'pauschal25',
+    });
+    const point = { id: 'a', title: 't', open: 'link' };
+    expect(parseStartPoint({ ...point, link: 'stammdaten=1&formular=sepa-mandat' }).ok).toBe(true);
+    expect(parseStartPoint({ ...point, link: 'stammdaten=9&formular=sepa-mandat' }).ok).toBe(false);
+    expect(parseStartPoint({ ...point, link: 'stammdaten=1&firma=X' }).ok).toBe(false);
+    expect(parseStartPoint({ ...point, link: 'stammdaten=1&formular=x', extra: 1 }).ok).toBe(false);
+  });
+
+  it('a Kanzlei input never comes from a link start point', () => {
+    const point = kanzlei.find((p) => p.id === 'kanzlei-sofortmeldung-vollstaendig');
+    if (!point) throw new Error('missing');
+    const built = buildKanzleiStart(
+      { ...point, inbox: [{ name: 'link.pdf', from: 'personalfragebogen-stammdaten-link' }] },
+      byId,
+      newest,
+      envOf(),
+      RECEIVED,
+    );
+    expect(built.ok ? [] : built.problems).toEqual([
+      'link.pdf: den Startpunkt „personalfragebogen-stammdaten-link“ gibt es nicht.',
+    ]);
   });
 
   it('reports what no longer fits instead of building half a questionnaire', () => {

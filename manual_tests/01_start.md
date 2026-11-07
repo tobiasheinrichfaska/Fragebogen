@@ -36,7 +36,7 @@ _Automatisch geprüft mit `npm run test:e2e` (Chromium, Firefox, WebKit): Die Da
 Sicherheitsrichtlinie (CSP) jede Verbindung; der Test meldet jede Anfrage, die das Gerät verlässt.
 Dieser Handtest bleibt für echte Geräte und Browser._
 
-**Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ im Testbereich links; als Datei: MT-01). Sie verwenden Edge oder Chrome am PC.
+**Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ in der Kopfzeile; als Datei: `index.html` per Doppelklick öffnen). Sie verwenden Edge oder Chrome am PC.
 
 **Schritte:**
 

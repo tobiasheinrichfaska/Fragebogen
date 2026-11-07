@@ -2,11 +2,9 @@
 
 ## MT-20: Arbeitgeber schließt ohne Unterschrift ab
 
-**Einstieg:** [Arbeitgeber ausgefüllt öffnen](start:sofortmeldung-arbeitgeber-zusammenfassung) – die
-Angaben des Arbeitgebers sind ausgefüllt, Sie stehen in seiner Zusammenfassung. Ohne Testbereich:
-MT-11 bis zur Zusammenfassung.
+**Einstieg:** [Arbeitgeber ausgefüllt öffnen](start:sofortmeldung-arbeitgeber-zusammenfassung) – die Angaben des Arbeitgebers sind ausgefüllt, Sie stehen in seiner Zusammenfassung. Ohne Testbereich: einen neuen Fragebogen beginnen und als Arbeitgeber alle Fragen bis zur Zusammenfassung beantworten.
 
-**Voraussetzungen:** Zusammenfassung des Arbeitgebers (Startlink oder MT-11).
+**Voraussetzungen:** Zusammenfassung des Arbeitgebers.
 
 **Schritte:**
 
@@ -32,8 +30,7 @@ MT-11 bis zur Zusammenfassung.
 hat abgeschlossen, alle Fragen der Person sind beantwortet und beide Hinweise bestätigt; Sie stehen
 in der Zusammenfassung der Person.
 
-**Voraussetzungen:** Startlink – oder ohne Testbereich MT-20; dann **„Gerät weitergeben – zur
-Übersicht“**, **„Ich bin: Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
+**Voraussetzungen:** Ohne Testbereich: nach dem Abschluss des Arbeitgebers **„Gerät weitergeben – zur Übersicht“**, **„Ich bin: Beschäftigte Person“**, alle Fragen beantwortet, beide Hinweise bestätigt.
 
 **Schritte:**
 
@@ -75,12 +72,9 @@ in der Zusammenfassung der Person.
 
 ## MT-22: Getippter Name statt Zeichnung
 
-**Einstieg:** [Zum Unterschreiben öffnen](start:sofortmeldung-zum-unterschreiben), dann **„Weiter zum
-Abschluss“** und das Häkchen setzen – oder direkt nach MT-21 Schritt 3.
+**Einstieg:** [Zum Unterschreiben öffnen](start:sofortmeldung-zum-unterschreiben), dann **„Weiter zum Abschluss“** und das Häkchen setzen.
 
-**Voraussetzungen:** Die Person steht auf der Abschluss-Seite („Weiter zum Abschluss“ geklickt), das
-Häkchen **„Ich versichere, dass meine Angaben richtig und vollständig sind.“** ist gesetzt (MT-21
-bis Schritt 3).
+**Voraussetzungen:** Die Person steht auf der Abschluss-Seite („Weiter zum Abschluss“ geklickt), das Häkchen **„Ich versichere, dass meine Angaben richtig und vollständig sind.“** ist gesetzt.
 
 **Schritte:**
 
@@ -159,8 +153,7 @@ hat mit getipptem Namen unterschrieben, der Arbeitgeber hat noch nichts ausgefü
 
 ## MT-25: Stammdaten-Link des Arbeitgebers
 
-**Einstieg:** [Arbeitgeber ausgefüllt öffnen](start:sofortmeldung-arbeitgeber-zusammenfassung) – Sie
-stehen in der Zusammenfassung des Arbeitgebers. Ohne Testbereich: MT-11 bis zur Zusammenfassung.
+**Einstieg:** [Arbeitgeber ausgefüllt öffnen](start:sofortmeldung-arbeitgeber-zusammenfassung) – Sie stehen in der Zusammenfassung des Arbeitgebers. Ohne Testbereich: einen neuen Fragebogen beginnen und als Arbeitgeber alle Fragen bis zur Zusammenfassung beantworten.
 
 **Voraussetzungen:** Zusammenfassung des Arbeitgebers.
 

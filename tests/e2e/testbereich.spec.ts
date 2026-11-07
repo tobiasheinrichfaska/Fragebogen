@@ -112,6 +112,61 @@ test('opening a test asks to restart the app with its entry and shows the test f
   await expectQuiet(page, found);
 });
 
+// Tobias 2026-11-07: "Jeder Test startet mit seiner eigenen Umgebung" — MT-40 builds its two files
+// of one questionnaire itself, from two start points with one label.
+test('two start points with one label give two files of one questionnaire (MT-40)', async ({
+  page,
+}, testInfo) => {
+  const found = await openCase(page, 'MT-40', 'Mit diesem Einstieg neu starten');
+  const app = page.locator('.test-app');
+  const pdf = async (name: string) => {
+    const [file] = await Promise.all([
+      page.waitForEvent('download'),
+      app.getByRole('button', { name: 'PDF erstellen', exact: true }).click(),
+    ]);
+    const path = testInfo.outputPath(name);
+    await file.saveAs(path);
+    return path;
+  };
+  const number = async () =>
+    (await app.getByText(/^Fragebogen [0-9a-f]{8} · /).textContent()) ?? '';
+  const first = await number();
+  const handover = await pdf('weitergabe.pdf');
+  await startLink(page, 'Zweite Datei: vollständig öffnen');
+  await expect(app.getByText(/^Vorbereitet: Dieselbe Sofortmeldung/)).toBeVisible();
+  expect(await number()).toBe(first);
+  const complete = await pdf('vollstaendig.pdf');
+  await app.getByRole('button', { name: 'Fragebogen schließen' }).click();
+  await app.getByRole('button', { name: /^Eingänge zusammenführen/ }).click();
+  await app.locator('input[type=file]').first().setInputFiles([handover, complete]);
+  await expect(app).toContainText('2 Datei(en)');
+  await expect(app).toContainText('Dieselbe Fassung ist mehrfach eingegangen');
+  await expect(app).toContainText('Vollständig und ohne Widersprüche.');
+  await expectQuiet(page, found);
+});
+
+// MT-100/101 start with the Kanzlei's master-data link instead of the link MT-99 made.
+test('a link start point opens the app as the bookmark would, the next start drops it', async ({
+  page,
+}) => {
+  const found = await openCase(page, 'MT-100', 'Mit diesem Einstieg neu starten');
+  const app = page.locator('.test-app');
+  await expect(app).toContainText(
+    'Neuer Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ aus Ihrem Lesezeichen.',
+  );
+  expect(await page.evaluate(() => location.hash)).toContain('lohnsteuerAushilfe=pauschal25');
+  await app.getByRole('button', { name: 'Ich bin: Arbeitgeber' }).click();
+  await expect(app).toContainText('Stammdaten aus Ihrem Lesezeichen übernommen. Bitte prüfen.');
+
+  await panel(page).getByRole('button', { name: 'Zurück zur Testübersicht' }).first().click();
+  await caseButton(page, 'MT-03').click();
+  await question(page).getByRole('button', { name: 'App neu starten', exact: true }).click();
+  await expect(app).toContainText('Neuer Fragebogen');
+  expect(await page.evaluate(() => location.hash)).toBe('');
+  await expect(app).not.toContainText('aus Ihrem Lesezeichen');
+  await expectQuiet(page, found);
+});
+
 test('the header restarts the app and resets it fully, the test results stay', async ({ page }) => {
   const found = await openCase(page, 'MT-03', 'App neu starten');
   await panel(page).getByRole('radio', { name: '✓ Wie erwartet' }).click();

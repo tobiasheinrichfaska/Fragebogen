@@ -7,8 +7,10 @@
 // A Kanzlei start point opens the Kanzlei station with prepared inputs instead: each one is the
 // questionnaire of another start point (all parts sealed), optionally with changed answers; inputs
 // with the same label share the questionnaire id and nonces, so equal parts give equal seals (two
-// versions of one person for the conflict test). Fictitious data only; bundled into the test folder
-// build alone.
+// versions of one person for the conflict test). Since 2026-11-07 (Tobias: "Jeder Test startet mit
+// seiner eigenen Umgebung") form start points with one label build one questionnaire — two files of
+// one questionnaire at different stages — and a link start point opens the app as a bookmark link
+// would. Fictitious data only; bundled into the test folder build alone.
 import { buildPackage, packageText } from './dataPackage';
 import { Decoder, type DecodeIssue } from './decode';
 import { fieldsOfRole } from './form';
@@ -16,6 +18,7 @@ import { FORM_ID, ID } from './formDefinition';
 import type { RegisteredForm } from './formRegistry';
 import { sha256Hex } from './hash';
 import { addToInbox, EMPTY_INBOX, type Inbox } from './kanzlei';
+import { parseMasterDataFragment } from './masterDataLink';
 import type { FieldId, RoleId, SystemNote } from './model';
 import {
   acknowledge,
@@ -46,6 +49,21 @@ export interface StartPoint {
   parts: StartPart[];
   /** The role whose draft opens, at a question (field id) or its summary; or the overview. */
   open: { role: RoleId; at: FieldId | 'summary' } | 'overview';
+  /**
+   * Start points with the same label build one questionnaire — same id, nonces and time — while
+   * the test page stays open, so equal parts give equal seals: files of one questionnaire at
+   * different stages (MT-40).
+   */
+  questionnaire?: string;
+}
+
+/** Opens the app as the master-data link would — a bookmark of the Kanzlei (MT-100, MT-101). */
+export interface LinkStartPoint {
+  id: string;
+  title: string;
+  /** The master-data link without "#", e.g. "stammdaten=1&formular=…&firma=…". */
+  link: string;
+  open: 'link';
 }
 
 /** One prepared input of the Kanzlei station: the questionnaire of another start point. */
@@ -67,10 +85,16 @@ export interface KanzleiStartPoint {
   open: 'kanzlei';
 }
 
-export type AnyStartPoint = StartPoint | KanzleiStartPoint;
+export type AnyStartPoint = StartPoint | KanzleiStartPoint | LinkStartPoint;
 
 export const isKanzleiStart = (point: AnyStartPoint): point is KanzleiStartPoint =>
   point.open === 'kanzlei';
+
+export const isLinkStart = (point: AnyStartPoint): point is LinkStartPoint => point.open === 'link';
+
+/** A start point that builds a questionnaire of one form. */
+export const isFormStart = (point: AnyStartPoint): point is StartPoint =>
+  !isKanzleiStart(point) && !isLinkStart(point);
 
 const START_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FILE_NAME = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/;
@@ -81,8 +105,9 @@ export type StartPointParse =
 /** Strict decoding of one start point file. */
 export function parseStartPoint(raw: unknown): StartPointParse {
   if (typeof raw === 'object' && raw !== null && 'inbox' in raw) return parseKanzleiStart(raw);
+  if (typeof raw === 'object' && raw !== null && 'link' in raw) return parseLinkStart(raw);
   const d = new Decoder();
-  const o = d.object(raw, '$', ['id', 'title', 'form', 'parts', 'open']);
+  const o = d.object(raw, '$', ['id', 'title', 'form', 'parts', 'open', 'questionnaire']);
   const id = o && d.string(o.id, '$.id', START_ID);
   const title = o && d.string(o.title, '$.title');
   const form = o && d.string(o.form, '$.form', FORM_ID);
@@ -109,10 +134,40 @@ export function parseStartPoint(raw: unknown): StartPointParse {
       1,
     );
   const open = o && (o.open === 'overview' ? 'overview' : decodeOpen(d, o.open));
+  const label =
+    o?.questionnaire === undefined ? undefined : d.string(o.questionnaire, '$.questionnaire', ID);
   if (d.issues.length > 0 || !id || !title || !form || !parts || !open) {
     return { ok: false, issues: d.issues };
   }
-  return { ok: true, point: { id, title, form, parts, open } };
+  return {
+    ok: true,
+    point: {
+      id,
+      title,
+      form,
+      parts,
+      open,
+      ...(label === undefined ? {} : { questionnaire: label }),
+    },
+  };
+}
+
+function parseLinkStart(raw: unknown): StartPointParse {
+  const d = new Decoder();
+  const o = d.object(raw, '$', ['id', 'title', 'link', 'open']);
+  const id = o && d.string(o.id, '$.id', START_ID);
+  const title = o && d.string(o.title, '$.title');
+  const open = o && d.literal(o.open, '$.open', ['link'] as const);
+  const link = o && d.string(o.link, '$.link');
+  if (link !== undefined) {
+    const parsed = parseMasterDataFragment(`#${link}`);
+    if (!parsed.ok) d.report('$.link', `kein gültiger Stammdaten-Link (${parsed.issue})`);
+    else if (parsed.form === undefined) d.report('$.link', 'der Link nennt kein Formular');
+  }
+  if (d.issues.length > 0 || !id || !title || !link || !open) {
+    return { ok: false, issues: d.issues };
+  }
+  return { ok: true, point: { id, title, link, open } };
 }
 
 function parseKanzleiStart(raw: unknown): StartPointParse {
@@ -266,7 +321,7 @@ export function buildKanzleiStart(
   let inbox = EMPTY_INBOX;
   for (const entry of point.inbox) {
     const base = points.get(entry.from);
-    if (!base || isKanzleiStart(base)) {
+    if (!base || !isFormStart(base)) {
       problems.push(`${entry.name}: den Startpunkt „${entry.from}“ gibt es nicht.`);
       continue;
     }

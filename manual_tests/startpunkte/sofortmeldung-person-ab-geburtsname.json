@@ -1,0 +1,31 @@
+{
+  "id": "sofortmeldung-person-ab-geburtsname",
+  "title": "Sofortmeldung – Arbeitgeber abgeschlossen, Person bis zu den Vornamen ausgefüllt",
+  "form": "sofortmeldung",
+  "parts": [
+    {
+      "role": "arbeitgeber",
+      "answers": {
+        "agFirma": "Beispiel Bau GmbH",
+        "agBetriebsnummer": "12345671",
+        "agBranche": "bau",
+        "agFamilienname": "Musterfrau",
+        "agVorname": "Erika",
+        "agBeschaeftigungsbeginn": "02.11.2026"
+      },
+      "seal": "unsigned"
+    },
+    {
+      "role": "person",
+      "answers": {
+        "familienname": "Musterfrau",
+        "vorname": "Erika",
+        "namensbestandteile": false
+      }
+    }
+  ],
+  "open": {
+    "role": "person",
+    "at": "geburtsnameWieFamilienname"
+  }
+}

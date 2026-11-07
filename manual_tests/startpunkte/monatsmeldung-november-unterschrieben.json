@@ -1,0 +1,51 @@
+{
+  "id": "monatsmeldung-november-unterschrieben",
+  "title": "Monatsmeldung November 2026 – unterschrieben, Max Beispiel scheidet aus",
+  "form": "lohnmeldung",
+  "parts": [
+    {
+      "role": "arbeitgeber",
+      "answers": {
+        "abrechnungsmonat": "11.2026",
+        "agFirma": "Beispiel Bau GmbH",
+        "agBetriebsnummer": "12345671",
+        "mandantennummer": "99999",
+        "abgabetag": "15",
+        "ansprechpartner": "Jürgen Beispiel",
+        "ansprechpartnerEmail": "lohn@example.org",
+        "lohnarten": "1000 Stundenlohn\n2000 Nachtzuschlag 25 %",
+        "mitarbeitende": [
+          {
+            "rowId": "r1",
+            "maName": "Musterfrau, Erika",
+            "maVerguetungsart": "stundenlohn",
+            "maVerguetung": "14,50",
+            "maFehltage": ["2026-11-03:urlaub", "2026-11-04:halberUrlaub", "2026-11-17:krank"],
+            "maUrlaubStunden": "6",
+            "maKrankStunden": "8"
+          },
+          {
+            "rowId": "r2",
+            "maName": "Beispiel, Max",
+            "maVerguetungsart": "monatsentgelt",
+            "maVerguetung": "2.400",
+            "maScheidetAus": true
+          }
+        ],
+        "monatWerte": [
+          {
+            "rowId": "r1",
+            "monatPerson": "Musterfrau, Erika",
+            "monatLohnart": "1000 Stundenlohn",
+            "monatWert": "100"
+          }
+        ],
+        "fragVormonat": false
+      },
+      "seal": {
+        "typed": "Jürgen Beispiel"
+      }
+    }
+  ],
+  "open": "overview"
+}
