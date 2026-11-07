@@ -24,7 +24,10 @@
      zusätzlich als Meta-Tag in der Datei; beide gelten gleichzeitig.
 4. Die Adresse `…/.htaccess` aufrufen.
    - **Danach:** „Forbidden“ (versteckte Dateien werden nicht ausgeliefert).
-5. Optional: die Adresse bei einem Header-Prüfdienst eingeben (z. B. securityheaders.com).
+5. Die Adresse `…/test.php` aufrufen (die Datei gibt es nicht).
+   - **Danach:** „Forbidden“, nicht „Not Found“. _Nicht offensichtlich:_ Auf der Subdomain wird jede
+     Datei mit einer Skript-Endung abgewiesen, ob es sie gibt oder nicht – auch in Unterordnern.
+6. Optional: die Adresse bei einem Header-Prüfdienst eingeben (z. B. securityheaders.com).
    - **Danach:** Ein Hinweis auf eine fehlende Skript-Regel im Header ist erwartbar (sie steht im
      Meta-Tag).
 
@@ -51,7 +54,7 @@
 3. Die Rückfrage „Jetzt hochladen?“ mit **„Ja“** beantworten.
    - **Danach:** „Hochgeladen …“ und **„index.html: online identisch“**.
 4. `npm run hochladen` (ohne Ziel).
-   - **Danach:** Meldung „Welches Ziel? Vorhanden: oeffentlich, test, mehrfachbearbeitung“, nichts
+   - **Danach:** Meldung „Welches Ziel? Vorhanden: oeffentlich, test, mehrfachbearbeitung, regeln“, nichts
      wird hochgeladen. _Nicht offensichtlich:_ Es gibt kein voreingestelltes Ziel mehr – die
      öffentliche App geht nur hoch, wenn sie ausdrücklich genannt wird.
 5. Die Datei `..\..\private\Auslieferung\.local\zugaenge\fragebogen\sftp-passwort.dpapi` in einem
@@ -69,6 +72,11 @@
 8. `npm run hochladen -- -Ziel oeffentlich -Probelauf`.
    - **Danach:** Zeigt, ob ein Upload die öffentliche App ändern würde – vor einer Veröffentlichung,
      ohne etwas hochzuladen.
+9. `npm run hochladen -- -Ziel regeln -Probelauf`.
+   - **Danach:** Hochgeladen würde nur `.htaccess` in den Hauptordner der Subdomain. _Nicht
+     offensichtlich:_ Dieses Ziel baut nichts und lädt keine App hoch; die öffentliche App bleibt, wie
+     sie ist. Einen Vergleich mit der Seite online gibt es dafür nicht (die `.htaccess` ist von außen
+     gesperrt) – geprüft wird danach mit MT-80.
 
 **Erwartet:**
 
