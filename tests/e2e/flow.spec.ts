@@ -45,7 +45,8 @@ const ANSWERS: Readonly<Record<string, string>> = {
   vorname: 'Erika',
   namensbestandteile: 'Nein',
   geburtsnameWieFamilienname: 'Ja',
-  geburtsdatum: '17.05.1990',
+  // Typed with a two-digit year (Tobias 2026-11-07: TTMMJJ); the app makes it 17.05.1990.
+  geburtsdatum: '170590',
   geborenInDeutschland: 'Ja',
   geburtsort: 'Musterstadt',
   geschlecht: 'weiblich',
@@ -177,6 +178,7 @@ test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on t
 
   await press(page, 'Ich bin: Beschäftigte Person');
   await answerUntilSummary(page);
+  await expect(page.locator('main')).toContainText('17.05.1990');
   await press(page, 'Weiter zum Abschluss');
   await press(page, 'Ich versichere, dass meine Angaben richtig und vollständig sind.');
   await sign(page);
@@ -518,6 +520,15 @@ test('the dots of a date show before they are typed (the iPhone keypad has none)
   await input.fill('');
   await input.pressSequentially('2,11,2026');
   await expect(input).toHaveValue('2.11.2026');
+  // A two-digit year only where the day cannot be after today (2026-11-07): not the start.
+  await input.fill('');
+  await input.pressSequentially('021126');
+  await press(page, 'Weiter');
+  await expect(
+    page.getByText('Bitte das Jahr vierstellig eingeben, z. B. 02.11.2026.'),
+  ).toBeVisible();
+  await input.fill('');
+  await input.pressSequentially('2,11,2026');
 
   // The device's date picker (tests cannot tap the native wheels; they set its value).
   const picker = page.getByLabel('Datum im Kalender wählen');

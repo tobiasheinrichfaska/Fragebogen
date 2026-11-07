@@ -237,6 +237,35 @@ describe('a floating date bound (maxDate "today")', () => {
     expect(normalizeFieldValue(birth, '31.12.1875')).toEqual(refused('date.tooEarly'));
   });
 
+  // Tobias 2026-11-07: "Geburtsdatum sollte auch ttmmjj eingegeben werden können … ergänzt für
+  // Alter bis ca. 100 Jahre": the latest year with these two digits that is not after the bound.
+  it.each([
+    ['170590', '1990-05-17'],
+    ['17.05.90', '1990-05-17'],
+    ['1.5.90', '1990-05-01'],
+    ['17,05,90', '1990-05-17'],
+    ['010125', '2025-01-01'],
+    ['01.07.31', '2031-07-01'], // today: age 0
+    ['02.07.31', '1931-07-02'], // tomorrow is in the future: 100 years earlier, age 99
+    ['290200', '2000-02-29'],
+  ])('reads a two-digit year %j as %s, at most 100 years back', (raw, iso) => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2031, 6, 1, 10));
+    expect(normalizeFieldValue(birth, raw)).toEqual(accepted(iso));
+  });
+
+  it('still refuses a two-digit year where it cannot tell the century', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 10, 7, 10));
+    expect(normalizeFieldValue(birth, '290225')).toEqual(refused('date.invalid'));
+    const start = field('date', { minDate: '2026-01-01' });
+    expect(normalizeFieldValue(start, '02.11.26')).toEqual(refused('date.shortYear'));
+    expect(normalizeFieldValue(start, '021126')).toEqual(refused('date.shortYear'));
+    expect(issueMessage('date.shortYear', {})).toBe(
+      'Bitte das Jahr vierstellig eingeben, z. B. 02.11.2026.',
+    );
+  });
+
   it('names "heute" in the message', () => {
     expect(issueMessage('date.tooLate', { maxDate: 'today' })).toBe(
       'Das Datum liegt zu spät – spätestens heute.',

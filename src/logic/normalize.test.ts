@@ -135,7 +135,8 @@ describe('normalizeDate', () => {
     ['29.02.2026', 'date.invalid'],
     ['31.04.2026', 'date.invalid'],
     ['2026-13-01', 'date.invalid'],
-    ['29.10.26', 'date.format'],
+    ['29.10.26', 'date.shortYear'],
+    ['291026', 'date.shortYear'],
     ['29/10/2026', 'date.format'],
     ['2026-1-5', 'date.format'],
     ['1705199', 'date.format'],
@@ -144,6 +145,25 @@ describe('normalizeDate', () => {
     ['morgen', 'date.format'],
   ])('%j → %s', (raw, issue) => {
     expect(normalizeDate(raw)).toEqual({ ok: false, issue });
+  });
+
+  // Tobias 2026-11-07: with a latest day (a birth date: today) two digits give the year.
+  it.each([
+    ['170590', '2026-11-07', '1990-05-17'],
+    ['07.11.26', '2026-11-07', '2026-11-07'],
+    ['08.11.26', '2026-11-07', '1926-11-08'],
+    ['311299', '2026-11-07', '1999-12-31'],
+    ['010100', '2026-11-07', '2000-01-01'],
+    ['15.06.75', '2026-12-31', '1975-06-15'],
+    // A four-digit year never changes, even past the latest day (the bound check refuses it).
+    ['17.05.2030', '2026-11-07', '2030-05-17'],
+  ])('%j up to %s → %s', (raw, latest, expected) => {
+    expect(normalizeDate(raw, latest)).toEqual({ ok: true, value: expected, warnings: [] });
+  });
+
+  it('checks the day of a two-digit year like any other', () => {
+    expect(normalizeDate('31.04.90', '2026-11-07')).toEqual({ ok: false, issue: 'date.invalid' });
+    expect(normalizeDate('1.5.9', '2026-11-07')).toEqual({ ok: false, issue: 'date.format' });
   });
 });
 
