@@ -236,10 +236,31 @@ describe('manual_tests/ as the catalogue', () => {
     expect(testAreaOf(byId('MT-10'))).toEqual({ offered: true });
   });
 
-  it('tells where a test starts when it builds on another one', () => {
+  it('tells where a test starts', () => {
     const mt10 = cases.find((c) => c.id === 'MT-10');
     const pre = mt10?.parts.find((part) => part.label === 'Voraussetzungen')?.blocks[0];
     expect(pre?.kind === 'text' && pre.text).toContain('App neu starten');
+  });
+
+  // Tobias 2026-11-07: "sorge dafür, dass kein Test einen anderen Test vorneweg braucht oder
+  // erwartet. Jeder Test startet mit seiner eigenen Umgebung."
+  it('lets no test need another one first', () => {
+    const named = cases.flatMap((c) =>
+      c.parts
+        .filter((part) => part.label === 'Einstieg' || part.label === 'Voraussetzungen')
+        .flatMap((part) => part.blocks.flatMap(textsOf))
+        .flatMap((text) => inlineMarkdown(text))
+        .filter((token) => token.kind === 'ref' && token.id !== c.id)
+        .map((token) => `${c.id} ${token.text}`),
+    );
+    expect(named).toEqual([]);
+    const after = cases.flatMap((c) =>
+      c.parts
+        .flatMap((part) => part.blocks.flatMap(textsOf))
+        .filter((text) => /\b(?:nach|aus|wie(?: in)?|spielen)\s+(?:MT|L)-\d/i.test(text))
+        .map((text) => `${c.id}: ${text.slice(0, 60)}`),
+    );
+    expect(after).toEqual([]);
   });
 
   // Tobias 2026-11-01: "sollte die Anleitung beginnen mit: Sie starten einen neuen Fragebogen …".
@@ -262,18 +283,7 @@ describe('manual_tests/ as the catalogue', () => {
     expect(kinds.filter((k) => k === 'home').length).toBeGreaterThanOrEqual(40);
     // The rest begins elsewhere; a test listed here lost its start link or names its entry oddly.
     expect(offered.filter((c) => testEnvironment(c).kind === 'elsewhere').map((c) => c.id)).toEqual(
-      [
-        'MT-116',
-        'MT-118',
-        'MT-69',
-        'MT-88',
-        'MT-100',
-        'MT-101',
-        'MT-80',
-        'MT-85',
-        'MT-133',
-        'MT-130',
-      ],
+      ['MT-116', 'MT-118', 'MT-80', 'MT-85', 'MT-133', 'MT-130'],
     );
   });
 });
