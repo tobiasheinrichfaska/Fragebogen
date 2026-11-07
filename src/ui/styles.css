@@ -923,11 +923,58 @@ table.sheet tr.sheet-mask th {
   padding-top: 0.75rem;
 }
 
-/* Test folder build: the test page next to the app; two tabs on a narrow screen. */
+/* Test folder build: a header, the test page next to the app; two tabs on a narrow screen. */
+.test-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--test-header);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+:root {
+  --test-header: 3.5rem;
+}
+
+.test-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.test-header button {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.75rem;
+}
+
+.test-banner {
+  padding: 0 1rem;
+}
+
 .test-shell {
   display: grid;
   grid-template-columns: minmax(20rem, 30rem) minmax(0, 1fr);
-  min-height: 100vh;
+  min-height: calc(100vh - var(--test-header));
+}
+
+/* Opened from far down the list, a test begins at its heading, below the sticky header and tabs. */
+.test-case {
+  scroll-margin-top: 4.5rem;
+}
+
+.choice-dialog-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .test-tabs {
@@ -946,8 +993,8 @@ button.start-link {
 
 .test-panel {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: var(--test-header);
+  height: calc(100vh - var(--test-header));
   overflow-y: auto;
   border-right: 1px solid var(--border);
   background: var(--surface);
@@ -996,37 +1043,82 @@ button.start-link {
   color: var(--fg);
 }
 
-.test-list {
-  margin: 0.5rem 0;
-  padding: 0;
-  list-style: none;
-}
-
-.test-list button {
+/* The overview (Tobias 2026-11-07, like the Arbeitszeitplaner's): one box per test, by area. */
+.test-filters {
   display: flex;
-  gap: 0.6rem;
-  align-items: baseline;
-  margin: 0.25rem 0;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  align-items: end;
 }
 
-.test-symbol {
-  flex: none;
-  width: 1.2rem;
-  text-align: center;
-  font-weight: 700;
+.test-filters .test-field {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.test-check {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin: 0.75rem 0;
+}
+
+.test-grid-row {
+  margin: 0.6rem 0;
+}
+
+.test-grid-area {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.82rem;
   color: var(--muted);
 }
 
-.test-symbol.bestanden {
-  color: #2b7a3d;
+.test-grid-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
-.test-symbol.teilweise {
-  color: #a86a00;
+button.test-chip {
+  min-width: 2.9rem;
+  min-height: 2rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 0.8rem;
 }
 
-.test-symbol.nichtBestanden {
+button.test-chip.bestanden {
+  border-color: var(--success-border);
+  background: var(--success-bg);
+}
+
+button.test-chip.nichtBestanden {
+  border-color: var(--danger);
+  background: var(--error-bg);
   color: var(--danger);
+}
+
+button.test-chip.changed {
+  border-style: dashed;
+}
+
+button.test-chip.elsewhere {
+  opacity: 0.55;
+}
+
+button.test-chip[aria-current='true'] {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.test-case-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .test-summary,
@@ -1042,6 +1134,11 @@ button.start-link {
 }
 
 @media (max-width: 900px) {
+  .test-header {
+    position: static;
+    height: auto;
+  }
+
   .test-shell {
     display: block;
   }
@@ -1160,7 +1257,8 @@ button.start-link {
 }
 
 /* "Geschützte PDF": the password of a protected PDF while it is read */
-.password-dialog {
+.password-dialog,
+.choice-dialog {
   width: min(28rem, calc(100% - 2rem));
   padding: 1.25rem;
   border: 1px solid var(--border);
@@ -1169,11 +1267,13 @@ button.start-link {
   color: var(--fg);
 }
 
-.password-dialog::backdrop {
+.password-dialog::backdrop,
+.choice-dialog::backdrop {
   background: rgb(0 0 0 / 0.45);
 }
 
-.password-dialog h2 {
+.password-dialog h2,
+.choice-dialog h2 {
   margin-top: 0;
 }
 

@@ -146,45 +146,63 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 
 **Schritte:**
 
-1. Den Testordner öffnen; links den eigenen Namen eintragen, einen Bereich wählen.
-   - **Danach:** Die Tests sind dieselben wie in `manual_tests/` (Kennung MT-…); lokale Tests (L-…)
-     stehen am Ende.
-2. Einen Test anklicken, **„Test beginnen (Zeit läuft)“**, rechts in der App den Schritten folgen.
+1. Den Testordner öffnen.
+   - **Danach:** Oben eine Kopfzeile „Testbereich“ mit **„App neu starten“**, **„App vollständig
+     zurücksetzen“** und **„Testbericht herunterladen“**. Links die **„Testübersicht“**: je Bereich
+     eine Zeile mit Kästchen, eines je Test (die Nummer ohne „MT-“), rechts die App. Die Tests sind
+     dieselben wie in `manual_tests/`; lokale Tests (L-…) stehen am Ende.
+2. Mit der Maus auf ein Kästchen zeigen.
+   - **Danach:** Kennung und Titel des Tests erscheinen, z. B. „MT-11: Interview des Arbeitgebers“.
+3. Bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen eintragen.
+4. Das Kästchen **„11“** anklicken.
+   - **Danach:** Die Frage „App für MT-11 neu starten?“ erscheint (mehr dazu in MT-133).
+5. **„App so lassen“** klicken.
+   - **Danach:** Die Testübersicht ist ausgeblendet; links steht nur MT-11, oben mit **„← Zurück zur
+     Testübersicht“**, darunter **„‹ Vorheriger“**, „5 von 109“ (oder ähnlich) und **„Nächster ›“**.
+     Der Test beginnt oben mit seiner Überschrift.
+6. **„Test beginnen (Zeit läuft)“** klicken und rechts in der App den Schritten folgen.
    - **Danach:** Was ein Schritt bringt, steht grün gleich darunter („Danach:“). Neben einem Wert
      zum Eintragen steht ⧉; ein Klick kopiert ihn, das Zeichen wird zu ✓ (klappt das Kopieren nicht,
      steht daneben „(bitte markieren und kopieren)“). Ein Wert, den Sie selbst tippen sollen, ist wie
      eine Taste dargestellt, ohne ⧉. _Nicht offensichtlich:_ ⧉ trägt nichts in die App ein – den
      kopierten Wert dort selbst einfügen.
-3. Ein Ergebnis wählen („bestanden“, „teilweise“ oder „nicht bestanden“), einen Kommentar schreiben,
-   bei „Dauer korrigieren“ eine Minutenzahl eintragen.
-   - **Danach:** In der Liste steht beim Test das Zeichen des Ergebnisses.
-4. Die Seite neu laden.
-   - **Danach:** Name, Ergebnisse und Kommentare sind noch da. _Nicht offensichtlich:_ In einem
-     privaten Fenster warnt die Seite, dass sie nichts speichern kann.
-5. **„Testbericht als PDF“**.
-   - **Danach:** Eine PDF „Testbericht_<Name>_<Datum>.pdf“ mit Ergebnis, Beginn, Ende, gemessener und
-     korrigierter Dauer, Kommentar und Summen; nicht bearbeitete Tests fehlen darin. Oben steht
-     „Gerät laut Browser: …“, z. B. „Windows-Computer · Edge 142 · Bildschirm 1920 × 1080“.
-6. MT-11 öffnen und bei „Voraussetzungen“ auf **„MT-10“** klicken.
-   - **Danach:** MT-10 öffnet sich.
-7. MT-01 öffnen.
-   - **Danach:** MT-01 zeigt oben „Nicht im Testbereich: …“ mit Grund und steht in der Liste
-     mit „– nicht im Testbereich“.
-8. In der App einen Fragebogen beginnen, dann links **„App neu starten (Startseite)“** und die
-   Rückfrage bestätigen.
-   - **Danach:** Die App zeigt wieder ihre Startseite; die Ergebnisse links sind noch da.
-9. Am Handy den Testordner öffnen und bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen
-   eintragen.
-10. Einen Test antippen und **„Test beginnen (Zeit läuft)“** tippen.
-11. Oben auf **„App“** wechseln, einen Fragebogen beginnen und die erste Frage beantworten.
-12. Oben auf **„Testanleitung“** wechseln, dann wieder auf **„App“**.
+7. **„✗ Klappt nicht“** klicken.
+   - **Danach:** Es gibt nur diese zwei Ergebnisse: **„✓ Wie erwartet“** und **„✗ Klappt nicht“**.
+     Darunter steht: „Hat es nur zum Teil geklappt? Bitte „Klappt nicht“ und im Kommentar, was.“
+8. Bei „Kommentar – was ist aufgefallen?“ <kbd>Probe</kbd> tippen und bei „Dauer korrigieren“ eine
+   Minutenzahl eintragen.
+9. **„← Zurück zur Testübersicht“** klicken.
+   - **Danach:** Das Kästchen „11“ ist rot und zeigt „✗ 11“; es ist umrandet, weil es der zuletzt
+     geöffnete Test ist.
+10. Das Kästchen „11“ wieder öffnen und **„✓ Wie erwartet“** klicken, dann zurück zur Übersicht.
+    - **Danach:** Das Kästchen ist grün und zeigt „✓ 11“. Über den Kästchen steht „1 von 109
+      geprüft · ✓ wie erwartet 1 · ✗ klappt nicht 0 · Zeit …“.
+11. Das Häkchen **„Erledigte ausblenden“** setzen.
+    - **Danach:** Das Kästchen „11“ fehlt; die anderen Tests bleiben.
+12. Das Häkchen wieder entfernen und die Seite neu laden.
+    - **Danach:** Name, Ergebnisse und Kommentare sind noch da. _Nicht offensichtlich:_ In einem
+      privaten Fenster warnt die Seite, dass sie nichts speichern kann.
+13. MT-11 öffnen und bei „Voraussetzungen“ auf **„MT-10“** klicken.
+    - **Danach:** MT-10 öffnet sich (nach der Frage zum Neustart).
+14. Das Kästchen **„01“** anklicken.
+    - **Danach:** _Nicht offensichtlich:_ Keine Frage zum Neustart. MT-01 zeigt oben „Nicht im
+      Testbereich: …“ mit Grund; sein Kästchen ist in der Übersicht blasser.
+15. Am Handy den Testordner öffnen und bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen
+    eintragen.
+16. Ein Kästchen antippen, bei der Frage **„App so lassen“** und dann **„Test beginnen (Zeit
+    läuft)“** tippen.
+17. Oben auf **„App“** wechseln, einen Fragebogen beginnen und die erste Frage beantworten.
+18. Oben auf **„Testanleitung“** wechseln, dann wieder auf **„App“**.
     - **Danach:** Der Wechsel zur App und zurück verliert keine Eingaben in der App.
-13. Oben auf **„Testanleitung“** wechseln, ein Ergebnis wählen, mit **„← Zur Liste“** zurück zur
-    Liste und **„Testbericht als PDF“** tippen.
+19. Oben auf **„Testanleitung“** wechseln, ein Ergebnis wählen und ganz oben auf der Seite
+    **„Testbericht herunterladen“** tippen.
     - **Danach:** Im Testbericht vom Handy steht oben „iPhone · Safari …“ oder „Android-Smartphone ·
       Chrome …“. _Nicht offensichtlich:_ Ein iPad meldet sich in Safari wie ein Mac; die App erkennt
       es an der Touch-Bedienung und schreibt „iPad“.
-14. MT-21 öffnen und **„▶ Zum Unterschreiben öffnen“** anklicken, die Rückfrage bestätigen.
+20. MT-21 öffnen, bei der Frage **„App so lassen“**, dann im Test **„▶ Zum Unterschreiben öffnen“**
+    anklicken.
+    - **Danach:** Die Frage „Vorbereiteten Fragebogen öffnen?“ mit **„Abbrechen“** und **„Öffnen“**.
+21. **„Öffnen“** klicken.
     - **Danach:** Rechts öffnet sich die Zusammenfassung der beschäftigten Person mit dem Hinweis
       „Vorbereitet: Sofortmeldung – alles ausgefüllt, die Person unterschreibt.“; am Handy springt
       die Ansicht auf „App“. _Nicht offensichtlich:_ Passt ein Startpunkt nicht mehr zum Formular,
@@ -193,31 +211,93 @@ eingetragen (siehe MT-82, „Zugang oder IP-Adressen ändern“).
 **Erwartet:**
 
 - _Nicht offensichtlich:_ Wird ein Test geändert, nachdem Sie ihn bewertet haben (z. B. nach einem
-  neuen Upload des Testordners), steht er in der Liste mit „– geändert seit Ihrem Test“ und im Test
-  mit der Bitte, ihn neu zu bewerten; der Testbericht vermerkt es ebenfalls.
+  neuen Upload des Testordners), ist sein Kästchen gestrichelt umrandet, der Test bittet, ihn neu zu
+  bewerten, und der Testbericht vermerkt es ebenfalls.
+- _Nicht offensichtlich:_ Ein „teilweise“ aus der Zeit vor dem 07.11.2026 steht jetzt als „✗ Klappt
+  nicht“ da; der Kommentar bleibt.
 
-## MT-130: Erledigte Tests aus dem nächsten Bericht nehmen
+## MT-133: Neuen Test öffnen – die App passend neu starten
 
 **Einstieg:** Der Testbereich selbst – Sie sind schon da.
 
-**Voraussetzungen:** Mindestens zwei Tests haben ein Ergebnis (z. B. aus MT-85).
+**Voraussetzungen:** Die Testübersicht ist zu sehen (sonst **„← Zurück zur Testübersicht“**).
 
 **Schritte:**
 
-1. **„← Zur Liste“** klicken und unter der Liste **„Testbericht als PDF“** klicken.
-   - **Danach:** Die PDF enthält alle Tests mit Ergebnis.
-2. **„Erledigte Tests aus dem nächsten Bericht nehmen“** klicken.
-   - **Danach:** _Nicht offensichtlich:_ Die Tests stehen in der Liste weiter mit ✓ und ihrem
-     Ergebnis, dazu „· berichtet“. Unter der Liste steht „· im nächsten Bericht: 0“, und der Knopf ist
-     ausgegraut.
-3. Noch einmal **„Testbericht als PDF“**.
-   - **Danach:** Die PDF enthält diese Tests nicht mehr; darunter steht der Satz „… schon berichtete
-     Tests fehlen darin; sie stehen in der Liste weiter als erledigt.“
-4. Einen der berichteten Tests öffnen und seinen Kommentar ändern, dann **„Zur Liste“**.
-   - **Danach:** „· berichtet“ fehlt bei diesem Test; „im nächsten Bericht: 1“ – eine Änderung bringt
-     ihn wieder in den Bericht.
-5. **„Alle wieder in den Bericht nehmen“** klicken.
-   - **Danach:** Kein Test zeigt mehr „· berichtet“; der nächste Bericht enthält wieder alle.
+1. In der Testübersicht weit unten das Kästchen **„132“** anklicken.
+   - **Danach:** Die Frage „App für MT-132 neu starten?“: „Dieser Test beginnt mit „Sofortmeldung –
+     nur der Arbeitgeber hat abgeschlossen“.“ und „Ihre Eingaben in der App gehen verloren; die
+     Testergebnisse bleiben erhalten.“, dazu **„App so lassen“** und **„Mit diesem Einstieg neu
+     starten“**.
+2. **„Mit diesem Einstieg neu starten“** klicken.
+   - **Danach:** Rechts steht die App bei „Wer füllt jetzt aus?“ mit dem abgeschlossenen Teil des
+     Arbeitgebers. Links beginnt MT-132 oben mit seiner Überschrift – nicht am Ende des Tests.
+     _Nicht offensichtlich:_ Am Handy bleibt die Ansicht auf „Testanleitung“, damit Sie die Schritte
+     zuerst lesen.
+3. **„← Zurück zur Testübersicht“** klicken und das Kästchen **„132“** noch einmal anklicken.
+   - **Danach:** _Nicht offensichtlich:_ Keine Frage – es ist derselbe Test wie zuletzt.
+4. **„Nächster ›“** klicken.
+   - **Danach:** Die Frage zum Neustart für den nächsten Test erscheint.
+5. **„App so lassen“** klicken, zurück zur Übersicht und das Kästchen **„03“** anklicken.
+   - **Danach:** „Dieser Test beginnt auf der Startseite der App.“ mit **„App so lassen“** und
+     **„App neu starten“**.
+6. **„App neu starten“** klicken.
+   - **Danach:** Rechts die Startseite der App mit „Neuer Fragebogen“.
+7. Zurück zur Übersicht und das Kästchen **„69“** anklicken.
+   - **Danach:** „Einstieg: Direkt nach MT-68 (Schritt 3 erledigt).“ und „Die App kann dafür bleiben,
+     wie sie ist.“; hier ist **„App so lassen“** hervorgehoben, **„App neu starten (Startseite)“**
+     steht daneben.
+8. **„App so lassen“** klicken.
+9. In der App einen Fragebogen beginnen, dann in der Kopfzeile **„App neu starten“** klicken.
+   - **Danach:** Die Frage „App neu starten?“ mit **„Abbrechen“** und **„App neu starten“**.
+10. **„Abbrechen“** klicken.
+    - **Danach:** Die App bleibt beim angefangenen Fragebogen.
+11. In der Kopfzeile **„App vollständig zurücksetzen“** klicken.
+    - **Danach:** Die Frage „App vollständig zurücksetzen?“ erklärt, dass alles gelöscht wird, was die
+      App in diesem Browser gespeichert hat – auch ein angefangener Fragebogen zum Fortsetzen – und
+      der Link in der Adresszeile; „Ihre Testergebnisse bleiben erhalten.“
+12. **„Zurücksetzen“** klicken.
+    - **Danach:** Grün unter der Kopfzeile: „Die App ist zurückgesetzt: nichts mehr in diesem Browser
+      gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.“ Rechts die
+      Startseite der App; die farbigen Kästchen der Testübersicht sind unverändert.
+
+## MT-130: Gemeldete Tests fehlen im nächsten Testbericht
+
+**Einstieg:** Der Testbereich selbst – Sie sind schon da.
+
+**Voraussetzungen:** Mindestens zwei Tests haben ein Ergebnis (z. B. aus MT-85), und noch kein
+Testbericht wurde in diesem Browser heruntergeladen.
+
+**Schritte:**
+
+1. In der Kopfzeile **„Testbericht herunterladen“** klicken.
+   - **Danach:** Ohne Rückfrage lädt die PDF herunter; sie enthält alle Tests mit Ergebnis,
+     Kommentar oder Beginn.
+2. Mit der Maus auf das Kästchen eines dieser Tests zeigen.
+   - **Danach:** _Nicht offensichtlich:_ Hinter Titel und Ergebnis steht „– berichtet“. Das Kästchen
+     bleibt grün bzw. rot; im geöffneten Test steht „im Testbericht vom …“.
+3. Noch einmal **„Testbericht herunterladen“** klicken.
+   - **Danach:** Die Frage „Schon gemeldete Tests mitnehmen?“: wie viele Tests schon in einem früheren
+     Testbericht standen und wie viele neu oder geändert sind, dazu **„Abbrechen“**, **„Ja, alle
+     mitnehmen“** und **„Nein (Bericht ohne Tests)“**.
+4. **„Nein (Bericht ohne Tests)“** klicken.
+   - **Danach:** Die PDF enthält keinen Test, nur Kopf, Summen und den Gesamteindruck.
+5. Einen der gemeldeten Tests öffnen und seinen Kommentar ändern.
+6. In der Kopfzeile **„Testbericht herunterladen“** klicken.
+   - **Danach:** Die Frage nennt jetzt einen Test als neu oder geändert; der dritte Knopf heißt
+     **„Nein, nur neue und geänderte“**.
+7. **„Nein, nur neue und geänderte“** klicken.
+   - **Danach:** Die PDF enthält nur den geänderten Test.
+8. **„Testbericht herunterladen“** klicken und **„Ja, alle mitnehmen“** wählen.
+   - **Danach:** Die PDF enthält wieder alle Tests mit Ergebnis.
+
+**Erwartet:**
+
+- _Nicht offensichtlich:_ Auch ein Test ohne Ergebnis, aber mit Kommentar oder begonnen, gilt nach
+  einem Bericht als gemeldet – sein Kommentar steht nicht in jedem weiteren Bericht wieder.
+- Ein Test, der an einem anderen Tag begonnen als bewertet wurde, zeigt im Bericht das Datum beim
+  Beginn (z. B. „Beginn 01.11. 14:42 Uhr“); im Test bittet ein Hinweis, die Dauer zu korrigieren,
+  wenn mehr als 600 Minuten gemessen sind.
 
 ---
 

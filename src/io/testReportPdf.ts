@@ -4,12 +4,14 @@
 import fontkit from '@cantoo/fontkit';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { testReportFileName } from '../logic/fileNames';
-import { formatLocalDateTime, isLocalTime } from '../logic/time';
+import { formatLocalDateTime } from '../logic/time';
 import {
   RESULT_LABELS,
   changedSince,
   countedMinutes,
+  inReport,
   measuredMinutes,
+  testTime,
   totalsOf,
   type TestRun,
 } from '../logic/testRun';
@@ -25,9 +27,6 @@ export interface TestReportInput {
   /** Device time of creation. */
   created: { local: string; utc: string };
 }
-
-const clock = (local: string | undefined) =>
-  local && isLocalTime(local) ? `${local.slice(11, 16)} Uhr` : '–';
 
 export async function writeTestReportPdf(
   input: TestReportInput,
@@ -61,18 +60,19 @@ export async function writeTestReportPdf(
   );
   layout.text(`Gerät laut Browser: ${input.device}`, { ...small, gap: 6 });
   layout.text(
-    `Getestet: ${totals.tested} (bestanden ${totals.byResult.bestanden}, teilweise ${totals.byResult.teilweise}, ` +
-      `nicht bestanden ${totals.byResult.nichtBestanden}) · Zeit gemessen ${totals.measuredMinutes} Min., ` +
+    `Getestet: ${totals.tested} (wie erwartet ${totals.byResult.bestanden}, ` +
+      `klappt nicht ${totals.byResult.nichtBestanden}) · Zeit gemessen ${totals.measuredMinutes} Min., ` +
       `gezählt (mit Korrekturen) ${totals.countedMinutes} Min.`,
     { font: fonts.bold, size: 10, gap: 4 },
   );
 
   for (const testCase of input.cases) {
     const entry = run.entries[testCase.id];
-    if (!entry || (!entry.result && !entry.started && entry.comment.trim() === '')) continue;
+    if (!entry || !inReport(entry)) continue;
     layout.heading(`${testCase.id} ${testCase.title}`, 10);
     layout.text(testCase.area, small);
     const measured = measuredMinutes(entry);
+    const clock = (local: string | undefined) => testTime(local, input.created.local);
     layout.text(
       `Ergebnis: ${entry.result ? RESULT_LABELS[entry.result] : 'nicht abgeschlossen'} · Beginn ${clock(entry.started)} · ` +
         `Ende ${clock(entry.ended)} · gemessen ${measured === undefined ? '–' : `${measured} Min.`}` +

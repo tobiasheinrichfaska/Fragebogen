@@ -43,10 +43,13 @@ async function openComplete(page: Page): Promise<void> {
   expect(existsSync(TEST_APP), 'dist-test/index.html (npm run build:test)').toBe(true);
   await page.goto(pathToFileURL(TEST_APP).href);
   await page
-    .locator('.test-list button')
-    .filter({ hasText: /^\S*\s*MT-30 / })
+    .locator('.test-grid')
+    .getByRole('button', { name: /^MT-30: / })
     .click();
+  // The page asks how to start the test, then before the start link replaces the app (2026-11-07).
+  await page.getByRole('dialog').getByRole('button', { name: 'App so lassen' }).click();
   await page.getByRole('button', { name: '▶ Vollständigen Fragebogen öffnen' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Öffnen', exact: true }).click();
   await expect(page.locator('.test-app')).toContainText('Vollständig');
 }
 

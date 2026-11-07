@@ -8,6 +8,7 @@ import {
   inlineMarkdown,
   parseManualTests,
   testAreaOf,
+  testEnvironment,
   textsOf,
 } from '../../src/logic/manualTests';
 
@@ -251,6 +252,63 @@ describe('manual_tests/ as the catalogue', () => {
     expect(mt11?.kind === 'text' && mt11.text).toContain(
       'einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“',
     );
+  });
+
+  // Tobias 2026-11-07: opening a test asks to restart the app with the environment that suits it.
+  it('knows the environment of every test the test area offers', () => {
+    const offered = cases.filter((c) => testAreaOf(c).offered);
+    const kinds = offered.map((c) => testEnvironment(c).kind);
+    expect(kinds.filter((k) => k === 'start').length).toBeGreaterThanOrEqual(45);
+    expect(kinds.filter((k) => k === 'home').length).toBeGreaterThanOrEqual(40);
+    // The rest begins elsewhere; a test listed here lost its start link or names its entry oddly.
+    expect(offered.filter((c) => testEnvironment(c).kind === 'elsewhere').map((c) => c.id)).toEqual(
+      [
+        'MT-116',
+        'MT-118',
+        'MT-69',
+        'MT-88',
+        'MT-100',
+        'MT-101',
+        'MT-80',
+        'MT-85',
+        'MT-133',
+        'MT-130',
+      ],
+    );
+  });
+});
+
+describe('testEnvironment', () => {
+  const caseWith = (entry?: string) =>
+    parseManualTests(
+      ['# 01 – Start', '', '## MT-90: Probe', '', ...(entry ? [`**Einstieg:** ${entry}`, ''] : [])]
+        .concat(['**Schritte:**', '', '1. Klicken.'])
+        .join('\n'),
+      '01_start.md',
+    ).cases[0] ?? { id: '', title: '', parts: [] };
+
+  it('takes the first start link of the entry', () => {
+    expect(
+      testEnvironment(
+        caseWith(
+          'Direkt nach MT-21 – oder schneller: [Zum Unterschreiben öffnen](start:sofortmeldung-fertig) oder [anders](start:anders)',
+        ),
+      ),
+    ).toEqual({ kind: 'start', id: 'sofortmeldung-fertig', text: 'Zum Unterschreiben öffnen' });
+  });
+
+  it('starts on the start page when the entry says so, or when there is no entry', () => {
+    expect(
+      testEnvironment(caseWith('Startseite der App (im Testbereich: „App neu starten“).')),
+    ).toEqual({ kind: 'home' });
+    expect(testEnvironment(caseWith())).toEqual({ kind: 'home' });
+  });
+
+  it('leaves the app as it is for an entry elsewhere', () => {
+    expect(testEnvironment(caseWith('Direkt nach **MT-68** (Schritt 3 erledigt).'))).toEqual({
+      kind: 'elsewhere',
+      text: 'Direkt nach MT-68 (Schritt 3 erledigt).',
+    });
   });
 });
 

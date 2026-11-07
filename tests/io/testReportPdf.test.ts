@@ -24,11 +24,23 @@ const FONTS: PdfFonts = {
 
 const T0 = '2026-11-01T10:00:00.000+01:00';
 let run = { ...emptyRun(), tester: 'Erika Mustermann', comment: 'Gut verständlich.' };
-run = setResult(startTest(run, 'MT-13', T0), 'MT-13', 'teilweise', '2026-11-01T10:07:30.000+01:00');
+run = setResult(
+  startTest(run, 'MT-13', T0),
+  'MT-13',
+  'nichtBestanden',
+  '2026-11-01T10:07:30.000+01:00',
+);
 run = correctDuration(run, 'MT-13', 5);
 run = setComment(run, 'MT-13', 'Text zu lang.');
 run = setResult(run, 'MT-14', 'bestanden', '2026-11-01T10:10:00.000+01:00', 'aaaaaaaaaaaa');
 run = setComment(run, 'MT-15', 'Nicht geschafft, Datei nicht gefunden.');
+// iPhone report 2026-11-06: begun days before the result, the times read as minutes only.
+run = setResult(
+  startTest(run, 'MT-17', '2026-10-27T14:42:00.000+01:00'),
+  'MT-17',
+  'bestanden',
+  '2026-11-01T10:20:00.000+01:00',
+);
 const CASES = [
   {
     id: 'MT-13',
@@ -38,6 +50,7 @@ const CASES = [
   { id: 'MT-14', title: 'Folgefragen', area: 'Ausfüllen (Interview)', version: 'bbbbbbbbbbbb' },
   { id: 'MT-15', title: 'Zwischenstand speichern', area: 'Ausfüllen (Interview)' },
   { id: 'MT-16', title: 'Nicht bearbeitet', area: 'Ausfüllen (Interview)' },
+  { id: 'MT-17', title: 'Alle Daten löschen', area: 'Ausfüllen (Interview)' },
 ];
 
 describe('test report as PDF', () => {
@@ -67,14 +80,15 @@ describe('test report as PDF', () => {
       'Tester: Erika Mustermann · erstellt am 01.11.2026, 11:00 Uhr laut Gerät · App 0.1.0',
       // 2026-11-05: the report named no device, so an iPhone test could not be told apart.
       'Gerät laut Browser: iPhone · Safari 18 · Bildschirm 390 × 844',
-      'Getestet: 2 (bestanden 1, teilweise 1, nicht bestanden 0)',
+      'Getestet: 3 (wie erwartet 2, klappt nicht 1)',
       'MT-13 Hinweise und „Vorerst überspringen“ (Person)',
-      'Ergebnis: teilweise · Beginn 10:00 Uhr · Ende 10:07 Uhr · gemessen 8 Min. · korrigiert 5 Min. (gezählt 5 Min.)',
+      'Ergebnis: klappt nicht · Beginn 10:00 Uhr · Ende 10:07 Uhr · gemessen 8 Min. · korrigiert 5 Min. (gezählt 5 Min.)',
       'Kommentar: Text zu lang.',
-      'Ergebnis: bestanden · Beginn 10:10 Uhr · Ende 10:10 Uhr · gemessen 1 Min.',
+      'Ergebnis: wie erwartet · Beginn 10:10 Uhr · Ende 10:10 Uhr · gemessen 1 Min.',
       'Hinweis: Der Test wurde nach diesem Ergebnis geändert.',
       'Ergebnis: nicht abgeschlossen',
       'Kommentar: Nicht geschafft, Datei nicht gefunden.',
+      'Ergebnis: wie erwartet · Beginn 27.10. 14:42 Uhr · Ende 10:20 Uhr · gemessen 6938 Min.',
       'Gesamteindruck',
       'Gut verständlich.',
       'Seite 1 von 1',
