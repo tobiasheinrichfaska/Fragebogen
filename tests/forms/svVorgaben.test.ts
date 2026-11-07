@@ -935,9 +935,13 @@ function report(): string {
 }
 
 describe('docs/sv-vorgaben/', () => {
-  it('lists every case with its source, expectation and the app proposal', async () => {
-    await expect(report()).toMatchFileSnapshot(
-      `../../docs/sv-vorgaben/${svForm.definition.id}-${svForm.definition.version}.md`,
-    );
-  });
+  it(
+    'lists every case with its source, expectation and the app proposal',
+    { timeout: 60_000 },
+    async () => {
+      await expect(report()).toMatchFileSnapshot(
+        `../../docs/sv-vorgaben/${svForm.definition.id}-${svForm.definition.version}.md`,
+      );
+    },
+  );
 });

@@ -30,7 +30,8 @@ async function lockedLink(
   return { fragment: made.fragment, locked: parsed.locked };
 }
 
-describe('lockTransfer / unlockTransfer', () => {
+// PBKDF2 with 600,000 rounds, several times per test: seconds each under load (2026-11-07 timed out).
+describe('lockTransfer / unlockTransfer', { timeout: 60_000 }, () => {
   it('is available where Web Crypto is', () => {
     expect(lockAvailable()).toBe(true);
   });
