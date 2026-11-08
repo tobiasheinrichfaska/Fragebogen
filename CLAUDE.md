@@ -1202,8 +1202,8 @@ session.ts (the rule moved out of RolesScreen). Regression tests that failed on 
 (red with the old rule); e2e MT-18 got the complete Sofortmeldung, and the MT-18 takeover test now
 checks „derselbe Fragebogen“ with the interim file (it had relied on the offer in a complete one).
 Personalfragebogen draft changed (rules only), so `npm run catalogue` stamped `revised`. Commit
-ac530fe, pushed; **test folder uploaded at ac530fe („online identisch“); the public app (f25e71b)
-lacks (3) and (5) — upload only on Tobias's OK.** Unit 5239 passed. e2e: the first full run had 2
+ac530fe, pushed; **test folder uploaded at ac530fe („online identisch“); on Tobias's „Ja“ the public
+app uploaded at 2b8d4cb („online identisch“), so it now carries (3) and (5).** Unit 5239 passed. e2e: the first full run had 2
 failures in `flow.spec.ts` under load (Firefox „Page crashed“ at the PDF download, WebKit stuck at
 „Weiter“; both engines alone 24 passed), the second full run 226 passed, 1 skipped, 26.4 min.
 
