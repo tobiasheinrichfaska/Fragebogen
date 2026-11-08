@@ -92,6 +92,21 @@ const links = readdirSync(DIR)
   .filter((name) => /^\d\d_.+\.md$/.test(name))
   .flatMap((name) => startLinksOf(parseManualTests(readFileSync(join(DIR, name), 'utf8'), name)));
 
+// The end-to-end tests that took over manual tests open start points by id (`openTestApp(page,
+// 'id')`, i.e. `?startpunkt=id`; Tobias 2026-11-08).
+const E2E_DIR = join(__dirname, '..', 'e2e');
+const specs = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory()
+      ? specs(join(dir, entry.name))
+      : entry.name.endsWith('.ts')
+        ? [readFileSync(join(dir, entry.name), 'utf8')]
+        : [],
+  );
+const automated = specs(E2E_DIR).flatMap((text) =>
+  [...text.matchAll(/openTestApp\(\s*page\s*,\s*'([a-z0-9-]+)'/g)].map((match) => match[1] ?? ''),
+);
+
 describe('start points (manual_tests/startpunkte/)', () => {
   it.each(points.map((point) => [point.id, point] as const))('%s builds', (_id, point) => {
     const form = newest(point.form);
@@ -134,8 +149,12 @@ describe('start points (manual_tests/startpunkte/)', () => {
 
   it('every start link names a start point, and every start point is used', () => {
     const ids = new Set(all.map((point) => point.id));
-    const used = new Set([...links, ...kanzlei.flatMap((p) => p.inbox.map((e) => e.from))]);
-    expect(links.filter((id) => !ids.has(id))).toEqual([]);
+    const used = new Set([
+      ...links,
+      ...automated,
+      ...kanzlei.flatMap((p) => p.inbox.map((e) => e.from)),
+    ]);
+    expect([...links, ...automated].filter((id) => !ids.has(id))).toEqual([]);
     expect([...ids].filter((id) => !used.has(id))).toEqual([]);
   });
 

@@ -1,5 +1,9 @@
 # 01 – Start
 
+Was ein Browser ohne Bildschirm prüfen kann – den Inhalt der Startseite, dass nichts ins Internet
+geht (auch offline), die Kontraste im dunklen Modus –, läuft automatisch in
+`tests/e2e/handtests/01_start.spec.ts`. Hier bleibt, was nur am echten Gerät geht.
+
 ## MT-01: Datei per Doppelklick öffnen
 
 **Testbereich:** nein – nur mit der heruntergeladenen Datei; im Testbereich läuft die App vom
@@ -10,49 +14,15 @@ Server (Einstieg dort: die Startseite der App rechts neben dem Testbereich).
 **Schritte:**
 
 1. Doppelklicken Sie auf `index.html`.
-2. Warten Sie, bis der Browser die Seite anzeigt.
-   - **Danach:** Die Überschrift **„Fragebogen“** erscheint, darunter drei Kästen: **„Neuer
-     Fragebogen“** mit dem Knopf **„Personalfragebogen: Angaben für die Sofortmeldung“** (Version
-     1.0.0, ohne „Testfassung“, oder höher), **„Weiterbearbeiten oder prüfen“** und **„Ihre Daten
-     bleiben auf diesem Gerät“**.
-   - **Danach:** _Nicht offensichtlich:_ Der Personalfragebogen, die Monatsmeldung, die
-     Steuerfreigabe und die Dienstwagen-Überlassung fehlen hier – sie sind Entwürfe und stehen nur
-     im Testbereich.
-   - **Danach:** Ganz unten steht **„Fragebogen 0.1.0 · läuft vollständig auf diesem Gerät“** (oder
-     eine höhere Version).
+   - **Danach:** Ihr Standardbrowser öffnet sich und zeigt die Startseite mit der Überschrift
+     **„Fragebogen“**.
    - **Danach:** _Nicht offensichtlich:_ In der Adresszeile steht `file:///…` statt einer
      Internetadresse. Das ist richtig, denn die Seite läuft ohne Server.
 
----
+**Erwartet:**
 
-## MT-02: Keine Verbindung ins Internet
-
-**Einstieg:** Startseite der App (im Testbereich: „App neu starten“); ab Schritt 2 ein neuer Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“.
-
-**Testbereich:** nur am PC – die Entwicklerwerkzeuge (F12) gibt es auf Handy und Tablet nicht
-(iPhone-Testbericht vom 01.11.2026).
-
-_Automatisch geprüft mit `npm run test:e2e` (Chromium, Firefox, WebKit): Die Datei verbietet per
-Sicherheitsrichtlinie (CSP) jede Verbindung; der Test meldet jede Anfrage, die das Gerät verlässt.
-Dieser Handtest bleibt für echte Geräte und Browser._
-
-**Voraussetzungen:** Startseite der App (im Testbereich: „App neu starten“ in der Kopfzeile; als Datei: `index.html` per Doppelklick öffnen). Sie verwenden Edge oder Chrome am PC.
-
-**Schritte:**
-
-1. Drücken Sie **F12**, wählen Sie den Reiter **„Netzwerk“** (bzw. „Network“) und laden Sie die
-   Seite mit **F5** neu.
-   - **Danach:** Im Reiter „Netzwerk“ erscheint nur die Seite selbst – im Testbereich die Adresse
-     `https://…/test/`, als Datei `file:…` – und ggf. ein Eintrag mit `data:`. _Nicht
-     offensichtlich:_ Ein Eintrag „favicon“ mit `data:,` ist gewollt. Er verhindert, dass der
-     Browser ein Symbol aus dem Internet nachlädt.
-2. Beginnen Sie mit **„Personalfragebogen: Angaben für die Sofortmeldung“** einen Fragebogen und
-   beantworten Sie einige Fragen.
-   - **Danach:** Im Reiter „Netzwerk“ ist beim Ausfüllen **keine** weitere Anfrage dazugekommen.
-3. Trennen Sie jetzt den Rechner vom Internet (WLAN aus bzw. Netzwerkkabel ziehen) und füllen Sie
-   weiter aus.
-   - **Danach:** Die App arbeitet ohne Internet weiter. _Nicht offensichtlich:_ Nur die Links „Wo
-     finde ich das?“ brauchen Internet.
+- Was die Startseite zeigt (nur veröffentlichte Formulare, unten die Versionsnummer), prüft ein
+  automatischer Test. Hier zählt nur, dass der Doppelklick die Datei im Browser öffnet.
 
 ---
 
@@ -68,3 +38,8 @@ Personalisierung → Farben → „Dunkel“; iPhone: Einstellungen → Anzeige 
 1. Öffnen Sie die App (im Testbereich oder als Datei) bzw. laden Sie sie neu.
    - **Danach:** Die Seite erscheint mit dunklem Hintergrund und heller Schrift. Alles bleibt gut
      lesbar – im Testbereich auch die Testanleitung.
+
+**Erwartet:**
+
+- Den Kontrast jeder Schrift zu ihrem Hintergrund misst ein automatischer Test. Hier zählt Ihr
+  Eindruck am echten Bildschirm.

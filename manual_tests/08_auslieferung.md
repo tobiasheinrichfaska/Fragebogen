@@ -144,209 +144,66 @@
 12. Im Büro `…/test/` öffnen.
     - **Danach:** „Fragebogen-Test“ öffnet sich ohne Anmeldung.
 
-## MT-85: Testseite im Testordner
+## MT-85: Testseite am echten Handy und iPad
 
 **Einstieg:** Der Testbereich selbst – Sie sind schon da.
 
-**Voraussetzungen:** Der Testordner ist hochgeladen, oder lokal `npm run build:test` und
-`dist-test/index.html` öffnen.
+**Voraussetzungen:** Der Testordner ist hochgeladen. Ein echtes Handy (iPhone oder Android), wenn
+vorhanden auch ein iPad. Alles andere an der Testseite – Übersicht, Ergebnisse,
+Neustart-Fragen, Zurücksetzen, Testbericht, die Ansicht am Handy nachgestellt – prüfen die
+automatischen Tests in `tests/e2e/handtests/08_testbereich.spec.ts`.
 
 **Schritte:**
 
-1. Den Testordner öffnen.
-   - **Danach:** Oben eine Kopfzeile „Testbereich“ mit **„App neu starten“**, **„App vollständig
-     zurücksetzen“** und **„Testbericht herunterladen“**. Links die **„Testübersicht“**: je Bereich
-     eine Zeile mit Kästchen, eines je Test (die Nummer ohne „MT-“), rechts die App. Die Tests sind
-     dieselben wie in `manual_tests/`; lokale Tests (L-…) stehen am Ende.
-2. Mit der Maus auf ein Kästchen zeigen.
-   - **Danach:** Kennung und Titel des Tests erscheinen, z. B. „MT-11: Interview des Arbeitgebers“.
-3. Bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen eintragen.
-4. Das Kästchen **„11“** anklicken.
-   - **Danach:** Die Frage „App für MT-11 neu starten?“ erscheint (mehr dazu in MT-133).
-5. **„App so lassen“** klicken.
-   - **Danach:** Die Testübersicht ist ausgeblendet; links steht nur MT-11, oben mit **„← Zurück zur
-     Testübersicht“**, darunter **„‹ Vorheriger“**, „5 von 109“ (oder ähnlich) und **„Nächster ›“**.
-     Der Test beginnt oben mit seiner Überschrift.
-6. **„Test beginnen (Zeit läuft)“** klicken und rechts in der App den Schritten folgen.
-   - **Danach:** Was ein Schritt bringt, steht grün gleich darunter („Danach:“). Neben einem Wert
-     zum Eintragen steht ⧉; ein Klick kopiert ihn, das Zeichen wird zu ✓ (klappt das Kopieren nicht,
-     steht daneben „(bitte markieren und kopieren)“). Ein Wert, den Sie selbst tippen sollen, ist wie
-     eine Taste dargestellt, ohne ⧉. _Nicht offensichtlich:_ ⧉ trägt nichts in die App ein – den
-     kopierten Wert dort selbst einfügen.
-7. **„✗ Klappt nicht“** klicken.
-   - **Danach:** Es gibt nur diese zwei Ergebnisse: **„✓ Wie erwartet“** und **„✗ Klappt nicht“**.
-     Darunter steht: „Hat es nur zum Teil geklappt? Bitte „Klappt nicht“ und im Kommentar, was.“
-8. Bei „Kommentar – was ist aufgefallen?“ <kbd>Probe</kbd> tippen und bei „Dauer korrigieren“ eine
-   Minutenzahl eintragen.
-9. **„← Zurück zur Testübersicht“** klicken.
-   - **Danach:** Das Kästchen „11“ ist rot und zeigt „✗ 11“; es ist umrandet, weil es der zuletzt
-     geöffnete Test ist.
-10. Das Kästchen „11“ wieder öffnen und **„✓ Wie erwartet“** klicken, dann zurück zur Übersicht.
-    - **Danach:** Das Kästchen ist grün und zeigt „✓ 11“. Über den Kästchen steht „1 von 109
-      geprüft · ✓ wie erwartet 1 · ✗ klappt nicht 0 · Zeit …“.
-11. Das Häkchen **„Erledigte ausblenden“** setzen.
-    - **Danach:** Das Kästchen „11“ fehlt; die anderen Tests bleiben.
-12. Das Häkchen wieder entfernen und die Seite neu laden.
-    - **Danach:** Name, Ergebnisse und Kommentare sind noch da. _Nicht offensichtlich:_ In einem
-      privaten Fenster warnt die Seite, dass sie nichts speichern kann.
-13. MT-30 öffnen und in Schritt 2 auf **„MT-37“** klicken.
-    - **Danach:** MT-37 öffnet sich (nach der Frage zum Neustart).
-14. Das Kästchen **„01“** anklicken.
-    - **Danach:** _Nicht offensichtlich:_ Keine Frage zum Neustart. MT-01 zeigt oben „Nicht im
-      Testbereich: …“ mit Grund; sein Kästchen ist in der Übersicht blasser.
-15. Am Handy den Testordner öffnen und bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen
-    eintragen.
-16. Ein Kästchen antippen, bei der Frage **„App so lassen“** und dann **„Test beginnen (Zeit
-    läuft)“** tippen.
-17. Oben auf **„App“** wechseln, einen Fragebogen beginnen und die erste Frage beantworten.
-18. Oben auf **„Testanleitung“** wechseln, dann wieder auf **„App“**.
-    - **Danach:** Der Wechsel zur App und zurück verliert keine Eingaben in der App.
-19. Oben auf **„Testanleitung“** wechseln, ein Ergebnis wählen und ganz oben auf der Seite
-    **„Testbericht herunterladen“** tippen.
-    - **Danach:** Im Testbericht vom Handy steht oben „iPhone · Safari …“ oder „Android-Smartphone ·
-      Chrome …“. _Nicht offensichtlich:_ Ein iPad meldet sich in Safari wie ein Mac; die App erkennt
-      es an der Touch-Bedienung und schreibt „iPad“.
-20. MT-21 öffnen, bei der Frage **„App so lassen“**, dann im Test **„▶ Zum Unterschreiben öffnen“**
-    anklicken.
-    - **Danach:** Die Frage „Vorbereiteten Fragebogen öffnen?“ mit **„Abbrechen“** und **„Öffnen“**.
-21. **„Öffnen“** klicken.
-    - **Danach:** Rechts öffnet sich die Zusammenfassung der beschäftigten Person mit dem Hinweis
-      „Vorbereitet: Sofortmeldung – alles ausgefüllt, die Person unterschreibt.“; am Handy springt
-      die Ansicht auf „App“. _Nicht offensichtlich:_ Passt ein Startpunkt nicht mehr zum Formular,
-      meldet der Testbereich das mit Grund, statt einen halben Fragebogen zu öffnen.
-
-**Erwartet:**
-
-- _Nicht offensichtlich:_ Wird ein Test geändert, nachdem Sie ihn bewertet haben (z. B. nach einem
-  neuen Upload des Testordners), ist sein Kästchen gestrichelt umrandet, der Test bittet, ihn neu zu
-  bewerten, und der Testbericht vermerkt es ebenfalls.
-- _Nicht offensichtlich:_ Ein „teilweise“ aus der Zeit vor dem 07.11.2026 steht jetzt als „✗ Klappt
-  nicht“ da; der Kommentar bleibt.
-
-## MT-133: Neuen Test öffnen – die App passend neu starten
-
-**Einstieg:** Der Testbereich selbst – Sie sind schon da.
-
-**Voraussetzungen:** Die Testübersicht ist zu sehen (sonst **„← Zurück zur Testübersicht“**).
-
-**Schritte:**
-
-1. In der Testübersicht weit unten das Kästchen **„132“** anklicken.
-   - **Danach:** Die Frage „App für MT-132 neu starten?“: „Dieser Test beginnt mit „Sofortmeldung –
-     nur der Arbeitgeber hat abgeschlossen“.“ und „Ihre Eingaben in der App gehen verloren; die
-     Testergebnisse bleiben erhalten.“, dazu **„App so lassen“** und **„Mit diesem Einstieg neu
-     starten“**.
-2. **„Mit diesem Einstieg neu starten“** klicken.
-   - **Danach:** Rechts steht die App bei „Wer füllt jetzt aus?“ mit dem abgeschlossenen Teil des
-     Arbeitgebers. Links beginnt MT-132 oben mit seiner Überschrift – nicht am Ende des Tests.
-     _Nicht offensichtlich:_ Am Handy bleibt die Ansicht auf „Testanleitung“, damit Sie die Schritte
-     zuerst lesen.
-3. **„← Zurück zur Testübersicht“** klicken und das Kästchen **„132“** noch einmal anklicken.
-   - **Danach:** _Nicht offensichtlich:_ Keine Frage – es ist derselbe Test wie zuletzt.
-4. **„Nächster ›“** klicken.
-   - **Danach:** Die Frage zum Neustart für den nächsten Test erscheint.
-5. **„App so lassen“** klicken, zurück zur Übersicht und das Kästchen **„03“** anklicken.
-   - **Danach:** „Dieser Test beginnt auf der Startseite der App.“ mit **„App so lassen“** und
-     **„App neu starten“**.
-6. **„App neu starten“** klicken.
-   - **Danach:** Rechts die Startseite der App mit „Neuer Fragebogen“.
-7. Zurück zur Übersicht und das Kästchen **„80“** anklicken.
-   - **Danach:** „Einstieg: Die öffentliche Adresse der App im Browser (nicht der Testbereich).“ und „Die App kann dafür bleiben, wie sie ist.“; hier ist **„App so lassen“** hervorgehoben, **„App neu starten (Startseite)“** steht daneben.
-8. **„App so lassen“** klicken.
-9. In der App einen Fragebogen beginnen, dann in der Kopfzeile **„App neu starten“** klicken.
-   - **Danach:** Die Frage „App neu starten?“ mit **„Abbrechen“** und **„App neu starten“**.
-10. **„Abbrechen“** klicken.
-    - **Danach:** Die App bleibt beim angefangenen Fragebogen.
-11. In der Kopfzeile **„App vollständig zurücksetzen“** klicken.
-    - **Danach:** Die Frage „App vollständig zurücksetzen?“ erklärt, dass alles gelöscht wird, was die
-      App in diesem Browser gespeichert hat – auch ein angefangener Fragebogen zum Fortsetzen – und
-      der Link in der Adresszeile; „Ihre Testergebnisse bleiben erhalten.“
-12. **„Zurücksetzen“** klicken.
-    - **Danach:** Grün unter der Kopfzeile: „Die App ist zurückgesetzt: nichts mehr in diesem Browser
-      gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.“ Rechts die
-      Startseite der App; die farbigen Kästchen der Testübersicht sind unverändert.
-
-## MT-130: Gemeldete Tests fehlen im nächsten Testbericht
-
-**Einstieg:** Der Testbereich selbst – Sie sind schon da.
-
-**Voraussetzungen:** In diesem Browser wurde noch kein Testbericht heruntergeladen – sonst fragt schon Schritt 4 nach den gemeldeten Tests.
-
-**Schritte:**
-
-1. In der Testübersicht das Kästchen **„02“** anklicken und bei der Frage **„App so lassen“**
-   wählen.
-2. **„✓ Wie erwartet“** klicken und **„← Zurück zur Testübersicht“**.
-3. Das Kästchen **„03“** anklicken, **„App so lassen“**, dann **„✗ Klappt nicht“** und zurück zur
-   Übersicht.
-   - **Danach:** Die Kästchen „02“ (grün) und „03“ (rot) haben ein Ergebnis.
-4. In der Kopfzeile **„Testbericht herunterladen“** klicken.
-   - **Danach:** Ohne Rückfrage lädt die PDF herunter; sie enthält alle Tests mit Ergebnis,
-     Kommentar oder Beginn.
-5. Mit der Maus auf das Kästchen eines dieser Tests zeigen.
-   - **Danach:** _Nicht offensichtlich:_ Hinter Titel und Ergebnis steht „– berichtet“. Das Kästchen
-     bleibt grün bzw. rot; im geöffneten Test steht „im Testbericht vom …“.
-6. Noch einmal **„Testbericht herunterladen“** klicken.
-   - **Danach:** Die Frage „Schon gemeldete Tests mitnehmen?“: wie viele Tests schon in einem früheren
-     Testbericht standen und wie viele neu oder geändert sind, dazu **„Abbrechen“**, **„Ja, alle
-     mitnehmen“** und **„Nein (Bericht ohne Tests)“**.
-7. **„Nein (Bericht ohne Tests)“** klicken.
-   - **Danach:** Die PDF enthält keinen Test, nur Kopf, Summen und den Gesamteindruck.
-8. Einen der gemeldeten Tests öffnen und seinen Kommentar ändern.
-9. In der Kopfzeile **„Testbericht herunterladen“** klicken.
-   - **Danach:** Die Frage nennt jetzt einen Test als neu oder geändert; der dritte Knopf heißt
-     **„Nein, nur neue und geänderte“**.
-10. **„Nein, nur neue und geänderte“** klicken.
-
-- **Danach:** Die PDF enthält nur den geänderten Test.
-
-11. **„Testbericht herunterladen“** klicken und **„Ja, alle mitnehmen“** wählen.
-
-- **Danach:** Die PDF enthält wieder alle Tests mit Ergebnis.
-
-**Erwartet:**
-
-- _Nicht offensichtlich:_ Auch ein Test ohne Ergebnis, aber mit Kommentar oder begonnen, gilt nach
-  einem Bericht als gemeldet – sein Kommentar steht nicht in jedem weiteren Bericht wieder.
-- Ein Test, der an einem anderen Tag begonnen als bewertet wurde, zeigt im Bericht das Datum beim
-  Beginn (z. B. „Beginn 01.11. 14:42 Uhr“); im Test bittet ein Hinweis, die Dauer zu korrigieren,
-  wenn mehr als 600 Minuten gemessen sind.
+1. Am Handy den Testordner öffnen und bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen
+   eintragen.
+   - **Danach:** Oben die Umschalter **„Testanleitung“** und **„App“**, darunter die Testübersicht.
+     Alles lässt sich ohne Zoomen lesen und antippen.
+2. Ein Kästchen antippen und bei der Frage **„App so lassen“** tippen.
+   - **Danach:** Der Test beginnt oben mit seiner Überschrift.
+3. In den Schritten auf ⧉ neben einem Wert tippen.
+   - **Danach:** Das Zeichen wird zu ✓ – oder daneben steht „(bitte markieren und kopieren)“.
+4. Oben auf **„App“** wechseln, einen Fragebogen beginnen und den kopierten Wert in das erste Feld
+   einfügen.
+   - **Danach:** Der Wert steht im Feld. _Nicht offensichtlich:_ ⧉ trägt selbst nichts in die App
+     ein.
+5. Oben auf **„Testanleitung“** wechseln, dann wieder auf **„App“**.
+   - **Danach:** Die Eingabe in der App ist noch da.
+6. Auf **„Testanleitung“** wechseln, **„✓ Wie erwartet“** tippen und ganz oben auf der Seite
+   **„Testbericht herunterladen“** tippen.
+   - **Danach:** Die PDF lässt sich öffnen, teilen oder speichern. Oben steht „Gerät laut Browser:
+     iPhone · Safari …“ bzw. „Android-Smartphone · Chrome …“.
+7. Am iPad die Schritte 1, 2 und 6 wiederholen.
+   - **Danach:** _Nicht offensichtlich:_ Safari meldet sich am iPad wie ein Mac; im Testbericht
+     steht trotzdem „iPad“.
 
 ---
 
-## MT-81: Hilfeseiten „Wo finde ich …?“
+## MT-81: Hilfeseiten „Wo finde ich …?“ auf dem echten Handy
 
-**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“ und tippen bei der Steuer-Identifikationsnummer auf „Wo finde ich das?“.
+**Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“ und gehen bis zur Frage nach der Steuer-Identifikationsnummer.
 
-**Voraussetzungen:** `docs/hilfe/` (aus `npm run catalogue`) lokal geöffnet oder auf der Homepage unter
-dem Pfad, den die Kanzlei-Konfiguration als `explainerBase` nennt.
+**Voraussetzungen:** Ein echtes Handy mit Internet. Die Hilfeseiten (`docs/hilfe/`) liegen auf der
+Homepage unter dem Pfad, den die Kanzlei-Konfiguration als `explainerBase` nennt.
 
 **Schritte:**
 
-1. `docs/hilfe/steuer-id/index.html` öffnen, die Kachel „Lohnsteuerbescheinigung eines früheren
-   Arbeitgebers“ antippen.
-   - **Danach:** Das Muster erscheint, zoomt nach etwa einer halben Sekunde auf das Feld
-     „Identifikationsnummer:“ und markiert es. Darunter steht „Hier: Identifikationsnummer:“. Überall
-     steht schräg „MUSTER“, alle Nummern bestehen aus 9.
-2. „Andere Auswahl“, dann „Nichts davon“.
-   - **Danach:** Kein Muster, sondern wie man die Nummer anfordert, mit Link.
-3. `docs/hilfe/versicherungsnummer/index.html`, Kachel „Gesundheitskarte der Krankenkasse“.
-   - **Danach:** Gestrichelte Markierung und „Achtung, andere Nummer: Versichertennummer“.
-4. Auf dem Handy `…/hilfe/steuer-id/index.html` öffnen, die Kachel „Lohnsteuerbescheinigung eines
-   früheren Arbeitgebers“ antippen.
-   - **Danach:** Das Muster erscheint, zoomt nach etwa einer halben Sekunde auf das Feld
-     „Identifikationsnummer:“ und markiert es. Darunter steht „Hier: Identifikationsnummer:“.
-5. Auf dem Handy „Andere Auswahl“, dann „Nichts davon“ antippen.
-   - **Danach:** Kein Muster, sondern wie man die Nummer anfordert, mit Link.
-6. Auf dem Handy `…/hilfe/versicherungsnummer/index.html` öffnen, Kachel „Gesundheitskarte der
-   Krankenkasse“ antippen.
-   - **Danach:** Gestrichelte Markierung und „Achtung, andere Nummer: Versichertennummer“.
-7. In den Systemeinstellungen des Handys „Bewegung reduzieren“ einschalten.
-8. Auf dem Handy `…/hilfe/steuer-id/index.html` wieder öffnen, die Kachel „Lohnsteuerbescheinigung
-   eines früheren Arbeitgebers“ antippen.
-   - **Danach:** Mit „Bewegung reduzieren“ keine Animation, das ganze Blatt mit Markierung.
+1. Bei der Steuer-Identifikationsnummer auf „Wo finde ich das?“ tippen.
+   - **Danach:** Die Seite „Wo finde ich meine Steuer-Identifikationsnummer?“ öffnet sich von der
+     Homepage.
+2. Die Kachel „Lohnsteuerbescheinigung eines früheren Arbeitgebers“ antippen.
+   - **Danach:** Das Muster zoomt ruhig auf das Feld „Identifikationsnummer:“. Die Markierung sitzt
+     genau auf dem Feld; Schrift und Linien bleiben beim Zoomen scharf.
+3. In den Systemeinstellungen des Handys „Bewegung reduzieren“ einschalten.
+4. Die Hilfeseite neu laden und die Kachel „Lohnsteuerbescheinigung eines früheren Arbeitgebers“
+   wieder antippen.
+   - **Danach:** Keine Animation – das ganze Blatt mit der Markierung erscheint sofort.
+5. „Bewegung reduzieren“ wieder ausschalten.
 
 **Erwartet:**
 
-- _Nicht offensichtlich:_ Die Seiten laden nichts nach und funktionieren ohne Internet; nur die
-  Links zu den Quellen führen nach außen.
+- _Nicht offensichtlich:_ Was die Seiten zeigen – Muster mit „MUSTER“ und lauter 9en, der Weg über
+  „Nichts davon“, die gestrichelte Markierung bei der Versichertennummer, keine Anfrage nach außen –
+  prüft ein automatischer Test in drei Browsern, auch auf einem nachgebildeten Handy
+  (`tests/e2e/handtests/08_auslieferung.spec.ts`). Hier geht es nur um das echte Gerät und die Seiten
+  auf der Homepage.

@@ -1,9 +1,11 @@
 # Manuelle Tests – Fragebogen
 
-Diese Anleitungen richten sich an Testerinnen und Tester **ohne Entwicklerkenntnisse**. Sie prüfen,
-was nur ein Mensch am Bildschirm beurteilen kann: Darstellung, Unterschrift mit Finger oder Stift,
-heruntergeladene PDFs und das Verhalten auf echten Geräten. Die automatischen Tests ersetzen das
-nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
+Diese Anleitungen richten sich an Testerinnen und Tester **ohne Entwicklerkenntnisse**. Seit
+08.11.2026 stehen hier nur noch Tests, die ein Mensch oder ein echtes Gerät braucht: das Aussehen
+in einem echten PDF-Programm, Finger und Stift, Kamera und Scanner, Teilen-Menü und Tastatur am
+Handy, der Upload am Kanzlei-PC. Alles, was ein Browser selbst nachspielen kann, prüfen die
+automatischen Tests (siehe **Automatisiert** unten) – auch in Chrome, Firefox und Safari (WebKit)
+und mit einem nachgestellten Handy.
 
 ## Was Sie brauchen
 
@@ -31,21 +33,36 @@ nicht, und diese Anleitungen ersetzen die automatischen Tests nicht.
 
 ## Testfälle
 
-| Datei                                                  | Bereich                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`01_start.md`](01_start.md)                           | Datei öffnen, Startseite, keine Netzverbindungen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [`02_ausfuellen.md`](02_ausfuellen.md)                 | Rollenwahl, Interview, „Vorerst überspringen“, Zusammenfassung, Zwischenstand, Übernahme, Verwerfen, angefangenen Fragebogen fortsetzen (MT-116), Datum im Kalender (MT-118)                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`03_abschluss.md`](03_abschluss.md)                   | Unterschrift, Abschluss ohne Unterschrift, Gerät weitergeben, Minderjährige, neue Fassung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| [`04_pdf.md`](04_pdf.md)                               | PDF erstellen und wieder öffnen, neu gespeicherte PDF, Scan und Fotos der QR-Codes, Link, PDF am Handy teilen (MT-37), PDF mit Kennwort (MT-132)                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [`05_kanzlei.md`](05_kanzlei.md)                       | Kanzlei: viele Dateien einlesen, zusammenführen, Konflikte entscheiden, PDF für die Personalakte, Übergabe an Lohn und Gehalt (MT-68–72)                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [`06_aendern_und_ablauf.md`](06_aendern_und_ablauf.md) | Angaben ändern, Minijob-Steuer, Ablaufplan, Gültigkeit, Grenzen, Mehrfachbeschäftigung, Stammdaten-Link erstellen und spät füllen (MT-99–101) , Lesezeichen beginnt einen neuen Fragebogen (MT-109)                                                                                                                                                                                                                                                                                                                                                                           |
-| [`07_sv_beurteilung.md`](07_sv_beurteilung.md)         | Verdienst zuerst, Azubi unter 600 €, Minijob mit Weihnachtsgeld, Sonderfälle, Befreiung, amtliche Listen, Aushilfe über drei Monate (MT-96), Werkstudent-Stunden (MT-97), Langzeitstudium und Versorgungswerk (MT-98), Studentin mit zwei Minijobs (MT-102), Hausfrau nach dem Ausscheiden (MT-103)                                                                                                                                                                                                                                                                           |
-| [`08_auslieferung.md`](08_auslieferung.md)             | Auslieferung auf der Homepage: `.htaccess`, HTTPS, Header (MT-80); Hilfeseiten (MT-81); Hochladen, Ordner, Tester, Testseite mit Übersicht (MT-82–85), passender Neustart und Kopfzeile (MT-133), gemeldete Tests im nächsten Bericht (MT-130)                                                                                                                                                                                                                                                                                                                                |
-| [`09_monatsmeldung.md`](09_monatsmeldung.md)           | Monatsmeldung (Entwurf): Kalender je Person, Stunden nur bei Stundenlohn, Lohnart-Vorschläge, Vormonat einlesen (MT-94, MT-95)                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| [`10_eingabepruefung.md`](10_eingabepruefung.md)       | Längen im Eingabefeld, Zeichen nur als Hinweis, Geburtsdatum (auch TTMMJJ, MT-134), Prüfhinweise zu Versicherungsnummer und Postleitzahl im Ausland, Stunden und Grad der Behinderung (MT-104 bis MT-108), Hinweis zur Versicherungsnummer beim Ausfüllen (MT-117)                                                                                                                                                                                                                                                                                                            |
-| [`11_eigenbeleg.md`](11_eigenbeleg.md)                 | Eigenbeleg (Entwurf): Spende gesperrt, Bewirtung gewarnt (MT-110), Bewirtung unterschreiben (MT-111), Prüfhinweise in der Kanzlei (MT-112), Privatentnahme bei einer GmbH (MT-113), Wechsel zum Geldtransit (MT-114), Einlage (MT-115)                                                                                                                                                                                                                                                                                                                                        |
-| [`12_sepa_mandat.md`](12_sepa_mandat.md)               | SEPA-Mandat: Stammdaten-Link der Kanzlei (MT-119), Kanzlei schließt ohne Unterschrift ab (MT-120), Kontoinhaberin erteilt das Mandat (MT-121), Gemeinschaftskonto (MT-122), ohne Teil der Kanzlei (MT-123), Teil der Kanzlei als Link weitergeben (MT-124), Kanzlei trägt die Angaben zum Konto ein (MT-125), Anschrift im Ausland (MT-126), abweichender Kontoinhaber (MT-127), zwei Kontoinhaber mit einer Unterschrift (MT-128), Kontoinhaberin ändert die vorbelegte IBAN (MT-129), Link mit Kennwort (MT-131) – beschreibt die Fassung 1.1.0 (produktiv seit 06.11.2026) |
-| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md)       | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Datei                                            | Bereich                                                                                                                                                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`01_start.md`](01_start.md)                     | Datei per Doppelklick öffnen (MT-01), dunkle Darstellung am echten Bildschirm (MT-03)                                                                                                             |
+| [`02_ausfuellen.md`](02_ausfuellen.md)           | Tastatur und Kalender des Handys beim Datum (MT-118)                                                                                                                                              |
+| [`03_abschluss.md`](03_abschluss.md)             | Unterschrift mit Finger und Stift auf Tablet oder Handy (MT-21)                                                                                                                                   |
+| [`04_pdf.md`](04_pdf.md)                         | PDF im echten PDF-Programm (MT-30), mit Acrobat geändert (MT-33), Druck und Scan (MT-34), Fotos (MT-35), Link (MT-36), Teilen am Handy (MT-37), Kennwort in Chrome, Acrobat und Vorschau (MT-132) |
+| [`05_kanzlei.md`](05_kanzlei.md)                 | Übergabe an Lohn und Gehalt: Import in DATEV (MT-68, MT-70)                                                                                                                                       |
+| [`08_auslieferung.md`](08_auslieferung.md)       | Subdomain mit `.htaccess` (MT-80), Hilfeseiten am echten Handy (MT-81), Hochladen, Ordner, Tester (MT-82–84), Testseite am echten Handy (MT-85)                                                   |
+| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                                                                          |
+
+## Automatisiert (seit 08.11.2026)
+
+Diese früheren Handtests laufen als automatische Tests in `tests/e2e/handtests/`
+(`npm run test:e2e`). Bei „teilweise“ ist der Rest oben als Handtest geblieben.
+
+| Frühere Tests                                                            | Automatischer Test              |
+| ------------------------------------------------------------------------ | ------------------------------- |
+| MT-01, MT-03 (teilweise), MT-02                                          | `01_start.spec.ts`              |
+| MT-10 bis MT-19, MT-26, MT-27, MT-116, MT-118 (teilweise)                | `02_ausfuellen.spec.ts`         |
+| MT-20, MT-21 (teilweise), MT-22 bis MT-25                                | `03_abschluss.spec.ts`          |
+| MT-30 bis MT-37 und MT-132 (teilweise, MT-31, MT-32 ganz)                | `04_pdf.spec.ts`                |
+| MT-40 bis MT-45, MT-68 und MT-70 (teilweise), MT-69, MT-71, MT-72, MT-88 | `05_kanzlei.spec.ts`            |
+| MT-50 bis MT-58, MT-86, MT-87, MT-99 bis MT-101, MT-109                  | `06_aendern_und_ablauf.spec.ts` |
+| MT-60 bis MT-67, MT-96 bis MT-98, MT-102, MT-103                         | `07_sv_beurteilung.spec.ts`     |
+| MT-81 (teilweise)                                                        | `08_auslieferung.spec.ts`       |
+| MT-85 (teilweise), MT-130, MT-133                                        | `08_testbereich.spec.ts`        |
+| MT-94, MT-95                                                             | `09_monatsmeldung.spec.ts`      |
+| MT-104 bis MT-108, MT-117, MT-134                                        | `10_eingabepruefung.spec.ts`    |
+| MT-110 bis MT-115                                                        | `11_eigenbeleg.spec.ts`         |
+| MT-119 bis MT-129, MT-131                                                | `12_sepa_mandat.spec.ts`        |
 
 ## Im Testbereich
 
@@ -123,11 +140,16 @@ angepasst. Das gehört zur Definition of Done.
   Kanzlei-Startpunkt nennt stattdessen Eingänge: `from` einen anderen Startpunkt, `change` geänderte
   Antworten, gleiche `questionnaire`-Kennung = derselbe Fragebogen). Seit 07.11.2026 auch: zwei
   Formular-Startpunkte mit derselben `questionnaire`-Kennung bauen denselben Fragebogen (gleiche
-  Nummer, gleiches Siegel – zwei Dateien eines Fragebogens, MT-40), und ein Link-Startpunkt
+  Nummer, gleiches Siegel – zwei Dateien eines Fragebogens), und ein Link-Startpunkt
   (`"link": "stammdaten=1&…"`, `"open": "link"`) öffnet die App wie ein Stammdaten-Link der
-  Kanzlei (MT-100, MT-101). Die App baut
+  Kanzlei. Die App baut
   ihn mit der neuesten Formularfassung; `tests/testbereich/startPoints.test.ts` prüft, dass jeder
   Startpunkt aufgeht und benutzt wird, `startPointsSv.test.ts` spielt die SV-Fälle ab ihrem
   Startpunkt durch. Nur erfundene Daten; Startpunkte gibt es nur im Testbereich.
+- **Neue Tests (seit 08.11.2026):** Was ein Browser nachspielen kann, wird ein automatischer Test
+  in `tests/e2e/handtests/<datei>.spec.ts`, kein Handtest. Er öffnet seinen Startpunkt direkt mit
+  `dist-test/index.html?startpunkt=<kennung>` (`openTestApp` in `tests/e2e/app.ts`); ein neuer
+  Startpunkt wirkt erst nach `npm run build:test`. Ein Handtest bleibt nur für das, was ein Mensch
+  oder ein echtes Gerät braucht, und sagt in der Einleitung, was davon schon automatisch läuft.
 - Eingegangene Testberichte liegen in `import/` (nicht im Repo). Nach der Bearbeitung kommen sie
   nach `import/archiv/<JJJJ-MM-TT>/` (Tag der Bearbeitung).
