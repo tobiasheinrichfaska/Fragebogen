@@ -47,13 +47,6 @@ interface Shared {
   systemNote: SystemNote;
 }
 
-/**
- * Form start points with one label, for as long as the page is open: the same questionnaire id,
- * nonces, time and system note, so the second start point seals the parts it shares exactly like
- * the first (without the shared system note the Kanzlei saw two versions, e2e 2026-11-07).
- */
-const LABELLED = new Map<string, Shared>();
-
 /** What a start link opens: a prepared questionnaire, a bookmark link, or why there is none. */
 type Prepared = { title: string; start?: PreparedStart; link?: string };
 
@@ -83,9 +76,9 @@ function prepare(id: string): Prepared | string {
     now: { local: now.local, utc: now.utc },
     systemNote: systemNoteFor(now, ['keyboard']),
   });
-  const envOf = (label: string | undefined, labels = shared): StartEnvironment => {
-    const own = (label === undefined ? undefined : labels.get(label)) ?? fresh();
-    if (label !== undefined) labels.set(label, own);
+  const envOf = (label: string | undefined): StartEnvironment => {
+    const own = (label === undefined ? undefined : shared.get(label)) ?? fresh();
+    if (label !== undefined) shared.set(label, own);
     return envFrom(own);
   };
   if (isKanzleiStart(point)) {
@@ -106,7 +99,7 @@ function prepare(id: string): Prepared | string {
   }
   const form = registry?.latest(point.form);
   if (!form) return `Das Formular „${point.form}“ ist in dieser Fassung der App nicht enthalten.`;
-  const built = buildStartPoint(point, form, envOf(point.questionnaire, LABELLED));
+  const built = buildStartPoint(point, form, envOf(undefined));
   if (!built.ok) {
     return `Der Startpunkt „${point.title}“ passt nicht mehr zum Formular:\n\n${built.problems.join('\n')}`;
   }

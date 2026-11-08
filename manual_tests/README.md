@@ -138,11 +138,10 @@ angepasst. Das gehört zur Definition of Done.
   `[Text](start:<kennung>)`. Der Startpunkt liegt als Daten in `startpunkte/<kennung>.json`
   (Formular, Antworten je Rolle wie getippt, abgeschlossen oder offen, wo er öffnet; ein
   Kanzlei-Startpunkt nennt stattdessen Eingänge: `from` einen anderen Startpunkt, `change` geänderte
-  Antworten, gleiche `questionnaire`-Kennung = derselbe Fragebogen). Seit 07.11.2026 auch: zwei
-  Formular-Startpunkte mit derselben `questionnaire`-Kennung bauen denselben Fragebogen (gleiche
-  Nummer, gleiches Siegel – zwei Dateien eines Fragebogens), und ein Link-Startpunkt
-  (`"link": "stammdaten=1&…"`, `"open": "link"`) öffnet die App wie ein Stammdaten-Link der
-  Kanzlei. Die App baut
+  Antworten, gleiche `questionnaire`-Kennung = derselbe Fragebogen; nur Kanzlei-Eingänge haben
+  diese Kennung, für Formular-Startpunkte ist sie seit 08.11.2026 entfallen). Seit 07.11.2026 auch:
+  ein Link-Startpunkt (`"link": "stammdaten=1&…"`, `"open": "link"`) öffnet die App wie ein
+  Stammdaten-Link der Kanzlei. Die App baut
   ihn mit der neuesten Formularfassung; `tests/testbereich/startPoints.test.ts` prüft, dass jeder
   Startpunkt aufgeht und benutzt wird, `startPointsSv.test.ts` spielt die SV-Fälle ab ihrem
   Startpunkt durch. Nur erfundene Daten; Startpunkte gibt es nur im Testbereich.

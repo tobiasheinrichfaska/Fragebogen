@@ -6,8 +6,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { compareVersions, registryOf, type RegisteredForm } from '../../src/logic/formRegistry';
-import { sha256Hex } from '../../src/logic/hash';
-import { addToInbox, EMPTY_INBOX, mergeInbox } from '../../src/logic/kanzlei';
+import { mergeInbox } from '../../src/logic/kanzlei';
 import { inlineMarkdown, parseManualTests, startLinksOf } from '../../src/logic/manualTests';
 import { parseMasterDataFragment } from '../../src/logic/masterDataLink';
 import { currentPart, latestSealed } from '../../src/logic/questionnaire';
@@ -190,39 +189,12 @@ describe('start points (manual_tests/startpunkte/)', () => {
     expect(merged.proposals).toHaveLength(1);
   });
 
-  // Tobias 2026-11-07: every test in its own environment — MT-40 needs two files of ONE
-  // questionnaire, so two start points with one label build it like the test page does.
-  it('two start points with one label are two stages of one questionnaire (MT-40)', () => {
-    const form = newest('sofortmeldung');
-    const first = points.find((p) => p.id === 'sofortmeldung-zwei-dateien-arbeitgeber');
-    const second = points.find((p) => p.id === 'sofortmeldung-zwei-dateien-vollstaendig');
-    if (!form || !first || !second) throw new Error('missing');
-    expect(first.questionnaire).toBe(second.questionnaire);
-    const env = envOf();
-    const a = buildStartPoint(first, form, env(first.questionnaire));
-    const b = buildStartPoint(second, form, env(second.questionnaire));
-    if (!a.ok || !b.ok) throw new Error('not built');
-    expect(b.session.questionnaire.questionnaireId).toBe(a.session.questionnaire.questionnaireId);
-    expect(latestSealed(b.session.questionnaire, 'arbeitgeber')).toEqual(
-      latestSealed(a.session.questionnaire, 'arbeitgeber'),
-    );
-    let inbox = EMPTY_INBOX;
-    for (const [name, questionnaire] of [
-      ['weitergabe.pdf', a.session.questionnaire],
-      ['vollstaendig.pdf', b.session.questionnaire],
-    ] as const) {
-      inbox = addToInbox(inbox, {
-        name,
-        fileSha256: sha256Hex(name),
-        questionnaire,
-        form,
-        origin: 'published',
-        received: RECEIVED,
-      }).inbox;
-    }
-    const merged = mergeInbox(inbox, registry);
-    expect(merged.groups).toHaveLength(1);
-    expect(merged.groups[0]?.conflicts ?? []).toEqual([]);
+  // Form start points sharing a label were dropped (Tobias 2026-11-08); MT-40 makes both files in
+  // one run. Only Kanzlei inputs share a questionnaire (MT-42).
+  it('a form start point takes no questionnaire label', () => {
+    const point = points.find((p) => p.id === 'sofortmeldung-vollstaendig');
+    if (!point) throw new Error('missing');
+    expect(parseStartPoint({ ...point, questionnaire: 'gemeinsam' }).ok).toBe(false);
   });
 
   it('a link start point opens the app like the Kanzlei bookmark (MT-100, MT-101)', () => {

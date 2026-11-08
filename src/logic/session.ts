@@ -234,6 +234,8 @@ export interface RoleState {
   version?: number;
   /** The latest seal can still be withdrawn (not passed on or confirmed yet). */
   canReopen: boolean;
+  /** A conditional role this questionnaire does not need (e.g. no guardian for an adult). */
+  notNeeded: boolean;
 }
 
 export function roleStates(session: Session): RoleState[] {
@@ -242,14 +244,27 @@ export function roleStates(session: Session): RoleState[] {
     const part = currentPart(questionnaire, role.id);
     const sealed = latestSealed(questionnaire, role.id);
     const version = sealed?.seal?.payload.version;
+    const requirement = roleRequirement(form.definition, questionnaire, role);
     return {
       role,
-      requirement: roleRequirement(form.definition, questionnaire, role),
+      requirement,
       state: part ? part.status : 'missing',
       ...(version === undefined ? {} : { version }),
       canReopen: part?.seal !== undefined && reopenPart(questionnaire, form, role.id).ok,
+      notNeeded: role.requiredIf !== undefined && !requirement.required && !part,
     };
   });
+}
+
+/**
+ * "Angaben aus einer anderen Datei übernehmen" while a part to fill is open — not for a role that
+ * only prefills or one the questionnaire does not need (Tobias 2026-11-08).
+ */
+export function takeOverOffered(states: readonly RoleState[]): boolean {
+  return states.some(
+    (s) =>
+      s.role.prefills !== true && !s.notNeeded && (s.state === 'missing' || s.state === 'draft'),
+  );
 }
 
 /**

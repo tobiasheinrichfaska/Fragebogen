@@ -55,9 +55,12 @@ function run(start: StartPoint, answers: Readonly<Record<string, unknown>>) {
     }),
   );
   const results = new Map(derive(s.questionnaire, svForm.definition).map((d) => [d.id, d]));
+  const pgr = results.get('personengruppe');
   return {
     hints: checkHints(s.questionnaire, svForm.definition).map((h) => h.id),
-    pgr: shownValue(results.get('personengruppe')),
+    pgr: shownValue(pgr),
+    /** Reason and facts as the Kanzlei reads them. */
+    pgrWhy: pgr ? [pgr.reason, ...pgr.detail].join(' ') : '',
     bgr: shownValue(results.get('beitragsgruppen')),
     ue: shownValue(results.get('uebergangsbereich')),
     ts: shownValue(results.get('taetigkeitsschluessel')),
@@ -83,7 +86,25 @@ describe('SV cases from their start points (manual_tests/07)', { timeout: 30_000
     };
     expect(run(start, kurz)).toMatchObject({ pgr: '110', bgr: '0000' });
     const longer = { ...kurz, agKurzfristigBis: '01.09.2026', agKurzfristigArbeitstage: '79' };
-    expect(run(start, longer)).toMatchObject({ pgr: '101 (p)', bgr: '1111' });
+    // The reason names the limit that failed (Tobias 2026-11-08: show the detail of zeitgrenze()).
+    expect(run(start, longer)).toMatchObject({
+      pgr: '101 (p)',
+      bgr: '1111',
+      pgrWhy: expect.stringContaining(
+        'Von vornherein länger als drei Monate (bis 31.08.2026) und mehr als 70 Arbeitstage',
+      ) as unknown,
+    });
+    // Over a year under a framework agreement: regular, though within 70 working days.
+    const regular = {
+      ...kurz,
+      agKurzfristigBis: '30.06.2027',
+      agKurzfristigArbeitstage: '50',
+      agRahmenvereinbarung: true,
+    };
+    expect(run(start, regular)).toMatchObject({
+      pgr: '101 (p)',
+      pgrWhy: expect.stringContaining('Rahmenvereinbarung ohne Befristung') as unknown,
+    });
     expect(run(start, { ...longer, agMonatsentgelt: '500,00' })).toMatchObject({
       pgr: '109 (p)',
       bgr: '6100',
