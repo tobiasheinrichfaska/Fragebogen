@@ -37,6 +37,8 @@ const FORM = JSON.parse(readFileSync(join(SOFORT_DIR, NEWEST ?? ''), 'utf8')) as
 const ANSWERS: Readonly<Record<string, string>> = {
   agFirma: 'Beispiel Bau GmbH',
   agBetriebsnummer: '12345671',
+  // Asked from 1.1.0 on; unused while an older version is the newest published one.
+  agBranche: 'bau',
   agFamilienname: 'Musterfrau',
   agVorname: 'Erika',
   agPersonalnummer: '',
