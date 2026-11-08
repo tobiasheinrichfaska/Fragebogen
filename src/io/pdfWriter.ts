@@ -72,8 +72,8 @@ export const INK = rgb(0.11, 0.13, 0.19);
 export const MUTED = rgb(0.36, 0.39, 0.45);
 export const SHADE = rgb(0.91, 0.92, 0.94);
 const LINE = rgb(0.8, 0.82, 0.86);
-/** One QR module printed as 0.5 mm — readable by flatbed scanners and phone cameras. */
-const QR_MODULE = (0.5 / 25.4) * 72;
+/** One QR module printed as 0.5 mm (in points) — readable by flatbed scanners and phone cameras. */
+export const QR_MODULE = (0.5 / 25.4) * 72;
 
 // Glyphs in the embedded subsets (assets/fonts/README.md); anything else prints as U+FFFD.
 const RANGES: readonly [number, number][] = [

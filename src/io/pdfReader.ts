@@ -147,17 +147,28 @@ export function editClues(bytes: Uint8Array, producer: string | undefined): Edit
   return clues;
 }
 
-/** Renders the pages to RGBA images for the QR search (browser only: needs a canvas). */
-export async function renderPdfPages(
+/**
+ * Pixels on the long side of a page or photo searched for QR codes: about 6 px per printed module
+ * (0.5 mm) on A4. At 2400 px (4 px per module) a full-page scan lost 2 to 4 of 11 codes, and a
+ * 600-dpi scan more than a 300-dpi one (bug 2026-11-08, found automating MT-34).
+ */
+export const QR_SEARCH_SIDE = 3600;
+
+/**
+ * Renders the pages one at a time for the QR search and hands each image to `read`, so only one
+ * page image is held at once (browser only: needs a canvas).
+ */
+export async function renderPdfPages<T>(
   pdfjs: PdfJsLike,
   bytes: Uint8Array,
-  longestSide = 2400,
+  read: (image: RgbaImage) => T,
   password?: string,
-): Promise<RgbaImage[]> {
+  longestSide = QR_SEARCH_SIDE,
+): Promise<T[]> {
   const task = open(pdfjs, bytes, password);
   try {
     const pdf = await task.promise;
-    const images: RgbaImage[] = [];
+    const results: T[] = [];
     for (let n = 1; n <= Math.min(pdf.numPages, MAX_PDF_PAGES); n++) {
       const page = await pdf.getPage(n);
       const base = page.getViewport({ scale: 1 });
@@ -171,17 +182,22 @@ export async function renderPdfPages(
       context.fillRect(0, 0, canvas.width, canvas.height);
       await page.render({ canvasContext: context, viewport, canvas }).promise;
       const data = context.getImageData(0, 0, canvas.width, canvas.height);
-      images.push({ data: data.data, width: data.width, height: data.height });
+      results.push(read({ data: data.data, width: data.width, height: data.height }));
       page.cleanup();
+      canvas.width = 0;
+      canvas.height = 0;
     }
-    return images;
+    return results;
   } finally {
     await task.destroy();
   }
 }
 
 /** A photo or scan image as RGBA, scaled down to `longestSide` (browser only). */
-export async function imageFileToRgba(file: Blob, longestSide = 2400): Promise<RgbaImage> {
+export async function imageFileToRgba(
+  file: Blob,
+  longestSide = QR_SEARCH_SIDE,
+): Promise<RgbaImage> {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, longestSide / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement('canvas');

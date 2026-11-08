@@ -2,7 +2,8 @@
 // (jsQR, Apache-2.0). jsQR decodes ONE code per image and finds none at all when several are
 // visible (probed 2026-10-30). The page layout therefore keeps wide white gaps between codes, and
 // reading first cuts the image along white rows and columns into cells, each decoded on its own;
-// the whole image is tried last (a photo of a single code).
+// the whole image is tried last (a photo of a single code). A cell jsQR cannot read is tried again
+// in black and white and at half size (full-page scans, 2026-11-08).
 import jsQR from 'jsqr';
 import qrcode from 'qrcode-generator';
 
@@ -47,24 +48,79 @@ export function readQrCodes(image: RgbaImage): Uint8Array[] {
     if (!found.some((known) => sameBytes(known, payload))) found.push(payload);
   };
   for (const cell of cells(dark, image.width, image.height).slice(0, MAX_CELLS)) {
-    const code = decode(image, cell);
+    const code = decodeCell(image, dark, cell);
     if (code) add(code);
   }
   if (found.length === 0) {
-    const code = decode(image, { left: 0, top: 0, width: image.width, height: image.height });
+    const code = decode(crop(image, { left: 0, top: 0, width: image.width, height: image.height }));
     if (code) add(code);
   }
   return found;
 }
 
-function decode(image: RgbaImage, box: Box): Uint8Array | undefined {
-  const crop = new Uint8ClampedArray(box.width * box.height * 4);
+/**
+ * One cell, three ways: as it is (jsQR binarises locally), in black and white by the image's
+ * mid-grey, at half size. On full-page scans at 200, 300 and 600 dpi each way alone missed codes,
+ * the three together none of 330 (probe 2026-11-08; tests/io/qrScan.test.ts).
+ */
+function decodeCell(image: RgbaImage, dark: Uint8Array, box: Box): Uint8Array | undefined {
+  const cell = crop(image, box);
+  return decode(cell) ?? decode(blackAndWhite(dark, image.width, box)) ?? decode(halved(cell));
+}
+
+function decode(image: RgbaImage): Uint8Array | undefined {
+  const code = jsQR(image.data, image.width, image.height, { inversionAttempts: 'dontInvert' });
+  return code ? Uint8Array.from(code.binaryData) : undefined;
+}
+
+function crop(image: RgbaImage, box: Box): RgbaImage {
+  const data = new Uint8ClampedArray(box.width * box.height * 4);
   for (let y = 0; y < box.height; y++) {
     const from = ((box.top + y) * image.width + box.left) * 4;
-    crop.set(image.data.subarray(from, from + box.width * 4), y * box.width * 4);
+    data.set(image.data.subarray(from, from + box.width * 4), y * box.width * 4);
   }
-  const code = jsQR(crop, box.width, box.height, { inversionAttempts: 'dontInvert' });
-  return code ? Uint8Array.from(code.binaryData) : undefined;
+  return { data, width: box.width, height: box.height };
+}
+
+function blackAndWhite(dark: Uint8Array, width: number, box: Box): RgbaImage {
+  const data = new Uint8ClampedArray(box.width * box.height * 4).fill(255);
+  for (let y = 0; y < box.height; y++) {
+    for (let x = 0; x < box.width; x++) {
+      if (!dark[(box.top + y) * width + box.left + x]) continue;
+      const at = (y * box.width + x) * 4;
+      data[at] = data[at + 1] = data[at + 2] = 0;
+    }
+  }
+  return { data, width: box.width, height: box.height };
+}
+
+/** Every 2 × 2 pixels averaged into one grey pixel. */
+function halved(image: RgbaImage): RgbaImage {
+  const width = Math.floor(image.width / 2);
+  const height = Math.floor(image.height / 2);
+  const data = new Uint8ClampedArray(width * height * 4);
+  const luminance = (x: number, y: number) => {
+    const at = (y * image.width + x) * 4;
+    return (
+      0.299 * (image.data[at] ?? 255) +
+      0.587 * (image.data[at + 1] ?? 255) +
+      0.114 * (image.data[at + 2] ?? 255)
+    );
+  };
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const grey =
+        (luminance(2 * x, 2 * y) +
+          luminance(2 * x + 1, 2 * y) +
+          luminance(2 * x, 2 * y + 1) +
+          luminance(2 * x + 1, 2 * y + 1)) /
+        4;
+      const at = (y * width + x) * 4;
+      data[at] = data[at + 1] = data[at + 2] = grey;
+      data[at + 3] = 255;
+    }
+  }
+  return { data, width, height };
 }
 
 /** 1 for a dark pixel (luminance below the image's mid-grey), 0 otherwise. */
