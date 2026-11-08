@@ -254,6 +254,31 @@ describe('a floating date bound (maxDate "today")', () => {
     expect(normalizeFieldValue(birth, raw)).toEqual(accepted(iso));
   });
 
+  // Check of 2026-11-08: the SEPA signature date and the Eigenbeleg dates (maxDate "today", no
+  // lower bound) turned a typed tomorrow "091126" into 1926 silently, while "09.11.2026" was refused.
+  // Without a lower bound the year stays in the century of the latest day.
+  it.each([
+    ['081126', accepted('2026-11-08')],
+    ['08.11.26', accepted('2026-11-08')],
+    ['010126', accepted('2026-01-01')],
+    ['091126', refused('date.tooLate')],
+    ['311299', refused('date.tooLate')],
+  ])('reads %j in a signature date as this century: %j', (raw, expected) => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 10, 8, 10));
+    expect(normalizeFieldValue(field('date', { maxDate: 'today' }), raw)).toEqual(expected);
+  });
+
+  it('rolls back only as far as the lower bound allows', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 10, 8, 10));
+    const recent = field('date', { minDate: '2020-01-01', maxDate: 'today' });
+    expect(normalizeFieldValue(recent, '010125')).toEqual(accepted('2025-01-01'));
+    expect(normalizeFieldValue(recent, '091126')).toEqual(refused('date.tooLate'));
+    expect(normalizeFieldValue(birth, '091126')).toEqual(accepted('1926-11-09'));
+    expect(normalizeFieldValue(birth, '010176')).toEqual(accepted('1976-01-01'));
+  });
+
   it('still refuses a two-digit year where it cannot tell the century', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date(2026, 10, 7, 10));

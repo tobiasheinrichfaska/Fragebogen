@@ -65,21 +65,36 @@ const SHORT_DATE = /^(\d{1,2})[.,](\d{1,2})[.,](\d{2})$|^(\d{2})(\d{2})(\d{2})$/
 const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
- * The year of a two-digit year: the latest one with these digits whose day is not after `latest`
- * (Tobias 2026-11-07: a birth date "170590" is 17.05.1990 — ages up to about 100 years).
+ * The year of a two-digit year: the latest one with these digits whose day lies between `earliest`
+ * and `latest` (Tobias 2026-11-07: a birth date "170590" is 17.05.1990 — ages up to about 100
+ * years). Without `earliest` only the century of `latest` counts: a signature date "091126" typed
+ * on 08.11.2026 is 09.11.2026 and refused like the full date, never 1926 (check of 2026-11-08).
+ * When no year fits, the one in the century of `latest`, so the bound check names the problem.
  */
-function fullYear(shortYear: string, monthDay: string, latest: IsoDate): string {
+function fullYear(
+  shortYear: string,
+  monthDay: string,
+  latest: IsoDate,
+  earliest: IsoDate | undefined,
+): string {
   const top = Number(latest.slice(0, 4));
-  const year = top - (top % 100) + Number(shortYear);
-  const fits = `${String(year).padStart(4, '0')}-${monthDay}` <= latest;
-  return String(fits ? year : year - 100).padStart(4, '0');
+  const century = top - (top % 100);
+  const lowest = earliest ?? `${String(century).padStart(4, '0')}-01-01`;
+  const day = (year: number) => `${String(year).padStart(4, '0')}-${monthDay}`;
+  let year = century + Number(shortYear);
+  while (year >= 0 && day(year) >= lowest) {
+    if (day(year) <= latest) return String(year).padStart(4, '0');
+    year -= 100;
+  }
+  return String(century + Number(shortYear)).padStart(4, '0');
 }
 
 /**
  * Date: `TT.MM.JJJJ` (also `T.M.JJJJ`, eight digits) or `YYYY-MM-DD` → `YYYY-MM-DD`. A two-digit
- * year (`TT.MM.JJ`, six digits) only with `latest`, the latest day the field allows; else refused.
+ * year (`TT.MM.JJ`, six digits) only with `latest`, the latest day the field allows, read between
+ * `earliest` (the field's first day) and `latest`; without `latest` refused.
  */
-export function normalizeDate(raw: string, latest?: IsoDate): Checked<IsoDate> {
+export function normalizeDate(raw: string, latest?: IsoDate, earliest?: IsoDate): Checked<IsoDate> {
   const text = raw.trim();
   const german = GERMAN_DATE.exec(text) ?? DIGITS_DATE.exec(text);
   const short = german ? null : SHORT_DATE.exec(text);
@@ -92,7 +107,7 @@ export function normalizeDate(raw: string, latest?: IsoDate): Checked<IsoDate> {
     const [day = '', month = '', year = ''] =
       short[1] === undefined ? short.slice(4, 7) : short.slice(1, 4);
     const monthDay = `${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    iso = `${fullYear(year, monthDay, latest)}-${monthDay}`;
+    iso = `${fullYear(year, monthDay, latest, earliest)}-${monthDay}`;
   }
   if (!ISO_DATE_SHAPE.test(iso)) return reject('date.format');
   return parseIsoDate(iso) ? accept(iso) : reject('date.invalid');
@@ -356,7 +371,11 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
   }),
   date: fromText((text, field) =>
     withinDates(
-      normalizeDate(text, field.maxDate === undefined ? undefined : boundDay(field.maxDate)),
+      normalizeDate(
+        text,
+        field.maxDate === undefined ? undefined : boundDay(field.maxDate),
+        field.minDate === undefined ? undefined : boundDay(field.minDate),
+      ),
       field,
     ),
   ),

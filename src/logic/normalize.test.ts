@@ -147,7 +147,7 @@ describe('normalizeDate', () => {
     expect(normalizeDate(raw)).toEqual({ ok: false, issue });
   });
 
-  // Tobias 2026-11-07: with a latest day (a birth date: today) two digits give the year.
+  // Tobias 2026-11-07: with a latest day (a birth date: today, from 1876) two digits give the year.
   it.each([
     ['170590', '2026-11-07', '1990-05-17'],
     ['07.11.26', '2026-11-07', '2026-11-07'],
@@ -158,7 +158,27 @@ describe('normalizeDate', () => {
     // A four-digit year never changes, even past the latest day (the bound check refuses it).
     ['17.05.2030', '2026-11-07', '2030-05-17'],
   ])('%j up to %s → %s', (raw, latest, expected) => {
-    expect(normalizeDate(raw, latest)).toEqual({ ok: true, value: expected, warnings: [] });
+    expect(normalizeDate(raw, latest, '1876-01-01')).toEqual({
+      ok: true,
+      value: expected,
+      warnings: [],
+    });
+  });
+
+  // Check of 2026-11-08: back into an earlier century only as far as the first day allows; without
+  // one the century of the latest day (a signature date), and a year that fits nowhere stays there.
+  it.each([
+    ['091126', '2026-11-08', '1876-01-01', '1926-11-09'],
+    ['091126', '2026-11-08', undefined, '2026-11-09'],
+    ['311299', '2026-11-08', undefined, '2099-12-31'],
+    ['010125', '2026-11-08', '2020-01-01', '2025-01-01'],
+    ['010119', '2026-11-08', '2020-01-01', '2019-01-01'],
+  ])('%j up to %s from %s → %s', (raw, latest, earliest, expected) => {
+    expect(normalizeDate(raw, latest, earliest)).toEqual({
+      ok: true,
+      value: expected,
+      warnings: [],
+    });
   });
 
   it('checks the day of a two-digit year like any other', () => {
