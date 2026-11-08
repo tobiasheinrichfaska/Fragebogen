@@ -748,17 +748,39 @@ function kurzfristigkeit(mode: 'gegeben' | 'bisGrenze' | 'werkstudent'): HintTes
       }
       let notShortTerm = time.status === 'ueberschritten' || regular || open;
       let uncertain = time.status === 'offen';
+      let berufsmaessig = false;
       if (mode !== 'bisGrenze') {
         const earlier = berufsmaessigNachVorbeschaeftigungen(job, limit);
         if (payOver || own === undefined) detail.push(...earlier.detail);
-        if (earlier.holds && payOver) notShortTerm = true;
+        if (earlier.holds && payOver) berufsmaessig = true;
         if (earlier.holds && own === undefined) uncertain = true;
         if (earlier.uncertain && payOver) uncertain = true;
       } else {
-        if (payOver) notShortTerm = true;
+        if (payOver) berufsmaessig = true;
         if (own === undefined) uncertain = true;
       }
+      if (berufsmaessig && total !== undefined) {
+        notShortTerm = true;
+        detail.push(
+          `Berufsmäßig und mit ${euro(total)} im Monat über der Geringfügigkeitsgrenze von ${euro(limit)}: keine kurzfristige Beschäftigung (Geringfügigkeits-Richtlinien B 2.3.3).`,
+        );
+      }
       return { holds: !notShortTerm, ...(uncertain ? { uncertain: true } : {}), detail };
+    },
+  };
+}
+
+/**
+ * The opposite of a test, with the same facts — e.g. why a job chosen as short-term is none, so a
+ * 101 proposal names the limit that failed (Tobias 2026-11-08). Undecided stays undecided.
+ */
+function negated(test: HintTest): HintTest {
+  return {
+    args: test.args,
+    describe: (labels) => `nicht zutrifft, dass ${test.describe(labels)}`,
+    run: (values) => {
+      const outcome = test.run(values);
+      return outcome && { ...outcome, holds: !outcome.holds };
     },
   };
 }
@@ -1228,6 +1250,8 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   kurzfristigBefristetBisDreiMonate: kurzfristigkeit('werkstudent'),
   kurzfristigGegeben: kurzfristigkeit('gegeben'),
   kurzfristigGegebenBisGeringfuegigkeitsgrenze: kurzfristigkeit('bisGrenze'),
+  nichtKurzfristigGegeben: negated(kurzfristigkeit('gegeben')),
+  nichtKurzfristigGegebenBisGeringfuegigkeitsgrenze: negated(kurzfristigkeit('bisGrenze')),
   minijobNebenHauptbeschaeftigung,
   hoechstensGeringfuegigkeitsgrenze: geringfuegigkeit(true),
   ueberGeringfuegigkeitsgrenze: geringfuegigkeit(false),

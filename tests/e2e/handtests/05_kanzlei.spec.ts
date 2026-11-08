@@ -196,7 +196,7 @@ test('MT-40: several files of one questionnaire read in at once count once', asy
   page,
 }, testInfo) => {
   test.slow();
-  const { found, app } = await openTestApp(page, 'sofortmeldung-zwei-dateien-arbeitgeber');
+  const { found, app } = await openTestApp(page, 'sofortmeldung-arbeitgeber-abgeschlossen');
   const id = await questionnaireNumber(app);
   const handover = await download(
     page,
@@ -242,7 +242,7 @@ test('MT-40: several files of one questionnaire read in at once count once', asy
 
 test('MT-40: the same file chosen again counts once', async ({ page }, testInfo) => {
   test.slow();
-  const { found, app } = await openTestApp(page, 'sofortmeldung-zwei-dateien-vollstaendig');
+  const { found, app } = await openTestApp(page, 'sofortmeldung-vollstaendig');
   const complete = await download(
     page,
     card(app, 'Stand'),

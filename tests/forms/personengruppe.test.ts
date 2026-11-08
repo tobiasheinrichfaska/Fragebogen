@@ -194,6 +194,35 @@ describe('Personengruppe proposed from the answers', () => {
     );
   });
 
+  // Tobias 2026-11-08: a short-term job that is none says why (the limit, regularity, Berufsmäßigkeit).
+  it.each([
+    [
+      'over three months and 70 working days',
+      { agKurzfristigBis: '02.03.2027', agKurzfristigArbeitstage: '80' },
+      {},
+      'Von vornherein länger als drei Monate (bis 01.02.2027) und mehr als 70 Arbeitstage',
+    ],
+    [
+      'berufsmäßig by status and above the pay limit',
+      { agKurzfristigBis: '31.12.2026', agKurzfristigArbeitstage: '40' },
+      { status: 'arbeitslos' },
+      'Berufsmäßig und mit 1.500,00 € im Monat über der Geringfügigkeitsgrenze von 603,00 €',
+    ],
+  ])('a job chosen as short-term that is none, %s, names the cause', (_name, job, person, why) => {
+    const result = proposal(
+      {
+        agBeschaeftigungsart: 'kurzfristig',
+        agRahmenvereinbarung: false,
+        agEntgeltArt: 'monatsentgelt',
+        agMonatsentgelt: '1.500,00',
+        ...job,
+      },
+      person,
+    );
+    expect(result).toMatchObject({ value: '101', check: true });
+    expect(result.detail.join(' ')).toContain(why);
+  });
+
   it('asks for a check instead of guessing in a year without Rechengrößen', () => {
     const result = proposal({
       ...MINIJOB,

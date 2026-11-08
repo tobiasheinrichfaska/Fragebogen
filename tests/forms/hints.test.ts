@@ -222,6 +222,8 @@ describe('check hints — definition rules', () => {
       'kurzfristigGegebenBisGeringfuegigkeitsgrenze',
       'listeneintragNichtGueltig',
       'minijobNebenHauptbeschaeftigung',
+      'nichtKurzfristigGegeben',
+      'nichtKurzfristigGegebenBisGeringfuegigkeitsgrenze',
       'plzAuslandFormat',
       'regelaltersgrenzeErreicht',
       'regelaltersgrenzeInnerhalbEinesJahres',

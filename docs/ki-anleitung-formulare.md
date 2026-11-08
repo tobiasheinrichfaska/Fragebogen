@@ -236,7 +236,9 @@ ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins S
   weiteren Beschäftigungen; Art, Beitrag und Zuschuss der betrieblichen Altersversorgung;
   landwirtschaftlicher Betrieb; Rentenart und Rentenbeginn; nicht mehr berufstätig seit: Zeitgrenze,
   Regelmäßigkeit und Berufsmäßigkeit einer kurzfristigen Beschäftigung – frühere Beschäftigungen vor
-  dem Ausscheiden aus dem Berufsleben zählen nicht –, sonst Minijob); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
+  dem Ausscheiden aus dem Berufsleben zählen nicht –, sonst Minijob); `nichtKurzfristigGegeben` und
+  `nichtKurzfristigGegebenBisGeringfuegigkeitsgrenze` (dieselben 25 Felder: das Gegenteil der beiden
+  Aushilfe-Tests mit denselben Fakten, damit ein Vorschlag 101 den Grund nennt); `kuerzerAlsEineWoche` (Datum, Datum: vom ersten bis zum zweiten
   weniger als sieben Tage); `hoechstensGeringfuegigkeitsgrenze` und `ueberGeringfuegigkeitsgrenze` (Betrag, Betrag, Betrag,
   Ja/Nein, Datum: festes Monatsentgelt, erwarteter Monatsverdienst – es zählt der beantwortete –,
   Spalte der Einmalzahlungen und Spalte „Anspruch“ derselben Tabelle, Stichtag; zwölf Monate plus

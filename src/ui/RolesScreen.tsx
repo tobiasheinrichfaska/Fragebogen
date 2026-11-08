@@ -8,7 +8,7 @@ import {
   requirementText,
   transmissionBlockers,
 } from '../logic/requirements';
-import { roleStates, type RoleState, type Session } from '../logic/session';
+import { roleStates, takeOverOffered, type RoleState, type Session } from '../logic/session';
 import type { TransferOffer } from '../logic/transferLink';
 import { Banner, Card, FormScope } from './common';
 import { PasswordOption } from './PasswordOption';
@@ -65,9 +65,7 @@ export function RolesScreen(props: Props) {
     (gap) => !blockers.some((b) => b.code === gap.code && b.role === gap.role),
   );
   const anySealed = states.some((s) => s.state === 'sealed' || s.state === 'signed');
-  const anyOpen = states.some(
-    (s) => s.role.prefills !== true && (s.state === 'missing' || s.state === 'draft'),
-  );
+  const anyOpen = takeOverOffered(states);
   return (
     <>
       <Card title="Wer füllt jetzt aus?">
@@ -78,8 +76,7 @@ export function RolesScreen(props: Props) {
         <ul className="roles">
           {states.map((state) => {
             const note = requirementText(session.form.definition, state.role, state.requirement);
-            const notNeeded =
-              state.role.requiredIf && !state.requirement.required && state.state === 'missing';
+            const { notNeeded } = state;
             return (
               <li key={state.role.id} className={notNeeded ? 'role muted' : 'role'}>
                 <div>

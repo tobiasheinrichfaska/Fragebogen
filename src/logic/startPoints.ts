@@ -8,9 +8,9 @@
 // questionnaire of another start point (all parts sealed), optionally with changed answers; inputs
 // with the same label share the questionnaire id and nonces, so equal parts give equal seals (two
 // versions of one person for the conflict test). Since 2026-11-07 (Tobias: "Jeder Test startet mit
-// seiner eigenen Umgebung") form start points with one label build one questionnaire — two files of
-// one questionnaire at different stages — and a link start point opens the app as a bookmark link
-// would. Fictitious data only; bundled into the test folder build alone.
+// seiner eigenen Umgebung") a link start point opens the app as a bookmark link would; form start
+// points sharing a label were dropped on 2026-11-08 (Tobias), no test needed them any more.
+// Fictitious data only; bundled into the test folder build alone.
 import { buildPackage, packageText } from './dataPackage';
 import { Decoder, type DecodeIssue } from './decode';
 import { fieldsOfRole } from './form';
@@ -49,12 +49,6 @@ export interface StartPoint {
   parts: StartPart[];
   /** The role whose draft opens, at a question (field id) or its summary; or the overview. */
   open: { role: RoleId; at: FieldId | 'summary' } | 'overview';
-  /**
-   * Start points with the same label build one questionnaire — same id, nonces and time — while
-   * the test page stays open, so equal parts give equal seals: files of one questionnaire at
-   * different stages (MT-40).
-   */
-  questionnaire?: string;
 }
 
 /** Opens the app as the master-data link would — a bookmark of the Kanzlei (MT-100, MT-101). */
@@ -107,7 +101,7 @@ export function parseStartPoint(raw: unknown): StartPointParse {
   if (typeof raw === 'object' && raw !== null && 'inbox' in raw) return parseKanzleiStart(raw);
   if (typeof raw === 'object' && raw !== null && 'link' in raw) return parseLinkStart(raw);
   const d = new Decoder();
-  const o = d.object(raw, '$', ['id', 'title', 'form', 'parts', 'open', 'questionnaire']);
+  const o = d.object(raw, '$', ['id', 'title', 'form', 'parts', 'open']);
   const id = o && d.string(o.id, '$.id', START_ID);
   const title = o && d.string(o.title, '$.title');
   const form = o && d.string(o.form, '$.form', FORM_ID);
@@ -134,22 +128,10 @@ export function parseStartPoint(raw: unknown): StartPointParse {
       1,
     );
   const open = o && (o.open === 'overview' ? 'overview' : decodeOpen(d, o.open));
-  const label =
-    o?.questionnaire === undefined ? undefined : d.string(o.questionnaire, '$.questionnaire', ID);
   if (d.issues.length > 0 || !id || !title || !form || !parts || !open) {
     return { ok: false, issues: d.issues };
   }
-  return {
-    ok: true,
-    point: {
-      id,
-      title,
-      form,
-      parts,
-      open,
-      ...(label === undefined ? {} : { questionnaire: label }),
-    },
-  };
+  return { ok: true, point: { id, title, form, parts, open } };
 }
 
 function parseLinkStart(raw: unknown): StartPointParse {

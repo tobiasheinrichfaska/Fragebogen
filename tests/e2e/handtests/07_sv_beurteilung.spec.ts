@@ -702,7 +702,7 @@ for (const run of AUSHILFE) {
     const line = await expectProposal(app, PERSONENGRUPPE, run.gruppe, run.check);
     if (run.gruppe === '101') {
       await expect(line).toContainText(
-        'keine kurzfristige Beschäftigung (Zeitgrenze von drei Monaten oder 70 Arbeitstagen überschritten',
+        'Von vornherein länger als drei Monate (bis 31.08.2026) und mehr als 70 Arbeitstage',
       );
     }
     await expectProposal(app, BEITRAGSGRUPPEN, run.bgr, false);

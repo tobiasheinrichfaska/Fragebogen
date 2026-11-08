@@ -23,6 +23,7 @@ import {
   startNewVersion,
   startSession,
   summaryOf,
+  takeOverOffered,
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
@@ -120,6 +121,20 @@ describe('session — Sofortmeldung on one device', () => {
     expect(completenessGaps(s.questionnaire, form)).toEqual([]);
     expect(s.role).toBeUndefined();
     expect(s.dirty).toBe(true);
+  });
+
+  // Tobias 2026-11-08: a complete Sofortmeldung offered the takeover because the guardian part it
+  // does not need was "noch offen".
+  it('offers taking answers over only while a part that is needed is open', () => {
+    expect(takeOverOffered(roleStates(fresh()))).toBe(true);
+    const employer = employerSeals(fresh());
+    expect(takeOverOffered(roleStates(employer))).toBe(true);
+    const complete = roleStates(personSigns(employer));
+    expect(complete.find((r) => r.role.id === 'vertretung')).toMatchObject({
+      state: 'missing',
+      notNeeded: true,
+    });
+    expect(takeOverOffered(complete)).toBe(false);
   });
 
   it('starts a fresh part with the notices, then the first question', () => {

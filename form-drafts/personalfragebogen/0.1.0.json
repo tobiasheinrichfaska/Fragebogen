@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "0.1.0",
-  "revised": "2026-11-06T12:24",
+  "revised": "2026-11-08T19:55",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -8331,6 +8331,142 @@
             "equals": "altersvoll"
           },
           "reason": "Vollrente wegen Alters vor der Regelaltersgrenze (laut Angabe der Person): versicherungspflichtig."
+        },
+        {
+          "value": "101",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "not": {
+                  "any": [
+                    {
+                      "field": "status",
+                      "equals": "arbeitslos"
+                    },
+                    {
+                      "field": "grundsicherung",
+                      "equals": true
+                    },
+                    {
+                      "field": "leistungArbeitslos",
+                      "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                    },
+                    {
+                      "field": "elternzeitAnderswo",
+                      "equals": true
+                    },
+                    {
+                      "field": "planNachSchule",
+                      "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "check": true,
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Geringfügigkeits-Richtlinien B 2.3) und mit einem Entgelt über der Geringfügigkeitsgrenze: versicherungspflichtig.",
+          "test": {
+            "fn": "nichtKurzfristigGegeben",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit",
+              "ausgeschiedenSeit"
+            ]
+          }
+        },
+        {
+          "value": "101",
+          "when": {
+            "all": [
+              {
+                "field": "agBeschaeftigungsart",
+                "equals": "kurzfristig"
+              },
+              {
+                "any": [
+                  {
+                    "field": "status",
+                    "equals": "arbeitslos"
+                  },
+                  {
+                    "field": "grundsicherung",
+                    "equals": true
+                  },
+                  {
+                    "field": "leistungArbeitslos",
+                    "in": ["arbeitslosengeld", "grundsicherungsgeld"]
+                  },
+                  {
+                    "field": "elternzeitAnderswo",
+                    "equals": true
+                  },
+                  {
+                    "field": "planNachSchule",
+                    "in": ["ausbildung", "freiwilligendienst", "wehrdienst"]
+                  }
+                ]
+              }
+            ]
+          },
+          "check": true,
+          "reason": "Als kurzfristige Aushilfe vorgesehen, aber keine kurzfristige Beschäftigung (Geringfügigkeits-Richtlinien B 2.3) und mit einem Entgelt über der Geringfügigkeitsgrenze: versicherungspflichtig.",
+          "test": {
+            "fn": "nichtKurzfristigGegebenBisGeringfuegigkeitsgrenze",
+            "args": [
+              "agBeschaeftigungsbeginn",
+              "agKurzfristigBis",
+              "agKurzfristigArbeitstage",
+              "agRahmenvereinbarung",
+              "agBefristet",
+              "vbArt",
+              "vbVon",
+              "vbBis",
+              "vbArbeitstage",
+              "vbEntgeltMonat",
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "jobBefristetBis",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "agLandwirtschaft",
+              "rentenart",
+              "renteSeit",
+              "ausgeschiedenSeit"
+            ]
+          }
         },
         {
           "value": "101",

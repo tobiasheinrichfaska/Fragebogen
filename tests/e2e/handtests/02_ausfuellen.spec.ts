@@ -539,11 +539,15 @@ test('MT-18: answers of another file fill the open parts, never overwrite and ne
     /Beschäftigte Person: 0 Angaben übernommen, [^.]*\d+ vorhandene behalten \(Familienname/,
   );
 
-  // The same questionnaire is opened, not taken over.
-  await press(app, 'Fragebogen schließen');
-  await app.locator('input[type=file]').first().setInputFiles(pdf.path);
-  await expect.poll(() => heading(app)).toBe('Wer füllt jetzt aus?');
-  await takeOver.setInputFiles(pdf.path);
+  // The same questionnaire is opened, not taken over — here its own interim file, while its parts
+  // are open (a complete one offers no takeover at all, Tobias 2026-11-08).
+  const interim = await download(
+    page,
+    app,
+    'Zwischenstand speichern',
+    testInfo.outputPath('zwischenstand.json'),
+  );
+  await takeOver.setInputFiles(interim.path);
   await expect(app.locator('.banner-error')).toContainText('Das ist derselbe Fragebogen');
   await expectQuiet(page, found);
 });
@@ -583,12 +587,23 @@ test('MT-18: an answer of the old file replaces a differing preselection', async
   await expectQuiet(page, found);
 });
 
-test('MT-18: no takeover once every part is closed', async ({ page }) => {
-  const { found, app } = await openTestApp(page, 'eigenbeleg-bewirtung-unterschrieben');
+async function expectNoTakeOver(app: Locator) {
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
   await expect(
     app.getByRole('button', { name: 'Angaben aus einer anderen Datei übernehmen …' }),
   ).toHaveCount(0);
+}
+
+test('MT-18: no takeover once every part is closed', async ({ page }) => {
+  const { found, app } = await openTestApp(page, 'eigenbeleg-bewirtung-unterschrieben');
+  await expectNoTakeOver(app);
+  await expectQuiet(page, found);
+});
+
+// Its guardian part is not needed, so nothing is open (Tobias 2026-11-08).
+test('MT-18: no takeover in a complete Sofortmeldung', async ({ page }) => {
+  const { found, app } = await openTestApp(page, 'sofortmeldung-vollstaendig');
+  await expectNoTakeOver(app);
   await expectQuiet(page, found);
 });
 
