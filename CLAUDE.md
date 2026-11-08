@@ -1193,7 +1193,7 @@ was reported in green (`fromPackageText` `warnings`), and a full-page scan of th
 7–9 of 11 codes (`QR_SEARCH_SIDE` 3600 instead of 2400 px, and each cell tried in black and white and at half size when jsQR alone fails — probe over 330 codes at 200/300/600 dpi: none lost; `tests/io/qrScan.test.ts`). Earlier the same day: a two-digit year
 rolls back only as far as the lower bound allows — a signature date `091126` stays 2026 and is
 refused (d8a3306); Sofortmeldung 1.1.0 side paths played as a table (`sofortmeldung110Wege.test.ts`,
-0533491). **Open for Tobias:** (1) „Kein Zusatz“ (quick answer `null`) counts as unanswered, so „Zur
+0533491). Commits 6bd16c1 (fixes) + 76091d2 (tests), pushed; **test folder uploaded at 76091d2 („online identisch“); the public app does not have the two fixes yet — upload only on Tobias's OK.** e2e gate: 225 passed, 1 skipped (the iPhone test in Chromium; it runs in WebKit), 31.0 min; unit 5238 passed. **Open for Tobias:** (1) „Kein Zusatz“ (quick answer `null`) counts as unanswered, so „Zur
 nächsten fehlenden Angabe“ stops at the address suffix (rule of 2026-10-30: voluntary ones included)
 — keep? (2) A 101 proposal from the fallback rule names no detail (MT-96 expected „länger als drei
 Monate … mehr als 70 Arbeitstage“; `zeitgrenze()` has the text). (3) No manual test uses two form
