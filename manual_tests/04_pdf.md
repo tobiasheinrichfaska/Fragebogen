@@ -1,79 +1,36 @@
 # 04 – PDF, Einlesen und Papierweg
 
-## MT-30: PDF erstellen (vollständig)
+Was ein Browser selbst prüfen kann, läuft automatisch in `tests/e2e/handtests/04_pdf.spec.ts`:
+Dateiname, Text und Reihenfolge der PDF, Wiedereinlesen, eine mit einem anderen Programm neu
+gespeicherte PDF, Scans und Fotos der QR-Codes als Bilder, der Link zur App und das Kennwort in der
+App. Hier steht nur noch, was ein echtes PDF-Programm, ein Drucker, eine Kamera oder ein Handy zeigt.
+
+## MT-30: PDF in einem PDF-Programm ansehen
 
 **Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat mit getipptem Namen unterschrieben.
 
-**Voraussetzungen:** Im Kasten „Stand“ steht „Vollständig“.
+**Voraussetzungen:** Ein PDF-Programm (Acrobat Reader, Edge oder Vorschau).
 
 **Schritte:**
 
 1. Klicken Sie in der Übersicht unter „Stand“ **„PDF erstellen“**.
-   - **Danach:** Die Meldung nennt den Dateinamen `Sofortmeldung_xxxxxxxx_vollstaendig.pdf` und „5
-     Seiten, davon die letzten mit 7 QR-Codes“ (die Zahlen können abweichen).
-   - **Danach:** _Nicht offensichtlich:_ Der Dateiname enthält keinen Personennamen.
-2. Nur am Handy oder Tablet: Tippen Sie in der Meldung **„Speichern“** (siehe MT-37).
-3. Öffnen Sie die heruntergeladene Datei in einem PDF-Programm (Acrobat Reader, Edge, Vorschau).
-   - **Danach:** Seite 1 beginnt mit **„Vollständig: alle erforderlichen Teile liegen vor und sind
-     verknüpft.“** Die Angaben des Arbeitgebers sind **grau hinterlegt**.
-   - **Danach:** Unten auf jeder Seite: „Fragebogen-ID … · Daten … · Formular sofortmeldung 1.0.0 ·
-     Seite x von y“ (die Fassung, mit der der Bogen begonnen wurde).
-4. Blättern Sie weiter bis zu den Unterschriften.
-   - **Danach:** Nach den Angaben folgen die Hinweise mit „bestätigt von: Beschäftigte Person“, dann
-     **„Unterschriften und Abschlüsse“** mit der gezeichneten Unterschrift (nach dem Startlink: dem
-     getippten Namen), Systemvermerk und Prüfwert je Rolle.
-   - **Danach:** _Nicht offensichtlich:_ Eine gezeichnete Unterschrift ist als Linie gesetzt
-     (vergrößern bleibt scharf), nicht als Bild.
-5. Blättern Sie bis zum Ende.
-   - **Danach:** Nach den Unterschriften kommen das **Prüfblatt**, eine Seite **„Anlage: Daten in
-     maschinenlesbarer Form“** mit Zeichenkolonnen und eine Seite **„Anlage: Daten als QR-Codes“**.
+   - **Danach:** Die PDF wird heruntergeladen (am Handy oder Tablet: in der Meldung **„Speichern“**
+     tippen, siehe MT-37).
+2. Öffnen Sie die heruntergeladene Datei in einem PDF-Programm.
+   - **Danach:** Die PDF öffnet ohne Fehlermeldung. Seite 1 beginnt mit **„Vollständig: alle
+     erforderlichen Teile liegen vor und sind verknüpft.“**
+   - **Danach:** _Nicht offensichtlich:_ Die Angaben des Arbeitgebers sind **grau hinterlegt**, die
+     der Person nicht.
+3. Blättern Sie bis zum Ende.
+   - **Danach:** Alle Seiten sind gut lesbar, auch die Zeichenkolonnen und die QR-Codes am Ende.
 
 ---
 
-## MT-31: PDF zur Weitergabe (noch nicht vollständig)
-
-**Einstieg:** [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen) – Sie stehen in der Übersicht. Ohne Testbereich: als Arbeitgeber ausfüllen und ohne Unterschrift abschließen.
-
-**Voraussetzungen:** Nur der Arbeitgeber hat abgeschlossen; der Teil der Person ist noch nicht
-begonnen.
-
-**Schritte:**
-
-1. Klicken Sie in der Übersicht unter „Stand“ **„PDF erstellen“**.
-   - **Danach:** Die Datei heißt `Sofortmeldung_xxxxxxxx_Weitergabe.pdf`.
-   - **Danach:** Seite 1 beginnt mit **„Zur Weitergabe an die nächste Station. Noch offen: …“** und
-     nennt den fehlenden Teil der beschäftigten Person.
-
-**Erwartet:**
-
-- _Nicht offensichtlich:_ Solange ein Teil **begonnen, aber nicht abgeschlossen** ist oder eine
-  Pflicht-Unterschrift fehlt, ist „PDF erstellen“ ausgegraut. Ein noch gar nicht begonnener Teil
-  sperrt die Weitergabe dagegen nicht.
-
----
-
-## MT-32: Die eigene PDF wieder öffnen
+## MT-33: PDF in Acrobat kommentiert und neu gespeichert
 
 **Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben; dann unter „Stand“ **„PDF erstellen“**. Die heruntergeladene PDF ist die PDF dieses Tests.
 
-**Schritte:**
-
-1. Laden Sie die Seite neu (oder in der Übersicht unter „Stand“ **„Fragebogen schließen“**).
-2. Klicken Sie auf der Startseite **„Datei öffnen …“** und wählen Sie die PDF.
-   - **Danach:** _Nicht offensichtlich:_ Das Öffnen dauert beim ersten Mal ein bis zwei Sekunden
-     (das Lesemodul startet).
-   - **Danach:** Dann grün: **„Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem
-     Abschluss.“** mit dem Zusatz „Geprüft wurden die Datenseiten, nicht der sichtbare Text.“
-   - **Danach:** Die Übersicht zeigt dieselben Zustände wie vor dem Erstellen. Bei einer
-     Weitergabe-PDF kann die nächste Rolle jetzt ausfüllen.
-
----
-
-## MT-33: PDF in einem anderen Programm neu gespeichert
-
-**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben; dann unter „Stand“ **„PDF erstellen“**. Die heruntergeladene PDF ist die PDF dieses Tests.
-
-**Voraussetzungen:** Acrobat oder ein anderes PDF-Programm.
+**Voraussetzungen:** Acrobat oder ein anderes PDF-Programm, das Kommentare speichert.
 
 **Schritte:**
 
@@ -96,24 +53,29 @@ begonnen.
 
 **Schritte:**
 
-1. Drucken Sie **nur die Seite mit den QR-Codes** aus (Seite „Anlage: Daten als QR-Codes“), in
-   Originalgröße („Tatsächliche Größe“, nicht „An Seite anpassen“).
+1. Drucken Sie **nur die Seite mit den QR-Codes** aus (Seite „Anlage: Daten als QR-Codes“; bei
+   vielen Angaben sind es mehrere), in Originalgröße („Tatsächliche Größe“, nicht „An Seite
+   anpassen“).
 2. Legen Sie das Blatt **gerade** auf und scannen Sie es als PDF (300 dpi, schwarz-weiß oder
    Graustufen).
 3. Öffnen Sie den Scan in der App (auf der Startseite **„Datei öffnen …“**).
    - **Danach:** Grün oder gelb: „Geprüft: …“ mit dem Zusatz **„Gelesen aus den QR-Codes eines
      Ausdrucks. Das Original bleibt die elektronische Datei.“**
-   - **Danach:** _Nicht offensichtlich:_ Die Seiten mit den Zeichenkolonnen helfen beim Scan
-     **nicht** (Texterkennung ist zu unsicher); nur die QR-Codes werden gelesen.
-   - **Danach:** Fehlen Codes (Seite abgeschnitten), nennt die App die fehlenden Teile.
-   - **Danach:** _Nicht offensichtlich:_ Bei einem schrägen Scan erkennt die App mehrere Codes
-     womöglich nicht (bitte dann notieren, wie schräg).
+4. Scannen Sie das Blatt noch einmal, diesmal **leicht schräg** aufgelegt, und öffnen Sie den
+   Scan in der App.
+   - **Danach:** _Nicht offensichtlich:_ Bei einem schrägen Scan erkennt die App womöglich nicht
+     alle Codes und nennt die fehlenden Teile. Bitte notieren, wie schräg es noch ging.
+
+**Erwartet:**
+
+- _Nicht offensichtlich:_ Die Seiten mit den Zeichenkolonnen helfen beim Scan **nicht**
+  (Texterkennung ist zu unsicher); nur die QR-Codes werden gelesen.
 
 ---
 
 ## MT-35: QR-Codes mit dem Handy fotografieren
 
-**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben. Aus diesem Fragebogen erstellen und drucken Sie zuerst die Seite mit den QR-Codes.
+**Einstieg:** [Vollständigen Fragebogen öffnen](start:sofortmeldung-vollstaendig) – Arbeitgeber abgeschlossen, die Person hat unterschrieben. Aus diesem Fragebogen erstellen und drucken Sie zuerst die Seiten mit den QR-Codes.
 
 **Voraussetzungen:** Ein Drucker; ein Handy oder Tablet mit der gehosteten App (oder die Fotos per Mail an den PC).
 
@@ -125,7 +87,7 @@ begonnen.
 3. Fotografieren Sie zuerst nur die **obere Reihe** der Codes, möglichst gerade von oben.
 4. Öffnen Sie das Foto in der App.
    - **Danach:** Blau **„QR-Codes: 3 von 7 gelesen. Bitte ein weiteres Foto …“** mit der Liste der
-     fehlenden Teile.
+     fehlenden Teile (die Zahlen können abweichen).
 5. Fotografieren Sie die übrigen Codes.
 6. Öffnen Sie dieses Foto ebenfalls in der App.
    - **Danach:** Grün oder gelb: „Geprüft: …“ mit dem Zusatz **„Gelesen aus den QR-Codes eines
@@ -152,12 +114,8 @@ begonnen.
 2. Öffnen Sie die PDF in einem PDF-Programm.
 3. Klicken Sie auf die Zeile „App: https://…“.
    - **Danach:** Der Browser öffnet die Adresse der App.
-
-**Erwartet:**
-
-- Gedruckt ist die Adresse ebenfalls lesbar.
-- _Nicht offensichtlich:_ Ohne konfigurierte Adresse (Fassung aus dem öffentlichen Repo) fehlt die
-  Zeile ganz.
+4. Drucken Sie Seite 1 aus.
+   - **Danach:** Die Adresse ist auch gedruckt gut lesbar.
 
 ---
 
@@ -172,8 +130,8 @@ Messenger oder Cloud-Speicher).
 **Schritte:**
 
 1. Tippen Sie in der Übersicht unter „Stand“ **„PDF erstellen“**.
-   - **Danach:** Die PDF öffnet sich **nicht** von selbst. Die Seite rückt zur grünen Meldung „PDF …
-     erstellt“ mit den Knöpfen **„Teilen“** und **„Speichern“**.
+   - **Danach:** Die grüne Meldung „PDF … erstellt“ mit den Knöpfen **„Teilen“** und
+     **„Speichern“** ist zu sehen.
 2. Tippen Sie in der grünen Meldung **„Teilen“**.
    - **Danach:** Das Teilen-Menü des Geräts geht auf.
 3. Brechen Sie das Teilen-Menü ab.
@@ -189,56 +147,35 @@ Messenger oder Cloud-Speicher).
 
 **Erwartet:**
 
-- _Nicht offensichtlich:_ Am PC lädt „PDF erstellen“ wie bisher sofort herunter; „Speichern“ gibt es
-  dort nicht, „Teilen“ nur, wenn der Browser Dateien teilen kann (z. B. Edge unter Windows).
+- _Nicht offensichtlich:_ Am PC lädt „PDF erstellen“ sofort herunter; „Teilen“ gibt es dort nur,
+  wenn der Browser Dateien teilen kann (z. B. Edge unter Windows).
 
 ---
 
-## MT-132: PDF mit Kennwort weitergeben und wieder einlesen
+## MT-132: PDF mit Kennwort in PDF-Programmen öffnen
 
 **Einstieg:** [Nur Arbeitgeber abgeschlossen öffnen](start:sofortmeldung-arbeitgeber-abgeschlossen) –
 Sie stehen bei „Wer füllt jetzt aus?“.
 
+**Voraussetzungen:** Chrome oder Edge; wenn vorhanden auch Acrobat Reader und am Mac die Vorschau.
+
 **Schritte:**
 
-1. In der Übersicht unter „Stand“ das Häkchen **„Mit Kennwort schützen (PDF und Link)“** setzen.
-   - **Danach:** Ein Feld „Kennwort“ mit drei Vierergruppen aus kleinen Buchstaben und Ziffern (etwa
-     „k7qm-2xrp-9fha“), „Kopieren“ und **„Neues Kennwort“**. Der Hinweis darunter sagt, dass ein
-     PDF-Programm das Kennwort genau so will, klein und mit Bindestrichen.
-2. Das Kennwort auf einem Zettel notieren und **„PDF erstellen“** klicken.
-   - **Danach:** Grün: „PDF „Sofortmeldung_…_Weitergabe.pdf“ erstellt, mit Kennwort geschützt – …“,
-     darunter „Mit Kennwort ist die PDF keine PDF/A. Zur Ablage erstellt die Kanzlei nach dem
-     Einlesen eine PDF ohne Kennwort.“
-3. Die heruntergeladene PDF in einem PDF-Programm öffnen – auch direkt im Browser (Chrome, Edge),
-   in Acrobat Reader oder in der Vorschau.
-   - **Danach:** Das Programm fragt nach einem Kennwort.
+1. In der Übersicht unter „Stand“ das Häkchen **„Mit Kennwort schützen (PDF und Link)“** setzen und
+   das Kennwort auf einem Zettel notieren.
+2. **„PDF erstellen“** klicken.
+   - **Danach:** Grün: „PDF „Sofortmeldung_…_Weitergabe.pdf“ erstellt, mit Kennwort geschützt – …“
+3. Die heruntergeladene PDF direkt im Browser öffnen (Chrome oder Edge).
+   - **Danach:** Der Browser fragt nach einem Kennwort.
 4. Das Kennwort genau wie notiert eingeben: klein und mit Bindestrichen.
-   - **Danach:** Die PDF zeigt die Angaben des Arbeitgebers wie ohne Kennwort. _Nicht
-     offensichtlich:_ In den Dokumenteigenschaften stehen Titel und Fragebogen-ID auch ohne Kennwort
-     lesbar – die Angaben selbst sind verschlüsselt.
-5. In der App **„Fragebogen schließen“**, dann auf der Startseite **„Datei öffnen …“** und die PDF
-   wählen.
-   - **Danach:** Ein Fenster **„Geschützte PDF“** mit dem Dateinamen und dem Feld „Kennwort“.
-6. <kbd>falsch-falsch</kbd> tippen und **„Öffnen“** klicken.
-   - **Danach:** Rot im Fenster: „Das Kennwort passt nicht zu dieser PDF. Bitte prüfen Sie es und
-     geben Sie es noch einmal ein.“
-7. Das Feld leeren, das notierte Kennwort in **Großbuchstaben und ohne Bindestriche** tippen und
-   **„Öffnen“** klicken.
-   - **Danach:** Der Fragebogen öffnet; die Meldung nennt „Geprüft: Alle abgeschlossenen Teile sind
-     unverändert seit ihrem Abschluss.“ und „Die PDF war mit einem Kennwort geschützt.“ _Nicht
-     offensichtlich:_ **Kein** Hinweis „mit einem anderen Programm neu gespeichert“.
-8. **„Fragebogen schließen“**, **„Datei öffnen …“**, dieselbe PDF wählen und im Fenster
-   **„Abbrechen“** klicken.
-   - **Danach:** Rot: „„Sofortmeldung_…_Weitergabe.pdf“ ist mit einem Kennwort geschützt. Ohne das
-     Kennwort lässt sich die PDF nicht öffnen.“
-9. Weiter unten im Abschnitt „Kanzlei“ **„Eingänge zusammenführen …“**, dann **„Dateien hinzufügen
-   …“** und dieselbe PDF wählen.
-   - **Danach:** Auch hier das Fenster „Geschützte PDF“; mit dem Kennwort wird die Datei eingelesen.
+   - **Danach:** Die PDF zeigt die Angaben des Arbeitgebers wie ohne Kennwort.
+5. Dieselbe PDF in Acrobat Reader öffnen und das Kennwort eingeben.
+   - **Danach:** Acrobat Reader fragt nach dem Kennwort und zeigt die PDF damit an.
+6. Am Mac: dieselbe PDF in der Vorschau öffnen und das Kennwort eingeben.
+   - **Danach:** Die Vorschau fragt nach dem Kennwort und zeigt die PDF damit an.
 
 **Erwartet:**
 
-- _Nicht offensichtlich:_ Die PDF für die Personalakte, die die Kanzlei nach dem Zusammenführen
-  erstellt, hat nie ein Kennwort – sie bleibt PDF/A für die Ablage.
 - Öffnet ein PDF-Programm die PDF auch mit dem richtigen Kennwort nicht, bitte Programm und Version
   melden. Bekannt: Die in Windows eingebaute PDF-Schnittstelle, die manche ältere Programme nutzen,
   kann AES-256 nicht öffnen.

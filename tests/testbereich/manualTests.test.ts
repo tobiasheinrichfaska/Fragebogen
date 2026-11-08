@@ -179,9 +179,17 @@ describe('expectations at the steps (Tobias 2026-11-06)', () => {
 
 describe('manual_tests/ as the catalogue', () => {
   const cases = files.flatMap((file) => file.cases);
+  const byId = (id: string) => {
+    const found = cases.find((c) => c.id === id);
+    if (!found) throw new Error(`${id} missing`);
+    return found;
+  };
 
+  // Since 2026-11-08 only what needs a person or a real device stays a manual test; the rest runs
+  // in tests/e2e/handtests/ (Tobias: "reduziere die Handtests auf die Dinge, die wir nicht mit
+  // virtuellen Browsern abbilden können").
   it('reads every case of every file, each id once', () => {
-    expect(cases.length).toBeGreaterThanOrEqual(65);
+    expect(cases.length).toBeGreaterThanOrEqual(20);
     expect(new Set(cases.map((c) => c.id)).size).toBe(cases.length);
     expect(files.every((file) => file.area !== '')).toBe(true);
   });
@@ -226,20 +234,17 @@ describe('manual_tests/ as the catalogue', () => {
   // Tobias 2026-11-01 (first test report): tests that cannot run in the hosted test area say so.
   it('marks the tests that cannot run in the test area, with the reason', () => {
     const notOffered = cases.filter((c) => !testAreaOf(c).offered).map((c) => c.id);
-    expect(notOffered).toEqual(['MT-01', 'MT-52', 'MT-82', 'MT-83', 'MT-84']);
-    const byId = (id: string) => {
-      const found = cases.find((c) => c.id === id);
-      if (!found) throw new Error(`${id} missing`);
-      return found;
-    };
+    expect(notOffered).toEqual(['MT-01', 'MT-82', 'MT-83', 'MT-84']);
     expect(testAreaOf(byId('MT-01')).note).toContain('heruntergeladenen Datei');
-    expect(testAreaOf(byId('MT-10'))).toEqual({ offered: true });
+    expect(testAreaOf(byId('MT-03'))).toEqual({ offered: true });
   });
 
   it('tells where a test starts', () => {
-    const mt10 = cases.find((c) => c.id === 'MT-10');
-    const pre = mt10?.parts.find((part) => part.label === 'Voraussetzungen')?.blocks[0];
-    expect(pre?.kind === 'text' && pre.text).toContain('App neu starten');
+    expect(testEnvironment(byId('MT-03'))).toEqual({ kind: 'home' });
+    expect(testEnvironment(byId('MT-30'))).toMatchObject({
+      kind: 'start',
+      id: 'sofortmeldung-vollstaendig',
+    });
   });
 
   // Tobias 2026-11-07: "sorge dafür, dass kein Test einen anderen Test vorneweg braucht oder
@@ -269,9 +274,9 @@ describe('manual_tests/ as the catalogue', () => {
       .filter((c) => testAreaOf(c).offered && c.parts[0]?.label !== 'Einstieg')
       .map((c) => c.id);
     expect(withoutEntry).toEqual([]);
-    const mt11 = cases.find((c) => c.id === 'MT-11')?.parts[0]?.blocks[0];
-    expect(mt11?.kind === 'text' && mt11.text).toContain(
-      'einen neuen Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“',
+    const mt81 = byId('MT-81').parts[0]?.blocks[0];
+    expect(mt81?.kind === 'text' && mt81.text).toContain(
+      'einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“',
     );
   });
 
@@ -279,11 +284,11 @@ describe('manual_tests/ as the catalogue', () => {
   it('knows the environment of every test the test area offers', () => {
     const offered = cases.filter((c) => testAreaOf(c).offered);
     const kinds = offered.map((c) => testEnvironment(c).kind);
-    expect(kinds.filter((k) => k === 'start').length).toBeGreaterThanOrEqual(45);
-    expect(kinds.filter((k) => k === 'home').length).toBeGreaterThanOrEqual(40);
+    expect(kinds.filter((k) => k === 'start').length).toBeGreaterThanOrEqual(10);
+    expect(kinds.filter((k) => k === 'home').length).toBeGreaterThanOrEqual(2);
     // The rest begins elsewhere; a test listed here lost its start link or names its entry oddly.
     expect(offered.filter((c) => testEnvironment(c).kind === 'elsewhere').map((c) => c.id)).toEqual(
-      ['MT-116', 'MT-118', 'MT-80', 'MT-85', 'MT-133', 'MT-130'],
+      ['MT-80', 'MT-85'],
     );
   });
 });

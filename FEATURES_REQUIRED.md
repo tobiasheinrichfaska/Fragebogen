@@ -12,7 +12,7 @@ the named automated test (the audit re-runs them); unchecked paths are guarded b
 - [x] **Open the single HTML file by double-click (file://)** — app renders, no console errors (`tests/e2e/flow.spec.ts`, console guard in three engines)
 - [x] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest (`tests/e2e/guards.ts` via `npm run test:e2e`, three engines)
 - [x] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow (`tests/e2e/guards.ts`, `expectClean`)
-- [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean (manual: MT-17; no automated guard yet)
+- [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean (e2e: `tests/e2e/handtests/02_ausfuellen.spec.ts`, former MT-17)
 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
 

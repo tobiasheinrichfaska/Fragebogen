@@ -26,7 +26,7 @@ import type { SystemNote } from '../../logic/model';
 import type { PreparedStart } from '../App';
 import { Banner, type BannerMessage } from '../common';
 import { createTestReportPdf } from '../pdfActions';
-import { START_POINTS, TEST_CASES } from './catalogue';
+import { START_POINTS, TEST_AREA, TEST_CASES } from './catalogue';
 import { ChoiceDialog, type Question } from './ChoiceDialog';
 import { loadRun, resetAppStorage, saveRun } from './storage';
 import { TestPanel } from './TestPanel';
@@ -116,17 +116,43 @@ function prepare(id: string): Prepared | string {
   };
 }
 
+/**
+ * `?startpunkt=<id>` opens a start point right away, without a test text (the automated tests,
+ * Tobias 2026-11-08). Read once when the page loads and taken out of the address, so a later
+ * restart starts the app plainly; a link start point leaves its link for the app to read.
+ */
+function startFromAddress(): Prepared | string | undefined {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('startpunkt');
+  if (id === null) return undefined;
+  params.delete('startpunkt');
+  const prepared = prepare(id);
+  const rest = params.toString();
+  const search = rest === '' ? '' : `?${rest}`;
+  const link = typeof prepared === 'string' || !prepared.link ? '' : `#${prepared.link}`;
+  history.replaceState(null, '', location.pathname + search + link);
+  return prepared;
+}
+
+const FROM_ADDRESS = TEST_AREA ? startFromAddress() : undefined;
+
 export function TestShell({ children }: { children: (start?: PreparedStart) => ReactNode }) {
-  const [tab, setTab] = useState<'anleitung' | 'app'>('anleitung');
+  const [tab, setTab] = useState<'anleitung' | 'app'>(
+    typeof FROM_ADDRESS === 'object' ? 'app' : 'anleitung',
+  );
   // A new key mounts the app afresh: back to its start page (or a start point), results stay.
   const [appKey, setAppKey] = useState(0);
-  const [start, setStart] = useState<PreparedStart>();
+  const [start, setStart] = useState<PreparedStart | undefined>(
+    typeof FROM_ADDRESS === 'object' ? FROM_ADDRESS.start : undefined,
+  );
   const [run, setRun] = useState<TestRun>(loadRun);
   // The run as last changed: a report marks it when its PDF is ready, after any typing meanwhile.
   const latest = useRef(run);
   const [stored, setStored] = useState(true);
   const [question, setQuestion] = useState<Question>();
-  const [banner, setBanner] = useState<BannerMessage>();
+  const [banner, setBanner] = useState<BannerMessage | undefined>(
+    typeof FROM_ADDRESS === 'string' ? { tone: 'error', text: FROM_ADDRESS } : undefined,
+  );
   const update = (next: TestRun) => {
     latest.current = next;
     setRun(next);
