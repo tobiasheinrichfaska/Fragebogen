@@ -119,10 +119,11 @@ stehen beim Geburtsdatum.
 
 **Erwartet:**
 
-- _Nicht offensichtlich:_ Ein zweistelliges Jahr gilt nur bei Datumsfeldern, die nicht nach heute
-  liegen dürfen (Geburtsdatum, Datum der Unterschrift beim SEPA-Mandat, Daten beim Eigenbeleg).
-  Andere Daten, etwa der Beginn der Beschäftigung, verlangen das Jahr vierstellig: „Bitte das Jahr
-  vierstellig eingeben, z. B. 02.11.2026.“
+- _Nicht offensichtlich:_ Nur das Geburtsdatum geht bis zu 100 Jahre zurück. Beim Datum der
+  Unterschrift (SEPA-Mandat) und bei den Daten des Eigenbelegs gilt ein zweistelliges Jahr als
+  20JJ – ein Datum von morgen wird dort abgelehnt („spätestens heute“), nie zu 1926. Andere Daten,
+  etwa der Beginn der Beschäftigung, verlangen das Jahr vierstellig: „Bitte das Jahr vierstellig
+  eingeben, z. B. 02.11.2026.“
 
 ---
 
