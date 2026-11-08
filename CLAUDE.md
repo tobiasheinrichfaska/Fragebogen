@@ -802,7 +802,9 @@ Key design decisions (details in `docs/plan.md`):
   `manual_tests/`. Emulated phones are not real ones (no real share sheet, keyboard, clipboard of the
   device). MT-34/35 render PDFs in Node with `@napi-rs/canvas` (optional dependency of pdfjs-dist);
   without it those tests fail. Tests that need `config/export.local.json` or `config/kanzlei.local.json`
-  skip without the file — a skip is not a pass.
+  skip without the file — a skip is not a pass. Under the load of a full run (3 workers) the long
+  `flow.spec.ts` test can still fail in Firefox or WebKit (page crash, page stops answering;
+  2026-11-08 once each, both green alone and in the next full run) — re-run, never count it green.
 
 - **Foreign postcode (2026-11-06):** required unless the state is in `staatenOhnePostleitzahl2026`
   (62 states: 47 without postcodes per the UPU addressing sheets, 15 unclear — treated as without,
@@ -1199,7 +1201,11 @@ session.ts (the rule moved out of RolesScreen). Regression tests that failed on 
 `session.sofortmeldung.test.ts` „offers taking answers over only while a part that is needed is open“
 (red with the old rule); e2e MT-18 got the complete Sofortmeldung, and the MT-18 takeover test now
 checks „derselbe Fragebogen“ with the interim file (it had relied on the offer in a complete one).
-Personalfragebogen draft changed (rules only), so `npm run catalogue` stamped `revised`.
+Personalfragebogen draft changed (rules only), so `npm run catalogue` stamped `revised`. Commit
+ac530fe, pushed; **test folder uploaded at ac530fe („online identisch“); the public app (f25e71b)
+lacks (3) and (5) — upload only on Tobias's OK.** Unit 5239 passed. e2e: the first full run had 2
+failures in `flow.spec.ts` under load (Firefox „Page crashed“ at the PDF download, WebKit stuck at
+„Weiter“; both engines alone 24 passed), the second full run 226 passed, 1 skipped, 26.4 min.
 
 **Hand-over 2026-11-08 afternoon:** Tobias: „Prüfe, welche Handtests du besser mit deinen
 Simulatoren abbilden kannst. Reduziere die Handtests auf die Dinge, die wir nicht mit virtuellen
