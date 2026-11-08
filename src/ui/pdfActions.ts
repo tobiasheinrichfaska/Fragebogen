@@ -183,12 +183,16 @@ export type OpenResult =
   | { kind: 'partial'; collected: Uint8Array[]; message: BannerMessage }
   | { kind: 'error'; message: BannerMessage };
 
-/** Decodes and verifies a package text; the message says what was checked and what was found. */
+/**
+ * Decodes and verifies a package text; the message says what was checked and what was found.
+ * `warnings` (clues of later editing) colour the message like a finding; `notes` only inform.
+ */
 export function fromPackageText(
   text: string,
   registry: FormRegistry,
   arrival: Arrival,
   notes: readonly string[],
+  warnings: readonly string[] = [],
 ): OpenResult {
   let raw: unknown;
   try {
@@ -219,7 +223,7 @@ export function fromPackageText(
   const tone =
     verdict.level === 'invalid'
       ? 'error'
-      : findings.length > 0 || decoded.origin === 'embedded'
+      : findings.length > 0 || warnings.length > 0 || decoded.origin === 'embedded'
         ? 'warning'
         : 'success';
   return {
@@ -235,6 +239,7 @@ export function fromPackageText(
       detail: [
         ...(decoded.origin === 'embedded' ? [ORIGIN_MESSAGES.embedded] : []),
         ...notes,
+        ...warnings,
         ...findings,
       ],
     },
@@ -412,11 +417,16 @@ export async function openPdfOrImage(
     const lines = decodeDataLines(text.lines);
     if (lines.ok) {
       const clues = editClues(bytes, text.producer).map((clue) => EDIT_CLUE_MESSAGES[clue]);
-      return fromPackageText(lines.text, registry, arrival, [
-        'Geprüft wurden die Datenseiten, nicht der sichtbare Text.',
-        ...(password === undefined ? [] : ['Die PDF war mit einem Kennwort geschützt.']),
-        ...clues,
-      ]);
+      return fromPackageText(
+        lines.text,
+        registry,
+        arrival,
+        [
+          'Geprüft wurden die Datenseiten, nicht der sichtbare Text.',
+          ...(password === undefined ? [] : ['Die PDF war mit einem Kennwort geschützt.']),
+        ],
+        clues,
+      );
     }
     if (lines.issue !== 'notFound') {
       return {
@@ -425,9 +435,7 @@ export async function openPdfOrImage(
       };
     }
     // No text data pages: a scan or a print-to-PDF. Look for the QR codes on the pages.
-    const payloads = (await renderPdfPages(library, bytes, undefined, password)).flatMap(
-      readQrCodes,
-    );
+    const payloads = (await renderPdfPages(library, bytes, readQrCodes, password)).flat();
     return fromQr([...collected, ...payloads], registry, arrival, DATA_LINES_MESSAGES.notFound);
   } catch (error) {
     return {

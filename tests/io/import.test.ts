@@ -58,6 +58,24 @@ describe('import report', () => {
       expect(result.message.detail?.[0]).toContain('nicht veröffentlicht');
   });
 
+  // Bug 2026-11-08 (MT-33 automated): a PDF saved again by another program or with an appended
+  // update was reported in green — the clue was only a note and never coloured the message.
+  it('warns when the PDF was changed by another program, with the clue', () => {
+    const clue = 'Die PDF wurde mit einem anderen Programm neu gespeichert.';
+    const result = fromPackageText(
+      text(),
+      published,
+      ARRIVAL,
+      ['Geprüft wurden die Datenseiten.'],
+      [clue],
+    );
+    expect(result.kind === 'session' && result.message).toMatchObject({
+      tone: 'warning',
+      text: 'Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.',
+      detail: ['Geprüft wurden die Datenseiten.', clue],
+    });
+  });
+
   it('refuses something that is not a package', () => {
     expect(fromPackageText('{"format":"anders"}', published, ARRIVAL, []).kind).toBe('error');
     expect(fromPackageText('kein JSON', published, ARRIVAL, []).kind).toBe('error');

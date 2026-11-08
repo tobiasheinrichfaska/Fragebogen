@@ -17,10 +17,11 @@ import {
   editClues,
   groupLines,
   passwordIssue,
+  QR_SEARCH_SIDE,
   readPdfText,
   type PdfJsLike,
 } from '../../src/io/pdfReader';
-import { printable, writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
+import { printable, QR_MODULE, writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
 import { decodePackage } from '../../src/logic/dataPackage';
 import { decodeDataLines } from '../../src/logic/dataPages';
 import { registryOf } from '../../src/logic/formRegistry';
@@ -81,6 +82,13 @@ async function readBack(bytes: Uint8Array) {
   if (!lines.ok) throw new Error(`${lines.issue} ${lines.detail.join(', ')}`);
   return { text, decoded: decodePackage(JSON.parse(lines.text), registryOf([sofortmeldung])) };
 }
+
+// Bug 2026-11-08 (MT-34 automated): at 2400 px on the long side of A4 a printed module got about
+// 4 px and a full-page scan lost codes; the end-to-end scan test is in tests/e2e/handtests/04_pdf.
+it('searches a scanned A4 page for QR codes at 6 px or more per printed module', () => {
+  const a4LongSide = (297 / 25.4) * 72;
+  expect((QR_SEARCH_SIDE / a4LongSide) * QR_MODULE).toBeGreaterThanOrEqual(6);
+});
 
 describe('questionnaire PDF', () => {
   const session = completeSofortmeldung();
