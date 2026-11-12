@@ -10,6 +10,7 @@ import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { readPdfText, type PdfJsLike } from '../../src/io/pdfReader';
 import { writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
 import { formCatalogue } from '../../src/logic/catalogue';
+import { checkHints } from '../../src/logic/hints';
 import { contradictions } from '../../src/logic/consistency';
 import { fieldsById } from '../../src/logic/form';
 import { checkFormDefinition, parseFormDefinition } from '../../src/logic/formDefinition';
@@ -27,6 +28,7 @@ import {
   proposedBy,
   roleToFillNext,
   seal,
+  signingOverview,
   startSession,
   stepsFor,
   type Session,
@@ -187,10 +189,18 @@ describe('fixed packages of KSt, GewSt and Zerlegung', () => {
   });
 });
 
-// Tobias 2026-11-12: „eigene Seite für jeden einzelnen Punkt, der von der Kanzlei vorgegeben
-// wurde, nicht eine Generalerklärung zu Beginn“.
-describe('one page per return the Kanzlei names', () => {
-  it('shows a page for each named return, in the Kanzlei order, then AGB and data protection', () => {
+// Tobias 2026-11-12: first „eigene Seite für jeden einzelnen Punkt … nicht eine Generalerklärung
+// zu Beginn“, then „Können wir die Hinweise bündeln?“ — one page per recipient: the Finanzverwaltung
+// (any tax return), banks (Digitaler Finanzbericht), the Unternehmensregister (Offenlegung).
+describe('one page per recipient of what the Kanzlei names', () => {
+  /** The returns a notice's condition names. */
+  const named = (id: string): string[] => {
+    const block = form.definition.infoBlocks.find((b) => b.id === id);
+    const leaves = block?.showIf && 'any' in block.showIf ? block.showIf.any : [block?.showIf];
+    return leaves.flatMap((leaf) => (leaf && 'contains' in leaf ? [leaf.contains] : []));
+  };
+
+  it('bundles every tax return into one page, then AGB and data protection', () => {
     const mandant = must(
       enterRole(
         kanzleiSealed({ ...FIRMA, erklaerungen: ['kst', 'gewst', 'ust'], zerlegung: true }),
@@ -198,35 +208,40 @@ describe('one page per return the Kanzlei names', () => {
       ),
     );
     expect(flow(mandant)).toEqual([
-      'seiteKst',
-      'seiteGewst',
-      'seiteZerlegung',
-      'seiteUst',
+      'seiteSteuererklaerungen',
       'agbDatenschutz',
+      'einschraenkungenMandant',
       'unterzeichnerName',
     ]);
   });
 
-  it('has no page for a return the Kanzlei did not name', () => {
-    const mandant = must(enterRole(kanzleiSealed(FIRMA), 'mandant'));
-    expect(notices(mandant)).toEqual([
-      'seiteKst',
-      'seiteGewst',
-      'seiteUst',
-      'seiteEbilanz',
+  it('adds the pages for banks and the Unternehmensregister only where named', () => {
+    expect(notices(must(enterRole(kanzleiSealed(FIRMA), 'mandant')))).toEqual([
+      'seiteSteuererklaerungen',
       'seiteOffenlegung',
+      'agbDatenschutz',
+    ]);
+    const banksOnly = kanzleiSealed({
+      mandantName: 'Beispiel GmbH',
+      vorlageDatum: '28.10.2026',
+      erklaerungen: ['difin'],
+    });
+    expect(notices(must(enterRole(banksOnly, 'mandant')))).toEqual([
+      'seiteDifin',
       'agbDatenschutz',
     ]);
   });
 
-  it('has a page for every return of the list', () => {
-    const pages = form.definition.infoBlocks
-      .filter((block) => block.role === 'mandant' && block.showIf !== undefined)
-      .map((block) => block.showIf);
-    for (const option of optionsOf(field('zustimmungErklaerungen'))) {
-      expect(pages).toContainEqual({ field: 'zustimmungErklaerungen', contains: option.id });
-    }
-    expect(pages).toContainEqual({ field: 'zustimmungZerlegung', equals: true });
+  it('covers every return of the list by exactly one page', () => {
+    const pages = ['seiteSteuererklaerungen', 'seiteDifin', 'seiteOffenlegung'];
+    const covered = pages.flatMap(named).sort();
+    expect(covered).toEqual(
+      optionsOf(field('zustimmungErklaerungen'))
+        .map((o) => o.id)
+        .sort(),
+    );
+    expect(named('seiteDifin')).toEqual(['difin']);
+    expect(named('seiteOffenlegung')).toEqual(['offenlegung']);
   });
 
   it('refuses to sign while a page is not confirmed', () => {
@@ -234,11 +249,11 @@ describe('one page per return the Kanzlei names', () => {
       unterzeichnerName: 'Erika Musterfrau',
     });
     const allButOne = notices(mandant)
-      .filter((id) => id !== 'seiteEbilanz')
+      .filter((id) => id !== 'seiteOffenlegung')
       .reduce((next, id) => acknowledge(next, id, true), mandant);
     const refused = sealed(allButOne, 'b2', 'Erika Musterfrau');
     expect(refused.ok).toBe(false);
-    if (!refused.ok) expect(refused.detail).toEqual(['seiteEbilanz']);
+    if (!refused.ok) expect(refused.detail).toEqual(['seiteOffenlegung']);
   });
 
   it('puts the page right after the answer when the client names the returns', () => {
@@ -250,7 +265,8 @@ describe('one page per return the Kanzlei names', () => {
       'zustimmungMandant',
       'zustimmungSchreibenVom',
       'zustimmungErklaerungen',
-      'seiteUst',
+      'seiteSteuererklaerungen',
+      'einschraenkungenMandant',
       'unterzeichnerName',
     ]);
   });
@@ -265,12 +281,12 @@ describe('one page per return the Kanzlei names', () => {
         unterzeichnerName: 'Erika Musterfrau',
       }),
     );
-    s = confirmAll(answerAll(s, { zustimmungErklaerungen: ['zm'] }));
+    s = confirmAll(answerAll(s, { zustimmungErklaerungen: ['difin'] }));
     const done = must(sealed(s, 'b2', 'Erika Musterfrau'));
     const sealedNotices = latestSealed(done.questionnaire, 'mandant')
       ?.seal?.payload.acknowledgements.map((a) => a.infoBlockId)
       .sort();
-    expect(sealedNotices).toEqual(['agbDatenschutz', 'seiteZm']);
+    expect(sealedNotices).toEqual(['agbDatenschutz', 'seiteDifin']);
     const verdict = verifyQuestionnaire(done.questionnaire, { registry: registryOf([form]) });
     expect(verdict.parts.flatMap((p) => p.findings.map((f) => f.code))).not.toContain(
       'noticeMismatch',
@@ -280,7 +296,58 @@ describe('one page per return the Kanzlei names', () => {
 
   it('names the condition of each page in the catalogue', () => {
     expect(formCatalogue(form, 'draft')).toContain(
-      '- Nur wenn bei „Erklärungen“ „Zusammenfassende Meldung“ angekreuzt ist',
+      '- Nur wenn bei „Erklärungen“ „Offenlegung oder Hinterlegung beim Unternehmensregister“ angekreuzt ist',
+    );
+  });
+});
+
+// Tobias 2026-11-12: „Können wir ein Freitextfeld für Einschränkungen erfassen?“ — „Beide“: the
+// Kanzlei's restrictions belong to what the client consents to; the client's and the spouse's
+// reach the Kanzlei as a check hint. All or nothing stays: none of them is required.
+describe('restrictions as free text', () => {
+  it('shows the Kanzlei restriction to the client before signing', () => {
+    const kanzlei = kanzleiSealed({
+      ...EINZEL,
+      einschraenkungenKanzlei: 'Ohne die noch fehlende Spendenbescheinigung.',
+    });
+    const mandant = answerAll(confirmAll(must(enterRole(kanzlei, 'mandant'))), {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    const rows = signingOverview(mandant)
+      ?.others.find((o) => o.role === 'kanzlei')
+      ?.sections.flatMap((section) => section.rows);
+    expect(rows?.find((r) => r.fieldId === 'einschraenkungenKanzlei')?.value).toBe(
+      'Ohne die noch fehlende Spendenbescheinigung.',
+    );
+    // The client's seal confirms the Kanzlei part it saw, restriction included.
+    const done = must(sealed(mandant, 'b2', 'Erika Musterfrau'));
+    expect(
+      latestSealed(done.questionnaire, 'mandant')?.seal?.payload.receivedParts.map((p) => p.role),
+    ).toContain('kanzlei');
+  });
+
+  it('tells the Kanzlei about a restriction of the client or the spouse', () => {
+    const hintIds = (s: Session) => checkHints(s.questionnaire, form.definition).map((h) => h.id);
+    const first = consented(kanzleiSealed(ZUSAMMEN), 'mandant', 'Erika Musterfrau', {
+      einschraenkungenMandant: 'Nur, wenn die Erstattung auf das neue Konto geht.',
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    expect(hintIds(first)).toContain('einschraenkungenMandant');
+    const both = consented(first, 'ehegatte', 'Max Mustermann', {
+      einschraenkungenEhegatte: 'Bitte die Kirchensteuer noch einmal prüfen.',
+    });
+    expect(hintIds(both)).toEqual(
+      expect.arrayContaining(['einschraenkungenMandant', 'einschraenkungenEhegatte']),
+    );
+  });
+
+  it('needs no restriction and gives no hint without one', () => {
+    const done = consented(kanzleiSealed(EINZEL), 'mandant', 'Erika Musterfrau', {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    expect(completenessGaps(done.questionnaire, form)).toEqual([]);
+    expect(checkHints(done.questionnaire, form.definition).map((h) => h.id)).not.toContain(
+      'einschraenkungenMandant',
     );
   });
 });
@@ -289,7 +356,10 @@ describe('who consents', () => {
   it('is one person at an Einzelveranlagung, asked only who signs', () => {
     const kanzlei = kanzleiSealed(EINZEL);
     expect(roleToFillNext(kanzlei)).toBe('mandant');
-    expect(questions(must(enterRole(kanzlei, 'mandant')))).toEqual(['unterzeichnerName']);
+    expect(questions(must(enterRole(kanzlei, 'mandant')))).toEqual([
+      'einschraenkungenMandant',
+      'unterzeichnerName',
+    ]);
     const done = consented(kanzlei, 'mandant', 'Erika Musterfrau', {
       unterzeichnerName: 'Erika Musterfrau',
     });
@@ -382,6 +452,7 @@ describe('what the Kanzlei names stays fixed', () => {
       'zustimmungMandant',
       'zustimmungSchreibenVom',
       'zustimmungErklaerungen',
+      'einschraenkungenMandant',
       'unterzeichnerName',
     ]);
     const signed = consented(alone, 'mandant', 'Erika Musterfrau', {
@@ -453,9 +524,9 @@ describe('the PDF', () => {
       FONTS,
     );
     const text = (await readPdfText(pdfjs as unknown as PdfJsLike, written.bytes)).lines.join('\n');
-    expect(text).toContain('Körperschaftsteuererklärung');
+    expect(text).toContain('Bundeszentralamt für Steuern');
     expect(text).toContain('Allgemeine Geschäftsbedingungen und Datenschutz');
-    expect(text).not.toContain('Zusammenfassende Meldung');
+    expect(text).not.toContain('Digitaler Finanzbericht');
     expect(text).not.toContain('Gemeinsame Einkommensteuererklärung');
   }, 60_000);
 });
@@ -469,7 +540,7 @@ describe('definition rules for conditional notices', () => {
     return checkFormDefinition(parsed.definition).map((p) => `${p.path} ${p.message}`);
   };
   const page = (d: FormDefinition) => {
-    const block = d.infoBlocks.find((b) => b.id === 'seiteZm');
+    const block = d.infoBlocks.find((b) => b.id === 'seiteDifin');
     if (!block) throw new Error('no page');
     return block;
   };
@@ -477,23 +548,23 @@ describe('definition rules for conditional notices', () => {
   it('reads only fields of its own role and says why', () => {
     expect(
       mutated((d) => {
-        page(d).showIf = { field: 'erklaerungen', contains: 'zm' };
+        page(d).showIf = { field: 'erklaerungen', contains: 'difin' };
       }),
-    ).toContain('$.infoBlocks[7].showIf.field showIf may only reference fields of the same role');
+    ).toContain('$.infoBlocks[1].showIf.field showIf may only reference fields of the same role');
     expect(
       mutated((d) => {
-        page(d).showIf = { field: 'gibtEsNicht', contains: 'zm' };
+        page(d).showIf = { field: 'gibtEsNicht', contains: 'difin' };
       }),
-    ).toContain('$.infoBlocks[7].showIf.field unknown field "gibtEsNicht"');
+    ).toContain('$.infoBlocks[1].showIf.field unknown field "gibtEsNicht"');
     expect(
       mutated((d) => {
         delete page(d).because;
       }),
-    ).toContain('$.infoBlocks[7].because a conditional notice says why');
+    ).toContain('$.infoBlocks[1].because a conditional notice says why');
     expect(
       mutated((d) => {
         delete page(d).showIf;
       }),
-    ).toContain('$.infoBlocks[7].because only conditional notices explain their condition');
+    ).toContain('$.infoBlocks[1].because only conditional notices explain their condition');
   });
 });
