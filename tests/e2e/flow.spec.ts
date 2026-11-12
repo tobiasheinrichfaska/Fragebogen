@@ -6,6 +6,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+import { toOverview } from './app';
 import { expectClean, guard } from './guards';
 
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
@@ -176,7 +177,7 @@ test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on t
   await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
   await press(page, 'Ohne Unterschrift abschließen');
   await press(page, 'Abschließen');
-  await press(page, 'Gerät weitergeben');
+  await toOverview(page);
 
   await press(page, 'Ich bin: Beschäftigte Person');
   await answerUntilSummary(page);
@@ -185,7 +186,7 @@ test('employer, person with a drawn signature, PDF, reopen, Kanzlei — all on t
   await press(page, 'Ich versichere, dass meine Angaben richtig und vollständig sind.');
   await sign(page);
   await press(page, 'Unterschreiben und abschließen');
-  await press(page, 'Gerät weitergeben');
+  await toOverview(page);
   await expect(page.locator('main')).toContainText('Vollständig');
 
   const pdf = await download(page, 'PDF erstellen', testInfo.outputPath('sofortmeldung.pdf'));
@@ -238,7 +239,7 @@ test('a PDF passed on with a password asks for it when read in (Tobias 2026-11-0
   expect(raw).toContain('/Encrypt');
   expect(raw).not.toMatch(/pdfaid/);
 
-  await press(page, 'Gerät weitergeben');
+  await toOverview(page);
   await press(page, 'Fragebogen schließen');
   await page.locator('input[type=file]').first().setInputFiles(pdf);
   const dialog = page.getByRole('dialog', { name: 'Geschützte PDF' });
@@ -409,7 +410,7 @@ test('the overview offers PDF and link right under the roles (test report 2026-1
   await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
   await press(page, 'Ohne Unterschrift abschließen');
   await press(page, 'Abschließen');
-  await press(page, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(page);
   await expect(page.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
   const pdf = page.getByRole('button', { name: 'PDF erstellen' });
   await expect(pdf).toBeEnabled();

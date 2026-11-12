@@ -1,7 +1,7 @@
 // Former manual tests of manual_tests/11_eigenbeleg.md, played in the test build (Tobias
 // 2026-11-08: only what a virtual browser cannot check stays a manual test).
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { download, expectQuiet, heading, openTestApp, pdfPages, press } from '../app';
+import { download, expectQuiet, heading, openTestApp, pdfPages, press, toOverview } from '../app';
 
 /** Waits until the step is `text` and returns the headings seen so far for later checks. */
 async function at(app: Locator, text: string, seen: string[] = []): Promise<string[]> {
@@ -45,7 +45,7 @@ async function signAndReadInAtKanzlei(page: Page, app: Locator, path: string): P
   await press(app, 'Unterschreiben und abschließen');
   await expect(app).toContainText('Ausstellende Person: abgeschlossen');
   const pdf = await download(page, app, 'PDF erstellen', path);
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await press(app, 'Fragebogen schließen');
   await press(app, 'Eingänge zusammenführen');
   await app.locator('input[type=file]').first().setInputFiles(pdf.path);

@@ -14,6 +14,7 @@ import {
   pdfPages,
   press,
   TEST_APP,
+  toOverview,
 } from '../app';
 import { expectClean, guard } from '../guards';
 
@@ -487,7 +488,7 @@ test('MT-122: joint account — the second holder signs too', async ({ page }, t
   await app.locator('.typed-name input').fill('Max Mustermann');
   await press(app, 'Unterschreiben und abschließen');
   await expect(app).toContainText(`${second}: abgeschlossen`);
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(app).toContainText(
     'Vollständig: alle erforderlichen Teile liegen vor und sind verknüpft.',
   );
@@ -770,7 +771,7 @@ test('MT-127: an account holder other than the payer', async ({ page }, testInfo
   await press(app, 'Weiter zum Abschluss');
   await app.locator('label.confirm input').check();
   await press(app, 'Abschließen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
 
   await asAccountHolder(app);
@@ -794,7 +795,7 @@ test('MT-127: an account holder other than the payer', async ({ page }, testInfo
   await signTyped(app, 'Erika Musterfrau');
   await expect(app).toContainText('Kontoinhaberin oder Kontoinhaber: abgeschlossen');
   await expect(app).toContainText('Unterschrieben am');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await readInAtKanzlei(page, app, testInfo.outputPath('abweichend.pdf'));
   await expect(app).toContainText(
     'Abweichender Kontoinhaber: Die Vorabankündigung jeder Lastschrift geht an den Kontoinhaber',
@@ -831,7 +832,7 @@ test('MT-128: two account holders, each alone — one signature with a name', as
   );
   await signTyped(app, 'Max Mustermann');
   await expect(app).toContainText('Kontoinhaberin oder Kontoinhaber: abgeschlossen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   const holder = role(app, 'Kontoinhaberin oder Kontoinhaber');
   await expect(holder.locator('.state')).toHaveText('unterschrieben (Fassung 1)');
   const second = role(app, 'Zweite Kontoinhaberin oder zweiter Kontoinhaber');
@@ -902,7 +903,7 @@ test('MT-129: the account holder changes the IBAN the Kanzlei prefilled', async 
   await expect(iban).not.toContainText('vorbelegt von');
 
   await signTyped(app, 'Erika Musterfrau');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(app.getByRole('button', { name: 'PDF erstellen' })).toBeEnabled();
   await readInAtKanzlei(page, app, testInfo.outputPath('iban.pdf'));
   await expect(app).toContainText(
@@ -990,7 +991,7 @@ test('MT-131: the Kanzlei part passes on as a link with a password', async ({
   await press(app, 'Weiter zum Abschluss');
   await app.locator('label.confirm input').check();
   await press(app, 'Abschließen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
   const box = app.getByLabel('Mit Kennwort schützen (PDF und Link)');
   await expect(box).not.toBeChecked();
