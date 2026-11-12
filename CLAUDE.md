@@ -1207,7 +1207,15 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-**Hand-over 2026-11-12 evening (start here):** Tobias's next round on the Zustimmung. (1) Fixed
+**Bug 2026-11-12 late (fixed, 6c27c61):** Tobias as client: „Bestätigung für Steuererklärung wurde
+mir als Mandant nicht vorgelegt, erst bei der Zusammenfassung wurde es als fehlend markiert.“
+`enterRole` chose the first step before adopting the other roles' answers (`fromRole`), so a
+conditional notice opened by them lay before the start and „Weiter“ passed it. Now a first version
+starts after the adoption (all forms, also a link opening straight in the role). Regression test in
+`steuerfreigabe.test.ts` walks the client's steps with „Weiter“ (failed on the old code: start at
+„AGB und Datenschutz“). Unit 5267 passed, e2e 226 passed, 1 skipped (16.5 min), exit 0.
+
+**Hand-over 2026-11-12 evening:** Tobias's next round on the Zustimmung. (1) Fixed
 packages: KSt alone, GewSt alone, both; the Zerlegung is a follow-up question of the GewSt
 (§ 14a Satz 1, § 28 Abs. 1 GewStG checked) — refused without it. (2) Role labels „Mandant /
 Steuerpflichtiger“, „Ehegatte / Lebenspartner“. (3) No general declaration at the start: **conditional
