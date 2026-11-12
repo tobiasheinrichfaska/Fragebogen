@@ -13,11 +13,11 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
 const sofort = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')));
-const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const personal = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 
 const must = (result: SessionResult): Session => {
   if (!result.ok) throw new Error(`${result.message} ${result.detail.join(', ')}`);

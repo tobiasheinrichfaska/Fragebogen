@@ -11,10 +11,10 @@ import { derivationImpact, impactReport } from '../../src/logic/derivationImpact
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import { ANLAGE_16 } from '../support/anlage16';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 const { definition } = form;
 type Answers = Record<string, unknown>;
 

@@ -1,4 +1,4 @@
-# Wirkung der Angaben auf die Vorschläge – Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0
+# Wirkung der Angaben auf die Vorschläge – Personalfragebogen: Angaben für die Lohnabrechnung 1.0.0
 
 > Erzeugt aus der Formulardefinition (`npm run catalogue`), nicht von Hand bearbeiten.
 > „Direkt“: Die Angabe steht in einer Regel des Vorschlags (Bedingung, Prüfung oder Wert).

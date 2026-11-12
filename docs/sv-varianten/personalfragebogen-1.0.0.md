@@ -1,4 +1,4 @@
-# Varianten der SV-Vorschläge – Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0
+# Varianten der SV-Vorschläge – Personalfragebogen: Angaben für die Lohnabrechnung 1.0.0
 
 > Erzeugt aus der Formulardefinition (`npm run catalogue`), nicht von Hand bearbeiten. Je Zeile
 > eine erfundene Kombination aus Beschäftigung (Angaben des Arbeitgebers), Person und – im

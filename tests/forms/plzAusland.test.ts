@@ -79,7 +79,7 @@ describe('the condition inSet', () => {
 describe.each([
   ['sepa-mandat', '1.1.0', 'kontoinhaber', FORMS_DIR],
   ['sofortmeldung', '1.1.0', 'person', DRAFTS_DIR],
-  ['personalfragebogen', '0.1.0', 'person', DRAFTS_DIR],
+  ['personalfragebogen', '1.0.0', 'person', FORMS_DIR],
 ])('the foreign postcode in %s %s', (folder, version, role, dir) => {
   const definition = definitionOf(dir, folder, version);
   const field = fieldsById(definition).get('postleitzahlAusland');

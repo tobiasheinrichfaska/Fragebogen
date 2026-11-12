@@ -20,6 +20,17 @@ import { expectClean, guard } from '../guards';
 test.describe.configure({ mode: 'parallel' });
 
 const PLAN = fileURLToPath(new URL('../../../docs/ablaufplan.html', import.meta.url));
+/** Ids of the forms that exist only as drafts, so the public build lacks them. */
+const DRAFT_ONLY = (() => {
+  const folders = (dir: string) =>
+    readdirSync(fileURLToPath(new URL(dir, import.meta.url)), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+  const published = new Set(folders('../../../forms/'));
+  return folders('../../../form-drafts/')
+    .filter((id) => !published.has(id))
+    .sort();
+})();
 const FORM = 'Personalfragebogen: Angaben für die Lohnabrechnung';
 const FIELDS = formFields('personalfragebogen', true) as (ReturnType<typeof formFields>[number] & {
   role: string;
@@ -933,14 +944,16 @@ test('MT-99: the master-data link page shows one form’s data and names what it
   await expectQuiet(page, found);
 });
 
-test('MT-99: the public build has no Personalfragebogen on the link page', async ({ page }) => {
+test('MT-99: the public build offers only published forms on the link page', async ({ page }) => {
   const { found, app } = await openApp(page);
   await button(app, 'Stammdaten-Link erstellen oder ändern …').click();
   const values = await app
     .locator('#master-opens option')
     .evaluateAll((options) => options.map((o) => (o as HTMLOptionElement).value));
-  expect(values).toContain('sofortmeldung');
-  expect(values).not.toContain('personalfragebogen');
+  // The Personalfragebogen is published since 2026-11-12; before, it was the draft left out here.
+  expect(values).toEqual(expect.arrayContaining(['sofortmeldung', 'personalfragebogen']));
+  expect(DRAFT_ONLY.length).toBeGreaterThan(0);
+  for (const id of DRAFT_ONLY) expect(values, id).not.toContain(id);
   await expectClean(page, found);
 });
 
@@ -1129,12 +1142,14 @@ test('MT-109: a bookmark with a form begins a new questionnaire at once; without
 test('MT-109: the public build names a form it lacks and shows the start page', async ({
   page,
 }) => {
-  const { found, app } = await openApp(page, '#stammdaten=1&formular=personalfragebogen');
+  const lacking = DRAFT_ONLY[0];
+  if (lacking === undefined) throw new Error('no form exists only as a draft');
+  const { found, app } = await openApp(page, `#stammdaten=1&formular=${lacking}`);
   await page.reload();
   await expect(
     note(
       app,
-      'Ihr Lesezeichen soll einen neuen Fragebogen „personalfragebogen“ öffnen; diese Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.',
+      `Ihr Lesezeichen soll einen neuen Fragebogen „${lacking}“ öffnen; diese Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.`,
     ),
   ).toHaveClass(/banner-warning/);
   await expect(app.getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();

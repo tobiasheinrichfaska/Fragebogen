@@ -1,4 +1,4 @@
-# SV-Beurteilung nach amtlichen Beispielen – Personalfragebogen: Angaben für die Lohnabrechnung 0.1.0
+# SV-Beurteilung nach amtlichen Beispielen – Personalfragebogen: Angaben für die Lohnabrechnung 1.0.0
 
 > Erzeugt aus `tests/fixtures/sv-vorgaben/` und der Formulardefinition (`npm run catalogue`), nicht von
 > Hand bearbeiten. Keine Rechtsberatung. Je Zeile ein Beispiel aus einer amtlichen oder veröffentlichten

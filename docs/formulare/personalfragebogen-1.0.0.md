@@ -5,11 +5,11 @@
 
 | Angabe | Wert |
 | --- | --- |
-| Formular | personalfragebogen, Version 0.1.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
+| Formular | personalfragebogen, Version 1.0.0 |
+| Status | Veröffentlicht und eingefroren |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026 |
 | Stand | zuletzt überarbeitet am 08.11.2026 um 19:55 |
-| Definition (SHA-256) | 526fa5f44830ad9bedfc81f3f5bf2bf3a79955f84a08d03557bbaede6d8ff651 |
+| Definition (SHA-256) | 456b4da4c22f7b88307e683c84ade032b50ea07fecbaa7d448dbb61836f7864a |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
