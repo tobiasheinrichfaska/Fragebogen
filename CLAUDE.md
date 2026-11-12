@@ -1223,7 +1223,10 @@ erstellen“ first, „Zur Übersicht“ instead of „Gerät weitergeben – zu
 `toOverview` helper, MT-20/MT-21 check the primary button; the PDF leaves out notices of a role surely
 not needed. Commits 566b167, 18759c8, 9b0e17a; unit 5266 passed; e2e: first full run 225 passed,
 1 failed (WebKit `flow.spec.ts` hung while drawing the signature — the known load pattern, green
-alone in 18 s), second full run 226 passed, 1 skipped (15.9 min), exit 0.
+alone in 18 s), second full run 226 passed, 1 skipped (15.9 min), exit 0. Pushed; **test folder
+uploaded at 4cd7197 („online identisch“)**; the public app is unchanged (the done-screen change
+reaches it only with the next public upload, which needs Tobias's OK). Next: Tobias tests the
+Zustimmung in the test folder.
 
 **Hand-over 2026-11-12 later:** the Steuerfreigabe draft rebuilt after the Kanzlei's
 letter template „Zustimmung zur elektronischen Übertragung der Steuererklärung(en)“ (never used
