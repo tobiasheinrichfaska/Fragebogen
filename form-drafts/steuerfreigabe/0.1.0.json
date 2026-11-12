@@ -1,8 +1,8 @@
 {
   "id": "steuerfreigabe",
   "version": "0.1.0",
-  "revised": "2026-11-06T09:11",
-  "title": "Freigabe zur elektronischen Übermittlung einer Steuererklärung",
+  "revised": "2026-11-12T11:26",
+  "title": "Zustimmung zur elektronischen Übermittlung der Steuererklärungen",
   "signaturePolicy": "electronic",
   "recipient": {
     "label": "Kanzlei"
@@ -12,30 +12,32 @@
       "id": "kanzlei",
       "label": "Kanzlei",
       "stationHeading": "Vorlage der Kanzlei",
-      "confirmationText": "Wir haben die oben bezeichnete Fassung der Steuererklärung zur Prüfung vorgelegt.",
-      "signature": "required"
+      "confirmationText": "Wir legen die Erklärungen mit diesen Angaben zur Zustimmung vor.",
+      "signature": "none",
+      "prefills": true
     },
     {
       "id": "mandant",
       "label": "Mandantin oder Mandant",
-      "stationHeading": "Freigabe",
-      "confirmationText": "Ich bestätige meine Angaben und meine Entscheidung oben.",
-      "signature": "required"
+      "stationHeading": "Zustimmung",
+      "confirmationText": "Ich habe die oben genannten Erklärungen geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen.",
+      "signature": "required",
+      "signerNameField": "unterzeichnerName"
     },
     {
       "id": "ehegatte",
       "label": "Ehegatte oder Lebenspartner",
-      "stationHeading": "Freigabe des Ehegatten oder Lebenspartners",
-      "confirmationText": "Ich bestätige meine Angaben und meine Entscheidung oben.",
+      "stationHeading": "Zustimmung des Ehegatten oder Lebenspartners",
+      "confirmationText": "Ich habe die gemeinsame Einkommensteuererklärung geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen.",
       "signature": "required",
       "requiredIf": {
         "kind": "answer",
         "when": {
-          "field": "veranlagung",
+          "field": "zustimmungVeranlagung",
           "equals": "zusammen"
         }
       },
-      "because": "Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb gibt auch der andere sie frei.",
+      "because": "Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb stimmt auch der andere zu.",
       "signerNameField": "ehegatteName"
     }
   ],
@@ -45,80 +47,79 @@
       "title": "Vorlage der Kanzlei",
       "fields": [
         {
-          "id": "mandantennummer",
+          "id": "mandantName",
           "role": "kanzlei",
           "type": "text",
-          "textFormat": "ziffern",
-          "label": "Mandantennummer",
-          "question": "Mandantennummer",
-          "required": false,
-          "purpose": "Zuordnung in der Kanzlei"
+          "label": "Mandantin oder Mandant",
+          "question": "Für wen legen Sie die Erklärungen vor?",
+          "help": "Vor- und Familienname oder Firma.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Wessen Erklärungen die Zustimmung betrifft"
         },
         {
-          "id": "mandantNameKanzlei",
+          "id": "vorlageDatum",
           "role": "kanzlei",
-          "type": "text",
-          "label": "Vor- und Familienname der Mandantin oder des Mandanten",
+          "type": "date",
+          "label": "Datum des Anschreibens",
+          "question": "Von wann ist das Schreiben, mit dem Sie die Erklärungen übersandt haben?",
           "required": true,
-          "purpose": "Zuordnung; Abgleich mit der Angabe der Mandantin oder des Mandanten"
-        },
-        {
-          "id": "steuerjahr",
-          "role": "kanzlei",
-          "type": "text",
-          "textFormat": "jahr",
-          "label": "Steuerjahr",
-          "help": "Zum Beispiel 2025.",
-          "required": true,
-          "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)"
+          "maxDate": "today",
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO); Stichtag dieser Fassung"
         },
         {
           "id": "erklaerungen",
           "role": "kanzlei",
           "type": "multiChoice",
           "label": "Erklärungen",
-          "question": "Welche Erklärungen werden freigegeben?",
-          "help": "Je Steuerjahr eine Freigabe; mehrere Erklärungen desselben Jahres sind möglich.",
+          "question": "Welche Erklärungen haben Sie übersandt?",
+          "help": "Alle, die mit diesem Schreiben zur Zustimmung vorliegen.",
           "required": true,
-          "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)",
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
           "options": [
             {
               "id": "est",
-              "label": "Einkommensteuer"
-            },
-            {
-              "id": "ust",
-              "label": "Umsatzsteuer"
-            },
-            {
-              "id": "gewst",
-              "label": "Gewerbesteuer"
+              "label": "Einkommensteuererklärung"
             },
             {
               "id": "feststellung",
-              "label": "Feststellungserklärung"
+              "label": "Gesonderte und einheitliche Feststellungserklärung"
             },
             {
-              "id": "sonstige",
-              "label": "sonstige Erklärung"
-            }
-          ]
-        },
-        {
-          "id": "erklaerungArt",
-          "role": "kanzlei",
-          "type": "choice",
-          "label": "Art der Erklärung",
-          "required": true,
-          "purpose": "Berichtigung nach § 153 AO erkennbar",
-          "options": [
-            {
-              "id": "erstmalig",
-              "label": "erstmalige Erklärung"
+              "id": "euer",
+              "label": "Gewinnermittlung (Anlage EÜR)"
             },
             {
-              "id": "berichtigt",
-              "label": "berichtigte Erklärung"
+              "id": "kst",
+              "label": "Körperschaftsteuererklärung"
+            },
+            {
+              "id": "gewst",
+              "label": "Gewerbesteuererklärung"
+            },
+            {
+              "id": "gewstZerlegung",
+              "label": "Gewerbesteuererklärung mit Zerlegung"
+            },
+            {
+              "id": "ust",
+              "label": "Umsatzsteuererklärung"
+            },
+            {
+              "id": "zm",
+              "label": "Zusammenfassende Meldung"
+            },
+            {
+              "id": "ebilanz",
+              "label": "E-Bilanz"
+            },
+            {
+              "id": "difin",
+              "label": "Digitaler Finanzbericht (an Banken)"
+            },
+            {
+              "id": "offenlegung",
+              "label": "Offenlegung oder Hinterlegung beim Unternehmensregister"
             }
           ]
         },
@@ -126,26 +127,23 @@
           "id": "veranlagung",
           "role": "kanzlei",
           "type": "choice",
-          "label": "Veranlagungsart",
+          "label": "Veranlagung",
+          "question": "Einzel- oder Zusammenveranlagung?",
           "required": true,
-          "purpose": "Entscheidet, ob auch der Ehegatte oder Lebenspartner freigeben muss (§ 25 Abs. 3 Satz 2 EStG)",
+          "purpose": "Entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt (§ 25 Abs. 3 Satz 2 EStG)",
           "showIf": {
             "field": "erklaerungen",
             "contains": "est"
           },
-          "because": "Eine Veranlagungsart gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner freigibt.",
+          "because": "Eine Veranlagung gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt.",
           "options": [
             {
               "id": "einzel",
-              "label": "Einzelveranlagung"
+              "label": "Einzelveranlagung (auch von Ehegatten, § 26a EStG)"
             },
             {
               "id": "zusammen",
               "label": "Zusammenveranlagung (§ 26b EStG)"
-            },
-            {
-              "id": "einzelEhegatten",
-              "label": "Einzelveranlagung von Ehegatten (§ 26a EStG)"
             }
           ]
         },
@@ -153,337 +151,250 @@
           "id": "ehegatteNameKanzlei",
           "role": "kanzlei",
           "type": "text",
-          "label": "Vor- und Familienname des Ehegatten oder Lebenspartners",
+          "label": "Ehegatte oder Lebenspartner",
+          "question": "Wie heißt der Ehegatte oder Lebenspartner?",
+          "help": "Vor- und Familienname. Er stimmt mit zu.",
           "required": true,
-          "purpose": "Zuordnung; Abgleich mit der Angabe des Ehegatten",
+          "maxLength": 70,
+          "purpose": "Wer bei Zusammenveranlagung mit zustimmt",
           "showIf": {
             "field": "veranlagung",
             "equals": "zusammen"
           },
-          "because": "Nur bei Zusammenveranlagung gibt der Ehegatte oder Lebenspartner mit frei; dafür nennt die Kanzlei seinen Namen."
-        },
-        {
-          "id": "steuernummer",
-          "role": "kanzlei",
-          "type": "text",
-          "textFormat": "steuernummer",
-          "label": "Steuernummer",
-          "required": false,
-          "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)"
-        },
-        {
-          "id": "ergebnis",
-          "role": "kanzlei",
-          "type": "choice",
-          "label": "Voraussichtliches Ergebnis laut Steuerberechnung",
-          "help": "Vorausberechnung; maßgeblich ist der Bescheid.",
-          "required": true,
-          "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)",
-          "options": [
-            {
-              "id": "erstattung",
-              "label": "Erstattung"
-            },
-            {
-              "id": "nachzahlung",
-              "label": "Nachzahlung"
-            },
-            {
-              "id": "ausgeglichen",
-              "label": "ausgeglichen"
-            },
-            {
-              "id": "keine",
-              "label": "keine Berechnung"
-            }
-          ]
-        },
-        {
-          "id": "betrag",
-          "role": "kanzlei",
-          "type": "money",
-          "label": "Betrag laut Steuerberechnung",
-          "help": "Summe aus Einkommensteuer, Solidaritätszuschlag und Kirchensteuer.",
-          "required": true,
-          "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)",
-          "showIf": {
-            "field": "ergebnis",
-            "in": ["erstattung", "nachzahlung"]
-          },
-          "because": "Nur bei einer Erstattung oder Nachzahlung gibt es einen Betrag laut Steuerberechnung; er bezeichnet die vorgelegte Fassung (§ 87d Abs. 3 AO)."
-        },
-        {
-          "id": "vorgelegt",
-          "role": "kanzlei",
-          "type": "multiChoice",
-          "label": "Vorgelegte Unterlagen",
-          "required": true,
-          "purpose": "Nachweis der „leicht nachprüfbaren Form“ (§ 87d Abs. 3 AO)",
-          "options": [
-            {
-              "id": "formular",
-              "label": "Formularansicht aller Anlagen"
-            },
-            {
-              "id": "berechnung",
-              "label": "Steuerberechnung"
-            },
-            {
-              "id": "edaten",
-              "label": "Liste der übernommenen Daten Dritter (eDaten)"
-            },
-            {
-              "id": "erlaeuterung",
-              "label": "Erläuterungsschreiben"
-            },
-            {
-              "id": "sonstiges",
-              "label": "Sonstiges"
-            }
-          ]
-        },
-        {
-          "id": "vorlageBezeichnung",
-          "role": "kanzlei",
-          "type": "text",
-          "label": "Bezeichnung der Vorlage",
-          "help": "Zum Beispiel „ESt 2025, Stand 28.10.2026, 34 Seiten“.",
-          "required": true,
-          "purpose": "Bezeichnung der vorgelegten Fassung, an die die Freigabe gebunden ist (§ 87d Abs. 3 AO)"
-        },
-        {
-          "id": "vorlageDatum",
-          "role": "kanzlei",
-          "type": "date",
-          "label": "Datum der Vorlage",
-          "required": true,
-          "purpose": "Unverzügliche Prüfung nachvollziehbar"
-        },
-        {
-          "id": "vorgelegtUeber",
-          "role": "kanzlei",
-          "type": "choice",
-          "label": "Vorgelegt über",
-          "required": false,
-          "purpose": "Dokumentation",
-          "options": [
-            {
-              "id": "portal",
-              "label": "Portal"
-            },
-            {
-              "id": "email",
-              "label": "E-Mail"
-            },
-            {
-              "id": "persoenlich",
-              "label": "persönlich in der Kanzlei"
-            },
-            {
-              "id": "post",
-              "label": "Post"
-            }
-          ]
-        },
-        {
-          "id": "freitextFinanzamt",
-          "role": "kanzlei",
-          "type": "boolean",
-          "label": "Angaben im Freitextfeld für das Finanzamt",
-          "question": "Enthält die Erklärung Angaben im Freitextfeld für das Finanzamt?",
-          "required": false,
-          "purpose": "Transparenz für die Mandantin oder den Mandanten (§ 150 Abs. 7 AO)"
-        },
-        {
-          "id": "hinweiseKanzlei",
-          "role": "kanzlei",
-          "type": "text",
-          "label": "Hinweise der Kanzlei zu dieser Fassung",
-          "help": "Zum Beispiel offene Punkte, strittige Positionen oder Abweichungen von Ihren Unterlagen.",
-          "required": false,
-          "purpose": "Information vor der Freigabe",
-          "multiline": true
+          "because": "Nur bei Zusammenveranlagung stimmt der Ehegatte oder Lebenspartner mit zu; dafür nennt die Kanzlei seinen Namen."
         }
       ]
     },
     {
-      "id": "freigabeMandant",
-      "title": "Freigabe",
+      "id": "zustimmungMandant",
+      "title": "Zustimmung",
       "fields": [
         {
-          "id": "mandantName",
+          "id": "zustimmungMandant",
           "role": "mandant",
           "type": "text",
-          "label": "Ihr Vor- und Familienname",
+          "label": "Mandantin oder Mandant",
+          "question": "Für wen stimmen Sie zu?",
+          "help": "Vor- und Familienname oder Firma, wie im Anschreiben der Kanzlei.",
           "required": true,
-          "purpose": "Abgleich mit der Angabe der Kanzlei"
+          "maxLength": 70,
+          "purpose": "Wessen Erklärungen die Zustimmung betrifft",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "mandantName"
+          },
+          "because": "Den Namen nennt die Kanzlei; liegt ihr Teil vor, steht er hier fest und wird nicht gefragt."
         },
         {
-          "id": "mandantGeprueft",
+          "id": "zustimmungSchreibenVom",
           "role": "mandant",
-          "type": "boolean",
-          "label": "Prüfung der vorgelegten Daten",
-          "question": "Haben Sie die vorgelegten Daten auf Vollständigkeit und Richtigkeit geprüft?",
-          "help": "Prüfen Sie auch die übernommenen Daten Dritter, zum Beispiel die Lohnsteuerbescheinigung: Sie gelten als Ihre Angaben, wenn Sie nichts anderes sagen.",
+          "type": "date",
+          "label": "Schreiben der Kanzlei vom",
+          "question": "Von wann ist das Schreiben, mit dem Sie die Erklärungen erhalten haben?",
           "required": true,
-          "purpose": "Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO)"
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "vorlageDatum"
+          },
+          "because": "Das Datum des Schreibens nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt."
         },
         {
-          "id": "mandantVollstaendig",
+          "id": "zustimmungErklaerungen",
           "role": "mandant",
-          "type": "boolean",
-          "label": "Alle Unterlagen gegeben",
-          "question": "Haben Sie der Kanzlei alle Unterlagen und Angaben gegeben, die für diese Erklärung wichtig sind?",
+          "type": "multiChoice",
+          "label": "Erklärungen",
+          "question": "Welchen Erklärungen stimmen Sie zu?",
           "required": true,
-          "purpose": "Vollständigkeit (§ 150 Abs. 2 AO)"
-        },
-        {
-          "id": "mandantEntscheidung",
-          "role": "mandant",
-          "type": "choice",
-          "label": "Ihre Entscheidung",
-          "help": "Ihre Zustimmung gilt nur für die oben bezeichnete Fassung.",
-          "required": true,
-          "purpose": "Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO)",
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "erklaerungen"
+          },
+          "because": "Welche Erklärungen vorliegen, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.",
           "options": [
             {
-              "id": "zustimmung",
-              "label": "Ich stimme der elektronischen Übermittlung zu."
+              "id": "est",
+              "label": "Einkommensteuererklärung"
             },
             {
-              "id": "aendern",
-              "label": "Ich stimme noch nicht zu – bitte zuerst ändern."
+              "id": "feststellung",
+              "label": "Gesonderte und einheitliche Feststellungserklärung"
+            },
+            {
+              "id": "euer",
+              "label": "Gewinnermittlung (Anlage EÜR)"
+            },
+            {
+              "id": "kst",
+              "label": "Körperschaftsteuererklärung"
+            },
+            {
+              "id": "gewst",
+              "label": "Gewerbesteuererklärung"
+            },
+            {
+              "id": "gewstZerlegung",
+              "label": "Gewerbesteuererklärung mit Zerlegung"
+            },
+            {
+              "id": "ust",
+              "label": "Umsatzsteuererklärung"
+            },
+            {
+              "id": "zm",
+              "label": "Zusammenfassende Meldung"
+            },
+            {
+              "id": "ebilanz",
+              "label": "E-Bilanz"
+            },
+            {
+              "id": "difin",
+              "label": "Digitaler Finanzbericht (an Banken)"
+            },
+            {
+              "id": "offenlegung",
+              "label": "Offenlegung oder Hinterlegung beim Unternehmensregister"
             }
           ]
         },
         {
-          "id": "mandantAenderung",
+          "id": "zustimmungVeranlagung",
+          "role": "mandant",
+          "type": "choice",
+          "label": "Veranlagung",
+          "question": "Einzel- oder Zusammenveranlagung?",
+          "help": "Bei Zusammenveranlagung stimmt auch Ihr Ehegatte oder Lebenspartner zu.",
+          "required": true,
+          "purpose": "Entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt (§ 25 Abs. 3 Satz 2 EStG)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "est"
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "veranlagung"
+          },
+          "because": "Eine Veranlagung gibt es nur bei der Einkommensteuer. Sie nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "einzel",
+              "label": "Einzelveranlagung (auch von Ehegatten, § 26a EStG)"
+            },
+            {
+              "id": "zusammen",
+              "label": "Zusammenveranlagung (§ 26b EStG)"
+            }
+          ]
+        },
+        {
+          "id": "unterzeichnerName",
           "role": "mandant",
           "type": "text",
-          "label": "Was soll geändert werden?",
+          "label": "Name der unterschreibenden Person",
+          "question": "Wer unterschreibt?",
+          "help": "Vor- und Familienname. Bei einer Firma die Person, die für sie unterschreibt. Dieser Name steht an der Unterschrift.",
           "required": true,
-          "purpose": "Rückmeldung an die Kanzlei",
-          "showIf": {
-            "field": "mandantEntscheidung",
-            "equals": "aendern"
-          },
-          "because": "Wer noch nicht zustimmt, sagt, was vorher geändert werden soll.",
-          "multiline": true
+          "maxLength": 70,
+          "purpose": "Wer zustimmt (Name an der Unterschrift)",
+          "suggestedText": "{zustimmungMandant}"
         }
       ]
     },
     {
-      "id": "freigabeEhegatte",
-      "title": "Freigabe des Ehegatten oder Lebenspartners",
+      "id": "zustimmungEhegatte",
+      "title": "Zustimmung des Ehegatten oder Lebenspartners",
       "fields": [
         {
           "id": "ehegatteName",
           "role": "ehegatte",
           "type": "text",
           "label": "Ihr Vor- und Familienname",
+          "question": "Wie heißen Sie?",
+          "help": "Dieser Name steht an Ihrer Unterschrift.",
           "required": true,
-          "purpose": "Unterschrift mit Namen; Abgleich mit der Angabe der Kanzlei"
-        },
-        {
-          "id": "ehegatteGeprueft",
-          "role": "ehegatte",
-          "type": "boolean",
-          "label": "Prüfung der vorgelegten Daten",
-          "question": "Haben Sie die vorgelegten Daten auf Vollständigkeit und Richtigkeit geprüft?",
-          "required": true,
-          "purpose": "Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO)"
-        },
-        {
-          "id": "ehegatteEntscheidung",
-          "role": "ehegatte",
-          "type": "choice",
-          "label": "Ihre Entscheidung",
-          "help": "Ihre Zustimmung gilt nur für die oben bezeichnete Fassung.",
-          "required": true,
-          "purpose": "Zustimmung zur elektronischen Übermittlung (§ 87d Abs. 3 AO)",
-          "options": [
-            {
-              "id": "zustimmung",
-              "label": "Ich stimme der elektronischen Übermittlung zu."
-            },
-            {
-              "id": "aendern",
-              "label": "Ich stimme noch nicht zu – bitte zuerst ändern."
-            }
-          ]
-        },
-        {
-          "id": "ehegatteAenderung",
-          "role": "ehegatte",
-          "type": "text",
-          "label": "Was soll geändert werden?",
-          "required": true,
-          "purpose": "Rückmeldung an die Kanzlei",
-          "showIf": {
-            "field": "ehegatteEntscheidung",
-            "equals": "aendern"
+          "maxLength": 70,
+          "purpose": "Wer mit zustimmt (Name an der Unterschrift)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "ehegatteNameKanzlei",
+            "changeable": true
           },
-          "because": "Wer noch nicht zustimmt, sagt, was vorher geändert werden soll.",
-          "multiline": true
+          "because": "Den Namen nennt die Kanzlei; er steht da und kann geändert werden."
         }
       ]
     }
   ],
   "infoBlocks": [
     {
-      "id": "freigabeHinweis",
+      "id": "zustimmungHinweis",
       "role": "mandant",
-      "title": "Was Sie mit der Freigabe erklären",
-      "text": "Die Kanzlei übermittelt Ihre Steuererklärung in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO). Vorher legt sie Ihnen die Daten so vor, dass Sie sie leicht prüfen können; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).\n\nEs bleibt Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nDer Betrag laut Steuerberechnung ist eine Vorausberechnung; maßgeblich ist der Bescheid. Ihre Freigabe gilt nur für die oben bezeichnete Fassung. Nach der Übermittlung erhalten Sie das Übertragungsprotokoll.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Freigabe wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
-      "asOf": "2026-10-30",
+      "title": "Was Sie mit der Zustimmung erklären",
+      "text": "Die Kanzlei übermittelt Ihre Steuererklärungen in Ihrem Auftrag elektronisch an die Finanzverwaltung (§ 87d AO). Vorher stellt sie Ihnen die Daten in leicht nachprüfbarer Form zur Verfügung; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).\n\nEs bleiben Ihre Erklärungen: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nDer Digitale Finanzbericht geht nicht an das Finanzamt, sondern an Banken; die Offenlegung oder Hinterlegung geht an das Unternehmensregister (§§ 325, 326 HGB). Auch dafür ist Ihre Zustimmung der Auftrag an die Kanzlei.\n\nHaben Sie Änderungswünsche, stimmen Sie nicht zu: Schließen Sie diesen Fragebogen nicht ab und melden Sie sich bei der Kanzlei.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
+      "asOf": "2026-11-12",
       "acknowledgement": "read"
     },
     {
-      "id": "freigabeHinweisEhegatte",
+      "id": "zustimmungHinweisEhegatte",
       "role": "ehegatte",
-      "title": "Was Sie mit der Freigabe erklären",
-      "text": "Die Kanzlei übermittelt Ihre Steuererklärung in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO). Vorher legt sie Ihnen die Daten so vor, dass Sie sie leicht prüfen können; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).\n\nEs bleibt Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nDer Betrag laut Steuerberechnung ist eine Vorausberechnung; maßgeblich ist der Bescheid. Ihre Freigabe gilt nur für die oben bezeichnete Fassung. Nach der Übermittlung erhalten Sie das Übertragungsprotokoll.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Freigabe wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
-      "asOf": "2026-10-30",
+      "title": "Was Sie mit der Zustimmung erklären",
+      "text": "Die Kanzlei übermittelt Ihre gemeinsame Einkommensteuererklärung in Ihrem Auftrag elektronisch an die Finanzverwaltung (§ 87d AO). Vorher stellt sie Ihnen die Daten in leicht nachprüfbarer Form zur Verfügung; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).\n\nEs bleibt Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, stimmen Sie nicht zu: Schließen Sie diesen Fragebogen nicht ab und melden Sie sich bei der Kanzlei.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
+      "asOf": "2026-11-12",
       "acknowledgement": "read"
     }
   ],
   "consistencyRules": [
     {
       "kind": "equal",
-      "fields": ["mandantNameKanzlei", "mandantName"],
-      "message": "Der Name weicht zwischen der Vorlage der Kanzlei und der Freigabe ab."
+      "fields": ["mandantName", "zustimmungMandant"],
+      "message": "Der Name weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
     },
     {
       "kind": "equal",
-      "fields": ["ehegatteNameKanzlei", "ehegatteName"],
-      "message": "Der Name des Ehegatten weicht zwischen der Vorlage der Kanzlei und der Freigabe ab."
+      "fields": ["vorlageDatum", "zustimmungSchreibenVom"],
+      "message": "Das Datum des Schreibens weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["erklaerungen", "zustimmungErklaerungen"],
+      "message": "Die Erklärungen weichen zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["veranlagung", "zustimmungVeranlagung"],
+      "message": "Die Veranlagung weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
     }
   ],
   "matchKeys": [
     {
-      "label": "Name",
+      "label": "Mandantin oder Mandant",
       "fields": {
-        "kanzlei": "mandantNameKanzlei",
-        "mandant": "mandantName"
+        "kanzlei": "mandantName",
+        "mandant": "zustimmungMandant"
       }
     }
   ],
   "legalNotes": [
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). § 87d Abs. 3 AO schreibt für die Zustimmung keine Form vor; nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe.",
-    "Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner frei, weil die gemeinsame Erklärung eine Erklärung beider ist (§ 25 Abs. 3 Satz 2 EStG).",
-    "Die Freigabe bindet genau die bezeichnete Fassung: Ändert die Kanzlei danach die Vorlage, ist eine neue Freigabe nötig.",
-    "Dieser Fragebogen ist weder die Steuererklärung noch eine Vollmacht (§ 80 AO).",
-    "Die Kanzlei bewahrt die Freigabe in der Handakte auf (§ 66 StBerG)."
+    "Bei Zusammenveranlagung stimmen beide Ehegatten oder Lebenspartner zu, weil die gemeinsame Erklärung eine Erklärung beider ist (§ 25 Abs. 3 Satz 2 EStG). Sonst stimmt eine Person zu – bei einer Firma die Person, die für sie unterschreibt.",
+    "Die Zustimmung gilt für die Erklärungen, die die Kanzlei mit dem genannten Schreiben übersandt hat: Ändert die Kanzlei danach eine Erklärung, ist eine neue Zustimmung nötig.",
+    "§ 87d AO gilt für Übermittlungen an die Finanzverwaltung. Der Digitale Finanzbericht geht an Banken, die Offenlegung oder Hinterlegung an die das Unternehmensregister führende Stelle (§ 325 Abs. 1, § 326 Abs. 2 HGB); dafür ist die Zustimmung der Auftrag an die Kanzlei.",
+    "Dieser Fragebogen ist weder eine Steuererklärung noch eine Vollmacht (§ 80 AO).",
+    "Die Kanzlei bewahrt die Zustimmung in der Handakte auf (§ 66 StBerG)."
   ],
   "partLinks": [["kanzlei", "mandant"]],
-  "signatureBasis": "Für die Zustimmung zur Übermittlung schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die oben bezeichnete Fassung.",
+  "signatureBasis": "Für die Zustimmung zur Übermittlung an das Finanzamt schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die Erklärungen, die Ihnen die Kanzlei mit dem genannten Schreiben übersandt hat.",
   "validity": {
     "field": "vorlageDatum",
     "from": "2026-01-01"
   },
   "limits": [
-    "Der Fragebogen übermittelt keine Steuererklärung. Er dokumentiert die Zustimmung zu genau der vorgelegten Fassung (§ 87d AO).",
+    "Der Fragebogen übermittelt nichts. Er dokumentiert die Zustimmung zu den Erklärungen, die die Kanzlei mit dem genannten Schreiben übersandt hat (§ 87d AO).",
     "Eine Erklärung, die das Gesetz eigenhändig unterschrieben verlangt, ersetzt er nicht; dafür bleibt das Papier.",
-    "Er prüft den Inhalt der Steuerberechnung nicht; das bleibt Sache der Kanzlei und der Mandanten."
+    "Er prüft den Inhalt der Erklärungen nicht; das bleibt Sache der Kanzlei und der Mandanten.",
+    "Änderungswünsche nimmt er nicht auf: Wer nicht zustimmt, schließt nicht ab und meldet sich bei der Kanzlei.",
+    "Die Kanzlei belegt nur vor und unterschreibt nicht. Wer ohne ihren Teil beginnt, trägt Name, Datum des Schreibens und Erklärungen selbst ein; weichen sie später von den Angaben der Kanzlei ab, zeigt die App einen Widerspruch.",
+    "Höchstens zwei Personen stimmen zu: die Mandantin oder der Mandant und bei Zusammenveranlagung der Ehegatte oder Lebenspartner."
   ]
 }

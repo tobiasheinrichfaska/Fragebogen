@@ -69,7 +69,7 @@ wird aber nicht mit unterschrieben.</p>
 <li><a href="#eigenbeleg-0.1.0">Eigenbeleg: Ausgabe ohne Originalbeleg, Entnahme, Einlage oder Geldtransit 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#lohnmeldung-0.1.0">Monatsmeldung: Lohn- und Gehaltsdaten 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 <li><a href="#sofortmeldung-1.1.0">Personalfragebogen: Angaben für die Sofortmeldung 1.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
-<li><a href="#steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
+<li><a href="#steuerfreigabe-0.1.0">Zustimmung zur elektronischen Übermittlung der Steuererklärungen 0.1.0</a> <span class="muted">– Entwurf zur fachlichen Freigabe</span></li>
 </ol>
 <h2 id="personalfragebogen-1.0.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">1.0.0</span></h2>
 <p class="meta">Veröffentlicht (Testfassung) · Definition <code>456b4da4c22f7b88307e683c84ade032b50ea07fecbaa7d448dbb61836f7864a</code></p>
@@ -980,68 +980,59 @@ wird aber nicht mit unterschrieben.</p>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
-<h2 id="steuerfreigabe-0.1.0">Freigabe zur elektronischen Übermittlung einer Steuererklärung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>8de5c397a2a78427f2e0db383ee111929c8399ea58584081b9761cc0af991485</code></p>
-<p><strong>Diese Fassung gilt für „Datum der Vorlage“ ab 01.01.2026.</strong></p>
+<h2 id="steuerfreigabe-0.1.0">Zustimmung zur elektronischen Übermittlung der Steuererklärungen <span class="muted">0.1.0</span></h2>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>fda65d0a5d45939a2c52a7294222b41d96b0928d664ac4d627889845c364421d</code></p>
+<p><strong>Diese Fassung gilt für „Datum des Anschreibens“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
-<li>Der Fragebogen übermittelt keine Steuererklärung. Er dokumentiert die Zustimmung zu genau der vorgelegten Fassung (§ 87d AO).</li>
+<li>Der Fragebogen übermittelt nichts. Er dokumentiert die Zustimmung zu den Erklärungen, die die Kanzlei mit dem genannten Schreiben übersandt hat (§ 87d AO).</li>
 <li>Eine Erklärung, die das Gesetz eigenhändig unterschrieben verlangt, ersetzt er nicht; dafür bleibt das Papier.</li>
-<li>Er prüft den Inhalt der Steuerberechnung nicht; das bleibt Sache der Kanzlei und der Mandanten.</li>
+<li>Er prüft den Inhalt der Erklärungen nicht; das bleibt Sache der Kanzlei und der Mandanten.</li>
+<li>Änderungswünsche nimmt er nicht auf: Wer nicht zustimmt, schließt nicht ab und meldet sich bei der Kanzlei.</li>
+<li>Die Kanzlei belegt nur vor und unterschreibt nicht. Wer ohne ihren Teil beginnt, trägt Name, Datum des Schreibens und Erklärungen selbst ein; weichen sie später von den Angaben der Kanzlei ab, zeigt die App einen Widerspruch.</li>
+<li>Höchstens zwei Personen stimmen zu: die Mandantin oder der Mandant und bei Zusammenveranlagung der Ehegatte oder Lebenspartner.</li>
 </ul></div>
 <div class="order"><h3>Reihenfolge der Stationen</h3><ul>
 <li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
 <li>Kanzlei und Mandantin oder Mandant: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
-<li>Ehegatte oder Lebenspartner kommt nur dazu, wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist.</li>
+<li>Empfohlen: Kanzlei zuerst. Dann übernimmt der Fragebogen „Mandantin oder Mandant“, „Schreiben der Kanzlei vom“, „Erklärungen“, „Veranlagung“ in den Teil „Mandantin oder Mandant“ und fragt dort nur, was dazu passt. Ist „Mandantin oder Mandant“ zuerst dran, wird „Mandantin oder Mandant“, „Schreiben der Kanzlei vom“, „Erklärungen“, „Veranlagung“ dort gefragt.</li>
+<li>Empfohlen: Kanzlei zuerst. Dann übernimmt der Fragebogen „Ihr Vor- und Familienname“ in den Teil „Ehegatte oder Lebenspartner“ und fragt dort nur, was dazu passt. Ist „Ehegatte oder Lebenspartner“ zuerst dran, wird „Ihr Vor- und Familienname“ dort gefragt.</li>
+<li>Ehegatte oder Lebenspartner kommt nur dazu, wenn bei „Veranlagung“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist.</li>
 </ul></div>
 <section class="station" id="steuerfreigabe-0.1.0-kanzlei">
 <h3>Station: Kanzlei</h3>
-<p class="meta">Wird gebraucht: immer · unterschreibt</p>
+<p class="meta">Wird gebraucht: immer · schließt ohne Unterschrift ab</p>
 <h4>Vorlage der Kanzlei</h4>
 <ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Mandantennummer</span><div class="meta">Mandantennummer · Text · optional</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Vor- und Familienname der Mandantin oder des Mandanten</span><div class="meta">Vor- und Familienname der Mandantin oder des Mandanten · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Steuerjahr</span><div class="meta">Steuerjahr · Text · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">4</span> <span class="q">Welche Erklärungen werden freigegeben?</span><div class="meta">Erklärungen · Mehrfachauswahl: Einkommensteuer · Umsatzsteuer · Gewerbesteuer · Feststellungserklärung · sonstige Erklärung · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 6 ab.</div><div class="meta">Je Steuerjahr eine Freigabe; mehrere Erklärungen desselben Jahres sind möglich.</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Art der Erklärung</span><div class="meta">Art der Erklärung · Auswahl: erstmalige Erklärung · berichtigte Erklärung · Pflicht</div></li>
-<li class="step level-1 decision"><span class="num">6</span> <span class="q">Veranlagungsart</span><div class="meta">Veranlagungsart · Auswahl: Einzelveranlagung · Zusammenveranlagung (§ 26b EStG) · Einzelveranlagung von Ehegatten (§ 26a EStG) · Pflicht</div><div class="when">Gefragt erst wenn bei „Erklärungen“ „Einkommensteuer“ angekreuzt ist (hängt ab von Nr. 4).</div><div class="why">Warum: Eine Veranlagungsart gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner freigibt.</div><div class="opens">Weiche: davon hängen Nr. 7 ab.</div></li>
-<li class="step level-2"><span class="num">7</span> <span class="q">Vor- und Familienname des Ehegatten oder Lebenspartners</span><div class="meta">Vor- und Familienname des Ehegatten oder Lebenspartners · Text · Pflicht</div><div class="when">Gefragt erst wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (hängt ab von Nr. 6).</div><div class="why">Warum: Nur bei Zusammenveranlagung gibt der Ehegatte oder Lebenspartner mit frei; dafür nennt die Kanzlei seinen Namen.</div></li>
-<li class="step level-0"><span class="num">8</span> <span class="q">Steuernummer</span><div class="meta">Steuernummer · Text · optional</div></li>
-<li class="step level-0 decision"><span class="num">9</span> <span class="q">Voraussichtliches Ergebnis laut Steuerberechnung</span><div class="meta">Voraussichtliches Ergebnis laut Steuerberechnung · Auswahl: Erstattung · Nachzahlung · ausgeglichen · keine Berechnung · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 10 ab.</div><div class="meta">Vorausberechnung; maßgeblich ist der Bescheid.</div></li>
-<li class="step level-1"><span class="num">10</span> <span class="q">Betrag laut Steuerberechnung</span><div class="meta">Betrag laut Steuerberechnung · Betrag · Pflicht</div><div class="when">Gefragt erst wenn bei „Voraussichtliches Ergebnis laut Steuerberechnung“ „Erstattung“ oder „Nachzahlung“ gewählt ist (hängt ab von Nr. 9).</div><div class="why">Warum: Nur bei einer Erstattung oder Nachzahlung gibt es einen Betrag laut Steuerberechnung; er bezeichnet die vorgelegte Fassung (§ 87d Abs. 3 AO).</div></li>
-<li class="step level-0"><span class="num">11</span> <span class="q">Vorgelegte Unterlagen</span><div class="meta">Vorgelegte Unterlagen · Mehrfachauswahl: Formularansicht aller Anlagen · Steuerberechnung · Liste der übernommenen Daten Dritter (eDaten) · Erläuterungsschreiben · Sonstiges · Pflicht</div></li>
-<li class="step level-0"><span class="num">12</span> <span class="q">Bezeichnung der Vorlage</span><div class="meta">Bezeichnung der Vorlage · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">13</span> <span class="q">Datum der Vorlage</span><div class="meta">Datum der Vorlage · Datum · Pflicht</div></li>
-<li class="step level-0"><span class="num">14</span> <span class="q">Vorgelegt über</span><div class="meta">Vorgelegt über · Auswahl: Portal · E-Mail · persönlich in der Kanzlei · Post · optional</div></li>
-<li class="step level-0"><span class="num">15</span> <span class="q">Enthält die Erklärung Angaben im Freitextfeld für das Finanzamt?</span><div class="meta">Angaben im Freitextfeld für das Finanzamt · Ja/Nein · optional</div></li>
-<li class="step level-0"><span class="num">16</span> <span class="q">Hinweise der Kanzlei zu dieser Fassung</span><div class="meta">Hinweise der Kanzlei zu dieser Fassung · Text · optional</div></li>
+<li class="step level-0"><span class="num">1</span> <span class="q">Für wen legen Sie die Erklärungen vor?</span><div class="meta">Mandantin oder Mandant · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Von wann ist das Schreiben, mit dem Sie die Erklärungen übersandt haben?</span><div class="meta">Datum des Anschreibens · Datum · Pflicht</div></li>
+<li class="step level-0 decision"><span class="num">3</span> <span class="q">Welche Erklärungen haben Sie übersandt?</span><div class="meta">Erklärungen · Mehrfachauswahl: Einkommensteuererklärung · Gesonderte und einheitliche Feststellungserklärung · Gewinnermittlung (Anlage EÜR) · Körperschaftsteuererklärung · Gewerbesteuererklärung · Gewerbesteuererklärung mit Zerlegung · Umsatzsteuererklärung · Zusammenfassende Meldung · E-Bilanz · Digitaler Finanzbericht (an Banken) · Offenlegung oder Hinterlegung beim Unternehmensregister · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4 ab.</div><div class="meta">Alle, die mit diesem Schreiben zur Zustimmung vorliegen.</div></li>
+<li class="step level-1 decision"><span class="num">4</span> <span class="q">Einzel- oder Zusammenveranlagung?</span><div class="meta">Veranlagung · Auswahl: Einzelveranlagung (auch von Ehegatten, § 26a EStG) · Zusammenveranlagung (§ 26b EStG) · Pflicht</div><div class="when">Gefragt erst wenn bei „Erklärungen“ „Einkommensteuererklärung“ angekreuzt ist (hängt ab von Nr. 3).</div><div class="why">Warum: Eine Veranlagung gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt.</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div></li>
+<li class="step level-2"><span class="num">5</span> <span class="q">Wie heißt der Ehegatte oder Lebenspartner?</span><div class="meta">Ehegatte oder Lebenspartner · Text · Pflicht</div><div class="when">Gefragt erst wenn bei „Veranlagung“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (hängt ab von Nr. 4).</div><div class="why">Warum: Nur bei Zusammenveranlagung stimmt der Ehegatte oder Lebenspartner mit zu; dafür nennt die Kanzlei seinen Namen.</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <section class="station" id="steuerfreigabe-0.1.0-mandant">
 <h3>Station: Mandantin oder Mandant</h3>
 <p class="meta">Wird gebraucht: immer · unterschreibt</p>
-<p>Zuerst die Hinweise: „Was Sie mit der Freigabe erklären“.</p>
-<h4>Freigabe</h4>
+<p>Zuerst die Hinweise: „Was Sie mit der Zustimmung erklären“.</p>
+<h4>Zustimmung</h4>
 <ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Ihr Vor- und Familienname</span><div class="meta">Ihr Vor- und Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Haben Sie die vorgelegten Daten auf Vollständigkeit und Richtigkeit geprüft?</span><div class="meta">Prüfung der vorgelegten Daten · Ja/Nein · Pflicht</div></li>
-<li class="step level-0"><span class="num">3</span> <span class="q">Haben Sie der Kanzlei alle Unterlagen und Angaben gegeben, die für diese Erklärung wichtig sind?</span><div class="meta">Alle Unterlagen gegeben · Ja/Nein · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">4</span> <span class="q">Ihre Entscheidung</span><div class="meta">Ihre Entscheidung · Auswahl: Ich stimme der elektronischen Übermittlung zu. · Ich stimme noch nicht zu – bitte zuerst ändern. · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div><div class="meta">Ihre Zustimmung gilt nur für die oben bezeichnete Fassung.</div></li>
-<li class="step level-1"><span class="num">5</span> <span class="q">Was soll geändert werden?</span><div class="meta">Was soll geändert werden? · Text · Pflicht</div><div class="when">Gefragt erst wenn bei „Ihre Entscheidung“ „Ich stimme noch nicht zu – bitte zuerst ändern.“ gewählt ist (hängt ab von Nr. 4).</div><div class="why">Warum: Wer noch nicht zustimmt, sagt, was vorher geändert werden soll.</div></li>
+<li class="step level-0"><span class="num">1</span> <span class="q">Für wen stimmen Sie zu?</span><div class="meta">Mandantin oder Mandant · Text · Pflicht</div><div class="taken">Legt die andere Station fest (Kanzlei: „Mandantin oder Mandant“): Liegt ihr abgeschlossener Teil schon vor, wird die Angabe übernommen und nicht gefragt.</div><div class="why">Warum: Den Namen nennt die Kanzlei; liegt ihr Teil vor, steht er hier fest und wird nicht gefragt.</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Von wann ist das Schreiben, mit dem Sie die Erklärungen erhalten haben?</span><div class="meta">Schreiben der Kanzlei vom · Datum · Pflicht</div><div class="taken">Legt die andere Station fest (Kanzlei: „Datum des Anschreibens“): Liegt ihr abgeschlossener Teil schon vor, wird die Angabe übernommen und nicht gefragt.</div><div class="why">Warum: Das Datum des Schreibens nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.</div></li>
+<li class="step level-0 decision"><span class="num">3</span> <span class="q">Welchen Erklärungen stimmen Sie zu?</span><div class="meta">Erklärungen · Mehrfachauswahl: Einkommensteuererklärung · Gesonderte und einheitliche Feststellungserklärung · Gewinnermittlung (Anlage EÜR) · Körperschaftsteuererklärung · Gewerbesteuererklärung · Gewerbesteuererklärung mit Zerlegung · Umsatzsteuererklärung · Zusammenfassende Meldung · E-Bilanz · Digitaler Finanzbericht (an Banken) · Offenlegung oder Hinterlegung beim Unternehmensregister · Pflicht</div><div class="taken">Legt die andere Station fest (Kanzlei: „Erklärungen“): Liegt ihr abgeschlossener Teil schon vor, wird die Angabe übernommen und nicht gefragt.</div><div class="why">Warum: Welche Erklärungen vorliegen, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.</div><div class="opens">Weiche: davon hängen Nr. 4 ab.</div></li>
+<li class="step level-1"><span class="num">4</span> <span class="q">Einzel- oder Zusammenveranlagung?</span><div class="meta">Veranlagung · Auswahl: Einzelveranlagung (auch von Ehegatten, § 26a EStG) · Zusammenveranlagung (§ 26b EStG) · Pflicht</div><div class="when">Gefragt erst wenn bei „Erklärungen“ „Einkommensteuererklärung“ angekreuzt ist (hängt ab von Nr. 3).</div><div class="taken">Legt die andere Station fest (Kanzlei: „Veranlagung“): Liegt ihr abgeschlossener Teil schon vor, wird die Angabe übernommen und nicht gefragt.</div><div class="why">Warum: Eine Veranlagung gibt es nur bei der Einkommensteuer. Sie nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Wer unterschreibt?</span><div class="meta">Name der unterschreibenden Person · Text · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <section class="station" id="steuerfreigabe-0.1.0-ehegatte">
 <h3>Station: Ehegatte oder Lebenspartner</h3>
-<p class="meta">Wird gebraucht: nur wenn bei „Veranlagungsart“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist · unterschreibt</p>
-<p class="why">Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb gibt auch der andere sie frei.</p>
-<p>Zuerst die Hinweise: „Was Sie mit der Freigabe erklären“.</p>
-<h4>Freigabe des Ehegatten oder Lebenspartners</h4>
+<p class="meta">Wird gebraucht: nur wenn bei „Veranlagung“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist · unterschreibt</p>
+<p class="why">Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb stimmt auch der andere zu.</p>
+<p>Zuerst die Hinweise: „Was Sie mit der Zustimmung erklären“.</p>
+<h4>Zustimmung des Ehegatten oder Lebenspartners</h4>
 <ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Ihr Vor- und Familienname</span><div class="meta">Ihr Vor- und Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Haben Sie die vorgelegten Daten auf Vollständigkeit und Richtigkeit geprüft?</span><div class="meta">Prüfung der vorgelegten Daten · Ja/Nein · Pflicht</div></li>
-<li class="step level-0 decision"><span class="num">3</span> <span class="q">Ihre Entscheidung</span><div class="meta">Ihre Entscheidung · Auswahl: Ich stimme der elektronischen Übermittlung zu. · Ich stimme noch nicht zu – bitte zuerst ändern. · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4 ab.</div><div class="meta">Ihre Zustimmung gilt nur für die oben bezeichnete Fassung.</div></li>
-<li class="step level-1"><span class="num">4</span> <span class="q">Was soll geändert werden?</span><div class="meta">Was soll geändert werden? · Text · Pflicht</div><div class="when">Gefragt erst wenn bei „Ihre Entscheidung“ „Ich stimme noch nicht zu – bitte zuerst ändern.“ gewählt ist (hängt ab von Nr. 3).</div><div class="why">Warum: Wer noch nicht zustimmt, sagt, was vorher geändert werden soll.</div></li>
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie heißen Sie?</span><div class="meta">Ihr Vor- und Familienname · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Kanzlei: „Ehegatte oder Lebenspartner“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Den Namen nennt die Kanzlei; er steht da und kann geändert werden.</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>

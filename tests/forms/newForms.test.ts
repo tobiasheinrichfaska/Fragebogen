@@ -1,5 +1,5 @@
-// The new form drafts of 2026-10-30 through the engine: release of a tax return (spouse only at a
-// joint assessment), monthly payroll report (taken over from last month), company car (questions
+// The new form drafts of 2026-10-30 through the engine (the tax-return consent has its own file,
+// steuerfreigabe.test.ts): monthly payroll report (taken over from last month), company car (questions
 // per drive, both parts sealable). Fictitious data.
 import { join } from 'node:path';
 import { answerSuggestions } from '../../src/logic/answerSuggestions';
@@ -60,73 +60,6 @@ function seal(
     }),
   );
 }
-
-describe('Steuerfreigabe draft', () => {
-  const form = draft('steuerfreigabe');
-  const kanzlei = (veranlagung: string) =>
-    seal(
-      fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'kanzlei', {
-        mandantNameKanzlei: 'Erika Musterfrau',
-        steuerjahr: '2025',
-        erklaerungen: ['est'],
-        erklaerungArt: 'erstmalig',
-        veranlagung,
-        ...(veranlagung === 'zusammen' ? { ehegatteNameKanzlei: 'Max Mustermann' } : {}),
-        ergebnis: 'erstattung',
-        betrag: '1.234,56',
-        vorgelegt: ['formular', 'berechnung'],
-        vorlageBezeichnung: 'ESt 2025, Stand 28.10.2026, 34 Seiten',
-        vorlageDatum: '28.10.2026',
-      }),
-      form,
-      'kanzlei',
-      0,
-    );
-  const mandant = (q: Questionnaire) =>
-    seal(
-      fill(q, form, 'mandant', {
-        mandantName: 'Erika Musterfrau',
-        mandantGeprueft: true,
-        mandantVollstaendig: true,
-        mandantEntscheidung: 'zustimmung',
-      }),
-      form,
-      'mandant',
-      5,
-      { acknowledged: ['freigabeHinweis'], bind: 'kanzlei' },
-    );
-
-  it('is complete with the client alone at a single assessment', () => {
-    const q = mandant(kanzlei('einzel'));
-    expect(transmissionBlockers(q, form)).toEqual([]);
-    expect(completenessGaps(q, form)).toEqual([]);
-  });
-
-  it('needs the spouse at a joint assessment, bound to the current Kanzlei version', () => {
-    const q = mandant(kanzlei('zusammen'));
-    expect(transmissionBlockers(q, form).map((b) => b.code)).toEqual(['conditionalRoleMissing']);
-    const withSpouse = seal(
-      fill(q, form, 'ehegatte', {
-        ehegatteName: 'Max Mustermann',
-        ehegatteGeprueft: true,
-        ehegatteEntscheidung: 'zustimmung',
-      }),
-      form,
-      'ehegatte',
-      9,
-      { acknowledged: ['freigabeHinweisEhegatte'], bind: 'kanzlei' },
-    );
-    expect(transmissionBlockers(withSpouse, form)).toEqual([]);
-    expect(completenessGaps(withSpouse, form)).toEqual([]);
-  });
-
-  it('asks what to change when the client does not agree yet', () => {
-    const ids = visibleFields(form.definition, 'mandant', { mandantEntscheidung: 'aendern' }).map(
-      (f) => f.id,
-    );
-    expect(ids).toContain('mandantAenderung');
-  });
-});
 
 // Tobias 2026-11-01: base = last month's report; a block per person with a calendar; Lohnart rows;
 // hours only for an hourly wage; a notice confirmed once stays confirmed while its text is the same.
