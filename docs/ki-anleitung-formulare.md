@@ -6,7 +6,7 @@ vollständig; `tests/static/kiAnleitung.test.ts` prüft, dass jeder Schlüssel u
 App kennt, hier vorkommt und dass das Beispiel unten gültig ist.
 
 **So benutzen:** Den Abschnitt „Auftrag“ und alles danach in die KI kopieren. Dazu eine vorhandene
-Definition als Muster anhängen (z. B. `form-drafts/personalfragebogen/0.1.0.json`) und die Aufgabe
+Definition als Muster anhängen (z. B. `forms/personalfragebogen/1.0.0.json`) und die Aufgabe
 beschreiben, etwa „Entwirf einen Fragebogen für …“ oder „Ergänze im Personalfragebogen …“.
 
 ---

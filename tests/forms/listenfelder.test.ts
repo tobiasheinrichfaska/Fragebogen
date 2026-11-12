@@ -7,10 +7,10 @@ import { join } from 'node:path';
 import { listCodesOf, listEntryOf, listOf } from '../../src/logic/options';
 import { prefillFrom } from '../../src/logic/prefill';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, newestPublished, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, newestPublished, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const personal = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const personal = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 const sofort = newestPublished('sofortmeldung');
 
 const LISTS = {

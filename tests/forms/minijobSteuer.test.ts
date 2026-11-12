@@ -23,10 +23,10 @@ import {
 import { registryOf } from '../../src/logic/formRegistry';
 import type { Questionnaire } from '../../src/logic/model';
 import { verifyQuestionnaire } from '../../src/logic/verify';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, ok, QUESTIONNAIRE_ID, STROKES } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 const at = { local: '2026-10-30T10:00:00.000+01:00', utc: '2026-10-30T09:00:00.000Z' };
 
 const EMPLOYER = {

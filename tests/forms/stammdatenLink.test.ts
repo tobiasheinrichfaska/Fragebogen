@@ -40,7 +40,7 @@ import {
 } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 const { definition } = form;
 const definitionFile = (dir: string) =>
   definitionFiles(dir).filter((file) => file.file.endsWith('.json'));

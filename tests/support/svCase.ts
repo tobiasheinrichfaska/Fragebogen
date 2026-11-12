@@ -4,12 +4,10 @@ import { join } from 'node:path';
 import { derive, type DerivationResult } from '../../src/logic/derivations';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import type { Questionnaire } from '../../src/logic/model';
-import { DRAFTS_DIR, readJson, registeredFrom } from './formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from './formFiles';
 import { QUESTIONNAIRE_ID } from './sample';
 
-export const svForm = registeredFrom(
-  readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json')),
-);
+export const svForm = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 
 export type Answers = Record<string, unknown>;
 

@@ -6,10 +6,29 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { compareVersions } from '../../../src/logic/formRegistry';
 import { answerUntil, expectQuiet, formFields, heading, openApp, openTestApp, press } from '../app';
 import { expectClean } from '../guards';
 
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
+
+/** Title and version of the newest published version of every form in forms/. */
+function publishedNewest(): { title: string; version: string }[] {
+  return readdirSync(join(ROOT, 'forms'), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const folder = join(ROOT, 'forms', entry.name);
+      const newest = readdirSync(folder)
+        .filter((file) => file.endsWith('.json'))
+        .map((file) => file.slice(0, -'.json'.length))
+        .sort(compareVersions)
+        .at(-1);
+      const { title } = JSON.parse(readFileSync(join(folder, `${newest}.json`), 'utf8')) as {
+        title: string;
+      };
+      return { title, version: newest ?? '' };
+    });
+}
 
 /** Titles of the forms that exist only as drafts: the public build must not offer them. */
 function draftOnlyTitles(): string[] {
@@ -40,16 +59,21 @@ test('MT-01: the downloaded file opens on the start page with the published form
   ]) {
     await expect(app.locator('.card h2', { hasText: card })).toBeVisible();
   }
-  const sofort = app.locator('.form-list li').filter({
-    has: page.getByRole('button', {
-      name: 'Personalfragebogen: Angaben für die Sofortmeldung',
-      exact: true,
-    }),
-  });
-  await expect(sofort).toHaveCount(1);
-  const version = (await sofort.locator('.muted').textContent()) ?? '';
-  expect(version).toMatch(/^Version [1-9]\d*\.\d+\.\d+/);
-  expect(version).not.toMatch(/Testfassung|Entwurf/);
+  // Every published form is offered in its newest version; a production version (from 1.0.0, e.g.
+  // the Personalfragebogen since 2026-11-12) without a test or draft mark.
+  const published = publishedNewest();
+  expect(published.map((form) => form.title)).toContain(
+    'Personalfragebogen: Angaben für die Lohnabrechnung',
+  );
+  for (const { title, version } of published) {
+    const item = app.locator('.form-list li').filter({
+      has: page.getByRole('button', { name: title, exact: true }),
+    });
+    await expect(item, title).toHaveCount(1);
+    const shown = (await item.locator('.muted').textContent()) ?? '';
+    expect(shown, title).toContain(`Version ${version}`);
+    if (!version.startsWith('0.')) expect(shown, title).not.toMatch(/Testfassung|Entwurf/);
+  }
 
   const drafts = draftOnlyTitles();
   expect(drafts.length).toBeGreaterThan(0);

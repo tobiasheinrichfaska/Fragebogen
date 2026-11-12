@@ -7,11 +7,11 @@ import { checkHints, describeHint, HINT_TESTS } from '../../src/logic/hints';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import { regelaltersgrenze } from '../../src/logic/regelaltersgrenze';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const raw = () =>
-  structuredClone(readJson(join(DRAFTS_DIR, 'personalfragebogen', '0.1.0.json'))) as FormDefinition;
+  structuredClone(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json'))) as FormDefinition;
 const form = registeredFrom(raw());
 
 function answers(
