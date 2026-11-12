@@ -337,7 +337,13 @@ function withAdopted(result: SessionResult, role: RoleId): SessionResult {
 
 /** Takes the role to the device: continues its draft or opens its first version. */
 export function enterRole(session: Session, role: RoleId): SessionResult {
-  return withAdopted(enterRoleAsIs(leaveRole(session), role), role);
+  const base = leaveRole(session);
+  const fresh = currentPart(base.questionnaire, role) === undefined;
+  const entered = withAdopted(enterRoleAsIs(base, role), role);
+  // A first version starts at its first step as it stands with the other roles' answers taken
+  // over: a notice they open would otherwise lie before the start and be skipped (bug 2026-11-12).
+  if (!fresh || !entered.ok) return entered;
+  return ok({ ...entered.session, ...atStart(entered.session, role) }, entered.warnings);
 }
 
 function enterRoleAsIs(session: Session, role: RoleId): SessionResult {

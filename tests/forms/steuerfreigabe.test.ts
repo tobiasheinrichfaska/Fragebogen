@@ -23,8 +23,10 @@ import { completenessGaps, transmissionBlockers } from '../../src/logic/requirem
 import {
   acknowledge,
   allPartsDone,
+  currentStep,
   answer,
   enterRole,
+  nextStep,
   proposedBy,
   roleToFillNext,
   seal,
@@ -199,6 +201,27 @@ describe('one page per recipient of what the Kanzlei names', () => {
     const leaves = block?.showIf && 'any' in block.showIf ? block.showIf.any : [block?.showIf];
     return leaves.flatMap((leaf) => (leaf && 'contains' in leaf ? [leaf.contains] : []));
   };
+
+  // Bug 2026-11-12, Tobias: „Bestätigung für Steuererklärung wurde mir als Mandant nicht vorgelegt,
+  // erst bei der Zusammenfassung wurde es als fehlend markiert.“ The first step was chosen before
+  // the Kanzlei's answers were taken over, so the page they open lay before the start.
+  it('starts at the first page and leads through every page with „Weiter“', () => {
+    let s = must(enterRole(kanzleiSealed(EINZEL), 'mandant'));
+    expect(currentStep(s)?.key).toBe('notice:seiteSteuererklaerungen');
+    const visited: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      const step = currentStep(s);
+      if (!step || step.kind === 'summary') break;
+      visited.push(step.key);
+      s = nextStep(step.kind === 'notice' ? acknowledge(s, step.infoBlockId, true) : s);
+    }
+    expect(visited).toEqual([
+      'notice:seiteSteuererklaerungen',
+      'notice:agbDatenschutz',
+      'question:einschraenkungenMandant',
+      'question:unterzeichnerName',
+    ]);
+  });
 
   it('bundles every tax return into one page, then AGB and data protection', () => {
     const mandant = must(
