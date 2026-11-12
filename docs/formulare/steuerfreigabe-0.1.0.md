@@ -8,8 +8,8 @@
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum des Anschreibens“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 12.11.2026 um 11:26 |
-| Definition (SHA-256) | fda65d0a5d45939a2c52a7294222b41d96b0928d664ac4d627889845c364421d |
+| Stand | zuletzt überarbeitet am 12.11.2026 um 11:35 |
+| Definition (SHA-256) | 6a707019816fcee20da8497a1a735c3b793075752cef39aa3737754efda35db7 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung an das Finanzamt schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die Erklärungen, die Ihnen die Kanzlei mit dem genannten Schreiben übersandt hat. |
 | Empfänger | Kanzlei |
@@ -18,9 +18,9 @@
 
 | Rolle | Unterschrift | Erforderlich | Name der unterzeichnenden Person | Bestätigungstext |
 | --- | --- | --- | --- | --- |
-| Kanzlei (kanzlei) | keine | freiwillig – belegt nur Angaben der anderen vor | – | Wir legen die Erklärungen mit diesen Angaben zur Zustimmung vor. |
-| Mandantin oder Mandant (mandant) | Pflicht | immer | aus „Name der unterschreibenden Person“ | Ich habe die oben genannten Erklärungen geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen. |
-| Ehegatte oder Lebenspartner (ehegatte) | Pflicht | nur wenn bei „Veranlagung“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb stimmt auch der andere zu. | aus „Ihr Vor- und Familienname“ | Ich habe die gemeinsame Einkommensteuererklärung geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen. |
+| Kanzlei (kanzlei) | keine | freiwillig – belegt nur Angaben der anderen vor | – | Wir legen die Erklärungen mit diesen Angaben zur Zustimmung vor; unsere Allgemeinen Geschäftsbedingungen haben wir mit den Erklärungen übersandt. |
+| Mandantin oder Mandant (mandant) | Pflicht | immer | aus „Name der unterschreibenden Person“ | Ich habe die oben genannten Erklärungen geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen. Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit den Erklärungen übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden. |
+| Ehegatte oder Lebenspartner (ehegatte) | Pflicht | nur wenn bei „Veranlagung“ „Zusammenveranlagung (§ 26b EStG)“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb stimmt auch der andere zu. | aus „Ihr Vor- und Familienname“ | Ich habe die gemeinsame Einkommensteuererklärung geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen. Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit der Erklärung übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden. |
 
 ## Felder
 
@@ -76,6 +76,8 @@ Alle übrigen Angaben sind unabhängig.
 >
 > Der Digitale Finanzbericht geht nicht an das Finanzamt, sondern an Banken; die Offenlegung oder Hinterlegung geht an das Unternehmensregister (§§ 325, 326 HGB). Auch dafür ist Ihre Zustimmung der Auftrag an die Kanzlei.
 >
+> Mit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit den Erklärungen übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.
+>
 > Haben Sie Änderungswünsche, stimmen Sie nicht zu: Schließen Sie diesen Fragebogen nicht ab und melden Sie sich bei der Kanzlei.
 >
 > Datenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.
@@ -89,6 +91,8 @@ Alle übrigen Angaben sind unabhängig.
 > Die Kanzlei übermittelt Ihre gemeinsame Einkommensteuererklärung in Ihrem Auftrag elektronisch an die Finanzverwaltung (§ 87d AO). Vorher stellt sie Ihnen die Daten in leicht nachprüfbarer Form zur Verfügung; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).
 >
 > Es bleibt Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.
+>
+> Mit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit der Erklärung übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.
 >
 > Haben Sie Änderungswünsche, stimmen Sie nicht zu: Schließen Sie diesen Fragebogen nicht ab und melden Sie sich bei der Kanzlei.
 >
@@ -119,6 +123,7 @@ Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen.
 - Änderungswünsche nimmt er nicht auf: Wer nicht zustimmt, schließt nicht ab und meldet sich bei der Kanzlei.
 - Die Kanzlei belegt nur vor und unterschreibt nicht. Wer ohne ihren Teil beginnt, trägt Name, Datum des Schreibens und Erklärungen selbst ein; weichen sie später von den Angaben der Kanzlei ab, zeigt die App einen Widerspruch.
 - Höchstens zwei Personen stimmen zu: die Mandantin oder der Mandant und bei Zusammenveranlagung der Ehegatte oder Lebenspartner.
+- Die Allgemeinen Geschäftsbedingungen fügt die App nicht bei: Die Zustimmung bezieht sich auf die, die die Kanzlei mit den Erklärungen übersandt hat.
 
 ## Sonderfälle, die Abschließen und Weitergeben sperren
 

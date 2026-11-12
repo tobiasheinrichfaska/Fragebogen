@@ -167,6 +167,29 @@ describe('who consents', () => {
   });
 });
 
+// Tobias 2026-11-12: „Es wird den AGB zugestimmt, die mit der Erklärung übermittelt wurden.“ The
+// app attaches no AGB; each signer agrees to those the Kanzlei sent with the returns.
+describe('the AGB sent with the returns', () => {
+  const confirmed = (q: Session, role: string) =>
+    latestSealed(q.questionnaire, role)?.seal?.payload.confirmationText;
+
+  it('are part of what each signer confirms, and the Kanzlei states it sent them', () => {
+    const first = consented(kanzleiSealed(ZUSAMMEN), 'mandant', 'zustimmungHinweis', 'Erika', {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    const both = consented(first, 'ehegatte', 'zustimmungHinweisEhegatte', 'Max Mustermann');
+    expect(confirmed(both, 'mandant')).toContain(
+      'Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit den Erklärungen übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden.',
+    );
+    expect(confirmed(both, 'ehegatte')).toContain(
+      'Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit der Erklärung übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden.',
+    );
+    expect(confirmed(both, 'kanzlei')).toContain(
+      'unsere Allgemeinen Geschäftsbedingungen haben wir mit den Erklärungen übersandt',
+    );
+  });
+});
+
 describe('what the Kanzlei names stays fixed', () => {
   it('refuses another list of returns, date or name in the consent', () => {
     const mandant = must(enterRole(kanzleiSealed(EINZEL), 'mandant'));
