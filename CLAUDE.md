@@ -812,11 +812,11 @@ Key design decisions (details in `docs/plan.md`):
   start from 01.01.2027 the employer's part is refused („außerhalb der Gültigkeit“), so hires for
   January need a 2027 version with the 2027 values (Minijob limit, Rechengrößen in
   `rechengroessen.ts`) — publish it before the first such hire.
-- **Zustimmung zur elektronischen Übermittlung, draft (2026-11-12):** the Kanzlei's AGB are not yet
-  attached — the template's sentence „Die beigefügten AGB … einverstanden“ is left out until the
-  planned local AGB file (appended to the PDF, hash in the seal) exists. Change wishes are not taken
-  in: whoever does not consent does not finish and calls the Kanzlei. No place of signing (the seal
-  carries the time). No e2e hand test yet.
+- **Zustimmung zur elektronischen Übermittlung, draft (2026-11-12):** the app attaches no AGB — each
+  signer agrees to the AGB the Kanzlei sent with the returns (Tobias's decision); which AGB those
+  were, the Kanzlei's file shows, not the questionnaire. Change wishes are not taken in: whoever does
+  not consent does not finish and calls the Kanzlei. No place of signing (the seal carries the
+  time). No e2e hand test yet.
 - **Automated manual tests (2026-11-08):** `tests/e2e/handtests/` replays the former manual tests in
   virtual browsers; what only a person or a real device shows (look of a real PDF program, finger and
   pen, camera and scanner, share sheet and phone keyboard, DATEV import, upload) stays in
@@ -1215,7 +1215,10 @@ Offenlegung „beim Unternehmensregister“ — § 325 Abs. 1 / § 326 Abs. 2 HG
 template's „Bundesanzeiger“ is outdated) and, with ESt, the Veranlagung; the client's part copies
 them (fixed), the spouse's name is proposed. Title „Zustimmung zur elektronischen Übermittlung der
 Steuererklärungen“, id `steuerfreigabe` 0.1.0 unchanged. Tests `tests/forms/steuerfreigabe.test.ts`;
-unit 5242 passed. **Open for Tobias:** AGB attachment (Known Limitations).
+unit 5242 passed. **AGB (Tobias: „Es wird den AGB zugestimmt, die mit der Erklärung übermittelt
+wurden“):** the app attaches none; the template's sentence is in the confirmation of the client and
+of the spouse, the Kanzlei's confirmation says it sent its AGB with the returns. This replaces the
+earlier plan of a local AGB file appended to the PDF.
 
 **Hand-over 2026-11-12:** Tobias: „wir nehmen den Personalfragebogen auch auf die
 öffentliche Seite“ → **Personalfragebogen 1.0.0 in production** (see Key decisions). Tests: MT-01
