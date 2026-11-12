@@ -215,7 +215,11 @@ function stationOf(definition: FormDefinition, role: RoleDefinition): FlowStatio
     signature: SIGNATURE[role.signature],
     notices: definition.infoBlocks
       .filter((block) => block.role === role.id)
-      .map((block) => block.title),
+      .map((block) =>
+        block.showIf === undefined
+          ? block.title
+          : `${block.title} (nur wenn ${describeCondition(block.showIf, fieldsById(definition))})`,
+      ),
     sections: definition.sections
       .map((section) => ({
         title: section.title,

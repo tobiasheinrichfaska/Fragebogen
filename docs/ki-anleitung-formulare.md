@@ -202,9 +202,16 @@ Rolle; über Rollen hinweg gibt es `fromRole` (Antwort übernehmen), Rollen mit
 
 ### Hinweis zur Kenntnisnahme (`infoBlocks[]`)
 
-`{ "id", "role", "title", "text", "asOf": "JJJJ-MM-TT", "acknowledgement", "explainer"? }` –
+`{ "id", "role", "title", "text", "asOf": "JJJJ-MM-TT", "acknowledgement", "explainer"?, "showIf"?, "because"? }` –
 `acknowledgement` ist `read` (in der App gelesen und bestätigt) oder `paperHandout` (auf Papier
 ausgehändigt, im Fragebogen bestätigt). Der Text geht mit Stand und Hash ins Siegel.
+
+Mit `showIf` (Bedingung über Felder derselben Rolle, wie bei Feldern) erscheint der Hinweis nur,
+solange die Bedingung gilt – z. B. eine Seite je Erklärung, die die Kanzlei vorlegt
+(Steuerfreigabe). Nur dann muss er bestätigt werden; eine Bestätigung, deren Bedingung entfällt,
+fällt beim Abschließen weg wie eine ausgeblendete Antwort. Er steht im Interview direkt nach der
+letzten gefragten Frage, die seine Bedingung liest; legt eine andere Rolle diese Antworten fest,
+steht er vorn. `because` ist mit `showIf` Pflicht und nur mit ihm erlaubt.
 
 ### Prüfregel, Zuordnung, Prüfhinweis
 

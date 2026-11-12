@@ -1,7 +1,7 @@
 {
   "id": "steuerfreigabe",
   "version": "0.1.0",
-  "revised": "2026-11-12T11:35",
+  "revised": "2026-11-12T12:19",
   "title": "Zustimmung zur elektronischen Übermittlung der Steuererklärungen",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -18,7 +18,7 @@
     },
     {
       "id": "mandant",
-      "label": "Mandantin oder Mandant",
+      "label": "Mandant / Steuerpflichtiger",
       "stationHeading": "Zustimmung",
       "confirmationText": "Ich habe die oben genannten Erklärungen geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen. Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit den Erklärungen übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden.",
       "signature": "required",
@@ -26,8 +26,8 @@
     },
     {
       "id": "ehegatte",
-      "label": "Ehegatte oder Lebenspartner",
-      "stationHeading": "Zustimmung des Ehegatten oder Lebenspartners",
+      "label": "Ehegatte / Lebenspartner",
+      "stationHeading": "Zustimmung Ehegatte / Lebenspartner",
       "confirmationText": "Ich habe die gemeinsame Einkommensteuererklärung geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen. Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit der Erklärung übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden.",
       "signature": "required",
       "requiredIf": {
@@ -50,7 +50,7 @@
           "id": "mandantName",
           "role": "kanzlei",
           "type": "text",
-          "label": "Mandantin oder Mandant",
+          "label": "Mandant / Steuerpflichtiger",
           "question": "Für wen legen Sie die Erklärungen vor?",
           "help": "Vor- und Familienname oder Firma.",
           "required": true,
@@ -73,7 +73,7 @@
           "type": "multiChoice",
           "label": "Erklärungen",
           "question": "Welche Erklärungen haben Sie übersandt?",
-          "help": "Alle, die mit diesem Schreiben zur Zustimmung vorliegen.",
+          "help": "Alle, die mit diesem Schreiben zur Zustimmung vorliegen. Eine Zerlegungserklärung folgt als eigene Frage zur Gewerbesteuererklärung.",
           "required": true,
           "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
           "options": [
@@ -98,10 +98,6 @@
               "label": "Gewerbesteuererklärung"
             },
             {
-              "id": "gewstZerlegung",
-              "label": "Gewerbesteuererklärung mit Zerlegung"
-            },
-            {
               "id": "ust",
               "label": "Umsatzsteuererklärung"
             },
@@ -122,6 +118,21 @@
               "label": "Offenlegung oder Hinterlegung beim Unternehmensregister"
             }
           ]
+        },
+        {
+          "id": "zerlegung",
+          "role": "kanzlei",
+          "type": "boolean",
+          "label": "Zerlegungserklärung",
+          "question": "Gehört eine Zerlegungserklärung zur Gewerbesteuererklärung?",
+          "help": "Wenn Betriebsstätten in mehreren Gemeinden lagen (§ 28 GewStG).",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "erklaerungen",
+            "contains": "gewst"
+          },
+          "because": "Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1 GewStG)."
         },
         {
           "id": "veranlagung",
@@ -151,7 +162,7 @@
           "id": "ehegatteNameKanzlei",
           "role": "kanzlei",
           "type": "text",
-          "label": "Ehegatte oder Lebenspartner",
+          "label": "Ehegatte / Lebenspartner",
           "question": "Wie heißt der Ehegatte oder Lebenspartner?",
           "help": "Vor- und Familienname. Er stimmt mit zu.",
           "required": true,
@@ -173,7 +184,7 @@
           "id": "zustimmungMandant",
           "role": "mandant",
           "type": "text",
-          "label": "Mandantin oder Mandant",
+          "label": "Mandant / Steuerpflichtiger",
           "question": "Für wen stimmen Sie zu?",
           "help": "Vor- und Familienname oder Firma, wie im Anschreiben der Kanzlei.",
           "required": true,
@@ -234,10 +245,6 @@
               "label": "Gewerbesteuererklärung"
             },
             {
-              "id": "gewstZerlegung",
-              "label": "Gewerbesteuererklärung mit Zerlegung"
-            },
-            {
               "id": "ust",
               "label": "Umsatzsteuererklärung"
             },
@@ -258,6 +265,24 @@
               "label": "Offenlegung oder Hinterlegung beim Unternehmensregister"
             }
           ]
+        },
+        {
+          "id": "zustimmungZerlegung",
+          "role": "mandant",
+          "type": "boolean",
+          "label": "Zerlegungserklärung",
+          "question": "Gehört eine Zerlegungserklärung zur Gewerbesteuererklärung?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "gewst"
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "zerlegung"
+          },
+          "because": "Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1 GewStG). Ob sie vorliegt, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt."
         },
         {
           "id": "zustimmungVeranlagung",
@@ -304,7 +329,7 @@
     },
     {
       "id": "zustimmungEhegatte",
-      "title": "Zustimmung des Ehegatten oder Lebenspartners",
+      "title": "Zustimmung Ehegatte / Lebenspartner",
       "fields": [
         {
           "id": "ehegatteName",
@@ -328,18 +353,169 @@
   ],
   "infoBlocks": [
     {
-      "id": "zustimmungHinweis",
+      "id": "seiteEst",
       "role": "mandant",
-      "title": "Was Sie mit der Zustimmung erklären",
-      "text": "Die Kanzlei übermittelt Ihre Steuererklärungen in Ihrem Auftrag elektronisch an die Finanzverwaltung (§ 87d AO). Vorher stellt sie Ihnen die Daten in leicht nachprüfbarer Form zur Verfügung; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).\n\nEs bleiben Ihre Erklärungen: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nDer Digitale Finanzbericht geht nicht an das Finanzamt, sondern an Banken; die Offenlegung oder Hinterlegung geht an das Unternehmensregister (§§ 325, 326 HGB). Auch dafür ist Ihre Zustimmung der Auftrag an die Kanzlei.\n\nMit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit den Erklärungen übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.\n\nHaben Sie Änderungswünsche, stimmen Sie nicht zu: Schließen Sie diesen Fragebogen nicht ab und melden Sie sich bei der Kanzlei.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
+      "title": "Einkommensteuererklärung",
+      "text": "Sie haben die Einkommensteuererklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nEs bleibt Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nBei Zusammenveranlagung stimmt auch Ihr Ehegatte oder Lebenspartner zu.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "est"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Einkommensteuererklärung."
+    },
+    {
+      "id": "seiteFeststellung",
+      "role": "mandant",
+      "title": "Gesonderte und einheitliche Feststellungserklärung",
+      "text": "Sie haben die Feststellungserklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nDie Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "feststellung"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Feststellungserklärung."
+    },
+    {
+      "id": "seiteEuer",
+      "role": "mandant",
+      "title": "Gewinnermittlung (Anlage EÜR)",
+      "text": "Sie haben die Gewinnermittlung (Anlage EÜR), die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 60 Abs. 4 EStDV, § 87d AO).\n\nErkennen Sie später einen Fehler, sagen Sie bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "euer"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Gewinnermittlung (Anlage EÜR)."
+    },
+    {
+      "id": "seiteKst",
+      "role": "mandant",
+      "title": "Körperschaftsteuererklärung",
+      "text": "Sie haben die Körperschaftsteuererklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nDie Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "kst"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Körperschaftsteuererklärung."
+    },
+    {
+      "id": "seiteGewst",
+      "role": "mandant",
+      "title": "Gewerbesteuererklärung",
+      "text": "Sie haben die Gewerbesteuererklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 14a GewStG, § 87d AO).\n\nDie Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "gewst"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Gewerbesteuererklärung."
+    },
+    {
+      "id": "seiteZerlegung",
+      "role": "mandant",
+      "title": "Zerlegungserklärung",
+      "text": "Zur Gewerbesteuererklärung gehört eine Zerlegungserklärung: Der Steuermessbetrag wird auf die Gemeinden aufgeteilt, in denen Betriebsstätten lagen (§ 28 Abs. 1 GewStG). Sie haben die Zerlegungserklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag mit der Gewerbesteuererklärung elektronisch an das Finanzamt (§ 14a GewStG, § 87d AO).\n\nErkennen Sie später einen Fehler, sagen Sie bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungZerlegung",
+        "equals": true
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur, wenn zur Gewerbesteuererklärung eine Zerlegungserklärung gehört."
+    },
+    {
+      "id": "seiteUst",
+      "role": "mandant",
+      "title": "Umsatzsteuererklärung",
+      "text": "Sie haben die Umsatzsteuererklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nDie Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "ust"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Umsatzsteuererklärung."
+    },
+    {
+      "id": "seiteZm",
+      "role": "mandant",
+      "title": "Zusammenfassende Meldung",
+      "text": "Sie haben die Zusammenfassende Meldung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Bundeszentralamt für Steuern (§ 18a Abs. 1 UStG, § 87d AO).\n\nErkennen Sie später einen Fehler, sagen Sie bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "zm"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Zusammenfassenden Meldung."
+    },
+    {
+      "id": "seiteEbilanz",
+      "role": "mandant",
+      "title": "E-Bilanz",
+      "text": "Sie haben die E-Bilanz – den Inhalt der Bilanz und der Gewinn- und Verlustrechnung als Datensatz (§ 5b Abs. 1 EStG) –, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nErkennen Sie später einen Fehler, sagen Sie bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "ebilanz"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der E-Bilanz."
+    },
+    {
+      "id": "seiteDifin",
+      "role": "mandant",
+      "title": "Digitaler Finanzbericht",
+      "text": "Den Digitalen Finanzbericht übermittelt die Kanzlei nicht an das Finanzamt, sondern an Banken. Sie haben ihn geprüft und haben keine Änderungswünsche; mit Ihrer Zustimmung beauftragen Sie die Kanzlei, ihn elektronisch zu übermitteln.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "difin"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit dem Digitalen Finanzbericht."
+    },
+    {
+      "id": "seiteOffenlegung",
+      "role": "mandant",
+      "title": "Offenlegung oder Hinterlegung beim Unternehmensregister",
+      "text": "Die Kanzlei übermittelt den Jahresabschluss in Ihrem Auftrag elektronisch an die das Unternehmensregister führende Stelle (§ 325 Abs. 1 HGB). Eine Kleinstkapitalgesellschaft kann stattdessen nur die Bilanz übermitteln und ihre dauerhafte Hinterlegung verlangen (§ 326 Abs. 2 HGB). Sie haben die Unterlagen geprüft und haben keine Änderungswünsche.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "offenlegung"
+      },
+      "because": "Eine Seite je Erklärung, die die Kanzlei vorlegt: diese nur mit der Offenlegung oder Hinterlegung."
+    },
+    {
+      "id": "agbDatenschutz",
+      "role": "mandant",
+      "title": "Allgemeine Geschäftsbedingungen und Datenschutz",
+      "text": "Mit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit den Erklärungen übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
       "asOf": "2026-11-12",
       "acknowledgement": "read"
     },
     {
-      "id": "zustimmungHinweisEhegatte",
+      "id": "ehegatteSeiteEst",
       "role": "ehegatte",
-      "title": "Was Sie mit der Zustimmung erklären",
-      "text": "Die Kanzlei übermittelt Ihre gemeinsame Einkommensteuererklärung in Ihrem Auftrag elektronisch an die Finanzverwaltung (§ 87d AO). Vorher stellt sie Ihnen die Daten in leicht nachprüfbarer Form zur Verfügung; Sie müssen sie unverzüglich auf Vollständigkeit und Richtigkeit prüfen (§ 87d Abs. 3 AO).\n\nEs bleibt Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nMit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit der Erklärung übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.\n\nHaben Sie Änderungswünsche, stimmen Sie nicht zu: Schließen Sie diesen Fragebogen nicht ab und melden Sie sich bei der Kanzlei.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
+      "title": "Gemeinsame Einkommensteuererklärung",
+      "text": "Sie haben die gemeinsame Einkommensteuererklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nEs ist auch Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "ehegatteAgbDatenschutz",
+      "role": "ehegatte",
+      "title": "Allgemeine Geschäftsbedingungen und Datenschutz",
+      "text": "Mit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit der Erklärung übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
       "asOf": "2026-11-12",
       "acknowledgement": "read"
     }
@@ -362,13 +538,18 @@
     },
     {
       "kind": "equal",
+      "fields": ["zerlegung", "zustimmungZerlegung"],
+      "message": "Die Zerlegungserklärung weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
       "fields": ["veranlagung", "zustimmungVeranlagung"],
       "message": "Die Veranlagung weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
     }
   ],
   "matchKeys": [
     {
-      "label": "Mandantin oder Mandant",
+      "label": "Mandant / Steuerpflichtiger",
       "fields": {
         "kanzlei": "mandantName",
         "mandant": "zustimmungMandant"
@@ -378,6 +559,7 @@
   "legalNotes": [
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). § 87d Abs. 3 AO schreibt für die Zustimmung keine Form vor; nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe.",
     "Bei Zusammenveranlagung stimmen beide Ehegatten oder Lebenspartner zu, weil die gemeinsame Erklärung eine Erklärung beider ist (§ 25 Abs. 3 Satz 2 EStG). Sonst stimmt eine Person zu – bei einer Firma die Person, die für sie unterschreibt.",
+    "Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1, § 28 Abs. 1 GewStG); deshalb fragt der Fragebogen nach ihr nur, wenn die Gewerbesteuererklärung vorliegt.",
     "Die Zustimmung gilt für die Erklärungen, die die Kanzlei mit dem genannten Schreiben übersandt hat: Ändert die Kanzlei danach eine Erklärung, ist eine neue Zustimmung nötig.",
     "§ 87d AO gilt für Übermittlungen an die Finanzverwaltung. Der Digitale Finanzbericht geht an Banken, die Offenlegung oder Hinterlegung an die das Unternehmensregister führende Stelle (§ 325 Abs. 1, § 326 Abs. 2 HGB); dafür ist die Zustimmung der Auftrag an die Kanzlei.",
     "Dieser Fragebogen ist weder eine Steuererklärung noch eine Vollmacht (§ 80 AO).",
@@ -395,7 +577,7 @@
     "Er prüft den Inhalt der Erklärungen nicht; das bleibt Sache der Kanzlei und der Mandanten.",
     "Änderungswünsche nimmt er nicht auf: Wer nicht zustimmt, schließt nicht ab und meldet sich bei der Kanzlei.",
     "Die Kanzlei belegt nur vor und unterschreibt nicht. Wer ohne ihren Teil beginnt, trägt Name, Datum des Schreibens und Erklärungen selbst ein; weichen sie später von den Angaben der Kanzlei ab, zeigt die App einen Widerspruch.",
-    "Höchstens zwei Personen stimmen zu: die Mandantin oder der Mandant und bei Zusammenveranlagung der Ehegatte oder Lebenspartner.",
+    "Höchstens zwei Personen stimmen zu: der Mandant oder Steuerpflichtige und bei Zusammenveranlagung der Ehegatte oder Lebenspartner.",
     "Die Allgemeinen Geschäftsbedingungen fügt die App nicht bei: Die Zustimmung bezieht sich auf die, die die Kanzlei mit den Erklärungen übersandt hat."
   ]
 }

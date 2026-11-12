@@ -4,7 +4,7 @@
 // immutable Session; time, nonce and device data come from the io layer. Nothing is persisted:
 // the user saves files.
 import type { FormOrigin } from './dataPackage';
-import { fieldsById, infoBlocksOfRole, sealableData } from './form';
+import { activeInfoBlocks, fieldsById, sealableData } from './form';
 import type { RegisteredForm } from './formRegistry';
 import {
   interviewSteps,
@@ -52,7 +52,12 @@ import {
   type SignatureInput,
   type Transition,
 } from './questionnaire';
-import { roleRequirement, type RoleRequirement } from './requirements';
+import {
+  completenessGaps,
+  roleRequirement,
+  transmissionBlockers,
+  type RoleRequirement,
+} from './requirements';
 
 export interface Arrival {
   local: string;
@@ -264,6 +269,18 @@ export function takeOverOffered(states: readonly RoleState[]): boolean {
   return states.some(
     (s) =>
       s.role.prefills !== true && !s.notNeeded && (s.state === 'missing' || s.state === 'draft'),
+  );
+}
+
+/**
+ * Every needed part is done — no blocker, no gap (Tobias 2026-11-12: „wenn alle Rollen erfüllt
+ * sind, sollte nicht Weitergeben prominent sein, sondern PDF erstellen“).
+ */
+export function allPartsDone(session: Session): boolean {
+  const { questionnaire, form } = session;
+  return (
+    transmissionBlockers(questionnaire, form).length === 0 &&
+    completenessGaps(questionnaire, form).length === 0
   );
 }
 
@@ -493,8 +510,9 @@ function unconfirmedNotices(session: Session): ReadonlySet<string> {
   const role = session.role;
   if (role === undefined) return new Set();
   const confirmed = new Set(session.acknowledged[role] ?? []);
+  const data = currentPart(session.questionnaire, role)?.data ?? {};
   return new Set(
-    infoBlocksOfRole(session.form.definition, role)
+    activeInfoBlocks(session.form.definition, role, data)
       .map((block) => block.id)
       .filter((id) => !confirmed.has(id)),
   );

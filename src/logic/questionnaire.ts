@@ -5,6 +5,7 @@ import { describeCondition } from './conditions';
 import { canonicalize } from './jcs';
 import { Decoder } from './decode';
 import {
+  activeInfoBlocks,
   fieldStates,
   fieldsById,
   fieldsOfRole,
@@ -505,9 +506,12 @@ export function sealPart(
   const signature = input.signature && signatureOf(input.signature);
   if (typeof signature === 'string') return refuse('invalidSignature', [signature]);
 
-  const notices = infoBlocksOfRole(definition, role);
-  const unknownNotices = input.acknowledged.filter((id) => !notices.some((b) => b.id === id));
+  // A confirmed notice whose condition no longer holds is dropped like a hidden answer.
+  const unknownNotices = input.acknowledged.filter(
+    (id) => !infoBlocksOfRole(definition, role).some((b) => b.id === id),
+  );
   if (unknownNotices.length > 0) return refuse('unknownNotice', unknownNotices);
+  const notices = activeInfoBlocks(definition, role, draft.data);
   const unacknowledged = notices.filter((b) => !input.acknowledged.includes(b.id)).map((b) => b.id);
   if (unacknowledged.length > 0) return refuse('noticeNotAcknowledged', unacknowledged);
 
