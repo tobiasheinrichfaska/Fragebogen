@@ -8,7 +8,16 @@ import { fileURLToPath } from 'node:url';
 import { PDFDocument, PDFString } from '@cantoo/pdf-lib';
 import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { answerUntil, expectQuiet, formFields, openTestApp, pdfPages, press, sign } from '../app';
+import {
+  answerUntil,
+  expectQuiet,
+  formFields,
+  openTestApp,
+  pdfPages,
+  press,
+  sign,
+  toOverview,
+} from '../app';
 
 const COMPLETE = 'Vollständig: alle erforderlichen Teile liegen vor und sind verknüpft.';
 const VERIFIED = 'Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.';
@@ -274,7 +283,7 @@ test('MT-30: a drawn signature is set as lines, not as an image', async ({ page 
   await press(app, 'Ich versichere, dass meine Angaben richtig und vollständig sind.');
   await sign(page);
   await press(app, 'Unterschreiben und abschließen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   const { path } = await createPdf(page, app, testInfo);
 
   const images = new Set<number>([

@@ -29,3 +29,6 @@ Testbereich: nach dem Abschluss des Arbeitgebers **„Gerät weitergeben – zur
 5. Tippen Sie **„Unterschreiben und abschließen“**.
    - **Danach:** „Beschäftigte Person: abgeschlossen“ mit „Unterschrieben am …“. Im Systemvermerk
      steht bei „Eingabe“ „touch“ (mit Stift „pen“).
+   - **Danach:** _Nicht offensichtlich:_ Weil jetzt alle nötigen Teile fertig sind, ist
+     **„PDF erstellen“** der hervorgehobene Knopf, und statt „Gerät weitergeben – zur Übersicht“
+     steht nur **„Zur Übersicht“** (seit 12.11.2026).

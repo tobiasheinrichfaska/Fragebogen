@@ -68,6 +68,17 @@ export async function press(scope: Locator, text: string): Promise<void> {
     .click();
 }
 
+/**
+ * From the done screen to the overview: „Gerät weitergeben – zur Übersicht“ while a part is
+ * missing, „Zur Übersicht“ once every needed part is done (Tobias 2026-11-12; MT-20/MT-21 check
+ * which one comes first).
+ */
+export async function toOverview(scope: Locator | Page): Promise<void> {
+  await scope
+    .getByRole('button', { name: /^(Gerät weitergeben – zur Übersicht|Zur Übersicht)$/ })
+    .click();
+}
+
 /** The heading of the current step (its own text, without the badge or help next to it). */
 export async function heading(scope: Locator): Promise<string> {
   return scope

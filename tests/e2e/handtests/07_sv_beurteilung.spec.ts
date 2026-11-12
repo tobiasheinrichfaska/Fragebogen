@@ -11,6 +11,7 @@ import {
   pdfPages,
   press,
   sign,
+  toOverview,
 } from '../app';
 
 const FIELDS = formFields('personalfragebogen', true) as (ReturnType<typeof formFields>[number] & {
@@ -238,7 +239,7 @@ async function personThenEmployer(
   await startNew(app, 'Beschäftigte Person');
   await forward(app, person);
   await closePerson(page, app);
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await press(app, 'Ich bin: Arbeitgeber');
 }
 
@@ -249,7 +250,7 @@ async function pdf(page: Page, app: Locator, testInfo: TestInfo, name: string): 
 
 /** From the screen after closing to the Kanzlei, with that PDF read in. */
 async function readInAtKanzlei(app: Locator, file: string): Promise<void> {
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await press(app, 'Fragebogen schließen');
   await press(app, 'Eingänge zusammenführen');
   await app.locator('input[type=file]').first().setInputFiles(file);
@@ -858,7 +859,7 @@ test('MT-102: a part-time study gets no Werkstudent proposal', async ({ page }, 
   await forward(app, { ...STUNDEN_WECHSELND, agWochenstunden: '5' });
   await closeEmployer(app);
   await pdf(page, app, testInfo, 'arbeitgeber.pdf');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await app
     .locator('li.role')
     .filter({ hasText: 'Beschäftigte Person' })

@@ -13,6 +13,7 @@ import {
   openTestApp,
   pdfPages,
   TEST_APP,
+  toOverview,
 } from '../app';
 import { expectClean, guard } from '../guards';
 
@@ -168,7 +169,7 @@ async function closeEmployer(app: Locator): Promise<void> {
   await app.locator('label.confirm input[type=checkbox]').check();
   await radio(app, 'Ohne Unterschrift abschließen').click();
   await button(app, 'Abschließen').click();
-  await button(app, 'Gerät weitergeben – zur Übersicht').click();
+  await toOverview(app);
   await overview(app);
 }
 
@@ -179,7 +180,7 @@ async function signAsPerson(app: Locator): Promise<void> {
   await radio(app, 'Namen tippen').click();
   await app.getByLabel('Ihr vollständiger Name').fill('Erika Musterfrau');
   await button(app, 'Unterschreiben und abschließen').click();
-  await button(app, 'Gerät weitergeben – zur Übersicht').click();
+  await toOverview(app);
   await overview(app);
 }
 

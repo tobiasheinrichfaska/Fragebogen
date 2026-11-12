@@ -15,6 +15,7 @@ import {
   openApp,
   openTestApp,
   press,
+  toOverview,
 } from '../app';
 import { expectClean } from '../guards';
 
@@ -743,7 +744,7 @@ test('MT-26: the payroll hand-over names a birth country outside the list, no ke
   await press(app, 'Namen tippen');
   await app.getByLabel('Ihr vollständiger Name').fill('Erika Musterfrau');
   await press(app, 'Unterschreiben und abschließen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   const pdf = await download(page, app, 'PDF erstellen', testInfo.outputPath('geburtsland.pdf'));
   await press(app, 'Fragebogen schließen');
   await press(app, 'Eingänge zusammenführen');

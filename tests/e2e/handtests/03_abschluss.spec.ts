@@ -11,6 +11,7 @@ import {
   press,
   sign,
   TEST_APP,
+  toOverview,
 } from '../app';
 
 const SOFORT = formFields('sofortmeldung', true);
@@ -89,6 +90,8 @@ test('MT-20: the employer completes without a signature', async ({ page }) => {
     /Systemvermerk: [^·]+ · [^·]+ · Eingabe: [^·]+ · App \d+\.\d+\.\d+/,
   );
   await expect(app).toContainText(/Prüfwert \(SHA-256\): [0-9a-f]{64}/);
+  // The person is still missing: handing the device on comes first (Tobias 2026-11-12).
+  await expect(app.locator('.nav button.primary')).toHaveText('Gerät weitergeben – zur Übersicht');
   await expectQuiet(page, found);
 });
 
@@ -134,8 +137,16 @@ test('MT-21: the person must sign; a single dot is refused, a full signature com
   await done.click();
   await expect.poll(() => heading(app)).toBe('Beschäftigte Person: abgeschlossen');
   await expect(app).toContainText(/Unterschrieben am \d\d\.\d\d\.\d{4}, \d\d:\d\d Uhr/);
+  // Every part done: the PDF comes first, handing on steps back (Tobias 2026-11-12).
+  await expect(app).toContainText(
+    'Alle nötigen Teile sind abgeschlossen. Erstellen Sie jetzt die PDF.',
+  );
+  await expect(app.locator('.nav button.primary')).toHaveText('PDF erstellen');
+  await expect(app.getByRole('button', { name: 'Gerät weitergeben – zur Übersicht' })).toHaveCount(
+    0,
+  );
 
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await press(app, 'Zur Übersicht');
   await expect(roleRow(app, 'Beschäftigte Person')).toContainText('unterschrieben');
   await expect(roleRow(app, 'Arbeitgeber')).toContainText('abgeschlossen');
   await expect(card(app, 'Stand').locator('.banner-success')).toContainText(COMPLETE);
@@ -229,7 +240,7 @@ test('MT-23: a minor needs the signature of the legal representative', async ({ 
   await expect.poll(() => heading(app)).toBe('Wann sind Sie geboren?');
   await answerUntil(app, SOFORT, person('08.11.2008'));
   await signTyped(app, CONFIRM_PERSON, 'Erika Musterfrau');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
 
   const guardian = roleRow(app, 'Gesetzliche Vertretung');
   await expect(guardian).toContainText(
@@ -249,7 +260,7 @@ test('MT-23: a minor needs the signature of the legal representative', async ({ 
   await sign(page);
   await press(app, 'Unterschreiben und abschließen');
   await expect.poll(() => heading(app)).toBe('Gesetzliche Vertretung: abgeschlossen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(roleRow(app, 'Gesetzliche Vertretung')).toContainText('unterschrieben');
   await expect(stand.locator('.banner-success')).toContainText(COMPLETE);
   await expect(pdf).toBeEnabled();
@@ -262,7 +273,7 @@ test('MT-23: on the 18th birthday the person signs alone', async ({ page }) => {
   await expect.poll(() => heading(app)).toBe('Wann sind Sie geboren?');
   await answerUntil(app, SOFORT, person('07.11.2008'));
   await signTyped(app, CONFIRM_PERSON, 'Erika Musterfrau');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(roleRow(app, 'Gesetzliche Vertretung')).toContainText(
     'Nicht erforderlich: Die Person ist volljährig.',
   );
@@ -295,7 +306,7 @@ test('MT-24: a signature taken back, then a new version once the employer confir
   await signTyped(app, CONFIRM_PERSON, 'Erika Musterfrau');
   await expect.poll(() => heading(app)).toBe('Beschäftigte Person: abgeschlossen');
 
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await press(roleRow(app, 'Arbeitgeber'), 'Ich bin: Arbeitgeber');
   await answerUntil(app, SOFORT, EMPLOYER);
   await press(app, 'Weiter zum Abschluss');
@@ -303,7 +314,7 @@ test('MT-24: a signature taken back, then a new version once the employer confir
   await press(app, 'Ohne Unterschrift abschließen');
   await press(app, 'Abschließen');
   await expect.poll(() => heading(app)).toBe('Arbeitgeber: abgeschlossen');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
 
   // The employer has confirmed this version of the person's part: only a new version is left.
   await expect(personRow.getByRole('button', { name: 'Unterschrift zurücknehmen' })).toHaveCount(0);
@@ -324,7 +335,7 @@ test('MT-24: a signature taken back, then a new version once the employer confir
   await expect.poll(() => heading(app)).toBe('Zusammenfassung');
   await expect(app).toContainText('Neustadt');
   await signTyped(app, CONFIRM_PERSON, 'Erika Musterfrau');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await expect(personRow).toContainText('unterschrieben (Fassung 2)');
   await expect(card(app, 'Stand').locator('.banner-success')).toContainText(COMPLETE);
   await expectQuiet(page, found);

@@ -11,6 +11,7 @@ import {
   openTestApp,
   press,
   TEST_APP,
+  toOverview,
 } from '../app';
 
 const SOFORT = formFields('sofortmeldung', true);
@@ -87,7 +88,7 @@ async function signAndReadInAtKanzlei(page: Page, app: Locator, path: string): P
   await press(app, 'Unterschreiben und abschließen');
   await expect(app).toContainText('Beschäftigte Person: abgeschlossen');
   const pdf = await download(page, app, 'PDF erstellen', path);
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await press(app, 'Fragebogen schließen');
   await press(app, 'Eingänge zusammenführen');
   await app.locator('input[type=file]').first().setInputFiles(pdf.path);

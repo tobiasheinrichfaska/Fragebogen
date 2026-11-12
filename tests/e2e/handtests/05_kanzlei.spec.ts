@@ -15,6 +15,7 @@ import {
   openTestApp,
   pdfPages,
   press,
+  toOverview,
 } from '../app';
 
 const MAPPING = fileURLToPath(new URL('../../../config/export.local.json', import.meta.url));
@@ -114,7 +115,7 @@ async function signTyped(app: Locator, name: string): Promise<void> {
 async function employerToKanzlei(page: Page, app: Locator, path: string): Promise<Locator> {
   await sealWithoutSignature(app);
   const pdf = await download(page, app, 'PDF erstellen', path);
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   await press(app, 'Fragebogen schließen');
   await press(app, 'Eingänge zusammenführen');
   await fileInput(app).setInputFiles(pdf.path);
@@ -146,7 +147,7 @@ async function personToPdf(
 ): Promise<{ path: string; id: string }> {
   await answerUntil(app, PFB_FIELDS, PFB_PERSON);
   await signTyped(app, 'Erika Musterfrau');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   const id = await questionnaireNumber(app);
   const pdf = await download(page, card(app, 'Stand'), 'PDF erstellen', path);
   await press(app, 'Fragebogen schließen');
@@ -210,7 +211,7 @@ test('MT-40: several files of one questionnaire read in at once count once', asy
   await press(app, 'Ich bin: Beschäftigte Person');
   await answerUntil(app, formFields('sofortmeldung', true), SOFORT_PERSON);
   await signTyped(app, 'Erika Musterfrau');
-  await press(app, 'Gerät weitergeben – zur Übersicht');
+  await toOverview(app);
   expect(await questionnaireNumber(app)).toBe(id);
   const complete = await download(
     page,
