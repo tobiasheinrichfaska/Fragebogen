@@ -727,6 +727,8 @@ function decodeInfoBlock(d: Decoder, raw: unknown, path: string): InfoBlock | un
     'asOf',
     'acknowledgement',
     'explainer',
+    'showIf',
+    'because',
   ]);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, ID);
@@ -753,6 +755,9 @@ function decodeInfoBlock(d: Decoder, raw: unknown, path: string): InfoBlock | un
     o.explainer === undefined
       ? undefined
       : d.string(o.explainer, `${path}.explainer`, EXPLAINER_PATH);
+  const showIf =
+    o.showIf === undefined ? undefined : decodeCondition(d, o.showIf, `${path}.showIf`, 0);
+  const because = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
   return {
     id,
     role,
@@ -761,6 +766,8 @@ function decodeInfoBlock(d: Decoder, raw: unknown, path: string): InfoBlock | un
     asOf,
     acknowledgement,
     ...(explainer === undefined ? {} : { explainer }),
+    ...(showIf === undefined ? {} : { showIf }),
+    ...(because === undefined ? {} : { because }),
   };
 }
 
@@ -1328,11 +1335,28 @@ function roles({ definition, fields, report }: CheckContext): void {
   });
 }
 
-function infoBlocks({ definition, roleIds, report }: CheckContext): void {
+/** A conditional notice reads fields of its own role, like a field's showIf, and says why. */
+function infoBlocks({ definition, fields, roleIds, report }: CheckContext): void {
   definition.infoBlocks.forEach((block, i) => {
     const path = `$.infoBlocks[${i}]`;
     if (!roleIds.has(block.role)) report(`${path}.role`, `unknown role "${block.role}"`);
     if (!isIsoDate(block.asOf)) report(`${path}.asOf`, `"${block.asOf}" is not a calendar date`);
+    if (block.showIf) {
+      forEachLeaf(block.showIf, `${path}.showIf`, (leaf, leafPath) => {
+        const target = fields.get(leaf.field);
+        if (!target) return report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
+        if (target.field.role !== block.role) {
+          report(`${leafPath}.field`, 'showIf may only reference fields of the same role');
+        }
+        if (target.isColumn)
+          report(`${leafPath}.field`, 'showIf cannot reference a repeat-group column');
+        const problem = leafProblem(leaf, target.field);
+        if (problem) report(`${leafPath}.${problem.at}`, problem.message);
+      });
+      if (block.because === undefined) report(`${path}.because`, 'a conditional notice says why');
+    } else if (block.because !== undefined) {
+      report(`${path}.because`, 'only conditional notices explain their condition');
+    }
   });
 }
 

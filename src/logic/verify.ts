@@ -4,7 +4,7 @@
 // the same contentHash. Hashes reveal changes; they do not prove who sealed, because anyone can
 // produce a fresh, self-consistent seal.
 import { canonicalize } from './jcs';
-import { infoBlocksOfRole, noticeHash, roleOf, sealableData, typedNameIsPlausible } from './form';
+import { activeInfoBlocks, noticeHash, roleOf, sealableData, typedNameIsPlausible } from './form';
 import type { FormRegistry } from './formRegistry';
 import type {
   FormDefinition,
@@ -351,7 +351,7 @@ function checkAgainstDefinition(
     }
   }
   if (payload.confirmationText !== roleDefinition.confirmationText) add('confirmationTextChanged');
-  const expectedNotices = infoBlocksOfRole(definition, role)
+  const expectedNotices = activeInfoBlocks(definition, role, part.data)
     .map((block) => ({
       infoBlockId: block.id,
       kind: block.acknowledgement,

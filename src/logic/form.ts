@@ -72,6 +72,30 @@ export function infoBlocksOfRole(definition: FormDefinition, role: RoleId): Info
   return definition.infoBlocks.filter((block) => block.role === role);
 }
 
+/**
+ * The notices the role must confirm with these answers: the unconditional ones and those whose
+ * `showIf` holds (a hidden field counts as unanswered, as for fields).
+ */
+export function activeInfoBlocks(
+  definition: FormDefinition,
+  role: RoleId,
+  data: PartData,
+): InfoBlock[] {
+  const visible = visibility(definition, role, data);
+  const valueOf = (id: FieldId): FieldValue =>
+    visible.get(id) === true ? (data[id] ?? null) : null;
+  return infoBlocksOfRole(definition, role).filter(
+    (block) => !block.showIf || evaluateCondition(block.showIf, valueOf),
+  );
+}
+
+/** The fields a notice's condition reads (none without `showIf`). */
+export function infoBlockFields(block: InfoBlock): FieldId[] {
+  const ids: FieldId[] = [];
+  if (block.showIf) forEachLeaf(block.showIf, '$', (leaf) => ids.push(leaf.field));
+  return ids;
+}
+
 /** Hash of exactly what a notice shows: title, text and its "Stand". */
 export function noticeHash(block: InfoBlock): Sha256Hex {
   return canonicalHash({ asOf: block.asOf, text: block.text, title: block.title });

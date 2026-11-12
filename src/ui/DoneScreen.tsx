@@ -1,9 +1,10 @@
 // After sealing: what was recorded, and what comes next (hand the device on, save, PDF — or a link
-// when the questionnaire holds only a few values, Tobias 2026-11-05).
+// when the questionnaire holds only a few values, Tobias 2026-11-05). Once every needed part is
+// done, the PDF comes first and handing on steps back (Tobias 2026-11-12).
 import { useState } from 'react';
 import { roleOf } from '../logic/form';
 import { latestSealed } from '../logic/questionnaire';
-import type { Session } from '../logic/session';
+import { allPartsDone, type Session } from '../logic/session';
 import { formatLocalDateTime } from '../logic/time';
 import type { TransferOffer } from '../logic/transferLink';
 import { Card } from './common';
@@ -33,6 +34,12 @@ export function DoneScreen({
   const part = latestSealed(session.questionnaire, role);
   const note = part?.seal?.payload.systemNote;
   const [password, setPassword] = useState<string | undefined>();
+  const done = allPartsDone(session);
+  const pdfButton = (
+    <button type="button" className={done ? 'primary' : undefined} onClick={() => onPdf(password)}>
+      PDF erstellen
+    </button>
+  );
   return (
     <Card title={`${definition?.label ?? role}: abgeschlossen`}>
       <p>
@@ -48,19 +55,32 @@ export function DoneScreen({
         </p>
       )}
       <p className="muted mono">Prüfwert (SHA-256): {part?.seal?.contentHash}</p>
-      <p>
-        Füllt noch jemand auf diesem Gerät aus? Dann geben Sie das Gerät weiter und wählen dort die
-        eigene Rolle. Sonst geben Sie {transfer.kind === 'link' ? 'den Link unten oder ' : ''}die
-        PDF weiter.
-      </p>
+      {done ? (
+        <p>Alle nötigen Teile sind abgeschlossen. Erstellen Sie jetzt die PDF.</p>
+      ) : (
+        <p>
+          Füllt noch jemand auf diesem Gerät aus? Dann geben Sie das Gerät weiter und wählen dort
+          die eigene Rolle. Sonst geben Sie {transfer.kind === 'link' ? 'den Link unten oder ' : ''}
+          die PDF weiter.
+        </p>
+      )}
       <PasswordOption password={password} onChange={setPassword} />
       <div className="nav">
-        <button type="button" className="primary" onClick={onOverview}>
-          Gerät weitergeben – zur Übersicht
-        </button>
-        <button type="button" onClick={() => onPdf(password)}>
-          PDF erstellen
-        </button>
+        {done ? (
+          <>
+            {pdfButton}
+            <button type="button" onClick={onOverview}>
+              Zur Übersicht
+            </button>
+          </>
+        ) : (
+          <>
+            <button type="button" className="primary" onClick={onOverview}>
+              Gerät weitergeben – zur Übersicht
+            </button>
+            {pdfButton}
+          </>
+        )}
         <button type="button" onClick={onSaveInterim}>
           Zwischenstand speichern
         </button>

@@ -327,6 +327,8 @@ Nur <code>showIf</code>-Abhängigkeiten müssen kreisfrei sein; gegenseitiges <c
   <tr><td><code>asOf</code></td><td>IsoDate</td><td>ja</td><td>Stand des Texts</td></tr>
   <tr><td><code>acknowledgement</code></td><td><code>read</code> | <code>paperHandout</code></td><td>ja</td><td><code>read</code>: in der App gelesen und bestätigt. <code>paperHandout</code>: Die Belehrung wird auf Papier ausgehändigt; der Fragebogen bestätigt nur die zusätzliche Aushändigung auf Papier.</td></tr>
   <tr><td><code>explainer</code></td><td>string (Pfad)</td><td>nein</td><td>Erklärvideo zum Hinweis, wie bei Feldern</td></tr>
+  <tr><td><code>showIf</code></td><td>Condition</td><td>nein</td><td>Seit 12.11.2026: Der Hinweis gilt nur, solange die Bedingung über Felder derselben Rolle gilt (<code>activeInfoBlocks</code>) – z. B. eine Seite je Erklärung, die die Kanzlei vorlegt. Nur dann im Interview (nach der letzten gefragten Frage, die die Bedingung liest, sonst vorn), zu bestätigen, im Siegel und in der PDF; eine Bestätigung ohne geltende Bedingung fällt beim Abschließen weg.</td></tr>
+  <tr><td><code>because</code></td><td>string</td><td>mit <code>showIf</code></td><td>Warum der Hinweis bedingt ist; nur mit <code>showIf</code></td></tr>
 </table>
 
 <h3>ConsistencyRule · MatchKey</h3>
@@ -637,6 +639,7 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
   <tr><td><code>fillMasterData</code> · <code>filledFromLink</code> · <code>markSaved</code></td><td>Stammdaten aus dem Lesezeichen-Link: füllt die aktive Rolle und merkt den Link in <code>Session.masterData</code> (nie gespeichert), damit <code>answer</code> danach die Fragen füllt, die eine Antwort öffnet; abgelehnte Werte als deutsche Zeilen („Frage: Grund“). Ob eine Antwort noch die des Links ist (Hinweis „Vorbelegt aus Ihrem Stammdaten-Link“). Nach dem Speichern einer Datei</td></tr>
   <tr><td><code>signingOverview</code></td><td>Alles, was der Abschluss abdeckt, über dem Häkchen der Abschluss-Seite (Tobias 2026-11-06: damit „mit den Angaben oben“ stimmt): die Antworten der aktiven Rolle so, wie sie gesiegelt werden (ausgeblendete fallen weg), nach Abschnitten; darunter die abgeschlossenen Teile der anderen Rollen, deren Erhalt der Abschluss bestätigt (<code>{ own: OverviewSection[], others: { role, label, sections }[] }</code>).</td></tr>
   <tr><td><code>proposedBy</code> · <code>roleToFillNext</code></td><td>Die Rolle, deren Vorschlag (<code>fromRole.changeable</code>) das Feld noch unverändert hält – für „Vorbelegt von … – bitte prüfen.“ und „vorbelegt von: …“ in der Zusammenfassung; die Rolle, in der ein weitergegebener Fragebogen gleich öffnet (nur Teile von <code>prefills</code>-Rollen und genau eine unbedingte Rolle ohne Teil).</td></tr>
+  <tr><td><code>allPartsDone</code></td><td>Kein Hindernis und keine Lücke mehr (<code>transmissionBlockers</code>, <code>completenessGaps</code>): Seit 12.11.2026 ist dann nach dem Abschließen „PDF erstellen“ der Hauptknopf, „Zur Übersicht“ tritt zurück (Tobias: „wenn alle Rollen erfüllt sind … PDF erstellen“).</td></tr>
 </table>
 <p>Anzeige: <code>displayValue</code> / <code>editValue</code> (<code>display.ts</code>) – Datum TT.MM.JJJJ, Betrag 1.234,56 €, IBAN und Nummern gruppiert, Auswahl als Bezeichnung. Dateinamen: <code>fileNameFor</code> (<code>fileNames.ts</code>), z. B. <code>Sofortmeldung_3f2b8c1e_Weitergabe.pdf</code>.</p>
 
@@ -720,6 +723,7 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
   <tr><td><code>missingRequired</code></td><td><code>(definition, role, data) =&gt; FieldId[]</code></td><td>Verfügbare Pflichtfelder (immer oder per <code>requiredIf</code>) ohne Antwort</td></tr>
   <tr><td><code>noticeHash</code></td><td><code>(block: InfoBlock) =&gt; Sha256Hex</code></td><td>Hash von Titel, Text und Stand eines Hinweises</td></tr>
   <tr><td><code>roleOf</code> · <code>fieldsOfRole</code> · <code>infoBlocksOfRole</code></td><td>–</td><td>Nachschlagen in der Definition</td></tr>
+  <tr><td><code>activeInfoBlocks</code> · <code>infoBlockFields</code></td><td><code>(definition, role, data) =&gt; InfoBlock[]</code> · <code>(block) =&gt; FieldId[]</code></td><td>Die Hinweise, die die Rolle mit diesen Antworten bestätigen muss (ohne <code>showIf</code> oder mit geltender Bedingung; eine ausgeblendete Antwort zählt als leer) · die Felder, die die Bedingung eines Hinweises liest</td></tr>
   <tr><td><code>ownerOfField</code></td><td><code>(definition, fieldId) =&gt; RoleId | undefined</code></td><td>Welche Rolle ein Feld ausfüllt (z. B. wem das Geburtsdatum gehört)</td></tr>
   <tr><td><code>signerName</code></td><td><code>(role, data, signature) =&gt; string | undefined</code></td><td>Name der unterschreibenden Person: Namensfeld der Rolle, sonst der getippte Name</td></tr>
   <tr><td><code>typedNameIsPlausible</code></td><td><code>(name) =&gt; boolean</code></td><td>Mindestens zwei Buchstaben</td></tr>

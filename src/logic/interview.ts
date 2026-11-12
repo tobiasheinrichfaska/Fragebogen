@@ -1,16 +1,18 @@
 // The interview: one step at a time, generated from the form definition (no AI, no network).
 // Notices come first (inform before asking), then the role's available questions in form order —
-// a follow-up appears right after the answer that opens it — and finally the summary before
+// a follow-up appears right after the answer that opens it, and so does a conditional notice (one
+// whose answers are fixed by another role stays in front) — and finally the summary before
 // signing. The steps are recomputed after every answer; the UI only keeps the current step's key.
 // Answers that no longer apply stay in the draft (they come back if the condition holds again)
 // and are only dropped at signing; the summary lists them so this never happens unseen.
 import { fieldDependencies } from './dependencies';
 import { editValue, suggestedText } from './display';
 import {
+  activeInfoBlocks,
   describeFieldRules,
   fieldsById,
   fieldStates,
-  infoBlocksOfRole,
+  infoBlockFields,
   visibility,
   type PartData,
 } from './form';
@@ -62,11 +64,6 @@ export function interviewSteps(
   const states = fieldStates(definition, role, draft.data);
   const dependencies = fieldDependencies(definition);
   const deferred = new Set(draft.deferred ?? []);
-  const notices: InterviewStep[] = infoBlocksOfRole(definition, role).map((block) => ({
-    kind: 'notice',
-    key: `notice:${block.id}`,
-    infoBlockId: block.id,
-  }));
   const questions: InterviewStep[] = definition.sections.flatMap((section) =>
     section.fields
       .filter(
@@ -89,7 +86,23 @@ export function interviewSteps(
         ];
       }),
   );
-  return [...notices, ...questions, { kind: 'summary', key: 'summary' }];
+  // A conditional notice follows the last asked question its condition reads; -1 = in front.
+  const anchorOf = (fieldIds: readonly FieldId[]): number =>
+    questions.reduce(
+      (last, step, i) => (step.kind === 'question' && fieldIds.includes(step.fieldId) ? i : last),
+      -1,
+    );
+  const placed = activeInfoBlocks(definition, role, draft.data).map((block) => ({
+    anchor: anchorOf(infoBlockFields(block)),
+    step: { kind: 'notice', key: `notice:${block.id}`, infoBlockId: block.id } as InterviewStep,
+  }));
+  const after = (anchor: number) =>
+    placed.filter((notice) => notice.anchor === anchor).map((notice) => notice.step);
+  return [
+    ...after(-1),
+    ...questions.flatMap((step, i) => [step, ...after(i)]),
+    { kind: 'summary', key: 'summary' },
+  ];
 }
 
 /** The rows of a table answer; anything else has none. */
@@ -328,7 +341,7 @@ export function interviewSummary(
     )
     .map((field) => ({ fieldId: field.id, reason: describeFieldRules(definition, field).input }));
   const outside = outsideValidity(definition, role, draft.data);
-  const missingNotices = infoBlocksOfRole(definition, role)
+  const missingNotices = activeInfoBlocks(definition, role, draft.data)
     .map((block) => block.id)
     .filter((id) => !acknowledged.includes(id));
   return {

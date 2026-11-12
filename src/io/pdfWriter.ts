@@ -27,12 +27,13 @@ import { encodeDataLines } from '../logic/dataPages';
 import { formatGermanDate } from '../logic/dates';
 import { displayValue } from '../logic/display';
 import { fileNameFor } from '../logic/fileNames';
+import { activeInfoBlocks } from '../logic/form';
 import { isTestVersion, registryOf, type RegisteredForm } from '../logic/formRegistry';
 import type { Questionnaire } from '../logic/model';
 import { signatureLayout } from '../logic/provenance';
 import { qrPayloads } from '../logic/qrParts';
 import { latestSealed } from '../logic/questionnaire';
-import { BLOCKER_MESSAGES, completenessGaps } from '../logic/requirements';
+import { BLOCKER_MESSAGES, completenessGaps, roleRequirement } from '../logic/requirements';
 import { decodeStrokes } from '../logic/strokes';
 import { formatLocalDateTime } from '../logic/time';
 import { FINDING_MESSAGES, LEVEL_LABELS, verifyQuestionnaire } from '../logic/verify';
@@ -428,6 +429,21 @@ export async function writeQuestionnairePdf(
     layout.heading('Hinweise', 11);
     for (const block of definition.infoBlocks) {
       const part = latestSealed(questionnaire, block.role);
+      // A conditional notice only where it applied to the role's sealed answers; none of a role
+      // the questionnaire surely does not need (no spouse at an Einzelveranlagung).
+      const applies =
+        !block.showIf ||
+        (part !== undefined &&
+          activeInfoBlocks(definition, block.role, part.data).some((b) => b.id === block.id));
+      const roleDefinition = definition.roles.find((r) => r.id === block.role);
+      const requirement =
+        roleDefinition && roleRequirement(definition, questionnaire, roleDefinition);
+      const notNeeded =
+        part === undefined &&
+        requirement !== undefined &&
+        !requirement.required &&
+        requirement.reason !== 'pending';
+      if (!applies || notNeeded) continue;
       const acknowledged = part?.seal?.payload.acknowledgements.some(
         (a) => a.infoBlockId === block.id,
       );

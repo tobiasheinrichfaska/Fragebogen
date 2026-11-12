@@ -374,6 +374,12 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
       `- Kenntnisnahme durch: ${roleLabel(definition, block.role)}`,
       `- Art: ${ACKNOWLEDGEMENT_LABELS[block.acknowledgement]}`,
       `- Stand: ${formatGermanDate(block.asOf)}`,
+      ...(block.showIf === undefined
+        ? []
+        : [
+            `- Nur wenn ${describeCondition(block.showIf, fieldsById(definition))}`,
+            ...(block.because === undefined ? [] : [`- Warum: ${block.because}`]),
+          ]),
       ...(block.explainer === undefined ? [] : [`- Erklärvideo: ${block.explainer}`]),
       '',
       ...quote(block.text),

@@ -340,6 +340,13 @@ export interface InfoBlock {
   acknowledgement: AcknowledgementKind;
   /** Explainer video path, as for fields. */
   explainer?: string;
+  /**
+   * Shown and confirmed only while this condition over the role's own fields holds (Tobias
+   * 2026-11-12: one page per return the Kanzlei names); without it, always.
+   */
+  showIf?: Condition;
+  /** Why the notice is conditional — required with `showIf`, only with it. */
+  because?: string;
 }
 
 export interface ConsistencyRule {
