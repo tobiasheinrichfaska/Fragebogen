@@ -1218,7 +1218,9 @@ Steuererklärungen“, id `steuerfreigabe` 0.1.0 unchanged. Tests `tests/forms/s
 unit 5242 passed. **AGB (Tobias: „Es wird den AGB zugestimmt, die mit der Erklärung übermittelt
 wurden“):** the app attaches none; the template's sentence is in the confirmation of the client and
 of the spouse, the Kanzlei's confirmation says it sent its AGB with the returns. This replaces the
-earlier plan of a local AGB file appended to the PDF.
+earlier plan of a local AGB file appended to the PDF. Gate at 2bcdb97: unit 5243 passed, e2e 226
+passed, 1 skipped (16.1 min); pushed, **test folder uploaded at 2bcdb97 („online identisch“)**.
+Next: Tobias tests the Zustimmung in the test folder.
 
 **Hand-over 2026-11-12:** Tobias: „wir nehmen den Personalfragebogen auch auf die
 öffentliche Seite“ → **Personalfragebogen 1.0.0 in production** (see Key decisions). Tests: MT-01
