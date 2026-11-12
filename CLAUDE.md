@@ -1204,8 +1204,9 @@ now checks every published form on the public start page (newest version, produc
 „Testfassung“/„Entwurf“); MT-99 and MT-109 had used the Personalfragebogen as the form the public
 build lacks — the first full e2e run failed there (224 passed, 2 failed), they now take the forms
 that exist only as drafts. Second run: unit 5237 passed (two draft-only checks of the old draft are
-gone, the published-forms guard covers 1.0.0), e2e 226 passed, 1 skipped, 15.0 min. Open for
-Tobias: a 2027 version before the first hire starting in 2027 (Known Limitations).
+gone, the published-forms guard covers 1.0.0), e2e 226 passed, 1 skipped, 15.0 min. Commit 36e72b4
+pushed; **test folder and public app uploaded at 36e72b4 („online identisch“)**. Open for Tobias: a
+2027 version before the first hire starting in 2027 (Known Limitations).
 
 **Hand-over 2026-11-08 evening:** Tobias answered the five questions of the afternoon
 („1 ok 2 ok 3 ok 4 OK 5 ok“). (1) **Public app uploaded at f25e71b** („online identisch“) — the first
