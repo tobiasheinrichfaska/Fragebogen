@@ -8,8 +8,8 @@
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 13:25 |
-| Definition (SHA-256) | 7f4c419b42fb66a66c93e7a20c072a838d2f2265fc27ede9074dd906968fe613 |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 17:27 |
+| Definition (SHA-256) | bd776dd24a73d410a640034df308f0a497553546e38987bf532e4fb7978f4f9b |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -63,8 +63,8 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
-| Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
+| Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer<br>Belegt Arbeitgeber vor („Familienname der beschäftigten Person“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
+| Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer<br>Belegt Arbeitgeber vor („Vornamen der beschäftigten Person“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
 | Fahrten zwischen Wohnung und erster Tätigkeitsstätte (fahrtenWohnung)<br>Frage: Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?<br>Hilfe: Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG). | Beschäftigte Person | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Fahrten von der Meldeanschrift (wohnungMeldeanschrift)<br>Frage: Fahren Sie von Ihrer Meldeanschrift aus? | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Anschrift der Wohnung, von der Sie fahren (wohnungAnschrift) | Beschäftigte Person | Text | erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist<br>Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung. | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |

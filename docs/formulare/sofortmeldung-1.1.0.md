@@ -8,8 +8,8 @@
 | Formular | sofortmeldung, Version 1.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 06.11.2026 um 12:24 |
-| Definition (SHA-256) | 3f0dd70f9bfe21be0dfcc6c28675f708f2c4f342375250485e03493be21d578a |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 17:27 |
+| Definition (SHA-256) | a4df4d5148f7f29ea96a509dcde8490082c742e6ea447b1af6cb0783f35974d9 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -20,6 +20,7 @@
 | --- | --- | --- | --- | --- |
 | Beschäftigte Person (person) | Pflicht | immer | – | Ich versichere, dass meine Angaben richtig und vollständig sind. |
 | Gesetzliche Vertretung (vertretung) | Pflicht | nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist<br>Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift. | aus „Vor- und Familienname der gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
+| Zweite gesetzliche Vertretung (vertretung2) | Pflicht | nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung. | aus „Vor- und Familienname der zweiten gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
 | Arbeitgeber (arbeitgeber) | freiwillig | immer | – | Ich bestätige die Angaben des Arbeitgebers. |
 
 ## Felder
@@ -63,16 +64,23 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Vor- und Familienname der gesetzlichen Vertretung (vertretungName)<br>Frage: Wie lautet Ihr Vor- und Familienname?<br>Hilfe: Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil. | Gesetzliche Vertretung | Text | immer | Pflicht | Nachweis, wer für die minderjährige Person unterschreibt |
+| Allein sorgeberechtigt (vertretungAlleinSorge)<br>Frage: Haben Sie das Sorgerecht allein?<br>Hilfe: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB); dann unterschreibt auch der andere Elternteil. | Gesetzliche Vertretung | Ja/Nein | immer | Pflicht | Ob eine zweite gesetzliche Vertretung unterschreiben muss |
 
-### 4. Angaben des Arbeitgebers
+### 4. Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)
+
+| Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
+| --- | --- | --- | --- | --- | --- |
+| Vor- und Familienname der zweiten gesetzlichen Vertretung (vertretung2Name)<br>Frage: Wie lautet Ihr Vor- und Familienname?<br>Hilfe: Sie unterschreiben als zweite gesetzliche Vertretung der minderjährigen Person, zum Beispiel als zweiter Elternteil mit gemeinsamem Sorgerecht. | Zweite gesetzliche Vertretung | Text | immer | Pflicht | Nachweis, wer für die minderjährige Person zusätzlich unterschreibt |
+
+### 5. Angaben des Arbeitgebers
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Firma des Arbeitgebers (agFirma)<br>Frage: Wie lautet die Firma des Arbeitgebers?<br>Hilfe: So, wie sie auf dem Briefkopf oder im Handelsregister steht. | Arbeitgeber | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Kopfzeile des Fragebogens, Zuordnung |
 | Betriebsnummer des Arbeitgebers (agBetriebsnummer)<br>Frage: Wie lautet die Betriebsnummer?<br>Hilfe: 8 Ziffern, vergeben von der Bundesagentur für Arbeit. Sie steht auf den Meldungen zur Sozialversicherung; Ihre Lohnabrechnung kennt sie. | Arbeitgeber | Betriebsnummer (8 Ziffern); Stammdatum „betriebsnummer“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
 | Wirtschaftsbereich (agBranche)<br>Frage: In welchem Wirtschaftsbereich arbeitet die Person?<br>Hilfe: Die Sofortmeldung ist nur in diesen Bereichen vorgeschrieben – und genau dort müssen die Beschäftigten bei der Arbeit ihre Ausweispapiere mitführen. Ist der Betrieb in mehreren Bereichen tätig, wählen Sie den Bereich, in dem die Person arbeitet. | Arbeitgeber | Auswahl: Baugewerbe, Gaststätten- und Beherbergungsgewerbe, Personenbeförderungsgewerbe, Speditions-, Transport- und damit verbundenes Logistikgewerbe, auch plattformbasierte Lieferdienste, Schaustellergewerbe, Gebäudereinigungsgewerbe, Auf- und Abbau von Messen und Ausstellungen, Fleischwirtschaft (ohne Fleischerhandwerk), Prostitutionsgewerbe, Wach- und Sicherheitsgewerbe, Friseur- und Kosmetikgewerbe, keiner dieser Bereiche; Stammdatum „branche“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Pflicht zur Sofortmeldung (§ 28a Abs. 4 SGB IV) und zum Mitführen der Ausweispapiere (§ 2a Abs. 1 SchwarzArbG); Stammdaten für die Lohnabrechnung |
-| Familienname der beschäftigten Person (agFamilienname)<br>Frage: Wie lautet der Familienname der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
-| Vornamen der beschäftigten Person (agVorname)<br>Frage: Wie lauten die Vornamen der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
+| Familienname der beschäftigten Person (agFamilienname)<br>Frage: Wie lautet der Familienname der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer<br>Belegt Beschäftigte Person vor („Familienname“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
+| Vornamen der beschäftigten Person (agVorname)<br>Frage: Wie lauten die Vornamen der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer<br>Belegt Beschäftigte Person vor („Vornamen“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
 | Personalnummer (agPersonalnummer)<br>Frage: Welche Personalnummer hat die Person?<br>Hilfe: Nur, wenn schon eine vergeben ist. | Arbeitgeber | Text | immer | optional | Zuordnung in der Lohnabrechnung |
 | Tag der Beschäftigungsaufnahme (agBeschaeftigungsbeginn)<br>Frage: An welchem Tag beginnt die Beschäftigung?<br>Hilfe: Der erste Arbeitstag. Die Sofortmeldung muss spätestens bei Arbeitsaufnahme erstattet sein. | Arbeitgeber | Datum | immer | Pflicht | Inhalt der Sofortmeldung (§ 28a Abs. 4 SGB IV) |
 

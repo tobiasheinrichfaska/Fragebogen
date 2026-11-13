@@ -8,8 +8,8 @@
 | Formular | personalfragebogen, Version 1.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 12:28 |
-| Definition (SHA-256) | 8134b9f2976757b53ca18d2c72bd0642ada3955ce4c51a010a862f2972a69dc8 |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 17:27 |
+| Definition (SHA-256) | 711df615e0134433628b19aab3e49b1af5100f6ddca8770902c8f430963b3853 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -20,6 +20,7 @@
 | --- | --- | --- | --- | --- |
 | Beschäftigte Person (person) | Pflicht | immer | – | Ich versichere, dass meine Angaben richtig und vollständig sind. Ändert sich etwas, vor allem bei weiteren Beschäftigungen, teile ich das meinem Arbeitgeber unverzüglich mit. |
 | Gesetzliche Vertretung (vertretung) | Pflicht | nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist<br>Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift. | aus „Vor- und Familienname der gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
+| Zweite gesetzliche Vertretung (vertretung2) | Pflicht | nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung. | aus „Vor- und Familienname der zweiten gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
 | Arbeitgeber (arbeitgeber) | freiwillig | immer | – | Ich bestätige die Angaben des Arbeitgebers. |
 
 ## Felder
@@ -239,16 +240,23 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Vor- und Familienname der gesetzlichen Vertretung (vertretungName)<br>Frage: Wie lautet Ihr Vor- und Familienname?<br>Hilfe: Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil. | Gesetzliche Vertretung | Text | immer | Pflicht | Nachweis, wer für die minderjährige Person unterschreibt |
+| Allein sorgeberechtigt (vertretungAlleinSorge)<br>Frage: Haben Sie das Sorgerecht allein?<br>Hilfe: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB); dann unterschreibt auch der andere Elternteil. | Gesetzliche Vertretung | Ja/Nein | immer | Pflicht | Ob eine zweite gesetzliche Vertretung unterschreiben muss |
 
-### 17. Angaben des Arbeitgebers
+### 17. Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)
+
+| Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
+| --- | --- | --- | --- | --- | --- |
+| Vor- und Familienname der zweiten gesetzlichen Vertretung (vertretung2Name)<br>Frage: Wie lautet Ihr Vor- und Familienname?<br>Hilfe: Sie unterschreiben als zweite gesetzliche Vertretung der minderjährigen Person, zum Beispiel als zweiter Elternteil mit gemeinsamem Sorgerecht. | Zweite gesetzliche Vertretung | Text | immer | Pflicht | Nachweis, wer für die minderjährige Person zusätzlich unterschreibt |
+
+### 18. Angaben des Arbeitgebers
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Firma des Arbeitgebers (agFirma)<br>Frage: Wie lautet die Firma des Arbeitgebers?<br>Hilfe: So, wie sie auf dem Briefkopf oder im Handelsregister steht. | Arbeitgeber | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Kopfzeile des Fragebogens, Zuordnung |
 | Betriebsnummer des Arbeitgebers (agBetriebsnummer)<br>Frage: Wie lautet die Betriebsnummer?<br>Hilfe: 8 Ziffern, vergeben von der Bundesagentur für Arbeit. Sie steht auf den Meldungen zur Sozialversicherung; Ihre Lohnabrechnung kennt sie. | Arbeitgeber | Betriebsnummer (8 Ziffern); Stammdatum „betriebsnummer“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Meldungen zur Sozialversicherung (§ 28a SGB IV) |
 | Steuernummer des Arbeitgebers (agSteuernummer)<br>Frage: Wie lautet die Steuernummer des Arbeitgebers?<br>Hilfe: Die Steuernummer des Betriebsstättenfinanzamts für die Lohnsteuer. | Arbeitgeber | Text, Steuernummer (10 bis 13 Ziffern); Stammdatum „steuernummer“, kann im Stammdaten-Link gemerkt werden | immer<br>Warum: Für Minijobs verlangen die Entgeltmeldungen die Steuernummer des Arbeitgebers (DEÜV-Rundschreiben 2026 Tz. 1.3.7). | Pflicht, wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist | Pflichtangabe in den Entgeltmeldungen für Minijobs (DEÜV-Rundschreiben 2026 Tz. 1.3.7); Lohnsteuer-Anmeldung |
-| Familienname der beschäftigten Person (agFamilienname)<br>Frage: Wie lautet der Familienname der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
-| Vornamen der beschäftigten Person (agVorname)<br>Frage: Wie lauten die Vornamen der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
+| Familienname der beschäftigten Person (agFamilienname)<br>Frage: Wie lautet der Familienname der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer<br>Belegt Beschäftigte Person vor („Familienname“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
+| Vornamen der beschäftigten Person (agVorname)<br>Frage: Wie lauten die Vornamen der beschäftigten Person? | Arbeitgeber | Text, höchstens 30 Zeichen | immer<br>Belegt Beschäftigte Person vor („Vornamen“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung zu den Angaben der beschäftigten Person |
 | Personalnummer (agPersonalnummer)<br>Frage: Welche Personalnummer hat die Person?<br>Hilfe: Nur, wenn schon eine vergeben ist. | Arbeitgeber | Text | immer | optional | Zuordnung in der Lohnabrechnung |
 | Tag der Beschäftigungsaufnahme (agBeschaeftigungsbeginn)<br>Frage: An welchem Tag beginnt die Beschäftigung?<br>Hilfe: Der erste Arbeitstag. | Arbeitgeber | Datum | immer | Pflicht | Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung |
 | Vertragsbeginn weicht vom ersten Arbeitstag ab (agVertragsbeginnAbweichend)<br>Frage: Beginnt der Arbeitsvertrag an einem anderen Tag als dem ersten Arbeitstag?<br>Hilfe: Zum Beispiel: Vertrag ab dem 1. eines Monats, der erste Arbeitstag ist wegen eines Wochenendes oder Feiertags später. | Arbeitgeber | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung |
@@ -263,7 +271,7 @@
 | Beschäftigte mit Sozialversicherung in einem anderen Staat (agAuslandSvBetrieb)<br>Frage: Beschäftigt Ihr Betrieb Personen, die für ihre Arbeit in einem anderen Staat sozialversichert sind, zum Beispiel mit einer A1-Bescheinigung?<br>Hilfe: Gilt für den ganzen Betrieb; steht im Stammdaten-Link, wenn Sie ihn einmal angelegt haben. Das betrifft vor allem Saisonkräfte und Beschäftigte, die in einem anderen Staat der EU, des EWR oder in der Schweiz wohnen oder dort zugleich arbeiten. | Arbeitgeber | Ja/Nein; vorbelegt: Nein; Stammdatum „auslandSv“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004); A1-Bescheinigung als Nachweis (Art. 19 Abs. 2 VO (EG) Nr. 987/2009) |
 | Besondere Betriebsart (agBetriebsart)<br>Frage: Gehört der Betrieb zu einer dieser Arten? | Arbeitgeber | Auswahl: Nein, keine davon, Werkstatt für behinderte Menschen oder Blindenwerkstatt, Inklusionsbetrieb, Einrichtung der Jugendhilfe oder Berufsbildungswerk, knappschaftlicher Betrieb (Bergbau); vorbelegt: Nein, keine davon; Stammdatum „betriebsart“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Vorfrage: Beschäftigung behinderter Menschen in Werkstätten oder Inklusionsbetrieben, Teilnehmer von Einrichtungen der Jugendhilfe oder Berufsbildungswerken und knappschaftliche Betriebe deckt der Fragebogen nicht ab (Personengruppen 107, 111, 127; knappschaftliche Rentenversicherung) |
 
-### 18. Besondere Fälle
+### 19. Besondere Fälle
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
@@ -276,7 +284,7 @@
 | Staat der Sozialversicherung (agSvAuslandStaat)<br>Frage: In welchem Staat ist die Person sozialversichert? | Arbeitgeber | Text | erst wenn „Sozialversicherung in einem anderen Staat“ mit „Ja“ beantwortet ist<br>Warum: Nur wer in einem anderen Staat versichert ist, braucht ihn; dann gelten unter Umständen dessen Rechtsvorschriften statt der deutschen (Art. 11 ff. VO (EG) Nr. 883/2004). | Pflicht | Anzuwendendes Sozialversicherungsrecht (Art. 11 ff. VO (EG) Nr. 883/2004) |
 | A1-Bescheinigung liegt vor (agSvAuslandA1)<br>Frage: Liegt Ihnen für diese Beschäftigung eine A1-Bescheinigung vor? | Arbeitgeber | Ja/Nein | erst wenn „Sozialversicherung in einem anderen Staat“ mit „Ja“ beantwortet ist<br>Warum: Die A1-Bescheinigung belegt, welche Rechtsvorschriften gelten; ohne sie prüft die lohnabrechnende Stelle die Zuständigkeit selbst. | Pflicht | Nachweis der anzuwendenden Rechtsvorschriften (Art. 19 Abs. 2 VO (EG) Nr. 987/2009) |
 
-### 19. Verdienst
+### 20. Verdienst
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
@@ -298,7 +306,7 @@
 | Verdienst über der Jahresarbeitsentgeltgrenze (agUeberJaeg)<br>Frage: Liegt der Verdienst voraussichtlich über der Jahresarbeitsentgeltgrenze?<br>Hilfe: 2026: 77.400 € im Jahr (6.450 € im Monat), einschließlich zugesagter Einmalzahlungen. Für Personen, die am 31.12.2002 privat versichert waren, gilt eine niedrigere Grenze (69.750 €). Dann ist die Person in der Krankenversicherung versicherungsfrei. | Arbeitgeber | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Versicherungsfreiheit in der Krankenversicherung (§ 6 Abs. 1 Nr. 1, Abs. 6, 7 SGB V); Beitragsgruppe und Beitragszahlung bei freiwilliger Versicherung |
 | Beitragszahlung bei freiwilliger Krankenversicherung (agFirmenzahler)<br>Frage: Ist die Person freiwillig gesetzlich krankenversichert – zahlen Sie dann die Beiträge zur Kranken- und Pflegeversicherung an die Krankenkasse?<br>Hilfe: Firmenzahler: Sie überweisen den ganzen Beitrag und ziehen den Anteil der Person vom Lohn ab. Selbstzahler: Die Person zahlt selbst; Sie zahlen ihr den Beitragszuschuss aus. | Arbeitgeber | Auswahl: Ja, wir zahlen die Beiträge (Firmenzahler), Nein, die Person zahlt selbst (Selbstzahler), Die Person ist nicht freiwillig gesetzlich versichert (zum Beispiel privat)., Weiß ich noch nicht. | erst wenn „Verdienst über der Jahresarbeitsentgeltgrenze“ mit „Ja“ beantwortet ist<br>Warum: Nur wer wegen seines Verdiensts krankenversicherungsfrei ist, kann freiwillig gesetzlich versichert sein; nur dann kommt es auf Firmen- oder Selbstzahler an. | Pflicht | Beitragsgruppe Krankenversicherung (DEÜV Anlage 1: 9 = Firmenzahler, 0 = Selbstzahler); Beitragszuschuss (§ 257 SGB V, § 61 SGB XI) |
 
-### 20. Beschäftigung
+### 21. Beschäftigung
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
@@ -338,7 +346,7 @@
 | Abwälzung der Pauschalsteuer (agPauschalsteuerAbgewaelzt)<br>Frage: Trägt die Person die Pauschalsteuer selbst (Abwälzung)?<br>Hilfe: Nur, wenn das arbeitsvertraglich vereinbart ist. | Arbeitgeber | Ja/Nein; Stammdatum je Fall, kann im Stammdaten-Link gemerkt werden: „Abwälzung der Pauschalsteuer bei Minijobs“ (abwaelzungMinijob), „Abwälzung der Pauschalsteuer bei kurzfristigen Aushilfen“ (abwaelzungAushilfe) | erst wenn bei „Art der Lohnsteuer“ „pauschal 2 % (Minijob)“ oder „pauschal 20 % (Minijob)“ oder „pauschal 25 % (kurzfristige Aushilfe)“ oder „pauschal 5 % (Aushilfe in der Land- und Forstwirtschaft)“ gewählt ist<br>Warum: Nur eine Pauschalsteuer kann auf die Person abgewälzt werden; sie mindert dann nicht die Bemessungsgrundlage (§ 40 Abs. 3 S. 2, § 40a Abs. 5 EStG). | Pflicht | Lohnabrechnung bei Pauschalsteuer (§ 40 Abs. 3, § 40a Abs. 5 EStG) |
 | Kostenstelle (agKostenstelle)<br>Frage: Welcher Kostenstelle wird die Person zugeordnet?<br>Hilfe: Nur, wenn Sie mit Kostenstellen arbeiten. | Arbeitgeber | Text | immer | optional | Zuordnung der Lohnkosten in der Buchhaltung |
 
-### 21. Arbeitszeit
+### 22. Arbeitszeit
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
@@ -373,14 +381,14 @@
 | Beschreibung der Arbeitszeit (agArbeitszeitAnderes)<br>Frage: Wie ist die Arbeitszeit vereinbart? | Arbeitgeber | Text, mehrzeilig | erst wenn bei „Arbeitszeitmodell“ „anderes Modell“ gewählt ist<br>Warum: Passt keines der Modelle, muss die Arbeitszeit beschrieben werden. | Pflicht | Urlaub, Entgeltfortzahlung (§ 4 EntgFG), Mindestlohn, Minijob-Grenze und Tätigkeitsschlüssel |
 | Wertguthaben (Langzeitkonto) (agWertguthaben)<br>Frage: Gibt es ein Wertguthaben (Langzeitkonto, zum Beispiel für ein Sabbatical)? | Arbeitgeber | Ja/Nein; vorbelegt: Nein | immer | Pflicht | Wertguthaben nach § 7b SGB IV |
 
-### 22. Urlaub
+### 23. Urlaub
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Urlaubstage im Jahr (agUrlaubstage)<br>Frage: Wie viele Urlaubstage stehen der Person im Jahr zu?<br>Hilfe: Ohne Zusatzurlaub wegen Schwerbehinderung; den rechnet die lohnabrechnende Stelle. | Arbeitgeber | Zahl, 1 Nachkommastellen, in Tage, höchstens 366 | erst wenn nicht zutrifft, dass bei „Vorgesehene Art der Beschäftigung“ „Vorruhestandsgeld nach einer Vorruhestandsvereinbarung“ gewählt ist<br>Warum: Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb. | Pflicht | Urlaubsverwaltung (§ 3 BUrlG, Arbeitsvertrag, Tarif) |
 | Bezug der Urlaubstage (agUrlaubBezug)<br>Frage: Auf wie viele Arbeitstage pro Woche bezieht sich diese Zahl? | Arbeitgeber | Auswahl: auf eine 5-Tage-Woche, auf eine 6-Tage-Woche, auf die tatsächlichen Arbeitstage der Person | erst wenn nicht zutrifft, dass bei „Vorgesehene Art der Beschäftigung“ „Vorruhestandsgeld nach einer Vorruhestandsvereinbarung“ gewählt ist<br>Warum: Beim Vorruhestandsgeld arbeitet die Person nicht mehr; Fragen zu Tätigkeit, Arbeitszeit, Urlaub und Vergütung entfallen deshalb. | Pflicht | Umrechnung des Urlaubs bei anderer Verteilung der Arbeitstage |
 
-### 23. Weitere Vergütung
+### 24. Weitere Vergütung
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
@@ -406,7 +414,7 @@
 | – Hinweis (sbHinweis) | Arbeitgeber | Text | immer | optional | Sachbezüge |
 | Weitere vereinbarte Bezüge (agWeitereBezuege)<br>Frage: Sind weitere Bezüge vereinbart?<br>Hilfe: Nur was oben noch nicht erfasst ist, zum Beispiel Zulagen, jeweils mit Betrag. Sonst leer lassen. | Arbeitgeber | Text, mehrzeilig | immer | optional | Lohnabrechnung |
 
-### 24. Schwerbehinderung
+### 25. Schwerbehinderung
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
@@ -417,13 +425,13 @@
 | Ausstellende Behörde (agSbBehoerde)<br>Frage: Welche Behörde hat den Bescheid ausgestellt?<br>Hilfe: Zum Beispiel das Versorgungsamt; bei einer Gleichstellung die Agentur für Arbeit. | Arbeitgeber | Text | erst wenn bei „Schwerbehinderung oder Gleichstellung“ „schwerbehindert (Grad der Behinderung mindestens 50)“ oder „einem schwerbehinderten Menschen gleichgestellt“ gewählt ist<br>Warum: Nur bei Schwerbehinderung oder Gleichstellung gehören die Angaben aus dem Bescheid in das Verzeichnis des Arbeitgebers (§ 163 SGB IX). | optional | Verzeichnis und Anzeige (§ 163 SGB IX) mit den Angaben aus dem Bescheid; Stammdaten der Lohnabrechnung |
 | Aktenzeichen (agSbAktenzeichen)<br>Frage: Wie lautet das Aktenzeichen des Bescheids?<br>Hilfe: So, wie es auf dem Bescheid oder Ausweis steht. | Arbeitgeber | Text | erst wenn bei „Schwerbehinderung oder Gleichstellung“ „schwerbehindert (Grad der Behinderung mindestens 50)“ oder „einem schwerbehinderten Menschen gleichgestellt“ gewählt ist<br>Warum: Nur bei Schwerbehinderung oder Gleichstellung gehören die Angaben aus dem Bescheid in das Verzeichnis des Arbeitgebers (§ 163 SGB IX). | optional | Verzeichnis und Anzeige (§ 163 SGB IX) mit den Angaben aus dem Bescheid; Stammdaten der Lohnabrechnung |
 
-### 25. Arbeitspapiere
+### 26. Arbeitspapiere
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Arbeitspapiere, die vorliegen (agUnterlagen)<br>Frage: Welche Unterlagen liegen Ihnen vor?<br>Hilfe: Kreuzen Sie an, was vorliegt. Was nicht angekreuzt ist, sieht die lohnabrechnende Stelle als offen und vergleicht es mit den Angaben der Person. | Arbeitgeber | Mehrfachauswahl: Arbeits- oder Ausbildungsvertrag oder Nachweis der Vertragsbedingungen, Lohnsteuerbescheinigungen früherer Arbeitgeber in diesem Jahr, Mitteilung der Steuer-Identifikationsnummer, Nachweis der Versicherungsnummer, Mitgliedsbescheinigung der Krankenkasse, Bescheinigung der privaten Krankenversicherung für den Zuschuss, Befreiungsbescheid der Krankenkasse, Schulbescheinigung, Immatrikulationsbescheinigung (je Semester), Nachweis über ein vorgeschriebenes Praktikum, Rentenbescheid, Pensionsbescheid, Befreiungsantrag Rentenversicherung im Minijob (Papieroriginal), Verzicht auf die Rentenversicherungsfreiheit (Papieroriginal), Schwerbehindertenausweis oder Gleichstellungsbescheid, Nachweise für nicht abrufbare Kinder, A1-Bescheinigung (Beschäftigung im Ausland), Aufenthaltstitel oder Arbeitserlaubnis, Bescheinigung über die Erstuntersuchung (Jugendliche), Vertrag über vermögenswirksame Leistungen, Unterlagen zur betrieblichen Altersversorgung, Zustimmung des Arbeitgebers in der Elternzeit, Erklärung zur Kirchensteuer bei Pauschalierung, Befreiungsbescheid der Rentenversicherung (Versorgungswerk), Unterlagen der Sozialkasse (z. B. SOKA-BAU, Maler) | immer | optional | Vollständigkeit der Entgeltunterlagen (§ 8 BVV); Nachweise für Versicherungsfreiheit, Zuschüsse und Beitragsgruppen |
 
-### 26. Erklärungen auf Papier
+### 27. Erklärungen auf Papier
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |

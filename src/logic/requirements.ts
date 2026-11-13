@@ -23,7 +23,14 @@ import { currentPart, latestSealed } from './questionnaire';
 import { verifyQuestionnaire } from './verify';
 
 export type RequirementReason =
-  'always' | 'pending' | 'minor' | 'adult' | 'ageUnknown' | 'answerMet' | 'answerNotMet';
+  | 'always'
+  | 'pending'
+  | 'minor'
+  | 'adult'
+  | 'ageUnknown'
+  | 'answerMet'
+  | 'answerNotMet'
+  | 'triggerNotNeeded';
 
 export interface RoleRequirement {
   role: RoleId;
@@ -31,7 +38,8 @@ export interface RoleRequirement {
   /**
    * `always`: unconditional role. For a conditional role: `pending` until the triggering part is
    * sealed, then `minor` / `adult`; `ageUnknown` (treated as required) if the birth date is not a
-   * date or lies after the signing day.
+   * date or lies after the signing day. `triggerNotNeeded`: the deciding role is itself conditional
+   * and not needed (the second representative of an adult, 2026-11-13).
    */
   reason: RequirementReason;
   triggerRole?: RoleId;
@@ -49,6 +57,15 @@ export function roleRequirement(
   if (!condition) return { role: role.id, required: true, reason: 'always' };
   const triggerRole = triggerRoleOf(definition, condition);
   const base = { role: role.id, ...(triggerRole === undefined ? {} : { triggerRole }) };
+  // A chain (the second representative hangs on the first, who hangs on the person's age): when
+  // the deciding role is itself decided not needed, so is this one. The definition refuses cycles.
+  const deciding = definition.roles.find((candidate) => candidate.id === triggerRole);
+  if (deciding?.requiredIf && deciding.id !== role.id) {
+    const above = roleRequirement(definition, questionnaire, deciding);
+    if (!above.required && above.reason !== 'pending') {
+      return { ...base, required: false, reason: 'triggerNotNeeded' };
+    }
+  }
   const trigger = triggerRole === undefined ? undefined : latestSealed(questionnaire, triggerRole);
   if (!trigger?.seal || triggerRole === undefined) {
     return { ...base, required: false, reason: 'pending' };
@@ -89,6 +106,7 @@ export function requirementText(
       case 'answerMet':
         return `Erforderlich, weil ${when}.`;
       case 'answerNotMet':
+      case 'triggerNotNeeded':
         return 'Nicht erforderlich nach den Angaben im Fragebogen.';
       default:
         return `Nur nötig, wenn ${when}.`;

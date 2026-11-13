@@ -47,11 +47,29 @@ describe('Personalfragebogen: the end of a fixed term', () => {
 
   // Besides the date rules, 1.1.0 carries the wording of the Chrome evaluation (B3, B4, B14–B16,
   // B27; tests/forms/chromeEvaluierung.test.ts) — help texts only.
+  // And (2026-11-13) the employer's proposed names, the second representative under joint custody.
   it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules and help texts', () => {
+    const SECOND = ['vertretung2', 'vertretungAlleinSorge'];
     const strip = (form: RegisteredForm) =>
-      JSON.stringify(form.definition, (key, value: unknown) =>
-        ['version', 'revised', 'notBefore', 'notAfter', 'help'].includes(key) ? undefined : value,
-      );
+      JSON.stringify(form.definition, (key, value: unknown) => {
+        if (['version', 'revised', 'notBefore', 'notAfter', 'help', 'fromRole'].includes(key)) {
+          return undefined;
+        }
+        if (key === 'because' && typeof value === 'string' && value.includes('vorbelegt')) {
+          return undefined;
+        }
+        if (Array.isArray(value)) {
+          return value.filter(
+            (item: unknown) =>
+              !(
+                typeof item === 'object' &&
+                item !== null &&
+                SECOND.includes((item as { id?: string }).id ?? '')
+              ),
+          );
+        }
+        return value;
+      });
     expect(strip(pfb110)).toBe(strip(pfb100));
   });
 });
