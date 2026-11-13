@@ -3,8 +3,8 @@
 import type { Analysis, InvoicePart, Problem } from './analysis';
 import { isoDate } from './dates';
 import { decimalEquals, parseDecimal } from './decimal';
-import { first } from './mapping';
-import type { BtId } from './mapping';
+import { first } from './model';
+import type { BtId } from './model';
 import { profileOf } from './profiles';
 import type { Einordnung, ProfileMatch } from './profiles';
 import { syntaxById } from './syntax';

@@ -2,10 +2,10 @@
 // from the name; XML among PDF attachments as well. Every XML document is disposed right after
 // its values are read.
 import type { Analysis, FileKind, InvoicePart, OtherPart, Problem } from '../logic/analysis';
-import { HEADER_FIELDS } from '../logic/mapping';
-import type { BtId, HeaderValues } from '../logic/mapping';
+import { coreValues, normalize } from '../logic/model';
 import { looksLikeXml } from '../logic/prolog';
 import { syntaxOf } from '../logic/syntax';
+import { extractModel } from './extract';
 import { readPdfAttachments } from './pdf';
 import type { PdfJsLike } from './pdf';
 import { readXml, rootOf, valuesAt } from './xml';
@@ -39,12 +39,17 @@ function readInvoiceXml(origin: string, bytes: Uint8Array): XmlOutcome {
     const root = rootOf(doc);
     const syntax = syntaxOf(root);
     if (!syntax) return { kind: 'other', root };
-    const header: Partial<Record<BtId, string[]>> = {};
-    for (const field of HEADER_FIELDS) {
-      const path = field.paths[syntax.id];
-      if (path) header[field.bt] = valuesAt(doc, path, syntax.namespaces);
+    const raw = extractModel(doc, syntax);
+    if (!raw) {
+      // ZUGFeRD 1.0: no EN 16931 model, only its specification identifier
+      const specId = syntax.specIdPath ? valuesAt(doc, syntax.specIdPath, syntax.namespaces) : [];
+      return { kind: 'invoice', part: { origin, syntax: syntax.id, header: { 'BT-24': specId } } };
     }
-    return { kind: 'invoice', part: { origin, syntax: syntax.id, header: header as HeaderValues } };
+    const model = normalize(raw, { ubl: syntax.id !== 'cii' });
+    return {
+      kind: 'invoice',
+      part: { origin, syntax: syntax.id, header: coreValues(model), model },
+    };
   } finally {
     doc.dispose();
   }

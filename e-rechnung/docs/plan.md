@@ -50,7 +50,7 @@ Ergebnis sind **Hinweise, keine Freigabe**.
 | 0.4     | Spike: libxml2-wasm + pdf.js in der einen Datei unter der CSP; XSD-Imports aus dem Speicher        | bestanden (Chromium, Firefox, WebKit)         |
 | 0.5     | Zuordnung gegen die KoSIT/FeRD-Empfehlung abgleichen → `offene-fragen.md` F9                       | erledigt                                      |
 | 1a      | Einlesen + Erkennen (PDF/XML, Anhänge am Inhalt, Syntax, Profil, Ergebnisarten, mehrere XML)       | erledigt                                      |
-| 1b      | Normalisieren (Zuordnung als Daten, BT-Modell, Positionen)                                         | offen                                         |
+| 1b      | Normalisieren (Zuordnung als Daten, BT-Modell, Positionen)                                         | erledigt                                      |
 | 1c      | Pflichtangaben-Ansicht (§ 14 Abs. 4 in Reihenfolge, Status, Gesamtsatz, fester Hinweis)            | offen                                         |
 | 2a      | XSDs übernehmen (nur weitergebbare), Profil → XSD                                                  | UBL 2.1 + CII D16B übernommen; FeRD offen     |
 | 2b      | Schema-Prüfung + Anzeige                                                                           | offen                                         |

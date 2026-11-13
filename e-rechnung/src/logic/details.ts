@@ -2,7 +2,7 @@
 // formatted for German readers. The raw value stays visible where formatting could hide it.
 import { germanDate, isoDate } from './dates';
 import { formatAmount, parseDecimal } from './decimal';
-import { first } from './mapping';
+import { first } from './model';
 import { TYPE_CODES } from './texts';
 import type { InvoiceVerdict } from './verdict';
 

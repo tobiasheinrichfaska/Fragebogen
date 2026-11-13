@@ -1,6 +1,6 @@
 // What the IO layer found in a file, as plain data. The logic layer judges it (verdict.ts); the
 // UI shows both. Nothing here holds an XML document or a PDF — only values.
-import type { HeaderValues } from './mapping';
+import type { HeaderValues, InvoiceModel } from './model';
 import type { SyntaxId } from './syntax';
 
 export interface Problem {
@@ -19,7 +19,10 @@ export interface InvoicePart {
   /** File name or attachment name */
   origin: string;
   syntax: SyntaxId;
+  /** Core terms as written (recognition, comparison, details) */
   header: HeaderValues;
+  /** The full EN 16931 model; missing for syntaxes outside EN 16931 (ZUGFeRD 1.0) */
+  model?: InvoiceModel;
 }
 
 export type OtherPartKind = 'otherXml' | 'brokenXml' | 'doctypeXml' | 'notXml';

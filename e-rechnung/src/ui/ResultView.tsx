@@ -1,6 +1,6 @@
 import type { Analysis } from '../logic/analysis';
 import { invoiceDetails } from '../logic/details';
-import { HEADER_FIELDS } from '../logic/mapping';
+import { termLabel } from '../logic/binding';
 import type { Verdict } from '../logic/verdict';
 
 interface Props {
@@ -17,7 +17,7 @@ const OTHER_KIND: Readonly<Record<string, string>> = {
 
 export function ResultView({ analysis, verdict }: Props) {
   const inPdf = analysis.kind === 'pdf';
-  const labelOf = (bt: string) => HEADER_FIELDS.find((f) => f.bt === bt)?.label ?? bt;
+
   return (
     <section className="result" aria-live="polite">
       <div className={`verdict tone-${verdict.tone}`} data-testid="verdict">
@@ -27,7 +27,7 @@ export function ResultView({ analysis, verdict }: Props) {
         ))}
         {verdict.comparison && !verdict.comparison.same && (
           <p data-testid="differing">
-            Unterschiedlich: {verdict.comparison.differing.map(labelOf).join(', ')}.
+            Unterschiedlich: {verdict.comparison.differing.map(termLabel).join(', ')}.
           </p>
         )}
       </div>
