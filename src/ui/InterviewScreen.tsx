@@ -2,6 +2,7 @@
 // All rules live in the logic layer (session.ts, interview.ts); this only renders and dispatches.
 import { useState } from 'react';
 import { todayIso } from '../logic/clock';
+import { describeDateOrderProblem } from '../logic/dateOrder';
 import { displayValue, fillPlaceholders } from '../logic/display';
 import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { fillingHints } from '../logic/hints';
@@ -397,7 +398,9 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
 
   return (
     <Card title="Zusammenfassung">
-      {(summary.missingRequired.length > 0 || summary.missingNotices.length > 0) && (
+      {(summary.missingRequired.length > 0 ||
+        summary.missingNotices.length > 0 ||
+        summary.dateOrder.length > 0) && (
         // Everything that keeps the part from being signed, in one place at the top (test report
         // 2026-11-06: an unconfirmed notice further down was not found).
         <div className="skipped missing" role="group" aria-label="Fehlende Pflichtangaben">
@@ -428,6 +431,18 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
                   onClick={() => onSession(noticeFromSummary(session, id))}
                 >
                   ansehen und bestätigen
+                </button>
+              </li>
+            ))}
+            {summary.dateOrder.map((problem) => (
+              <li key={`order-${problem.fieldId}-${problem.other}`}>
+                <span>{describeDateOrderProblem(problem, label)}</span>
+                <button
+                  type="button"
+                  className="link"
+                  onClick={() => onSession(editFromSummary(session, problem.fieldId))}
+                >
+                  ändern
                 </button>
               </li>
             ))}

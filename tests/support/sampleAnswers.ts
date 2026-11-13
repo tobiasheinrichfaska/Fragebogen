@@ -2,6 +2,9 @@
 // (tests/forms/walkWithNext.test.ts) tries them in order until the app takes one. The strategies
 // reach different branches: "first" picks the first option and yes, "last" the last option and no,
 // "lastYes" the last option and yes (e.g. a second account holder who must sign too).
+import { dateOrderRules } from '../../src/logic/dateOrder';
+import { formatGermanDate, isIsoDate } from '../../src/logic/dates';
+import type { PartData } from '../../src/logic/form';
 import { normalizeFieldValue } from '../../src/logic/normalize';
 import type { FieldDefinition, FormDefinition, TextFormat } from '../../src/logic/model';
 import { optionsOf } from '../../src/logic/options';
@@ -28,8 +31,10 @@ const TEXT_BY_FORMAT: Readonly<Record<TextFormat, readonly string[]>> = {
 // form so far is valid in November 2026, and these days lie before any test run.
 const VALIDITY_DATES = ['01.11.2026', '12.11.2026', '01.01.2026'];
 // 31.12.2026 first: an end of a fixed term well after the start of 01.11.2026 (a term of under a
-// week is a special case the forms refuse; an end before the start is not refused — see CLAUDE.md,
-// Known Limitations). A field that allows no future day (a birth date) takes 17.05.1990.
+// week is a special case the forms refuse; the Personalfragebogen 1.0.0 still takes an end before
+// the start). A field that allows no future day (a birth date) takes 17.05.1990. A date bound to
+// another one (notBefore/notAfter) tries that one's day last (the same day as a start would be a
+// fixed term of under a week).
 const ADULT = ['31.12.2026', '17.05.1990', '01.11.2026', '01.01.2026', '12.11.2026', '01.01.2000'];
 const RECENT = ['01.11.2026', '17.05.1990', '01.01.2026', '12.11.2026', '01.01.2000'];
 const DATES: Readonly<Record<Strategy, readonly string[]>> = {
@@ -46,8 +51,13 @@ export function candidates(
   definition: FormDefinition,
   field: FieldDefinition,
   strategy: Strategy,
+  data: PartData = {},
 ): unknown[] {
   const validityField = definition.validity?.field;
+  const boundDays = dateOrderRules(field).flatMap(([, other]) => {
+    const day = data[other];
+    return typeof day === 'string' && isIsoDate(day) ? [formatGermanDate(day)] : [];
+  });
   switch (field.type) {
     case 'choice':
       return ordered(optionsOf(field), strategy).map((option) => option.id);
@@ -59,7 +69,7 @@ export function candidates(
     case 'boolean':
       return strategy === 'last' ? [false, true] : [true, false];
     case 'date':
-      return field.id === validityField ? VALIDITY_DATES : [...DATES[strategy]];
+      return [...(field.id === validityField ? VALIDITY_DATES : DATES[strategy]), ...boundDays];
     case 'month':
       return field.id === validityField ? ['11.2026'] : ['11.2026', '01.2026', '12.2025'];
     case 'money':

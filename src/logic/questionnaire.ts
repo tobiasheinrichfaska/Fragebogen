@@ -2,6 +2,7 @@
 // refusal with a reason and never mutates its input. Time, nonce and device data are arguments
 // (gathered by the io layer), so sealing is deterministic and testable.
 import { describeCondition } from './conditions';
+import { dateOrderProblems, type DateOrderProblem } from './dateOrder';
 import { canonicalize } from './jcs';
 import { Decoder } from './decode';
 import {
@@ -81,7 +82,8 @@ export type TransitionCode =
   | 'requiredStaysOpen'
   | 'fixedByOtherRole'
   | 'outsideValidity'
-  | 'outOfScope';
+  | 'outOfScope'
+  | 'dateOrder';
 
 export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   wrongForm: 'Die Formularversion passt nicht zu diesem Fragebogen.',
@@ -121,7 +123,13 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
     'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
   outOfScope:
     'Für diesen Sonderfall ist der Fragebogen nicht gedacht. Abschließen und Weitergeben sind gesperrt; bitte bei der Stelle nachfragen, die den Fragebogen bekommt.',
+  dateOrder: 'Zwei Daten passen nicht zueinander.',
 };
+
+/** detail of a refused `dateOrder`: field, relation, other field, its date — one problem. */
+function dateOrderDetail(problem: DateOrderProblem): string[] {
+  return [problem.fieldId, problem.relation, problem.other, problem.otherValue];
+}
 
 export type Transition =
   | { ok: true; questionnaire: Questionnaire; warnings: readonly IssueCode[] }
@@ -239,6 +247,10 @@ export function setValue(
     return refuse('fieldNotAvailable', [fieldId, reason]);
   }
   const updated: Part = { ...draft, data: { ...draft.data, [fieldId]: value.value } };
+  // The second of two ordered dates is refused on the wrong side; moving the first one is allowed
+  // and caught by the summary and the seal.
+  const [misordered] = dateOrderProblems(form.definition, role, updated.data, fieldId);
+  if (misordered) return refuse('dateOrder', dateOrderDetail(misordered));
   const versions = [...versionsOf(questionnaire, role)];
   // An answer ends "Weiß ich gerade nicht"; clearing a field keeps the mark.
   versions[versions.length - 1] =
@@ -535,6 +547,8 @@ export function sealPart(
     })
     .map((field) => field.id);
   if (invalid.length > 0) return refuse('invalidValue', invalid);
+  const [misordered] = dateOrderProblems(definition, role, draft.data);
+  if (misordered) return refuse('dateOrder', dateOrderDetail(misordered));
   const missing = missingRequired(definition, role, data);
   if (missing.length > 0) return refuse('missingRequired', missing);
 

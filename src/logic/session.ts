@@ -4,6 +4,8 @@
 // immutable Session; time, nonce and device data come from the io layer. Nothing is persisted:
 // the user saves files.
 import type { FormOrigin } from './dataPackage';
+import { dateOrderMessage } from './dateOrder';
+import { isIsoDate } from './dates';
 import { activeInfoBlocks, fieldsById, sealableData } from './form';
 import type { RegisteredForm } from './formRegistry';
 import {
@@ -113,6 +115,13 @@ export function transitionMessage(
         ? issueMessage(issue as IssueCode, fields.get(fieldId))
         : TRANSITION_MESSAGES.invalidValue;
     return { message: text, detail: [label(fieldId)] };
+  }
+  if (result.code === 'dateOrder') {
+    const [fieldId = '', relation = '', other = '', otherValue = ''] = result.detail;
+    if ((relation === 'notBefore' || relation === 'notAfter') && isIsoDate(otherValue)) {
+      const problem = { fieldId, relation, other, value: otherValue, otherValue } as const;
+      return { message: dateOrderMessage(problem, label), detail: [label(fieldId)] };
+    }
   }
   if (result.code === 'fixedByOtherRole') {
     const [fieldId = '', from = ''] = result.detail;

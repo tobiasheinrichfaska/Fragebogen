@@ -2,6 +2,7 @@
 // strictly into a typed FormDefinition (see decode.ts) and then checks every id reference inside it.
 import { COMPUTE_FUNCTIONS } from './compute';
 import { CONDITION_OPERATORS, forEachLeaf, leafProblem } from './conditions';
+import { dateOrderRules } from './dateOrder';
 import { placeholderIds } from './display';
 import { hintTestProblem } from './hints';
 import { isIsoDate } from './dates';
@@ -399,6 +400,8 @@ export const FIELD_KEYS = [
   'warnAbove',
   'minDate',
   'maxDate',
+  'notBefore',
+  'notAfter',
   'because',
   'fromRole',
   'monthFrom',
@@ -538,6 +541,9 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
   const [minDate, maxDate] = (['minDate', 'maxDate'] as const).map((key) =>
     o[key] === undefined ? undefined : d.string(o[key], `${path}.${key}`, DATE_BOUND_SHAPE),
   );
+  const [notBefore, notAfter] = (['notBefore', 'notAfter'] as const).map((key) =>
+    o[key] === undefined ? undefined : d.string(o[key], `${path}.${key}`, ID),
+  );
   const because = o.because === undefined ? undefined : d.string(o.because, `${path}.because`);
   const fromRole = o.fromRole === undefined ? undefined : decodeFromRole(d, o.fromRole, path);
   const monthFrom =
@@ -601,6 +607,8 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(warnAbove === undefined ? {} : { warnAbove }),
     ...(minDate === undefined ? {} : { minDate }),
     ...(maxDate === undefined ? {} : { maxDate }),
+    ...(notBefore === undefined ? {} : { notBefore }),
+    ...(notAfter === undefined ? {} : { notAfter }),
     ...(because === undefined ? {} : { because }),
     ...(fromRole === undefined ? {} : { fromRole }),
     ...(monthFrom === undefined ? {} : { monthFrom }),
@@ -1781,4 +1789,31 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   fromRoleFields,
   becauseTexts,
   validityRule,
+  dateOrderRule,
 ];
+
+/**
+ * notBefore/notAfter (dateOrder.ts): only on date fields, naming another date field of the same
+ * role that is asked before it, so the second of the two dates is the one checked as it is typed.
+ * Table columns have no order yet.
+ */
+function dateOrderRule({ definition, fields, report }: CheckContext): void {
+  const position = new Map(
+    definition.sections.flatMap((section) => section.fields).map((field, i) => [field.id, i]),
+  );
+  for (const { field, path, isColumn } of fields.values()) {
+    for (const [relation, otherId] of dateOrderRules(field)) {
+      const at = `${path}.${relation}`;
+      const other = fields.get(otherId)?.field;
+      if (field.type !== 'date') report(at, `only date fields have ${relation}`);
+      else if (isColumn) report(at, 'table columns have no date order yet');
+      else if (!other) report(at, `unknown field "${otherId}"`);
+      else if (otherId === field.id) report(at, 'a field cannot be compared with itself');
+      else if (other.type !== 'date') report(at, `"${otherId}" is not a date field`);
+      else if (other.role !== field.role) report(at, `"${otherId}" belongs to another role`);
+      else if ((position.get(otherId) ?? -1) >= (position.get(field.id) ?? -1)) {
+        report(at, `"${otherId}" must come before "${field.id}" (interview order)`);
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@
 // signing. The steps are recomputed after every answer; the UI only keeps the current step's key.
 // Answers that no longer apply stay in the draft (they come back if the condition holds again)
 // and are only dropped at signing; the summary lists them so this never happens unseen.
+import { dateOrderProblems, type DateOrderProblem } from './dateOrder';
 import { fieldDependencies } from './dependencies';
 import { editValue, suggestedText } from './display';
 import {
@@ -310,6 +311,8 @@ export interface InterviewSummary {
   inactive: { fieldId: FieldId; reason: string }[];
   /** Notices of the role not yet confirmed. */
   missingNotices: string[];
+  /** Two dates on the wrong side of each other (dateOrder.ts); signing is refused until they fit. */
+  dateOrder: DateOrderProblem[];
   /**
    * The reference date this role states lies outside the form version's validity, as people read
    * it, with the validity — signing is refused until it fits.
@@ -344,15 +347,20 @@ export function interviewSummary(
   const missingNotices = activeInfoBlocks(definition, role, draft.data)
     .map((block) => block.id)
     .filter((id) => !acknowledged.includes(id));
+  const dateOrder = dateOrderProblems(definition, role, draft.data);
   return {
     missingRequired,
     deferred,
     inactive,
     missingNotices,
+    dateOrder,
     ...(outside === undefined
       ? {}
       : { outsideValidity: { value: outside, validity: describeValidity(definition) ?? '' } }),
     readyToSign:
-      missingRequired.length === 0 && missingNotices.length === 0 && outside === undefined,
+      missingRequired.length === 0 &&
+      missingNotices.length === 0 &&
+      dateOrder.length === 0 &&
+      outside === undefined,
   };
 }

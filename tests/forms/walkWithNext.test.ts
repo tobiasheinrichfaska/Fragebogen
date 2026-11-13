@@ -7,6 +7,7 @@
 import { fieldsById } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import type { FieldDefinition, RoleDefinition } from '../../src/logic/model';
+import { currentPart } from '../../src/logic/questionnaire';
 import {
   acknowledge,
   answer,
@@ -69,7 +70,8 @@ function answerQuestion(
   field: FieldDefinition,
   strategy: Strategy,
 ): { session: Session; answered: boolean } {
-  for (const raw of candidates(s.form.definition, field, strategy)) {
+  const data = s.role === undefined ? {} : (currentPart(s.questionnaire, s.role)?.data ?? {});
+  for (const raw of candidates(s.form.definition, field, strategy, data)) {
     const result = answer(s, field.id, raw);
     if (result.ok) return { session: result.session, answered: true };
   }
