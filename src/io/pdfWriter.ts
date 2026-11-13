@@ -25,7 +25,7 @@ import type { AppConfig } from '../logic/appConfig';
 import { buildPackage, ORIGIN_MESSAGES, packageText, type FormOrigin } from '../logic/dataPackage';
 import { encodeDataLines } from '../logic/dataPages';
 import { formatGermanDate } from '../logic/dates';
-import { displayValue } from '../logic/display';
+import { describeInputTypes, displayValue } from '../logic/display';
 import { fileNameFor } from '../logic/fileNames';
 import { activeInfoBlocks } from '../logic/form';
 import { isTestVersion, registryOf, type RegisteredForm } from '../logic/formRegistry';
@@ -496,7 +496,7 @@ export async function writeQuestionnairePdf(
     if (note) {
       layout.text(
         `Systemvermerk: ${note.signedAtLocal} (${note.timeZone}) = ${note.signedAtUtc} · ${note.os} · ` +
-          `${note.browser} ${note.browserVersion} · ${note.language} · Eingabe: ${note.inputTypes.join(', ')} · App ${note.appVersion}`,
+          `${note.browser} ${note.browserVersion} · ${note.language} · Eingabe: ${describeInputTypes(note.inputTypes)} · App ${note.appVersion}`,
         { size: 7.5, color: MUTED },
       );
     }

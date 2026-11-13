@@ -213,7 +213,8 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
           {...common}
           type="text"
           inputMode="decimal"
-          placeholder="0"
+          // No grey „0“: it read like an answer while „Weiter“ stayed locked (Chrome evaluation
+          // 2026-11-13, B2).
           onKeyDown={(event) => {
             if (event.key === 'Enter') onSubmit();
           }}

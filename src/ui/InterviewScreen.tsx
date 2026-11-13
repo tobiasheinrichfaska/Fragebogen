@@ -6,7 +6,7 @@ import { describeDateOrderProblem } from '../logic/dateOrder';
 import { displayValue, fillPlaceholders } from '../logic/display';
 import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { fillingHints } from '../logic/hints';
-import { initialInput, interviewProgress } from '../logic/interview';
+import { initialInput, interviewProgress, progressLine } from '../logic/interview';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
 import { MASTER_DATA_LINK_MESSAGES, masterDataFragment } from '../logic/masterDataLink';
@@ -58,14 +58,15 @@ export function InterviewScreen(props: Props) {
   if (!step || !role) return null;
   const tableField =
     step.kind === 'question' ? fieldsById(session.form.definition).get(step.fieldId) : undefined;
+  const complete = step.kind === 'summary' && summaryOf(session)?.readyToSign === true;
+  const max = Math.max(progress.total, 1);
   return (
     <div className="interview">
       <div className="interview-head">
         <p className="muted">
-          {role.stationHeading} · {progress.answered} von etwa {progress.total} Fragen beantwortet
-          {progress.deferred > 0 ? ` · ${progress.deferred} zurückgestellt` : ''}
+          {role.stationHeading} · {progressLine(progress, complete)}
         </p>
-        <progress max={Math.max(progress.total, 1)} value={progress.answered} />
+        <progress max={max} value={complete ? max : progress.answered} />
       </div>
       {outOfScopeOf(session).length > 0 && (
         <Banner
@@ -137,10 +138,13 @@ function NoticeStep({
         />
         {label}
       </label>
-      {block.acknowledgement === 'paperHandout' && !confirmed && (
+      {/* Always shown, so the buttons stay where they are after the tick (Chrome evaluation
+          2026-11-13, B24, B25). */}
+      {block.acknowledgement === 'paperHandout' && (
         <p className="muted">
           Ihr Arbeitgeber händigt Ihnen diesen Hinweis auf Papier aus. Bestätigen Sie erst, wenn Sie
-          ihn erhalten haben; vorher können Sie trotzdem weitermachen.
+          ihn erhalten haben. Weitermachen können Sie schon vorher, abschließen erst nach der
+          Bestätigung.
         </p>
       )}
       <Nav session={session} onSession={onSession} />
@@ -154,6 +158,7 @@ function Nav({
   onNext,
   onSkip,
   onDefer,
+  deferSlot = false,
   nextDisabled,
 }: {
   session: Session;
@@ -163,6 +168,8 @@ function Nav({
   onSkip?: () => void;
   /** "Vorerst überspringen" — only while the question has no answer. */
   onDefer?: () => void;
+  /** Keep the place of "Vorerst überspringen" while it is not offered. */
+  deferSlot?: boolean;
   nextDisabled?: boolean;
 }) {
   const first = stepsFor(session)[0]?.key === session.stepKey;
@@ -177,10 +184,18 @@ function Nav({
       >
         Zurück
       </button>
-      {onDefer && (
+      {onDefer ? (
         <button type="button" onClick={onDefer}>
           Vorerst überspringen
         </button>
+      ) : (
+        deferSlot && (
+          // Holds the place once something is typed: on a phone „Weiter“ moved up under the finger
+          // (Chrome evaluation 2026-11-13, B24).
+          <button type="button" className="slot" disabled aria-hidden="true" tabIndex={-1}>
+            Vorerst überspringen
+          </button>
+        )
       )}
       <button
         type="button"
@@ -357,6 +372,7 @@ function QuestionStep({
         onNext={next}
         onSkip={() => leave(skipToMissing)}
         {...(empty && step.state !== 'deferred' ? { onDefer: putBack } : {})}
+        deferSlot={step.state !== 'deferred'}
         nextDisabled={step.required && empty && step.state !== 'deferred'}
       />
     </Card>

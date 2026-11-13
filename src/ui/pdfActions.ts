@@ -101,7 +101,7 @@ export async function createPdf(
         text: result.protected
           ? `PDF „${result.fileName}“ erstellt, mit Kennwort geschützt – zur Weitergabe an die nächste Station. Das Kennwort bitte auf einem anderen Weg weitergeben als die Datei.`
           : result.complete
-            ? `PDF „${result.fileName}“ erstellt: vollständig. Bitte die Datei selbst weitergeben oder in der Personalakte ablegen.`
+            ? `PDF „${result.fileName}“ erstellt: vollständig. Bitte geben Sie die Datei selbst weiter – an: ${session.form.definition.recipient.label}.`
             : `PDF „${result.fileName}“ erstellt – zur Weitergabe an die nächste Station. Sie enthält alle bisherigen Teile.`,
         detail: [
           `${result.pages} Seiten, davon die letzten mit ${result.qrCodes} QR-Codes für den Papierweg.`,

@@ -45,10 +45,12 @@ describe('Personalfragebogen: the end of a fixed term', () => {
     expect(answer(employer(pfb100, FIXED_TERM), 'agBefristetBis', '17.05.2026').ok).toBe(true);
   });
 
-  it('1.1.0 differs from 1.0.0 only in its version, its stamp and the date rules', () => {
+  // Besides the date rules, 1.1.0 carries the wording of the Chrome evaluation (B3, B4, B14–B16,
+  // B27; tests/forms/chromeEvaluierung.test.ts) — help texts only.
+  it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules and help texts', () => {
     const strip = (form: RegisteredForm) =>
       JSON.stringify(form.definition, (key, value: unknown) =>
-        ['version', 'revised', 'notBefore', 'notAfter'].includes(key) ? undefined : value,
+        ['version', 'revised', 'notBefore', 'notAfter', 'help'].includes(key) ? undefined : value,
       );
     expect(strip(pfb110)).toBe(strip(pfb100));
   });

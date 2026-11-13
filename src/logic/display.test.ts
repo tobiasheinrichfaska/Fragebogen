@@ -1,4 +1,4 @@
-import { displayValue, editValue, EMPTY_VALUE } from './display';
+import { describeInputTypes, displayValue, editValue, EMPTY_VALUE } from './display';
 import type { FieldDefinition, FieldType } from './model';
 import { normalizeFieldValue } from './normalize';
 
@@ -40,6 +40,21 @@ describe('displayValue', () => {
     );
   });
 
+  // Chrome evaluation 2026-11-13 (B10): „Dienstag, Donnerstag, Freitag, Mittwoch, Montag“.
+  it('shows several choices in the order of the options, not sorted by id', () => {
+    const days = [
+      { id: 'mo', label: 'Montag' },
+      { id: 'di', label: 'Dienstag' },
+      { id: 'mi', label: 'Mittwoch' },
+    ];
+    const stored = normalizeFieldValue(field('multiChoice', { options: days }), ['mo', 'mi', 'di']);
+    if (!stored.ok) throw new Error(stored.issue);
+    expect(stored.value).toEqual(['di', 'mi', 'mo']);
+    expect(displayValue(field('multiChoice', { options: days }), stored.value)).toBe(
+      'Montag, Dienstag, Mittwoch',
+    );
+  });
+
   it('shows unanswered fields as a dash', () => {
     expect(displayValue(field('text'), null)).toBe(EMPTY_VALUE);
     expect(displayValue(field('text'), undefined)).toBe(EMPTY_VALUE);
@@ -59,8 +74,26 @@ describe('editValue', () => {
     expect(again).toEqual(stored);
   });
 
+  // Chrome evaluation 2026-11-13 (B30): back on the page, „DE89370400440532013000“ stood ungrouped.
+  it.each<[FieldType, string, string]>([
+    ['iban', 'DE89370400440532013000', 'DE89 3704 0044 0532 0130 00'],
+    ['taxId', '86095742719', '86 095 742 719'],
+    ['svNumber', '65170590M520', '65 170590 M 520'],
+  ])('shows %s in its groups for editing, as everywhere else', (type, stored, shown) => {
+    expect(editValue(field(type), stored)).toBe(shown);
+    expect(normalizeFieldValue(field(type), shown)).toMatchObject({ ok: true, value: stored });
+  });
+
   it('is empty for unanswered and non-text values', () => {
     expect(editValue(field('text'), null)).toBe('');
     expect(editValue(field('boolean'), true)).toBe('');
+  });
+});
+
+// Chrome evaluation 2026-11-13 (B29): the system note said „Eingabe: mouse, keyboard“.
+describe('describeInputTypes', () => {
+  it('names the ways of input in German, in their order', () => {
+    expect(describeInputTypes(['mouse', 'keyboard'])).toBe('Maus, Tastatur');
+    expect(describeInputTypes(['touch', 'pen'])).toBe('Finger, Stift');
   });
 });

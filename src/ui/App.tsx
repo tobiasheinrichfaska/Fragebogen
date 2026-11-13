@@ -259,6 +259,16 @@ function Workspace({
     return () => tracker.stop();
   }, []);
 
+  // Every new page begins at its top (Chrome evaluation 2026-11-13, B28: the summary opened in the
+  // middle of its list, the signature page at its end).
+  const page = `${screen.kind}|${session?.role ?? ''}|${session?.stepKey ?? ''}`;
+  const shownPage = useRef(page);
+  useEffect(() => {
+    if (shownPage.current === page) return;
+    shownPage.current = page;
+    document.querySelector('main.shell')?.scrollIntoView?.({ block: 'start' });
+  }, [page]);
+
   useEffect(() => {
     if (resumeRead.kind !== 'none' && resumeRead.kind !== 'found') clearResume();
   }, [resumeRead]);

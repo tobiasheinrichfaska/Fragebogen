@@ -253,6 +253,11 @@ textarea {
   order: 10;
 }
 
+/* The place of a button not offered right now; the others stay where they are. */
+.nav > .slot {
+  visibility: hidden;
+}
+
 @media (max-width: 600px) {
   .nav {
     display: grid;

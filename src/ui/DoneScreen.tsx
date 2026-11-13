@@ -2,6 +2,7 @@
 // when the questionnaire holds only a few values, Tobias 2026-11-05). Once every needed part is
 // done, the PDF comes first and handing on steps back (Tobias 2026-11-12).
 import { useState } from 'react';
+import { describeInputTypes } from '../logic/display';
 import { roleOf } from '../logic/form';
 import { latestSealed } from '../logic/questionnaire';
 import { allPartsDone, type Session } from '../logic/session';
@@ -51,10 +52,13 @@ export function DoneScreen({
       {note && (
         <p className="muted">
           Systemvermerk: {note.os} · {note.browser} {note.browserVersion} · Eingabe:{' '}
-          {note.inputTypes.join(', ')} · App {note.appVersion}
+          {describeInputTypes(note.inputTypes)} · App {note.appVersion}
         </p>
       )}
-      <p className="muted mono">Prüfwert (SHA-256): {part?.seal?.contentHash}</p>
+      <p className="muted">
+        Prüfwert, an dem sich später zeigt, dass die Angaben unverändert sind:{' '}
+        <span className="mono">{part?.seal?.contentHash}</span>
+      </p>
       {done ? (
         <p>Alle nötigen Teile sind abgeschlossen. Erstellen Sie jetzt die PDF.</p>
       ) : (
