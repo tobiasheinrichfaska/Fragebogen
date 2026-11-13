@@ -13,4 +13,11 @@ Geräte, Ziehen und Ablegen aus dem Mailprogramm. Alles andere prüfen die autom
 
 ## Übersicht
 
-Die Testfälle folgen mit Schritt 1a (Einlesen und Erkennen).
+| Datei                              | Tests         | Bereich                                                |
+| ---------------------------------- | ------------- | ------------------------------------------------------ |
+| [`01_erkennen.md`](01_erkennen.md) | MT-01 – MT-04 | Echte Rechnungen erkennen, Ziehen aus dem Mailprogramm |
+
+**Automatisiert statt von Hand** (Playwright, `tests/e2e/erkennen.spec.ts`, Chromium, Firefox,
+WebKit): XML-E-Rechnung, Hybrid-PDF, einfaches PDF, Profil MINIMUM, widersprüchliche Rechnungsdaten,
+geschütztes PDF, Ablegen per Ziehen, feste Hinweiszeile, CSP – und bei jedem Test: keine
+Netzwerkanfrage, kein Speicher- oder Cookie-Zugriff, kein Konsolenfehler.

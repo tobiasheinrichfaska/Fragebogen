@@ -4,12 +4,12 @@
 
 ## Einlesen und Erkennen (Phase 1)
 
-- [ ] **Hybrid-PDF (ZUGFeRD/Factur-X) hineinziehen** — „E-Rechnung erkannt (Profil …)“, Syntax CII
-- [ ] **XRechnung als XML (UBL oder CII) hineinziehen** — „E-Rechnung erkannt“ mit Spezifikation
-- [ ] **Einfaches PDF ohne Rechnungsdaten** — „Keine E-Rechnung: einfaches PDF“
-- [ ] **Profil MINIMUM oder BASIC WL** — „keine E-Rechnung im Sinne des UStG“
-- [ ] **Mehrere Rechnungs-XML im PDF** — alle gezeigt, Vergleich, nie eine Fassung selbst gewählt
-- [ ] **Kaputte, verschlüsselte oder zu große Datei** — klare Meldung mit Grund, kein Absturz
+- [x] **Hybrid-PDF (ZUGFeRD/Factur-X) hineinziehen** — „E-Rechnung erkannt (Profil …)“, Syntax CII
+- [x] **XRechnung als XML (UBL oder CII) hineinziehen** — „E-Rechnung erkannt“ mit Spezifikation
+- [x] **Einfaches PDF ohne Rechnungsdaten** — „Keine E-Rechnung: einfaches PDF“
+- [x] **Profil MINIMUM oder BASIC WL** — „keine E-Rechnung im Sinne des UStG“
+- [x] **Mehrere Rechnungs-XML im PDF** — alle gezeigt, Vergleich, nie eine Fassung selbst gewählt
+- [x] **Kaputte, verschlüsselte oder zu große Datei** — klare Meldung mit Grund, kein Absturz
 
 ## Pflichtangaben (Phase 1)
 

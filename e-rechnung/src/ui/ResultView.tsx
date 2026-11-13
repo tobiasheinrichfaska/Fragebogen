@@ -1,0 +1,74 @@
+import type { Analysis } from '../logic/analysis';
+import { invoiceDetails } from '../logic/details';
+import { HEADER_FIELDS } from '../logic/mapping';
+import type { Verdict } from '../logic/verdict';
+
+interface Props {
+  analysis: Analysis;
+  verdict: Verdict;
+}
+
+const OTHER_KIND: Readonly<Record<string, string>> = {
+  notXml: 'keine XML',
+  otherXml: 'XML, aber keine Rechnung',
+  brokenXml: 'XML, fehlerhaft',
+  doctypeXml: 'XML mit DOCTYPE, nicht gelesen',
+};
+
+export function ResultView({ analysis, verdict }: Props) {
+  const inPdf = analysis.kind === 'pdf';
+  const labelOf = (bt: string) => HEADER_FIELDS.find((f) => f.bt === bt)?.label ?? bt;
+  return (
+    <section className="result" aria-live="polite">
+      <div className={`verdict tone-${verdict.tone}`} data-testid="verdict">
+        <h2 data-testid="headline">{verdict.headline}</h2>
+        {verdict.explanation.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+        {verdict.comparison && !verdict.comparison.same && (
+          <p data-testid="differing">
+            Unterschiedlich: {verdict.comparison.differing.map(labelOf).join(', ')}.
+          </p>
+        )}
+      </div>
+
+      {verdict.invoices.map((invoice, index) => (
+        <div className="card" key={`${invoice.part.origin}-${index}`}>
+          {verdict.invoices.length > 1 && (
+            <h3>
+              Rechnungsdaten {index + 1} von {verdict.invoices.length}
+            </h3>
+          )}
+          <table className="details">
+            <tbody>
+              {invoiceDetails(invoice, inPdf).map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">{row.label}</th>
+                  <td>{row.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      {inPdf && analysis.others.length > 0 && (
+        <div className="card">
+          <h3>Weitere Anhänge im PDF</h3>
+          <ul>
+            {analysis.others.map((other) => (
+              <li key={other.origin}>
+                {other.origin} – {OTHER_KIND[other.kind] ?? other.kind}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {analysis.pdf?.truncated && (
+        <p className="hint">
+          Das PDF hat sehr viele Anhänge. Das Tool hat nur die ersten 50 gelesen.
+        </p>
+      )}
+    </section>
+  );
+}
