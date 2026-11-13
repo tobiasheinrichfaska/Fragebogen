@@ -3,6 +3,8 @@
 // listed here and checked against real objects by tests/docs/dataModel.test.ts.
 import { INVOICE } from '../logic/binding';
 import type { GroupDef } from '../logic/binding';
+import { MODES, PFLICHTANGABEN } from '../logic/pflichtangaben';
+import type { Need } from '../logic/pflichtangaben';
 import { PROFILES } from '../logic/profiles';
 import { SYNTAXES } from '../logic/syntax';
 import { TYPE_CODES } from '../logic/texts';
@@ -208,6 +210,81 @@ export const ENTITIES: EntityDoc[] = [
       },
     ],
   },
+  {
+    name: 'PflichtResult',
+    file: 'src/logic/check.ts',
+    purpose: 'Ergebnis der Pflichtangaben-Prüfung einer Rechnung – Hinweise, nie „ordnungsgemäß“.',
+    fields: [
+      {
+        name: 'mode',
+        type: "'regel' | 'kleinbetrag' | 'kleinunternehmer'",
+        required: true,
+        meaning: 'Welche Mindestangaben gelten (MODES)',
+      },
+      {
+        name: 'modeText',
+        type: 'string',
+        required: false,
+        meaning: 'Hinweis bei verringerten Angaben (§ 33, § 34a UStDV)',
+      },
+      {
+        name: 'rows',
+        type: 'RowResult[]',
+        required: true,
+        meaning: 'Je Pflichtangabe der Tabelle',
+      },
+      {
+        name: 'missingLabels',
+        type: 'string[]',
+        required: true,
+        meaning: 'Bezeichnungen der fehlenden Angaben',
+      },
+      {
+        name: 'summary',
+        type: 'string',
+        required: true,
+        meaning: '„Alle Pflichtfelder belegt …“ oder „Es fehlt: …“',
+      },
+    ],
+  },
+  {
+    name: 'RowResult',
+    file: 'src/logic/check.ts',
+    purpose: 'Eine Zeile der Pflichtangaben-Ansicht.',
+    fields: [
+      {
+        name: 'row',
+        type: 'Pflichtangabe',
+        required: true,
+        meaning: 'Die Zeile aus PFLICHTANGABEN',
+      },
+      {
+        name: 'status',
+        type: "'vorhanden' | 'fehlt' | 'einzelfall'",
+        required: true,
+        meaning: 'vorhanden / fehlt / nur im Einzelfall nötig',
+      },
+      { name: 'reason', type: 'string', required: false, meaning: 'Warum nur im Einzelfall nötig' },
+      {
+        name: 'missing',
+        type: 'string[]',
+        required: true,
+        meaning: 'Fehlende Teile (z. B. Postleitzahl, Position 2: Menge)',
+      },
+      {
+        name: 'values',
+        type: 'ShownValue[]',
+        required: true,
+        meaning: 'Werte aus der XML, deutsch formatiert',
+      },
+      {
+        name: 'groups',
+        type: 'GroupDisplay[]',
+        required: true,
+        meaning: 'Werte je Vorkommen (Positionen, Steuersätze)',
+      },
+    ],
+  },
 ];
 
 export const FUNCTIONS: { layer: string; signature: string; purpose: string }[] = [
@@ -283,8 +360,28 @@ export const FUNCTIONS: { layer: string; signature: string; purpose: string }[] 
   },
   {
     layer: 'logic',
-    signature: 'parseDecimal / decimalEquals / formatAmount',
+    signature: 'parseDecimal / decimalEquals / compareDecimal / formatAmount',
     purpose: 'Genaue Dezimalzahlen auf BigInt',
+  },
+  {
+    layer: 'logic',
+    signature: 'checkPflichtangaben(model): PflichtResult',
+    purpose: 'PFLICHTANGABEN gegen das Modell auswerten',
+  },
+  {
+    layer: 'logic',
+    signature: 'modeOf(model): { mode; text? }',
+    purpose: 'Kleinunternehmer (§ 34a UStDV) vor Kleinbetrag (§ 33 UStDV) vor Regelfall',
+  },
+  {
+    layer: 'logic',
+    signature: 'present(model, presence) / holds(model, condition)',
+    purpose: 'Vorhandensein und Bedingungen aus den Daten auswerten',
+  },
+  {
+    layer: 'logic',
+    signature: 'displayValue(bt, value, currency): string',
+    purpose: 'Datum, Betrag, Satz, Kategorie, Einheit deutsch anzeigen',
   },
 ];
 
@@ -302,7 +399,14 @@ export const RELATIONS: [string, string, string, string][] = [
   ['Verdict', 'invoices', 'InvoiceVerdict', '0..n'],
   ['InvoiceVerdict', 'part', 'InvoicePart', '1'],
   ['InvoiceVerdict', 'profile.entry', 'ProfileEntry (PROFILES)', '0..1'],
+  ['PflichtResult', 'rows', 'RowResult', '0..n'],
+  ['RowResult', 'row', 'Pflichtangabe (PFLICHTANGABEN)', '1'],
 ];
+
+function needText(need: Need): string {
+  if (need.kind === 'immer') return 'immer';
+  return `${need.kind === 'bedingt' ? 'bedingt' : need.kind === 'einzelfall' ? 'Einzelfall' : 'nicht'}<br><small>${esc(need.because)}</small>`;
+}
 
 function bindingRows(group: GroupDef, depth: number): string {
   const indent = depth * 16;
@@ -438,9 +542,18 @@ ${entityTables}
 <p>Quelle: KoSIT „XRechnung Visualization“ v2026-10-13 (Apache-2.0); XPath 2.0 in XPath 1.0 umgeschrieben. Gruppenpfade relativ zur übergeordneten Gruppe, Terme relativ zu ihrer Gruppe.</p>
 <table><thead><tr><th>Gruppe / Term</th><th>UBL 2.1</th><th>CII D16B</th></tr></thead><tbody>${bindingRows(INVOICE, 0)}</tbody></table>
 
+<h2>Pflichtangaben (<code>PFLICHTANGABEN</code> in pflichtangaben.ts)</h2>
+<p>Zuordnung nach KoSIT/FeRD „Empfehlungen zu Pflichtangaben in einer E-Rechnung, Teil I“ (Stand 25.07.2025), Wortlaut nach gesetze-im-internet.de. Bedarf je Fall: <b>immer</b>, <b>bedingt</b> (nur wenn die Bedingung im Modell gilt), <b>Einzelfall</b> (aus den Daten nicht erkennbar), <b>nicht</b> (diese Mindestangaben verlangen es nicht).</p>
+<p>Fallarten (<code>MODES</code>, erster Treffer gilt): ${MODES.map((m) => `<b>${m.mode}</b> – ${esc(m.text)}`).join(' ')} Sonst <b>regel</b>.</p>
+<table><thead><tr><th>Angabe</th><th>Fundstelle</th><th>Regelfall</th><th>Kleinbetrag</th><th>Kleinunternehmer</th><th>Quelle der Zuordnung</th></tr></thead><tbody>${PFLICHTANGABEN.map(
+    (p) =>
+      `<tr><td>${esc(p.label)}</td><td>${esc(p.norm)}</td><td>${needText(p.needs.regel)}</td><td>${needText(p.needs.kleinbetrag)}</td><td>${needText(p.needs.kleinunternehmer)}</td><td>${esc(p.source)}</td></tr>`,
+  ).join('')}</tbody></table>
+
 <h2>Werkseinstellungen</h2>
 <p>Das Tool speichert nichts und hat keine Nutzerdaten. Es gibt <b>keine</b> geseedeten, änderbaren Daten. Fest eingebaut (nur durch ein neues Programm änderbar):</p>
 <ul>
+<li><b>Pflichtangaben</b> (<code>PFLICHTANGABEN</code>, ${PFLICHTANGABEN.length} Zeilen) und Fallarten (<code>MODES</code>) – Tabelle oben.</li>
 <li><b>Syntaxen</b> (<code>SYNTAXES</code>): ${SYNTAXES.map((s) => esc(s.label)).join(', ')}.</li>
 <li><b>Profilkennungen</b> (<code>PROFILES</code>, ${PROFILES.length} Einträge) – Tabelle unten.</li>
 <li><b>Zuordnung</b> (<code>INVOICE</code> in binding.ts) – Tabelle oben.</li>

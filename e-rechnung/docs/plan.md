@@ -51,7 +51,7 @@ Ergebnis sind **Hinweise, keine Freigabe**.
 | 0.5     | Zuordnung gegen die KoSIT/FeRD-Empfehlung abgleichen → `offene-fragen.md` F9                       | erledigt                                      |
 | 1a      | Einlesen + Erkennen (PDF/XML, Anhänge am Inhalt, Syntax, Profil, Ergebnisarten, mehrere XML)       | erledigt                                      |
 | 1b      | Normalisieren (Zuordnung als Daten, BT-Modell, Positionen)                                         | erledigt                                      |
-| 1c      | Pflichtangaben-Ansicht (§ 14 Abs. 4 in Reihenfolge, Status, Gesamtsatz, fester Hinweis)            | offen                                         |
+| 1c      | Pflichtangaben-Ansicht (§ 14 Abs. 4 in Reihenfolge, Status, Gesamtsatz, fester Hinweis)            | erledigt (Fragen F7, F10–F14 offen)           |
 | 2a      | XSDs übernehmen (nur weitergebbare), Profil → XSD                                                  | UBL 2.1 + CII D16B übernommen; FeRD offen     |
 | 2b      | Schema-Prüfung + Anzeige                                                                           | offen                                         |
 | 3a      | Plausibilitätsregeln (BR-CO-10, -13, -14, -15, -16, -17, Aufschlüsselung je Satz, Befreiungsgrund) | offen                                         |

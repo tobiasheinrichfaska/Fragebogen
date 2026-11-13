@@ -13,11 +13,13 @@ Geräte, Ziehen und Ablegen aus dem Mailprogramm. Alles andere prüfen die autom
 
 ## Übersicht
 
-| Datei                              | Tests         | Bereich                                                |
-| ---------------------------------- | ------------- | ------------------------------------------------------ |
-| [`01_erkennen.md`](01_erkennen.md) | MT-01 – MT-04 | Echte Rechnungen erkennen, Ziehen aus dem Mailprogramm |
+| Datei                                          | Tests         | Bereich                                                            |
+| ---------------------------------------------- | ------------- | ------------------------------------------------------------------ |
+| [`01_erkennen.md`](01_erkennen.md)             | MT-01 – MT-04 | Echte Rechnungen erkennen, Ziehen aus dem Mailprogramm             |
+| [`02_pflichtangaben.md`](02_pflichtangaben.md) | MT-05 – MT-07 | Pflichtangaben einer echten Rechnung, fehlende Angabe, Kleinbetrag |
 
-**Automatisiert statt von Hand** (Playwright, `tests/e2e/erkennen.spec.ts`, Chromium, Firefox,
-WebKit): XML-E-Rechnung, Hybrid-PDF, einfaches PDF, Profil MINIMUM, widersprüchliche Rechnungsdaten,
-geschütztes PDF, Ablegen per Ziehen, feste Hinweiszeile, CSP – und bei jedem Test: keine
-Netzwerkanfrage, kein Speicher- oder Cookie-Zugriff, kein Konsolenfehler.
+**Automatisiert statt von Hand** (Playwright, `tests/e2e/*.spec.ts`, Chromium, Firefox, WebKit):
+XML-E-Rechnung, Hybrid-PDF, einfaches PDF, Profil MINIMUM, widersprüchliche Rechnungsdaten,
+geschütztes PDF, Ablegen per Ziehen, feste Hinweiszeile, CSP, Pflichtangaben vollständig / mit
+Lücken / Kleinbetrag, Positionen aufklappen – und bei jedem Test: keine Netzwerkanfrage, kein
+Speicher- oder Cookie-Zugriff, kein Konsolenfehler.
