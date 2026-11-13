@@ -223,3 +223,110 @@ describe('role condition "answer" — definition rules', () => {
     ).not.toEqual([]);
   });
 });
+
+// A chain (Tobias 2026-11-13: „dann muss gesetzlicher Vertreter 1 eine Angabe machen, ob er allein
+// sorgeberechtigt ist, sonst 2“): a second conditional role decided by the first conditional one.
+describe('role condition chain', () => {
+  const chained = structuredClone(RAW);
+  chained.roles.push({
+    id: 'zweit',
+    label: 'Zweite Person',
+    stationHeading: 'Freigabe der zweiten Person',
+    confirmationText: 'Ich gebe auch frei.',
+    signature: 'required',
+    requiredIf: { kind: 'answer', when: { field: 'alleinFrei', equals: false } },
+    signerNameField: 'zweitName',
+  });
+  chained.sections[1]?.fields.push({
+    id: 'alleinFrei',
+    role: 'ehegatte',
+    type: 'boolean',
+    label: 'Gibt allein frei',
+    required: true,
+    purpose: 'Test',
+  });
+  chained.sections.push({
+    id: 'zweit',
+    title: 'Zweite Person',
+    fields: [
+      {
+        id: 'zweitName',
+        role: 'zweit',
+        type: 'text',
+        label: 'Name',
+        required: true,
+        purpose: 'Test',
+      },
+    ],
+  });
+  const chainForm = registeredFrom(structuredClone(chained));
+  const zweit = chainForm.definition.roles[2];
+  if (!zweit) throw new Error('fixture changed');
+
+  function kanzlei(veranlagung: string) {
+    let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, chainForm), chainForm, 'kanzlei'));
+    q = fill(q, 'kanzlei', { veranlagung }, chainForm);
+    const t = at(0);
+    return ok(
+      sealPart(q, chainForm, 'kanzlei', {
+        nonce: 'a1'.repeat(16),
+        systemNote: note(t.local, t.utc),
+        acknowledged: [],
+        signature: { method: 'drawn', strokes: STROKES },
+      }),
+    );
+  }
+  function spouse(alleinFrei: boolean) {
+    const base = kanzlei('zusammen');
+    let q = ok(startPart(base, chainForm, 'ehegatte'));
+    q = fill(q, 'ehegatte', { ehegatteName: 'Erika Musterfrau', alleinFrei }, chainForm);
+    const kanzleiPart = base.parts.kanzlei?.[0];
+    if (!kanzleiPart) throw new Error('no Kanzlei part');
+    const t = at(5);
+    return ok(
+      sealPart(q, chainForm, 'ehegatte', {
+        nonce: 'b2'.repeat(16),
+        systemNote: note(t.local, t.utc),
+        acknowledged: [],
+        signature: { method: 'drawn', strokes: STROKES },
+        receivedParts: [receivedPartFor(kanzleiPart, t, 'same-device')],
+      }),
+    );
+  }
+  const requirement = (q: ReturnType<typeof kanzlei>) =>
+    roleRequirement(chainForm.definition, q, zweit);
+
+  it('is a valid definition', () => {
+    expect(checkFormDefinition(chainForm.definition)).toEqual([]);
+  });
+
+  it('is not needed once the deciding role is decided not needed, not pending forever', () => {
+    expect(requirement(kanzlei('einzel'))).toMatchObject({
+      required: false,
+      reason: 'triggerNotNeeded',
+    });
+    expect(transmissionBlockers(kanzlei('einzel'), chainForm)).toEqual([]);
+    expect(requirementText(chainForm.definition, zweit, requirement(kanzlei('einzel')))).toBe(
+      'Nicht erforderlich nach den Angaben im Fragebogen.',
+    );
+  });
+
+  it('waits for the deciding role, then follows its answer', () => {
+    expect(requirement(kanzlei('zusammen'))).toMatchObject({ required: false, reason: 'pending' });
+    expect(requirement(spouse(true))).toMatchObject({ required: false, reason: 'answerNotMet' });
+    expect(requirement(spouse(false))).toMatchObject({ required: true, reason: 'answerMet' });
+    expect(transmissionBlockers(spouse(false), chainForm).map((b) => b.code)).toEqual([
+      'conditionalRoleMissing',
+    ]);
+  });
+
+  it('refuses deciding roles that form a cycle', () => {
+    const cycle = structuredClone(chained);
+    const ehegatteRole = cycle.roles[1];
+    if (ehegatteRole)
+      ehegatteRole.requiredIf = { kind: 'answer', when: { field: 'zweitName', answered: true } };
+    expect(checkFormDefinition(cycle).map((issue) => issue.message)).toContain(
+      'the deciding roles form a cycle',
+    );
+  });
+});

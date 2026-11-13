@@ -131,10 +131,28 @@ function personSigns(s: Session, answers: Answers): Session {
   );
 }
 
-function guardianSigns(s: Session, name: string): Session {
+function guardianSigns(s: Session, name: string, alone = true): Session {
   return must(
-    seal(fill(must(enterRole(s, 'vertretung')), { vertretungName: name }), {
-      nonce: NONCE_GUARDIAN,
+    seal(
+      fill(must(enterRole(s, 'vertretung')), {
+        vertretungName: name,
+        vertretungAlleinSorge: alone,
+      }),
+      {
+        nonce: NONCE_GUARDIAN,
+        systemNote: note(GUARDIAN_AT.local, GUARDIAN_AT.utc, ['touch']),
+        signature: { method: 'drawn', strokes: STROKES },
+        now: GUARDIAN_AT,
+      },
+    ),
+  );
+}
+
+/** The second representative under joint custody (§ 1629 Abs. 1 Satz 2 BGB, 2026-11-13). */
+function secondGuardianSigns(s: Session, name: string): Session {
+  return must(
+    seal(fill(must(enterRole(s, 'vertretung2')), { vertretung2Name: name }), {
+      nonce: '2468ace0'.repeat(4),
       systemNote: note(GUARDIAN_AT.local, GUARDIAN_AT.utc, ['touch']),
       signature: { method: 'drawn', strokes: STROKES },
       now: GUARDIAN_AT,
@@ -147,6 +165,8 @@ interface Way {
   person?: Answers;
   employer?: Answers;
   guardian?: string;
+  /** Joint custody: the first representative is not alone, this one signs too. */
+  secondGuardian?: string;
   /** What the person sees under "Stand" once person and employer have sealed. */
   blockersBeforeGuardian?: string[];
   /** Text the PDF must show for this way. */
@@ -220,9 +240,19 @@ const WAYS: Way[] = [
     shows: ['01.03.2010', 'Max Musterfrau'],
   },
   {
+    name: 'a minor whose parents share custody: both sign',
+    person: { geburtsdatum: '01.03.2010', versicherungsnummer: undefined },
+    guardian: 'Max Musterfrau',
+    secondGuardian: 'Erika Musterfrau',
+    blockersBeforeGuardian: ['guardianMissing'],
+    shows: ['01.03.2010', 'Max Musterfrau', 'Erika Musterfrau'],
+  },
+  {
     name: 'a family name that differs between employer and person',
     employer: { agFamilienname: 'Mustermann' },
     shows: ['Mustermann', 'Musterfrau'],
+    // The employer's name differs from the one the person's part proposes (fromRole, 2026-11-13).
+    hints: ['fromRole:agFamilienname'],
     contradictions: [
       'Der Familienname weicht zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab.',
     ],
@@ -258,7 +288,15 @@ describe.each(WAYS)('Sofortmeldung 1.1.0 to the end: $name', (way) => {
     expect(transmissionBlockers(session.questionnaire, form).map((b) => b.code)).toEqual(
       way.blockersBeforeGuardian ?? [],
     );
-    if (way.guardian !== undefined) session = guardianSigns(session, way.guardian);
+    if (way.guardian !== undefined) {
+      session = guardianSigns(session, way.guardian, way.secondGuardian === undefined);
+    }
+    if (way.secondGuardian !== undefined) {
+      expect(transmissionBlockers(session.questionnaire, form).map((b) => b.code)).toEqual([
+        'conditionalRoleMissing',
+      ]);
+      session = secondGuardianSigns(session, way.secondGuardian);
+    }
     expect(transmissionBlockers(session.questionnaire, form)).toEqual([]);
   });
 

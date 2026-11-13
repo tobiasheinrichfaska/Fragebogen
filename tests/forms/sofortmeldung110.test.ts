@@ -140,8 +140,11 @@ describe('Sofortmeldung 1.1.0: texts', () => {
   });
 
   it('changes nothing else against 1.0.0 but the sector, the exclusion, these texts and the foreign postcode', () => {
+    // 2026-11-13: the employer gets the person's names proposed (fromRole), and under joint
+    // custody a second representative signs (role vertretung2, field vertretungAlleinSorge).
     const strip = (d: typeof definition) => ({
       ...d,
+      roles: d.roles.filter((r) => r.id !== 'vertretung2'),
       version: '',
       revised: '',
       exclusions: [],
@@ -151,20 +154,30 @@ describe('Sofortmeldung 1.1.0: texts', () => {
         return rest;
       }),
       infoBlocks: d.infoBlocks.map((b) => ({ ...b, text: '', asOf: '' })),
-      sections: d.sections.map((s) => ({
-        ...s,
-        fields: s.fields
-          .filter((f) => f.id !== 'agBranche')
-          .map((f) => (f.id === 'geborenInDeutschland' ? { ...f, help: '' } : f))
-          // The foreign postcode is required unless the state has none (Tobias 2026-11-06).
-          .map((f) => {
-            if (f.id !== 'postleitzahlAusland') return f;
-            const rest = { ...f, help: '', because: '' };
-            delete rest.requiredIf;
-            delete rest.quickAnswers;
-            return rest;
-          }),
-      })),
+      sections: d.sections
+        .filter((s) => s.id !== 'vertretung2')
+        .map((s) => ({
+          ...s,
+          fields: s.fields
+            .filter((f) => f.id !== 'agBranche' && f.id !== 'vertretungAlleinSorge')
+            .map((f) => {
+              const rest = { ...f };
+              if (f.id === 'agFamilienname' || f.id === 'agVorname') {
+                delete rest.fromRole;
+                delete rest.because;
+              }
+              return rest;
+            })
+            .map((f) => (f.id === 'geborenInDeutschland' ? { ...f, help: '' } : f))
+            // The foreign postcode is required unless the state has none (Tobias 2026-11-06).
+            .map((f) => {
+              if (f.id !== 'postleitzahlAusland') return f;
+              const rest = { ...f, help: '', because: '' };
+              delete rest.requiredIf;
+              delete rest.quickAnswers;
+              return rest;
+            }),
+        })),
     });
     expect(strip(definition)).toEqual(strip(previous.definition));
   });

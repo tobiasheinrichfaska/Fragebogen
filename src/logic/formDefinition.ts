@@ -4,6 +4,7 @@ import { COMPUTE_FUNCTIONS } from './compute';
 import { CONDITION_OPERATORS, forEachLeaf, leafProblem } from './conditions';
 import { dateOrderRules } from './dateOrder';
 import { placeholderIds } from './display';
+import { triggerRoleOf } from './form';
 import { hintTestProblem } from './hints';
 import { isIsoDate } from './dates';
 import { Decoder, type DecodeIssue } from './decode';
@@ -1289,9 +1290,16 @@ function roles({ definition, fields, report }: CheckContext): void {
       } else if (owners.size > 1) {
         report(`${path}.requiredIf.when`, 'all fields must belong to one role');
       } else {
-        const [owner] = owners;
-        if (definition.roles.find((candidate) => candidate.id === owner)?.requiredIf) {
-          report(`${path}.requiredIf.when`, 'the deciding role cannot be conditional itself');
+        // A deciding role may be conditional itself (a chain), but the chain must not come back.
+        const seen = new Set<string>([role.id]);
+        let next: string | undefined = [...owners][0];
+        while (next !== undefined && !seen.has(next)) {
+          seen.add(next);
+          const condition = definition.roles.find((candidate) => candidate.id === next)?.requiredIf;
+          next = condition ? triggerRoleOf(definition, condition) : undefined;
+        }
+        if (next !== undefined) {
+          report(`${path}.requiredIf.when`, 'the deciding roles form a cycle');
         }
       }
       if (role.signature !== 'required') {

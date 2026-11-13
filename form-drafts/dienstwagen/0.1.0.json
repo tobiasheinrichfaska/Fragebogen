@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-13T13:25",
+  "revised": "2026-11-13T17:27",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -358,7 +358,13 @@
           "label": "Familienname",
           "question": "Wie lautet Ihr Familienname?",
           "required": true,
-          "purpose": "Zuordnung; Abgleich mit der Angabe des Arbeitgebers"
+          "purpose": "Zuordnung; Abgleich mit der Angabe des Arbeitgebers",
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agFamilienname",
+            "changeable": true
+          },
+          "because": "Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt."
         },
         {
           "id": "vorname",
@@ -368,7 +374,13 @@
           "label": "Vornamen",
           "question": "Wie lauten Ihre Vornamen?",
           "required": true,
-          "purpose": "Zuordnung; Abgleich mit der Angabe des Arbeitgebers"
+          "purpose": "Zuordnung; Abgleich mit der Angabe des Arbeitgebers",
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agVorname",
+            "changeable": true
+          },
+          "because": "Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt."
         },
         {
           "id": "fahrtenWohnung",

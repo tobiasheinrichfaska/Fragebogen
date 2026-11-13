@@ -1,7 +1,7 @@
 {
   "id": "sofortmeldung",
   "version": "1.1.0",
-  "revised": "2026-11-06T12:24",
+  "revised": "2026-11-13T17:27",
   "title": "Personalfragebogen: Angaben für die Sofortmeldung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -24,6 +24,22 @@
       },
       "because": "Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.",
       "signerNameField": "vertretungName"
+    },
+    {
+      "id": "vertretung2",
+      "label": "Zweite gesetzliche Vertretung",
+      "stationHeading": "Unterschrift der zweiten gesetzlichen Vertretung",
+      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "signature": "required",
+      "requiredIf": {
+        "kind": "answer",
+        "when": {
+          "field": "vertretungAlleinSorge",
+          "equals": false
+        }
+      },
+      "because": "Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.",
+      "signerNameField": "vertretung2Name"
     },
     {
       "id": "arbeitgeber",
@@ -443,6 +459,32 @@
           "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil.",
           "required": true,
           "purpose": "Nachweis, wer für die minderjährige Person unterschreibt"
+        },
+        {
+          "id": "vertretungAlleinSorge",
+          "role": "vertretung",
+          "type": "boolean",
+          "label": "Allein sorgeberechtigt",
+          "question": "Haben Sie das Sorgerecht allein?",
+          "help": "Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB); dann unterschreibt auch der andere Elternteil.",
+          "required": true,
+          "purpose": "Ob eine zweite gesetzliche Vertretung unterschreiben muss"
+        }
+      ]
+    },
+    {
+      "id": "vertretung2",
+      "title": "Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)",
+      "fields": [
+        {
+          "id": "vertretung2Name",
+          "role": "vertretung2",
+          "type": "text",
+          "label": "Vor- und Familienname der zweiten gesetzlichen Vertretung",
+          "question": "Wie lautet Ihr Vor- und Familienname?",
+          "help": "Sie unterschreiben als zweite gesetzliche Vertretung der minderjährigen Person, zum Beispiel als zweiter Elternteil mit gemeinsamem Sorgerecht.",
+          "required": true,
+          "purpose": "Nachweis, wer für die minderjährige Person zusätzlich unterschreibt"
         }
       ]
     },
@@ -541,7 +583,13 @@
           "label": "Familienname der beschäftigten Person",
           "question": "Wie lautet der Familienname der beschäftigten Person?",
           "required": true,
-          "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
+          "purpose": "Zuordnung zu den Angaben der beschäftigten Person",
+          "fromRole": {
+            "role": "person",
+            "field": "familienname",
+            "changeable": true
+          },
+          "because": "Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt."
         },
         {
           "id": "agVorname",
@@ -551,7 +599,13 @@
           "label": "Vornamen der beschäftigten Person",
           "question": "Wie lauten die Vornamen der beschäftigten Person?",
           "required": true,
-          "purpose": "Zuordnung zu den Angaben der beschäftigten Person"
+          "purpose": "Zuordnung zu den Angaben der beschäftigten Person",
+          "fromRole": {
+            "role": "person",
+            "field": "vorname",
+            "changeable": true
+          },
+          "because": "Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt."
         },
         {
           "id": "agPersonalnummer",

@@ -213,7 +213,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="dienstwagen-0.1.0">Dienstwagen: Überlassung <span class="muted">0.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>7f4c419b42fb66a66c93e7a20c072a838d2f2265fc27ede9074dd906968fe613</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>bd776dd24a73d410a640034df308f0a497553546e38987bf532e4fb7978f4f9b</code></p>
 <p><strong>Diese Fassung gilt für „Überlassen ab“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
 <li>Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.</li>
@@ -223,6 +223,7 @@ wird aber nicht mit unterschrieben.</p>
 <div class="order"><h3>Reihenfolge der Stationen</h3><ul>
 <li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
 <li>Arbeitgeber und Beschäftigte Person: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+<li>Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Familienname“, „Vornamen“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt. Ist „Beschäftigte Person“ zuerst dran, wird „Familienname“, „Vornamen“ dort gefragt.</li>
 </ul></div>
 <section class="station" id="dienstwagen-0.1.0-arbeitgeber">
 <h3>Station: Arbeitgeber</h3>
@@ -265,8 +266,8 @@ wird aber nicht mit unterschrieben.</p>
 <p>Zuerst die Hinweise: „Datenschutzhinweis“, „Was Ihre Angaben bewirken“.</p>
 <h4>Angaben der beschäftigten Person</h4>
 <ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Arbeitgeber: „Familienname der beschäftigten Person“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt.</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Arbeitgeber: „Vornamen der beschäftigten Person“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt.</div></li>
 <li class="step level-0 decision"><span class="num">3</span> <span class="q">Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?</span><div class="meta">Fahrten zwischen Wohnung und erster Tätigkeitsstätte · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 6 ab.</div><div class="meta">Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).</div></li>
 <li class="step level-0 decision"><span class="num">4</span> <span class="q">Fahren Sie von Ihrer Meldeanschrift aus?</span><div class="meta">Fahrten von der Meldeanschrift · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 5 ab.</div></li>
 <li class="step level-1"><span class="num">5</span> <span class="q">Anschrift der Wohnung, von der Sie fahren</span><div class="meta">Anschrift der Wohnung, von der Sie fahren · Text · Pflicht</div><div class="when">Gefragt erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist (hängt ab von Nr. 4).</div><div class="why">Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung.</div></li>
@@ -419,7 +420,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="personalfragebogen-1.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">1.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>8134b9f2976757b53ca18d2c72bd0642ada3955ce4c51a010a862f2972a69dc8</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>711df615e0134433628b19aab3e49b1af5100f6ddca8770902c8f430963b3853</code></p>
 <p class="meta">Ersetzt die ältere Fassung 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
@@ -451,7 +452,9 @@ wird aber nicht mit unterschrieben.</p>
 <li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
 <li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
 <li>Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Art der Lohnsteuer“, „Sozialkassenverfahren“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt. Ist „Beschäftigte Person“ zuerst dran, wird „Art der Lohnsteuer“, „Sozialkassenverfahren“ dort gefragt.</li>
+<li>Empfohlen: Beschäftigte Person zuerst. Dann übernimmt der Fragebogen „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ in den Teil „Arbeitgeber“ und fragt dort nur, was dazu passt. Ist „Arbeitgeber“ zuerst dran, wird „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ dort gefragt.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
+<li>Zweite gesetzliche Vertretung kommt nur dazu, wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist.</li>
 </ul></div>
 <section class="station" id="personalfragebogen-1.1.0-person">
 <h3>Station: Beschäftigte Person</h3>
@@ -622,6 +625,17 @@ wird aber nicht mit unterschrieben.</p>
 <h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
 <ol class="flow">
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Haben Sie das Sorgerecht allein?</span><div class="meta">Allein sorgeberechtigt · Ja/Nein · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="personalfragebogen-1.1.0-vertretung2">
+<h3>Station: Zweite gesetzliche Vertretung</h3>
+<p class="meta">Wird gebraucht: nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist · unterschreibt</p>
+<p class="why">Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.</p>
+<h4>Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der zweiten gesetzlichen Vertretung · Text · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
@@ -633,8 +647,8 @@ wird aber nicht mit unterschrieben.</p>
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet die Firma des Arbeitgebers?</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
 <li class="step level-0"><span class="num">2</span> <span class="q">Wie lautet die Betriebsnummer?</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
 <li class="step level-0"><span class="num">3</span> <span class="q">Wie lautet die Steuernummer des Arbeitgebers?</span><div class="meta">Steuernummer des Arbeitgebers · Text · Pflicht, wenn bei „Vorgesehene Art der Beschäftigung“ „Minijob (bis 603 € im Monat)“ gewählt ist</div><div class="when">Pflicht hängt ab von Nr. 37.</div><div class="why">Warum: Für Minijobs verlangen die Entgeltmeldungen die Steuernummer des Arbeitgebers (DEÜV-Rundschreiben 2026 Tz. 1.3.7).</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Beschäftigte Person: „Familienname“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt.</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Beschäftigte Person: „Vornamen“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt.</div></li>
 <li class="step level-0"><span class="num">6</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
 <li class="step level-0"><span class="num">7</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
 <li class="step level-0 decision"><span class="num">8</span> <span class="q">Beginnt der Arbeitsvertrag an einem anderen Tag als dem ersten Arbeitstag?</span><div class="meta">Vertragsbeginn weicht vom ersten Arbeitstag ab · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 9 ab.</div><div class="meta">Zum Beispiel: Vertrag ab dem 1. eines Monats, der erste Arbeitstag ist wegen eines Wochenendes oder Feiertags später.</div></li>
@@ -904,7 +918,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="sofortmeldung-1.1.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">1.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>3f0dd70f9bfe21be0dfcc6c28675f708f2c4f342375250485e03493be21d578a</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>a4df4d5148f7f29ea96a509dcde8490082c742e6ea447b1af6cb0783f35974d9</code></p>
 <p class="meta">Ersetzt die ältere Fassung 0.2.0 (eingefroren), 0.3.0 (eingefroren), 0.4.0 (eingefroren), 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
@@ -918,7 +932,9 @@ wird aber nicht mit unterschrieben.</p>
 <div class="order"><h3>Reihenfolge der Stationen</h3><ul>
 <li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
 <li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+<li>Empfohlen: Beschäftigte Person zuerst. Dann übernimmt der Fragebogen „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ in den Teil „Arbeitgeber“ und fragt dort nur, was dazu passt. Ist „Arbeitgeber“ zuerst dran, wird „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ dort gefragt.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
+<li>Zweite gesetzliche Vertretung kommt nur dazu, wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist.</li>
 </ul></div>
 <section class="station" id="sofortmeldung-1.1.0-person">
 <h3>Station: Beschäftigte Person</h3>
@@ -963,6 +979,17 @@ wird aber nicht mit unterschrieben.</p>
 <h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
 <ol class="flow">
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Haben Sie das Sorgerecht allein?</span><div class="meta">Allein sorgeberechtigt · Ja/Nein · Pflicht</div></li>
+</ol>
+<p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
+</section>
+<section class="station" id="sofortmeldung-1.1.0-vertretung2">
+<h3>Station: Zweite gesetzliche Vertretung</h3>
+<p class="meta">Wird gebraucht: nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist · unterschreibt</p>
+<p class="why">Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.</p>
+<h4>Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)</h4>
+<ol class="flow">
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der zweiten gesetzlichen Vertretung · Text · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
@@ -974,8 +1001,8 @@ wird aber nicht mit unterschrieben.</p>
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet die Firma des Arbeitgebers?</span><div class="meta">Firma des Arbeitgebers · Text · Pflicht</div></li>
 <li class="step level-0"><span class="num">2</span> <span class="q">Wie lautet die Betriebsnummer?</span><div class="meta">Betriebsnummer des Arbeitgebers · Betriebsnummer · Pflicht</div></li>
 <li class="step level-0"><span class="num">3</span> <span class="q">In welchem Wirtschaftsbereich arbeitet die Person?</span><div class="meta">Wirtschaftsbereich · Auswahl: Baugewerbe · Gaststätten- und Beherbergungsgewerbe · Personenbeförderungsgewerbe · Speditions-, Transport- und damit verbundenes Logistikgewerbe, auch plattformbasierte Lieferdienste · Schaustellergewerbe · Gebäudereinigungsgewerbe · Auf- und Abbau von Messen und Ausstellungen · Fleischwirtschaft (ohne Fleischerhandwerk) · Prostitutionsgewerbe · Wach- und Sicherheitsgewerbe · Friseur- und Kosmetikgewerbe · keiner dieser Bereiche · Pflicht</div></li>
-<li class="step level-0"><span class="num">4</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">5</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">4</span> <span class="q">Wie lautet der Familienname der beschäftigten Person?</span><div class="meta">Familienname der beschäftigten Person · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Beschäftigte Person: „Familienname“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt.</div></li>
+<li class="step level-0"><span class="num">5</span> <span class="q">Wie lauten die Vornamen der beschäftigten Person?</span><div class="meta">Vornamen der beschäftigten Person · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Beschäftigte Person: „Vornamen“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt.</div></li>
 <li class="step level-0"><span class="num">6</span> <span class="q">Welche Personalnummer hat die Person?</span><div class="meta">Personalnummer · Text · optional</div></li>
 <li class="step level-0"><span class="num">7</span> <span class="q">An welchem Tag beginnt die Beschäftigung?</span><div class="meta">Tag der Beschäftigungsaufnahme · Datum · Pflicht</div></li>
 </ol>

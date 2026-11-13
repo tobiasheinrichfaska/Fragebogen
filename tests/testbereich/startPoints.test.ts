@@ -142,6 +142,7 @@ describe('start points (manual_tests/startpunkte/)', () => {
     expect(roleStates(built.session).map((r) => [r.role.id, r.state])).toEqual([
       ['person', 'signed'],
       ['vertretung', 'missing'],
+      ['vertretung2', 'missing'],
       ['arbeitgeber', 'sealed'],
     ]);
   });
