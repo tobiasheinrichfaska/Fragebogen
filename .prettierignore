@@ -1,7 +1,5 @@
 dist/
 coverage/
-# Sub-project with its own Prettier run
-e-rechnung/
 .tmp/
 import/
 node_modules/

@@ -1,4 +1,0 @@
-# Official artefacts stay byte-identical to their source (verifiable against docs/quellen.md):
-# no line-ending conversion, whatever the repo-wide text=auto eol=lf rule says.
-schemas/**/*.xsd -text
-tests/fixtures/** -text
