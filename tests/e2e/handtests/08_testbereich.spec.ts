@@ -525,7 +525,9 @@ test.describe('MT-133: opening a test restarts the app with its entry', () => {
     await expect(dialog(page)).toContainText(
       'auch einen angefangenen Fragebogen zum Fortsetzen – und den Link in der Adresszeile',
     );
-    await expect(dialog(page)).toContainText('Ihre Testergebnisse bleiben erhalten.');
+    await expect(dialog(page)).toContainText(
+      'Ihre Testergebnisse bleiben erhalten, ebenso alles, was die öffentliche App gespeichert hat.',
+    );
     await choose(page, 'Zurücksetzen');
     await expect(
       page.getByText(
