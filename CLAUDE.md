@@ -1131,7 +1131,9 @@ Key design decisions (details in `docs/plan.md`):
   the link offer on a finished single-role form (Eigenbeleg, B19); help texts not following earlier
   answers (B20); units of the Monatsmeldung values without a Lohnarten list (B23); tables in the
   summary as one long line (B24); same firm question everywhere (B17). Claude in Chrome never types
-  IBAN, tax id or SV number itself — the person running it does.
+  IBAN, tax id or SV number itself — the person running it does. Reports and PDFs archived in the
+  gitignored `import-archiv/<timestamp>_chrome-evaluierung/` (workspace rule); the older `import/archiv/`
+  still sits inside `import/` — moving it out waits for Tobias.
 - **Device key (ECDSA) deliberately not built** — proves a browser profile, not a person, and
   conflicts with "store nothing".
 - **PDF parsing runs in the main thread** (pdf.js "fake worker", because `file://` forbids blob
