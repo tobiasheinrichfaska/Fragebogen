@@ -8,8 +8,8 @@
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Abrechnungsmonat“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
-| Definition (SHA-256) | 18370932c49fb1769e0b3d44af013692b6e0ee6d73d6531814b6d9dee56424d2 |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 13:25 |
+| Definition (SHA-256) | 227a4e5499d9e651825009f40f5ba85e03e76cf9270ab80e97a1e72630a78944 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -29,12 +29,12 @@
 | Abrechnungsmonat (abrechnungsmonat)<br>Hilfe: Der Monat, für den abgerechnet werden soll, zum Beispiel 11.2026. Haben Sie die Meldung des Vormonats eingelesen, ist er schon eingetragen. | Arbeitgeber | Monat; wird übernommen als der folgende Monat | immer | Pflicht | Lohnzahlungszeitraum (§ 4 Abs. 2 Nr. 1 LStDV) |
 | Firma des Arbeitgebers (agFirma) | Arbeitgeber | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung |
 | Betriebsnummer des Arbeitgebers (agBetriebsnummer) | Arbeitgeber | Betriebsnummer (8 Ziffern); Stammdatum „betriebsnummer“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung |
-| Mandantennummer (mandantennummer)<br>Hilfe: Steht auf Schreiben und Abrechnungen Ihrer lohnabrechnenden Stelle und im Lesezeichen-Link. | Arbeitgeber | Text, nur Ziffern; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung bei der lohnabrechnenden Stelle |
-| Abgabe bis zum … des Monats (abgabetag)<br>Frage: Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?<br>Hilfe: Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen. | Arbeitgeber | Zahl, ganzzahlig, mindestens 1, höchstens 31; Stammdatum „abgabetag“, kann im Stammdaten-Link gemerkt werden | immer | optional | Termin der lohnabrechnenden Stelle für die Monatsmeldung |
+| Mandantennummer (mandantennummer)<br>Hilfe: Steht auf Schreiben und Abrechnungen Ihrer lohnabrechnenden Stelle und im Stammdaten-Link. | Arbeitgeber | Text, nur Ziffern; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung bei der lohnabrechnenden Stelle |
+| Abgabe bis zum … des Monats (abgabetag)<br>Frage: Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?<br>Hilfe: Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Stammdaten-Link, ist er schon eingetragen. | Arbeitgeber | Zahl, ganzzahlig, mindestens 1, höchstens 31; Stammdatum „abgabetag“, kann im Stammdaten-Link gemerkt werden | immer | optional | Termin der lohnabrechnenden Stelle für die Monatsmeldung |
 | Meldende Person (ansprechpartner)<br>Frage: Wer gibt die Meldung ab und ist Ansprechperson für Rückfragen?<br>Hilfe: Ihr Vor- und Familienname. | Arbeitgeber | Text; Stammdatum „ansprechpartner“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Rückfragen; Unterschrift mit Namen |
 | Telefon (ansprechpartnerTelefon) | Arbeitgeber | Text, Telefonnummer mit Vorwahl; Stammdatum „ansprechpartnerTelefon“, kann im Stammdaten-Link gemerkt werden | immer<br>Warum: Für Rückfragen genügt ein Weg: Ohne E-Mail ist das Telefon Pflicht. | Pflicht, wenn „E-Mail“ leer ist | Rückfragen |
 | E-Mail (ansprechpartnerEmail) | Arbeitgeber | Text, E-Mail-Adresse; Stammdatum „ansprechpartnerEmail“, kann im Stammdaten-Link gemerkt werden | immer<br>Warum: Für Rückfragen genügt ein Weg: Ohne Telefon ist die E-Mail Pflicht. | Pflicht, wenn „Telefon“ leer ist | Rückfragen |
-| Lohnarten Ihres Betriebs (lohnarten)<br>Hilfe: Gibt Ihre lohnabrechnende Stelle vor, eine je Zeile, zum Beispiel „1000 Stundenlohn“; steht im Lesezeichen-Link. Sie erscheinen als Vorschläge bei den Monatswerten. | Arbeitgeber | Text, mehrzeilig; Stammdatum „lohnarten“, kann im Stammdaten-Link gemerkt werden | immer | optional | Vorschläge für die Monatswerte |
+| Lohnarten Ihres Betriebs (lohnarten)<br>Hilfe: Gibt Ihre lohnabrechnende Stelle vor, eine je Zeile, zum Beispiel „1000 Stundenlohn“; steht im Stammdaten-Link. Sie erscheinen als Vorschläge bei den Monatswerten. | Arbeitgeber | Text, mehrzeilig; Stammdatum „lohnarten“, kann im Stammdaten-Link gemerkt werden | immer | optional | Vorschläge für die Monatswerte |
 
 ### 2. Mitarbeitende
 
@@ -102,9 +102,9 @@ Alle übrigen Angaben sind unabhängig.
 
 - Kenntnisnahme durch: Arbeitgeber
 - Art: wird in der App gelesen und bestätigt
-- Stand: 30.10.2026
+- Stand: 13.11.2026
 
-> Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über die werktägliche Höchstarbeitszeit hinaus ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.
+> Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über acht Stunden je Werktag ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.
 
 ## Verknüpfung der Teile
 

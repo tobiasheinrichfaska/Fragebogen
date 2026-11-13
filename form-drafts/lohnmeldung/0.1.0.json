@@ -1,7 +1,7 @@
 {
   "id": "lohnmeldung",
   "version": "0.1.0",
-  "revised": "2026-11-04T18:13",
+  "revised": "2026-11-13T13:25",
   "title": "Monatsmeldung: Lohn- und Gehaltsdaten",
   "signaturePolicy": "electronic",
   "roles": [
@@ -58,7 +58,7 @@
           "label": "Mandantennummer",
           "required": true,
           "purpose": "Zuordnung bei der lohnabrechnenden Stelle",
-          "help": "Steht auf Schreiben und Abrechnungen Ihrer lohnabrechnenden Stelle und im Lesezeichen-Link.",
+          "help": "Steht auf Schreiben und Abrechnungen Ihrer lohnabrechnenden Stelle und im Stammdaten-Link.",
           "masterData": "mandantennummer"
         },
         {
@@ -69,7 +69,7 @@
           "required": false,
           "purpose": "Termin der lohnabrechnenden Stelle für die Monatsmeldung",
           "question": "Bis zu welchem Tag des Monats braucht Ihre lohnabrechnende Stelle die Meldung?",
-          "help": "Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Lesezeichen-Link, ist er schon eingetragen.",
+          "help": "Den Tag nennt Ihnen Ihre lohnabrechnende Stelle. Steht er in Ihrem Stammdaten-Link, ist er schon eingetragen.",
           "masterData": "abgabetag",
           "decimals": 0,
           "min": 1,
@@ -123,7 +123,7 @@
           "label": "Lohnarten Ihres Betriebs",
           "required": false,
           "purpose": "Vorschläge für die Monatswerte",
-          "help": "Gibt Ihre lohnabrechnende Stelle vor, eine je Zeile, zum Beispiel „1000 Stundenlohn“; steht im Lesezeichen-Link. Sie erscheinen als Vorschläge bei den Monatswerten.",
+          "help": "Gibt Ihre lohnabrechnende Stelle vor, eine je Zeile, zum Beispiel „1000 Stundenlohn“; steht im Stammdaten-Link. Sie erscheinen als Vorschläge bei den Monatswerten.",
           "multiline": true,
           "masterData": "lohnarten"
         }
@@ -459,8 +459,8 @@
       "id": "arbeitszeit",
       "role": "arbeitgeber",
       "title": "Arbeitszeit aufzeichnen",
-      "text": "Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über die werktägliche Höchstarbeitszeit hinaus ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.",
-      "asOf": "2026-10-30",
+      "text": "Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über acht Stunden je Werktag ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.",
+      "asOf": "2026-11-13",
       "acknowledgement": "read"
     }
   ],

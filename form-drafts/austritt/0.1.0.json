@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-13T10:38",
+  "revised": "2026-11-13T13:25",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -321,7 +321,7 @@
           "type": "date",
           "label": "Zugang der Kündigung",
           "question": "An welchem Tag ist die Kündigung zugegangen?",
-          "help": "Haben Sie gekündigt: der Tag, an dem die Person das Schreiben erhalten hat. Hat die Person gekündigt: der Tag, an dem es bei Ihnen ankam. Erst mit dem Zugang wirkt die Kündigung (§ 130 BGB); ab dann laufen die Kündigungsfrist und die Klagefrist. Diesen Tag meldet die lohnabrechnende Stelle als Tag der Kündigung.",
+          "help": "Haben Sie gekündigt: der Tag, an dem die Person das Schreiben erhalten hat. Hat die Person gekündigt: der Tag, an dem es bei Ihnen ankam. Erst mit dem Zugang wirkt die Kündigung (§ 130 BGB); am Tag danach beginnen die Kündigungsfrist und die Klagefrist. Diesen Tag meldet die lohnabrechnende Stelle als Tag der Kündigung.",
           "required": true,
           "showIf": {
             "field": "agBeendigungsart",
@@ -1310,8 +1310,8 @@
       "id": "hinweisAblauf",
       "role": "arbeitgeber",
       "title": "Wann die lohnabrechnende Stelle die Angaben braucht",
-      "text": "Bitte schicken Sie diesen Fragebogen, sobald das Ende feststeht – nicht erst mit der letzten Monatsmeldung. Die lohnabrechnende Stelle meldet das Ende mit der nächsten Abrechnung, spätestens sechs Wochen danach, zur Sozialversicherung ab (§ 8 Abs. 1 DEÜV) und teilt es unverzüglich dem Bundeszentralamt für Steuern mit (§ 39e Abs. 4 S. 5 EStG).\n\nSteht etwas noch nicht fest, etwa eine Klage, eine Abfindung, Überstunden, das Arbeitszeitkonto oder der Resturlaub, wählen Sie „Steht noch nicht fest“ oder lassen das Feld leer. Vor der letzten Abrechnung öffnen Sie den Fragebogen wieder und ergänzen ihn als neue Fassung; ebenso, wenn sich später etwas ändert.\n\nEine Arbeitsbescheinigung erstellt die lohnabrechnende Stelle nur, wenn die Person oder die Agentur für Arbeit sie verlangt, und erst nach der letzten Abrechnung (§ 312 Abs. 1, § 313a Abs. 1 SGB III).",
-      "asOf": "2026-11-03",
+      "text": "Bitte schicken Sie diesen Fragebogen, sobald das Ende feststeht – nicht erst mit der letzten Monatsmeldung. Die lohnabrechnende Stelle meldet das Ende mit der nächsten Abrechnung, spätestens sechs Wochen nach dem Ende der Beschäftigung, zur Sozialversicherung ab (§ 8 Abs. 1 DEÜV) und teilt es unverzüglich dem Bundeszentralamt für Steuern mit (§ 39e Abs. 4 S. 5 EStG).\n\nSteht etwas noch nicht fest, etwa eine Klage, eine Abfindung, Überstunden, das Arbeitszeitkonto oder der Resturlaub, wählen Sie „Steht noch nicht fest“ oder lassen das Feld leer. Vor der letzten Abrechnung öffnen Sie den Fragebogen wieder und ergänzen ihn als neue Fassung; ebenso, wenn sich später etwas ändert.\n\nEine Arbeitsbescheinigung erstellt die lohnabrechnende Stelle nur, wenn die Person oder die Agentur für Arbeit sie verlangt, und erst nach der letzten Abrechnung (§ 312 Abs. 1, § 313a Abs. 1 SGB III).",
+      "asOf": "2026-11-13",
       "acknowledgement": "read"
     },
     {
@@ -1326,8 +1326,8 @@
       "id": "hinweisZugang",
       "role": "arbeitgeber",
       "title": "Die Kündigung wirkt erst mit dem Zugang",
-      "text": "Maßgeblich ist der Tag, an dem die Kündigung bei der anderen Seite ankommt, nicht das Datum auf dem Schreiben (§ 130 Abs. 1 BGB). Ab diesem Tag laufen die Kündigungsfrist und die Frist von drei Wochen für eine Kündigungsschutzklage (§ 4 KSchG). Halten Sie fest, wann und wie Sie die Kündigung übergeben oder verschickt haben, und bewahren Sie einen Nachweis auf.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
-      "asOf": "2026-11-03",
+      "text": "Maßgeblich ist der Tag, an dem die Kündigung bei der anderen Seite ankommt, nicht das Datum auf dem Schreiben (§ 130 Abs. 1 BGB). Am Tag danach beginnen die Kündigungsfrist und die Frist von drei Wochen für eine Kündigungsschutzklage (§ 4 KSchG; § 187 Abs. 1 BGB). Halten Sie fest, wann und wie Sie die Kündigung übergeben oder verschickt haben, und bewahren Sie einen Nachweis auf.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
+      "asOf": "2026-11-13",
       "acknowledgement": "read"
     },
     {

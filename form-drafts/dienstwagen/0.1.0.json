@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-13T12:28",
+  "revised": "2026-11-13T13:25",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -231,7 +231,7 @@
           "type": "boolean",
           "label": "Privatnutzung erlaubt",
           "question": "Darf die Person das Fahrzeug privat nutzen?",
-          "help": "Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger).",
+          "help": "Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger).",
           "required": true,
           "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)"
         },
@@ -273,6 +273,7 @@
           "type": "boolean",
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt",
           "question": "Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?",
+          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).",
           "required": true,
           "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
         },
@@ -282,7 +283,7 @@
           "type": "boolean",
           "label": "Pauschalierung mit 15 %",
           "question": "Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?",
-          "help": "Pauschal versteuert wird der Vorteil für 15 Arbeitstage im Monat; dieser Teil ist in der Sozialversicherung beitragsfrei.",
+          "help": "Pauschal versteuert wird höchstens der Betrag, den die Person für 15 Arbeitstage im Monat als Entfernungspauschale absetzen könnte; dieser Teil ist in der Sozialversicherung beitragsfrei.",
           "required": true,
           "purpose": "Pauschale Lohnsteuer für 15 Fahrten im Monat (§ 40 Abs. 2 Satz 2 Nr. 1a EStG); beitragsfrei (§ 1 SvEV)",
           "showIf": {
@@ -375,6 +376,7 @@
           "type": "boolean",
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte",
           "question": "Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?",
+          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).",
           "required": true,
           "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
         },
@@ -433,8 +435,8 @@
       "id": "pflichten",
       "role": "person",
       "title": "Was Ihre Angaben bewirken",
-      "text": "Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.",
-      "asOf": "2026-10-30",
+      "text": "Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.",
+      "asOf": "2026-11-13",
       "acknowledgement": "read"
     }
   ],

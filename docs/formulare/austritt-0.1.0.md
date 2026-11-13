@@ -8,8 +8,8 @@
 | Formular | austritt, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Ende des Arbeitsverhältnisses“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 10:38 |
-| Definition (SHA-256) | 5a502d793981e227865433f0ad90591ca851c0e8643a4fdec154b907b308b26b |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 13:25 |
+| Definition (SHA-256) | 5ae4a2c1e1ab93c9b9be1fc232e798e1eb529b3f058aeb2aea887a16cf3d0381 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -53,7 +53,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Form der Kündigung (agKuendigungForm)<br>Frage: In welcher Form wurde gekündigt?<br>Hilfe: Wirksam ist nur eine Kündigung auf Papier mit eigenhändiger Unterschrift, im Original übergeben oder geschickt. E-Mail, Fax, Messenger, ein Scan oder eine elektronische Signatur genügen nicht, auch nicht bei einer Kündigung durch die Person (§ 623 BGB). Ist das passiert, sprechen Sie bitte vor der Abrechnung mit Ihrer lohnabrechnenden Stelle. | Arbeitgeber | Auswahl: Auf Papier, eigenhändig unterschrieben, im Original übergeben oder geschickt, Anders, z. B. per E-Mail, Fax, Messenger, als Scan, elektronisch signiert oder mündlich | erst wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ gewählt ist<br>Warum: Nur bei einer Kündigung; sie bedarf der Schriftform (§ 623 BGB). | Pflicht | Wirksamkeit der Kündigung (§ 623 BGB); Arbeitsbescheinigung (§ 312 SGB III): Kündigung schriftlich |
 | Datum des Kündigungsschreibens (agKuendigungDatum)<br>Frage: Welches Datum trägt das Kündigungsschreiben? | Arbeitgeber | Datum, nicht nach „Ende des Arbeitsverhältnisses“ | erst wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ gewählt ist<br>Warum: Nur bei einer Kündigung. | Pflicht | Arbeitsbescheinigung (§ 312 SGB III): Tag der Kündigung |
-| Zugang der Kündigung (agKuendigungZugang)<br>Frage: An welchem Tag ist die Kündigung zugegangen?<br>Hilfe: Haben Sie gekündigt: der Tag, an dem die Person das Schreiben erhalten hat. Hat die Person gekündigt: der Tag, an dem es bei Ihnen ankam. Erst mit dem Zugang wirkt die Kündigung (§ 130 BGB); ab dann laufen die Kündigungsfrist und die Klagefrist. Diesen Tag meldet die lohnabrechnende Stelle als Tag der Kündigung. | Arbeitgeber | Datum, nicht vor „Datum des Kündigungsschreibens“, nicht nach „Ende des Arbeitsverhältnisses“ | erst wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ gewählt ist<br>Warum: Nur bei einer Kündigung; sie wirkt erst mit dem Zugang (§ 130 Abs. 1 BGB). | Pflicht | Kündigungsfrist (§ 622 BGB) und Ruhen des Arbeitslosengelds (§ 158 Abs. 1 S. 2 SGB III); Klagefrist (§ 4 KSchG) |
+| Zugang der Kündigung (agKuendigungZugang)<br>Frage: An welchem Tag ist die Kündigung zugegangen?<br>Hilfe: Haben Sie gekündigt: der Tag, an dem die Person das Schreiben erhalten hat. Hat die Person gekündigt: der Tag, an dem es bei Ihnen ankam. Erst mit dem Zugang wirkt die Kündigung (§ 130 BGB); am Tag danach beginnen die Kündigungsfrist und die Klagefrist. Diesen Tag meldet die lohnabrechnende Stelle als Tag der Kündigung. | Arbeitgeber | Datum, nicht vor „Datum des Kündigungsschreibens“, nicht nach „Ende des Arbeitsverhältnisses“ | erst wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ gewählt ist<br>Warum: Nur bei einer Kündigung; sie wirkt erst mit dem Zugang (§ 130 Abs. 1 BGB). | Pflicht | Kündigungsfrist (§ 622 BGB) und Ruhen des Arbeitslosengelds (§ 158 Abs. 1 S. 2 SGB III); Klagefrist (§ 4 KSchG) |
 | Zustellung der Kündigung (agKuendigungZustellung)<br>Frage: Wie wurde die Kündigung zugestellt? | Arbeitgeber | Auswahl: Persönlich übergeben, Per Post, Durch einen Boten, z. B. Einwurf in den Briefkasten | erst wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ gewählt ist<br>Warum: Nur bei einer Kündigung. | Pflicht | Arbeitsbescheinigung (§ 312 SGB III): Art der Zustellung |
 | Art der Kündigung (agKuendigungArt)<br>Frage: Wie wurde gekündigt?<br>Hilfe: Fristlos kündigen kann man nur innerhalb von zwei Wochen, nachdem man die Gründe erfahren hat (§ 626 Abs. 2 BGB). | Arbeitgeber | Auswahl: Ordentlich, mit Kündigungsfrist, Fristlos (außerordentlich), Außerordentlich mit einer Auslauffrist | erst wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ gewählt ist<br>Warum: Nur bei einer Kündigung. | Pflicht | Arbeitsbescheinigung (§ 312 SGB III); Ruhen des Arbeitslosengelds bei einer Abfindung (§ 158 SGB III) |
 | Kündigung in der Probezeit (agKuendigungProbezeit)<br>Frage: Ging die Kündigung während einer vereinbarten Probezeit zu?<br>Hilfe: In einer Probezeit von höchstens sechs Monaten gilt eine Frist von zwei Wochen (§ 622 Abs. 3 BGB). | Arbeitgeber | Ja/Nein | erst wenn bei „Art der Kündigung“ „Ordentlich, mit Kündigungsfrist“ gewählt ist<br>Warum: Nur bei einer ordentlichen Kündigung kommt es auf die Frist an; in der Probezeit ist sie kürzer (§ 622 Abs. 3 BGB). | Pflicht | Maßgebende Kündigungsfrist in der Arbeitsbescheinigung (§ 312 SGB III) |
@@ -241,9 +241,9 @@ Alle übrigen Angaben sind unabhängig.
 
 - Kenntnisnahme durch: Arbeitgeber
 - Art: wird in der App gelesen und bestätigt
-- Stand: 03.11.2026
+- Stand: 13.11.2026
 
-> Bitte schicken Sie diesen Fragebogen, sobald das Ende feststeht – nicht erst mit der letzten Monatsmeldung. Die lohnabrechnende Stelle meldet das Ende mit der nächsten Abrechnung, spätestens sechs Wochen danach, zur Sozialversicherung ab (§ 8 Abs. 1 DEÜV) und teilt es unverzüglich dem Bundeszentralamt für Steuern mit (§ 39e Abs. 4 S. 5 EStG).
+> Bitte schicken Sie diesen Fragebogen, sobald das Ende feststeht – nicht erst mit der letzten Monatsmeldung. Die lohnabrechnende Stelle meldet das Ende mit der nächsten Abrechnung, spätestens sechs Wochen nach dem Ende der Beschäftigung, zur Sozialversicherung ab (§ 8 Abs. 1 DEÜV) und teilt es unverzüglich dem Bundeszentralamt für Steuern mit (§ 39e Abs. 4 S. 5 EStG).
 >
 > Steht etwas noch nicht fest, etwa eine Klage, eine Abfindung, Überstunden, das Arbeitszeitkonto oder der Resturlaub, wählen Sie „Steht noch nicht fest“ oder lassen das Feld leer. Vor der letzten Abrechnung öffnen Sie den Fragebogen wieder und ergänzen ihn als neue Fassung; ebenso, wenn sich später etwas ändert.
 >
@@ -263,9 +263,9 @@ Alle übrigen Angaben sind unabhängig.
 
 - Kenntnisnahme durch: Arbeitgeber
 - Art: wird in der App gelesen und bestätigt
-- Stand: 03.11.2026
+- Stand: 13.11.2026
 
-> Maßgeblich ist der Tag, an dem die Kündigung bei der anderen Seite ankommt, nicht das Datum auf dem Schreiben (§ 130 Abs. 1 BGB). Ab diesem Tag laufen die Kündigungsfrist und die Frist von drei Wochen für eine Kündigungsschutzklage (§ 4 KSchG). Halten Sie fest, wann und wie Sie die Kündigung übergeben oder verschickt haben, und bewahren Sie einen Nachweis auf.
+> Maßgeblich ist der Tag, an dem die Kündigung bei der anderen Seite ankommt, nicht das Datum auf dem Schreiben (§ 130 Abs. 1 BGB). Am Tag danach beginnen die Kündigungsfrist und die Frist von drei Wochen für eine Kündigungsschutzklage (§ 4 KSchG; § 187 Abs. 1 BGB). Halten Sie fest, wann und wie Sie die Kündigung übergeben oder verschickt haben, und bewahren Sie einen Nachweis auf.
 >
 > Das ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.
 

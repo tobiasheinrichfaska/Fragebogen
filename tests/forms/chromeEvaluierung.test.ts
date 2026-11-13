@@ -104,3 +104,32 @@ describe('Zustimmung: restrictions are named after whose they are', () => {
     expect(label('einschraenkungenKanzlei')).toBe('Einschränkungen der Kanzlei');
   });
 });
+
+// Part 3 (Austritt, Dienstwagen, Eigenbeleg, Monatsmeldung): wording and legal precision.
+describe('part 3: texts of the drafts', () => {
+  const text = (id: string) => JSON.stringify(load(DRAFTS_DIR, id, '0.1.0').definition);
+
+  it('B6, B7: Austritt counts the periods from the day after the notice, the report from the end', () => {
+    const austritt = text('austritt');
+    expect(austritt).not.toContain('Ab diesem Tag laufen');
+    expect(austritt).not.toContain('ab dann laufen');
+    expect(austritt).toContain('§ 187 Abs. 1 BGB');
+    expect(austritt).toContain('spätestens sechs Wochen nach dem Ende der Beschäftigung');
+  });
+
+  it('B12, B14, B15: Dienstwagen — plug-in hybrids only, the first workplace, the commuting cap', () => {
+    const dienstwagen = text('dienstwagen');
+    expect(dienstwagen).not.toContain('bei Elektro- und Hybridfahrzeugen weniger');
+    expect(dienstwagen).toContain('Plug-in-Hybridfahrzeugen unter Bedingungen weniger');
+    expect(dienstwagen).toContain('Erste Tätigkeitsstätte ist');
+    expect(dienstwagen).toContain('als Entfernungspauschale');
+  });
+
+  it('B22: Monatsmeldung names eight hours a working day (§ 16 Abs. 2, § 3 ArbZG)', () => {
+    expect(text('lohnmeldung')).toContain('Arbeitszeit über acht Stunden je Werktag');
+  });
+
+  it('B18: one word for the link that keeps the master data', () => {
+    for (const draft of DRAFTS) expect(JSON.stringify(draft)).not.toContain('Lesezeichen-Link');
+  });
+});

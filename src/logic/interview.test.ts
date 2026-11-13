@@ -180,7 +180,7 @@ describe('progressLine', () => {
     expect(progressLine(progress(36, 41), false)).toBe('36 von etwa 41 Fragen beantwortet');
     expect(progressLine(progress(1, 1), false)).toBe('1 von etwa 1 Frage beantwortet');
     expect(progressLine(progress(3, 9, 2), false)).toBe(
-      '3 von etwa 9 Fragen beantwortet · 2 zurückgestellt',
+      '3 von etwa 9 Fragen beantwortet · 2 übersprungen',
     );
   });
   it('says nothing is missing once the summary can be signed', () => {

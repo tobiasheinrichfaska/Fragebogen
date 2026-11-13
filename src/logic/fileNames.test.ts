@@ -27,6 +27,17 @@ describe('safeFileName (Gemeinsame Grundsätze § 9a BVV)', () => {
 describe('fileNameFor', () => {
   const id = '3f2b8c1e-5d4a-4b6f-9a1c-2e7d8f9a0b1c';
 
+  // Chrome evaluation 2026-11-13 (part 3 B25): „Lohnmeldung_…“ for the Monatsmeldung.
+  it('names the file after the form as its title reads, where the id reads otherwise', () => {
+    expect(fileNameFor('lohnmeldung', id, 'complete')).toBe(
+      'Monatsmeldung_3f2b8c1e_vollstaendig.pdf',
+    );
+    expect(fileNameFor('steuerfreigabe', id, 'complete')).toBe(
+      'Zustimmung_3f2b8c1e_vollstaendig.pdf',
+    );
+    expect(fileNameFor('sepa-mandat', id, 'complete')).toBe('SepaMandat_3f2b8c1e_vollstaendig.pdf');
+  });
+
   it.each<[Parameters<typeof fileNameFor>[2], string]>([
     ['interim', 'Sofortmeldung_3f2b8c1e_Zwischenstand.json'],
     ['handover', 'Sofortmeldung_3f2b8c1e_Weitergabe.pdf'],

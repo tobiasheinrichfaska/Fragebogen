@@ -148,6 +148,20 @@ describe('placeholders in question texts', () => {
     );
   });
 
+  // Chrome evaluation 2026-11-13 (part 3 B1): „Erika“ „Musterfrau“.
+  it('quotes two answers side by side once, as one name', () => {
+    const first: FieldDefinition = { ...plain, id: 'vorname', label: 'Vorname' };
+    const both = (id: string) => (id === 'vorname' ? first : fieldOf(id));
+    const value = (id: string) => (id === 'vorname' ? 'Erika' : 'Musterfrau');
+    expect(
+      fillPlaceholders(
+        'Wodurch endet das Arbeitsverhältnis mit {vorname} {familienname}?',
+        both,
+        value,
+      ),
+    ).toBe('Wodurch endet das Arbeitsverhältnis mit „Erika Musterfrau“?');
+  });
+
   it('lists the ids it names', () => {
     expect(placeholderIds(text)).toEqual(['familienname']);
     expect(placeholderIds('ohne')).toEqual([]);

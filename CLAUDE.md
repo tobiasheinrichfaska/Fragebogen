@@ -1115,14 +1115,22 @@ Key design decisions (details in `docs/plan.md`):
   are uploaded to the same subdomain, so all three share localStorage and could read each other's
   browser data. Only the office uses all three on one device. Own subdomains per app later. The old
   test-area reset (before f6246a7) removed their keys too; now it removes only its own.
-- **Claude-in-Chrome evaluation 2026-11-13 (parts 1–2 done, part 3 running):** findings fixed in the
-  app (7d2f828 and the commit after it) and in drafts (Personalfragebogen 1.1.0, SEPA-Mandat 1.2.0,
-  Sofortmeldung 1.1.0, Zustimmung, Dienstwagen); not uploaded while part 3 runs. Open decisions: the
-  employer types the person's name again (part 1 B5, part 2 B7); the list of documents unfiltered (B6);
+- **Claude-in-Chrome evaluation 2026-11-13 (all three parts in, `docs/prompts/chrome-evaluierung-fragebogen.md`):**
+  70 findings; fixed in the app (7d2f828, c0596c5 and the commit after: grouping, option order,
+  role status, PDF message and busy state, links keeping typed input, buttons in place, file names
+  after the title) and in drafts (Personalfragebogen 1.1.0, SEPA-Mandat 1.2.0, Zustimmung, Austritt,
+  Dienstwagen, Eigenbeleg, Monatsmeldung). The PDFs it made verify „ok“. Open decisions: the other
+  role's names typed again (part 1 B5, part 2 B7, part 3 B16); documents list unfiltered (B6);
   „(freiwillig)“ vs „(falls bekannt)“ (B7); quick answers without a value read „–“ (B9); Sozialkasse
-  follow-ups after „Weiß ich nicht“ (B13); hours per weekday on one page (B17); the firm's name proposed
-  as signer of the Zustimmung (part 2 B2); one guardian signature under joint custody (part 2 B11);
-  progress not counting notice pages (part 2 B12). Report files stay in `import/` until part 3 is in.
+  follow-ups (B13); hours per weekday on one page (B17); firm name proposed as signer (part 2 B2);
+  one guardian signature under joint custody (part 2 B11); progress without notice pages (part 2
+  B12); Austritt: Sozialauswahl without the reason of the notice, wording of the notice-period block,
+  help texts per branch, contact data (part 3 B2–B5, B8, B10); a notice in the future only a hint?
+  (B9); Dienstwagen: drive before purchase date, „Weiß ich nicht“ for the 15 % flat tax (B13, B15);
+  the link offer on a finished single-role form (Eigenbeleg, B19); help texts not following earlier
+  answers (B20); units of the Monatsmeldung values without a Lohnarten list (B23); tables in the
+  summary as one long line (B24); same firm question everywhere (B17). Claude in Chrome never types
+  IBAN, tax id or SV number itself — the person running it does.
 - **Device key (ECDSA) deliberately not built** — proves a browser profile, not a person, and
   conflicts with "store nothing".
 - **PDF parsing runs in the main thread** (pdf.js "fake worker", because `file://` forbids blob

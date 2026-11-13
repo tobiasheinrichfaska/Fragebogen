@@ -33,6 +33,11 @@ Ein Lauf ist kein Testnachweis: Er ersetzt weder die automatischen Tests noch di
 Lohnabrechnung und SEPA-Mandat sind im Testordner gleich wie öffentlich und laufen deshalb nur einmal.
 Kommt ein Formular oder eine Version dazu, wird diese Tabelle und der passende Teil unten ergänzt.
 
+**Erfahrungen aus dem ersten Lauf (2026-11-13):** Teil 1 brauchte 258, Teil 2 150, Teil 3 175 Schritte.
+Die Antworten kamen auch unter anderen Dateinamen an (`bericht.json`); jede Datei im Import mit
+`"teil": n` zählt. Ein Teil lässt sich auch einzeln mit einem eigenständigen Prompt fahren – dann
+Regeln, Testdaten, Ablauf und Antwortformat mitgeben.
+
 **So gehst du vor:**
 
 1. Am **Kanzlei-PC** arbeiten: Dort öffnet sich der Testordner ohne Anmeldung.
@@ -70,6 +75,10 @@ Irre führen würde. Das Ergebnis ist ein JSON nach dem Schema unten.
   Andere Seiten öffnest du nicht, und die anderen Tabs des Browsers liest du nicht. Arbeite in einem
   neuen Tab und schließe ihn am Ende.
 - **Nur die erfundenen Testdaten unten.** Trage nie echte Namen, Nummern oder Anschriften ein.
+- **Nummern wie IBAN, Steuer-ID oder Versicherungsnummer tippst du nicht selbst.** Halte an, nenne
+  Feld und Wert aus den Testdaten und warte, bis Tobias sie eingetippt hat; prüfe danach die Anzeige.
+  (Erster Lauf 2026-11-13: Claude in Chrome lehnt das Eintippen solcher Nummern ab, auch als
+  Testwerte.)
 - **Schritte ankündigen.** Nenne vor dem Start, wie viele Schritte du für diesen Teil etwa brauchst.
 - **Diese Knöpfe nie drücken.** Sie öffnen ein Bestätigungsfenster des Browsers oder ein Fenster von
   Windows, an dem du stehen bleibst, oder sie löschen Daten:

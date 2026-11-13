@@ -8,8 +8,8 @@
 | Formular | eigenbeleg, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag des Vorgangs“ ab 01.01.2025 |
-| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
-| Definition (SHA-256) | be86f8dc82284dd39e0174d123bdf1d8a5f7dff1a24e492c5fd062132465e1db |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 13:25 |
+| Definition (SHA-256) | 713c8730a53549cae1886f11ddfcecc5df26c2ce3cf29b7452079e1539de064b |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Eigenbelege schreibt kein Gesetz eine Form vor. Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Für den digitalen Bewirtungs-Eigenbeleg lässt die Finanzverwaltung eine elektronische Unterschrift oder Genehmigung genügen, wenn der Zeitpunkt aufgezeichnet wird und die Angaben nicht unbemerkt geändert werden können (BMF-Schreiben vom 19.11.2025 Rn. 19, 22). Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung). |
 | Empfänger | Buchhaltung oder Kanzlei |
@@ -27,7 +27,7 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Unternehmen (firma)<br>Frage: Für welches Unternehmen stellen Sie den Eigenbeleg aus?<br>Hilfe: So, wie es auf Ihren Rechnungen oder im Handelsregister steht. | Ausstellende Person | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Belegempfänger; Zuordnung zum Unternehmen (GoBD Rz. 77) |
-| Mandantennummer (mandantennummer)<br>Frage: Wie lautet Ihre Mandantennummer?<br>Hilfe: Steht auf Schreiben Ihrer Kanzlei und im Lesezeichen-Link. Nicht zur Hand? Dann lassen Sie das Feld leer. | Ausstellende Person | Text, nur Ziffern; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
+| Mandantennummer (mandantennummer)<br>Frage: Wie lautet Ihre Mandantennummer?<br>Hilfe: Steht auf Schreiben Ihrer Kanzlei und im Stammdaten-Link. Nicht zur Hand? Dann lassen Sie das Feld leer. | Ausstellende Person | Text, nur Ziffern; Stammdatum „mandantennummer“, kann im Stammdaten-Link gemerkt werden | immer | optional | Zuordnung in der Kanzlei |
 | Ausgestellt von (ausstellerName)<br>Frage: Wer stellt den Eigenbeleg aus?<br>Hilfe: Ihr Vor- und Familienname. Sie unterschreiben am Ende. | Ausstellende Person | Text, höchstens 60 Zeichen | immer | Pflicht | Verantwortlicher Aussteller (GoBD Rz. 77); Name der unterschreibenden Person |
 
 ### 2. Art und Tag des Vorgangs

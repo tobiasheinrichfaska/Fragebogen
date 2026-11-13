@@ -18,6 +18,10 @@ interface Props {
   onOverview: () => void;
   onSaveInterim: () => void;
   onPdf: (password: string | undefined) => void;
+  /** The PDF is being written (the page stands still for seconds). */
+  pdfBusy: boolean;
+  /** The PDF of exactly this state has been made. */
+  pdfMade: boolean;
   transfer: TransferOffer;
   onLinkCopied: () => void;
 }
@@ -28,6 +32,8 @@ export function DoneScreen({
   onOverview,
   onSaveInterim,
   onPdf,
+  pdfBusy,
+  pdfMade,
   transfer,
   onLinkCopied,
 }: Props) {
@@ -36,9 +42,16 @@ export function DoneScreen({
   const note = part?.seal?.payload.systemNote;
   const [password, setPassword] = useState<string | undefined>();
   const done = allPartsDone(session);
+  // Once the PDF is made, „Zur Übersicht“ leads on; a second PDF stays possible (part 3 B11).
+  const pdfFirst = done && !pdfMade;
   const pdfButton = (
-    <button type="button" className={done ? 'primary' : undefined} onClick={() => onPdf(password)}>
-      PDF erstellen
+    <button
+      type="button"
+      className={pdfFirst ? 'primary' : undefined}
+      disabled={pdfBusy}
+      onClick={() => onPdf(password)}
+    >
+      {pdfBusy ? 'PDF wird erstellt …' : 'PDF erstellen'}
     </button>
   );
   return (
@@ -59,7 +72,11 @@ export function DoneScreen({
         Prüfwert, an dem sich später zeigt, dass die Angaben unverändert sind:{' '}
         <span className="mono">{part?.seal?.contentHash}</span>
       </p>
-      {done ? (
+      {done && pdfMade ? (
+        <p>
+          Die PDF ist erstellt. Geben Sie sie weiter; danach können Sie den Fragebogen schließen.
+        </p>
+      ) : done ? (
         <p>Alle nötigen Teile sind abgeschlossen. Erstellen Sie jetzt die PDF.</p>
       ) : (
         <p>
@@ -73,7 +90,7 @@ export function DoneScreen({
         {done ? (
           <>
             {pdfButton}
-            <button type="button" onClick={onOverview}>
+            <button type="button" className={pdfFirst ? undefined : 'primary'} onClick={onOverview}>
               Zur Übersicht
             </button>
           </>

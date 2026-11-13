@@ -447,11 +447,23 @@ function Workspace({
     });
   };
 
+  // While the PDF is written the page stands still for seconds: the button says so and is locked
+  // (Chrome evaluation 2026-11-13, part 3 B26). The session it was made for marks it as made (B11).
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfMadeFor, setPdfMadeFor] = useState<Session | undefined>();
   const pdf = async (password?: string) => {
-    if (!session) return;
-    const result = await createPdf(session, password);
-    setSession(result.session);
-    setBanner(result.message);
+    if (!session || pdfBusy) return;
+    setPdfBusy(true);
+    // Paint „PDF wird erstellt …“ before the work blocks the page.
+    await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+    try {
+      const result = await createPdf(session, password);
+      setSession(result.session);
+      setBanner(result.message);
+      if (result.message.tone === 'success') setPdfMadeFor(result.session);
+    } finally {
+      setPdfBusy(false);
+    }
   };
 
   // Always asked (second test report, Tobias 2026-11-01: "hier kam keine Warnmeldung").
@@ -621,6 +633,7 @@ function Workspace({
           onSaveInterim={saveInterim}
           onTakeOver={(f) => void takeOverFile(f)}
           onPdf={(password) => void pdf(password)}
+          pdfBusy={pdfBusy}
           onClose={close}
           onDiscard={discard}
           transfer={transferOffer(
@@ -666,6 +679,8 @@ function Workspace({
           onOverview={() => setScreen({ kind: 'roles' })}
           onSaveInterim={saveInterim}
           onPdf={(password) => void pdf(password)}
+          pdfBusy={pdfBusy}
+          pdfMade={pdfMadeFor === session}
           transfer={transferOffer(
             session.questionnaire,
             session.form,
