@@ -186,7 +186,7 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
       problem === undefined
         ? {
             tone: 'success',
-            text: 'Die App ist zurückgesetzt: nichts mehr in diesem Browser gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.',
+            text: 'Die App ist zurückgesetzt: nichts mehr vom Testbereich in diesem Browser gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.',
           }
         : {
             tone: 'error',
@@ -200,7 +200,7 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
       title: 'App vollständig zurücksetzen?',
       text: [
         'Die App löscht alles, was sie in diesem Browser gespeichert hat – auch einen angefangenen Fragebogen zum Fortsetzen – und den Link in der Adresszeile. Dann beginnt sie auf ihrer Startseite.',
-        'Ihre Testergebnisse bleiben erhalten.',
+        'Ihre Testergebnisse bleiben erhalten, ebenso alles, was die öffentliche App gespeichert hat.',
       ],
       choices: [{ label: 'Abbrechen' }, { label: 'Zurücksetzen', primary: true, onChoose: reset }],
     });

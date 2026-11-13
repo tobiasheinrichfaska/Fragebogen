@@ -529,7 +529,7 @@ test.describe('MT-133: opening a test restarts the app with its entry', () => {
     await choose(page, 'Zurücksetzen');
     await expect(
       page.getByText(
-        'Die App ist zurückgesetzt: nichts mehr in diesem Browser gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.',
+        'Die App ist zurückgesetzt: nichts mehr vom Testbereich in diesem Browser gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.',
       ),
     ).toBeVisible();
     await expect(app(page).getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
