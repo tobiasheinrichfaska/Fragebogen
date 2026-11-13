@@ -13,6 +13,8 @@ export interface SyntaxEntry {
   namespaces: Readonly<Record<string, string>>;
   /** Part of EN 16931 (UBL or CII D16B); ZUGFeRD 1.0 is not */
   en16931: boolean;
+  /** Only for syntaxes outside the binding (ZUGFeRD 1.0): where the specification id sits */
+  specIdPath?: string;
 }
 
 const UBL_COMMON = {
@@ -64,6 +66,8 @@ export const SYNTAXES: readonly SyntaxEntry[] = [
       udt: 'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:15',
     },
     en16931: false,
+    specIdPath:
+      '/rsm:CrossIndustryDocument/rsm:SpecifiedExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID',
   },
 ];
 
