@@ -642,12 +642,14 @@ function decodeFromRole(
 }
 
 function decodeOption(d: Decoder, raw: unknown, path: string): ChoiceOption | undefined {
-  const o = d.object(raw, path, ['id', 'label']);
+  const o = d.object(raw, path, ['id', 'label', 'showIf']);
   if (!o) return undefined;
   const id = d.string(o.id, `${path}.id`, OPTION_ID);
   const label = d.string(o.label, `${path}.label`);
+  const showIf =
+    o.showIf === undefined ? undefined : decodeCondition(d, o.showIf, `${path}.showIf`, 0);
   if (id === undefined || label === undefined) return undefined;
-  return { id, label };
+  return { id, label, ...(showIf === undefined ? {} : { showIf }) };
 }
 
 export function decodeCondition(
@@ -1798,7 +1800,47 @@ const DEFINITION_RULES: readonly DefinitionRule[] = [
   becauseTexts,
   validityRule,
   dateOrderRule,
+  optionConditions,
 ];
+
+/**
+ * An option's showIf (optionConditions.ts, 2026-11-13): never in a table column; every leaf names a
+ * known top-level field with a value it can have; a field of the same role is asked before, so the
+ * offered answers never depend on what comes later.
+ */
+function optionConditions({ definition, fields, report }: CheckContext): void {
+  const position = new Map(
+    definition.sections.flatMap((section) => section.fields).map((field, i) => [field.id, i]),
+  );
+  for (const { field, path, isColumn } of fields.values()) {
+    (field.options ?? []).forEach((option, o) => {
+      if (!option.showIf) return;
+      const at = `${path}.options[${o}].showIf`;
+      if (isColumn) {
+        report(at, 'table columns have no option conditions');
+        return;
+      }
+      forEachLeaf(option.showIf, at, (leaf, leafPath) => {
+        const target = fields.get(leaf.field);
+        if (!target || target.isColumn) {
+          report(`${leafPath}.field`, `unknown field "${leaf.field}"`);
+          return;
+        }
+        const problem = leafProblem(leaf, target.field);
+        if (problem) {
+          report(`${leafPath}.${problem.at === 'field' ? 'field' : problem.at}`, problem.message);
+        }
+        const before = (position.get(leaf.field) ?? -1) < (position.get(field.id) ?? -1);
+        if (target.field.role === field.role && !before) {
+          report(
+            `${leafPath}.field`,
+            `"${leaf.field}" must come before "${field.id}" (interview order)`,
+          );
+        }
+      });
+    });
+  }
+}
 
 /**
  * notBefore/notAfter (dateOrder.ts): only on date fields, naming another date field of the same

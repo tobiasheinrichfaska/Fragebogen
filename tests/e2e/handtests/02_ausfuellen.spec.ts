@@ -15,6 +15,7 @@ import {
   openApp,
   openTestApp,
   press,
+  protect,
   toOverview,
 } from '../app';
 import { expectClean, rememberAccess } from '../guards';
@@ -48,8 +49,9 @@ const type = (app: Locator, value: string) =>
     await app.locator('.card .nav button.primary').click();
   });
 
+// Exactly this role: „Gesetzliche Vertretung“ is also part of „Zweite gesetzliche Vertretung“.
 const roleRow = (app: Locator, label: string) =>
-  app.locator('li.role').filter({ has: app.page().locator('strong', { hasText: label }) });
+  app.locator('li.role').filter({ has: app.page().getByText(label, { exact: true }) });
 const summaryRow = (app: Locator, label: string) =>
   app
     .locator('.summary-row')
@@ -69,7 +71,12 @@ test('MT-10: a new questionnaire asks who fills in, with its own number', async 
   const { found, app } = await openTestApp(page);
   await press(app, SOFORT);
   await expect.poll(() => heading(app)).toBe('Wer füllt jetzt aus?');
-  for (const label of ['Beschäftigte Person', 'Gesetzliche Vertretung', 'Arbeitgeber']) {
+  for (const label of [
+    'Beschäftigte Person',
+    'Gesetzliche Vertretung',
+    'Zweite gesetzliche Vertretung',
+    'Arbeitgeber',
+  ]) {
     await expect(roleRow(app, label).locator('.state')).toHaveText('noch offen');
   }
   await expect(app.getByRole('button', { name: 'Ich bin: Beschäftigte Person' })).toBeVisible();
@@ -914,7 +921,13 @@ test.describe('the hosted app', () => {
     await press(app, 'Ohne Unterschrift abschließen');
     await press(app, 'Abschließen');
     await expect.poll(() => stored(page)).not.toBeNull();
-    await Promise.all([page.waitForEvent('download'), press(app, 'PDF erstellen')]);
+    await Promise.all([
+      page.waitForEvent('download'),
+      (async () => {
+        await press(app, 'PDF erstellen');
+        await protect(page, 'Ohne Kennwort');
+      })(),
+    ]);
     await expect.poll(() => stored(page)).toBeNull();
     expect(seen.foreign).toEqual([]);
     expect(seen.errors).toEqual([]);
