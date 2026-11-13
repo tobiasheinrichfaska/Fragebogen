@@ -1,7 +1,10 @@
 import type { Analysis } from '../logic/analysis';
-import { invoiceDetails } from '../logic/details';
 import { termLabel } from '../logic/binding';
+import { checkPflichtangaben } from '../logic/check';
+import { invoiceDetails } from '../logic/details';
+import { TEXTS } from '../logic/texts';
 import type { Verdict } from '../logic/verdict';
+import { PflichtangabenView } from './PflichtangabenView';
 
 interface Props {
   analysis: Analysis;
@@ -49,6 +52,11 @@ export function ResultView({ analysis, verdict }: Props) {
               ))}
             </tbody>
           </table>
+          {invoice.part.model ? (
+            <PflichtangabenView result={checkPflichtangaben(invoice.part.model)} />
+          ) : (
+            <p className="muted">{TEXTS.noModel}</p>
+          )}
         </div>
       ))}
 

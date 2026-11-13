@@ -47,6 +47,22 @@ export const TEXTS = {
   formatError: 'Formatfehler, gem. Rn. 6a ggf. keine E-Rechnung.',
   problemAtLine: 'Zeile {line}: {message}',
 
+  pflichtHeading: 'Pflichtangaben nach § 14 Abs. 4 UStG',
+  besondereHeading: 'Angaben in besonderen Fällen (§ 14 Abs. 5, § 14a, § 22c UStG)',
+  allPresent: 'Alle Pflichtfelder belegt. Bitte prüfen Sie die Werte.',
+  missingList: 'Es fehlt: {list}.',
+  addressStreet: 'Straße oder Postfach',
+  addressPostcode: 'Postleitzahl',
+  addressCity: 'Ort',
+  noGroup: 'keine Angabe „{group}“',
+  statusVorhanden: 'vorhanden',
+  statusFehlt: 'fehlt',
+  statusEinzelfall: 'nur im Einzelfall nötig',
+  showPositions: 'Positionen anzeigen ({count})',
+  notInXml: '– nicht in der XML',
+  noModel:
+    'Für diese Rechnungsdaten zeigt das Tool keine Pflichtangaben (kein Format nach EN 16931).',
+
   fileProblems: {
     empty: { tone: 'bad', headline: 'Die Datei ist leer', explanation: [] },
     unsupportedType: {
@@ -92,6 +108,45 @@ export function fill(text: string, values: Readonly<Record<string, string | numb
     key in values ? String(values[key]) : whole,
   );
 }
+
+/** VAT category codes (BT-118, BT-151; UNTDID 5305 as used by EN 16931). */
+export const CATEGORY_LABELS: Readonly<Record<string, string>> = {
+  S: 'steuerpflichtig',
+  Z: 'Nullsatz',
+  E: 'steuerbefreit',
+  AE: 'Steuerschuldnerschaft des Leistungsempfängers',
+  K: 'innergemeinschaftliche Lieferung',
+  G: 'Ausfuhr',
+  O: 'nicht steuerbar',
+  L: 'Kanarische Inseln',
+  M: 'Ceuta und Melilla',
+};
+
+/** Frequent unit codes (BT-130, BT-150; UN/ECE Recommendation 20/21). */
+export const UNIT_LABELS: Readonly<Record<string, string>> = {
+  C62: 'Stück',
+  H87: 'Stück',
+  XPP: 'Stück',
+  EA: 'Stück',
+  SET: 'Satz',
+  LS: 'pauschal',
+  HUR: 'Stunde',
+  MIN: 'Minute',
+  DAY: 'Tag',
+  WEE: 'Woche',
+  MON: 'Monat',
+  ANN: 'Jahr',
+  KGM: 'Kilogramm',
+  GRM: 'Gramm',
+  TNE: 'Tonne',
+  MTR: 'Meter',
+  KMT: 'Kilometer',
+  MTK: 'Quadratmeter',
+  MTQ: 'Kubikmeter',
+  LTR: 'Liter',
+  KWH: 'Kilowattstunde',
+  P1: 'Prozent',
+};
 
 /** Labels of the document type codes (BT-3, UNTDID 1001) that occur in German practice. */
 export const TYPE_CODES: Readonly<Record<string, string>> = {

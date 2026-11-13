@@ -36,6 +36,19 @@ export function decimalEquals(a: Decimal, b: Decimal): boolean {
   return x.units === y.units && x.scale === y.scale;
 }
 
+/** Same value written with `scale` decimals (only ever adds zeros). */
+function rescale(value: Decimal, scale: number): bigint {
+  return value.units * 10n ** BigInt(scale - value.scale);
+}
+
+/** -1, 0 or 1 like a comparator. */
+export function compareDecimal(a: Decimal, b: Decimal): number {
+  const scale = Math.max(a.scale, b.scale);
+  const x = rescale(a, scale);
+  const y = rescale(b, scale);
+  return x < y ? -1 : x > y ? 1 : 0;
+}
+
 /** Plain text with a dot ("1234.5" → "1234.5", scale kept). */
 export function decimalText(value: Decimal): string {
   const negative = value.units < 0n;
