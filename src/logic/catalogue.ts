@@ -15,6 +15,7 @@ import { optionsOf, REFERENCE_LISTS } from './options';
 import { describeRevised, describeValidity } from './validity';
 import type {
   AcknowledgementKind,
+  Condition,
   DateBound,
   FieldDefinition,
   FieldType,
@@ -138,7 +139,11 @@ export const TEXT_FORMAT_LABELS: Readonly<Record<TextFormat, string>> = {
 const germanNumber = (value: number) => String(value).replace('.', ',');
 const germanBound = (bound: DateBound) => (bound === 'today' ? 'heute' : formatGermanDate(bound));
 
-function fieldKind(field: FieldDefinition, label: (id: string) => string): string {
+function fieldKind(
+  field: FieldDefinition,
+  label: (id: string) => string,
+  when: (condition: Condition) => string,
+): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
   if (field.textFormat !== undefined) kind += `, ${TEXT_FORMAT_LABELS[field.textFormat]}`;
@@ -158,7 +163,13 @@ function fieldKind(field: FieldDefinition, label: (id: string) => string): strin
   if (field.minDate !== undefined) kind += `, frühestens ${germanBound(field.minDate)}`;
   if (field.maxDate !== undefined) kind += `, spätestens ${germanBound(field.maxDate)}`;
   for (const rule of describeDateOrderRules(field, label)) kind += `, ${rule}`;
-  if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
+  if (field.options) {
+    // An answer offered only under a condition says so (optionConditions.ts, 2026-11-13).
+    const shown = field.options.map((option) =>
+      option.showIf ? `${option.label} (nur wenn ${when(option.showIf)})` : option.label,
+    );
+    kind += `: ${shown.join(', ')}`;
+  }
   const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
   if (list)
     kind += `: aus der Liste „${list.title}“ (${list.options.length} Einträge; ${list.source})`;
@@ -237,7 +248,11 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
   const own = [
     name,
     roleLabel(definition, field.role),
-    fieldKind(field, (id) => fieldsById(definition).get(id)?.label ?? id),
+    fieldKind(
+      field,
+      (id) => fieldsById(definition).get(id)?.label ?? id,
+      (condition) => describeCondition(condition, fieldsById(definition)),
+    ),
     availability,
     requirement,
     field.purpose,

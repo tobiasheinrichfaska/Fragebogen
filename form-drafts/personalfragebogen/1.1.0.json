@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-13T17:27",
+  "revised": "2026-11-13T23:58",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -5816,7 +5816,11 @@
             },
             {
               "id": "lstbVorarbeitgeber",
-              "label": "Lohnsteuerbescheinigungen früherer Arbeitgeber in diesem Jahr"
+              "label": "Lohnsteuerbescheinigungen früherer Arbeitgeber in diesem Jahr",
+              "showIf": {
+                "field": "vorbeschJahr",
+                "equals": true
+              }
             },
             {
               "id": "steuerId",
@@ -5828,59 +5832,123 @@
             },
             {
               "id": "kvNachweis",
-              "label": "Mitgliedsbescheinigung der Krankenkasse"
+              "label": "Mitgliedsbescheinigung der Krankenkasse",
+              "showIf": {
+                "field": "krankenversicherung",
+                "equals": "gesetzlich"
+              }
             },
             {
               "id": "pkvBescheinigung",
-              "label": "Bescheinigung der privaten Krankenversicherung für den Zuschuss"
+              "label": "Bescheinigung der privaten Krankenversicherung für den Zuschuss",
+              "showIf": {
+                "field": "krankenversicherung",
+                "equals": "privat"
+              }
             },
             {
               "id": "kvBefreiungsbescheid",
-              "label": "Befreiungsbescheid der Krankenkasse"
+              "label": "Befreiungsbescheid der Krankenkasse",
+              "showIf": {
+                "field": "kvBefreiung",
+                "equals": "ja"
+              }
             },
             {
               "id": "schulbescheinigung",
-              "label": "Schulbescheinigung"
+              "label": "Schulbescheinigung",
+              "showIf": {
+                "field": "status",
+                "in": ["schueler", "schulende"]
+              }
             },
             {
               "id": "immatrikulation",
-              "label": "Immatrikulationsbescheinigung (je Semester)"
+              "label": "Immatrikulationsbescheinigung (je Semester)",
+              "showIf": {
+                "any": [
+                  {
+                    "field": "status",
+                    "in": ["student", "studienbewerber"]
+                  },
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "werkstudent"
+                  }
+                ]
+              }
             },
             {
               "id": "praktikumOrdnung",
-              "label": "Nachweis über ein vorgeschriebenes Praktikum"
+              "label": "Nachweis über ein vorgeschriebenes Praktikum",
+              "showIf": {
+                "field": "agBeschaeftigungsart",
+                "equals": "praktikum"
+              }
             },
             {
               "id": "rentenbescheid",
-              "label": "Rentenbescheid"
+              "label": "Rentenbescheid",
+              "showIf": {
+                "field": "bezugRente",
+                "equals": true
+              }
             },
             {
               "id": "pensionsbescheid",
-              "label": "Pensionsbescheid"
+              "label": "Pensionsbescheid",
+              "showIf": {
+                "field": "bezugPension",
+                "equals": true
+              }
             },
             {
               "id": "rvBefreiung",
-              "label": "Befreiungsantrag Rentenversicherung im Minijob (Papieroriginal)"
+              "label": "Befreiungsantrag Rentenversicherung im Minijob (Papieroriginal)",
+              "showIf": {
+                "field": "rvBefreiungWunsch",
+                "in": ["ja", "schonBefreit"]
+              }
             },
             {
               "id": "rvVerzicht",
-              "label": "Verzicht auf die Rentenversicherungsfreiheit (Papieroriginal)"
+              "label": "Verzicht auf die Rentenversicherungsfreiheit (Papieroriginal)",
+              "showIf": {
+                "field": "agBeschaeftigungsart",
+                "equals": "minijob"
+              }
             },
             {
               "id": "schwerbehindertenausweis",
-              "label": "Schwerbehindertenausweis oder Gleichstellungsbescheid"
+              "label": "Schwerbehindertenausweis oder Gleichstellungsbescheid",
+              "showIf": {
+                "field": "agSchwerbehinderung",
+                "in": ["schwerbehindert", "gleichgestellt"]
+              }
             },
             {
               "id": "kinderNachweise",
-              "label": "Nachweise für nicht abrufbare Kinder"
+              "label": "Nachweise für nicht abrufbare Kinder",
+              "showIf": {
+                "field": "kinder",
+                "equals": true
+              }
             },
             {
               "id": "a1",
-              "label": "A1-Bescheinigung (Beschäftigung im Ausland)"
+              "label": "A1-Bescheinigung (Beschäftigung im Ausland)",
+              "showIf": {
+                "field": "agSvAusland",
+                "equals": true
+              }
             },
             {
               "id": "aufenthaltstitel",
-              "label": "Aufenthaltstitel oder Arbeitserlaubnis"
+              "label": "Aufenthaltstitel oder Arbeitserlaubnis",
+              "showIf": {
+                "field": "deutscheStaatsangehoerigkeit",
+                "equals": false
+              }
             },
             {
               "id": "jarbschg",
@@ -5888,15 +5956,27 @@
             },
             {
               "id": "vwlVertrag",
-              "label": "Vertrag über vermögenswirksame Leistungen"
+              "label": "Vertrag über vermögenswirksame Leistungen",
+              "showIf": {
+                "field": "agVwl",
+                "equals": true
+              }
             },
             {
               "id": "bav",
-              "label": "Unterlagen zur betrieblichen Altersversorgung"
+              "label": "Unterlagen zur betrieblichen Altersversorgung",
+              "showIf": {
+                "field": "agBav",
+                "in": ["arbeitgeber", "umwandlung", "beides"]
+              }
             },
             {
               "id": "elternzeitZustimmung",
-              "label": "Zustimmung des Arbeitgebers in der Elternzeit"
+              "label": "Zustimmung des Arbeitgebers in der Elternzeit",
+              "showIf": {
+                "field": "elternzeitAnderswo",
+                "equals": true
+              }
             },
             {
               "id": "kirchensteuer",
@@ -5904,11 +5984,27 @@
             },
             {
               "id": "versorgungswerkBefreiung",
-              "label": "Befreiungsbescheid der Rentenversicherung (Versorgungswerk)"
+              "label": "Befreiungsbescheid der Rentenversicherung (Versorgungswerk)",
+              "showIf": {
+                "field": "versorgungswerk",
+                "in": ["befreit", "offen"]
+              }
             },
             {
               "id": "sozialkasse",
-              "label": "Unterlagen der Sozialkasse (z. B. SOKA-BAU, Maler)"
+              "label": "Unterlagen der Sozialkasse (z. B. SOKA-BAU, Maler)",
+              "showIf": {
+                "any": [
+                  {
+                    "field": "agSozialkasse",
+                    "equals": "ja"
+                  },
+                  {
+                    "field": "sozialkasseBetrieb",
+                    "equals": "ja"
+                  }
+                ]
+              }
             }
           ]
         }

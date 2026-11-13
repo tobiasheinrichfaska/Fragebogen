@@ -118,6 +118,12 @@ export type DeuevRule = (typeof DEUEV_RULES)[number];
 export interface ChoiceOption {
   id: string;
   label: string;
+  /**
+   * Offered only while this holds (Tobias 2026-11-13: „nur anzeigen, was sinnvoll ist“ — the list
+   * of documents). Leaves may name fields of another role: they are read from its sealed part, and
+   * while that part is missing the option stays offered (optionConditions.ts).
+   */
+  showIf?: Condition;
 }
 
 /**

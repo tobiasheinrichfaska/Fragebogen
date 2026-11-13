@@ -2,7 +2,13 @@
 // "Weiter" (normalising every keystroke would fight the person); choices answer immediately.
 import { answerSuggestions } from '../logic/answerSuggestions';
 import type { PartData } from '../logic/form';
-import type { FieldDefinition, FieldType, FieldValue, FormDefinition } from '../logic/model';
+import type {
+  ChoiceOption,
+  FieldDefinition,
+  FieldType,
+  FieldValue,
+  FormDefinition,
+} from '../logic/model';
 import { stepHalfSteps } from '../logic/normalize';
 import { TYPED_MASKS, typedText } from '../logic/typing';
 import { ISSUE_MESSAGES } from '../logic/issues';
@@ -42,9 +48,21 @@ interface Props {
   onSubmit: () => void;
   /** The form and the role's answers so far: a calendar's month, suggestions from answers. */
   context?: { definition: FormDefinition; data: PartData };
+  /** The answers offered now (optionConditions.ts); all options of the field without it. */
+  options?: readonly ChoiceOption[];
 }
 
-export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit, context }: Props) {
+export function FieldInput({
+  field,
+  id,
+  value,
+  text,
+  onText,
+  onChoose,
+  onSubmit,
+  context,
+  options,
+}: Props) {
   if (field.type === 'calendar') {
     const month = field.monthFrom === undefined ? undefined : context?.data[field.monthFrom];
     return (
@@ -146,7 +164,7 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
   if (field.type === 'choice') {
     return (
       <div className="choices" role="radiogroup" aria-labelledby={`${id}-label`}>
-        {(field.options ?? []).map((option) => (
+        {(options ?? field.options ?? []).map((option) => (
           <button
             key={option.id}
             type="button"
@@ -165,7 +183,7 @@ export function FieldInput({ field, id, value, text, onText, onChoose, onSubmit,
     const chosen = new Set(Array.isArray(value) ? value.map(String) : []);
     return (
       <div className="choices" role="group" aria-labelledby={`${id}-label`}>
-        {(field.options ?? []).map((option) => (
+        {(options ?? field.options ?? []).map((option) => (
           <label key={option.id} className={chosen.has(option.id) ? 'choice chosen' : 'choice'}>
             <input
               type="checkbox"

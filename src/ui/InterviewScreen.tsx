@@ -7,6 +7,7 @@ import { displayValue, fillPlaceholders } from '../logic/display';
 import { fieldStates, fieldsById, fieldsOfRole, roleOf } from '../logic/form';
 import { fillingHints } from '../logic/hints';
 import { initialInput, interviewProgress, progressLine } from '../logic/interview';
+import { availableOptions } from '../logic/optionConditions';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
 import { MASTER_DATA_LINK_MESSAGES, masterDataFragment } from '../logic/masterDataLink';
@@ -363,6 +364,12 @@ function QuestionStep({
           onChoose={choose}
           onSubmit={next}
           context={{ definition: session.form.definition, data: part?.data ?? {} }}
+          options={availableOptions(
+            session.form.definition,
+            field,
+            part?.data ?? {},
+            (other) => latestSealed(session.questionnaire, other)?.data,
+          )}
         />
         {clearable && (
           <p className="clear-choice">

@@ -47,12 +47,18 @@ describe('Personalfragebogen: the end of a fixed term', () => {
 
   // Besides the date rules, 1.1.0 carries the wording of the Chrome evaluation (B3, B4, B14–B16,
   // B27; tests/forms/chromeEvaluierung.test.ts) — help texts only.
-  // And (2026-11-13) the employer's proposed names, the second representative under joint custody.
+  // And (2026-11-13) the employer's proposed names, the second representative under joint custody,
+  // the documents offered only where they fit (option conditions, tests/forms/unterlagen.test.ts).
   it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules and help texts', () => {
     const SECOND = ['vertretung2', 'vertretungAlleinSorge'];
     const strip = (form: RegisteredForm) =>
-      JSON.stringify(form.definition, (key, value: unknown) => {
+      JSON.stringify(form.definition, function (this: unknown, key, value: unknown) {
         if (['version', 'revised', 'notBefore', 'notAfter', 'help', 'fromRole'].includes(key)) {
+          return undefined;
+        }
+        // The condition of an answer (an option has a label but no role), not of a field.
+        const parent = this as { label?: unknown; role?: unknown };
+        if (key === 'showIf' && parent.label !== undefined && parent.role === undefined) {
           return undefined;
         }
         if (key === 'because' && typeof value === 'string' && value.includes('vorbelegt')) {
