@@ -208,9 +208,54 @@ export async function download(
   button: string,
   path: string,
 ): Promise<{ path: string; name: string }> {
-  const [file] = await Promise.all([page.waitForEvent('download'), press(scope, button)]);
+  const [file] = await Promise.all([
+    page.waitForEvent('download'),
+    (async () => {
+      await press(scope, button);
+      // „Mit Kennwort schützen?“ comes once per screen (2026-11-13); a test about the password
+      // answers it itself (protect).
+      if (button === 'PDF erstellen') await protect(page, 'Ohne Kennwort', { ifAsked: true });
+    })(),
+  ]);
   await file.saveAs(path);
   return { path, name: file.suggestedFilename() };
+}
+
+const PROTECTION = 'Mit Kennwort schützen?';
+
+/**
+ * Answers „Mit Kennwort schützen?“; „Mit Kennwort schützen“ returns the proposed password after
+ * „Mit diesem Kennwort weiter“. `ifAsked`: only if the question comes (once per screen).
+ */
+export async function protect(
+  page: Page,
+  choice: 'Ohne Kennwort' | 'Mit Kennwort schützen',
+  options: { ifAsked?: boolean } = {},
+): Promise<string | undefined> {
+  const dialog = page.getByRole('dialog', { name: PROTECTION });
+  if (options.ifAsked) {
+    try {
+      await dialog.waitFor({ state: 'visible', timeout: 3000 });
+    } catch {
+      return undefined;
+    }
+  }
+  await dialog.getByRole('button', { name: choice, exact: true }).click();
+  if (choice === 'Ohne Kennwort') return undefined;
+  const password = await dialog.getByLabel('Kennwort', { exact: true }).inputValue();
+  await dialog.getByRole('button', { name: 'Mit diesem Kennwort weiter' }).click();
+  return password;
+}
+
+/** „Link erstellen“ in „Als Link weitergeben“, answering the question if it comes. */
+export async function requestLink(
+  scope: Locator,
+  choice: 'Ohne Kennwort' | 'Mit Kennwort schützen' = 'Ohne Kennwort',
+): Promise<string | undefined> {
+  const button = scope.getByRole('button', { name: 'Link erstellen', exact: true });
+  if ((await button.count()) === 0) return undefined;
+  await button.click();
+  return protect(scope.page(), choice);
 }
 
 /** The text of every page of a PDF, one string per page. */

@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-13T13:25",
+  "revised": "2026-11-13T23:26",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -357,7 +357,7 @@
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Art der Kündigung",
-          "question": "Wie wurde gekündigt?",
+          "question": "Mit Kündigungsfrist oder fristlos?",
           "help": "Fristlos kündigen kann man nur innerhalb von zwei Wochen, nachdem man die Gründe erfahren hat (§ 626 Abs. 2 BGB).",
           "required": true,
           "showIf": {
@@ -367,9 +367,18 @@
           "because": "Nur bei einer Kündigung.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III); Ruhen des Arbeitslosengelds bei einer Abfindung (§ 158 SGB III)",
           "options": [
-            { "id": "ordentlich", "label": "Ordentlich, mit Kündigungsfrist" },
-            { "id": "fristlos", "label": "Fristlos (außerordentlich)" },
-            { "id": "auslauffrist", "label": "Außerordentlich mit einer Auslauffrist" }
+            {
+              "id": "ordentlich",
+              "label": "Ordentlich, mit Kündigungsfrist"
+            },
+            {
+              "id": "fristlos",
+              "label": "Fristlos (außerordentlich)"
+            },
+            {
+              "id": "auslauffrist",
+              "label": "Außerordentlich mit einer Auslauffrist"
+            }
           ]
         },
         {
@@ -426,16 +435,37 @@
       "title": "Ihre Kündigung: Anlass",
       "fields": [
         {
-          "id": "agVertragswidrig",
+          "id": "agKuendigungsgrund",
           "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Kündigung wegen vertragswidrigen Verhaltens",
-          "question": "Haben Sie gekündigt, weil die Person gegen ihre Pflichten aus dem Arbeitsvertrag verstoßen hat?",
-          "help": "Bitte nur Ja oder Nein, keine Schilderung.",
+          "type": "choice",
+          "label": "Grund der Kündigung",
+          "question": "Aus welchem Grund haben Sie gekündigt?",
+          "help": "Der Grund entscheidet, wonach die Arbeitsbescheinigung weiter fragt: eine Sozialauswahl gibt es nur bei betrieblichen Gründen, eine Abmahnung nur beim Verhalten.",
           "required": true,
-          "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
-          "because": "Den Anlass bescheinigt die Arbeitsbescheinigung nur bei einer Kündigung durch den Arbeitgeber.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Anlass der Kündigung; Sperrzeit (§ 159 Abs. 1 S. 2 Nr. 1 SGB III)"
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Anlass der Kündigung; Sperrzeit (§ 159 Abs. 1 S. 2 Nr. 1 SGB III)",
+          "options": [
+            {
+              "id": "betriebsbedingt",
+              "label": "Aus betrieblichen Gründen, z. B. weil der Arbeitsplatz wegfällt"
+            },
+            {
+              "id": "verhaltensbedingt",
+              "label": "Wegen des Verhaltens der Person, z. B. eines Verstoßes gegen ihre Pflichten"
+            },
+            {
+              "id": "personenbedingt",
+              "label": "Aus Gründen in der Person, z. B. wegen langer Krankheit"
+            },
+            {
+              "id": "ohneKschg",
+              "label": "Ohne solchen Grund – das Kündigungsschutzgesetz gilt nicht (Kleinbetrieb oder weniger als sechs Monate beschäftigt)"
+            }
+          ],
+          "showIf": {
+            "field": "agBeendigungsart",
+            "equals": "kuendigungArbeitgeber"
+          },
+          "because": "Nur bei einer Kündigung durch Sie; nach dem Grund richten sich die weiteren Fragen (§ 1 Abs. 2 KSchG)."
         },
         {
           "id": "agAbmahnung",
@@ -444,8 +474,11 @@
           "label": "Abmahnung wegen desselben Verhaltens",
           "question": "Haben Sie die Person wegen desselben Verhaltens schon abgemahnt?",
           "required": true,
-          "showIf": { "field": "agVertragswidrig", "equals": true },
-          "because": "Nur bei einer Kündigung wegen vertragswidrigen Verhaltens fragt die Arbeitsbescheinigung nach einer Abmahnung.",
+          "showIf": {
+            "field": "agKuendigungsgrund",
+            "equals": "verhaltensbedingt"
+          },
+          "because": "Nur bei einer Kündigung wegen des Verhaltens fragt die Arbeitsbescheinigung nach einer Abmahnung.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Abmahnung"
         },
         {
@@ -465,11 +498,14 @@
           "role": "arbeitgeber",
           "type": "boolean",
           "label": "Abfindungsangebot im Kündigungsschreiben (§ 1a KSchG)",
-          "question": "Haben Sie aus betrieblichen Gründen gekündigt und im Kündigungsschreiben eine Abfindung für den Fall angeboten, dass die Person nicht klagt?",
+          "question": "Haben Sie im Kündigungsschreiben eine Abfindung für den Fall angeboten, dass die Person nicht klagt (§ 1a KSchG)?",
           "help": "„Ja“ nur, wenn dieser Hinweis im Kündigungsschreiben steht (§ 1a KSchG). Eine betriebsbedingte Kündigung ohne dieses Angebot ist „Nein“.",
           "required": true,
-          "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
-          "because": "Das Angebot nach § 1a KSchG gibt es nur bei einer Kündigung durch den Arbeitgeber.",
+          "showIf": {
+            "field": "agKuendigungsgrund",
+            "equals": "betriebsbedingt"
+          },
+          "because": "Das Angebot nach § 1a KSchG gibt es nur bei einer Kündigung aus betrieblichen Gründen.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): betriebsbedingte Kündigung mit Abfindungsangebot"
         },
         {
@@ -480,15 +516,20 @@
           "question": "Haben Sie vor der Kündigung eine Sozialauswahl getroffen?",
           "help": "Bei einer Kündigung aus betrieblichen Gründen wählen Sie unter vergleichbaren Beschäftigten nach Betriebszugehörigkeit, Lebensalter, Unterhaltspflichten und Schwerbehinderung aus (§ 1 Abs. 3 KSchG).",
           "required": true,
-          "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
-          "because": "Eine Sozialauswahl gibt es nur bei einer Kündigung durch den Arbeitgeber (§ 1 Abs. 3 KSchG).",
+          "showIf": {
+            "field": "agKuendigungsgrund",
+            "equals": "betriebsbedingt"
+          },
+          "because": "Eine Sozialauswahl gibt es nur bei einer Kündigung aus betrieblichen Gründen (§ 1 Abs. 3 KSchG).",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Sozialauswahl",
           "options": [
-            { "id": "ja", "label": "Ja" },
-            { "id": "nein", "label": "Nein" },
             {
-              "id": "personenbedingt",
-              "label": "Entfällt, weil die Kündigung personenbedingt ist"
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "nein",
+              "label": "Nein"
             }
           ]
         },

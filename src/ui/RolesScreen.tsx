@@ -1,6 +1,6 @@
 // "Wer füllt jetzt aus?" — the overview of the questionnaire: every role with its state, what
 // still blocks passing it on and what the recipient still misses.
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import {
   BLOCKER_MESSAGES,
   completenessGaps,
@@ -11,7 +11,7 @@ import {
 import { roleStates, takeOverOffered, type RoleState, type Session } from '../logic/session';
 import type { TransferOffer } from '../logic/transferLink';
 import { Banner, Card, FormScope } from './common';
-import { PasswordOption } from './PasswordOption';
+import { useProtection } from './useProtection';
 import { TransferLinkSection } from './TransferLinkSection';
 
 interface Props {
@@ -60,7 +60,7 @@ export function RolesScreen(props: Props) {
     onLinkCopied,
   } = props;
   const input = useRef<HTMLInputElement>(null);
-  const [password, setPassword] = useState<string | undefined>();
+  const protection = useProtection();
   const states = roleStates(session);
   const blockers = transmissionBlockers(session.questionnaire, session.form);
   const gaps = completenessGaps(session.questionnaire, session.form).filter(
@@ -179,9 +179,7 @@ export function RolesScreen(props: Props) {
             }}
           />
         )}
-        {anySealed && blockers.length === 0 && (
-          <PasswordOption password={password} onChange={setPassword} />
-        )}
+        {anySealed && blockers.length === 0 && protection.status}
         <div className="nav">
           <button type="button" onClick={onSaveInterim}>
             Zwischenstand speichern
@@ -190,7 +188,7 @@ export function RolesScreen(props: Props) {
             type="button"
             className="primary"
             disabled={!anySealed || blockers.length > 0 || pdfBusy}
-            onClick={() => onPdf(password)}
+            onClick={() => protection.withProtection(onPdf)}
           >
             {pdfBusy ? 'PDF wird erstellt …' : 'PDF erstellen'}
           </button>
@@ -201,7 +199,13 @@ export function RolesScreen(props: Props) {
             Fragebogen verwerfen
           </button>
         </div>
-        <TransferLinkSection transfer={transfer} password={password} onLinkCopied={onLinkCopied} />
+        <TransferLinkSection
+          transfer={transfer}
+          choice={protection.choice}
+          onRequest={() => protection.withProtection(() => undefined)}
+          onLinkCopied={onLinkCopied}
+        />
+        {protection.dialog}
       </Card>
       <Card title="Gültigkeit und Grenzen">
         <FormScope definition={session.form.definition} />

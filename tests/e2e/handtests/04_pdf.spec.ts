@@ -15,6 +15,7 @@ import {
   openTestApp,
   pdfPages,
   press,
+  protect,
   sign,
   toOverview,
 } from '../app';
@@ -66,15 +67,21 @@ async function createPdf(
   page: Page,
   app: Locator,
   testInfo: TestInfo,
-): Promise<{ path: string; name: string }> {
+  choice: 'Ohne Kennwort' | 'Mit Kennwort schützen' = 'Ohne Kennwort',
+): Promise<{ path: string; name: string; password: string | undefined }> {
+  let password: string | undefined;
   const [file] = await Promise.all([
     page.waitForEvent('download'),
-    press(stand(app), 'PDF erstellen'),
+    (async () => {
+      await press(stand(app), 'PDF erstellen');
+      // „Mit Kennwort schützen?“ comes once per screen (2026-11-13).
+      password = await protect(page, choice, { ifAsked: choice === 'Ohne Kennwort' });
+    })(),
   ]);
   const name = file.suggestedFilename();
   const path = join(testInfo.outputDir, name);
   await file.saveAs(path);
-  return { path, name };
+  return { path, name, password };
 }
 
 /** A PDF opened with pdf.js in Node, closed again after `use`. */
@@ -620,6 +627,7 @@ test.describe('on a phone', () => {
     page.on('download', () => (downloads += 1));
 
     await press(stand(app), 'PDF erstellen');
+    await protect(page, 'Ohne Kennwort');
     const banner = app.locator('.banner-success').filter({ hasText: 'PDF „' });
     await expect(banner).toBeInViewport();
     await expect(banner.getByRole('button', { name: 'Speichern' })).toBeVisible();
@@ -651,21 +659,30 @@ test('MT-132: a PDF with a password: the app asks for it, any spelling opens it'
 }, testInfo) => {
   test.slow();
   const { found, app } = await openTestApp(page, 'sofortmeldung-arbeitgeber-abgeschlossen');
-  await stand(app).getByLabel('Mit Kennwort schützen (PDF und Link)').check();
-  const field = stand(app).getByLabel('Kennwort', { exact: true });
+  // Asked when the PDF is requested (Tobias 2026-11-13), with the reminder to pass it on.
+  await press(stand(app), 'PDF erstellen');
+  const ask = page.getByRole('dialog', { name: 'Mit Kennwort schützen?' });
+  await expect(ask).toContainText('Dann müssen Sie das Kennwort zusätzlich weitergeben');
+  await ask.getByRole('button', { name: 'Mit Kennwort schützen', exact: true }).click();
+  const field = ask.getByLabel('Kennwort', { exact: true });
   const PATTERN = /^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/;
   await expect(field).toHaveValue(PATTERN);
-  await expect(stand(app).getByRole('button', { name: 'Kopieren' }).first()).toBeVisible();
-  await expect(stand(app)).toContainText(
-    'ein PDF-Programm will es genau so, klein und mit Bindestrichen',
-  );
+  await expect(ask.getByRole('button', { name: 'Kopieren' })).toBeVisible();
+  await expect(ask).toContainText('ein PDF-Programm will es genau so, klein und mit Bindestrichen');
   const proposed = await field.inputValue();
-  await press(stand(app), 'Neues Kennwort');
+  await ask.getByRole('button', { name: 'Neues Kennwort' }).click();
   await expect(field).not.toHaveValue(proposed);
   await expect(field).toHaveValue(PATTERN);
   const password = await field.inputValue();
-
-  const { path, name } = await createPdf(page, app, testInfo);
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    ask.getByRole('button', { name: 'Mit diesem Kennwort weiter' }).click(),
+  ]);
+  const name = download.suggestedFilename();
+  const path = join(testInfo.outputDir, name);
+  await download.saveAs(path);
+  // The screen keeps the choice and shows the password to pass on.
+  await expect(stand(app).getByLabel('Kennwort', { exact: true })).toHaveValue(password);
   expect(name).toMatch(/^Sofortmeldung_[0-9a-f]{8}_Weitergabe\.pdf$/);
   const banner = app.locator('.banner-success').filter({ hasText: 'PDF „' });
   await expect(banner).toContainText(`PDF „${name}“ erstellt, mit Kennwort geschützt – `);
@@ -720,9 +737,8 @@ test('MT-132: the Kanzlei files a protected PDF as PDF/A without a password', as
 }, testInfo) => {
   test.slow();
   const { found, app } = await openTestApp(page, 'sofortmeldung-vollstaendig');
-  await stand(app).getByLabel('Mit Kennwort schützen (PDF und Link)').check();
-  const password = await stand(app).getByLabel('Kennwort', { exact: true }).inputValue();
-  const { path } = await createPdf(page, app, testInfo);
+  const { path, password } = await createPdf(page, app, testInfo, 'Mit Kennwort schützen');
+  if (password === undefined) throw new Error('no password proposed');
   expect(readFileSync(path).toString('latin1')).toContain('/Encrypt');
 
   await press(stand(app), 'Fragebogen schließen');

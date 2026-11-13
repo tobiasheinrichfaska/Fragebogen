@@ -13,6 +13,7 @@ import {
   openTestApp,
   pdfPages,
   press,
+  requestLink,
   TEST_APP,
   toOverview,
 } from '../app';
@@ -321,6 +322,7 @@ test('MT-120: the Kanzlei prepares the mandate and closes without a signature', 
   await app.locator('label.confirm input').check();
   await press(app, 'Abschließen');
   await expect(app.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
+  await requestLink(app);
   await expect(app.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=1&/);
   await expect(app.getByRole('button', { name: 'Kopieren' })).toBeVisible();
   await quiet();
@@ -547,6 +549,7 @@ test('MT-124: the Kanzlei part passes on as a link instead of a PDF', async ({
     '/?startpunkt=sepa-kanzlei-abgeschlossen',
   );
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  await requestLink(app);
   const field = app.getByLabel('Link zur Weitergabe');
   await expect(field).toHaveValue(/^https:\/\/fragebogen\.test\/#weitergabe=1&/);
   const link = await field.inputValue();
@@ -936,17 +939,28 @@ test('MT-131: the Kanzlei part passes on as a link with a password', async ({
     '/?startpunkt=sepa-kanzlei-abgeschlossen',
   );
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
-  await app.getByLabel('Mit Kennwort schützen (PDF und Link)').check();
-  const password = app.getByLabel('Kennwort', { exact: true });
+  // Asked when the link is requested (Tobias 2026-11-13), with the reminder to pass it on.
+  await app.getByRole('button', { name: 'Link erstellen', exact: true }).click();
+  const ask = page.getByRole('dialog', { name: 'Mit Kennwort schützen?' });
+  await ask.getByRole('button', { name: 'Mit Kennwort schützen', exact: true }).click();
+  await expect(ask.getByLabel('Kennwort', { exact: true })).toHaveValue(
+    /^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/,
+  );
+  await expect(ask.getByRole('button', { name: 'Kopieren' })).toBeVisible();
+  await expect(ask).toContainText('auf einem anderen Weg');
+  await ask.getByRole('button', { name: 'Mit diesem Kennwort weiter' }).click();
+  const protection = app.locator('.protection-status');
+  const password = protection.getByLabel('Kennwort', { exact: true });
   await expect(password).toHaveValue(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
-  const protection = app.locator('.password-option');
-  await expect(protection.getByRole('button', { name: 'Kopieren' })).toBeVisible();
-  await expect(protection).toContainText('auf einem anderen Weg');
   const field = app.getByLabel('Link zur Weitergabe');
   await expect(field).toHaveValue(/#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
   const first = { password: await password.inputValue(), link: await field.inputValue() };
 
-  await press(app, 'Neues Kennwort');
+  // „ändern“ opens the question again; a new password makes a new link.
+  await protection.getByRole('button', { name: 'ändern' }).click();
+  await ask.getByRole('button', { name: 'Mit Kennwort schützen', exact: true }).click();
+  await ask.getByRole('button', { name: 'Neues Kennwort' }).click();
+  await ask.getByRole('button', { name: 'Mit diesem Kennwort weiter' }).click();
   await expect(password).not.toHaveValue(first.password);
   await expect(field).not.toHaveValue(first.link);
   await expect(field).toHaveValue(/#weitergabe=2&/);
@@ -1004,10 +1018,9 @@ test('MT-131: the Kanzlei part passes on as a link with a password', async ({
   await press(app, 'Abschließen');
   await toOverview(app);
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
-  const box = app.getByLabel('Mit Kennwort schützen (PDF und Link)');
-  await expect(box).not.toBeChecked();
-  await box.check();
-  await expect(password).toHaveValue(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
-  expect([first.password, written]).not.toContain(await password.inputValue());
+  await expect(app.locator('.protection-status')).toHaveCount(0);
+  const again = await requestLink(app, 'Mit Kennwort schützen');
+  expect(again).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
+  expect([first.password, written]).not.toContain(again);
   await quiet();
 });
