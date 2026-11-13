@@ -520,6 +520,11 @@ test('MT-123: without the Kanzlei part', async ({ page }) => {
   await press(main, 'Weiter');
   await expect(main.locator('.question .field-error')).toContainText('Prüfziffer');
   await at(main, 'Wie lautet die Gläubiger-Identifikationsnummer des Zahlungsempfängers?');
+  // The link to the summary takes the typed input over, so a refused one stays with its message
+  // (Chrome evaluation 2026-11-13, part 2 B1); cleared, the question is left open.
+  await press(main, 'Zur Zusammenfassung – alle Angaben ansehen und ändern');
+  await expect(main.locator('.question .field-error')).toContainText('Prüfziffer');
+  await input(main).fill('');
   await press(main, 'Zur Zusammenfassung – alle Angaben ansehen und ändern');
   await at(main, 'Zusammenfassung');
   const missing = main.getByRole('group', { name: 'Fehlende Pflichtangaben' });
@@ -553,10 +558,11 @@ test('MT-124: the Kanzlei part passes on as a link instead of a PDF', async ({
   );
   if (copied !== undefined) expect(copied).toBe(link);
 
-  // Another device: a fresh browser with the public app at the same address.
+  // Another device: a fresh browser with the same app at the same address — a link of the test
+  // area opens the test area, where a draft (SEPA-Mandat 1.2.0 since 2026-11-13) is known.
   const other = await browser.newContext();
   const device = await other.newPage();
-  const there = await openHosted(device, APP, link);
+  const there = await openHosted(device, TEST_APP, link);
   const main = device.locator('main');
   await expect(main).toContainText(
     'Geprüft: Alle abgeschlossenen Teile sind unverändert seit ihrem Abschluss.',
@@ -882,7 +888,8 @@ test('MT-129: the account holder changes the IBAN the Kanzlei prefilled', async 
   }
   await next(app);
   await at(app, 'Von welchem Konto soll abgebucht werden?');
-  await expect(input(app)).toHaveValue('DE89370400440532013000');
+  // Always in its groups, also for editing (Tobias 2026-11-13: „immer formatiert … 4 4 4 .. 2“).
+  await expect(input(app)).toHaveValue('DE89 3704 0044 0532 0130 00');
   await expect(note(app)).toHaveText(prefilled);
   await type(app, 'DE02 1203 0000 0000 2020 51');
   await at(app, 'Wer unterschreibt das Mandat?');
@@ -954,12 +961,12 @@ test('MT-131: the Kanzlei part passes on as a link with a password', async ({
 
   const other = await browser.newContext();
   const device = await other.newPage();
-  const there = await openHosted(device, APP, link);
+  const there = await openHosted(device, TEST_APP, link);
   await expect(device.getByRole('heading', { name: 'Geschützter Link' })).toBeVisible();
   const typed = device.getByLabel('Kennwort', { exact: true });
   await expect(typed).toBeVisible();
-  await expect(device.getByRole('button', { name: 'Öffnen' })).toBeVisible();
-  await expect(device.getByRole('button', { name: 'Ohne diesen Link weiter' })).toBeVisible();
+  await expect(there.app.getByRole('button', { name: 'Öffnen' })).toBeVisible();
+  await expect(there.app.getByRole('button', { name: 'Ohne diesen Link weiter' })).toBeVisible();
   await expect(device.locator('main')).not.toContainText('Musterkanzlei Beispiel');
   await typed.pressSequentially('falsch-falsch');
   await press(device.locator('main'), 'Öffnen');
