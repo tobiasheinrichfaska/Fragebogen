@@ -117,6 +117,7 @@ describe('interviewSummary', () => {
       deferred: ['steuerId', 'bemerkungen'],
       inactive: [],
       missingNotices: ['datenschutz'],
+      dateOrder: [],
       readyToSign: false,
     });
   });

@@ -3,6 +3,7 @@
 // what gets frozen; tests/forms/catalogue.test.ts keeps docs/formulare/ in sync with the JSON.
 // The flow plan with the reason of every condition is docs/ablaufplan.html (flowPlan.ts).
 import { describeCondition } from './conditions';
+import { describeDateOrderRules } from './dateOrder';
 import { formatGermanDate } from './dates';
 import { placeholderIds } from './display';
 import { describeHint } from './hints';
@@ -137,7 +138,7 @@ export const TEXT_FORMAT_LABELS: Readonly<Record<TextFormat, string>> = {
 const germanNumber = (value: number) => String(value).replace('.', ',');
 const germanBound = (bound: DateBound) => (bound === 'today' ? 'heute' : formatGermanDate(bound));
 
-function fieldKind(field: FieldDefinition): string {
+function fieldKind(field: FieldDefinition, label: (id: string) => string): string {
   let kind = FIELD_TYPE_LABELS[field.type];
   if (field.multiline) kind += ', mehrzeilig';
   if (field.textFormat !== undefined) kind += `, ${TEXT_FORMAT_LABELS[field.textFormat]}`;
@@ -156,6 +157,7 @@ function fieldKind(field: FieldDefinition): string {
   }
   if (field.minDate !== undefined) kind += `, frühestens ${germanBound(field.minDate)}`;
   if (field.maxDate !== undefined) kind += `, spätestens ${germanBound(field.maxDate)}`;
+  for (const rule of describeDateOrderRules(field, label)) kind += `, ${rule}`;
   if (field.options) kind += `: ${field.options.map((option) => option.label).join(', ')}`;
   const list = field.optionsFrom === undefined ? undefined : REFERENCE_LISTS[field.optionsFrom];
   if (list)
@@ -235,7 +237,7 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
   const own = [
     name,
     roleLabel(definition, field.role),
-    fieldKind(field),
+    fieldKind(field, (id) => fieldsById(definition).get(id)?.label ?? id),
     availability,
     requirement,
     field.purpose,

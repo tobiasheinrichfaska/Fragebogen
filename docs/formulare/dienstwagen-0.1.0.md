@@ -8,8 +8,8 @@
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 04.11.2026 um 18:13 |
-| Definition (SHA-256) | e43d7a4326c1ee44992ca830016612d98a0a32cf1c6cc143b48fb39cdfc8e3ab |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 10:38 |
+| Definition (SHA-256) | 9ee04d6820bae5e0ad09761cde42195d8cee1a771c4d22d9b5a76ed6ed7d6b88 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -52,7 +52,7 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Überlassen ab (agUeberlassenAb) | Arbeitgeber | Datum | immer | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
-| Überlassen bis (agUeberlassenBis)<br>Hilfe: Nur wenn bekannt oder bei Rückgabe. | Arbeitgeber | Datum | immer | optional | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
+| Überlassen bis (agUeberlassenBis)<br>Hilfe: Nur wenn bekannt oder bei Rückgabe. | Arbeitgeber | Datum, nicht vor „Überlassen ab“ | immer | optional | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
 | Privatnutzung erlaubt (agPrivatnutzung)<br>Frage: Darf die Person das Fahrzeug privat nutzen?<br>Hilfe: Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger). | Arbeitgeber | Ja/Nein | immer | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
 | Regelung des Nutzungsverbots (agNutzungsverbot)<br>Hilfe: Das Dokument gehört zum Lohnkonto. | Arbeitgeber | Auswahl: Arbeitsvertrag, Dienstwagenvereinbarung, Betriebsvereinbarung, schriftlicher Verzicht der Person (auf Papier) | erst wenn „Privatnutzung erlaubt“ mit „Nein“ beantwortet ist<br>Warum: Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht. | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
 | Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt (agFahrtenWohnung)<br>Frage: Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren? | Arbeitgeber | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |

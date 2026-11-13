@@ -260,6 +260,13 @@ export interface FieldDefinition {
   minDate?: DateBound;
   /** `date` only: the latest day, or `today` (e.g. a birth date never lies in the future). */
   maxDate?: DateBound;
+  /**
+   * `date` only: not before the answer of this earlier date field of the same role, e.g. "Befristet
+   * bis" and the start of employment (dateOrder.ts, 2026-11-13).
+   */
+  notBefore?: FieldId;
+  /** `date` only: not after the answer of this earlier date field of the same role. */
+  notAfter?: FieldId;
   /** `number` only: unit shown after the value, e.g. "Std.", "km", "kWh". */
   unit?: string;
   /** `number` only: decimal places, 0 (default), 1 or 2; stored with exactly that many. */

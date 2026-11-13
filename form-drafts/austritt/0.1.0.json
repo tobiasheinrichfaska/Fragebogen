@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-04T18:13",
+  "revised": "2026-11-13T10:38",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -166,6 +166,7 @@
         },
         {
           "id": "agFreistellungAb",
+          "notAfter": "agEndeArbeitsverhaeltnis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Freigestellt ab",
@@ -299,6 +300,7 @@
         },
         {
           "id": "agKuendigungDatum",
+          "notAfter": "agEndeArbeitsverhaeltnis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Datum des Kündigungsschreibens",
@@ -313,6 +315,8 @@
         },
         {
           "id": "agKuendigungZugang",
+          "notBefore": "agKuendigungDatum",
+          "notAfter": "agEndeArbeitsverhaeltnis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Zugang der Kündigung",
@@ -594,6 +598,7 @@
         },
         {
           "id": "agHaetteGekuendigtZum",
+          "notBefore": "agHaetteGekuendigtAm",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Hätte gekündigt zum",
@@ -887,6 +892,7 @@
         },
         {
           "id": "agBetriebszugehoerigkeitSeit",
+          "notAfter": "agEndeArbeitsverhaeltnis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Ununterbrochen im Betrieb seit",
@@ -931,6 +937,7 @@
         },
         {
           "id": "agEntgeltUeberEndeBis",
+          "notBefore": "agEndeArbeitsverhaeltnis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Arbeitsentgelt über das Ende hinaus bis",
