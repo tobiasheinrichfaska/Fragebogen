@@ -247,6 +247,10 @@ test('MT-30: the complete PDF — file name, first page, footer on every page, o
   expect(name).toMatch(/^Sofortmeldung_[0-9a-f]{8}_vollstaendig\.pdf$/);
   const banner = app.locator('.banner-success').filter({ hasText: 'PDF „' });
   await expect(banner).toContainText(`PDF „${name}“ erstellt: vollständig.`);
+  // Chrome evaluation 2026-11-13 (B21): no „Personalakte“ for every form; the form's recipient.
+  await expect(banner).toContainText(
+    'Bitte geben Sie die Datei selbst weiter – an: Lohnabrechnende Stelle.',
+  );
   await expect(banner).toContainText(
     /\d+ Seiten, davon die letzten mit \d+ QR-Codes für den Papierweg\./,
   );

@@ -8,8 +8,8 @@
 | Formular | steuerfreigabe, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum des Anschreibens“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 12:28 |
-| Definition (SHA-256) | 7dea614297b63768e1ea52b279d7367bb800555dc0ec5d7d74aedef772b54bb0 |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 12:58 |
+| Definition (SHA-256) | d148b63b2c7c7ec2f815c8e93afd0bdb6b481a117c93f1219af5c9442c68c364 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung an das Finanzamt schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die Erklärungen, die Ihnen die Kanzlei mit dem genannten Schreiben übersandt hat. |
 | Empfänger | Kanzlei |
@@ -45,7 +45,7 @@
 | Erklärungen (zustimmungErklaerungen)<br>Frage: Welchen Erklärungen stimmen Sie zu? | Mandant / Steuerpflichtiger | Mehrfachauswahl: Einkommensteuererklärung, Gesonderte und einheitliche Feststellungserklärung, Gewinnermittlung (Anlage EÜR), Körperschaftsteuererklärung, Gewerbesteuererklärung, Umsatzsteuererklärung, Zusammenfassende Meldung, E-Bilanz, Digitaler Finanzbericht (an Banken), Offenlegung oder Hinterlegung beim Unternehmensregister | immer<br>Legt Kanzlei fest („Erklärungen“): liegt dessen abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt<br>Warum: Welche Erklärungen vorliegen, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt. | Pflicht | Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO) |
 | Zerlegungserklärung (zustimmungZerlegung)<br>Frage: Gehört eine Zerlegungserklärung zur Gewerbesteuererklärung? | Mandant / Steuerpflichtiger | Ja/Nein | erst wenn bei „Erklärungen“ „Gewerbesteuererklärung“ angekreuzt ist<br>Legt Kanzlei fest („Zerlegungserklärung“): liegt dessen abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt<br>Warum: Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1 GewStG). Ob sie vorliegt, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt. | Pflicht | Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO) |
 | Veranlagung (zustimmungVeranlagung)<br>Frage: Einzel- oder Zusammenveranlagung?<br>Hilfe: Bei Zusammenveranlagung stimmt auch Ihr Ehegatte oder Lebenspartner zu. | Mandant / Steuerpflichtiger | Auswahl: Einzelveranlagung (auch von Ehegatten, § 26a EStG), Zusammenveranlagung (§ 26b EStG) | erst wenn bei „Erklärungen“ „Einkommensteuererklärung“ angekreuzt ist<br>Legt Kanzlei fest („Veranlagung“): liegt dessen abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt<br>Warum: Eine Veranlagung gibt es nur bei der Einkommensteuer. Sie nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt. | Pflicht | Entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt (§ 25 Abs. 3 Satz 2 EStG) |
-| Ihre Einschränkungen (einschraenkungenMandant)<br>Frage: Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?<br>Hilfe: Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt. | Mandant / Steuerpflichtiger | Text, mehrzeilig, höchstens 1000 Zeichen | immer | optional | Einschränkungen der Zustimmung; die Kanzlei prüft sie vor der Übermittlung |
+| Einschränkungen des Mandanten / Steuerpflichtigen (einschraenkungenMandant)<br>Frage: Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?<br>Hilfe: Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt. | Mandant / Steuerpflichtiger | Text, mehrzeilig, höchstens 1000 Zeichen | immer | optional | Einschränkungen der Zustimmung; die Kanzlei prüft sie vor der Übermittlung |
 | Name der unterschreibenden Person (unterzeichnerName)<br>Frage: Wer unterschreibt?<br>Hilfe: Vor- und Familienname. Bei einer Firma die Person, die für sie unterschreibt. Dieser Name steht an der Unterschrift.<br>Vorschlag im Eingabefeld: „‹Mandant / Steuerpflichtiger›“ | Mandant / Steuerpflichtiger | Text, höchstens 70 Zeichen | immer | Pflicht | Wer zustimmt (Name an der Unterschrift) |
 
 ### 3. Zustimmung Ehegatte / Lebenspartner
@@ -53,7 +53,7 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Ihr Vor- und Familienname (ehegatteName)<br>Frage: Wie heißen Sie?<br>Hilfe: Dieser Name steht an Ihrer Unterschrift. | Ehegatte / Lebenspartner | Text, höchstens 70 Zeichen | immer<br>Belegt Kanzlei vor („Ehegatte / Lebenspartner“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Den Namen nennt die Kanzlei; er steht da und kann geändert werden. | Pflicht | Wer mit zustimmt (Name an der Unterschrift) |
-| Ihre Einschränkungen (einschraenkungenEhegatte)<br>Frage: Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?<br>Hilfe: Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt. | Ehegatte / Lebenspartner | Text, mehrzeilig, höchstens 1000 Zeichen | immer | optional | Einschränkungen der Zustimmung; die Kanzlei prüft sie vor der Übermittlung |
+| Einschränkungen des Ehegatten / Lebenspartners (einschraenkungenEhegatte)<br>Frage: Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?<br>Hilfe: Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt. | Ehegatte / Lebenspartner | Text, mehrzeilig, höchstens 1000 Zeichen | immer | optional | Einschränkungen der Zustimmung; die Kanzlei prüft sie vor der Übermittlung |
 
 ## Abhängigkeiten
 
@@ -165,8 +165,8 @@ Ein Vorschlag zur Verknüpfung entsteht nur, wenn alle Merkmale übereinstimmen.
 
 Nur Hinweise: Sie blockieren nichts und werden nicht unterschrieben. Sie erscheinen bei der Zusammenführung, sobald alle genannten Teile vorliegen.
 
-- „Der Mandant hat Einschränkungen zu seiner Zustimmung angegeben. Bitte vor der Übermittlung prüfen, ob sie zu den Erklärungen passen.“ – wenn „Ihre Einschränkungen“ ausgefüllt ist
-- „Der Ehegatte oder Lebenspartner hat Einschränkungen zu seiner Zustimmung angegeben. Bitte vor der Übermittlung prüfen, ob sie zu der Erklärung passen.“ – wenn „Ihre Einschränkungen“ ausgefüllt ist
+- „Der Mandant hat Einschränkungen zu seiner Zustimmung angegeben. Bitte vor der Übermittlung prüfen, ob sie zu den Erklärungen passen.“ – wenn „Einschränkungen des Mandanten / Steuerpflichtigen“ ausgefüllt ist
+- „Der Ehegatte oder Lebenspartner hat Einschränkungen zu seiner Zustimmung angegeben. Bitte vor der Übermittlung prüfen, ob sie zu der Erklärung passen.“ – wenn „Einschränkungen des Ehegatten / Lebenspartners“ ausgefüllt ist
 
 ## Was dieser Fragebogen nicht abdeckt
 

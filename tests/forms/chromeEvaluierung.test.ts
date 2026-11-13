@@ -88,3 +88,19 @@ describe('Personalfragebogen 1.1.0: texts', () => {
     expect(help(pfb, 'agBerufsbezeichnung')).toContain('Tätigkeit');
   });
 });
+
+// Part 2 B4: the spouse saw the client's restriction under „Ihre Einschränkungen“, as if his own.
+describe('Zustimmung: restrictions are named after whose they are', () => {
+  const zustimmung = load(DRAFTS_DIR, 'steuerfreigabe', '0.1.0').definition;
+  const label = (id: string) =>
+    zustimmung.sections.flatMap((s) => s.fields).find((f) => f.id === id)?.label;
+  it('labels each restriction field with its role, read alike from every role', () => {
+    expect(label('einschraenkungenMandant')).toBe(
+      'Einschränkungen des Mandanten / Steuerpflichtigen',
+    );
+    expect(label('einschraenkungenEhegatte')).toBe(
+      'Einschränkungen des Ehegatten / Lebenspartners',
+    );
+    expect(label('einschraenkungenKanzlei')).toBe('Einschränkungen der Kanzlei');
+  });
+});

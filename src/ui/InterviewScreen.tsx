@@ -37,19 +37,22 @@ import { MasterDataLink } from './MasterDataLink';
 import { isTextLike } from './fieldKinds';
 import { FieldInput } from './FieldInput';
 import { TableStep } from './TableStep';
+import { usePendingCommit, usePendingRef, type PendingRef } from './pendingCommit';
 
 interface Props {
   session: Session;
   onSession: (session: Session) => void;
   onBanner: (message: BannerMessage | undefined) => void;
   onSign: () => void;
-  onPause: () => void;
+  /** Gets the session with the step's input taken over. */
+  onPause: (session: Session) => void;
   onSaveInterim: () => void;
   onDiscard: () => void;
 }
 
 export function InterviewScreen(props: Props) {
   const { session, onPause } = props;
+  const pending = usePendingRef();
   const step = currentStep(session);
   const steps = stepsFor(session);
   const progress = interviewProgress(steps);
@@ -59,6 +62,11 @@ export function InterviewScreen(props: Props) {
   const tableField =
     step.kind === 'question' ? fieldsById(session.form.definition).get(step.fieldId) : undefined;
   const complete = step.kind === 'summary' && summaryOf(session)?.readyToSign === true;
+  // The links below leave the step: what it has typed is taken over first (B1).
+  const leaveStep = (go: (current: Session) => void) => {
+    const current = pending.current ? pending.current() : session;
+    if (current) go(current);
+  };
   const max = Math.max(progress.total, 1);
   return (
     <div className="interview">
@@ -85,10 +93,11 @@ export function InterviewScreen(props: Props) {
           field={tableField}
           step={step}
           onSession={props.onSession}
+          pending={pending}
         />
       )}
       {step.kind === 'question' && tableField?.type !== 'repeatGroup' && (
-        <QuestionStep key={step.key} {...props} step={step} />
+        <QuestionStep key={step.key} {...props} step={step} pending={pending} />
       )}
       {step.kind === 'summary' && <SummaryStep {...props} />}
       <p className="pause">
@@ -96,12 +105,12 @@ export function InterviewScreen(props: Props) {
           <button
             type="button"
             className="link"
-            onClick={() => props.onSession(goTo(session, 'summary'))}
+            onClick={() => leaveStep((current) => props.onSession(goTo(current, 'summary')))}
           >
             Zur Zusammenfassung – alle Angaben ansehen und ändern
           </button>
         )}
-        <button type="button" className="link" onClick={onPause}>
+        <button type="button" className="link" onClick={() => leaveStep(onPause)}>
           Unterbrechen – zur Übersicht (Angaben bleiben erhalten)
         </button>
         <button type="button" className="link danger" onClick={props.onDiscard}>
@@ -223,7 +232,8 @@ function QuestionStep({
   onSession,
   onBanner,
   step,
-}: Props & { step: Extract<InterviewStep, { kind: 'question' }> }) {
+  pending,
+}: Props & { step: Extract<InterviewStep, { kind: 'question' }>; pending: PendingRef }) {
   const field = fieldsById(session.form.definition).get(step.fieldId);
   const part =
     session.role === undefined ? undefined : currentPart(session.questionnaire, session.role);
@@ -235,6 +245,20 @@ function QuestionStep({
   );
   const [text, setText] = useState(first.text);
   const [error, setError] = useState<string | undefined>();
+  // Before the early return, like every hook: the links of the screen take the typed text over.
+  usePendingCommit(pending, () => {
+    if (!field || !isTextLike(field)) return session;
+    const result = answer(session, field.id, text.trim() === '' ? null : text);
+    if (!result.ok) {
+      setError(result.message);
+      return undefined;
+    }
+    setError(undefined);
+    onBanner(
+      result.warnings.length > 0 ? { tone: 'warning', text: result.warnings.join(' ') } : undefined,
+    );
+    return result.session;
+  });
   if (!field) return null;
   const proposer = proposedBy(session, field.id);
   const inputId = `field-${field.id}`;
@@ -318,7 +342,9 @@ function QuestionStep({
         {filledFromLink(session, field.id) && (
           <p className="link-note">Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.</p>
         )}
-        {first.suggested && text === first.text && (
+        {/* Stays while the step is open: when it vanished at the first key, „Weiter“ moved up
+            under the finger (Chrome evaluation 2026-11-13, part 2 B13). */}
+        {first.suggested && (
           <p className="link-note">Vorschlag aus Ihren Angaben – Sie können ihn ändern.</p>
         )}
         {proposer !== undefined && (

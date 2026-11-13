@@ -637,8 +637,8 @@ function Workspace({
           onSession={setSession}
           onBanner={setBanner}
           onSign={() => setScreen({ kind: 'sign' })}
-          onPause={() => {
-            setSession(leaveRole(session));
+          onPause={(current) => {
+            setSession(leaveRole(current));
             setScreen({ kind: 'roles' });
           }}
           onSaveInterim={saveInterim}

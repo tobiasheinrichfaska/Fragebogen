@@ -31,6 +31,7 @@ import {
 import { Card, Explainer } from './common';
 import { isTextLike } from './fieldKinds';
 import { FieldInput } from './FieldInput';
+import { usePendingCommit, type PendingRef } from './pendingCommit';
 
 interface Row {
   rowId: string;
@@ -42,6 +43,8 @@ interface Props {
   field: FieldDefinition;
   step: Extract<InterviewStep, { kind: 'question' }>;
   onSession: (session: Session) => void;
+  /** Where the screen's links find the table's commit (B1). */
+  pending?: PendingRef;
 }
 
 function rowsOf(field: FieldDefinition, value: FieldValue | undefined): Row[] {
@@ -71,7 +74,7 @@ function storedCells(field: FieldDefinition, row: Row): Record<string, FieldValu
   );
 }
 
-export function TableStep({ session, field, step, onSession }: Props) {
+export function TableStep({ session, field, step, onSession, pending }: Props) {
   const part =
     session.role === undefined ? undefined : currentPart(session.questionnaire, session.role);
   const [rows, setRows] = useState<Row[]>(() => rowsOf(field, part?.data[field.id]));
@@ -104,7 +107,11 @@ export function TableStep({ session, field, step, onSession }: Props) {
     setError(undefined);
   };
 
-  const leave = (move: (s: Session) => Session) => {
+  /**
+   * The rows checked and answered; undefined when refused (the table shows where). "Weiter" also
+   * wants every cell of this page; a link that leaves keeps a half-filled row for the summary.
+   */
+  const commitRows = (requireCells = true): Session | undefined => {
     const check = normalizeRows(field, raw());
     if (!check.ok) {
       setError({
@@ -115,11 +122,13 @@ export function TableStep({ session, field, step, onSession }: Props) {
           field.columns?.find((candidate) => candidate.id === check.column),
         ),
       });
-      return;
+      return undefined;
     }
     // Only the cells this page asks for must be filled here.
     const asked = new Set(columns.map((column) => column.id));
-    const firstGap = missingCells(field, check.value).find((gap) => asked.has(gap.column));
+    const firstGap = requireCells
+      ? missingCells(field, check.value).find((gap) => asked.has(gap.column))
+      : undefined;
     if (firstGap) {
       const index = rows.findIndex((row) => row.rowId === firstGap.rowId);
       setError({
@@ -127,14 +136,19 @@ export function TableStep({ session, field, step, onSession }: Props) {
         column: firstGap.column,
         text: page ? 'Bitte ausfüllen.' : 'Bitte ausfüllen oder die Zeile entfernen.',
       });
-      return;
+      return undefined;
     }
     const result = answer(session, field.id, raw());
     if (!result.ok) {
       setError({ text: result.message });
-      return;
+      return undefined;
     }
-    onSession(move(result.session));
+    return result.session;
+  };
+  usePendingCommit(pending, () => commitRows(false));
+  const leave = (move: (s: Session) => Session) => {
+    const committed = commitRows();
+    if (committed) onSession(move(committed));
   };
   const next = () => leave(nextStep);
   const choice = nextChoice(session);
