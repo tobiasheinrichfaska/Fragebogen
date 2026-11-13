@@ -6,8 +6,11 @@
   --line: #d0d5da;
   --accent: #0b5cad;
   --ok: #1b6e3a;
+  --ok-bg: #e8f4ec;
   --warn: #8a5300;
+  --warn-bg: #fdf3e1;
   --bad: #a4262c;
+  --bad-bg: #fbeaea;
   font-family:
     system-ui,
     -apple-system,
@@ -32,14 +35,130 @@ body {
 
 h1 {
   font-size: 1.6rem;
-  margin: 0 0 12px;
+  margin: 0 0 8px;
+}
+
+.lead {
+  margin: 0 0 16px;
+}
+
+.dropzone {
+  border: 2px dashed var(--line);
+  border-radius: 8px;
+  padding: 28px 16px;
+  text-align: center;
+  background: var(--panel);
+  margin-bottom: 16px;
+}
+
+.dropzone.over {
+  border-color: var(--accent);
+  background: #eaf2fb;
+}
+
+.dropzone-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.dropzone-sub {
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.status {
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.verdict {
+  border-left: 6px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.verdict h2 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+}
+
+.verdict p {
+  margin: 4px 0;
+}
+
+.tone-ok {
+  border-color: var(--ok);
+  background: var(--ok-bg);
+}
+
+.tone-warn {
+  border-color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.tone-bad {
+  border-color: var(--bad);
+  background: var(--bad-bg);
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.details {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.details th,
+.details td {
+  text-align: left;
+  vertical-align: top;
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid var(--panel);
+  overflow-wrap: anywhere;
+}
+
+.details th {
+  font-weight: 500;
+  color: var(--muted);
+  width: 38%;
+}
+
+.hint {
+  color: var(--warn);
 }
 
 .notice {
   background: var(--panel);
   border-left: 4px solid var(--accent);
   padding: 10px 14px;
-  margin: 0 0 20px;
+  margin: 24px 0 20px;
 }
 
 .version {

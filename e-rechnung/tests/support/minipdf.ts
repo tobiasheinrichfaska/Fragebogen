@@ -15,7 +15,15 @@ export interface Attachment {
 export interface MiniPdfOptions {
   text?: string;
   attachments?: Attachment[];
+  /**
+   * Adds a standard security handler (RC4, revision 2) whose user password is not empty, so a
+   * reader needs a password to open the file. The content itself stays unencrypted — enough
+   * for a reader to ask for the password, which is all the tests need.
+   */
+  passwordProtected?: boolean;
 }
+
+const HEX_32 = 'A1B2C3D4E5F60718293A4B5C6D7E8F90A1B2C3D4E5F60718293A4B5C6D7E8F90';
 
 const latin1 = (text: string) => Uint8Array.from(text, (c) => c.charCodeAt(0) & 0xff);
 const literal = (text: string) => `(${text.replace(/[\\()]/g, (c) => `\\${c}`)})`;
@@ -64,6 +72,12 @@ export function miniPdf(options: MiniPdfOptions = {}): Uint8Array {
   ];
   objects[3] = [latin1(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`)];
   objects[4] = [latin1('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>')];
+  const encryptId = options.passwordProtected
+    ? add([`<< /Filter /Standard /V 1 /R 2 /O <${HEX_32}> /U <${HEX_32}> /P -44 >>`])
+    : undefined;
+  const trailerExtra = encryptId
+    ? ` /Encrypt ${encryptId} 0 R /ID [<00112233445566778899AABBCCDDEEFF> <00112233445566778899AABBCCDDEEFF>]`
+    : '';
 
   const header = latin1('%PDF-1.7\n%\xE2\xE3\xCF\xD3\n');
   const chunks: Uint8Array[] = [header];
@@ -81,7 +95,7 @@ export function miniPdf(options: MiniPdfOptions = {}): Uint8Array {
   const xref = [
     `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`,
     ...offsets.map((o) => `${String(o).padStart(10, '0')} 00000 n \n`),
-    `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${offset}\n%%EOF\n`,
+    `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R${trailerExtra} >>\nstartxref\n${offset}\n%%EOF\n`,
   ].join('');
   chunks.push(latin1(xref));
 
