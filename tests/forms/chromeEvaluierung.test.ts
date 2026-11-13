@@ -3,6 +3,7 @@
 // fixes live in the drafts that will replace them.
 import { join } from 'node:path';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
+import { visibility } from '../../src/logic/form';
 import type { FormDefinition } from '../../src/logic/model';
 import {
   definitionFiles,
@@ -131,5 +132,40 @@ describe('part 3: texts of the drafts', () => {
 
   it('B18: one word for the link that keeps the master data', () => {
     for (const draft of DRAFTS) expect(JSON.stringify(draft)).not.toContain('Lesezeichen-Link');
+  });
+});
+
+// Part 3 B2 (Tobias 2026-11-13: „kann man das verbessern?“): the social selection was asked without
+// knowing why the employer gave notice; now the reason comes first.
+describe('Austritt: the reason of a dismissal decides what follows', () => {
+  const austritt = load(DRAFTS_DIR, 'austritt', '0.1.0').definition;
+  const shown = (grund: string | undefined) => {
+    const data = {
+      agBeendigungsart: 'kuendigungArbeitgeber',
+      ...(grund === undefined ? {} : { agKuendigungsgrund: grund }),
+    };
+    const visible = visibility(austritt, 'arbeitgeber', data);
+    return ['agSozialauswahl', 'agAbfindungsangebot1a', 'agAbmahnung'].filter(
+      (id) => visible.get(id) === true,
+    );
+  };
+
+  it('asks the social selection and the offer of § 1a KSchG only for business reasons', () => {
+    expect(shown('betriebsbedingt')).toEqual(['agSozialauswahl', 'agAbfindungsangebot1a']);
+    expect(shown('personenbedingt')).toEqual([]);
+    expect(shown('ohneKschg')).toEqual([]);
+  });
+
+  it('asks about a warning only for conduct', () => {
+    expect(shown('verhaltensbedingt')).toEqual(['agAbmahnung']);
+  });
+
+  it('asks the reason only when the employer gave notice, and the social selection has no detour', () => {
+    const visible = visibility(austritt, 'arbeitgeber', { agBeendigungsart: 'kuendigungPerson' });
+    expect(visible.get('agKuendigungsgrund')).toBe(false);
+    const field = austritt.sections
+      .flatMap((s) => s.fields)
+      .find((f) => f.id === 'agSozialauswahl');
+    expect(field?.options?.map((o) => o.id)).toEqual(['ja', 'nein']);
   });
 });

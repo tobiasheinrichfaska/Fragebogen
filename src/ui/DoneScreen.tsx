@@ -1,7 +1,6 @@
 // After sealing: what was recorded, and what comes next (hand the device on, save, PDF — or a link
 // when the questionnaire holds only a few values, Tobias 2026-11-05). Once every needed part is
 // done, the PDF comes first and handing on steps back (Tobias 2026-11-12).
-import { useState } from 'react';
 import { describeInputTypes } from '../logic/display';
 import { roleOf } from '../logic/form';
 import { latestSealed } from '../logic/questionnaire';
@@ -9,7 +8,7 @@ import { allPartsDone, type Session } from '../logic/session';
 import { formatLocalDateTime } from '../logic/time';
 import type { TransferOffer } from '../logic/transferLink';
 import { Card } from './common';
-import { PasswordOption } from './PasswordOption';
+import { useProtection } from './useProtection';
 import { TransferLinkSection } from './TransferLinkSection';
 
 interface Props {
@@ -40,7 +39,7 @@ export function DoneScreen({
   const definition = roleOf(session.form.definition, role);
   const part = latestSealed(session.questionnaire, role);
   const note = part?.seal?.payload.systemNote;
-  const [password, setPassword] = useState<string | undefined>();
+  const protection = useProtection();
   const done = allPartsDone(session);
   // Once the PDF is made, „Zur Übersicht“ leads on; a second PDF stays possible (part 3 B11).
   const pdfFirst = done && !pdfMade;
@@ -49,7 +48,7 @@ export function DoneScreen({
       type="button"
       className={pdfFirst ? 'primary' : undefined}
       disabled={pdfBusy}
-      onClick={() => onPdf(password)}
+      onClick={() => protection.withProtection(onPdf)}
     >
       {pdfBusy ? 'PDF wird erstellt …' : 'PDF erstellen'}
     </button>
@@ -85,7 +84,7 @@ export function DoneScreen({
           die PDF weiter.
         </p>
       )}
-      <PasswordOption password={password} onChange={setPassword} />
+      {protection.status}
       <div className="nav">
         {done ? (
           <>
@@ -106,7 +105,13 @@ export function DoneScreen({
           Zwischenstand speichern
         </button>
       </div>
-      <TransferLinkSection transfer={transfer} password={password} onLinkCopied={onLinkCopied} />
+      <TransferLinkSection
+        transfer={transfer}
+        choice={protection.choice}
+        onRequest={() => protection.withProtection(() => undefined)}
+        onLinkCopied={onLinkCopied}
+      />
+      {protection.dialog}
     </Card>
   );
 }

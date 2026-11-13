@@ -4,7 +4,7 @@
 // must offer "Teilen" and "Speichern", and "Teilen" must hand over the PDF itself. On a computer
 // (no stand-in) the PDF downloads at once as before.
 import { expect, test, type Page } from '@playwright/test';
-import { openTestApp } from './app';
+import { openTestApp, protect } from './app';
 import type { Guard } from './guards';
 
 declare global {
@@ -50,6 +50,7 @@ test('on a phone the PDF is shared, not downloaded at once', async ({ page }) =>
   page.on('download', () => (downloads += 1));
 
   await page.locator('.test-app').getByRole('button', { name: 'PDF erstellen' }).click();
+  await protect(page, 'Ohne Kennwort');
   const banner = page.locator('.test-app .banner-success').filter({ hasText: 'PDF „' });
   await expect(banner).toBeVisible();
   await expect(banner.getByRole('button', { name: 'Speichern' })).toBeVisible();
@@ -76,7 +77,10 @@ test('on a computer the PDF downloads at once as before', async ({ page }) => {
   const found = await openComplete(page);
   const [file] = await Promise.all([
     page.waitForEvent('download'),
-    page.locator('.test-app').getByRole('button', { name: 'PDF erstellen' }).click(),
+    (async () => {
+      await page.locator('.test-app').getByRole('button', { name: 'PDF erstellen' }).click();
+      await protect(page, 'Ohne Kennwort');
+    })(),
   ]);
   expect(file.suggestedFilename()).toMatch(/\.pdf$/);
   const banner = page.locator('.test-app .banner-success').filter({ hasText: 'PDF „' });

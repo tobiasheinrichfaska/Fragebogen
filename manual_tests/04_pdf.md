@@ -161,17 +161,21 @@ Sie stehen bei „Wer füllt jetzt aus?“.
 
 **Schritte:**
 
-1. In der Übersicht unter „Stand“ das Häkchen **„Mit Kennwort schützen (PDF und Link)“** setzen und
-   das Kennwort auf einem Zettel notieren.
-2. **„PDF erstellen“** klicken.
-   - **Danach:** Grün: „PDF „Sofortmeldung_…_Weitergabe.pdf“ erstellt, mit Kennwort geschützt – …“
-3. Die heruntergeladene PDF direkt im Browser öffnen (Chrome oder Edge).
+1. In der Übersicht unter „Stand“ **„PDF erstellen“** klicken.
+   - **Danach:** Ein Fenster fragt „Mit Kennwort schützen?“ und sagt, dass das Kennwort dann
+     zusätzlich weitergegeben werden muss.
+2. **„Mit Kennwort schützen“** klicken und das angezeigte Kennwort auf einem Zettel notieren.
+   - **Danach:** Das Kennwort steht im Fenster, mit „Kopieren“ und „Neues Kennwort“.
+3. **„Mit diesem Kennwort weiter“** klicken.
+   - **Danach:** Grün: „PDF „Sofortmeldung_…_Weitergabe.pdf“ erstellt, mit Kennwort geschützt – …“;
+     unter „Stand“ steht das Kennwort mit „ändern“.
+4. Die heruntergeladene PDF direkt im Browser öffnen (Chrome oder Edge).
    - **Danach:** Der Browser fragt nach einem Kennwort.
-4. Das Kennwort genau wie notiert eingeben: klein und mit Bindestrichen.
+5. Das Kennwort genau wie notiert eingeben: klein und mit Bindestrichen.
    - **Danach:** Die PDF zeigt die Angaben des Arbeitgebers wie ohne Kennwort.
-5. Dieselbe PDF in Acrobat Reader öffnen und das Kennwort eingeben.
+6. Dieselbe PDF in Acrobat Reader öffnen und das Kennwort eingeben.
    - **Danach:** Acrobat Reader fragt nach dem Kennwort und zeigt die PDF damit an.
-6. Am Mac: dieselbe PDF in der Vorschau öffnen und das Kennwort eingeben.
+7. Am Mac: dieselbe PDF in der Vorschau öffnen und das Kennwort eingeben.
    - **Danach:** Die Vorschau fragt nach dem Kennwort und zeigt die PDF damit an.
 
 **Erwartet:**

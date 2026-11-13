@@ -88,7 +88,8 @@ Irre führen würde. Das Ergebnis ist ein JSON nach dem Schema unten.
   - „Teilen“
   - „Datei öffnen …“ und jede andere Dateiauswahl
   - „Eingänge zusammenführen …“ (die Kanzlei-Station braucht Dateien)
-  - „Mit Kennwort schützen“: Erstelle keine PDF und keinen Link mit Kennwort.
+  - „Mit Kennwort schützen“: Erstelle keine PDF und keinen Link mit Kennwort; auf die Frage
+    „Mit Kennwort schützen?“ antwortest du „Ohne Kennwort“.
 - **„Fragebogen schließen“ erst, wenn die PDF erstellt ist.** Vorher fragt der Browser nach, und du
   bleibst stehen.
 - **Die Seite nie neu laden oder verlassen, solange ein Fragebogen offen ist und die PDF noch fehlt.**

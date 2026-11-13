@@ -6,7 +6,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
-import { toOverview } from './app';
+import { protect, requestLink, toOverview } from './app';
 import { expectClean, guard, rememberAccess } from './guards';
 
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
@@ -154,7 +154,13 @@ async function sign(page: Page): Promise<void> {
 }
 
 async function download(page: Page, button: string, path: string): Promise<string> {
-  const [file] = await Promise.all([page.waitForEvent('download'), press(page, button)]);
+  const [file] = await Promise.all([
+    page.waitForEvent('download'),
+    (async () => {
+      await press(page, button);
+      if (button === 'PDF erstellen') await protect(page, 'Ohne Kennwort', { ifAsked: true });
+    })(),
+  ]);
   await file.saveAs(path);
   return path;
 }
@@ -230,10 +236,18 @@ test('a PDF passed on with a password asks for it when read in (Tobias 2026-11-0
   await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
   await press(page, 'Ohne Unterschrift abschließen');
   await press(page, 'Abschließen');
-  await page.getByLabel('Mit Kennwort schützen').check();
-  const password = await page.getByLabel('Kennwort', { exact: true }).inputValue();
+  // „Mit Kennwort schützen?“ is asked when the PDF is requested (2026-11-13).
+  let password = '';
+  const [file] = await Promise.all([
+    page.waitForEvent('download'),
+    (async () => {
+      await press(page, 'PDF erstellen');
+      password = (await protect(page, 'Mit Kennwort schützen')) ?? '';
+    })(),
+  ]);
   expect(password).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
-  const pdf = await download(page, 'PDF erstellen', testInfo.outputPath('geschuetzt.pdf'));
+  const pdf = testInfo.outputPath('geschuetzt.pdf');
+  await file.saveAs(pdf);
   await expect(page.locator('main')).toContainText('mit Kennwort geschützt');
   const raw = readFileSync(pdf).toString('latin1');
   expect(raw).toContain('/Encrypt');
@@ -309,6 +323,7 @@ test('the employer part passes on as a link and opens on another device (Tobias 
   await press(page, 'Ohne Unterschrift abschließen');
   await press(page, 'Abschließen');
   await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
+  await requestLink(page.locator('main'));
   const link = await page.getByLabel('Link zur Weitergabe').inputValue();
   expect(link).toMatch(/^https:\/\/fragebogen\.test\/#weitergabe=1&pruef=[0-9a-f]{16}&daten=/);
 
@@ -350,8 +365,7 @@ test('a link passed on with a password opens only with it (Tobias 2026-11-06)', 
   await press(page, 'Ich bestätige die Angaben des Arbeitgebers.');
   await press(page, 'Ohne Unterschrift abschließen');
   await press(page, 'Abschließen');
-  await page.getByLabel('Mit Kennwort schützen').check();
-  const password = await page.getByLabel('Kennwort', { exact: true }).inputValue();
+  const password = (await requestLink(page.locator('main'), 'Mit Kennwort schützen')) ?? '';
   expect(password).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
   const field = page.getByLabel('Link zur Weitergabe');
   await expect(field).toHaveValue(/#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
@@ -416,6 +430,7 @@ test('the overview offers PDF and link right under the roles (test report 2026-1
   const pdf = page.getByRole('button', { name: 'PDF erstellen' });
   await expect(pdf).toBeEnabled();
   await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
+  await requestLink(page.locator('main'));
   await expect(page.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=1&/);
   const top = async (locator: ReturnType<Page['locator']>) => (await locator.boundingBox())?.y ?? 0;
   expect(await top(pdf)).toBeLessThan(

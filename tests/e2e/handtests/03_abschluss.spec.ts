@@ -9,6 +9,7 @@ import {
   heading,
   openTestApp,
   press,
+  protect,
   sign,
   TEST_APP,
   toOverview,
@@ -162,7 +163,13 @@ test('MT-21: the person must sign; a single dot is refused, a full signature com
       }
     }).observe(document.body, { subtree: true, childList: true, characterData: true });
   });
-  const [file] = await Promise.all([page.waitForEvent('download'), pdfButton.click()]);
+  const [file] = await Promise.all([
+    page.waitForEvent('download'),
+    (async () => {
+      await pdfButton.click();
+      await protect(page, 'Ohne Kennwort');
+    })(),
+  ]);
   const states = await page.evaluate(
     () => (window as unknown as { pdfStates: string[] }).pdfStates,
   );
@@ -282,7 +289,7 @@ test('MT-23: a minor needs the signature of the legal representative', async ({ 
   await expect(pdf).toBeDisabled();
 
   await press(guardian, 'Ich bin: Gesetzliche Vertretung');
-  await answerUntil(app, SOFORT, { vertretungName: 'Max Musterfrau' });
+  await answerUntil(app, SOFORT, { vertretungName: 'Max Musterfrau', vertretungAlleinSorge: 'Ja' });
   await press(app, 'Weiter zum Abschluss');
   await press(app, 'Als gesetzliche Vertretung der minderjährigen Person');
   await sign(page);

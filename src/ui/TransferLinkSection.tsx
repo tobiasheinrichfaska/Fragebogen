@@ -1,6 +1,7 @@
 // "Als Link weitergeben" (Tobias 2026-11-05) — on the done screen and, since the test report of
 // 2026-11-06, in the overview, so a closed part can be passed on later too. With the screen's
-// password („Mit Kennwort schützen“, PasswordOption — Tobias 2026-11-06) the link is encrypted.
+// password (asked when the link is requested, useProtection.tsx — 2026-11-13) the link is encrypted.
+import type { ProtectionChoice } from './useProtection';
 import { useEffect, useState } from 'react';
 import { lockAvailable, lockTransfer } from '../io/transferLock';
 import {
@@ -14,13 +15,18 @@ type Locked = { password: string } & ({ result: TransferLinkResult } | { failed:
 
 export function TransferLinkSection({
   transfer,
-  password,
+  choice,
+  onRequest,
   onLinkCopied,
 }: {
   transfer: TransferOffer;
-  password: string | undefined;
+  /** The screen's „Mit Kennwort schützen?“ answer; undefined until asked (2026-11-13). */
+  choice: ProtectionChoice;
+  /** Asks the question; the link shows once it is answered. */
+  onRequest: () => void;
   onLinkCopied: () => void;
 }) {
+  const password = choice?.password;
   const [locked, setLocked] = useState<Locked | undefined>();
   const questionnaire = transfer.kind === 'link' ? transfer.questionnaire : undefined;
   const available = lockAvailable();
@@ -52,7 +58,13 @@ export function TransferLinkSection({
         {password !== undefined &&
           ' Geschützt mit dem Kennwort oben: Öffnen kann ihn nur, wer auch das Kennwort hat.'}
       </p>
-      {password === undefined ? (
+      {choice === undefined ? (
+        <p>
+          <button type="button" onClick={onRequest}>
+            Link erstellen
+          </button>
+        </p>
+      ) : password === undefined ? (
         <MasterDataLink url={transfer.url} label="Link zur Weitergabe" onCopied={onLinkCopied} />
       ) : !available || (made !== undefined && 'failed' in made) ? (
         <p className="error-text">{TRANSFER_LINK_MESSAGES.lockUnavailable}</p>
