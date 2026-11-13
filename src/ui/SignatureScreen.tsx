@@ -147,8 +147,9 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
 
       <p className="muted">
         Das ist eine einfache elektronische Signatur. Mit dem Abschluss werden Ihre Angaben
-        gesiegelt; Datum, Uhrzeit und Gerät laut diesem Gerät werden vermerkt. Danach lassen sie
-        sich nur noch als neue Fassung ändern.
+        festgeschrieben: Ein Prüfwert zeigt später, ob etwas geändert wurde. Datum, Uhrzeit und
+        Gerät laut diesem Gerät werden vermerkt. Danach lassen sich die Angaben nur noch als neue
+        Fassung ändern.
       </p>
       <details className="signature-basis">
         <summary>Warum genügt das?</summary>

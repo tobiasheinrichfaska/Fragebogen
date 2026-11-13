@@ -82,7 +82,10 @@ export function RolesScreen(props: Props) {
                 <div>
                   <strong>{state.role.label}</strong>
                   <span className={`state state-${state.state}`}>
-                    {(state.role.prefills === true ? PREFILL_LABEL : STATE_LABEL)[state.state]}
+                    {/* Chrome evaluation 2026-11-13 (B12): not "noch offen" when not needed. */}
+                    {notNeeded
+                      ? 'nicht nötig'
+                      : (state.role.prefills === true ? PREFILL_LABEL : STATE_LABEL)[state.state]}
                     {state.version !== undefined ? ` (Fassung ${state.version})` : ''}
                   </span>
                   {note && <p className="muted">{note}</p>}
@@ -119,9 +122,9 @@ export function RolesScreen(props: Props) {
         {anyOpen && (
           <div className="take-over">
             <p className="muted">
-              Liegt schon ein anderer Fragebogen dieser Person vor (z. B. die Sofortmeldung oder die
-              Meldung des Vormonats)? Seine Angaben lassen sich in die noch offenen Teile übernehmen
-              – nur in leere Felder, und alles bleibt zu prüfen und zu unterschreiben.
+              Liegt schon ein anderer Fragebogen mit denselben Angaben vor? Seine Angaben lassen
+              sich in die noch offenen Teile übernehmen – nur in leere Felder, und alles bleibt zu
+              prüfen und zu unterschreiben.
             </p>
             <input
               ref={input}

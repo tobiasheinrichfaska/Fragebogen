@@ -4,6 +4,7 @@
 // are typed, they appear by themselves after the digits of day and month, and a comma shows as a dot.
 import { boundDay } from './clock';
 import { formatGermanDate, isIsoDate } from './dates';
+import { groupedText, groupsOf } from './display';
 import type { FieldDefinition, FieldType, IsoDate } from './model';
 import { normalizeDate } from './normalize';
 
@@ -14,6 +15,8 @@ export const TYPED_MASKS: Partial<Record<FieldType, string>> = {
 
 /** The text as it stays in the input while typing. Dots the person types stay where they are. */
 export function typedText(type: FieldType, text: string): string {
+  // IBAN, tax id and SV number take their groups as they are typed (Tobias 2026-11-13).
+  if (groupsOf(type) !== undefined) return groupedText(type, text);
   const mask = TYPED_MASKS[type];
   if (mask === undefined) return text;
   const dotted = text.replace(/,/g, '.');

@@ -302,6 +302,17 @@ export function interviewProgress(steps: readonly InterviewStep[]): InterviewPro
   return progress;
 }
 
+/**
+ * The progress line above every step. Once nothing is missing it says so — "36 von etwa 41" read
+ * like open questions in a complete summary (Chrome evaluation 2026-11-13, B18).
+ */
+export function progressLine(progress: InterviewProgress, complete: boolean): string {
+  if (complete) return 'alle nötigen Angaben vorhanden';
+  const questions = progress.total === 1 ? 'Frage' : 'Fragen';
+  const deferred = progress.deferred > 0 ? ` · ${progress.deferred} zurückgestellt` : '';
+  return `${progress.answered} von etwa ${progress.total} ${questions} beantwortet${deferred}`;
+}
+
 export interface InterviewSummary {
   /** Required, available and unanswered — deferred or not; signing is refused until answered. */
   missingRequired: FieldId[];

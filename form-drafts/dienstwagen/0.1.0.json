@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-13T10:38",
+  "revised": "2026-11-13T12:28",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -425,8 +425,8 @@
       "id": "datenschutz",
       "role": "person",
       "title": "Datenschutzhinweis",
-      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den geldwerten Vorteil aus der Überlassung des Dienstwagens zu ermitteln und die Lohnsteuer richtig einzubehalten. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Empfänger sind die lohnabrechnende Stelle, die Finanzverwaltung und die Sozialversicherung. Die Angaben werden als Beleg zum Lohnkonto aufbewahrt (§ 41 Abs. 1 EStG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.",
-      "asOf": "2026-10-30",
+      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den geldwerten Vorteil aus der Überlassung des Dienstwagens zu ermitteln und die Lohnsteuer richtig einzubehalten. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Empfänger sind die lohnabrechnende Stelle, die Finanzverwaltung und die Sozialversicherung. Die Angaben werden als Beleg zum Lohnkonto aufbewahrt (§ 41 Abs. 1 EStG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
+      "asOf": "2026-11-13",
       "acknowledgement": "read"
     },
     {

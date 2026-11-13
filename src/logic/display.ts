@@ -2,16 +2,47 @@
 // (canon 1); this only formats them by German conventions and never changes data.
 import { describeCalendar } from './calendar';
 import { formatGermanDate, isIsoDate, isIsoMonth, MONTH_NAMES } from './dates';
-import type { FieldDefinition, FieldType, FieldValue } from './model';
+import type { FieldDefinition, FieldType, FieldValue, InputType } from './model';
 import { columnShown } from './normalize';
 import { optionsOf } from './options';
 
 export const EMPTY_VALUE = '–';
 
+/** How the system note names the ways of input, in German (Chrome evaluation 2026-11-13, B29). */
+export const INPUT_TYPE_LABELS: Readonly<Record<InputType, string>> = {
+  pen: 'Stift',
+  touch: 'Finger',
+  mouse: 'Maus',
+  keyboard: 'Tastatur',
+};
+
+export function describeInputTypes(types: readonly InputType[]): string {
+  return types.map((type) => INPUT_TYPE_LABELS[type]).join(', ');
+}
+
 const GROUPS: Partial<Record<FieldType, readonly number[]>> = {
   taxId: [2, 3, 3, 3],
   svNumber: [2, 6, 1, 3],
 };
+
+/** IBAN in blocks of four, the rest last ("DE89 3704 0044 0532 0130 00"); 34 characters at most. */
+const IBAN_GROUPS: readonly number[] = Array<number>(9).fill(4);
+
+/** Fields shown in groups wherever they appear — read, edited or typed (Tobias 2026-11-13). */
+export function groupsOf(type: FieldType): readonly number[] | undefined {
+  return type === 'iban' ? IBAN_GROUPS : GROUPS[type];
+}
+
+/**
+ * The value in its groups: spaces removed, upper case, then spaced again. Text with other
+ * characters (a pasted value with dashes) stays as it is, so nothing typed is lost.
+ */
+export function groupedText(type: FieldType, text: string): string {
+  const sizes = groupsOf(type);
+  const compact = text.replace(/\s/g, '').toUpperCase();
+  if (sizes === undefined || !/^[A-Z0-9]*$/.test(compact)) return text;
+  return grouped(compact, sizes);
+}
 
 function grouped(value: string, sizes: readonly number[]): string {
   const parts: string[] = [];
@@ -57,15 +88,18 @@ const FORMATTERS: Readonly<
   money: (value) => (typeof value === 'string' ? money(value) : String(value)),
   boolean: (value) => (value === true ? 'Ja' : 'Nein'),
   choice: (value, field) => optionLabel(field, String(value)),
-  multiChoice: (value, field) =>
-    Array.isArray(value)
-      ? value.map((id) => optionLabel(field, String(id))).join(', ')
-      : String(value),
-  iban: (value) => (typeof value === 'string' ? grouped(value, Array(9).fill(4)) : String(value)),
-  taxId: (value) =>
-    typeof value === 'string' ? grouped(value, GROUPS.taxId ?? []) : String(value),
-  svNumber: (value) =>
-    typeof value === 'string' ? grouped(value, GROUPS.svNumber ?? []) : String(value),
+  // Stored sorted by id (canon 1); read in the order of the options, e.g. Montag before Dienstag.
+  multiChoice: (value, field) => {
+    if (!Array.isArray(value)) return String(value);
+    const ids = value.map(String);
+    const order = optionsOf(field).map((option) => option.id);
+    const known = order.filter((id) => ids.includes(id));
+    const unknown = ids.filter((id) => !order.includes(id));
+    return [...known, ...unknown].map((id) => optionLabel(field, id)).join(', ');
+  },
+  iban: (value) => (typeof value === 'string' ? groupedText('iban', value) : String(value)),
+  taxId: (value) => (typeof value === 'string' ? groupedText('taxId', value) : String(value)),
+  svNumber: (value) => (typeof value === 'string' ? groupedText('svNumber', value) : String(value)),
   betriebsnummer: (value) => String(value),
   repeatGroup: (value, field) =>
     Array.isArray(value)
@@ -152,6 +186,7 @@ export function editValue(field: FieldDefinition, value: FieldValue | undefined)
   if (value === undefined || value === null || typeof value !== 'string') return '';
   if (field.type === 'date' && isIsoDate(value)) return formatGermanDate(value);
   if (field.type === 'money') return money(value).replace(' €', '');
+  if (groupsOf(field.type) !== undefined) return groupedText(field.type, value);
   if (field.optionsFrom !== undefined) return optionLabel(field, value);
   if (field.type === 'number') return germanNumber(value).replace('\u2212', '-');
   if (field.type === 'month' && isIsoMonth(value)) {

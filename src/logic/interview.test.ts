@@ -3,6 +3,7 @@ import {
   interviewProgress,
   interviewSteps,
   interviewSummary,
+  progressLine,
   resumeStep,
   stepAfter,
   stepBefore,
@@ -163,5 +164,26 @@ describe('interviewSummary', () => {
       weitereStunden: '20',
     });
     expect(interviewSummary(definition, 'person', draftOf(restored), []).inactive).toEqual([]);
+  });
+});
+
+// Chrome evaluation 2026-11-13 (B18): „1 von etwa 1 Fragen“, and „36 von etwa 41“ in a summary
+// with nothing missing.
+describe('progressLine', () => {
+  const progress = (answered: number, total: number, deferred = 0) => ({
+    answered,
+    deferred,
+    open: total - answered - deferred,
+    total,
+  });
+  it('counts the questions, one as „Frage“', () => {
+    expect(progressLine(progress(36, 41), false)).toBe('36 von etwa 41 Fragen beantwortet');
+    expect(progressLine(progress(1, 1), false)).toBe('1 von etwa 1 Frage beantwortet');
+    expect(progressLine(progress(3, 9, 2), false)).toBe(
+      '3 von etwa 9 Fragen beantwortet · 2 zurückgestellt',
+    );
+  });
+  it('says nothing is missing once the summary can be signed', () => {
+    expect(progressLine(progress(36, 41), true)).toBe('alle nötigen Angaben vorhanden');
   });
 });

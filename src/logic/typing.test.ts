@@ -65,6 +65,26 @@ describe('typedText', () => {
     expect(typedText('text', 'Müller, Anna 123')).toBe('Müller, Anna 123');
   });
 
+  // Tobias 2026-11-13: „am besten immer formatiert anzeigen 4 4 4 .. 2“.
+  it('groups an IBAN in fours while it is typed, the rest last, in capitals', () => {
+    expect(typedText('iban', 'de89')).toBe('DE89');
+    expect(typedText('iban', 'DE893')).toBe('DE89 3');
+    expect(typedText('iban', 'DE89 3704 0044 0532 0130 00')).toBe('DE89 3704 0044 0532 0130 00');
+    expect(typedText('iban', 'DE89370400440532013000')).toBe('DE89 3704 0044 0532 0130 00');
+    // Backspace after a group removes the character, never a space that comes back.
+    expect(typedText('iban', 'DE89 370')).toBe('DE89 370');
+    expect(typedText('iban', 'DE89 ')).toBe('DE89');
+  });
+
+  it('groups the tax id and the SV number as on the documents', () => {
+    expect(typedText('taxId', '86095742719')).toBe('86 095 742 719');
+    expect(typedText('svNumber', '65170590m520')).toBe('65 170590 M 520');
+  });
+
+  it('leaves a pasted IBAN with other characters as it is, so nothing typed is lost', () => {
+    expect(typedText('iban', 'DE89-3704-0044')).toBe('DE89-3704-0044');
+  });
+
   it('turns every typed date into one the check accepts', () => {
     for (const keys of ['02112026', '1,2,2026', '17,05,1990', '29022028']) {
       expect(normalizeDate(typedText('date', keys)).ok).toBe(true);

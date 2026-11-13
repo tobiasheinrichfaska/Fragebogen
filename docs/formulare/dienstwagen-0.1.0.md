@@ -8,8 +8,8 @@
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 10:38 |
-| Definition (SHA-256) | 9ee04d6820bae5e0ad09761cde42195d8cee1a771c4d22d9b5a76ed6ed7d6b88 |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 12:28 |
+| Definition (SHA-256) | ab23bf07d8d7dc7b8936cc357a3fc814fb26e0828a699563829d5e4776841387 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -95,9 +95,9 @@ Alle übrigen Angaben sind unabhängig.
 
 - Kenntnisnahme durch: Beschäftigte Person
 - Art: wird in der App gelesen und bestätigt
-- Stand: 30.10.2026
+- Stand: 13.11.2026
 
-> Ihr Arbeitgeber verarbeitet diese Angaben, um den geldwerten Vorteil aus der Überlassung des Dienstwagens zu ermitteln und die Lohnsteuer richtig einzubehalten. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Empfänger sind die lohnabrechnende Stelle, die Finanzverwaltung und die Sozialversicherung. Die Angaben werden als Beleg zum Lohnkonto aufbewahrt (§ 41 Abs. 1 EStG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App speichert und versendet nichts.
+> Ihr Arbeitgeber verarbeitet diese Angaben, um den geldwerten Vorteil aus der Überlassung des Dienstwagens zu ermitteln und die Lohnsteuer richtig einzubehalten. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Empfänger sind die lohnabrechnende Stelle, die Finanzverwaltung und die Sozialversicherung. Die Angaben werden als Beleg zum Lohnkonto aufbewahrt (§ 41 Abs. 1 EStG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
 
 ### Was Ihre Angaben bewirken
 
