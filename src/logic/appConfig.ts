@@ -23,6 +23,12 @@ export interface AppConfig {
    * only in the local config. Each one must keep text readable (contrast at least 4.5:1).
    */
   colors?: KanzleiColors;
+  /**
+   * Asked before the hosted app opens (Tobias 2026-11-13: the tools are for the Kanzlei's clients
+   * only), e.g. „Ich bestätige, dass ich Mandant der Kanzlei … bin.“ — names the Kanzlei, so only
+   * in the local config. Without it the app asks nothing.
+   */
+  accessNotice?: string;
 }
 
 export interface KanzleiColors {
@@ -54,6 +60,8 @@ const CONTRAST: Readonly<Record<keyof KanzleiColors, readonly [string, string]>>
 
 export const MIN_CONTRAST = 4.5;
 const HEX = /^#[0-9a-f]{6}$/i;
+/** A text with something in it (the access notice). */
+const NOT_BLANK = /\S/;
 
 function luminance(hex: string): number {
   const channel = (i: number) => {
@@ -134,6 +142,7 @@ export function parseAppConfig(
     'explainerBase',
     'testAddress',
     'colors',
+    'accessNotice',
   ]);
   if (!o) return { ok: false, issues: d.issues };
   const kanzleiName =
@@ -149,6 +158,10 @@ export function parseAppConfig(
   const testAddress =
     o.testAddress === undefined ? undefined : relativeOrHttps(o.testAddress, '$.testAddress');
   const colors = o.colors === undefined ? undefined : decodeColors(d, o.colors, '$.colors');
+  const accessNotice =
+    o.accessNotice === undefined
+      ? undefined
+      : d.string(o.accessNotice, '$.accessNotice', NOT_BLANK);
   if (d.issues.length > 0) return { ok: false, issues: d.issues };
   return {
     ok: true,
@@ -158,6 +171,7 @@ export function parseAppConfig(
       ...(explainerBase === undefined ? {} : { explainerBase }),
       ...(testAddress === undefined ? {} : { testAddress }),
       ...(colors === undefined ? {} : { colors }),
+      ...(accessNotice === undefined ? {} : { accessNotice }),
     },
   };
 }

@@ -8,6 +8,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { devices, expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { passAccessGate, rememberAccess } from '../guards';
 import {
   inlineMarkdown,
   parseManualTests,
@@ -103,6 +104,7 @@ interface Seen {
 
 /** The test folder at its https address; anything else asked for is refused and noted. */
 async function serve(context: BrowserContext, page: Page): Promise<Seen> {
+  await rememberAccess(context);
   const html = readFileSync(TEST_APP);
   const seen: Seen = { foreign: [], errors: [] };
   await context.route('**/*', (route) => {
@@ -529,6 +531,8 @@ test.describe('MT-133: opening a test restarts the app with its entry', () => {
       'Ihre Testergebnisse bleiben erhalten, ebenso alles, was die öffentliche App gespeichert hat.',
     );
     await choose(page, 'Zurücksetzen');
+    // The remembered access notice went with it: asked again (2026-11-13).
+    await passAccessGate(app(page));
     await expect(
       page.getByText(
         'Die App ist zurückgesetzt: nichts mehr vom Testbereich in diesem Browser gespeichert, kein Link in der Adresszeile. Die Testergebnisse sind erhalten.',

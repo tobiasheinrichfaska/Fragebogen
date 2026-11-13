@@ -17,7 +17,7 @@ import {
   press,
   toOverview,
 } from '../app';
-import { expectClean } from '../guards';
+import { expectClean, rememberAccess } from '../guards';
 
 const SOFORT = 'Personalfragebogen: Angaben für die Sofortmeldung';
 const SUMMARY_LINK = 'Zur Zusammenfassung – alle Angaben ansehen und ändern';
@@ -795,6 +795,7 @@ const ORIGIN = 'https://fragebogen.test';
 const STORED = 'fragebogen-angefangen';
 
 async function serve(context: BrowserContext): Promise<{ foreign: string[]; errors: string[] }> {
+  await rememberAccess(context);
   const html = readFileSync(APP);
   const seen = { foreign: [] as string[], errors: [] as string[] };
   await context.route('**/*', (route) => {

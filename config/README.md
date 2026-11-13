@@ -28,6 +28,11 @@ ausgeschlossen.
 - `testAddress` setzt auf der Startseite den Link „Testbereich (für Tester)“: ein einfacher relativer
   Pfad wie `test/` (Buchstaben, Ziffern, `-`, `_`, `/`) oder eine `https://`-Adresse. Er erscheint nur,
   wenn die App über https läuft – in einer heruntergeladenen Datei führte er ins Leere.
+- `accessNotice` (freiwillig, seit 13.11.2026) ist der Text, den die Online-Fassung vor dem Öffnen
+  bestätigen lässt, z. B. „Ich bestätige, dass ich Mandant der Kanzlei … bin. Die Nutzung dieser
+  Tools ist Mandanten vorbehalten.“ Mit „Antwort für die Zukunft merken“ merkt sich der Browser die
+  Bestätigung (kein Cookie; „Alle Daten auf diesem Gerät löschen“ nimmt sie weg); ein geänderter Text
+  wird neu gefragt. Eine heruntergeladene Datei fragt nicht. Ohne den Eintrag fragt die App nichts.
 
 ## Lokale Tests der Testseite (`tests.local.md`)
 

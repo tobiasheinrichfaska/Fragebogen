@@ -6,6 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+import { rememberAccess } from './guards';
 import { sealed, type ResumeRecord } from '../../src/logic/resume';
 import { APP_STORAGE, storageKey } from '../../src/logic/storageKeys';
 
@@ -19,6 +20,7 @@ const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
 const ORIGIN = 'https://fragebogen.test';
 
 async function serve(page: Page): Promise<string[]> {
+  await rememberAccess(page);
   const html = readFileSync(APP);
   const foreign: string[] = [];
   await page.route('**/*', (route) => {
@@ -37,6 +39,7 @@ const TEST_APP = fileURLToPath(new URL('../../dist-test/index.html', import.meta
 
 /** The public app at / and the test folder at /test/ under one origin, as on the web server. */
 async function serveBoth(page: Page): Promise<string[]> {
+  await rememberAccess(page);
   const pages = new Map([
     [`${ORIGIN}/`, readFileSync(APP)],
     [`${ORIGIN}/index.html`, readFileSync(APP)],

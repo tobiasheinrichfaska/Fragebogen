@@ -14,6 +14,8 @@ the named automated test (the audit re-runs them); unchecked paths are guarded b
 - [x] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow (`tests/e2e/guards.ts`, `expectClean`)
 - [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean (e2e: `tests/e2e/handtests/02_ausfuellen.spec.ts`, former MT-17)
 
+- [ ] **Clients-only notice** — with `accessNotice` configured, the hosted app shows nothing before the notice is ticked; „Antwort für die Zukunft merken“ keeps it in the browser (no cookie), „Alle Daten auf diesem Gerät löschen“ removes it; a downloaded copy does not ask (`tests/e2e/handtests/14_zugang.spec.ts`)
+
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
 
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
