@@ -15,6 +15,8 @@ test-results/
 
 # Delivered third-party material (DATEV documents, research results) — never committed
 import/
+# Processed imports, one folder per run (workspace rule 2026-11-02); same data as import/
+import-archiv/
 
 # Local environment / editor
 .env
