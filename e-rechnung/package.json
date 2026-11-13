@@ -1,0 +1,51 @@
+{
+  "name": "e-rechnung",
+  "private": true,
+  "version": "0.1.0",
+  "description": "E-Rechnungs-Prüfer: zeigt im Browser, ob eine Datei eine E-Rechnung ist, welche Pflichtangaben sie enthält und ob die Beträge zusammenpassen. Die Datei verlässt den Rechner nicht.",
+  "license": "AGPL-3.0-only",
+  "author": "Tobias Heinrich",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite --port 5178 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 5178 --strictPort",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "npm run build && playwright test",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "hochladen": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../../private/Auslieferung/upload.ps1 -Projekt .",
+    "tester": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../../private/Auslieferung/tester.ps1 -Projekt . -Ziel test"
+  },
+  "dependencies": {
+    "libxml2-wasm": "0.7.2",
+    "pdfjs-dist": "6.4.299",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.61.0",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "eslint": "10.13.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.7",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vite-plugin-singlefile": "2.3.4",
+    "vitest": "4.1.12"
+  }
+}

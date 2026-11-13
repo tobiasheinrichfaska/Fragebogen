@@ -1,0 +1,15 @@
+# Dependencies & build output (the repo root ignores node_modules/, dist/ and .tmp/ at any depth too)
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# Downloaded official artefacts and throw-away spikes — never committed (see docs/quellen.md)
+.tmp/
+
+# Sample invoices whose licence forbids redistribution (FeRD Musterrechnungen) — local only
+tests/fixtures/lokal/
+
+# Upload tool: tester list (hashes) and generated access rules — local only
+deploy/.local/
