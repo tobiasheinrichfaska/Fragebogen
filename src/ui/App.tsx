@@ -7,7 +7,10 @@ import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
 import { InputTracker, newQuestionnaireId } from '../io/environment';
 import { handOut } from '../io/files';
+import { clearAccess, loadAccess, saveAccess } from '../io/accessStore';
 import { clearResume, loadResume, saveResume } from '../io/resumeStore';
+import { accessGateNeeded, accessToken } from '../logic/accessGate';
+import { AccessGate } from './AccessGate';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import type { Inbox } from '../logic/kanzlei';
 import { fileNameFor } from '../logic/fileNames';
@@ -245,6 +248,14 @@ function Workspace({
   // QR codes read so far from photos of a print-out, until all parts are there.
   const [collected, setCollected] = useState<Uint8Array[]>([]);
   const { dialog: passwordDialog, ask: askPassword } = usePasswordDialog();
+  // The access notice of the local configuration, asked once per visit unless remembered.
+  const [accessOpen, setAccessOpen] = useState(() =>
+    accessGateNeeded({
+      notice: APP_CONFIG.accessNotice,
+      protocol: location.protocol,
+      remembered: loadAccess(),
+    }),
+  );
   const [banner, setBanner] = useState<BannerMessage | undefined>(
     () => transferred?.message ?? startBanner(start, remembered, linked),
   );
@@ -477,6 +488,7 @@ function Workspace({
     }
     setSession(undefined);
     clearResume();
+    clearAccess();
     // Drop the master-data fragment as well and start from a clean page.
     location.replace(location.pathname + location.search);
   };
@@ -555,6 +567,27 @@ function Workspace({
 
   const role = session?.role;
   const roleLabel = session?.form.definition.roles.find((r) => r.id === role)?.label;
+
+  // Clients only (Tobias 2026-11-13): nothing of the app before the notice is confirmed.
+  if (accessOpen && APP_CONFIG.accessNotice !== undefined) {
+    const notice = APP_CONFIG.accessNotice;
+    return (
+      <main className="shell">
+        <header className="app-header">
+          <div>
+            <h1>{APP_NAME}</h1>
+          </div>
+        </header>
+        <AccessGate
+          notice={notice}
+          onConfirm={(remember) => {
+            if (remember) saveAccess(accessToken(notice));
+            setAccessOpen(false);
+          }}
+        />
+      </main>
+    );
+  }
 
   return (
     <main className="shell">

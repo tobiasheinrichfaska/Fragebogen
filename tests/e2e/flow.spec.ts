@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { toOverview } from './app';
-import { expectClean, guard } from './guards';
+import { expectClean, guard, rememberAccess } from './guards';
 
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
 // The app starts the newest published version; its labels drive the steps.
@@ -280,6 +280,7 @@ test('a PDF passed on with a password asks for it when read in (Tobias 2026-11-0
 /** The public build at an https address, served by Playwright itself; anything else is refused. */
 const ORIGIN = 'https://fragebogen.test';
 async function serveHosted(page: Page): Promise<string[]> {
+  await rememberAccess(page);
   const html = readFileSync(APP);
   const foreign: string[] = [];
   await page.route('**/*', (route) => {

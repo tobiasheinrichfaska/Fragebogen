@@ -4,7 +4,11 @@
 // they were: a questionnaire begun in the public app before keeps being found.
 
 /** Everything the questionnaire app keeps in the browser, by name (the tester's run is not the app's). */
-export const APP_STORAGE = { resume: 'fragebogen-angefangen' } as const;
+export const APP_STORAGE = {
+  resume: 'fragebogen-angefangen',
+  /** The confirmed access notice, when the person asked to remember it (accessGate.ts). */
+  access: 'fragebogen-zugang',
+} as const;
 
 /** The folder of a page address: "/" for "/" and "/index.html", "/test/" for "/test/index.html". */
 export function folderOf(pathname: string): string {
