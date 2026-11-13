@@ -1,0 +1,8 @@
+dist/
+coverage/
+.tmp/
+node_modules/
+package-lock.json
+docs/*.html
+schemas/
+tests/fixtures/

@@ -7,7 +7,8 @@ import prettier from 'eslint-config-prettier';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist', 'coverage', '.tmp', 'playwright-report', 'test-results']),
+  // e-rechnung/ is a sub-project with its own package.json, ESLint config and dependencies
+  globalIgnores(['dist', 'coverage', '.tmp', 'playwright-report', 'test-results', 'e-rechnung']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, tseslint.configs.strict],
