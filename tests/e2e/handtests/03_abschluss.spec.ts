@@ -277,6 +277,8 @@ test('MT-23: on the 18th birthday the person signs alone', async ({ page }) => {
   await expect(roleRow(app, 'Gesetzliche Vertretung')).toContainText(
     'Nicht erforderlich: Die Person ist volljährig.',
   );
+  // Chrome evaluation 2026-11-13 (B12): it read „noch offen“ above that line.
+  await expect(roleRow(app, 'Gesetzliche Vertretung').locator('.state')).toHaveText('nicht nötig');
   await expect(card(app, 'Stand').locator('.banner-success')).toContainText(COMPLETE);
   await expect(app.getByRole('button', { name: 'PDF erstellen' })).toBeEnabled();
   await expectQuiet(page, found);

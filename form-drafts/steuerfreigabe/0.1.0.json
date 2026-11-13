@@ -1,7 +1,7 @@
 {
   "id": "steuerfreigabe",
   "version": "0.1.0",
-  "revised": "2026-11-13T12:28",
+  "revised": "2026-11-13T12:58",
   "title": "Zustimmung zur elektronischen Übermittlung der Steuererklärungen",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -329,7 +329,7 @@
           "id": "einschraenkungenMandant",
           "role": "mandant",
           "type": "text",
-          "label": "Ihre Einschränkungen",
+          "label": "Einschränkungen des Mandanten / Steuerpflichtigen",
           "question": "Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?",
           "help": "Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt.",
           "required": false,
@@ -376,7 +376,7 @@
           "id": "einschraenkungenEhegatte",
           "role": "ehegatte",
           "type": "text",
-          "label": "Ihre Einschränkungen",
+          "label": "Einschränkungen des Ehegatten / Lebenspartners",
           "question": "Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?",
           "help": "Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt.",
           "required": false,

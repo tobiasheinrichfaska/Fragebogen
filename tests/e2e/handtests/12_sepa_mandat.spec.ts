@@ -276,6 +276,10 @@ test('MT-120: the Kanzlei prepares the mandate and closes without a signature', 
   await at(app, 'Mandatsreferenz');
   await expect(input(app)).toHaveValue('100010000001');
   await expect(note(app)).toHaveText('Vorschlag aus Ihren Angaben – Sie können ihn ändern.');
+  // Chrome evaluation 2026-11-13 (part 2, B13): the note vanished at the first key and the
+  // buttons moved up under the finger; it stays while the step is open.
+  await input(app).fill('100010000002');
+  await expect(note(app)).toHaveText('Vorschlag aus Ihren Angaben – Sie können ihn ändern.');
   await next(app, 'Wird separat mitgeteilt');
   await at(app, 'Welche Angaben zum Konto tragen Sie schon ein?');
   await expect(app.locator('.question input[type=checkbox]:checked')).toHaveCount(0);
