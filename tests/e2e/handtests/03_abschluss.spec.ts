@@ -89,7 +89,9 @@ test('MT-20: the employer completes without a signature', async ({ page }) => {
   await expect(app).toContainText(
     /Systemvermerk: [^·]+ · [^·]+ · Eingabe: [^·]+ · App \d+\.\d+\.\d+/,
   );
-  await expect(app).toContainText(/Prüfwert \(SHA-256\): [0-9a-f]{64}/);
+  await expect(app).toContainText(
+    /Prüfwert, an dem sich später zeigt, dass die Angaben unverändert sind: [0-9a-f]{64}/,
+  );
   // The person is still missing: handing the device on comes first (Tobias 2026-11-12).
   await expect(app.locator('.nav button.primary')).toHaveText('Gerät weitergeben – zur Übersicht');
   await expectQuiet(page, found);
@@ -235,7 +237,7 @@ test.describe('on a touch screen', () => {
     await expect(done).toBeEnabled();
     await done.click();
     await expect.poll(() => heading(app)).toBe('Beschäftigte Person: abgeschlossen');
-    await expect(app).toContainText(/Eingabe: [^·]*touch/);
+    await expect(app).toContainText(/Eingabe: [^·]*Finger/);
     await expectQuiet(page, found);
   });
 });

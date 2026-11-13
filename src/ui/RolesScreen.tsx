@@ -85,7 +85,8 @@ export function RolesScreen(props: Props) {
                   <strong>{state.role.label}</strong>
                   <span className={`state state-${state.state}`}>
                     {/* Chrome evaluation 2026-11-13 (B12): not "noch offen" when not needed. */}
-                    {notNeeded
+                    {/* Only once decided: while it depends on another part it is still open. */}
+                    {notNeeded && state.requirement.reason !== 'pending'
                       ? 'nicht nötig'
                       : (state.role.prefills === true ? PREFILL_LABEL : STATE_LABEL)[state.state]}
                     {state.version !== undefined ? ` (Fassung ${state.version})` : ''}
