@@ -22,6 +22,7 @@ interface Props {
   onSaveInterim: () => void;
   onTakeOver: (file: File) => void;
   onPdf: (password: string | undefined) => void;
+  pdfBusy: boolean;
   onClose: () => void;
   onDiscard: () => void;
   transfer: TransferOffer;
@@ -52,6 +53,7 @@ export function RolesScreen(props: Props) {
     onSaveInterim,
     onTakeOver,
     onPdf,
+    pdfBusy,
     onClose,
     onDiscard,
     transfer,
@@ -186,10 +188,10 @@ export function RolesScreen(props: Props) {
           <button
             type="button"
             className="primary"
-            disabled={!anySealed || blockers.length > 0}
+            disabled={!anySealed || blockers.length > 0 || pdfBusy}
             onClick={() => onPdf(password)}
           >
-            PDF erstellen
+            {pdfBusy ? 'PDF wird erstellt …' : 'PDF erstellen'}
           </button>
           <button type="button" className="link" onClick={onClose}>
             Fragebogen schließen

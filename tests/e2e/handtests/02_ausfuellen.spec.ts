@@ -372,7 +372,7 @@ test('MT-15: an interim file names no person and opens again at the first open q
     'begonnen, nicht abgeschlossen',
   );
   expect(await tap(app, 'Weitermachen')).toBe(open);
-  await expect(app.locator('.interview-head')).toContainText('1 zurückgestellt');
+  await expect(app.locator('.interview-head')).toContainText('1 übersprungen');
   await expectClean(page, found);
 });
 

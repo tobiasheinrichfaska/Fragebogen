@@ -146,6 +146,32 @@ test('MT-21: the person must sign; a single dot is refused, a full signature com
     0,
   );
 
+  // Chrome evaluation 2026-11-13, part 3: while the PDF is written the button is locked and says
+  // so (B26); once made, the screen says it and „Zur Übersicht“ leads on (B11).
+  const pdfButton = app.locator('.nav button', { hasText: /^PDF (erstellen|wird erstellt …)$/ });
+  // However short the busy state is on this machine, an observer sees every state of the button.
+  await page.evaluate(() => {
+    const seen: string[] = [];
+    (window as unknown as { pdfStates: string[] }).pdfStates = seen;
+    new MutationObserver(() => {
+      for (const button of document.querySelectorAll('.nav button')) {
+        if (button.textContent?.startsWith('PDF wird erstellt'))
+          seen.push(`${button.textContent}|${(button as HTMLButtonElement).disabled}`);
+      }
+    }).observe(document.body, { subtree: true, childList: true, characterData: true });
+  });
+  const [file] = await Promise.all([page.waitForEvent('download'), pdfButton.click()]);
+  const states = await page.evaluate(
+    () => (window as unknown as { pdfStates: string[] }).pdfStates,
+  );
+  expect(states).toContain('PDF wird erstellt …|true');
+  expect(file.suggestedFilename()).toMatch(/_vollstaendig\.pdf$/);
+  await expect(app).toContainText(
+    'Die PDF ist erstellt. Geben Sie sie weiter; danach können Sie den Fragebogen schließen.',
+  );
+  await expect(app.locator('.nav button.primary')).toHaveText('Zur Übersicht');
+  await expect(pdfButton).toHaveText('PDF erstellen');
+
   await press(app, 'Zur Übersicht');
   await expect(roleRow(app, 'Beschäftigte Person')).toContainText('unterschrieben');
   await expect(roleRow(app, 'Arbeitgeber')).toContainText('abgeschlossen');

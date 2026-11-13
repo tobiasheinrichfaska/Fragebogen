@@ -309,7 +309,8 @@ export function interviewProgress(steps: readonly InterviewStep[]): InterviewPro
 export function progressLine(progress: InterviewProgress, complete: boolean): string {
   if (complete) return 'alle nötigen Angaben vorhanden';
   const questions = progress.total === 1 ? 'Frage' : 'Fragen';
-  const deferred = progress.deferred > 0 ? ` · ${progress.deferred} zurückgestellt` : '';
+  // „übersprungen“ like the button „Vorerst überspringen“ (part 3 B21).
+  const deferred = progress.deferred > 0 ? ` · ${progress.deferred} übersprungen` : '';
   return `${progress.answered} von etwa ${progress.total} ${questions} beantwortet${deferred}`;
 }
 

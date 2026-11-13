@@ -148,12 +148,18 @@ export function fillPlaceholders(
   fieldOf: (id: string) => FieldDefinition | undefined,
   valueOf: (id: string) => FieldValue | undefined,
 ): string {
-  return text.replace(PLACEHOLDER, (match, id: string) => {
-    const field = fieldOf(id);
-    const value = valueOf(id);
-    if (!field || value === undefined || value === null) return '';
-    return `${match.startsWith(' ') ? ' ' : ''}„${displayValue(field, value)}“`;
-  });
+  return (
+    text
+      .replace(PLACEHOLDER, (match, id: string) => {
+        const field = fieldOf(id);
+        const value = valueOf(id);
+        if (!field || value === undefined || value === null) return '';
+        return `${match.startsWith(' ') ? ' ' : ''}„${displayValue(field, value)}“`;
+      })
+      // Two answers side by side read as one: „Erika Musterfrau“, not „Erika“ „Musterfrau“
+      // (Chrome evaluation 2026-11-13, part 3 B1).
+      .replace(/“ „/g, ' ')
+  );
 }
 
 /**

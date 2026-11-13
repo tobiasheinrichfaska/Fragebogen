@@ -8,8 +8,8 @@
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 12:28 |
-| Definition (SHA-256) | ab23bf07d8d7dc7b8936cc357a3fc814fb26e0828a699563829d5e4776841387 |
+| Stand | zuletzt überarbeitet am 13.11.2026 um 13:25 |
+| Definition (SHA-256) | 7f4c419b42fb66a66c93e7a20c072a838d2f2265fc27ede9074dd906968fe613 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -53,10 +53,10 @@
 | --- | --- | --- | --- | --- | --- |
 | Überlassen ab (agUeberlassenAb) | Arbeitgeber | Datum | immer | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
 | Überlassen bis (agUeberlassenBis)<br>Hilfe: Nur wenn bekannt oder bei Rückgabe. | Arbeitgeber | Datum, nicht vor „Überlassen ab“ | immer | optional | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
-| Privatnutzung erlaubt (agPrivatnutzung)<br>Frage: Darf die Person das Fahrzeug privat nutzen?<br>Hilfe: Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger). | Arbeitgeber | Ja/Nein | immer | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
+| Privatnutzung erlaubt (agPrivatnutzung)<br>Frage: Darf die Person das Fahrzeug privat nutzen?<br>Hilfe: Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger). | Arbeitgeber | Ja/Nein | immer | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
 | Regelung des Nutzungsverbots (agNutzungsverbot)<br>Hilfe: Das Dokument gehört zum Lohnkonto. | Arbeitgeber | Auswahl: Arbeitsvertrag, Dienstwagenvereinbarung, Betriebsvereinbarung, schriftlicher Verzicht der Person (auf Papier) | erst wenn „Privatnutzung erlaubt“ mit „Nein“ beantwortet ist<br>Warum: Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht. | Pflicht | Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG) |
-| Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt (agFahrtenWohnung)<br>Frage: Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren? | Arbeitgeber | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
-| Pauschalierung mit 15 % (agPauschal15)<br>Frage: Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?<br>Hilfe: Pauschal versteuert wird der Vorteil für 15 Arbeitstage im Monat; dieser Teil ist in der Sozialversicherung beitragsfrei. | Arbeitgeber | Ja/Nein | erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt“ mit „Ja“ beantwortet ist<br>Warum: Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG). | Pflicht | Pauschale Lohnsteuer für 15 Fahrten im Monat (§ 40 Abs. 2 Satz 2 Nr. 1a EStG); beitragsfrei (§ 1 SvEV) |
+| Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt (agFahrtenWohnung)<br>Frage: Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?<br>Hilfe: Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG). | Arbeitgeber | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
+| Pauschalierung mit 15 % (agPauschal15)<br>Frage: Sollen die Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 15 % pauschal versteuert werden?<br>Hilfe: Pauschal versteuert wird höchstens der Betrag, den die Person für 15 Arbeitstage im Monat als Entfernungspauschale absetzen könnte; dieser Teil ist in der Sozialversicherung beitragsfrei. | Arbeitgeber | Ja/Nein | erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt“ mit „Ja“ beantwortet ist<br>Warum: Nur wenn das Fahrzeug für Fahrten zur ersten Tätigkeitsstätte genutzt wird, kann der Arbeitgeber diese Fahrten mit 15 % pauschal versteuern (§ 40 Abs. 2 Satz 2 Nr. 1a EStG). | Pflicht | Pauschale Lohnsteuer für 15 Fahrten im Monat (§ 40 Abs. 2 Satz 2 Nr. 1a EStG); beitragsfrei (§ 1 SvEV) |
 | Sonderfälle (agSonderfaelle)<br>Frage: Trifft einer dieser Sonderfälle zu?<br>Hilfe: Diese Fälle deckt der Fragebogen nicht ab; die lohnabrechnende Stelle klärt sie gesondert mit Ihnen. | Arbeitgeber | Mehrfachauswahl: Fahrtenbuch statt 1-%-Regelung, Einzelbewertung der Fahrten (0,002 % je Fahrt), weniger als 5 Arbeitstage pro Woche vor Ort (Homeoffice), Zuzahlungen oder Kostenübernahme durch die Person, Familienheimfahrten (doppelte Haushaltsführung), Fahrer wird gestellt, mehrere Personen nutzen das Fahrzeug privat, Erstattung von Ladestrom zu Hause, Überlassung durch Gehaltsumwandlung, keiner davon | immer | Pflicht | Abweichungen von der Standardbewertung, die die lohnabrechnende Stelle gesondert klärt |
 
 ### 4. Angaben der beschäftigten Person
@@ -65,7 +65,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Familienname (familienname)<br>Frage: Wie lautet Ihr Familienname? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
 | Vornamen (vorname)<br>Frage: Wie lauten Ihre Vornamen? | Beschäftigte Person | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe des Arbeitgebers |
-| Fahrten zwischen Wohnung und erster Tätigkeitsstätte (fahrtenWohnung)<br>Frage: Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte? | Beschäftigte Person | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
+| Fahrten zwischen Wohnung und erster Tätigkeitsstätte (fahrtenWohnung)<br>Frage: Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?<br>Hilfe: Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG). | Beschäftigte Person | Ja/Nein | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Fahrten von der Meldeanschrift (wohnungMeldeanschrift)<br>Frage: Fahren Sie von Ihrer Meldeanschrift aus? | Beschäftigte Person | Ja/Nein; vorbelegt: Ja | immer | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Anschrift der Wohnung, von der Sie fahren (wohnungAnschrift) | Beschäftigte Person | Text | erst wenn „Fahrten von der Meldeanschrift“ mit „Nein“ beantwortet ist<br>Warum: Fährt die Person nicht von ihrer Meldeanschrift, zählt die Wohnung, von der sie tatsächlich fährt, für die Entfernung. | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
 | Entfernung Wohnung – erste Tätigkeitsstätte (entfernungKm)<br>Hilfe: Einfache Strecke, kürzeste Straßenverbindung, auf volle km abgerundet – auch wenn Sie einen längeren Weg fahren. | Beschäftigte Person | Zahl, ganzzahlig, in km | erst wenn „Fahrten zwischen Wohnung und erster Tätigkeitsstätte“ mit „Ja“ beantwortet ist<br>Warum: Nur wer zur ersten Tätigkeitsstätte fährt, braucht die Entfernung für die 0,03 % je Kilometer (§ 8 Abs. 2 Satz 3 EStG). | Pflicht | Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG) |
@@ -103,9 +103,9 @@ Alle übrigen Angaben sind unabhängig.
 
 - Kenntnisnahme durch: Beschäftigte Person
 - Art: wird in der App gelesen und bestätigt
-- Stand: 30.10.2026
+- Stand: 13.11.2026
 
-> Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro- und Hybridfahrzeugen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.
+> Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.
 
 ## Verknüpfung der Teile
 

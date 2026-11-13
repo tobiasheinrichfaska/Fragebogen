@@ -45,7 +45,15 @@ const EXTENSION: Readonly<Record<FileKind, string>> = {
   merged: '.json',
 };
 
+/** Where the form id reads otherwise than its title (Chrome evaluation 2026-11-13, part 3 B25). */
+const FILE_NAMES: Readonly<Record<string, string>> = {
+  lohnmeldung: 'Monatsmeldung',
+  steuerfreigabe: 'Zustimmung',
+};
+
 function formName(formId: string): string {
+  const named = FILE_NAMES[formId];
+  if (named !== undefined) return named;
   return formId
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
