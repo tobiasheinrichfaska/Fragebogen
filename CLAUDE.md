@@ -1243,6 +1243,10 @@ Key design decisions (details in `docs/plan.md`):
   versions: when the deciding role **takes its seal back** („Unterschrift/Abschluss zurücknehmen“)
   instead of starting a new version, the old version is gone and no hint appears — open (a marker in
   the draft or refusing that reopen would change the file format or the flow; decision Tobias).
+- **A merged file must not be continued by a station** (found in the audit of 2026-11-14, loop 5):
+  a new version in it no longer matches the merge hash, so the file verifies as `invalid`
+  (`mergeAltered`) and its parts are left out of the next merge. Give a station the original
+  files; decision pending (renew the hash on every transition, or drop the record).
 - **Verification proves consistency, not authorship:** anyone can produce a fresh, self-consistent
   seal; only confirmations (other roles' seals, receipts, later the DATEV filing) raise the level,
   and receipts are as trustworthy as the station that wrote them.
@@ -1299,7 +1303,7 @@ from a scan (b9c454b); crafted files/links crashed the app (039f83f); PDF writin
 steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). **Open for Tobias:** tester login
 names in this file (hand-over 2026-11-04 evening); third-party data in the git history of the removed
 `e-rechnung/`; the reopen gap of the takeover hints; a link-filled marker for S5; refusing huge
-photos by their header. E2E here only in Chromium (preinstalled build via a gitignored
+photos by their header; a merged file a station continues fails verification (`mergeAltered`) and its parts drop out of the next merge — renew the merge hash on every transition or drop the record (pre-audit behaviour; until decided, give stations the original files, not a merged one). E2E here only in Chromium (preinstalled build via a gitignored
 `.tmp/e2e/` config); tests whose output path holds „—“ or „€“ cannot hand their file to the page in
 this Linux environment (also on the pre-audit build) — not an app fault.
 
