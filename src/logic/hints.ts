@@ -1577,6 +1577,14 @@ export function fillingHints(
   return [...defined, ...earlier];
 }
 
+interface FromRoleHint extends HintResult {
+  /** The role whose answer the hint is about, and that answer's field. */
+  role: RoleId;
+  fields: FieldId[];
+  /** The role still holds what the other role decided or proposed before (shown to the role too). */
+  earlier: boolean;
+}
+
 /**
  * A field another role decides (fromRole) that differs from that role's answer — e.g. the person
  * signed before the employer changed the kind of wage tax. An own extra option ("Weiß ich nicht")
@@ -1586,13 +1594,6 @@ export function fillingHints(
  * a decision its newest sealed version no longer makes, while the role still holds the earlier
  * one; a proposal it changed, while the role still holds the earlier one.
  */
-interface FromRoleHint extends HintResult {
-  /** The role whose answer the hint is about, and that answer's field. */
-  role: RoleId;
-  fields: FieldId[];
-  /** The role still holds what the other role decided or proposed before (shown to the role too). */
-  earlier: boolean;
-}
 
 function fromRoleHints(
   questionnaire: Questionnaire,
@@ -1612,34 +1613,43 @@ function fromRoleHints(
     if (own === null) continue;
     const ownRole = roleOf(definition, field.role)?.label ?? field.role;
     const fromRole = roleOf(definition, from.role)?.label ?? from.role;
+    // The history is read from sealed versions only: the newest sealed one decides (hidden values
+    // are dropped at sealing), an open draft of a new one does not count yet (loop 3 of the audit).
     const sealed = (questionnaire.parts[from.role] ?? []).filter((part) => part.seal);
+    const newest = sealed.at(-1);
+    const decidedSealed = newest ? (newest.data[from.field] ?? null) : undefined;
     const earlier = sealed.slice(0, -1).map((part) => part.data[from.field] ?? null);
     const heldEarlier = earlier.some((value) => value !== null && same(value, own));
     const hint = { role: field.role, fields: [field.id], detail: [] };
-    if (decided === null) {
-      if (from.changeable !== true && heldEarlier) {
-        results.push({
-          ...hint,
-          earlier: true,
-          id: `fromRoleWithdrawn:${field.id}`,
-          message: `„${field.label}“ hatte ${fromRole} festgelegt; in seiner neuen Fassung legt ${fromRole} das nicht mehr fest. Im Teil „${ownRole}“ steht noch „${displayValue(field, own)}“ – bitte prüfen.`,
-        });
-      }
+    if (from.changeable !== true && decidedSealed === null && heldEarlier) {
+      results.push({
+        ...hint,
+        earlier: true,
+        id: `fromRoleWithdrawn:${field.id}`,
+        message: `„${field.label}“ war im Teil „${fromRole}“ festgelegt; dessen neue Fassung legt das nicht mehr fest. Im Teil „${ownRole}“ steht noch „${displayValue(field, own)}“ – bitte prüfen.`,
+      });
       continue;
     }
+    if (decided === null) continue;
     if (same(own, decided)) continue;
     if (source.type === 'choice' && !optionsOf(source).some((option) => option.id === own))
       continue;
     // A proposal the role was free to change is news for the other role, not a contradiction —
     // unless the role still holds what the other role proposed before.
+    const newProposal =
+      from.changeable === true &&
+      heldEarlier &&
+      decidedSealed !== undefined &&
+      decidedSealed !== null &&
+      same(decidedSealed, decided);
     results.push({
       ...hint,
-      earlier: from.changeable === true && heldEarlier,
+      earlier: newProposal,
       id: `fromRole:${field.id}`,
       message:
         from.changeable === true
-          ? heldEarlier
-            ? `${fromRole} schlägt für „${field.label}“ jetzt „${displayValue(source, decided)}“ vor; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
+          ? newProposal
+            ? `Im Teil „${fromRole}“ steht für „${field.label}“ jetzt der Vorschlag „${displayValue(source, decided)}“; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
             : `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decided)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
           : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decided)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
     });

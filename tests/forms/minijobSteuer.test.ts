@@ -271,6 +271,26 @@ describe('a decision the other role no longer makes in a new version', () => {
     );
   }
 
+  /** The person copied the employer's flat-rate tax, then the employer's new version withdrew it. */
+  function withdrawnWithPerson(): Questionnaire {
+    const first = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
+    let q = ok(startPart(first.questionnaire, form, 'arbeitgeber'));
+    for (const [id, raw] of Object.entries({
+      agBeschaeftigungsart: 'svpflichtig',
+      agEntgeltArt: 'monatsentgelt',
+      agMonatsentgelt: '3.000,00',
+    })) {
+      q = ok(setValue(q, form, 'arbeitgeber', id, raw));
+    }
+    return ok(
+      sealPart(q, form, 'arbeitgeber', {
+        nonce: 'e5'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+  }
+
   it('stays as it is and is named to the person and to the Kanzlei', () => {
     const first = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
     const employerV2 = ok(startPart(first.questionnaire, form, 'arbeitgeber'));
@@ -299,6 +319,33 @@ describe('a decision the other role no longer makes in a new version', () => {
     expect(checkHints(person.questionnaire, form.definition).map((h) => h.id)).toContain(
       'fromRoleWithdrawn:steuerart',
     );
+  });
+
+  // Loop 3 of the audit: the hint read the employer's current part, so an open draft of a new
+  // version made it claim a withdrawal the newest sealed version does not make; and its wording
+  // must fit any station ("seiner" was wrong for the Kanzlei).
+  it('speaks of the newest sealed version only, not of a draft, in words that fit any station', () => {
+    // Two sealed versions deciding the flat-rate tax, then a third one begun as a job subject to
+    // insurance — the newest sealed version still decides it.
+    let q = employerSealed('pauschal2');
+    let person = minijobber(must(enterRole(sessionWith(q), 'person')));
+    q = ok(startPart(person.questionnaire, form, 'arbeitgeber'));
+    q = ok(
+      sealPart(q, form, 'arbeitgeber', {
+        nonce: 'f6'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+    q = ok(startPart(q, form, 'arbeitgeber'));
+    q = ok(setValue(q, form, 'arbeitgeber', 'agBeschaeftigungsart', 'svpflichtig'));
+    person = must(enterRole(sessionWith(q), 'person'));
+    const ids = fillingHints(person.questionnaire, form.definition, 'person').map((h) => h.id);
+    expect(ids).not.toContain('fromRoleWithdrawn:steuerart');
+    const message = checkHints(withdrawn(), form.definition)
+      .concat(fillingHints(withdrawnWithPerson(), form.definition, 'person'))
+      .find((h) => h.id === 'fromRoleWithdrawn:steuerart')?.message;
+    expect(message).toMatch(/im Teil „Arbeitgeber“ festgelegt; dessen neue Fassung/);
   });
 
   it('never deletes an answer the person gives herself, however often she comes back', () => {

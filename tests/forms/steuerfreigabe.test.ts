@@ -457,7 +457,7 @@ describe('who consents', () => {
     expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
     const shown = fillingHints(s.questionnaire, form.definition, 'ehegatte');
     expect(shown.find((h) => h.id === 'fromRole:ehegatteName')?.message).toContain(
-      'jetzt „Maximilian Mustermann“ vor',
+      'jetzt der Vorschlag „Maximilian Mustermann“',
     );
     const kanzleiSees = checkHints(s.questionnaire, form.definition);
     expect(kanzleiSees.find((h) => h.id === 'fromRole:ehegatteName')?.message).not.toContain(
