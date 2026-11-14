@@ -114,8 +114,6 @@ function decodeColors(d: Decoder, raw: unknown, path: string): KanzleiColors | u
 // Letters, digits, "-", "_" and "/" only: never "..", a scheme or a query.
 const RELATIVE_PATH = /^(?!.*\.\.)[a-z0-9][a-z0-9_\-/]*$/i;
 
-export const NEUTRAL_CONFIG: AppConfig = {};
-
 function httpsAddress(d: Decoder, value: unknown, path: string): string | undefined {
   const text = d.string(value, path);
   if (text === undefined) return undefined;

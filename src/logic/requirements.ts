@@ -124,13 +124,6 @@ export function requirementText(
   }
 }
 
-export function roleRequirements(
-  definition: FormDefinition,
-  questionnaire: Questionnaire,
-): RoleRequirement[] {
-  return definition.roles.map((role) => roleRequirement(definition, questionnaire, role));
-}
-
 export type BlockerCode =
   | 'nothingSealed'
   | 'draftOpen'
