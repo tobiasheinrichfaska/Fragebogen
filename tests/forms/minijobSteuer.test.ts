@@ -2,7 +2,7 @@
 // the person's tax questions depend on it. The person's `steuerart` is taken from the employer's
 // sealed part (fromRole) and then not asked; without that part the person answers it.
 import { join } from 'node:path';
-import { checkHints } from '../../src/logic/hints';
+import { checkHints, fillingHints } from '../../src/logic/hints';
 import {
   createQuestionnaire,
   fixedByOtherRoles,
@@ -247,14 +247,34 @@ describe('the taken-over answer is the person’s own data', () => {
 });
 
 // Audit 2026-11-14: the employer's new version no longer decides the kind of wage tax (now a job
-// subject to insurance), but the person's copy of the old decision stayed as an own answer — not
-// asked, and signed as if chosen. A copy the deciding role withdrew is asked again.
-describe('a decision the other role withdraws in a new version', () => {
-  it('is asked again instead of staying as the person’s own answer', () => {
-    let q = employerSealed('pauschal2');
-    let person = minijobber(must(enterRole(sessionWith(q), 'person')));
-    expect(person.questionnaire.parts.person?.[0]?.data.steuerart).toBe('pauschal2');
-    q = ok(startPart(person.questionnaire, form, 'arbeitgeber'));
+// subject to insurance), while the person's part still holds the old decision — before, nobody
+// was told. Loop 2 of the audit: deleting such a copy also deleted an answer the person gave
+// herself, on every entry; so the answer stays and a check hint says what happened, to the person
+// before she signs and to the Kanzlei.
+describe('a decision the other role no longer makes in a new version', () => {
+  function withdrawn(): Questionnaire {
+    const q = ok(startPart(employerSealed('pauschal2'), form, 'arbeitgeber'));
+    let v2 = q;
+    for (const [id, raw] of Object.entries({
+      agBeschaeftigungsart: 'svpflichtig',
+      agEntgeltArt: 'monatsentgelt',
+      agMonatsentgelt: '3.000,00',
+    })) {
+      v2 = ok(setValue(v2, form, 'arbeitgeber', id, raw));
+    }
+    return ok(
+      sealPart(v2, form, 'arbeitgeber', {
+        nonce: 'e5'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+  }
+
+  it('stays as it is and is named to the person and to the Kanzlei', () => {
+    const first = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
+    const employerV2 = ok(startPart(first.questionnaire, form, 'arbeitgeber'));
+    let q = employerV2;
     for (const [id, raw] of Object.entries({
       agBeschaeftigungsart: 'svpflichtig',
       agEntgeltArt: 'monatsentgelt',
@@ -269,9 +289,22 @@ describe('a decision the other role withdraws in a new version', () => {
         acknowledged: [],
       }),
     );
-    expect(q.parts.arbeitgeber?.at(-1)?.data.agBesteuerung ?? null).toBeNull();
-    person = must(enterRole(sessionWith(q), 'person'));
-    expect(person.questionnaire.parts.person?.at(-1)?.data.steuerart ?? null).toBeNull();
-    expect(questions(person)).toContain('steuerart');
+    const person = must(enterRole(sessionWith(q), 'person'));
+    expect(person.questionnaire.parts.person?.at(-1)?.data.steuerart).toBe('pauschal2');
+    const shown = fillingHints(person.questionnaire, form.definition, 'person');
+    expect(shown.map((h) => h.id)).toContain('fromRoleWithdrawn:steuerart');
+    expect(shown.find((h) => h.id === 'fromRoleWithdrawn:steuerart')?.fields).toEqual([
+      'steuerart',
+    ]);
+    expect(checkHints(person.questionnaire, form.definition).map((h) => h.id)).toContain(
+      'fromRoleWithdrawn:steuerart',
+    );
+  });
+
+  it('never deletes an answer the person gives herself, however often she comes back', () => {
+    let person = minijobber(must(enterRole(sessionWith(withdrawn()), 'person')));
+    person = must(answer(person, 'steuerart', 'pauschal2'));
+    for (let i = 0; i < 3; i++) person = must(enterRole(person, 'person'));
+    expect(person.questionnaire.parts.person?.at(-1)?.data.steuerart).toBe('pauschal2');
   });
 });

@@ -1534,7 +1534,14 @@ export function checkHints(questionnaire: Questionnaire, definition: FormDefinit
   const results = holding(definition.checkHints ?? [], values, (hint) =>
     [...rolesOf(hint, definition)].every((role) => currentPart(questionnaire, role)),
   );
-  return [...results, ...fromRoleHints(questionnaire, definition, valueOf)];
+  return [
+    ...results,
+    ...fromRoleHints(questionnaire, definition, valueOf).map(({ id, message, detail }) => ({
+      id,
+      message,
+      detail,
+    })),
+  ];
 }
 
 /** The fields a hint reads: its condition's fields, then its test's arguments, each once. */
@@ -1558,23 +1565,43 @@ export function fillingHints(
       hint.showWhileFilling === true && [...rolesOf(hint, definition)].every((r) => r === role),
   );
   const fields = new Map(own.map((hint) => [hint.id, hintFields(hint)]));
-  return holding(own, valuesOf(questionnaire, definition), () =>
-    Boolean(currentPart(questionnaire, role)),
-  ).map((result) => ({ ...result, fields: fields.get(result.id) ?? [] }));
+  const values = valuesOf(questionnaire, definition);
+  const defined = holding(own, values, () => Boolean(currentPart(questionnaire, role))).map(
+    (result) => ({ ...result, fields: fields.get(result.id) ?? [] }),
+  );
+  // What another role decided or proposed earlier and the role still holds: the role sees it
+  // before it signs, not only the Kanzlei (audit 2026-11-14).
+  const earlier = fromRoleHints(questionnaire, definition, values.valueOf)
+    .filter((hint) => hint.role === role && hint.earlier)
+    .map(({ id, message, detail, fields: ids }) => ({ id, message, detail, fields: ids }));
+  return [...defined, ...earlier];
 }
 
 /**
  * A field another role decides (fromRole) that differs from that role's answer — e.g. the person
  * signed before the employer changed the kind of wage tax. An own extra option ("Weiß ich nicht")
  * is no contradiction.
+ *
+ * With the deciding role's history (audit 2026-11-14), stated as it is, never changing an answer:
+ * a decision its newest sealed version no longer makes, while the role still holds the earlier
+ * one; a proposal it changed, while the role still holds the earlier one.
  */
+interface FromRoleHint extends HintResult {
+  /** The role whose answer the hint is about, and that answer's field. */
+  role: RoleId;
+  fields: FieldId[];
+  /** The role still holds what the other role decided or proposed before (shown to the role too). */
+  earlier: boolean;
+}
+
 function fromRoleHints(
   questionnaire: Questionnaire,
   definition: FormDefinition,
   valueOf: (id: FieldId) => FieldValue,
-): HintResult[] {
+): FromRoleHint[] {
   const fields = fieldsById(definition);
-  const results: HintResult[] = [];
+  const results: FromRoleHint[] = [];
+  const same = (a: FieldValue, b: FieldValue) => canonicalize(a) === canonicalize(b);
   for (const field of fields.values()) {
     const from = field.fromRole;
     const source = from && fields.get(from.field);
@@ -1582,19 +1609,39 @@ function fromRoleHints(
     if (!currentPart(questionnaire, field.role) || !currentPart(questionnaire, from.role)) continue;
     const own = valueOf(field.id);
     const decided = valueOf(source.id);
-    if (own === null || decided === null || canonicalize(own) === canonicalize(decided)) continue;
-    if (source.type === 'choice' && !optionsOf(source).some((option) => option.id === own))
-      continue;
+    if (own === null) continue;
     const ownRole = roleOf(definition, field.role)?.label ?? field.role;
     const fromRole = roleOf(definition, from.role)?.label ?? from.role;
-    // A proposal the role was free to change is news for the other role, not a contradiction.
+    const sealed = (questionnaire.parts[from.role] ?? []).filter((part) => part.seal);
+    const earlier = sealed.slice(0, -1).map((part) => part.data[from.field] ?? null);
+    const heldEarlier = earlier.some((value) => value !== null && same(value, own));
+    const hint = { role: field.role, fields: [field.id], detail: [] };
+    if (decided === null) {
+      if (from.changeable !== true && heldEarlier) {
+        results.push({
+          ...hint,
+          earlier: true,
+          id: `fromRoleWithdrawn:${field.id}`,
+          message: `„${field.label}“ hatte ${fromRole} festgelegt; in seiner neuen Fassung legt ${fromRole} das nicht mehr fest. Im Teil „${ownRole}“ steht noch „${displayValue(field, own)}“ – bitte prüfen.`,
+        });
+      }
+      continue;
+    }
+    if (same(own, decided)) continue;
+    if (source.type === 'choice' && !optionsOf(source).some((option) => option.id === own))
+      continue;
+    // A proposal the role was free to change is news for the other role, not a contradiction —
+    // unless the role still holds what the other role proposed before.
     results.push({
+      ...hint,
+      earlier: from.changeable === true && heldEarlier,
       id: `fromRole:${field.id}`,
       message:
         from.changeable === true
-          ? `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decided)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
+          ? heldEarlier
+            ? `${fromRole} schlägt für „${field.label}“ jetzt „${displayValue(source, decided)}“ vor; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
+            : `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decided)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
           : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decided)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
-      detail: [],
     });
   }
   return results;
