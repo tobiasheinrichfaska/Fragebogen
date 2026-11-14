@@ -146,8 +146,11 @@ describe('session — Sofortmeldung on one device', () => {
     expect(currentStep(goTo(s, 'summary'))?.kind).toBe('summary');
   });
 
-  it('continues a draft at its first open question', () => {
+  // Since the audit of 2026-11-14 a notice still to confirm counts like an open question.
+  it('continues a draft at its first open question or notice still to confirm', () => {
     let s = fill(must(enterRole(fresh(), 'person')), { familienname: 'Musterfrau' });
+    expect(must(enterRole({ ...s, stepKey: 'summary' }, 'person')).stepKey).toMatch(/^notice:/);
+    s = acknowledge(acknowledge(s, 'datenschutz', true), 'mitfuehrungspflicht', true);
     s = must(enterRole({ ...s, stepKey: 'summary' }, 'person'));
     expect(s.stepKey).toBe('question:vorname');
   });
