@@ -8,6 +8,25 @@ import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/te
 
 const HANDTESTS = '**/handtests/**';
 
+/**
+ * A POSIX locale (the cloud containers, 2026-11-14) kept Chromium from taking files whose path holds
+ * „—“ or „€“ — the output folder of a test is named after its title. On Linux without UTF-8 the
+ * browsers get a UTF-8 locale of their own; Windows and a UTF-8 shell stay as they are.
+ */
+const UTF8 = /utf-?8/i.test(process.env.LC_ALL ?? process.env.LANG ?? '');
+const browserEnv: Record<string, string> =
+  process.platform === 'linux' && !UTF8
+    ? {
+        ...Object.fromEntries(
+          Object.entries(process.env).filter(
+            (entry): entry is [string, string] => entry[1] !== undefined,
+          ),
+        ),
+        LANG: 'C.UTF-8',
+        LC_ALL: 'C.UTF-8',
+      }
+    : {};
+
 export function projects(allEngines: boolean): PlaywrightTestConfig['projects'] {
   const others = allEngines ? {} : { testIgnore: HANDTESTS };
   return [
@@ -36,6 +55,10 @@ export default defineConfig({
   // stopped answering on 2026-11-08); two took too long with the former manual tests.
   workers: 3,
   reporter: [['list']],
-  use: { acceptDownloads: true, trace: 'retain-on-failure' },
+  use: {
+    acceptDownloads: true,
+    trace: 'retain-on-failure',
+    ...(Object.keys(browserEnv).length > 0 ? { launchOptions: { env: browserEnv } } : {}),
+  },
   projects: projects(false),
 });
