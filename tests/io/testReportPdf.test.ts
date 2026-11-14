@@ -13,6 +13,7 @@ import {
   setResult,
   startTest,
 } from '../../src/logic/testRun';
+import { keepForPdfa } from '../support/pdfaOut';
 
 const font = (name: string) =>
   new Uint8Array(readFileSync(new URL(`../../assets/fonts/${name}`, import.meta.url)));
@@ -66,6 +67,7 @@ describe('test report as PDF', () => {
       },
       FONTS,
     );
+    keepForPdfa('testbericht.pdf', written.bytes);
   }, 60_000);
 
   it('is named after the tester and the day', () => {

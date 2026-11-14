@@ -33,6 +33,7 @@ import {
   employerOnly,
   sofortmeldung,
 } from '../support/sofortmeldungSession';
+import { keepForPdfa } from '../support/pdfaOut';
 
 const font = (name: string) =>
   new Uint8Array(readFileSync(new URL(`../../assets/fonts/${name}`, import.meta.url)));
@@ -95,6 +96,7 @@ describe('questionnaire PDF', () => {
   let written: Awaited<ReturnType<typeof write>>;
   beforeAll(async () => {
     written = await write(session, 'https://fragebogen.example.org/');
+    keepForPdfa('sofortmeldung-vollstaendig.pdf', written.bytes);
   }, 60_000);
 
   it('round-trips the questionnaire and its form through the data pages', async () => {
@@ -194,6 +196,7 @@ describe('questionnaire PDF', () => {
 describe('questionnaire PDF — handover', () => {
   it('is marked for handover while a role is missing, and names what is missing', async () => {
     const written = await write(employerOnly());
+    keepForPdfa('sofortmeldung-weitergabe.pdf', written.bytes);
     expect(written.complete).toBe(false);
     expect(written.fileName).toBe('Sofortmeldung_3f2b8c1e_Weitergabe.pdf');
     const { text, decoded } = await readBack(written.bytes);
