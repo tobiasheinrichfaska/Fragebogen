@@ -34,8 +34,9 @@ letzten acht Zeichen.
 
 **Erwartet:**
 
-_Nicht offensichtlich:_ Eine automatische PDF/A-Prüfung mit veraPDF ist geplant, läuft aber noch
-nicht – bis dahin ist diese Gegenprobe die Prüfung.
+_Nicht offensichtlich:_ Seit 14.11.2026 prüft veraPDF bei jeder Änderung automatisch Beispiel-PDFs
+der App auf PDF/A-2u. Diese Gegenprobe ist die zweite Meinung von Acrobat an einer PDF, die Sie
+selbst erstellt haben.
 Meldet Acrobat trotzdem Probleme, bitte die Meldungen als Bildschirmfoto festhalten. Die
 Bildschirmfotos dürfen nur erfundene Daten zeigen.
 
