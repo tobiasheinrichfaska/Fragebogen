@@ -102,9 +102,17 @@ const specs = (dir: string): string[] =>
         ? [readFileSync(join(dir, entry.name), 'utf8')]
         : [],
   );
-const automated = specs(E2E_DIR).flatMap((text) =>
-  [...text.matchAll(/openTestApp\(\s*page\s*,\s*'([a-z0-9-]+)'/g)].map((match) => match[1] ?? ''),
-);
+const automated = [
+  ...specs(E2E_DIR).flatMap((text) =>
+    [...text.matchAll(/openTestApp\(\s*page\s*,\s*'([a-z0-9-]+)'/g)].map((match) => match[1] ?? ''),
+  ),
+  // The SV cases run from their start points one level lower (`point('id')`, since 2026-11-14).
+  ...[
+    ...readFileSync(join(__dirname, 'startPointsSv.test.ts'), 'utf8').matchAll(
+      /point\(\s*'([a-z0-9-]+)'/g,
+    ),
+  ].map((match) => match[1] ?? ''),
+];
 
 describe('start points (manual_tests/startpunkte/)', () => {
   it.each(points.map((point) => [point.id, point] as const))('%s builds', (_id, point) => {
