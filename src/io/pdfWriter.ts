@@ -18,7 +18,7 @@ import {
   type RGB,
 } from '@cantoo/pdf-lib';
 import { describeRevised, describeValidity } from '../logic/validity';
-import { derive } from '../logic/derivations';
+import { derive, proposalLine } from '../logic/derivations';
 import fontkit from '@cantoo/fontkit';
 import { APP_VERSION } from '../appInfo';
 import type { AppConfig } from '../logic/appConfig';
@@ -545,12 +545,9 @@ export async function writeQuestionnairePdf(
     layout.text(`  ${part.contentHash ?? ''}`, { font: fonts.mono, size: 7, color: MUTED });
   }
   for (const proposal of derive(questionnaire, definition)) {
-    layout.text(
-      `Vorschlag ${proposal.label}: ${proposal.value ?? '–'} – ${[proposal.reason, ...proposal.detail].join(' ')}` +
-        (proposal.check && proposal.status === 'proposed' ? ' Bitte prüfen.' : '') +
-        ' (Die App entscheidet das nicht.)',
-      { size: 8.5 },
-    );
+    layout.text(`Vorschlag ${proposalLine(proposal)} (Die App entscheidet das nicht.)`, {
+      size: 8.5,
+    });
   }
   for (const finding of [...verdict.findings, ...verdict.parts.flatMap((p) => p.findings)]) {
     layout.text(

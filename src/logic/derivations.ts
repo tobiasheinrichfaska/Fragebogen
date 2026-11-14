@@ -21,6 +21,14 @@ export interface DerivationResult {
   source?: string;
 }
 
+/** A proposal as the Kanzlei reads it — on its screen and on the check sheet of the PDF. */
+export function proposalLine(proposal: DerivationResult): string {
+  return (
+    `${proposal.label}: ${proposal.value ?? '–'} – ${[proposal.reason, ...proposal.detail].join(' ')}` +
+    (proposal.check && proposal.status === 'proposed' ? ' Bitte prüfen.' : '')
+  );
+}
+
 function result(
   derivation: Derivation,
   status: DerivationStatus,

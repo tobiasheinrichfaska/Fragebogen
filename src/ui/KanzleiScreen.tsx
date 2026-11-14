@@ -7,11 +7,13 @@ import { APP_VERSION } from '../appInfo';
 import { EXPORT_MAPPINGS } from '../config';
 import { downloadFile } from '../io/files';
 import { buildPackage, packageText } from '../logic/dataPackage';
+import { proposalLine } from '../logic/derivations';
 import { displayValue } from '../logic/display';
 import { mappingFor } from '../logic/exportMapping';
 import { fileNameFor } from '../logic/fileNames';
 import { fieldsById } from '../logic/form';
 import type { FormRegistry } from '../logic/formRegistry';
+import { hintLine } from '../logic/hints';
 import {
   addToInbox,
   decide,
@@ -339,11 +341,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
                 message={{
                   tone: 'info',
                   text: 'Vorschläge (die App entscheidet nicht – bitte prüfen):',
-                  detail: group.derivations.map(
-                    (d) =>
-                      `${d.label}: ${d.value ?? '–'} – ${[d.reason, ...d.detail].join(' ')}` +
-                      (d.check && d.status === 'proposed' ? ' Bitte prüfen.' : ''),
-                  ),
+                  detail: group.derivations.map(proposalLine),
                 }}
               />
             )}
@@ -352,11 +350,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
                 message={{
                   tone: 'info',
                   text: 'Prüfhinweise:',
-                  detail: group.hints.map(
-                    (hint) =>
-                      [hint.message, ...hint.detail].join(' ') +
-                      (hint.source === undefined ? '' : ` (${hint.source})`),
-                  ),
+                  detail: group.hints.map(hintLine),
                 }}
               />
             )}
