@@ -5,10 +5,15 @@
 // from fixed seeds whose pages jsQR alone could not read completely.
 import { PDFDocument, rgb } from '@cantoo/pdf-lib';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { QR_SEARCH_SIDE } from '../../src/io/pdfReader';
-import { A4, MARGIN, QR_MODULE } from '../../src/io/pdfWriter';
+import { A4, MARGIN, QR_MODULE, writeQuestionnairePdf } from '../../src/io/pdfWriter';
 import { QR_GAP_MODULES, qrMatrix, readQrCodes, type RgbaImage } from '../../src/io/qr';
-import { qrPayloads } from '../../src/logic/qrParts';
+import { assembleQrPayloads, qrPayloads } from '../../src/logic/qrParts';
+import { buildStartPoint, isFormStart, parseStartPoint } from '../../src/logic/startPoints';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { note, QUESTIONNAIRE_ID } from '../support/sample';
 
 interface CanvasMaker {
   create(
@@ -64,11 +69,11 @@ async function qrPage(matrices: readonly boolean[][][]): Promise<Uint8Array> {
   return doc.save();
 }
 
-/** Page 1 rendered so that its long side has `longestSide` pixels. */
-async function render(bytes: Uint8Array, longestSide: number) {
+/** A page (the first by default) rendered so that its long side has `longestSide` pixels. */
+async function render(bytes: Uint8Array, longestSide: number, pageNumber = 1) {
   const doc = await pdfjs.getDocument({ data: bytes.slice() }).promise;
   try {
-    const page = await doc.getPage(1);
+    const page = await doc.getPage(pageNumber);
     const base = page.getViewport({ scale: 1 });
     const viewport = page.getViewport({ scale: longestSide / Math.max(base.width, base.height) });
     const width = Math.round(viewport.width);
@@ -113,4 +118,59 @@ describe('a full-page scan of the QR page', () => {
     },
     120_000,
   );
+});
+
+// Audit 2026-11-14: the PDF the app writes, not a page drawn here — the complete Personalfragebogen
+// has 77 codes, and its last, smaller code (162 bytes) shares a row with full-size ones. It was never
+// read back; since the QR pages are drawn as one path per code, this also checks that drawing.
+describe('the QR pages of the PDF the app writes', () => {
+  const font = (name: string) =>
+    new Uint8Array(readFileSync(new URL(`../../assets/fonts/${name}`, import.meta.url)));
+  const fonts = {
+    sans: font('NotoSans-Regular.subset.ttf'),
+    bold: font('NotoSans-SemiBold.subset.ttf'),
+    mono: font('NotoSansMono-Regular.subset.ttf'),
+  };
+
+  it('give back every code, the short last one included', async () => {
+    const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
+    const start = join(
+      __dirname,
+      '../../manual_tests/startpunkte/personalfragebogen-vollstaendig.json',
+    );
+    const parsed = parseStartPoint(readJson(start));
+    if (!parsed.ok || !isFormStart(parsed.point)) throw new Error('start point');
+    let n = 0;
+    const at = { local: '2026-11-03T10:00:00.000+01:00', utc: '2026-11-03T09:00:00.000Z' };
+    const built = buildStartPoint(parsed.point, form, {
+      questionnaireId: QUESTIONNAIRE_ID,
+      nonce: () => String(++n).padStart(32, '0'),
+      now: at,
+      systemNote: note(at.local, at.utc, ['keyboard']),
+    });
+    if (!built.ok) throw new Error(built.problems.join('; '));
+    const { bytes } = await writeQuestionnairePdf(
+      {
+        questionnaire: built.session.questionnaire,
+        form,
+        origin: 'published',
+        config: {},
+        created: at,
+      },
+      fonts,
+    );
+    const doc = await pdfjs.getDocument({ data: bytes.slice() }).promise;
+    const pages = doc.numPages;
+    await doc.cleanup();
+    // The QR pages come last; read them from the end until a page holds none.
+    const codes: Uint8Array[] = [];
+    for (let page = pages; page > 0; page--) {
+      const { image } = await render(bytes, QR_SEARCH_SIDE, page);
+      const found = readQrCodes(image);
+      if (found.length === 0) break;
+      codes.push(...found);
+    }
+    const assembled = assembleQrPayloads(codes);
+    expect(assembled.ok ? 'ok' : assembled).toBe('ok');
+  }, 180_000);
 });

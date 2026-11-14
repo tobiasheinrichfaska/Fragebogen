@@ -160,7 +160,10 @@ function bands(profile: readonly number[], minGap: number): [number, number][] {
   return result;
 }
 
-/** Cuts the image into cells along white rows, then white columns within each row band. */
+/**
+ * Cuts the image into cells along white rows, then white columns within each row band, and trims
+ * each cell to its own dark rows.
+ */
 function cells(dark: Uint8Array, width: number, height: number): Box[] {
   const minGap = Math.max(4, Math.round(Math.min(width, height) * 0.012));
   const rows = Array.from({ length: height }, (_, y) => {
@@ -176,18 +179,28 @@ function cells(dark: Uint8Array, width: number, height: number): Box[] {
       return count;
     });
     for (const [left, right] of bands(columns, minGap)) {
+      // The cell's own dark rows: a code shorter than its row (the last, smaller one) would keep the
+      // row's height and fail the square check (audit 2026-11-14: it was never read from a scan).
+      const darkRow = (y: number) => {
+        for (let x = left; x <= right; x++) if (dark[y * width + x]) return true;
+        return false;
+      };
+      let cellTop = top;
+      while (cellTop < bottom && !darkRow(cellTop)) cellTop++;
+      let cellBottom = bottom;
+      while (cellBottom > cellTop && !darkRow(cellBottom)) cellBottom--;
       const w = right - left + 1;
-      const h = bottom - top + 1;
+      const h = cellBottom - cellTop + 1;
       // Codes are roughly square and not tiny; text lines and specks are skipped.
       if (w < 21 || h < 21 || w > h * 1.6 || h > w * 1.6) continue;
       const margin = Math.round(Math.max(w, h) * 0.1);
       const x0 = Math.max(0, left - margin);
-      const y0 = Math.max(0, top - margin);
+      const y0 = Math.max(0, cellTop - margin);
       boxes.push({
         left: x0,
         top: y0,
         width: Math.min(width, right + margin + 1) - x0,
-        height: Math.min(height, bottom + margin + 1) - y0,
+        height: Math.min(height, cellBottom + margin + 1) - y0,
       });
     }
   }
