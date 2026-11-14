@@ -23,6 +23,7 @@ import {
   withdraw,
   withKanzleiReceipts,
   type Inbox,
+  type InboxFile,
 } from '../logic/kanzlei';
 import {
   MERGE_CONFLICT_MESSAGES,
@@ -88,6 +89,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
     let next = inbox;
     let codes = collected;
     const added: FileReport[] = [];
+    const taken: InboxFile[] = [];
     // One after the other: photos of one print-out add up their QR codes.
     for (const file of files) {
       const { result, fileSha256, received } = await openAnyFile(
@@ -107,29 +109,37 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
         continue;
       }
       const { questionnaire, form, origin } = result.session;
-      const taken = addToInbox(next, {
+      const entry: InboxFile = {
         name: file.name,
         fileSha256,
         questionnaire,
         form,
         origin,
         received,
-      });
-      next = taken.inbox;
+      };
+      const fresh = addToInbox(next, entry);
+      next = fresh.inbox;
+      if (!fresh.duplicate) taken.push(entry);
       added.push({
         name: file.name,
-        message: taken.duplicate
+        message: fresh.duplicate
           ? { tone: 'info', text: 'Diese Datei ist schon eingelesen; sie zählt einmal.' }
           : result.message,
       });
     }
-    setInbox(next);
+    // Added to the inbox as it is now: a decision or removal made while the files were read stays
+    // (audit 2026-11-14: the inbox of the start was put back).
+    setInbox((current) => taken.reduce((acc, entry) => addToInbox(acc, entry).inbox, current));
     setCollected(codes);
-    setReports([...reports, ...added]);
+    setReports((current) => [...current, ...added]);
     setBusy(false);
   };
 
+  // Writing the PDF stands the page still for seconds: locked meanwhile, so a second click does not
+  // write a second PDF (audit 2026-11-14).
+  const [writing, setWriting] = useState(false);
   const write = async (group: MergeGroup, kind: 'pdf' | 'json') => {
+    if (writing) return;
     const result = withKanzleiReceipts(group, inbox, APP_VERSION);
     const form = result && forms.byHash(result.questionnaire.form.definitionHash);
     if (!result || !form) {
@@ -160,11 +170,18 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
         source: 'file',
       },
     );
-    const created = await createPdf(session);
-    setBanner({
-      ...created.message,
-      detail: [...(created.message.detail ?? []), ...refused],
-    });
+    setWriting(true);
+    try {
+      // Paint „PDF wird erstellt …“ before the work blocks the page.
+      await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+      const created = await createPdf(session);
+      setBanner({
+        ...created.message,
+        detail: [...(created.message.detail ?? []), ...refused],
+      });
+    } finally {
+      setWriting(false);
+    }
   };
 
   return (
@@ -409,8 +426,13 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
                 <button type="button" onClick={() => void write(group, 'json')}>
                   Daten speichern (JSON)
                 </button>
-                <button type="button" className="primary" onClick={() => void write(group, 'pdf')}>
-                  PDF für die Personalakte
+                <button
+                  type="button"
+                  className="primary"
+                  disabled={writing}
+                  onClick={() => void write(group, 'pdf')}
+                >
+                  {writing ? 'PDF wird erstellt …' : 'PDF für die Personalakte'}
                 </button>
               </div>
             )}
