@@ -43,6 +43,14 @@ export interface HintResult {
   detail: string[];
 }
 
+/** A check hint as the Kanzlei reads it: the message, its facts and where it comes from. */
+export function hintLine(hint: HintResult): string {
+  return (
+    [hint.message, ...hint.detail].join(' ') +
+    (hint.source === undefined ? '' : ` (${hint.source})`)
+  );
+}
+
 interface HintTest {
   args: readonly FieldType[];
   /** German clause for the catalogue, from the argument labels. */

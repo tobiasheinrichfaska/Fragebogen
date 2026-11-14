@@ -417,36 +417,9 @@ test('MT-43: questionnaires without a shared id are merged only on the Kanzlei d
   await expectQuiet(page, found);
 });
 
-test('MT-44: check hints when merging (job seeker as an Aushilfe, Regelaltersgrenze)', async ({
-  page,
-}, testInfo) => {
-  test.slow();
-  await page.clock.setFixedTime(new Date('2026-11-08T10:00:00+01:00'));
-  const { found, app } = await openTestApp(page, 'personalfragebogen-rag-arbeitslos-art-offen');
-  await expect.poll(() => heading(app)).toBe('Wie ist die Beschäftigung vorgesehen?');
-  await answerUntil(app, PFB_FIELDS, {
-    agBeschaeftigungsart: 'kurzfristig',
-    agKurzfristigBis: '31.12.2026',
-    agKurzfristigArbeitstage: '30',
-    agRahmenvereinbarung: 'Nein',
-    agBesteuerung: 'elstam',
-  });
-  const group = await employerToKanzlei(page, app, testInfo.outputPath('aushilfe.pdf'));
-  const hints = info(group, 'Prüfhinweise:').locator('li');
-  // Each hint names where it comes from.
-  await expect(
-    hints.filter({ hasText: 'Arbeitsuchend gemeldet und als kurzfristige Aushilfe vorgesehen' }),
-  ).toHaveText(/\(.+\)$/);
-  await expect(
-    hints.filter({
-      hasText: 'Laut Geburtsdatum ist die Regelaltersgrenze bei Beschäftigungsbeginn erreicht',
-    }),
-  ).toContainText('Regelaltersgrenze laut Geburtsdatum: 14.07.2026; Folgemonat: August 2026.');
-  // Hints block nothing.
-  await expect(group.getByRole('button', { name: 'PDF für die Personalakte' })).toBeEnabled();
-  await expectQuiet(page, found);
-});
-
+// The SV cases of MT-44, MT-45 (another job) and MT-88 run one level lower with the same start
+// points and the lines the Kanzlei reads (tests/testbereich/startPointsSv.test.ts, 2026-11-14);
+// MT-45 below shows a proposal on the screen and in the personnel-file PDF.
 test('MT-45: the proposed Personengruppe, on screen and on the check sheet', async ({
   page,
 }, testInfo) => {
@@ -479,92 +452,6 @@ test('MT-45: the proposed Personengruppe, on screen and on the check sheet', asy
   expect(squeezed).toContain(proposal.replace(/\s+/g, ''));
   expect(squeezed).toContain('(DieAppentscheidetdasnicht.)');
   await expectQuiet(page, found);
-});
-
-test('MT-45: another job makes the proposal one to check', async ({ page }, testInfo) => {
-  test.slow();
-  await page.clock.setFixedTime(new Date('2026-11-08T10:00:00+01:00'));
-  // The other Minijob (300 €) and this one stay together below the limit.
-  const { found, app } = await openTestApp(
-    page,
-    'personalfragebogen-zweiter-minijob-entgelt-offen',
-  );
-  await answerUntil(app, PFB_FIELDS, {
-    agEntgeltArt: 'monatsentgelt',
-    agMonatsentgelt: '200,00',
-    agBeschaeftigungsart: 'minijob',
-    agBesteuerung: 'elstam',
-  });
-  const group = await employerToKanzlei(page, app, testInfo.outputPath('zwei-minijobs.pdf'));
-  await expect(
-    info(group, 'Vorschläge')
-      .locator('li')
-      .filter({ hasText: /^Personengruppe:/ }),
-  ).toHaveText(/^Personengruppe: 109 – .* Bitte prüfen\.$/);
-  await expectQuiet(page, found);
-});
-
-test('MT-88: proposals draw the right conclusion (two Minijobs, a job seeker as an Aushilfe)', async ({
-  page,
-  context,
-}, testInfo) => {
-  test.slow();
-  await page.clock.setFixedTime(new Date('2026-11-08T10:00:00+01:00'));
-  const proposed = (group: Locator, label: string) =>
-    info(group, 'Vorschläge')
-      .locator('li')
-      .filter({ hasText: new RegExp(`^${label}:`) });
-
-  const two = await openTestApp(page, 'personalfragebogen-zweiter-minijob-entgelt-offen');
-  await answerUntil(two.app, PFB_FIELDS, {
-    agEntgeltArt: 'monatsentgelt',
-    agMonatsentgelt: '450,00',
-    agBeschaeftigungsart: 'minijob',
-    agBesteuerung: 'elstam',
-  });
-  let group = await employerToKanzlei(page, two.app, testInfo.outputPath('minijobs.pdf'));
-  // 450 € and the other 300 € lie above 603 € together: no Minijob (not 109).
-  await expect(proposed(group, 'Personengruppe')).toHaveText(
-    /^Personengruppe: 101 – .*Minijob.* Bitte prüfen\.$/,
-  );
-  await expect(proposed(group, 'Beitragsgruppen \\(KV RV AV PV\\)')).toHaveText(/: 1111 – /);
-  await expect(proposed(group, 'Kennzeichen Übergangsbereich')).toHaveText(
-    /: 1 – .* Bitte prüfen\.$/,
-  );
-  await expectQuiet(page, two.found);
-
-  // Each run on a page of its own: one set of guards per page.
-  const aushilfe = async (pay: string, file: string) => {
-    const page = await context.newPage();
-    const opened = await openTestApp(page, 'personalfragebogen-arbeitslos-entgelt-offen');
-    await expect.poll(() => heading(opened.app)).toBe('Wie hoch ist das Monatsentgelt brutto?');
-    await answerUntil(opened.app, PFB_FIELDS, {
-      agMonatsentgelt: pay,
-      agBeschaeftigungsart: 'kurzfristig',
-      agKurzfristigBis: '31.12.2026',
-      agKurzfristigArbeitstage: '30',
-      agRahmenvereinbarung: 'Nein',
-      agBesteuerung: 'elstam',
-    });
-    return {
-      page,
-      group: await employerToKanzlei(page, opened.app, testInfo.outputPath(file)),
-      found: opened.found,
-    };
-  };
-  // A job seeker is employed berufsmäßig: above the limit the Aushilfe is not kurzfristig.
-  const above = await aushilfe('1.500,00', 'aushilfe-1500.pdf');
-  group = above.group;
-  await expect(proposed(group, 'Personengruppe')).toHaveText(
-    /^Personengruppe: 101 – .*berufsmäßig.* Bitte prüfen\.$/i,
-  );
-  await expectQuiet(above.page, above.found);
-  // Up to the limit the Berufsmäßigkeit does not matter.
-  const below = await aushilfe('500,00', 'aushilfe-500.pdf');
-  group = below.group;
-  await expect(proposed(group, 'Personengruppe')).toHaveText(/^Personengruppe: 110 – /);
-  await expect(proposed(group, 'Beitragsgruppen \\(KV RV AV PV\\)')).toHaveText(/: 0000 – /);
-  await expectQuiet(below.page, below.found);
 });
 
 test('MT-68: hand-over to the payroll program, up to the import file', async ({
