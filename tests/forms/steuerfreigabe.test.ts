@@ -465,6 +465,25 @@ describe('who consents', () => {
     );
   });
 
+  // Loop 4 of the audit: an open draft of the Kanzlei's next version hid the hint from the spouse,
+  // and the Kanzlei's hint then blamed the spouse for a name never sealed. The sealed versions count.
+  it('names the newest sealed proposal while the Kanzlei has a draft of its next version open', () => {
+    let s = must(enterRole(kanzleiSealed(ZUSAMMEN), 'ehegatte'));
+    s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    s = answerAll(must(startNewVersion(must(sealed(s, 'd4')), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maxim Mustermann',
+    });
+    s = must(enterRole(s, 'ehegatte'));
+    const shown = fillingHints(s.questionnaire, form.definition, 'ehegatte');
+    expect(shown.find((h) => h.id === 'fromRole:ehegatteName')?.message).toContain(
+      'jetzt der Vorschlag „Maximilian Mustermann“',
+    );
+    const kanzleiSees = checkHints(s.questionnaire, form.definition);
+    expect(kanzleiSees.map((h) => h.message).join(' ')).not.toContain('Maxim Mustermann');
+  });
+
   it("keeps the name a spouse signed with in the spouse's new version (loop 2)", () => {
     const kanzlei = kanzleiSealed(ZUSAMMEN);
     const client = consented(kanzlei, 'mandant', 'Erika Musterfrau', {

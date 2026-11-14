@@ -289,12 +289,42 @@ describe('mergeSources — one questionnaire', () => {
         expect(group.conflicts.map((c) => c.code)).toEqual(['versionConflict']);
       });
 
+      it('keeps links, other roles and other questionnaires when a group choice is made', () => {
+        const other: MergeDecision = {
+          kind: 'chooseVersion',
+          questionnaireId: OTHER_ID,
+          role: 'arbeitgeber',
+          contentHash: sha('7'),
+        };
+        const outside: MergeDecision = {
+          kind: 'chooseVersion',
+          questionnaireId: '00000000-0000-4000-8000-000000000001',
+          role: 'person',
+          contentHash: sha('8'),
+        };
+        const inbox = decide(
+          { ...EMPTY_INBOX, decisions: [...before, other, outside] },
+          pick(groupId, a[0] as Questionnaire),
+          [QUESTIONNAIRE_ID, OTHER_ID],
+        );
+        expect(inbox.decisions).toEqual([
+          link,
+          other,
+          outside,
+          pick(groupId, a[0] as Questionnaire),
+        ]);
+      });
+
       it('lets a choice made for the joined group hold, whichever candidate it names', () => {
         for (const candidate of [...a, ...b]) {
-          const inbox = decide({ ...EMPTY_INBOX, decisions: before }, pick(groupId, candidate), [
-            QUESTIONNAIRE_ID,
-            OTHER_ID,
-          ]);
+          // The ids the conflict view sends: the group's sourceIds.
+          const { sourceIds } = only(merge(sources, before));
+          expect(sourceIds).toEqual([QUESTIONNAIRE_ID, OTHER_ID].sort());
+          const inbox = decide(
+            { ...EMPTY_INBOX, decisions: before },
+            pick(groupId, candidate),
+            sourceIds,
+          );
           const group = only(merge(sources, [...inbox.decisions]));
           expect(group.conflicts.map((c) => c.code)).toEqual([]);
           expect(merged(group).parts.person?.map((p) => p.seal?.contentHash)).toEqual([
@@ -441,6 +471,31 @@ describe('mergeSources — questionnaires without a shared id', () => {
     expect(
       verdict.parts.flatMap((p) => p.findings.map((f) => `${f.code}@${f.role ?? '-'}`)),
     ).toEqual(['linkedByDecision@arbeitgeber']);
+  });
+
+  // Loop 4 of the audit: a merged file whose record was altered is not trusted, so its links join
+  // nothing — but its linked ids still went into the group's sourceIds, and a choice made there
+  // (kanzlei `decide` with those ids) removed another group's choice.
+  it('names only trusted links among the ids of a group', () => {
+    const link: MergeDecision = { kind: 'link', questionnaireIds: [QUESTIONNAIRE_ID, OTHER_ID] };
+    const joined = merged(
+      only(
+        merge(
+          [
+            { questionnaire: personSigned(), fileSha256: sha('1') },
+            { questionnaire: employerSeparately(), fileSha256: sha('2') },
+          ],
+          [link],
+        ),
+      ),
+    );
+    const altered = { ...joined, mergeHash: sha('f') };
+    const result = merge([
+      { questionnaire: altered, fileSha256: sha('3') },
+      { questionnaire: employerSeparately(), fileSha256: sha('4') },
+    ]);
+    const own = result.groups.find((g) => g.questionnaireId === joined.questionnaireId);
+    expect(own?.sourceIds).toEqual([joined.questionnaireId]);
   });
 
   it('keeps the link when the merged file is merged again', () => {
