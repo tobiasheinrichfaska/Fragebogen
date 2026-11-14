@@ -1,0 +1,59 @@
+# Every push to main and every pull request runs the checks the Kanzlei PC ran before an upload
+# (Tobias 2026-11-14: in the end the PC only uploads and configures the server). GitHub's runners
+# have Chromium, Firefox and WebKit; the cloud sessions only Chromium. Tests that need the local
+# files (config/*.local.json, the licensed SV cases) skip here — a skip is not a pass; they run
+# where those files are. Failed e2e runs keep their files as an artifact (fictitious data only).
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typen, Lint, Format, Unit-Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+
+  e2e:
+    name: E2E in Chromium, Firefox und WebKit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-fehlschlaege
+          path: |
+            test-results/
+            .tmp/e2e-fehlschlaege/
+          retention-days: 14
+          if-no-files-found: ignore
