@@ -9,9 +9,10 @@ import qrcode from 'qrcode-generator';
 
 /** Error correction M: about 15 % of a code may be damaged (fold, stain) and it still reads. */
 export const QR_ERROR_CORRECTION = 'M';
-/** Light modules around a code that scanners need (ISO/IEC 18004). */
-export const QR_QUIET_ZONE = 4;
-/** White gap between printed codes, in modules: wide enough to cut the image apart. */
+/**
+ * White gap between printed codes, in modules: wide enough to cut the image apart, and more than
+ * the quiet zone of 4 modules scanners need (ISO/IEC 18004).
+ */
 export const QR_GAP_MODULES = 12;
 const MAX_CELLS = 60;
 
