@@ -108,7 +108,32 @@ echtes Gerät am PC braucht (Claude in Chrome, Handtests in `manual_tests/` sind
 `c:\skripte\private\general stuff\CLAUDE.md` ein, damit alle lokalen Sitzungen sie kennen. Auch
 für andere Projekte gilt: Bearbeiten in der Cloud, am PC nur Hochladen und Server.
 
-## 6 · Noch offen bei Tobias
+## 6 · Vorschlag: den Upload-Stand festhalten (für einen täglichen Integritätsauftrag)
+
+Tobias, 14.11.2026: Eine geplante Aufgabe in der Cloud soll täglich prüfen, ob die Dateien auf
+dem Server noch die hochgeladenen sind. Dafür muss sie wissen, was zuletzt hochgeladen wurde.
+Auslieferung berechnet den SHA-256 jeder Datei schon („online identisch“).
+
+**Vorschlag:** Nach jedem erfolgreichen Upload auf ein Ziel, das ohne Login erreichbar ist,
+schreibt Auslieferung `auslieferung/<Ziel>.json` in das private Begleit-Repo des Projekts und
+pusht es. Für den Fragebogen ist das `Fragebogen-privat`, für die anderen Apps auf der Subdomain
+ihr eigenes `-privat`-Repo.
+
+```json
+{
+  "ziel": "oeffentlich",
+  "adresse": "https://…/",
+  "commit": "<Commit des hochgeladenen Stands>",
+  "zeit": "2026-11-15T10:00:00+01:00",
+  "dateien": [{ "pfad": "index.html", "sha256": "…" }]
+}
+```
+
+Darin stehen nur Adresse und Hashes, keine Zugangsdaten. Der Testordner fehlt darin, weil er
+geschützt ist. Die wöchentliche Prüfung in der Cloud meldet, sobald ein Projekt diese Datei führt;
+den täglichen Auftrag legt sie danach erst auf Tobias' OK an.
+
+## 7 · Noch offen bei Tobias
 
 - Die sieben Tester-Logins in Auslieferung umbenennen: Die Vornamen waren öffentlich.
 - Beim GitHub-Support beantragen, die alten Commits von PR #1 zu entfernen („Removing sensitive
