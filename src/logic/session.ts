@@ -42,7 +42,7 @@ import {
   currentPart,
   deferQuestion,
   fixedByOtherRoles,
-  proposedByOtherRoles,
+  presetOf,
   withAcknowledged,
   leaveQuestionEmpty,
   latestSealed,
@@ -330,15 +330,26 @@ function withAdopted(result: SessionResult, role: RoleId): SessionResult {
   if (!result.ok) return result;
   const { session } = result;
   const adoption = adoptFromOtherRoles(session.questionnaire, session.form, role);
-  if (adoption.adopted.length === 0) return result;
-  const fields = fieldsById(session.form.definition);
+  if (adoption.adopted.length === 0 && adoption.withdrawn.length === 0) return result;
+  const { definition } = session.form;
+  const fields = fieldsById(definition);
   const after = currentPart(adoption.questionnaire, role)?.data ?? {};
-  const notes = adoption.replaced.map((id) => {
-    const field = fields.get(id);
-    return field
-      ? `Aus dem abgeschlossenen Teil der anderen Station übernommen: „${field.label}“ ist jetzt „${displayValue(field, after[id] ?? null)}“.`
-      : id;
-  });
+  const notes = [
+    ...adoption.replaced.map((id) => {
+      const field = fields.get(id);
+      return field
+        ? `Aus dem abgeschlossenen Teil der anderen Station übernommen: „${field.label}“ ist jetzt „${displayValue(field, after[id] ?? null)}“.`
+        : id;
+    }),
+    ...adoption.withdrawn.map((id) => {
+      const field = fields.get(id);
+      const from = field?.fromRole?.role;
+      const label = definition.roles.find((r) => r.id === from)?.label ?? from ?? '';
+      return field
+        ? `Der Teil „${label}“ gibt „${field.label}“ nicht mehr vor; die übernommene Angabe ist entfernt.`
+        : id;
+    }),
+  ];
   return ok({ ...session, questionnaire: adoption.questionnaire, dirty: true }, [
     ...result.warnings,
     ...notes,
@@ -772,7 +783,6 @@ export function fillMasterData(
   };
 }
 
-/** Whether the answer to this question is still the one the master-data link filled in. */
 /**
  * The role whose proposal (`fromRole.changeable`) the field still holds unchanged, e.g. the IBAN
  * the Kanzlei prefilled; undefined once the answer was changed.
@@ -781,16 +791,22 @@ export function proposedBy(session: Session, fieldId: FieldId): string | undefin
   const role = session.role;
   if (role === undefined) return undefined;
   const { definition } = session.form;
-  const proposal = proposedByOtherRoles(session.questionnaire, definition, role).get(fieldId);
-  const value = currentPart(session.questionnaire, role)?.data[fieldId] ?? null;
-  if (!proposal || JSON.stringify(proposal.value) !== JSON.stringify(value)) return undefined;
-  return definition.roles.find((other) => other.id === proposal.from)?.label ?? proposal.from;
+  const from = fieldsById(definition).get(fieldId)?.fromRole;
+  if (from?.changeable !== true) return undefined;
+  if (presetOf(currentPart(session.questionnaire, role), fieldId) !== 'otherRole') return undefined;
+  return definition.roles.find((other) => other.id === from.role)?.label ?? from.role;
 }
 
+/** Whether the answer to this question is still the one the master-data link filled in. */
 export function filledFromLink(session: Session, fieldId: FieldId): boolean {
   const role = session.role;
   if (role === undefined) return false;
-  const fill = session.masterData?.fills[role]?.[fieldId];
-  const value = currentPart(session.questionnaire, role)?.data[fieldId] ?? null;
-  return fill?.state === 'filled' && JSON.stringify(fill.value) === JSON.stringify(value);
+  return presetOf(currentPart(session.questionnaire, role), fieldId) === 'link';
+}
+
+/** Whether the answer to this question is still the form's own preselection (`initial`). */
+export function preselected(session: Session, fieldId: FieldId): boolean {
+  const role = session.role;
+  if (role === undefined) return false;
+  return presetOf(currentPart(session.questionnaire, role), fieldId) === 'initial';
 }

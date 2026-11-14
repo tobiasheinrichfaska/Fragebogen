@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import {
   createQuestionnaire,
   currentPart,
+  presetOf,
   sealPart,
   setValue,
   startPart,
@@ -171,6 +172,44 @@ describe('prefillFrom — preselections and roles without data', () => {
     });
     expect(reports[0]?.skipped).toEqual([]);
     expect(reports[0]?.kept).toEqual([]);
+  });
+
+  // Tobias 2026-11-14: "klar unterscheiden zwischen gemachten Angaben und Vorbelegungen" — before,
+  // an answer equal to the form's preselection counted as one and was replaced.
+  it('keeps an answer that merely equals the form’s preselection', () => {
+    let target = must(
+      enterRole(startSession(sofort, '8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a'), 'person'),
+    );
+    target = must(answer(target, 'geburtsnameWieFamilienname', false));
+    target = must(answer(target, 'geburtsnameWieFamilienname', true));
+    const { questionnaire, reports } = prefillFrom(target.questionnaire, sofort, source(), sofort);
+    expect(currentPart(questionnaire, 'person')?.data.geburtsnameWieFamilienname).toBe(true);
+    expect(reports[0]?.kept).toContain('geburtsnameWieFamilienname');
+  });
+
+  it('takes answers only: a preselection in the other file’s draft stays one here', () => {
+    const { questionnaire } = prefillFrom(
+      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', sofort),
+      sofort,
+      source(),
+      sofort,
+    );
+    const part = currentPart(questionnaire, 'person');
+    expect(part?.data.anschriftAusland).toBe(false);
+    expect(presetOf(part, 'anschriftAusland')).toBe('initial');
+    expect(presetOf(part, 'geburtsnameWieFamilienname')).toBeUndefined();
+  });
+
+  it('makes a preselection an answer where the other file answered the same', () => {
+    const { questionnaire } = prefillFrom(
+      createQuestionnaire('8d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a', sofort),
+      sofort,
+      completeSofortmeldung().questionnaire,
+      sofort,
+    );
+    const part = currentPart(questionnaire, 'person');
+    expect(part?.data.anschriftAusland).toBe(false);
+    expect(presetOf(part, 'anschriftAusland')).toBeUndefined();
   });
 
   it('starts no empty draft for a role the other file has nothing for', () => {

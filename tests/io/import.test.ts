@@ -1,6 +1,6 @@
 // What the import reports (ui/pdfActions.ts): verified package, altered part, form only in the
 // file, QR codes from several photos. Fictitious data.
-import { fromPackageText, fromQr } from '../../src/ui/pdfActions';
+import { fromPackageText, fromQr, openPdfOrImage } from '../../src/ui/pdfActions';
 import { buildPackage, packageText } from '../../src/logic/dataPackage';
 import { encodeDataLines } from '../../src/logic/dataPages';
 import { registryOf } from '../../src/logic/formRegistry';
@@ -111,6 +111,34 @@ describe('import report', () => {
     ).toMatchObject({
       kind: 'error',
       message: { text: 'nicht gefunden' },
+    });
+  });
+});
+
+// Audit 2026-11-14 (X5): a photo was decoded at full size before it was scaled down, so a small
+// file claiming 30,000 × 30,000 pixels (about 3.6 GB to decode) could take the tab down.
+describe('a photo that claims a huge picture', () => {
+  const pngHeader = (width: number, height: number) => {
+    const bytes = new Uint8Array(33);
+    bytes.set([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52,
+    ]);
+    const view = new DataView(bytes.buffer);
+    view.setUint32(16, width);
+    view.setUint32(20, height);
+    return bytes;
+  };
+
+  it('is refused by its header, before anything decodes it', async () => {
+    const bytes = pngHeader(30000, 30000);
+    const file = new File([bytes], 'foto.png', { type: 'image/png' });
+    const result = await openPdfOrImage(file, bytes, published, ARRIVAL, []);
+    expect(result).toEqual({
+      kind: 'error',
+      message: {
+        tone: 'error',
+        text: 'Das Bild ist mit 30.000 × 30.000 Pixeln zu groß zum Lesen (höchstens 100 Megapixel). Bitte ein Foto in normaler Auflösung oder einen Scan mit höchstens 600 dpi verwenden.',
+      },
     });
   });
 });

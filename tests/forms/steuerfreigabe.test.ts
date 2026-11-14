@@ -444,9 +444,10 @@ describe('who consents', () => {
 
   // Audit 2026-11-14: a correction in the Kanzlei's new version never reached the spouse, and the
   // check hint said the spouse had changed the name. Loop 2: renewing the value overwrote a name the
-  // spouse typed back on purpose — even its signer name after "Unterschrift zurücknehmen". So the
-  // value stays and a hint names the new proposal, to the spouse before signing and to the Kanzlei.
-  it('names a proposal the Kanzlei corrects in a new version, without changing the answer', () => {
+  // spouse typed back on purpose — even its signer name after "Unterschrift zurücknehmen". Since the
+  // draft marks a proposal nobody changed (Part.preset, Tobias 2026-11-14), the correction reaches
+  // such a value and nothing else; a signed part keeps its name and a hint names the new proposal.
+  it('takes a proposal the Kanzlei corrects into the spouse’s draft while nobody changed it', () => {
     const kanzlei = kanzleiSealed(ZUSAMMEN);
     let s = must(enterRole(kanzlei, 'ehegatte'));
     expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
@@ -454,20 +455,34 @@ describe('who consents', () => {
       ehegatteNameKanzlei: 'Maximilian Mustermann',
     });
     s = must(enterRole(must(sealed(s, 'd4')), 'ehegatte'));
-    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
-    const shown = fillingHints(s.questionnaire, form.definition, 'ehegatte');
-    expect(shown.find((h) => h.id === 'fromRole:ehegatteName')?.message).toContain(
-      'jetzt der Vorschlag „Maximilian Mustermann“',
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe(
+      'Maximilian Mustermann',
     );
-    const kanzleiSees = checkHints(s.questionnaire, form.definition);
-    expect(kanzleiSees.find((h) => h.id === 'fromRole:ehegatteName')?.message).not.toContain(
-      'geändert',
-    );
+    expect(proposedBy(s, 'ehegatteName')).toBe('Kanzlei');
+    const ids = [
+      ...fillingHints(s.questionnaire, form.definition, 'ehegatte'),
+      ...checkHints(s.questionnaire, form.definition),
+    ].map((h) => h.id);
+    expect(ids).not.toContain('fromRole:ehegatteName');
+  });
+
+  it('names the corrected proposal to the Kanzlei when the spouse signed the earlier one', () => {
+    const client = consented(kanzleiSealed(ZUSAMMEN), 'mandant', 'Erika Musterfrau', {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    const signed = consented(client, 'ehegatte', 'Max Mustermann');
+    const s = answerAll(must(startNewVersion(signed, 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    const q = must(sealed(s, 'd4')).questionnaire;
+    const hint = checkHints(q, form.definition).find((h) => h.id === 'fromRole:ehegatteName');
+    expect(hint?.message).toContain('jetzt der Vorschlag „Maximilian Mustermann“');
+    expect(hint?.message).toContain('noch der frühere Vorschlag „Max Mustermann“');
   });
 
   // Loop 4 of the audit: an open draft of the Kanzlei's next version hid the hint from the spouse,
   // and the Kanzlei's hint then blamed the spouse for a name never sealed. The sealed versions count.
-  it('names the newest sealed proposal while the Kanzlei has a draft of its next version open', () => {
+  it('follows the newest sealed proposal, not a draft of the Kanzlei’s next version', () => {
     let s = must(enterRole(kanzleiSealed(ZUSAMMEN), 'ehegatte'));
     s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
       ehegatteNameKanzlei: 'Maximilian Mustermann',
@@ -476,9 +491,8 @@ describe('who consents', () => {
       ehegatteNameKanzlei: 'Maxim Mustermann',
     });
     s = must(enterRole(s, 'ehegatte'));
-    const shown = fillingHints(s.questionnaire, form.definition, 'ehegatte');
-    expect(shown.find((h) => h.id === 'fromRole:ehegatteName')?.message).toContain(
-      'jetzt der Vorschlag „Maximilian Mustermann“',
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe(
+      'Maximilian Mustermann',
     );
     const kanzleiSees = checkHints(s.questionnaire, form.definition);
     expect(kanzleiSees.map((h) => h.message).join(' ')).not.toContain('Maxim Mustermann');
