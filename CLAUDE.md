@@ -1350,11 +1350,13 @@ Every finding went to an independent refuter first; survivors were fixed with a 
 that failed before; three further review loops on the fixes (loop 2 found that two fixes deleted
 own answers — replaced by check hints). Notable: the last, smaller QR code of a page was never read
 from a scan (b9c454b); crafted files/links crashed the app (039f83f); PDF writing 3x and interview
-steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). The `e-rechnung/` samples in the history are official public test data (checked). The history rewrite without the tester names is prepared, the force-push of `main` waits for his go (his local work pushed first). His decisions on the open points („So machen wir das“, and „wir sollten klar unterscheiden zwischen gemachten Angaben und Vorbelegungen“) are built: merge hash renewed on transitions, preselections marked in the draft (`Part.preset`, which also closes the reopen gap without refusing the reopen), huge photos refused by their header. E2E in the cloud: since 2026-11-14 evening in all three engines once
-the browsers of the project's Playwright are installed into `/opt/pw-browsers` (next to the
-preinstalled Chromium): `npm ci` and `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers npx playwright install
---with-deps chromium firefox webkit` (about 45 s with the system libraries present) — then
-`npm run test:e2e` as on the PC (206 passed, 10 skipped, 4.8 min). The container's POSIX locale kept
+steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). The `e-rechnung/` samples in the history are official public test data (checked). The history rewrite without the tester names is prepared, the force-push of `main` waits for his go (his local work pushed first). His decisions on the open points („So machen wir das“, and „wir sollten klar unterscheiden zwischen gemachten Angaben und Vorbelegungen“) are built: merge hash renewed on transitions, preselections marked in the draft (`Part.preset`, which also closes the reopen gap without refusing the reopen), huge photos refused by their header. E2E in the cloud: since 2026-11-14 evening in all three engines. The
+setup script of the Default cloud environment (Tobias: „Default“; one block per repository, each runs
+only when its repository is in the session, a failure only prints a note) runs `npm ci` and
+`PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers npx playwright install --with-deps chromium firefox webkit`
+in every fresh session (next to the preinstalled Chromium; about 45 s with the system libraries
+present, more without) — then `npm run test:e2e` as on the PC (206 passed, 10 skipped, 4.8 min).
+Saving the script replaces it whole: start from the current one (the E-Rechnung session was told). The container's POSIX locale kept
 Chromium from taking files whose path holds „—“ or „€“; `playwright.config.ts` now gives the
 browsers a UTF-8 locale on Linux.
 
