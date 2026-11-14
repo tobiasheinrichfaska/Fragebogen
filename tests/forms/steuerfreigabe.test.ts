@@ -10,7 +10,7 @@ import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { readPdfText, type PdfJsLike } from '../../src/io/pdfReader';
 import { writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
 import { formCatalogue } from '../../src/logic/catalogue';
-import { checkHints } from '../../src/logic/hints';
+import { checkHints, fillingHints } from '../../src/logic/hints';
 import { contradictions } from '../../src/logic/consistency';
 import { fieldsById } from '../../src/logic/form';
 import { checkFormDefinition, parseFormDefinition } from '../../src/logic/formDefinition';
@@ -442,9 +442,11 @@ describe('who consents', () => {
     expect(completenessGaps(both.questionnaire, form)).toEqual([]);
   });
 
-  // Audit 2026-11-14: a proposal taken over once looked like the role's own answer, so the Kanzlei's
-  // corrected name never reached the spouse's draft — and the check hint blamed the spouse.
-  it('renews a proposal the Kanzlei corrects in a new version, while untouched', () => {
+  // Audit 2026-11-14: a correction in the Kanzlei's new version never reached the spouse, and the
+  // check hint said the spouse had changed the name. Loop 2: renewing the value overwrote a name the
+  // spouse typed back on purpose — even its signer name after "Unterschrift zurücknehmen". So the
+  // value stays and a hint names the new proposal, to the spouse before signing and to the Kanzlei.
+  it('names a proposal the Kanzlei corrects in a new version, without changing the answer', () => {
     const kanzlei = kanzleiSealed(ZUSAMMEN);
     let s = must(enterRole(kanzlei, 'ehegatte'));
     expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
@@ -452,10 +454,29 @@ describe('who consents', () => {
       ehegatteNameKanzlei: 'Maximilian Mustermann',
     });
     s = must(enterRole(must(sealed(s, 'd4')), 'ehegatte'));
-    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe(
-      'Maximilian Mustermann',
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
+    const shown = fillingHints(s.questionnaire, form.definition, 'ehegatte');
+    expect(shown.find((h) => h.id === 'fromRole:ehegatteName')?.message).toContain(
+      'jetzt „Maximilian Mustermann“ vor',
     );
-    expect(proposedBy(s, 'ehegatteName')).toBe('Kanzlei');
+    const kanzleiSees = checkHints(s.questionnaire, form.definition);
+    expect(kanzleiSees.find((h) => h.id === 'fromRole:ehegatteName')?.message).not.toContain(
+      'geändert',
+    );
+  });
+
+  it("keeps the name a spouse signed with in the spouse's new version (loop 2)", () => {
+    const kanzlei = kanzleiSealed(ZUSAMMEN);
+    const client = consented(kanzlei, 'mandant', 'Erika Musterfrau', {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    const signed = consented(client, 'ehegatte', 'Max Mustermann');
+    let s = answerAll(must(startNewVersion(signed, 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    // The Kanzlei's new version confirms the spouse's part, so the spouse changes it in a new one.
+    s = must(startNewVersion(must(sealed(s, 'd4')), 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
   });
 
   it('keeps a name the spouse changed when the Kanzlei corrects its proposal', () => {

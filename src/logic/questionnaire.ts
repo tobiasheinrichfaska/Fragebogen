@@ -315,74 +315,29 @@ function fromOtherRoles(
 }
 
 /**
- * Decisions another role withdrew (audit 2026-11-14): its latest sealed part holds no value for a
- * field it decided (`fromRole`, not changeable) — e.g. the kind of wage tax after the job became
- * one subject to insurance. Per field the values its earlier sealed versions held: a copy equal to
- * one of them came from there and is asked again instead of staying as the role's own answer.
- */
-function withdrawnByOtherRoles(
-  questionnaire: Questionnaire,
-  definition: FormDefinition,
-  role: RoleId,
-): ReadonlyMap<FieldId, FieldValue[]> {
-  const found = new Map<FieldId, FieldValue[]>();
-  for (const field of fieldsOfRole(definition, role)) {
-    if (!field.fromRole || field.fromRole.changeable === true) continue;
-    const { role: from, field: source } = field.fromRole;
-    const latest = latestSealed(questionnaire, from);
-    if (!latest || (latest.data[source] ?? null) !== null) continue;
-    const earlier = earlierSealedValues(questionnaire, from, source);
-    if (earlier.length > 0) found.set(field.id, earlier);
-  }
-  return found;
-}
-
-/** What the sealed versions of `from` before its latest held for `source` (not null). */
-function earlierSealedValues(
-  questionnaire: Questionnaire,
-  from: RoleId,
-  source: FieldId,
-): FieldValue[] {
-  const latest = latestSealed(questionnaire, from);
-  return versionsOf(questionnaire, from)
-    .filter((part) => part.seal !== undefined && part !== latest)
-    .map((part) => part.data[source] ?? null)
-    .filter((value): value is FieldValue => value !== null);
-}
-
-/**
  * Copies the answers other roles decided into the role's draft (see fixedByOtherRoles) and ends
- * "Weiß ich gerade nicht" on them. `replaced` names fields whose earlier answer differed,
- * `released` the copies of a decision the other role withdrew, which are asked again.
+ * "Weiß ich gerade nicht" on them. `replaced` names fields whose earlier answer differed.
  * Without a draft nothing changes.
  */
 export function adoptFromOtherRoles(
   questionnaire: Questionnaire,
   form: RegisteredForm,
   role: RoleId,
-): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[]; released: FieldId[] } {
+): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[] } {
   const draft = currentPart(questionnaire, role);
   const fixed = fixedByOtherRoles(questionnaire, form.definition, role);
   const proposed = proposedByOtherRoles(questionnaire, form.definition, role);
-  const withdrawn = withdrawnByOtherRoles(questionnaire, form.definition, role);
-  const unchanged = { questionnaire, adopted: [], replaced: [], released: [] };
+  const unchanged = { questionnaire, adopted: [], replaced: [] };
   if (
     !matchesForm(questionnaire, form) ||
     draft?.status !== 'draft' ||
-    fixed.size + proposed.size + withdrawn.size === 0
+    fixed.size + proposed.size === 0
   ) {
     return unchanged;
   }
   const adopted: FieldId[] = [];
   const replaced: FieldId[] = [];
-  const released: FieldId[] = [];
   const data = { ...draft.data };
-  for (const [id, earlier] of withdrawn) {
-    const own = data[id] ?? null;
-    if (own === null || !earlier.some((value) => sameValue(value, own))) continue;
-    Reflect.deleteProperty(data, id);
-    released.push(id);
-  }
   for (const [id, { value }] of fixed) {
     const before = data[id] ?? null;
     if (sameValue(before, value)) continue;
@@ -390,41 +345,20 @@ export function adoptFromOtherRoles(
     adopted.push(id);
     data[id] = value;
   }
-  // A proposal never overwrites an own answer, even one left empty on purpose. An untouched earlier
-  // proposal is no own answer: it follows the proposing role's new version (audit 2026-11-14).
-  const sources = new Map(
-    fieldsOfRole(form.definition, role).flatMap((field) =>
-      field.fromRole ? [[field.id, field.fromRole] as const] : [],
-    ),
-  );
-  for (const [id, { value, from }] of proposed) {
-    const own = data[id];
-    if (own !== undefined) {
-      const source = sources.get(id)?.field;
-      const untouched =
-        own !== null &&
-        source !== undefined &&
-        !sameValue(own, value) &&
-        earlierSealedValues(questionnaire, from, source).some((earlier) => sameValue(earlier, own));
-      if (!untouched) continue;
-      replaced.push(id);
-    }
+  // A proposal never overwrites: an answer, even one left empty on purpose, is the role's own.
+  for (const [id, { value }] of proposed) {
+    if (data[id] !== undefined) continue;
     adopted.push(id);
     data[id] = value;
   }
-  if (adopted.length + released.length === 0) return unchanged;
+  if (adopted.length === 0) return unchanged;
   const updated = withDeferred(
     { ...draft, data },
     (draft.deferred ?? []).filter((id) => !adopted.includes(id)),
   );
   const versions = [...versionsOf(questionnaire, role)];
   versions[versions.length - 1] = updated;
-  return {
-    questionnaire: withVersions(questionnaire, role, versions),
-    adopted,
-    replaced,
-    released,
-  };
+  return { questionnaire: withVersions(questionnaire, role, versions), adopted, replaced };
 }
 
 /**
