@@ -4,7 +4,10 @@ import {
   employerOnly,
   sofortmeldung,
 } from '../../tests/support/sofortmeldungSession';
+import { strToU8 } from 'fflate';
 import { decodePackage } from './dataPackage';
+import { compressPackage, toBase64Url } from './dataPages';
+import { sha256Hex } from './hash';
 import { canonicalize } from './jcs';
 import { parseMasterDataFragment } from './masterDataLink';
 import type { Questionnaire } from './model';
@@ -104,6 +107,20 @@ describe('transferFragment / parseTransferFragment', () => {
     }
   });
 
+  it('reads no link longer than the app ever writes (audit 2026-11-14)', () => {
+    // Hex digests do not compress much, so this one link is well over the limit.
+    const extra = Array.from({ length: 200 }, (_, i) => sha256Hex(strToU8(String(i)))).join('');
+    const text = canonicalize({ ...personSigned(), extra });
+    const long = new URLSearchParams([
+      ['weitergabe', '1'],
+      ['pruef', sha256Hex(strToU8(text)).slice(0, 16)],
+      ['daten', toBase64Url(compressPackage(text))],
+    ]);
+    const fragment = `#${long.toString()}`;
+    expect(fragment.length).toBeGreaterThan(TRANSFER_LINK_MAX_LENGTH);
+    expect(parseTransferFragment(fragment)).toEqual({ ok: false, issue: 'damaged' });
+  });
+
   it('refuses a link of another link version', () => {
     expect(parseTransferFragment('#weitergabe=3&pruef=0&daten=x')).toEqual({
       ok: false,
@@ -188,6 +205,17 @@ describe('transferPackageText', () => {
     });
     expect(transferPackageText('null', carried)).toEqual({ ok: false, issue: 'unknownForm' });
     expect(transferPackageText('{nicht json', carried)).toEqual({ ok: false, issue: 'damaged' });
+  });
+
+  // Audit 2026-11-14: anyone can compute the digest of a link, so the text is untrusted. A value the
+  // canonical form refuses made the app throw while it rendered — a blank page on every reload.
+  it.each([
+    ['a number out of range', '1e400'],
+    ['a lone surrogate', '"\\ud800"'],
+    ['nesting deeper than any questionnaire', `${'['.repeat(100)}${']'.repeat(100)}`],
+  ])('names a link damaged that carries %s, never throws', (_label, value) => {
+    const text = `{"form":{"definitionHash":"${form.definitionHash}"},"x":${value}}`;
+    expect(transferPackageText(text, carried)).toEqual({ ok: false, issue: 'damaged' });
   });
 
   it('has a German message for every issue', () => {

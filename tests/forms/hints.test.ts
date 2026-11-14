@@ -3,6 +3,7 @@
 import { join } from 'node:path';
 import { visibleFields } from '../../src/logic/form';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
+import { derive } from '../../src/logic/derivations';
 import { checkHints, describeHint, HINT_TESTS } from '../../src/logic/hints';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
@@ -32,6 +33,31 @@ function answers(
 const ids = (q: Questionnaire) => checkHints(q, form.definition).map((hint) => hint.id);
 
 describe('check hints of the Personalfragebogen draft', () => {
+  // Audit 2026-11-14: a birth date after the start of work (a typo, or "010526" read as 2026) made
+  // ageOn throw inside the KV rules of a privately insured person — no PDF, and the Kanzlei merge
+  // crashed. The age is then unknown, as elsewhere.
+  it('leaves the age unknown when the birth date lies after the day it is asked for', () => {
+    expect(HINT_TESTS.ab55Jahren?.run(['2026-05-01', '2026-01-02'])).toBeUndefined();
+    const q = answers(
+      {
+        weitereBeschaeftigung: false,
+        geburtsdatum: '01.05.2026',
+        krankenversicherung: 'privat',
+        versicherungsunternehmen: 'Muster-PKV',
+        pkvBestand2002: 'nein',
+        kvBefreiung: 'nein',
+        gkvLetzte5Jahre: 'nein',
+      },
+      {
+        agBeschaeftigungsbeginn: '02.01.2026',
+        agEntgeltArt: 'monatsentgelt',
+        agMonatsentgelt: '3.000,00',
+        agBeschaeftigungsart: 'svpflichtig',
+      },
+    );
+    expect(() => derive(q, form.definition)).not.toThrow();
+  });
+
   it('flags a registered job seeker planned as short-term help', () => {
     const q = answers(
       { status: 'arbeitslos', artLautVereinbarung: 'aushilfe' },

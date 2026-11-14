@@ -1274,8 +1274,14 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   ab55Jahren: {
     args: ['date', 'date'],
     describe: ([birth = '', on = '']) => `laut „${birth}“ am „${on}“ mindestens 55 Jahre alt`,
+    // A birth date after the day asked for leaves the age unknown instead of throwing (audit
+    // 2026-11-14: a typo there crashed the proposals, the PDF and the Kanzlei merge).
     run: ([birth, on]) =>
-      typeof birth === 'string' && typeof on === 'string' && isIsoDate(birth) && isIsoDate(on)
+      typeof birth === 'string' &&
+      typeof on === 'string' &&
+      isIsoDate(birth) &&
+      isIsoDate(on) &&
+      birth <= on
         ? {
             holds: ageOn(birth, on) >= 55,
             detail: [`Alter am Stichtag: ${ageOn(birth, on)} Jahre.`],

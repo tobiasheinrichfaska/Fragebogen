@@ -41,8 +41,13 @@ import {
 /** Form id, also the folder name under forms/. */
 export const FORM_ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 export const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
-/** Ids of roles, sections, fields and notices — they appear in stored data and hashes. */
-export const ID = /^[a-z][a-zA-Z0-9]{0,63}$/;
+/**
+ * Ids of roles, sections, fields and notices — they appear in stored data and hashes. Never a name
+ * of Object.prototype (audit 2026-11-14): ids are keys of plain objects, and `parts.constructor`
+ * found the inherited function, so a crafted file crashed the merge. No form uses such a name.
+ */
+export const ID =
+  /^(?!(?:constructor|hasOwnProperty|isPrototypeOf|propertyIsEnumerable|toLocaleString|toString|valueOf)$)[a-z][a-zA-Z0-9]{0,63}$/;
 /** Option ids may also be codes such as "101". */
 export const OPTION_ID = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 /** Explainer video path below the configured address: lower-case segments, e.g. `a/b-c`. */

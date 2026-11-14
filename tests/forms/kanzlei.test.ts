@@ -166,6 +166,22 @@ describe('Kanzlei inbox', () => {
     expect(verdict.parts.every((p) => p.level === 'confirmed')).toBe(true);
   });
 
+  // Audit 2026-11-14: the receipt went to the first file listing the part's hash, even when that
+  // file's copy was altered and left out of the merge.
+  it('gives the receipt to the file whose copy went in, not to an altered copy that came first', () => {
+    const genuine = employerOnly().questionnaire;
+    const altered = structuredClone(genuine);
+    const employer = altered.parts.arbeitgeber?.[0];
+    if (!employer) throw new Error('no employer part');
+    employer.data = { ...employer.data, agFirma: 'Gefälschte GmbH' };
+    const inbox = inboxOf(file(altered, 'veraendert.pdf', 1), file(genuine, 'echt.pdf', 2));
+    const [group] = mergeInbox(inbox, published).groups;
+    if (!group) throw new Error('no group');
+    expect(group.notes.map((n) => n.code)).toContain('invalidExcluded');
+    const result = withKanzleiReceipts(group, inbox, '0.1.0');
+    expect(result?.questionnaire.receipts.map((r) => r.fileName)).toEqual(['echt.pdf']);
+  });
+
   it('adds no second receipt when the merged file is read again', () => {
     const inbox = inboxOf(file(completeSofortmeldung().questionnaire, 'vollstaendig.pdf', 2));
     const [group] = mergeInbox(inbox, published).groups;

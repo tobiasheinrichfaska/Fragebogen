@@ -1,9 +1,12 @@
+import { deflateSync, inflateSync } from 'fflate';
 import {
   CHARS_PER_LINE,
   DATA_LINES_MESSAGES,
   decodeDataLines,
   encodeDataLines,
   fromBase64Url,
+  inflatePackage,
+  MAX_PACKAGE_BYTES,
   toBase64Url,
 } from './dataPages';
 
@@ -92,5 +95,31 @@ describe('encodeDataLines / decodeDataLines', () => {
 
   it('has a German message for every issue', () => {
     for (const message of Object.values(DATA_LINES_MESSAGES)) expect(message).toMatch(/\.$/);
+  });
+});
+
+// Audit 2026-11-14: the size limit was checked only after inflating in full, so 400 KB of deflated
+// zeros (a "bomb") took 400 MB and seconds before they were refused — through a link, QR codes or
+// data pages alike. Inflating now stops as soon as the limit is passed.
+describe('inflatePackage and its size limit', () => {
+  const bomb = deflateSync(new Uint8Array(64 * 1024 * 1024), { level: 9 });
+
+  it('stops inflating at the limit instead of inflating everything first', () => {
+    // Cut off near its end: inflated in full, the stream ends too early ("corrupt"); a reader that
+    // stops at the limit never gets there.
+    const cut = bomb.subarray(0, bomb.length - 16);
+    expect(() => inflateSync(cut)).toThrow();
+    expect(inflatePackage(cut, { sha256Prefix: '' })).toEqual({ ok: false, issue: 'tooLarge' });
+    expect(inflatePackage(bomb, { sha256Prefix: '' })).toEqual({ ok: false, issue: 'tooLarge' });
+  });
+
+  it('still reads a package of exactly the limit and names a broken stream corrupt', () => {
+    const text = 'x'.repeat(MAX_PACKAGE_BYTES);
+    const read = inflatePackage(deflateSync(new TextEncoder().encode(text)), { sha256Prefix: '' });
+    expect(read.ok && read.text.length).toBe(MAX_PACKAGE_BYTES);
+    expect(inflatePackage(Uint8Array.from([1, 2, 3, 4, 5]), { sha256Prefix: '' })).toEqual({
+      ok: false,
+      issue: 'corrupt',
+    });
   });
 });
