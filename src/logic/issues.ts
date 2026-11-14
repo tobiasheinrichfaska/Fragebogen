@@ -8,6 +8,7 @@ export type IssueCode =
   | 'date.format'
   | 'date.shortYear'
   | 'date.invalid'
+  | 'date.year'
   | 'date.tooEarly'
   | 'date.tooLate'
   | 'text.tooLong'
@@ -72,6 +73,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
     'Bitte das Datum als TT.MM.JJJJ eingeben (am Handy genügen die Ziffern, z. B. 17051990).',
   'date.shortYear': 'Bitte das Jahr vierstellig eingeben, z. B. 02.11.2026.',
   'date.invalid': 'Dieses Datum gibt es nicht.',
+  'date.year': 'Bitte das Jahr prüfen: Ein Datum vor 1800 nimmt die App nicht an.',
   'date.tooEarly': 'Das Datum liegt zu weit zurück – frühestens {minDate}.',
   'date.tooLate': 'Das Datum liegt zu spät – spätestens {maxDate}.',
   'text.tooLong': 'Höchstens {maxLength} Zeichen.',

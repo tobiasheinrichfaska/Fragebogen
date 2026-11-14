@@ -309,9 +309,10 @@ export function roleToFillNext(session: Session): RoleId | undefined {
   return open.length === 1 ? open[0]?.id : undefined;
 }
 
-/** Continues an existing draft at its first open question (or the summary). */
+/** Continues an existing draft at its first open question or unconfirmed notice (or the summary). */
 function atResume(session: Session, role: RoleId): Partial<Session> {
-  return { role, stepKey: resumeStep(stepsFor({ ...session, role })).key };
+  const entered = { ...session, role };
+  return { role, stepKey: resumeStep(stepsFor(entered), unconfirmedNotices(entered)).key };
 }
 
 /** Changing a completed part: the summary lists every answer with "ändern". */
@@ -513,7 +514,11 @@ export function skipToMissing(session: Session): Session {
   const key = session.stepKey ?? '';
   if (session.editing !== undefined) {
     const target = missingStepAround(steps, key, unconfirmedNotices(session));
-    if (target.kind === 'question') return editFromSummary(session, target.fieldId);
+    // The step itself, so a further page of a table stays that page (audit 2026-11-14: the field
+    // alone led to the table's first page, again and again).
+    if (target.kind === 'question') {
+      return { ...session, stepKey: target.key, editing: target.fieldId };
+    }
     if (target.kind === 'notice') return noticeFromSummary(session, target.infoBlockId);
     return goTo(session, target.key);
   }

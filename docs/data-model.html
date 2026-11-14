@@ -351,7 +351,7 @@ Formular ergibt eine neue Version. Jede mitgelieferte Definition muss hier mit u
   <tr><td><code>version</code></td><td>string (<code>MAJOR.MINOR.PATCH</code>)</td><td>ja</td><td>Version, zugleich Dateiname</td></tr>
   <tr><td><code>definitionHash</code></td><td>Sha256Hex</td><td>ja</td><td>SHA-256 über JCS(Definition); darüber verweist ein Fragebogen auf seine Definition</td></tr>
 </table>
-<p><strong>Kennungen</strong> von Rollen, Abschnitten, Feldern und Hinweisen: <code>^[a-z][a-zA-Z0-9]{0,63}$</code>.
+<p><strong>Kennungen</strong> von Rollen, Abschnitten, Feldern und Hinweisen: <code>^[a-z][a-zA-Z0-9]{0,63}$</code>, nie ein Name von <code>Object.prototype</code> (<code>constructor</code>, <code>toString</code>, <code>valueOf</code> …; Audit 14.11.2026).
 Options-IDs dürfen auch Schlüssel wie <code>101</code> sein: <code>^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$</code>.
 Alle Texte einer Definition sind nicht leer und liegen in NFC vor.</p>
 
@@ -536,7 +536,7 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
 </table>
 <table>
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
-  <tr><td><code>roleRequirement</code> · <code>roleRequirements</code></td><td><code>(definition, q, role) =&gt; RoleRequirement</code></td><td>Ist die Rolle jetzt erforderlich? <code>always</code> · <code>pending</code> (auslösender Teil noch nicht gesiegelt) · <code>minor</code> · <code>adult</code> · <code>ageUnknown</code>, jeweils mit Unterschriftstag und Alter</td></tr>
+  <tr><td><code>roleRequirement</code></td><td><code>(definition, q, role) =&gt; RoleRequirement</code></td><td>Ist die Rolle jetzt erforderlich? <code>always</code> · <code>pending</code> (auslösender Teil noch nicht gesiegelt) · <code>minor</code> · <code>adult</code> · <code>ageUnknown</code>, jeweils mit Unterschriftstag und Alter</td></tr>
   <tr><td><code>transmissionBlockers</code></td><td><code>(q, form: RegisteredForm) =&gt; Blocker[]</code></td><td>Alles, was die Übermittlung verhindert; wirft bei einem fremden Formular</td></tr>
   <tr><td><code>completenessGaps</code></td><td><code>(q, form) =&gt; Blocker[]</code></td><td>Sperren plus fehlende erforderliche Rollen und fehlende Verknüpfungen (<code>partLinks</code>)</td></tr>
   <tr><td colspan="3"><code>src/logic/masterData.ts</code></td></tr>

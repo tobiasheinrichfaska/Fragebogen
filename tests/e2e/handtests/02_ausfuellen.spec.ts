@@ -580,12 +580,18 @@ test('MT-18: an answer of the old file replaces a differing preselection', async
   await expect(app.locator('.banner-info')).toContainText(
     /Beschäftigte Person: \d+ Angaben übernommen/,
   );
-  // The interview goes on after the answers taken over; back from there they are in place.
+  // The notices the old file's draft had not confirmed come first (audit 2026-11-14: they were
+  // passed over), then the interview goes on after the answers taken over; back from there they
+  // are in place.
   expect(
     await step(app, () =>
       roleRow(app, 'Beschäftigte Person').getByRole('button', { name: 'Weitermachen' }).click(),
     ),
-  ).toBe('Wann sind Sie geboren?');
+  ).toBe('Datenschutzhinweis');
+  await app.getByLabel('Ich habe den Hinweis gelesen.').check();
+  expect(await tap(app, 'Weiter')).toMatch(/^Hinweis: Ausweispapiere mitführen/);
+  await app.getByLabel('Ich habe diesen Hinweis auf Papier erhalten.').check();
+  expect(await tap(app, 'Zur nächsten fehlenden Angabe')).toBe('Wann sind Sie geboren?');
   expect(await tap(app, 'Zurück')).toBe('Wie lautet Ihr Geburtsname?');
   await expect(app.locator('.question input').first()).toHaveValue('Mustermann');
   expect(await tap(app, 'Zurück')).toBe(

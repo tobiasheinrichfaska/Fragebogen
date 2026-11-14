@@ -180,8 +180,9 @@ export function mergeSources(sources: readonly MergeSource[], options: MergeOpti
     const verdict = verifyQuestionnaire(source.questionnaire, { registry });
     return { source, verdict, trusted: !verdict.findings.some((f) => f.code === 'mergeAltered') };
   });
+  const fresh = uniqueSorted(options.decisions ?? []);
   const decisions = uniqueSorted([
-    ...(options.decisions ?? []),
+    ...fresh,
     ...checked.flatMap((c) =>
       c.trusted ? (c.source.questionnaire.mergeRecord?.decisions ?? []) : [],
     ),
@@ -206,21 +207,53 @@ export function mergeSources(sources: readonly MergeSource[], options: MergeOpti
   }
   const groups = [...members.entries()]
     .sort(([a], [b]) => byText(a, b))
-    .map(([groupId, items]) => mergeGroup(groupId, items, decisions, ids, registry));
+    .map(([groupId, items]) => mergeGroup(groupId, items, decisions, fresh, ids, registry));
   return { groups, proposals: proposeLinks(groups, registry) };
+}
+
+type VersionChoice = Extract<MergeDecision, { kind: 'chooseVersion' }>;
+
+/**
+ * The version choice that holds for a role (audit 2026-11-14): the human's choices in this merge
+ * replace those carried in merged files, and choices that name different versions hold none — the
+ * conflict is shown again instead of the app picking one by hash order.
+ */
+function choiceFor(
+  role: RoleId,
+  choices: readonly VersionChoice[],
+  fresh: readonly MergeDecision[],
+): VersionChoice | undefined {
+  const own = choices.filter((d) => d.role === role);
+  const isFresh = (d: VersionChoice) => fresh.some((f) => canonicalize(f) === canonicalize(d));
+  // The human's choices rule; differing ones hold none. A choice for a joined group replaces the
+  // earlier ones of its members where it is made (kanzlei `decide`), not here: the group takes the
+  // smallest id, so a member's earlier choice would look like one for the group (loop 3).
+  const ruling = own.some(isFresh) ? own.filter(isFresh) : own;
+  const [first] = ruling;
+  return first && ruling.every((d) => d.contentHash === first.contentHash) ? first : undefined;
 }
 
 function mergeGroup(
   groupId: string,
   items: readonly Checked[],
   decisions: readonly MergeDecision[],
+  fresh: readonly MergeDecision[],
   ids: IdSets,
   registry: FormRegistry,
 ): MergeGroup {
   const inGroup = (id: string) => ids.find(id) === groupId;
-  const groupDecisions = decisions.filter((d) =>
+  const relevant = decisions.filter((d) =>
     d.kind === 'link' ? d.questionnaireIds.some(inGroup) : inGroup(d.questionnaireId),
   );
+  const choices = relevant.filter((d): d is VersionChoice => d.kind === 'chooseVersion');
+  const ruling = uniqueSorted(
+    choices.flatMap((d) => {
+      const holds = choiceFor(d.role, choices, fresh);
+      return holds ? [holds] : [];
+    }),
+  );
+  /** Links, and per role only the choice that holds — what the new merge record lists. */
+  const groupDecisions = uniqueSorted([...relevant.filter((d) => d.kind === 'link'), ...ruling]);
   const notes: MergeNote[] = [];
   const conflicts: MergeConflict[] = [];
   const containerIds = uniqueSorted(items.map((item) => item.source.questionnaire.questionnaireId));
@@ -258,10 +291,7 @@ function mergeGroup(
   const parts: Record<RoleId, Part[]> = {};
   for (const role of roleOrder(definition, [...versions.keys()])) {
     const entries = versions.get(role) ?? new Map<Sha256Hex, Entry>();
-    const choice = groupDecisions.find(
-      (d): d is Extract<MergeDecision, { kind: 'chooseVersion' }> =>
-        d.kind === 'chooseVersion' && d.role === role,
-    );
+    const choice = ruling.find((d) => d.role === role);
     const resolved = resolveChain(entries, choice?.contentHash);
     if ('conflict' in resolved) {
       conflicts.push({

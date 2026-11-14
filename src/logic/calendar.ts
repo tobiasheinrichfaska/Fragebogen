@@ -20,12 +20,16 @@ export function entryText(entry: CalendarEntry): string {
   return `${entry.date}:${entry.mark}`;
 }
 
-/** Stored entries in order; anything malformed is left out (stored values are already normalised). */
+/**
+ * Stored entries in order; anything malformed is left out. Values the app stored are normalised,
+ * but a file is untrusted: a day that does not exist is left out too (audit 2026-11-14).
+ */
 export function calendarEntries(value: unknown): CalendarEntry[] {
   if (!Array.isArray(value)) return [];
   return value.flatMap((item) => {
     const match = typeof item === 'string' ? ENTRY.exec(item) : null;
-    return match ? [{ date: match[1] ?? '', mark: match[2] ?? '' }] : [];
+    const date = match?.[1] ?? '';
+    return match && parseIsoDate(date) !== null ? [{ date, mark: match[2] ?? '' }] : [];
   });
 }
 
