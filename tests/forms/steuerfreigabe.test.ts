@@ -1,9 +1,9 @@
-// Zustimmung zur elektronischen Übermittlung (draft, Tobias 2026-11-12, after the Kanzlei's letter
+// Zustimmung zur elektronischen Übermittlung (Tobias 2026-11-12, after the Kanzlei's letter
 // template): the Kanzlei only prefills client, date of its letter and the returns it sent; one
 // person consents (Einzelveranlagung, firms) or two (Zusammenveranlagung). No tax number, no
 // client number, no further questions. Fixed packages (KSt, GewSt, Zerlegung only with GewSt), one
 // page per return the Kanzlei names, the AGB sent with the returns, and the PDF first once every
-// part is done. Fictitious data.
+// part is done. Published as 1.0.0 on 2026-11-14 (Tobias). Fictitious data.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
@@ -37,10 +37,10 @@ import {
   type SessionResult,
 } from '../../src/logic/session';
 import { verifyQuestionnaire } from '../../src/logic/verify';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, QUESTIONNAIRE_ID } from '../support/sample';
 
-const raw = readJson(join(DRAFTS_DIR, 'steuerfreigabe', '0.1.0.json'));
+const raw = readJson(join(FORMS_DIR, 'steuerfreigabe', '1.0.0.json'));
 const form: RegisteredForm = registeredFrom(raw);
 const AT = { local: '2026-11-12T10:00:00.000+01:00', utc: '2026-11-12T09:00:00.000Z' };
 const TODAY = '2026-11-12';
@@ -318,7 +318,7 @@ describe('one page per recipient of what the Kanzlei names', () => {
   });
 
   it('names the condition of each page in the catalogue', () => {
-    expect(formCatalogue(form, 'draft')).toContain(
+    expect(formCatalogue(form, 'published')).toContain(
       '- Nur wenn bei „Erklärungen“ „Offenlegung oder Hinterlegung beim Unternehmensregister“ angekreuzt ist',
     );
   });

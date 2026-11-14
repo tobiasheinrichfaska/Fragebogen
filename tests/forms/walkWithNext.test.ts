@@ -196,6 +196,6 @@ describe.each(WALKS_BY_FORM)('%s', (_name, walks) => {
 
 it('walks the published forms and the drafts', () => {
   expect(FORMS.map(([name]) => name)).toEqual(
-    expect.arrayContaining(['personalfragebogen 1.0.0', 'steuerfreigabe 0.1.0']),
+    expect.arrayContaining(['personalfragebogen 1.0.0', 'steuerfreigabe 1.0.0', 'austritt 0.1.0']),
   );
 });

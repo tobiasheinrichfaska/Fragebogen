@@ -1,6 +1,6 @@
 {
   "id": "steuerfreigabe",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "revised": "2026-11-13T12:58",
   "title": "Zustimmung zur elektronischen Übermittlung der Steuererklärungen",
   "signaturePolicy": "electronic",
