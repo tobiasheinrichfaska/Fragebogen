@@ -245,3 +245,33 @@ describe('the taken-over answer is the person’s own data', () => {
     expect(verdict.parts.find((p) => p.role === 'person')?.level).toBe('consistent');
   });
 });
+
+// Audit 2026-11-14: the employer's new version no longer decides the kind of wage tax (now a job
+// subject to insurance), but the person's copy of the old decision stayed as an own answer — not
+// asked, and signed as if chosen. A copy the deciding role withdrew is asked again.
+describe('a decision the other role withdraws in a new version', () => {
+  it('is asked again instead of staying as the person’s own answer', () => {
+    let q = employerSealed('pauschal2');
+    let person = minijobber(must(enterRole(sessionWith(q), 'person')));
+    expect(person.questionnaire.parts.person?.[0]?.data.steuerart).toBe('pauschal2');
+    q = ok(startPart(person.questionnaire, form, 'arbeitgeber'));
+    for (const [id, raw] of Object.entries({
+      agBeschaeftigungsart: 'svpflichtig',
+      agEntgeltArt: 'monatsentgelt',
+      agMonatsentgelt: '3.000,00',
+    })) {
+      q = ok(setValue(q, form, 'arbeitgeber', id, raw));
+    }
+    q = ok(
+      sealPart(q, form, 'arbeitgeber', {
+        nonce: 'e5'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+    expect(q.parts.arbeitgeber?.at(-1)?.data.agBesteuerung ?? null).toBeNull();
+    person = must(enterRole(sessionWith(q), 'person'));
+    expect(person.questionnaire.parts.person?.at(-1)?.data.steuerart ?? null).toBeNull();
+    expect(questions(person)).toContain('steuerart');
+  });
+});

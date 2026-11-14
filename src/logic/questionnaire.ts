@@ -315,29 +315,64 @@ function fromOtherRoles(
 }
 
 /**
+ * Decisions another role withdrew (audit 2026-11-14): its latest sealed part holds no value for a
+ * field it decided (`fromRole`, not changeable) — e.g. the kind of wage tax after the job became
+ * one subject to insurance. Per field the values its earlier sealed versions held: a copy equal to
+ * one of them came from there and is asked again instead of staying as the role's own answer.
+ */
+function withdrawnByOtherRoles(
+  questionnaire: Questionnaire,
+  definition: FormDefinition,
+  role: RoleId,
+): ReadonlyMap<FieldId, FieldValue[]> {
+  const found = new Map<FieldId, FieldValue[]>();
+  for (const field of fieldsOfRole(definition, role)) {
+    if (!field.fromRole || field.fromRole.changeable === true) continue;
+    const { role: from, field: source } = field.fromRole;
+    const latest = latestSealed(questionnaire, from);
+    if (!latest || (latest.data[source] ?? null) !== null) continue;
+    const earlier = versionsOf(questionnaire, from)
+      .filter((part) => part.seal !== undefined && part !== latest)
+      .map((part) => part.data[source] ?? null)
+      .filter((value): value is FieldValue => value !== null);
+    if (earlier.length > 0) found.set(field.id, earlier);
+  }
+  return found;
+}
+
+/**
  * Copies the answers other roles decided into the role's draft (see fixedByOtherRoles) and ends
- * "Weiß ich gerade nicht" on them. `replaced` names fields whose earlier answer differed.
+ * "Weiß ich gerade nicht" on them. `replaced` names fields whose earlier answer differed,
+ * `released` the copies of a decision the other role withdrew, which are asked again.
  * Without a draft nothing changes.
  */
 export function adoptFromOtherRoles(
   questionnaire: Questionnaire,
   form: RegisteredForm,
   role: RoleId,
-): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[] } {
+): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[]; released: FieldId[] } {
   const draft = currentPart(questionnaire, role);
   const fixed = fixedByOtherRoles(questionnaire, form.definition, role);
   const proposed = proposedByOtherRoles(questionnaire, form.definition, role);
-  const unchanged = { questionnaire, adopted: [], replaced: [] };
+  const withdrawn = withdrawnByOtherRoles(questionnaire, form.definition, role);
+  const unchanged = { questionnaire, adopted: [], replaced: [], released: [] };
   if (
     !matchesForm(questionnaire, form) ||
     draft?.status !== 'draft' ||
-    fixed.size + proposed.size === 0
+    fixed.size + proposed.size + withdrawn.size === 0
   ) {
     return unchanged;
   }
   const adopted: FieldId[] = [];
   const replaced: FieldId[] = [];
+  const released: FieldId[] = [];
   const data = { ...draft.data };
+  for (const [id, earlier] of withdrawn) {
+    const own = data[id] ?? null;
+    if (own === null || !earlier.some((value) => sameValue(value, own))) continue;
+    Reflect.deleteProperty(data, id);
+    released.push(id);
+  }
   for (const [id, { value }] of fixed) {
     const before = data[id] ?? null;
     if (sameValue(before, value)) continue;
@@ -351,14 +386,19 @@ export function adoptFromOtherRoles(
     adopted.push(id);
     data[id] = value;
   }
-  if (adopted.length === 0) return unchanged;
+  if (adopted.length + released.length === 0) return unchanged;
   const updated = withDeferred(
     { ...draft, data },
     (draft.deferred ?? []).filter((id) => !adopted.includes(id)),
   );
   const versions = [...versionsOf(questionnaire, role)];
   versions[versions.length - 1] = updated;
-  return { questionnaire: withVersions(questionnaire, role, versions), adopted, replaced };
+  return {
+    questionnaire: withVersions(questionnaire, role, versions),
+    adopted,
+    replaced,
+    released,
+  };
 }
 
 /**

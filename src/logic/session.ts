@@ -330,15 +330,21 @@ function withAdopted(result: SessionResult, role: RoleId): SessionResult {
   if (!result.ok) return result;
   const { session } = result;
   const adoption = adoptFromOtherRoles(session.questionnaire, session.form, role);
-  if (adoption.adopted.length === 0) return result;
+  if (adoption.adopted.length + adoption.released.length === 0) return result;
   const fields = fieldsById(session.form.definition);
   const after = currentPart(adoption.questionnaire, role)?.data ?? {};
-  const notes = adoption.replaced.map((id) => {
-    const field = fields.get(id);
-    return field
-      ? `Aus dem abgeschlossenen Teil der anderen Station übernommen: „${field.label}“ ist jetzt „${displayValue(field, after[id] ?? null)}“.`
-      : id;
-  });
+  const notes = [
+    ...adoption.replaced.map((id) => {
+      const field = fields.get(id);
+      return field
+        ? `Aus dem abgeschlossenen Teil der anderen Station übernommen: „${field.label}“ ist jetzt „${displayValue(field, after[id] ?? null)}“.`
+        : id;
+    }),
+    ...adoption.released.map((id) => {
+      const label = fields.get(id)?.label ?? id;
+      return `„${label}“ legt die andere Station nicht mehr fest; die Frage wird wieder gestellt.`;
+    }),
+  ];
   return ok({ ...session, questionnaire: adoption.questionnaire, dirty: true }, [
     ...result.warnings,
     ...notes,
