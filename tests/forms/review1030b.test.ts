@@ -172,12 +172,12 @@ describe('check hints of the review', () => {
   it('says so when the year has no Rechengrößen instead of guessing', () => {
     const q = filled(
       'arbeitgeber',
-      { ...employer, agBeschaeftigungsbeginn: '02.01.2027' },
+      { ...employer, agBeschaeftigungsbeginn: '03.01.2028' },
       filled('person', person),
     );
     const hint = checkHints(q, definition).find((h) => h.id === 'jaeg');
     expect(hint?.detail.join(' ')).toContain(
-      'Für 2027 ist die Jahresarbeitsentgeltgrenze in der App nicht hinterlegt',
+      'Für 2028 ist die Jahresarbeitsentgeltgrenze in der App nicht hinterlegt',
     );
   });
 

@@ -10,6 +10,31 @@ import { QUESTIONNAIRE_ID } from '../support/sample';
 
 const pfb100 = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 const pfb110 = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
+
+// The extension to a start in 2027 (Tobias 2026-11-14): exactly these texts of 1.1.0 (as they stand
+// in its JSON text), each with its wording in 1.0.0.
+const UNDO_2027: [string, string][] = [
+  ['"until":"2027-12-31"', '"until":"2026-12-31"'],
+  ['"onOrBefore":"1961-07-01"', '"onOrBefore":"1960-09-01"'],
+  [
+    'Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.07.1961 hängt es vom Beginn der Beschäftigung in den Jahren 2026 und 2027 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).',
+    'Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.09.1960 hängt es vom Beginn der Beschäftigung im Jahr 2026 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).',
+  ],
+  [
+    '"label":"Minijob (2026 bis 603 €, 2027 bis 633 € im Monat)"',
+    '"label":"Minijob (bis 603 € im Monat)"',
+  ],
+  ['einen Minijob (2026 bis 603 €, 2027 bis 633 € im Monat)', 'einen Minijob (bis 603 € im Monat)'],
+  [
+    'Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € im Jahr 2026 und 633 € im Jahr 2027 und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn in den Jahren 2026 und 2027; maßgeblich sind jeweils die Werte des Jahres, in dem die Beschäftigung beginnt.',
+    'Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn im Jahr 2026.',
+  ],
+  [
+    'Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.',
+    'Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.',
+  ],
+  ['§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 257 SGB V', '§ 6 Abs. 1 Nr. 1, Abs. 6, 7, § 257 SGB V'],
+];
 const austritt = registeredFrom(readJson(join(DRAFTS_DIR, 'austritt', '0.1.0.json')));
 
 function employer(form: RegisteredForm, values: Record<string, unknown>): Session {
@@ -49,10 +74,13 @@ describe('Personalfragebogen: the end of a fixed term', () => {
   // B27; tests/forms/chromeEvaluierung.test.ts) — help texts only.
   // And (2026-11-13) the employer's proposed names, the second representative under joint custody,
   // the documents offered only where they fit (option conditions, tests/forms/unterlagen.test.ts).
-  it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules and help texts', () => {
+  it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules, help texts and 2027', () => {
     const SECOND = ['vertretung2', 'vertretungAlleinSorge'];
-    const strip = (form: RegisteredForm) =>
-      JSON.stringify(form.definition, function (this: unknown, key, value: unknown) {
+    const text = JSON.stringify(pfb110.definition);
+    for (const [now] of UNDO_2027) expect(text, now).toContain(now);
+    const undone = UNDO_2027.reduce((all, [now, before]) => all.split(now).join(before), text);
+    const strip = (definition: unknown) =>
+      JSON.stringify(definition, function (this: unknown, key, value: unknown) {
         if (['version', 'revised', 'notBefore', 'notAfter', 'help', 'fromRole'].includes(key)) {
           return undefined;
         }
@@ -76,7 +104,7 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         }
         return value;
       });
-    expect(strip(pfb110)).toBe(strip(pfb100));
+    expect(strip(JSON.parse(undone))).toBe(strip(pfb100.definition));
   });
 });
 
