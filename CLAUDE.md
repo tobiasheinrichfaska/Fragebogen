@@ -351,7 +351,8 @@ Key design decisions (details in `docs/plan.md`):
 - **No JSON numbers** in questionnaire data; dates are strings, never routed through `Date`.
 - **Canon 1** (`normalize.ts`): text → remove soft hyphen/zero-width/BOM and controls, all line
   breaks → LF, tab → space, NFC, collapse whitespace (per line for `multiline`), trim; empty → `null`.
-  Date `TT.MM.JJJJ`/ISO → `YYYY-MM-DD`. Money German input (`1.234,56`; `1.234` = thousands) →
+  Date `TT.MM.JJJJ`/ISO → `YYYY-MM-DD` (spaces around the dots dropped; a field without `minDate`
+  takes no year before 1800, audit 2026-11-14). Money German input (`1.234,56`; `1.234` = thousands) →
   `"1234.56"`. IBAN/SV number compact upper-case, tax id and Betriebsnummer digits only. Multi-choice
   sorted, unique. Number (hours, km …) German input → string with exactly `decimals` (0–2) places,
   minus only when `signed`; month `MM.JJJJ` → `YYYY-MM`. Tables: rows `{ rowId: "r1", … }`, each
@@ -1158,8 +1159,13 @@ Key design decisions (details in `docs/plan.md`):
 - **Device key (ECDSA) deliberately not built** — proves a browser profile, not a person, and
   conflicts with "store nothing".
 - **PDF parsing runs in the main thread** (pdf.js "fake worker", because `file://` forbids blob
-  workers): a huge or hostile PDF can freeze the tab — mitigated by import size limits (step 8).
-- **Bundle ≈ 3.2 MB** as one file (pdf.js ≈ 1.7 MB, pdf-lib ≈ 0.6 MB, fonts, QR libraries).
+  workers): a huge or hostile PDF can freeze the tab — mitigated by import size limits (step 8) and,
+  since the audit of 2026-11-14, by inflating data pages, QR codes and links only up to the 2 MB
+  package limit. A photo is decoded at full size before it is scaled down (`createImageBitmap`): a
+  small file with huge pixel dimensions can still exhaust the tab's memory (audit 2026-11-14, open).
+- **Bundle ≈ 3.8 MB** as one file (measured 2026-11-14: pdf.js ≈ 1.5 MB, pdf-lib + fontkit ≈ 0.6 MB,
+  React ≈ 0.2 MB, fonts, QR libraries). Start in Chromium from `file://`: about 0.4 s, 1.8 s at a
+  fourfold slowed CPU; without pdf.js it would be about 0.1 s less, so it is not split off.
 - **PDF/A-2u not yet externally validated** — the PDF carries the PDF/A markers (tested) but no
   veraPDF run yet: no Java locally, veraPDF + qpdf move to the CI (step 12). Acrobat Preflight is
   optional (MT-90). Never advertise "PDF/A" before that.
@@ -1182,7 +1188,9 @@ Key design decisions (details in `docs/plan.md`):
 - **Master-data link:** the fragment never reaches the server but stays in bookmarks and the browser
   history — fine for the employer's own data, never for the person's. What the link filled is known
   only in the open session: after reopening an interim file, filled values count as answers (no
-  "Vorbelegt" hint, no case following). The link screen cannot show a too-long link before typing
+  "Vorbelegt" hint, no case following) — except an answer equal to the field's preselection, which
+  counts as empty, so the link fills it again (audit 2026-11-14: SEPA-Mandat 1.1.0 `zahlungsart`
+  changed to „wiederkehrend“ by hand comes back as „einmalig“; the banner asks to check). The link screen cannot show a too-long link before typing
   it (it shows the message instead); 32 keys / 2,000 characters.
 - **Privacy notice of the Sofortmeldung** is a first version (confirmation click); a detailed
   review is pending (Tobias, 2026-10-29).
@@ -1586,4 +1594,4 @@ for now, long term as Kanzlei-signed forms loaded at runtime (signature in the e
 forms are finished together first (good patterns); `docs/ki-anleitung-formulare.md` lets any AI
 draft or adapt forms.
 
-_Last updated: 2026-11-08 (evening)_
+_Last updated: 2026-11-14 (audit)_

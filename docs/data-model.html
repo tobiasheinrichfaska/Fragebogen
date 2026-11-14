@@ -351,7 +351,7 @@ Formular ergibt eine neue Version. Jede mitgelieferte Definition muss hier mit u
   <tr><td><code>version</code></td><td>string (<code>MAJOR.MINOR.PATCH</code>)</td><td>ja</td><td>Version, zugleich Dateiname</td></tr>
   <tr><td><code>definitionHash</code></td><td>Sha256Hex</td><td>ja</td><td>SHA-256 über JCS(Definition); darüber verweist ein Fragebogen auf seine Definition</td></tr>
 </table>
-<p><strong>Kennungen</strong> von Rollen, Abschnitten, Feldern und Hinweisen: <code>^[a-z][a-zA-Z0-9]{0,63}$</code>.
+<p><strong>Kennungen</strong> von Rollen, Abschnitten, Feldern und Hinweisen: <code>^[a-z][a-zA-Z0-9]{0,63}$</code>, nie ein Name von <code>Object.prototype</code> (<code>constructor</code>, <code>toString</code>, <code>valueOf</code> …; Audit 14.11.2026).
 Options-IDs dürfen auch Schlüssel wie <code>101</code> sein: <code>^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$</code>.
 Alle Texte einer Definition sind nicht leer und liegen in NFC vor.</p>
 

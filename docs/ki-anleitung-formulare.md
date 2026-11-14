@@ -51,7 +51,9 @@ Gib zurück:
    öffnet.
 8. **Feldkennungen sind für immer.** `id` in camelCase, deutsch, Felder des Arbeitgebers mit
    `ag`-Präfix (`agBeschaeftigungsart`). Eine einmal veröffentlichte Kennung behält Typ, Rolle und
-   Bedeutung in allen Versionen; ändert sich die Bedeutung, gibt es eine neue Kennung.
+   Bedeutung in allen Versionen; ändert sich die Bedeutung, gibt es eine neue Kennung. Nie ein Name
+   wie `constructor`, `toString` oder `valueOf` (Bezeichner von `Object.prototype`; die App lehnt
+   sie ab).
 9. **Versionen.** Veröffentlichte Fassungen (`forms/`) sind eingefroren. Jede Änderung ist ein
    Entwurf mit neuer Version in `form-drafts/<id>/<version>.json`; 0.x sind Testfassungen.
 10. **Schriftform.** Wo das Gesetz eigenhändige Unterschrift verlangt oder die Praxis sie erwartet
