@@ -1309,8 +1309,7 @@ Every finding went to an independent refuter first; survivors were fixed with a 
 that failed before; three further review loops on the fixes (loop 2 found that two fixes deleted
 own answers — replaced by check hints). Notable: the last, smaller QR code of a page was never read
 from a scan (b9c454b); crafted files/links crashed the app (039f83f); PDF writing 3x and interview
-steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). **Open for Tobias:** third-party data in the git history of the removed
-`e-rechnung/`; the reopen gap of the takeover hints; a link-filled marker for S5; refusing huge
+steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). The `e-rechnung/` samples in the history are official public test data (checked). The history rewrite without the tester names is prepared, the force-push of `main` waits for his go. **Open for Tobias:** the reopen gap of the takeover hints; a link-filled marker for S5; refusing huge
 photos by their header; a merged file a station continues fails verification (`mergeAltered`) and its parts drop out of the next merge — renew the merge hash on every transition or drop the record (pre-audit behaviour; until decided, give stations the original files, not a merged one). E2E here only in Chromium (preinstalled build via a gitignored
 `.tmp/e2e/` config); tests whose output path holds „—“ or „€“ cannot hand their file to the page in
 this Linux environment (also on the pre-audit build) — not an app fault.
