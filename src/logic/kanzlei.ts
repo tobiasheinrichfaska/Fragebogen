@@ -55,15 +55,23 @@ export function removeFromInbox(inbox: Inbox, fileSha256: Sha256Hex): Inbox {
 
 const sameDecision = (a: MergeDecision, b: MergeDecision) => canonicalize(a) === canonicalize(b);
 
-/** Records a human decision; a new version choice replaces an earlier one for the same role. */
-export function decide(inbox: Inbox, decision: MergeDecision): Inbox {
+/**
+ * Records a human decision; a new version choice replaces an earlier one for the same role — in
+ * every questionnaire of `group` (the ids the choice is made for, e.g. a joined group's
+ * `sourceIds`), so choices made before questionnaires were joined do not compete with it.
+ */
+export function decide(
+  inbox: Inbox,
+  decision: MergeDecision,
+  group: readonly string[] = decision.kind === 'chooseVersion' ? [decision.questionnaireId] : [],
+): Inbox {
   const others = inbox.decisions.filter(
     (d) =>
       !sameDecision(d, decision) &&
       !(
         decision.kind === 'chooseVersion' &&
         d.kind === 'chooseVersion' &&
-        d.questionnaireId === decision.questionnaireId &&
+        (d.questionnaireId === decision.questionnaireId || group.includes(d.questionnaireId)) &&
         d.role === decision.role
       ),
   );

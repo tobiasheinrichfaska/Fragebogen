@@ -328,7 +328,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
                 group={group}
                 definition={definition}
                 fileName={fileName}
-                onChoose={(decision) => setInbox(decide(inbox, decision))}
+                onChoose={(decision) => setInbox(decide(inbox, decision, group.sourceIds))}
               />
             ))}
             {group.notes.length > 0 && (
