@@ -652,6 +652,14 @@ Key design decisions (details in `docs/plan.md`):
   `git status` before a commit; never `git add -f`). Without it the local tests skip, which is not a
   pass. Changes to those files are made in the cloud and pushed to Fragebogen-privat; the PC pulls it
   before building. One such repo per project that has local-only files.
+- **Every cloud session checks for the private files first** (Tobias 2026-11-14: „fügst du … automatisch
+  das private Repo als Quelle hinzu?“ — a session gets its repositories when it starts, the Default
+  environment cannot preselect one, a setup script cannot fetch a private repository): if
+  `config/kanzlei.local.json` is missing, attach `tobiasheinrichfaska/Fragebogen-privat` with
+  `add_repo` (clone it next to this checkout), copy `config/*.local.*` and
+  `tests/fixtures/sv-vorgaben-lokal/` over the checkout as the setup script does, and only then run
+  tests, builds or read the research. Selecting both repositories when starting a session spares
+  that step. Never commit those files.
 - **Briefing for the PC session:** `docs/briefing-kanzlei-pc.md` (reset to the rewritten main, one
   full local test run, upload rules, creating the private repo, what the PC no longer does).
 
