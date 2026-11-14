@@ -678,7 +678,7 @@
           "type": "choice",
           "label": "Regelaltersgrenze erreicht",
           "question": "Haben Sie zu Beginn dieser Beschäftigung die Regelaltersgrenze für die Altersrente erreicht?",
-          "help": "Für den Jahrgang 1959 liegt sie bei 66 Jahren und 2 Monaten, für den Jahrgang 1960 bei 66 Jahren und 4 Monaten. Sie gilt auch, wenn Sie keine Rente beziehen.",
+          "help": "Für den Jahrgang 1959 liegt sie bei 66 Jahren und 2 Monaten, für den Jahrgang 1960 bei 66 Jahren und 4 Monaten, für den Jahrgang 1961 bei 66 Jahren und 6 Monaten. Sie gilt auch, wenn Sie keine Rente beziehen.",
           "required": true,
           "showIf": {
             "all": [
@@ -690,11 +690,11 @@
               },
               {
                 "field": "geburtsdatum",
-                "onOrBefore": "1960-09-01"
+                "onOrBefore": "1961-07-01"
               }
             ]
           },
-          "because": "Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.09.1960 hängt es vom Beginn der Beschäftigung im Jahr 2026 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).",
+          "because": "Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.07.1961 hängt es vom Beginn der Beschäftigung in den Jahren 2026 und 2027 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).",
           "purpose": "Aktivrente (§ 3 Nr. 21 EStG), Versicherungsfreiheit in der Arbeitslosenversicherung (§ 28 Abs. 1 Nr. 1 SGB III) und Rentenversicherung (§ 5 Abs. 4 SGB VI)",
           "options": [
             {
@@ -5057,7 +5057,7 @@
           "type": "number",
           "label": "Vereinbarte Wochenstunden bei Arbeit auf Abruf",
           "question": "Wie viele Stunden pro Woche sind vereinbart?",
-          "help": "Ist keine Zahl vereinbart, gelten nach dem Gesetz 20 Stunden pro Woche – das ist 2026 mehr als ein Minijob erlaubt. Dann bitte 20 eintragen.",
+          "help": "Ist keine Zahl vereinbart, gelten nach dem Gesetz 20 Stunden pro Woche – das ist mehr, als ein Minijob erlaubt. Dann bitte 20 eintragen.",
           "required": true,
           "purpose": "Arbeit auf Abruf (§ 12 TzBfG): ohne vereinbarte Wochenstunden gelten 20 Stunden",
           "showIf": {
@@ -6914,7 +6914,7 @@
   "validity": {
     "field": "agBeschaeftigungsbeginn",
     "from": "2026-01-01",
-    "until": "2026-12-31"
+    "until": "2027-12-31"
   },
   "limits": [
     "Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.",

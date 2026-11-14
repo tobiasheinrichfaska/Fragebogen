@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { derive, type DerivationResult } from '../../src/logic/derivations';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import type { Questionnaire } from '../../src/logic/model';
+import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { FORMS_DIR, readJson, registeredFrom } from './formFiles';
 import { QUESTIONNAIRE_ID } from './sample';
 
@@ -23,15 +24,21 @@ export interface Assessment {
  * Sets the answers in passes until nothing more can be set, so a follow-up may come before the
  * answer that opens it; what stays unavailable is noted, not forced. Any other refusal throws.
  */
-function filled(q: Questionnaire, role: string, values: Answers, skipped: string[]) {
-  const started = startPart(q, svForm, role);
+function filled(
+  q: Questionnaire,
+  form: RegisteredForm,
+  role: string,
+  values: Answers,
+  skipped: string[],
+) {
+  const started = startPart(q, form, role);
   if (!started.ok) throw new Error(started.code);
   let current = started.questionnaire;
   let pending = Object.entries(values);
   for (;;) {
     const waiting: [string, unknown][] = [];
     for (const [id, raw] of pending) {
-      const result = setValue(current, svForm, role, id, raw);
+      const result = setValue(current, form, role, id, raw);
       if (result.ok) current = result.questionnaire;
       else if (result.code === 'fieldNotAvailable') waiting.push([id, raw]);
       else throw new Error(`${role}.${id}: ${result.code} ${result.detail.join(' ')}`);
@@ -44,12 +51,17 @@ function filled(q: Questionnaire, role: string, values: Answers, skipped: string
   }
 }
 
-export function assess(person: Answers, employer: Answers): Assessment {
+/** The proposals for one case; the published 1.0.0 unless another version is named. */
+export function assess(
+  person: Answers,
+  employer: Answers,
+  form: RegisteredForm = svForm,
+): Assessment {
   const skipped: string[] = [];
-  let q = createQuestionnaire(QUESTIONNAIRE_ID, svForm);
-  q = filled(q, 'person', person, skipped);
-  q = filled(q, 'arbeitgeber', employer, skipped);
-  const results = new Map(derive(q, svForm.definition).map((d) => [d.id, d] as const));
+  let q = createQuestionnaire(QUESTIONNAIRE_ID, form);
+  q = filled(q, form, 'person', person, skipped);
+  q = filled(q, form, 'arbeitgeber', employer, skipped);
+  const results = new Map(derive(q, form.definition).map((d) => [d.id, d] as const));
   return {
     pgr: results.get('personengruppe'),
     bgr: results.get('beitragsgruppen'),
