@@ -520,7 +520,11 @@ export function skipToMissing(session: Session): Session {
   const key = session.stepKey ?? '';
   if (session.editing !== undefined) {
     const target = missingStepAround(steps, key, unconfirmedNotices(session));
-    if (target.kind === 'question') return editFromSummary(session, target.fieldId);
+    // The step itself, so a further page of a table stays that page (audit 2026-11-14: the field
+    // alone led to the table's first page, again and again).
+    if (target.kind === 'question') {
+      return { ...session, stepKey: target.key, editing: target.fieldId };
+    }
     if (target.kind === 'notice') return noticeFromSummary(session, target.infoBlockId);
     return goTo(session, target.key);
   }
