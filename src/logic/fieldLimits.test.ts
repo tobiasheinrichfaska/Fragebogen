@@ -152,6 +152,29 @@ describe('date bounds', () => {
   });
 });
 
+// Audit 2026-11-14: eight digits are read as TTMMJJJJ, so a date typed as YYYYMMDD of 2001–2012
+// ("20110305") became the year 0305 — accepted wherever a field has no lower bound. A date field
+// without minDate now refuses a year before 1800; spaces around the dots are dropped as in months.
+describe('a date field without its own lower bound', () => {
+  it('refuses a year before 1800, as one typed the wrong way round', () => {
+    expect(normalizeFieldValue(field('date', { maxDate: 'today' }), '20110305')).toEqual(
+      refused('date.year'),
+    );
+    expect(normalizeFieldValue(field('date'), '01.01.1799')).toEqual(refused('date.year'));
+    expect(normalizeFieldValue(field('date'), '01.01.1800')).toEqual(accepted('1800-01-01'));
+  });
+
+  it('leaves a field with its own lower bound to that bound', () => {
+    const born = field('date', { minDate: '1876-01-01' });
+    expect(normalizeFieldValue(born, '01.01.1700')).toEqual(refused('date.tooEarly'));
+  });
+
+  it('takes spaces around the dots, like a month', () => {
+    expect(normalizeFieldValue(field('date'), '17. 05. 1990')).toEqual(accepted('1990-05-17'));
+    expect(normalizeFieldValue(field('date'), ' 17 .05.1990 ')).toEqual(accepted('1990-05-17'));
+  });
+});
+
 describe('issueMessage', () => {
   it('fills in the bounds of the field, German style', () => {
     expect(issueMessage('text.tooLong', { maxLength: 30 })).toBe('Höchstens 30 Zeichen.');
