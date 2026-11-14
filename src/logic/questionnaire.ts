@@ -331,13 +331,23 @@ function withdrawnByOtherRoles(
     const { role: from, field: source } = field.fromRole;
     const latest = latestSealed(questionnaire, from);
     if (!latest || (latest.data[source] ?? null) !== null) continue;
-    const earlier = versionsOf(questionnaire, from)
-      .filter((part) => part.seal !== undefined && part !== latest)
-      .map((part) => part.data[source] ?? null)
-      .filter((value): value is FieldValue => value !== null);
+    const earlier = earlierSealedValues(questionnaire, from, source);
     if (earlier.length > 0) found.set(field.id, earlier);
   }
   return found;
+}
+
+/** What the sealed versions of `from` before its latest held for `source` (not null). */
+function earlierSealedValues(
+  questionnaire: Questionnaire,
+  from: RoleId,
+  source: FieldId,
+): FieldValue[] {
+  const latest = latestSealed(questionnaire, from);
+  return versionsOf(questionnaire, from)
+    .filter((part) => part.seal !== undefined && part !== latest)
+    .map((part) => part.data[source] ?? null)
+    .filter((value): value is FieldValue => value !== null);
 }
 
 /**
@@ -380,9 +390,25 @@ export function adoptFromOtherRoles(
     adopted.push(id);
     data[id] = value;
   }
-  // A proposal never overwrites: an answer, even one left empty on purpose, is the role's own.
-  for (const [id, { value }] of proposed) {
-    if (data[id] !== undefined) continue;
+  // A proposal never overwrites an own answer, even one left empty on purpose. An untouched earlier
+  // proposal is no own answer: it follows the proposing role's new version (audit 2026-11-14).
+  const sources = new Map(
+    fieldsOfRole(form.definition, role).flatMap((field) =>
+      field.fromRole ? [[field.id, field.fromRole] as const] : [],
+    ),
+  );
+  for (const [id, { value, from }] of proposed) {
+    const own = data[id];
+    if (own !== undefined) {
+      const source = sources.get(id)?.field;
+      const untouched =
+        own !== null &&
+        source !== undefined &&
+        !sameValue(own, value) &&
+        earlierSealedValues(questionnaire, from, source).some((earlier) => sameValue(earlier, own));
+      if (!untouched) continue;
+      replaced.push(id);
+    }
     adopted.push(id);
     data[id] = value;
   }

@@ -32,6 +32,7 @@ import {
   roleToFillNext,
   seal,
   signingOverview,
+  startNewVersion,
   startSession,
   stepsFor,
   type Session,
@@ -439,6 +440,32 @@ describe('who consents', () => {
     const both = consented(first, 'ehegatte', 'Max Mustermann');
     expect(transmissionBlockers(both.questionnaire, form)).toEqual([]);
     expect(completenessGaps(both.questionnaire, form)).toEqual([]);
+  });
+
+  // Audit 2026-11-14: a proposal taken over once looked like the role's own answer, so the Kanzlei's
+  // corrected name never reached the spouse's draft — and the check hint blamed the spouse.
+  it('renews a proposal the Kanzlei corrects in a new version, while untouched', () => {
+    const kanzlei = kanzleiSealed(ZUSAMMEN);
+    let s = must(enterRole(kanzlei, 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
+    s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    s = must(enterRole(must(sealed(s, 'd4')), 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe(
+      'Maximilian Mustermann',
+    );
+    expect(proposedBy(s, 'ehegatteName')).toBe('Kanzlei');
+  });
+
+  it('keeps a name the spouse changed when the Kanzlei corrects its proposal', () => {
+    const kanzlei = kanzleiSealed(ZUSAMMEN);
+    let s = must(answer(must(enterRole(kanzlei, 'ehegatte')), 'ehegatteName', 'Max M. Mustermann'));
+    s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    s = must(enterRole(must(sealed(s, 'd4')), 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max M. Mustermann');
   });
 });
 
