@@ -26,6 +26,7 @@ import {
   currentStep,
   answer,
   enterRole,
+  leaveRole,
   nextStep,
   proposedBy,
   roleToFillNext,
@@ -221,6 +222,19 @@ describe('one page per recipient of what the Kanzlei names', () => {
       'question:einschraenkungenMandant',
       'question:unterzeichnerName',
     ]);
+  });
+
+  // Audit 2026-11-14: the same symptom after an interruption — a draft resumed at its first open
+  // question, so the pages not confirmed yet before it were passed over.
+  it('continues an interrupted part at the first page still to confirm', () => {
+    const kanzlei = kanzleiSealed({ ...EINZEL, erklaerungen: ['est', 'difin', 'offenlegung'] });
+    let s = must(enterRole(kanzlei, 'mandant'));
+    expect(currentStep(s)?.key).toBe('notice:seiteSteuererklaerungen');
+    s = nextStep(acknowledge(s, 'seiteSteuererklaerungen', true));
+    const interruptedAt = currentStep(s)?.key;
+    expect(interruptedAt).toMatch(/^notice:/);
+    s = must(enterRole(leaveRole(s), 'mandant'));
+    expect(currentStep(s)?.key).toBe(interruptedAt);
   });
 
   it('bundles every tax return into one page, then AGB and data protection', () => {

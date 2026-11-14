@@ -309,9 +309,10 @@ export function roleToFillNext(session: Session): RoleId | undefined {
   return open.length === 1 ? open[0]?.id : undefined;
 }
 
-/** Continues an existing draft at its first open question (or the summary). */
+/** Continues an existing draft at its first open question or unconfirmed notice (or the summary). */
 function atResume(session: Session, role: RoleId): Partial<Session> {
-  return { role, stepKey: resumeStep(stepsFor({ ...session, role })).key };
+  const entered = { ...session, role };
+  return { role, stepKey: resumeStep(stepsFor(entered), unconfirmedNotices(entered)).key };
 }
 
 /** Changing a completed part: the summary lists every answer with "ändern". */
