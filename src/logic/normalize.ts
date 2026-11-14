@@ -95,7 +95,8 @@ function fullYear(
  * `earliest` (the field's first day) and `latest`; without `latest` refused.
  */
 export function normalizeDate(raw: string, latest?: IsoDate, earliest?: IsoDate): Checked<IsoDate> {
-  const text = raw.trim();
+  // Spaces around the dots are dropped, as in a month (audit 2026-11-14: "17. 05. 1990" was refused).
+  const text = raw.trim().replace(/\s*([.,])\s*/g, '$1');
   const german = GERMAN_DATE.exec(text) ?? DIGITS_DATE.exec(text);
   const short = german ? null : SHORT_DATE.exec(text);
   let iso = text;
@@ -112,6 +113,9 @@ export function normalizeDate(raw: string, latest?: IsoDate, earliest?: IsoDate)
   if (!ISO_DATE_SHAPE.test(iso)) return reject('date.format');
   return parseIsoDate(iso) ? accept(iso) : reject('date.invalid');
 }
+
+/** The earliest day a date field without `minDate` takes. */
+export const EARLIEST_DATE = '1800-01-01';
 
 export const MONEY_MAX_INTEGER_DIGITS = 12;
 
@@ -369,16 +373,19 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
     const found = listOptionFor(suggestionsOf(field), text);
     return found ? accept(found.label, hints) : accept(text, ['list.freeEntry', ...hints]);
   }),
-  date: fromText((text, field) =>
-    withinDates(
-      normalizeDate(
-        text,
-        field.maxDate === undefined ? undefined : boundDay(field.maxDate),
-        field.minDate === undefined ? undefined : boundDay(field.minDate),
-      ),
-      field,
-    ),
-  ),
+  date: fromText((text, field) => {
+    const checked = normalizeDate(
+      text,
+      field.maxDate === undefined ? undefined : boundDay(field.maxDate),
+      field.minDate === undefined ? undefined : boundDay(field.minDate),
+    );
+    // Without a lower bound of its own a date still lies after 1800: eight digits typed as
+    // YYYYMMDD ("20110305") read as TTMMJJJJ give the year 0305 (audit 2026-11-14).
+    if (checked.ok && field.minDate === undefined && checked.value < EARLIEST_DATE) {
+      return reject('date.year');
+    }
+    return withinDates(checked, field);
+  }),
   money: fromText(normalizeMoney),
   number: fromText(normalizeNumber),
   month: fromText(normalizeMonth),

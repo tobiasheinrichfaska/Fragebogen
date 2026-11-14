@@ -2,6 +2,7 @@
 // tests). Text is grouped into visual lines by y position — the data pages are decoded from that.
 // Clues of later editing (an appended update, a foreign producer) become warnings; for scans the
 // pages are rendered to images and searched for QR codes.
+import { MAX_IMAGE_PIXELS } from '../logic/imageSize';
 import type { RgbaImage } from './qr';
 
 export const MAX_PDF_PAGES = 80;
@@ -46,6 +47,9 @@ function open(pdfjs: PdfJsLike, bytes: Uint8Array, password?: string) {
     data: bytes.slice(),
     ...(password === undefined ? {} : { password }),
     isEvalSupported: false,
+    // An image inside a scanned PDF above this is not decoded (audit 2026-11-14, X5): pdf.js has no
+    // limit of its own, and a small file can claim a picture of several gigabytes.
+    maxImageSize: MAX_IMAGE_PIXELS,
     disableFontFace: true,
     useSystemFonts: false,
     verbosity: 0,

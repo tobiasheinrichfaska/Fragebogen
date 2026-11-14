@@ -19,13 +19,15 @@ import type {
 import { ROW_ID_KEY } from './normalize';
 import {
   currentPart,
+  endPreset,
   latestSealed,
+  presetOf,
   setValue,
   startPart,
   TRANSITION_MESSAGES,
   withAcknowledged,
 } from './questionnaire';
-import { isPlainObject } from './jcs';
+import { canonicalize, isPlainObject } from './jcs';
 
 export interface PrefillReport {
   role: RoleId;
@@ -137,13 +139,20 @@ export function prefillFrom(
       ) {
         continue;
       }
-      const present = currentPart(q, role.id)?.data[field.id] ?? null;
-      // A preselection is not an answer yet: the other file's answer replaces it.
-      if (present !== null && present !== field.initial) {
+      // Only answers travel: a preselection in a draft of the other file is none (Part.preset).
+      if (presetOf(from, field.id) !== undefined) continue;
+      const draft = currentPart(q, role.id);
+      const present = draft?.data[field.id] ?? null;
+      // A preselection is not an answer yet: the other file's answer replaces it — or, where it is
+      // the same, makes it one. An answer is kept, even one equal to the form's preselection.
+      if (present !== null && presetOf(draft, field.id) === undefined) {
         report.kept.push(field.id);
         continue;
       }
-      if (present !== null && present === value) continue;
+      if (present !== null && canonicalize(present) === canonicalize(value)) {
+        q = endPreset(q, role.id, field.id);
+        continue;
+      }
       const taken =
         field.type === 'repeatGroup' ? tableValue(origin, field, value) : carried(field, value);
       if (taken === null) continue;

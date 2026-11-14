@@ -592,7 +592,23 @@ export interface Part {
    * keeps them (Tobias 2026-11-01). Never sealed — the seal records the notices by their hashes.
    */
   acknowledged?: string[];
+  /**
+   * Drafts only: fields whose value the app put in and nobody has changed since, with where it
+   * came from (Tobias 2026-11-14: "klar unterscheiden zwischen gemachten Angaben und
+   * Vorbelegungen"). Such a value is a preselection, not an answer: the app may replace it (a
+   * newer link value, another role's newer proposal, an answer taken over from another file), but
+   * never an answer — given, changed or cleared by a person. Kept in the interim file, never sealed:
+   * signing makes every value the signer's.
+   */
+  preset?: Record<FieldId, PresetSource>;
 }
+
+/**
+ * Where a preselection in a draft comes from: the form's own (`initial`), the master-data link
+ * (`link`), or another role's answer copied in (`otherRole`, `fromRole` — fixed or proposed).
+ */
+export const PRESET_SOURCES = ['initial', 'link', 'otherRole'] as const;
+export type PresetSource = (typeof PRESET_SOURCES)[number];
 
 /** Where a receipt time comes from: this app's clock or the DATEV filing date. */
 export const RECEIPT_SOURCES = ['app', 'datev'] as const;

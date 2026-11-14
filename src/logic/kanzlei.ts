@@ -55,15 +55,23 @@ export function removeFromInbox(inbox: Inbox, fileSha256: Sha256Hex): Inbox {
 
 const sameDecision = (a: MergeDecision, b: MergeDecision) => canonicalize(a) === canonicalize(b);
 
-/** Records a human decision; a new version choice replaces an earlier one for the same role. */
-export function decide(inbox: Inbox, decision: MergeDecision): Inbox {
+/**
+ * Records a human decision; a new version choice replaces an earlier one for the same role — in
+ * every questionnaire of `group` (the ids the choice is made for, e.g. a joined group's
+ * `sourceIds`), so choices made before questionnaires were joined do not compete with it.
+ */
+export function decide(
+  inbox: Inbox,
+  decision: MergeDecision,
+  group: readonly string[] = decision.kind === 'chooseVersion' ? [decision.questionnaireId] : [],
+): Inbox {
   const others = inbox.decisions.filter(
     (d) =>
       !sameDecision(d, decision) &&
       !(
         decision.kind === 'chooseVersion' &&
         d.kind === 'chooseVersion' &&
-        d.questionnaireId === decision.questionnaireId &&
+        (d.questionnaireId === decision.questionnaireId || group.includes(d.questionnaireId)) &&
         d.role === decision.role
       ),
   );
@@ -123,9 +131,13 @@ export function withKanzleiReceipts(
   let q = group.questionnaire;
   if (!q) return undefined;
   const refused: { fileName: string; reason: string }[] = [];
-  const kept = new Map<Sha256Hex, RoleId>();
+  // A file counts for a part only with a copy identical to the one that went in: an altered copy
+  // keeps the seal's hash, so the hash alone credited it (audit 2026-11-14).
+  const kept = new Map<Sha256Hex, { role: RoleId; text: string }>();
   for (const [role, parts] of Object.entries(q.parts)) {
-    for (const part of parts) if (part.seal) kept.set(part.seal.contentHash, role);
+    for (const part of parts) {
+      if (part.seal) kept.set(part.seal.contentHash, { role, text: canonicalize(part) });
+    }
   }
   const covered = new Set(
     q.receipts
@@ -137,10 +149,13 @@ export function withKanzleiReceipts(
       .flat()
       .flatMap((part) => {
         const hash = part.seal?.contentHash;
-        const role = hash === undefined ? undefined : kept.get(hash);
-        return hash === undefined || role === undefined || covered.has(hash)
+        const went = hash === undefined ? undefined : kept.get(hash);
+        return hash === undefined ||
+          went === undefined ||
+          covered.has(hash) ||
+          canonicalize(part) !== went.text
           ? []
-          : [{ role, contentHash: hash }];
+          : [{ role: went.role, contentHash: hash }];
       });
     if (parts.length === 0) continue;
     const result = addReceipt(q, {

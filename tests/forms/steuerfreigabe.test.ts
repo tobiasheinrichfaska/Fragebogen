@@ -10,7 +10,7 @@ import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { readPdfText, type PdfJsLike } from '../../src/io/pdfReader';
 import { writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
 import { formCatalogue } from '../../src/logic/catalogue';
-import { checkHints } from '../../src/logic/hints';
+import { checkHints, fillingHints } from '../../src/logic/hints';
 import { contradictions } from '../../src/logic/consistency';
 import { fieldsById } from '../../src/logic/form';
 import { checkFormDefinition, parseFormDefinition } from '../../src/logic/formDefinition';
@@ -26,11 +26,13 @@ import {
   currentStep,
   answer,
   enterRole,
+  leaveRole,
   nextStep,
   proposedBy,
   roleToFillNext,
   seal,
   signingOverview,
+  startNewVersion,
   startSession,
   stepsFor,
   type Session,
@@ -221,6 +223,19 @@ describe('one page per recipient of what the Kanzlei names', () => {
       'question:einschraenkungenMandant',
       'question:unterzeichnerName',
     ]);
+  });
+
+  // Audit 2026-11-14: the same symptom after an interruption — a draft resumed at its first open
+  // question, so the pages not confirmed yet before it were passed over.
+  it('continues an interrupted part at the first page still to confirm', () => {
+    const kanzlei = kanzleiSealed({ ...EINZEL, erklaerungen: ['est', 'difin', 'offenlegung'] });
+    let s = must(enterRole(kanzlei, 'mandant'));
+    expect(currentStep(s)?.key).toBe('notice:seiteSteuererklaerungen');
+    s = nextStep(acknowledge(s, 'seiteSteuererklaerungen', true));
+    const interruptedAt = currentStep(s)?.key;
+    expect(interruptedAt).toMatch(/^notice:/);
+    s = must(enterRole(leaveRole(s), 'mandant'));
+    expect(currentStep(s)?.key).toBe(interruptedAt);
   });
 
   it('bundles every tax return into one page, then AGB and data protection', () => {
@@ -425,6 +440,86 @@ describe('who consents', () => {
     const both = consented(first, 'ehegatte', 'Max Mustermann');
     expect(transmissionBlockers(both.questionnaire, form)).toEqual([]);
     expect(completenessGaps(both.questionnaire, form)).toEqual([]);
+  });
+
+  // Audit 2026-11-14: a correction in the Kanzlei's new version never reached the spouse, and the
+  // check hint said the spouse had changed the name. Loop 2: renewing the value overwrote a name the
+  // spouse typed back on purpose — even its signer name after "Unterschrift zurücknehmen". Since the
+  // draft marks a proposal nobody changed (Part.preset, Tobias 2026-11-14), the correction reaches
+  // such a value and nothing else; a signed part keeps its name and a hint names the new proposal.
+  it('takes a proposal the Kanzlei corrects into the spouse’s draft while nobody changed it', () => {
+    const kanzlei = kanzleiSealed(ZUSAMMEN);
+    let s = must(enterRole(kanzlei, 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
+    s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    s = must(enterRole(must(sealed(s, 'd4')), 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe(
+      'Maximilian Mustermann',
+    );
+    expect(proposedBy(s, 'ehegatteName')).toBe('Kanzlei');
+    const ids = [
+      ...fillingHints(s.questionnaire, form.definition, 'ehegatte'),
+      ...checkHints(s.questionnaire, form.definition),
+    ].map((h) => h.id);
+    expect(ids).not.toContain('fromRole:ehegatteName');
+  });
+
+  it('names the corrected proposal to the Kanzlei when the spouse signed the earlier one', () => {
+    const client = consented(kanzleiSealed(ZUSAMMEN), 'mandant', 'Erika Musterfrau', {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    const signed = consented(client, 'ehegatte', 'Max Mustermann');
+    const s = answerAll(must(startNewVersion(signed, 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    const q = must(sealed(s, 'd4')).questionnaire;
+    const hint = checkHints(q, form.definition).find((h) => h.id === 'fromRole:ehegatteName');
+    expect(hint?.message).toContain('jetzt der Vorschlag „Maximilian Mustermann“');
+    expect(hint?.message).toContain('noch der frühere Vorschlag „Max Mustermann“');
+  });
+
+  // Loop 4 of the audit: an open draft of the Kanzlei's next version hid the hint from the spouse,
+  // and the Kanzlei's hint then blamed the spouse for a name never sealed. The sealed versions count.
+  it('follows the newest sealed proposal, not a draft of the Kanzlei’s next version', () => {
+    let s = must(enterRole(kanzleiSealed(ZUSAMMEN), 'ehegatte'));
+    s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    s = answerAll(must(startNewVersion(must(sealed(s, 'd4')), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maxim Mustermann',
+    });
+    s = must(enterRole(s, 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe(
+      'Maximilian Mustermann',
+    );
+    const kanzleiSees = checkHints(s.questionnaire, form.definition);
+    expect(kanzleiSees.map((h) => h.message).join(' ')).not.toContain('Maxim Mustermann');
+  });
+
+  it("keeps the name a spouse signed with in the spouse's new version (loop 2)", () => {
+    const kanzlei = kanzleiSealed(ZUSAMMEN);
+    const client = consented(kanzlei, 'mandant', 'Erika Musterfrau', {
+      unterzeichnerName: 'Erika Musterfrau',
+    });
+    const signed = consented(client, 'ehegatte', 'Max Mustermann');
+    let s = answerAll(must(startNewVersion(signed, 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    // The Kanzlei's new version confirms the spouse's part, so the spouse changes it in a new one.
+    s = must(startNewVersion(must(sealed(s, 'd4')), 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max Mustermann');
+  });
+
+  it('keeps a name the spouse changed when the Kanzlei corrects its proposal', () => {
+    const kanzlei = kanzleiSealed(ZUSAMMEN);
+    let s = must(answer(must(enterRole(kanzlei, 'ehegatte')), 'ehegatteName', 'Max M. Mustermann'));
+    s = answerAll(must(startNewVersion(leaveRole(s), 'kanzlei')), {
+      ehegatteNameKanzlei: 'Maximilian Mustermann',
+    });
+    s = must(enterRole(must(sealed(s, 'd4')), 'ehegatte'));
+    expect(currentPart(s.questionnaire, 'ehegatte')?.data.ehegatteName).toBe('Max M. Mustermann');
   });
 });
 

@@ -2,8 +2,15 @@
 // what a virtual browser cannot check stays a manual test). What another program, a printer or a
 // camera would make of the PDF is made here in Node: pdf-lib re-saves it or appends an update, and
 // pdf.js renders its QR pages into "scans" and "photos".
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs';
+import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PDFDocument, PDFString } from '@cantoo/pdf-lib';
 import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test';
@@ -223,6 +230,33 @@ const savePng = (image: Raster, path: string) => {
   writeFileSync(path, image.file('image/png'));
   return path;
 };
+
+// MT-34 and MT-35 fail rarely (a run on 2026-11-14 read 11 of 12 photographed codes): the PDF and
+// the images of a failed run are attached to the result and copied to .tmp/e2e-fehlschlaege/, which
+// the next run does not empty (test-results/ is), so the case can be replayed at unit level.
+const KEPT = fileURLToPath(new URL('../../../.tmp/e2e-fehlschlaege/', import.meta.url));
+const keptFiles = new Map<string, string[]>();
+
+/** Notes a file of this test to keep if the test fails; returns the path. */
+function keepOnFailure(testInfo: TestInfo, path: string): string {
+  keptFiles.set(testInfo.testId, [...(keptFiles.get(testInfo.testId) ?? []), path]);
+  return path;
+}
+
+test.afterEach(async ({ browserName }, testInfo) => {
+  const files = keptFiles.get(testInfo.testId) ?? [];
+  keptFiles.delete(testInfo.testId);
+  if (files.length === 0 || testInfo.status === testInfo.expectedStatus) return;
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const title = testInfo.title.slice(0, 5).replace(/[^A-Za-z0-9-]/g, '');
+  const folder = join(KEPT, `${stamp}_${title}_${browserName}_${testInfo.retry}`);
+  mkdirSync(folder, { recursive: true });
+  for (const file of files.filter((path) => existsSync(path))) {
+    const contentType = file.endsWith('.png') ? 'image/png' : 'application/pdf';
+    await testInfo.attach(basename(file), { path: file, contentType });
+    copyFileSync(file, join(folder, basename(file)));
+  }
+});
 
 /** The numbers of "QR-Codes: x von y gelesen …" in the open banner. */
 async function qrProgress(
@@ -465,6 +499,7 @@ test('MT-34: a scan without data pages is refused; scans of the codes are collec
   test.slow();
   const { found, app } = await openTestApp(page, 'sofortmeldung-vollstaendig');
   const { path } = await createPdf(page, app, testInfo);
+  keepOnFailure(testInfo, path);
   const { pages, maker } = await qrPageImages(path, SCAN_DPI);
   const [firstPage, ...furtherPages] = pages;
   if (!firstPage) throw new Error('no QR page');
@@ -473,7 +508,7 @@ test('MT-34: a scan without data pages is refused; scans of the codes are collec
   const topRow = await scanPdf(
     [strip(maker, firstPage, 0, cut)],
     SCAN_DPI,
-    testInfo.outputPath('scan-obere-reihe.pdf'),
+    keepOnFailure(testInfo, testInfo.outputPath('scan-obere-reihe.pdf')),
   );
   const others = await scanPdf(
     [
@@ -481,7 +516,7 @@ test('MT-34: a scan without data pages is refused; scans of the codes are collec
       ...furtherPages.map((more) => codesBelow(maker, more, SCAN_DPI, 0)),
     ],
     SCAN_DPI,
-    testInfo.outputPath('scan-uebrige.pdf'),
+    keepOnFailure(testInfo, testInfo.outputPath('scan-uebrige.pdf')),
   );
   const noData = testInfo.outputPath('ohne-daten.pdf');
   const blank = await PDFDocument.create();
@@ -520,8 +555,13 @@ test('MT-34: a full-page scan of the QR page at 300 dpi reads every code', async
   test.slow();
   const { app } = await openTestApp(page, 'sofortmeldung-vollstaendig');
   const { path } = await createPdf(page, app, testInfo);
+  keepOnFailure(testInfo, path);
   const { pages } = await qrPageImages(path, SCAN_DPI);
-  const scan = await scanPdf(pages, SCAN_DPI, testInfo.outputPath('scan.pdf'));
+  const scan = await scanPdf(
+    pages,
+    SCAN_DPI,
+    keepOnFailure(testInfo, testInfo.outputPath('scan.pdf')),
+  );
   await press(stand(app), 'Fragebogen schließen');
   await openFile(page, app, scan);
   await expect(app.locator('.banner').filter({ hasText: VERIFIED })).toContainText(FROM_PAPER);
@@ -531,6 +571,7 @@ test('MT-35: photos of the codes are collected until all are read', async ({ pag
   test.slow();
   const { found, app } = await openTestApp(page, 'sofortmeldung-vollstaendig');
   const { path } = await createPdf(page, app, testInfo);
+  keepOnFailure(testInfo, path);
   const { pages, maker } = await qrPageImages(path, PHOTO);
   const [firstPage, ...furtherPages] = pages;
   if (!firstPage) throw new Error('no QR page');
@@ -540,7 +581,9 @@ test('MT-35: photos of the codes are collected until all are read', async ({ pag
     strip(maker, firstPage, 0, cut),
     strip(maker, firstPage, cut, firstPage.height),
     ...furtherPages,
-  ].map((image, i) => savePng(image, testInfo.outputPath(`foto-${i + 1}.png`)));
+  ].map((image, i) =>
+    keepOnFailure(testInfo, savePng(image, testInfo.outputPath(`foto-${i + 1}.png`))),
+  );
 
   await press(stand(app), 'Fragebogen schließen');
   const [topRow, ...rest] = photos;

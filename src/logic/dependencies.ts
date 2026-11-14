@@ -41,17 +41,22 @@ export function fieldDependencies(
     levels.set(id, level);
     return level;
   };
+  // One pass over the conditions (audit 2026-11-14: `enables` re-walked every field's condition for
+  // each field — 7 ms on the Personalfragebogen, several times per tap in the interview).
+  const availableThrough = new Map(fields.map((field) => [field.id, targets(field.showIf)]));
+  const enables = new Map<FieldId, FieldId[]>(fields.map((field) => [field.id, []]));
+  for (const field of fields) {
+    for (const parent of availableThrough.get(field.id) ?? []) enables.get(parent)?.push(field.id);
+  }
   return new Map(
     fields.map((field) => [
       field.id,
       {
         fieldId: field.id,
         level: levelOf(field.id),
-        availableThrough: targets(field.showIf),
+        availableThrough: availableThrough.get(field.id) ?? [],
         requiredThrough: targets(field.requiredIf),
-        enables: fields
-          .filter((other) => targets(other.showIf).includes(field.id))
-          .map((other) => other.id),
+        enables: enables.get(field.id) ?? [],
       },
     ]),
   );

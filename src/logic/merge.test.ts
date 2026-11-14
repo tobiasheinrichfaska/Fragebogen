@@ -14,6 +14,7 @@ import {
   withEmployer,
 } from '../../tests/support/sample';
 import { canonicalize } from './jcs';
+import { decide, EMPTY_INBOX } from './kanzlei';
 import { mergeSources, type MergeGroup, type MergeResult, type MergeSource } from './merge';
 import { mergeHashOf } from './mergeRecord';
 import type { MergeDecision, Questionnaire } from './model';
@@ -203,6 +204,142 @@ describe('mergeSources — one questionnaire', () => {
     expect(verifyQuestionnaire(q, { registry }).level).toBe('ok');
   });
 
+  // Audit 2026-11-14: decisions carried in merged files and the human's new ones were sorted by hash
+  // and the first choice for a role won — a new choice could lose against an older one, and two
+  // files with opposite choices were settled by the app without a word.
+  describe('choices carried in merged files', () => {
+    const hashOf = (q: Questionnaire) => latestSealed(q, 'person')?.seal?.contentHash ?? '';
+    const choose = (contentHash: string): MergeDecision => ({
+      kind: 'chooseVersion',
+      questionnaireId: QUESTIONNAIRE_ID,
+      role: 'person',
+      contentHash,
+    });
+    const versions = [personSigned(), competingPerson()].sort((a, b) =>
+      hashOf(a) < hashOf(b) ? -1 : 1,
+    );
+    const [lower, higher] = versions as [Questionnaire, Questionnaire];
+    const both = (): MergeSource[] => [
+      { questionnaire: personSigned(), fileSha256: sha('1') },
+      { questionnaire: competingPerson(), fileSha256: sha('2') },
+    ];
+    const mergedChoosing = (q: Questionnaire) => merged(only(merge(both(), [choose(hashOf(q))])));
+
+    it('lets a new choice replace the one a merged file carries', () => {
+      const group = only(
+        merge(
+          [
+            { questionnaire: mergedChoosing(lower), fileSha256: sha('3') },
+            { questionnaire: higher, fileSha256: sha('4') },
+          ],
+          [choose(hashOf(higher))],
+        ),
+      );
+      expect(group.conflicts).toEqual([]);
+      const q = merged(group);
+      expect(q.parts.person?.map((p) => p.seal?.contentHash)).toEqual([hashOf(higher)]);
+      expect(q.mergeRecord?.decisions).toEqual([choose(hashOf(higher))]);
+    });
+
+    it('shows opposite choices of two merged files as a conflict instead of picking one', () => {
+      const group = only(
+        merge([
+          { questionnaire: mergedChoosing(lower), fileSha256: sha('3') },
+          { questionnaire: mergedChoosing(higher), fileSha256: sha('4') },
+        ]),
+      );
+      expect(group.conflicts.map((c) => c.code)).toEqual(['versionConflict']);
+    });
+
+    // Loops 2 and 3 of the audit: two questionnaires each resolved by a choice, then linked. The
+    // two earlier choices compete — neither may win silently (loop 3: the smaller id's did, as the
+    // group took its id). A choice made for the joined group replaces both (kanzlei `decide` with the
+    // group's ids, as the conflict view sends it) and holds, whichever candidate it names.
+    describe('two questionnaires joined after each had its choice', () => {
+      const personIn = (id: string, nachname: string, nonce: string) => {
+        let q = ok(startPart(createQuestionnaire(id, form), form, 'person'));
+        q = fill(q, 'person', { ...PERSON_VALUES, nachname });
+        return ok(sealPart(q, form, 'person', personSealInput({ nonce: nonce.repeat(32) })));
+      };
+      const a = [
+        personIn(QUESTIONNAIRE_ID, 'Muster', 'a'),
+        personIn(QUESTIONNAIRE_ID, 'Muster-A', 'b'),
+      ];
+      const b = [personIn(OTHER_ID, 'Muster', 'c'), personIn(OTHER_ID, 'Muster-B', 'd')];
+      const sources = [...a, ...b].map((questionnaire, i) => ({
+        questionnaire,
+        fileSha256: sha(String(i + 1)),
+      }));
+      const groupId = QUESTIONNAIRE_ID < OTHER_ID ? QUESTIONNAIRE_ID : OTHER_ID;
+      const pick = (id: string, q: Questionnaire): MergeDecision => ({
+        kind: 'chooseVersion',
+        questionnaireId: id,
+        role: 'person',
+        contentHash: hashOf(q),
+      });
+      const link: MergeDecision = { kind: 'link', questionnaireIds: [QUESTIONNAIRE_ID, OTHER_ID] };
+      const before = [
+        pick(QUESTIONNAIRE_ID, a[1] as Questionnaire),
+        pick(OTHER_ID, b[1] as Questionnaire),
+        link,
+      ];
+
+      it('shows the conflict again instead of keeping one of the earlier choices', () => {
+        const group = only(merge(sources, before));
+        expect(group.conflicts.map((c) => c.code)).toEqual(['versionConflict']);
+      });
+
+      it('keeps links, other roles and other questionnaires when a group choice is made', () => {
+        const other: MergeDecision = {
+          kind: 'chooseVersion',
+          questionnaireId: OTHER_ID,
+          role: 'arbeitgeber',
+          contentHash: sha('7'),
+        };
+        const outside: MergeDecision = {
+          kind: 'chooseVersion',
+          questionnaireId: '00000000-0000-4000-8000-000000000001',
+          role: 'person',
+          contentHash: sha('8'),
+        };
+        const inbox = decide(
+          { ...EMPTY_INBOX, decisions: [...before, other, outside] },
+          pick(groupId, a[0] as Questionnaire),
+          [QUESTIONNAIRE_ID, OTHER_ID],
+        );
+        expect(inbox.decisions).toEqual([
+          link,
+          other,
+          outside,
+          pick(groupId, a[0] as Questionnaire),
+        ]);
+      });
+
+      it('lets a choice made for the joined group hold, whichever candidate it names', () => {
+        for (const candidate of [...a, ...b]) {
+          // The ids the conflict view sends: the group's sourceIds.
+          const { sourceIds } = only(merge(sources, before));
+          expect(sourceIds).toEqual([QUESTIONNAIRE_ID, OTHER_ID].sort());
+          const inbox = decide(
+            { ...EMPTY_INBOX, decisions: before },
+            pick(groupId, candidate),
+            sourceIds,
+          );
+          const group = only(merge(sources, [...inbox.decisions]));
+          expect(group.conflicts.map((c) => c.code)).toEqual([]);
+          expect(merged(group).parts.person?.map((p) => p.seal?.contentHash)).toEqual([
+            hashOf(candidate),
+          ]);
+        }
+      });
+    });
+
+    it('keeps a carried choice when nothing contradicts it', () => {
+      const group = only(merge([{ questionnaire: mergedChoosing(higher), fileSha256: sha('3') }]));
+      expect(merged(group).mergeRecord?.decisions).toEqual([choose(hashOf(higher))]);
+    });
+  });
+
   it('reports a choice that names no present version', () => {
     const group = only(
       merge(
@@ -334,6 +471,31 @@ describe('mergeSources — questionnaires without a shared id', () => {
     expect(
       verdict.parts.flatMap((p) => p.findings.map((f) => `${f.code}@${f.role ?? '-'}`)),
     ).toEqual(['linkedByDecision@arbeitgeber']);
+  });
+
+  // Loop 4 of the audit: a merged file whose record was altered is not trusted, so its links join
+  // nothing — but its linked ids still went into the group's sourceIds, and a choice made there
+  // (kanzlei `decide` with those ids) removed another group's choice.
+  it('names only trusted links among the ids of a group', () => {
+    const link: MergeDecision = { kind: 'link', questionnaireIds: [QUESTIONNAIRE_ID, OTHER_ID] };
+    const joined = merged(
+      only(
+        merge(
+          [
+            { questionnaire: personSigned(), fileSha256: sha('1') },
+            { questionnaire: employerSeparately(), fileSha256: sha('2') },
+          ],
+          [link],
+        ),
+      ),
+    );
+    const altered = { ...joined, mergeHash: sha('f') };
+    const result = merge([
+      { questionnaire: altered, fileSha256: sha('3') },
+      { questionnaire: employerSeparately(), fileSha256: sha('4') },
+    ]);
+    const own = result.groups.find((g) => g.questionnaireId === joined.questionnaireId);
+    expect(own?.sourceIds).toEqual([joined.questionnaireId]);
   });
 
   it('keeps the link when the merged file is merged again', () => {

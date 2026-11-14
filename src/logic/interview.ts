@@ -278,9 +278,20 @@ export function initialInput(
   return { text: editValue(field, value), suggested: false };
 }
 
-/** Where to continue, e.g. after loading an interim state: the first open question, else the summary. */
-export function resumeStep(steps: readonly InterviewStep[]): InterviewStep {
-  const open = steps.find((step) => step.kind === 'question' && step.state === 'open');
+/**
+ * Where to continue, e.g. after loading an interim state: the first open question or notice not
+ * confirmed yet (`unconfirmed`), else the summary. Notices count since the audit of 2026-11-14:
+ * a page before the first open question was passed over — the symptom of the bug of 2026-11-12.
+ */
+export function resumeStep(
+  steps: readonly InterviewStep[],
+  unconfirmed: ReadonlySet<string> = new Set(),
+): InterviewStep {
+  const open = steps.find(
+    (step) =>
+      (step.kind === 'question' && step.state === 'open') ||
+      (step.kind === 'notice' && unconfirmed.has(step.infoBlockId)),
+  );
   return open ?? steps[steps.length - 1] ?? { kind: 'summary', key: 'summary' };
 }
 

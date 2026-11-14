@@ -11,6 +11,7 @@ import { availableOptions } from '../logic/optionConditions';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
 import { MASTER_DATA_LINK_MESSAGES, masterDataFragment } from '../logic/masterDataLink';
+import type { FieldId } from '../logic/model';
 import { currentPart, latestSealed } from '../logic/questionnaire';
 import {
   acknowledge,
@@ -19,6 +20,7 @@ import {
   defer,
   editFromSummary,
   filledFromLink,
+  preselected,
   fixedFields,
   goTo,
   leaveEmpty,
@@ -49,6 +51,14 @@ interface Props {
   onPause: (session: Session) => void;
   onSaveInterim: () => void;
   onDiscard: () => void;
+}
+
+/** How the summary names a value nobody has changed yet: whose preselection it is. */
+function presetLabel(session: Session, fieldId: FieldId): string | undefined {
+  const proposer = proposedBy(session, fieldId);
+  if (proposer !== undefined) return `vorbelegt von: ${proposer}`;
+  if (filledFromLink(session, fieldId)) return 'vorbelegt aus Ihrem Stammdaten-Link';
+  return preselected(session, fieldId) ? 'vorbelegt' : undefined;
 }
 
 export function InterviewScreen(props: Props) {
@@ -343,6 +353,7 @@ function QuestionStep({
         {filledFromLink(session, field.id) && (
           <p className="link-note">Vorbelegt aus Ihrem Stammdaten-Link – bitte prüfen.</p>
         )}
+        {preselected(session, field.id) && <p className="link-note">Vorbelegt – bitte prüfen.</p>}
         {/* Stays while the step is open: when it vanished at the first key, „Weiter“ moved up
             under the finger (Chrome evaluation 2026-11-13, part 2 B13). */}
         {first.suggested && (
@@ -505,7 +516,9 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
           </p>
           <ul>
             {checks.map((check) => {
-              const target = check.fields.find((id) => visible.has(id));
+              // Never a field another station decided: it has no question here, and "ändern"
+              // led to the first step instead (audit 2026-11-14).
+              const target = check.fields.find((id) => visible.has(id) && !fixed.has(id));
               return (
                 <li key={check.id}>
                   <span>
@@ -612,11 +625,8 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
                         ändern
                       </button>
                     )}
-                    {!fixed.has(field.id) && proposedBy(session, field.id) !== undefined && (
-                      <span className="muted">
-                        {' '}
-                        (vorbelegt von: {proposedBy(session, field.id)})
-                      </span>
+                    {!fixed.has(field.id) && presetLabel(session, field.id) !== undefined && (
+                      <span className="muted"> ({presetLabel(session, field.id)})</span>
                     )}
                   </dd>
                 </div>

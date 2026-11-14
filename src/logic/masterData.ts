@@ -6,7 +6,9 @@
 //
 // A link value is a preselection (Tobias 2026-11-03): it fills a question as soon as the question
 // is available — a conditional one once its condition holds — and follows the case while nobody
-// changes it; an answer the person gave or changed is never touched again.
+// changes it; an answer the person gave, changed or cleared is never touched again. The draft marks
+// which values are the link's (Part.preset, Tobias 2026-11-14), so this holds after an interim
+// file, too.
 import { evaluateCondition } from './conditions';
 import { fieldsOfRole, visibility, type PartData } from './form';
 import type { RegisteredForm } from './formRegistry';
@@ -19,7 +21,14 @@ import type {
   Questionnaire,
   RoleId,
 } from './model';
-import { currentPart, setValue, type TransitionCode } from './questionnaire';
+import {
+  currentPart,
+  markPreset,
+  presetOf,
+  resetPreset,
+  setValue,
+  type TransitionCode,
+} from './questionnaire';
 
 /** Remembered master data: key → normalised value. */
 export type MasterData = Record<string, FieldValue>;
@@ -134,9 +143,11 @@ export function mergedMasterData(
 }
 
 /**
- * What the link did with a field in this session: `filled` (the value is still the link's),
- * `released` (someone answered or changed it — never touched again), `refused` (the form did not
- * accept the value; tried again only for another key).
+ * What the link did with a field in this session: `filled` (the value is the link's), `released`
+ * (the field holds an answer — given, changed or cleared by a person — and is never touched
+ * again), `refused` (the form did not accept the value; tried again only for another key). Only
+ * for reporting each field once: whether a value is the link's is marked in the draft itself
+ * (Part.preset), so it holds after an interim file, too.
  */
 export interface MasterDataFill {
   key: string;
@@ -159,7 +170,7 @@ export type MasterDataResult =
       fills: MasterDataFills;
       /** Fields filled from the record in this pass. */
       applied: FieldId[];
-      /** Fields whose link value no longer fits the case and went back to empty. */
+      /** Fields whose link value no longer fits the case and went back to the preselection. */
       cleared: FieldId[];
       /** Fields that already had an answer; the answer is kept. */
       kept: FieldId[];
@@ -173,8 +184,10 @@ const same = (a: FieldValue, b: FieldValue) => JSON.stringify(a) === JSON.string
 /**
  * Fills the available master-data fields of the role's open draft from a remembered record, in
  * form order (a filled answer may open the next question). Call it on entering the role and after
- * every answer with the `fills` it returned. A preselection counts as empty; keys of other forms
- * are ignored.
+ * every answer with the `fills` it returned. Only an empty field or one holding a preselection
+ * (the form's or the link's own, Part.preset) is filled — never a value a person gave or changed;
+ * a link value a person emptied stays empty while the questionnaire is open. The filled value is
+ * marked as the link's. Keys of other forms are ignored.
  */
 export function applyMasterData(
   questionnaire: Questionnaire,
@@ -192,48 +205,52 @@ export function applyMasterData(
   const cleared: FieldId[] = [];
   const kept: FieldId[] = [];
   const skipped: MasterDataSkip[] = [];
-  const set = (fieldId: FieldId, value: unknown) => {
-    const result = setValue(q, form, role, fieldId, value);
-    if (result.ok) q = result.questionnaire;
-    return result;
-  };
   for (const field of fieldsOfRole(definition, role)) {
     if (field.masterData === undefined && field.masterDataCases === undefined) continue;
-    const data = currentPart(q, role)?.data ?? {};
-    const valueOf = visibleValues(definition, role, data);
+    const part = currentPart(q, role);
+    const data = part?.data ?? {};
     if (visibility(definition, role, data).get(field.id) !== true) continue;
+    const mark = presetOf(part, field.id);
+    const present = data[field.id];
+    const choice = masterDataKeyFor(field, visibleValues(definition, role, data));
+    const target = choice !== undefined && Object.hasOwn(stored, choice.key) ? choice : undefined;
     const fill = fills[field.id];
-    const present = data[field.id] ?? null;
-    if (fill?.state === 'released') continue;
-    if (fill?.state === 'filled' && !same(present, fill.value)) {
-      fills[field.id] = { ...fill, state: 'released' };
+    // Empty is no answer: a field never answered, left empty or signed empty in an earlier version
+    // is filled — except one emptied in this session after the link had filled it (the person
+    // took the link's value out; `fills` remembers that while the questionnaire is open).
+    const clearedHere = present === null && mark === undefined && fill !== undefined;
+    if (clearedHere && fill.state !== 'refused') {
+      fills[field.id] = { ...fill, value: null, state: 'released' };
       continue;
     }
-    const ours = fill?.state === 'filled';
-    const choice = masterDataKeyFor(field, valueOf);
-    const target = choice !== undefined && Object.hasOwn(stored, choice.key) ? choice : undefined;
+    if (present !== undefined && present !== null && mark !== 'initial' && mark !== 'link') {
+      // An answer — given or changed — is never touched (Tobias 2026-11-14).
+      if (target !== undefined && fill?.state !== 'released') {
+        kept.push(field.id);
+        fills[field.id] = { key: target.key, value: present, state: 'released' };
+      }
+      continue;
+    }
     if (!target) {
       // The case changed (e.g. Minijob → kind unclear): the old case's value is not an answer.
-      if (ours && set(field.id, field.initial ?? null).ok) {
+      const reset = mark === 'link' ? resetPreset(q, form, role, field.id) : undefined;
+      if (reset?.ok === true) {
+        q = reset.questionnaire;
         cleared.push(field.id);
         Reflect.deleteProperty(fills, field.id);
       }
       continue;
     }
-    if (ours && fill.key === target.key) continue;
     if (fill?.state === 'refused' && fill.key === target.key) continue;
-    if (!ours && present !== null && present !== field.initial) {
-      kept.push(field.id);
-      fills[field.id] = { key: target.key, value: present, state: 'released' };
-      continue;
-    }
     const value = storedValue(field, stored[target.key]);
+    if (mark === 'link' && same(present ?? null, value as FieldValue)) continue;
     const result = fits(target, value as FieldValue)
-      ? set(field.id, value)
+      ? setValue(q, form, role, field.id, value)
       : ({ ok: false, code: 'invalidValue', detail: [field.id, 'choice.unknown'] } as const);
     if (result.ok) {
-      applied.push(field.id);
+      q = markPreset(result.questionnaire, role, field.id, 'link');
       const now = currentPart(q, role)?.data[field.id] ?? null;
+      if (mark !== 'link' || !same(present ?? null, now)) applied.push(field.id);
       fills[field.id] = { key: target.key, value: now, state: 'filled' };
     } else {
       skipped.push({
@@ -242,7 +259,7 @@ export function applyMasterData(
         code: result.code,
         detail: result.detail,
       });
-      fills[field.id] = { key: target.key, value: present, state: 'refused' };
+      fills[field.id] = { key: target.key, value: present ?? null, state: 'refused' };
     }
   }
   return { ok: true, questionnaire: q, fills, applied, cleared, kept, skipped };

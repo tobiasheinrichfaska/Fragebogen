@@ -2,10 +2,12 @@
 // the person's tax questions depend on it. The person's `steuerart` is taken from the employer's
 // sealed part (fromRole) and then not asked; without that part the person answers it.
 import { join } from 'node:path';
-import { checkHints } from '../../src/logic/hints';
+import { checkHints, fillingHints } from '../../src/logic/hints';
 import {
   createQuestionnaire,
   fixedByOtherRoles,
+  latestSealed,
+  reopenPart,
   sealPart,
   setValue,
   startPart,
@@ -88,6 +90,71 @@ const questions = (session: Session) =>
 
 const minijobber = (session: Session) =>
   must(answer(must(answer(session, 'status', 'student')), 'artLautVereinbarung', 'minijob'));
+
+/** The employer's open draft made a job subject to insurance and sealed. */
+function withSvpflichtig(draft: Questionnaire): Questionnaire {
+  let q = draft;
+  for (const [id, raw] of Object.entries({
+    agBeschaeftigungsart: 'svpflichtig',
+    agEntgeltArt: 'monatsentgelt',
+    agMonatsentgelt: '3.000,00',
+  })) {
+    q = ok(setValue(q, form, 'arbeitgeber', id, raw));
+  }
+  return ok(
+    sealPart(q, form, 'arbeitgeber', {
+      nonce: 'e5'.repeat(16),
+      systemNote: note(at.local, at.utc),
+      acknowledged: [],
+    }),
+  );
+}
+
+const PERSON = {
+  familienname: 'Musterfrau',
+  vorname: 'Erika',
+  geburtsnameWieFamilienname: true,
+  geburtsdatum: '17.05.2003',
+  geburtsort: 'Musterstadt',
+  geborenInDeutschland: true,
+  geschlecht: 'weiblich',
+  deutscheStaatsangehoerigkeit: true,
+  anschriftAusland: false,
+  strassenname: 'Musterweg',
+  hausnummer: '1',
+  postleitzahl: '12345',
+  wohnort: 'Musterstadt',
+  iban: 'DE89370400440532013000',
+  kontoinhaberSelbst: true,
+  studienArt: 'vollzeit',
+  hochschule: 'Beispiel-Hochschule',
+  urlaubssemester: false,
+  fachsemester: '4',
+  ueber20hJahr: false,
+  weitereBeschaeftigung: false,
+  krankenversicherung: 'gesetzlich',
+  krankenkasse: 'Beispiel-Krankenkasse',
+  rvBefreiungWunsch: 'nein',
+  steuerId: '86095742719',
+  kinder: false,
+  schulabschluss: 'abitur',
+  berufsabschluss: 'ohne',
+};
+
+/** The Minijobber takes the employer's decision over, answers everything and signs. */
+function personSigned(employer: Questionnaire): Questionnaire {
+  let session = minijobber(must(enterRole(sessionWith(employer), 'person')));
+  for (const [id, raw] of Object.entries(PERSON)) session = must(answer(session, id, raw));
+  session = { ...session, acknowledged: { person: ['datenschutz'] } };
+  return must(
+    seal(session, {
+      nonce: 'c3'.repeat(16),
+      systemNote: note(at.local, at.utc),
+      signature: { method: 'drawn', strokes: STROKES },
+      now: at,
+    }),
+  ).questionnaire;
+}
 
 describe('employer first: the person is not asked what the employer decided', () => {
   it('takes the flat-rate tax over and leaves out the questions on the tax class', () => {
@@ -194,37 +261,7 @@ describe('a later change at the employer becomes a check hint', () => {
 describe('the taken-over answer is the person’s own data', () => {
   it('seals with the person part and verifies without the employer part', () => {
     let session = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
-    const values = {
-      familienname: 'Musterfrau',
-      vorname: 'Erika',
-      geburtsnameWieFamilienname: true,
-      geburtsdatum: '17.05.2003',
-      geburtsort: 'Musterstadt',
-      geborenInDeutschland: true,
-      geschlecht: 'weiblich',
-      deutscheStaatsangehoerigkeit: true,
-      anschriftAusland: false,
-      strassenname: 'Musterweg',
-      hausnummer: '1',
-      postleitzahl: '12345',
-      wohnort: 'Musterstadt',
-      iban: 'DE89370400440532013000',
-      kontoinhaberSelbst: true,
-      studienArt: 'vollzeit',
-      hochschule: 'Beispiel-Hochschule',
-      urlaubssemester: false,
-      fachsemester: '4',
-      ueber20hJahr: false,
-      weitereBeschaeftigung: false,
-      krankenversicherung: 'gesetzlich',
-      krankenkasse: 'Beispiel-Krankenkasse',
-      rvBefreiungWunsch: 'nein',
-      steuerId: '86095742719',
-      kinder: false,
-      schulabschluss: 'abitur',
-      berufsabschluss: 'ohne',
-    };
-    for (const [id, raw] of Object.entries(values)) session = must(answer(session, id, raw));
+    for (const [id, raw] of Object.entries(PERSON)) session = must(answer(session, id, raw));
     session = { ...session, acknowledged: { person: ['datenschutz'] } };
     expect(summaryOf(session)?.missingRequired).toEqual([]);
     const signed = must(
@@ -243,5 +280,131 @@ describe('the taken-over answer is the person’s own data', () => {
     };
     const verdict = verifyQuestionnaire(alone, { registry: registryOf([form]) });
     expect(verdict.parts.find((p) => p.role === 'person')?.level).toBe('consistent');
+  });
+});
+
+// Audit 2026-11-14: the employer's new version no longer decides the kind of wage tax (now a job
+// subject to insurance), while the person's part still holds the old decision — before, nobody
+// was told. Loop 2 of the audit: deleting such a copy also deleted an answer the person gave
+// herself, on every entry. Since the draft marks copies (Part.preset, Tobias 2026-11-14: "klar
+// unterscheiden zwischen gemachten Angaben und Vorbelegungen"), a copy in a draft goes with the
+// decision — also when the employer took its seal back instead of starting a new version — and an
+// own answer stays; a sealed person part keeps it, and a check hint names it to the Kanzlei.
+describe('a decision the other role no longer makes in a new version', () => {
+  function withdrawn(): Questionnaire {
+    const q = ok(startPart(employerSealed('pauschal2'), form, 'arbeitgeber'));
+    let v2 = q;
+    for (const [id, raw] of Object.entries({
+      agBeschaeftigungsart: 'svpflichtig',
+      agEntgeltArt: 'monatsentgelt',
+      agMonatsentgelt: '3.000,00',
+    })) {
+      v2 = ok(setValue(v2, form, 'arbeitgeber', id, raw));
+    }
+    return ok(
+      sealPart(v2, form, 'arbeitgeber', {
+        nonce: 'e5'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+  }
+
+  /** The person copied the employer's flat-rate tax, then the employer's new version withdrew it. */
+  function withdrawnWithPerson(): Questionnaire {
+    const first = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
+    let q = ok(startPart(first.questionnaire, form, 'arbeitgeber'));
+    for (const [id, raw] of Object.entries({
+      agBeschaeftigungsart: 'svpflichtig',
+      agEntgeltArt: 'monatsentgelt',
+      agMonatsentgelt: '3.000,00',
+    })) {
+      q = ok(setValue(q, form, 'arbeitgeber', id, raw));
+    }
+    return ok(
+      sealPart(q, form, 'arbeitgeber', {
+        nonce: 'e5'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+  }
+
+  it('takes a copy in the person’s draft out again and says so', () => {
+    const first = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
+    expect(first.questionnaire.parts.person?.at(-1)?.data.steuerart).toBe('pauschal2');
+    const back = enterRole(
+      sessionWith(withSvpflichtig(ok(startPart(first.questionnaire, form, 'arbeitgeber')))),
+      'person',
+    );
+    if (!back.ok) throw new Error(back.message);
+    expect(back.session.questionnaire.parts.person?.at(-1)?.data.steuerart).toBeUndefined();
+    expect(back.warnings).toContain(
+      'Der Teil „Arbeitgeber“ gibt „Art der Lohnsteuer“ nicht mehr vor; die übernommene Angabe ist entfernt.',
+    );
+    const ids = fillingHints(back.session.questionnaire, form.definition, 'person').map(
+      (h) => h.id,
+    );
+    expect(ids).not.toContain('fromRoleWithdrawn:steuerart');
+  });
+
+  // Audit 2026-11-14 (L2): the employer took its seal back ("Abschluss zurücknehmen") instead of
+  // starting a new version — no earlier version was left to compare, so nobody was told.
+  it('follows the employer who took its seal back and changed the decision', () => {
+    const first = minijobber(must(enterRole(sessionWith(employerSealed('pauschal2')), 'person')));
+    const reopened = ok(reopenPart(first.questionnaire, form, 'arbeitgeber'));
+    const back = must(enterRole(sessionWith(withSvpflichtig(reopened)), 'person'));
+    expect(back.questionnaire.parts.person?.at(-1)?.data.steuerart).toBeUndefined();
+  });
+
+  it('stays in a sealed person part and is named to the Kanzlei', () => {
+    const signed = personSigned(employerSealed('pauschal2'));
+    const q = withSvpflichtig(ok(startPart(signed, form, 'arbeitgeber')));
+    expect(latestSealed(q, 'person')?.data.steuerart).toBe('pauschal2');
+    const hints = checkHints(q, form.definition);
+    expect(hints.map((h) => h.id)).toContain('fromRoleWithdrawn:steuerart');
+    expect(hints.find((h) => h.id === 'fromRoleWithdrawn:steuerart')?.message).toMatch(
+      /im Teil „Arbeitgeber“ festgelegt; dessen neue Fassung/,
+    );
+  });
+
+  // Loop 3 of the audit: the hint read the employer's current part, so an open draft of a new
+  // version made it claim a withdrawal the newest sealed version does not make; and its wording
+  // must fit any station ("seiner" was wrong for the Kanzlei).
+  it('speaks of the newest sealed version only, not of a draft, in words that fit any station', () => {
+    // Two sealed versions deciding the flat-rate tax, then a third one begun as a job subject to
+    // insurance — the newest sealed version still decides it.
+    let q = employerSealed('pauschal2');
+    let person = minijobber(must(enterRole(sessionWith(q), 'person')));
+    q = ok(startPart(person.questionnaire, form, 'arbeitgeber'));
+    q = ok(
+      sealPart(q, form, 'arbeitgeber', {
+        nonce: 'f6'.repeat(16),
+        systemNote: note(at.local, at.utc),
+        acknowledged: [],
+      }),
+    );
+    q = ok(startPart(q, form, 'arbeitgeber'));
+    q = ok(setValue(q, form, 'arbeitgeber', 'agBeschaeftigungsart', 'svpflichtig'));
+    person = must(enterRole(sessionWith(q), 'person'));
+    const ids = fillingHints(person.questionnaire, form.definition, 'person').map((h) => h.id);
+    expect(ids).not.toContain('fromRoleWithdrawn:steuerart');
+    // The same words for the person (before signing) and for the Kanzlei.
+    const both = withdrawnWithPerson();
+    for (const hints of [
+      fillingHints(both, form.definition, 'person'),
+      checkHints(both, form.definition),
+    ]) {
+      expect(hints.find((h) => h.id === 'fromRoleWithdrawn:steuerart')?.message).toMatch(
+        /im Teil „Arbeitgeber“ festgelegt; dessen neue Fassung/,
+      );
+    }
+  });
+
+  it('never deletes an answer the person gives herself, however often she comes back', () => {
+    let person = minijobber(must(enterRole(sessionWith(withdrawn()), 'person')));
+    person = must(answer(person, 'steuerart', 'pauschal2'));
+    for (let i = 0; i < 3; i++) person = must(enterRole(person, 'person'));
+    expect(person.questionnaire.parts.person?.at(-1)?.data.steuerart).toBe('pauschal2');
   });
 });

@@ -7,6 +7,7 @@ import boldUrl from '../../assets/fonts/NotoSans-SemiBold.subset.ttf?inline';
 import sansUrl from '../../assets/fonts/NotoSans-Regular.subset.ttf?inline';
 import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
 import { APP_VERSION } from '../appInfo';
+import { imageTooLarge, imageTooLargeMessage } from '../logic/imageSize';
 import { APP_CONFIG } from '../config';
 import { deviceForReport, deviceNow, type DeviceNow } from '../io/environment';
 import { handOut, readFileBytes } from '../io/files';
@@ -399,6 +400,10 @@ export async function openPdfOrImage(
   try {
     const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
     if (!isPdf) {
+      // The size from the header first: decoding a huge picture can take the tab down (X5).
+      const huge = imageTooLarge(bytes);
+      if (huge)
+        return { kind: 'error', message: { tone: 'error', text: imageTooLargeMessage(huge) } };
       const image = await imageFileToRgba(file);
       return fromQr([...collected, ...readQrCodes(image)], registry, arrival, QR_MESSAGES.noCodes);
     }

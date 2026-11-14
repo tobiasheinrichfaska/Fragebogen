@@ -2,7 +2,7 @@
 // base64url without padding, in numbered lines with a per-line checksum. Reading tolerates any line
 // order and extra whitespace (pdf.js output) and names every bad or missing line. The overall
 // check is length + SHA-256 of the UNcompressed text, so it does not depend on the compressor.
-import { deflateSync, inflateSync, strFromU8, strToU8 } from 'fflate';
+import { deflateSync, Inflate, strFromU8, strToU8 } from 'fflate';
 import { sha256Hex } from './hash';
 
 export const DATA_PAGES_TAG = 'FRAGEBOGEN-DATEN';
@@ -52,18 +52,49 @@ export type InflateResult =
   | { ok: true; text: string }
   | { ok: false; issue: 'corrupt' | 'tooLarge' | 'lengthMismatch' | 'digestMismatch' };
 
+/** Input handed to the inflater at a time; deflate gives at most about 1,000 times as much back. */
+const INFLATE_STEP = 1024;
+
+/**
+ * Inflates, but stops as soon as more than `limit` bytes come out (audit 2026-11-14: 400 KB of
+ * deflated zeros used to inflate to 400 MB before the limit was checked). Same results as fflate's
+ * inflateSync for everything within the limit, a broken stream included.
+ */
+function inflateWithin(compressed: Uint8Array, limit: number): Uint8Array | 'tooLarge' | 'corrupt' {
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  const inflater = new Inflate((chunk) => {
+    total += chunk.length;
+    if (total <= limit) chunks.push(chunk.slice());
+  });
+  try {
+    if (compressed.length === 0) inflater.push(compressed, true);
+    for (let at = 0; at < compressed.length; at += INFLATE_STEP) {
+      inflater.push(
+        compressed.subarray(at, at + INFLATE_STEP),
+        at + INFLATE_STEP >= compressed.length,
+      );
+      if (total > limit) return 'tooLarge';
+    }
+  } catch {
+    return 'corrupt';
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return bytes;
+}
+
 /** Inflates and checks the text against the expected length (if given) and SHA-256 prefix. */
 export function inflatePackage(
   compressed: Uint8Array,
   expected: { sha256Prefix: string; length?: number },
 ): InflateResult {
-  let bytes: Uint8Array;
-  try {
-    bytes = inflateSync(compressed);
-  } catch {
-    return { ok: false, issue: 'corrupt' };
-  }
-  if (bytes.length > MAX_PACKAGE_BYTES) return { ok: false, issue: 'tooLarge' };
+  const bytes = inflateWithin(compressed, MAX_PACKAGE_BYTES);
+  if (bytes === 'corrupt' || bytes === 'tooLarge') return { ok: false, issue: bytes };
   if (expected.length !== undefined && bytes.length !== expected.length) {
     return { ok: false, issue: 'lengthMismatch' };
   }

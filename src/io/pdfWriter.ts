@@ -4,6 +4,7 @@
 // and the data pages — the package as text lines and as QR codes for the paper path. Target
 // PDF/A-2u. Every page carries "Fragebogen-ID · Daten · Formular · Seite x von y".
 import {
+  fill,
   PDFArray,
   PDFDict,
   PDFDocument,
@@ -11,9 +12,14 @@ import {
   PDFRef,
   PDFStream,
   PDFString,
+  popGraphicsState,
+  pushGraphicsState,
+  rectangle,
   rgb,
+  setFillingRgbColor,
   type PDFFont,
   type PDFObject,
+  type PDFOperator,
   type PDFPage,
   type RGB,
 } from '@cantoo/pdf-lib';
@@ -636,22 +642,33 @@ export async function writeQuestionnairePdf(
       for (let column = 0; column < columns && index < matrices.length; column++, index++) {
         const matrix = matrices[index] ?? [];
         const left = MARGIN + column * (size + gap);
-        // One rectangle per horizontal run of dark modules keeps the content stream small.
+        // One rectangle per horizontal run of dark modules, all of a code filled at once in black
+        // (audit 2026-11-14: drawRectangle per run was three quarters of the time to write a PDF —
+        // each call builds, parses and wraps its own path; the geometry is the same).
+        const runs: PDFOperator[] = [];
         matrix.forEach((row, r) => {
           for (let c = 0; c < row.length; c++) {
             if (!row[c]) continue;
             let end = c;
             while (row[end + 1]) end++;
-            page.drawRectangle({
-              x: left + c * QR_MODULE,
-              y: top - (r + 1) * QR_MODULE,
-              width: (end - c + 1) * QR_MODULE,
-              height: QR_MODULE + 0.01,
-              color: rgb(0, 0, 0),
-            });
+            runs.push(
+              rectangle(
+                left + c * QR_MODULE,
+                top - (r + 1) * QR_MODULE,
+                (end - c + 1) * QR_MODULE,
+                QR_MODULE + 0.01,
+              ),
+            );
             c = end;
           }
         });
+        page.pushOperators(
+          pushGraphicsState(),
+          setFillingRgbColor(0, 0, 0),
+          ...runs,
+          fill(),
+          popGraphicsState(),
+        );
       }
       top -= size + gap;
     }

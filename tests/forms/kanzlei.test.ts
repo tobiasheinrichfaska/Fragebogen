@@ -20,11 +20,14 @@ import {
   answer,
   enterRole,
   seal,
+  sessionFromFile,
+  startNewVersion,
   startSession,
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
 import { verifyQuestionnaire } from '../../src/logic/verify';
+import { mergeHashOf } from '../../src/logic/mergeRecord';
 import { NONCE_PERSON_V2, note, STROKES } from '../support/sample';
 import {
   completeSofortmeldung,
@@ -166,6 +169,22 @@ describe('Kanzlei inbox', () => {
     expect(verdict.parts.every((p) => p.level === 'confirmed')).toBe(true);
   });
 
+  // Audit 2026-11-14: the receipt went to the first file listing the part's hash, even when that
+  // file's copy was altered and left out of the merge.
+  it('gives the receipt to the file whose copy went in, not to an altered copy that came first', () => {
+    const genuine = employerOnly().questionnaire;
+    const altered = structuredClone(genuine);
+    const employer = altered.parts.arbeitgeber?.[0];
+    if (!employer) throw new Error('no employer part');
+    employer.data = { ...employer.data, agFirma: 'Gefälschte GmbH' };
+    const inbox = inboxOf(file(altered, 'veraendert.pdf', 1), file(genuine, 'echt.pdf', 2));
+    const [group] = mergeInbox(inbox, published).groups;
+    if (!group) throw new Error('no group');
+    expect(group.notes.map((n) => n.code)).toContain('invalidExcluded');
+    const result = withKanzleiReceipts(group, inbox, '0.1.0');
+    expect(result?.questionnaire.receipts.map((r) => r.fileName)).toEqual(['echt.pdf']);
+  });
+
   it('adds no second receipt when the merged file is read again', () => {
     const inbox = inboxOf(file(completeSofortmeldung().questionnaire, 'vollstaendig.pdf', 2));
     const [group] = mergeInbox(inbox, published).groups;
@@ -177,6 +196,70 @@ describe('Kanzlei inbox', () => {
     if (!regroup) throw new Error('no group');
     const second = withKanzleiReceipts(regroup, again, '0.1.0');
     expect(second?.questionnaire.receipts).toEqual(first.questionnaire.receipts);
+  });
+
+  // Audit 2026-11-14 (N1, Tobias: renew the hash): a station that continued a merged file broke
+  // its merge hash — the file verified as altered and all its parts dropped out of the next merge.
+  describe('a merged file a station continues', () => {
+    const at = { local: '2026-10-31T09:00:00.000+01:00', utc: '2026-10-31T08:00:00.000Z' };
+    function mergedFile() {
+      const employerFile = file(employerOnly().questionnaire, 'arbeitgeber.pdf', 1);
+      const completeFile = file(completeSofortmeldung().questionnaire, 'vollstaendig.pdf', 2);
+      const inbox = inboxOf(employerFile, completeFile);
+      const [group] = mergeInbox(inbox, published).groups;
+      if (!group) throw new Error('no group');
+      const merged = withKanzleiReceipts(group, inbox, '0.1.0')?.questionnaire;
+      if (!merged) throw new Error('no questionnaire');
+      return { merged, employerFile, completeFile };
+    }
+    function continued(merged: Questionnaire): Questionnaire {
+      const opened = sessionFromFile(
+        { questionnaire: merged, form: sofortmeldung, origin: 'published' },
+        { ...at, source: 'file' },
+      );
+      let s = must(startNewVersion(opened, 'arbeitgeber'));
+      s = must(answer(s, 'agFirma', 'Beispiel Bau GmbH & Co. KG'));
+      return must(
+        seal(s, {
+          nonce: '0f'.repeat(16),
+          systemNote: note(at.local, at.utc, ['keyboard']),
+          now: at,
+        }),
+      ).questionnaire;
+    }
+
+    it('still verifies, also while the new version is a draft', () => {
+      const { merged } = mergedFile();
+      const opened = sessionFromFile(
+        { questionnaire: merged, form: sofortmeldung, origin: 'published' },
+        { ...at, source: 'file' },
+      );
+      const draft = must(startNewVersion(opened, 'arbeitgeber')).questionnaire;
+      for (const q of [draft, continued(merged)]) {
+        const verdict = verifyQuestionnaire(q, { registry: published });
+        expect(verdict.findings.map((f) => f.code)).not.toContain('mergeAltered');
+        expect(verdict.level).not.toBe('invalid');
+      }
+    });
+
+    it('brings its new version into the next merge, next to the original files', () => {
+      const { merged, employerFile, completeFile } = mergedFile();
+      const again = inboxOf(employerFile, completeFile, file(continued(merged), 'neu.pdf', 40));
+      const [group] = mergeInbox(again, published).groups;
+      expect(group?.notes.map((n) => n.code)).not.toContain('invalidExcluded');
+      expect(group?.conflicts).toEqual([]);
+      expect(group?.questionnaire?.parts.arbeitgeber?.at(-1)?.data.agFirma).toBe(
+        'Beispiel Bau GmbH & Co. KG',
+      );
+    });
+
+    it('never repairs a merge record altered outside the app', () => {
+      const { merged } = mergedFile();
+      const altered: Questionnaire = { ...merged, mergeRecord: { sources: [], decisions: [] } };
+      expect(altered.mergeHash).not.toBe(mergeHashOf(altered));
+      const verdict = verifyQuestionnaire(continued(altered), { registry: published });
+      expect(verdict.findings.map((f) => f.code)).toContain('mergeAltered');
+    });
   });
 
   it('leaves competing versions to a human; a choice resolves them and can be withdrawn', () => {
