@@ -149,10 +149,25 @@ function overLimit(
   };
 }
 
-const rechengroesse = (year: string, key: 'bbgKvMonat' | 'bbgRvMonat') => {
+const rechengroesse = (year: string, key: 'bbgKvMonat' | 'bbgPvMonat' | 'bbgRvMonat') => {
   const value = RECHENGROESSEN[year]?.[key];
   return value === undefined ? undefined : cents(value);
 };
+
+/**
+ * From 2027 the JAEG of those exempt and privately insured on 31.12.2026 (§ 6 Abs. 8 SGB V): the
+ * questionnaire does not ask that, so for a privately insured person outside the 2002 group (the
+ * 2002 question is asked only to the privately insured) a pay between this limit and the general one
+ * decides nothing for sure. Undefined where it cannot matter.
+ */
+function jaegBestand2026(year: string, y2002: FieldValue | undefined): number | undefined {
+  if (y2002 !== 'nein' && y2002 !== 'unbekannt') return undefined;
+  const value = RECHENGROESSEN[year]?.jaegBestand2026Jahr;
+  return value === undefined ? undefined : cents(value);
+}
+
+const BESTAND_2026_NOTE = (limit: number) =>
+  `Über der Jahresarbeitsentgeltgrenze für Personen, die am 31.12.2026 wegen Überschreitens der Grenze versicherungsfrei und privat versichert waren (${euro(limit)} im Jahr, § 6 Abs. 8 SGB V): Traf das zu, ist die Person versicherungsfrei, sonst versicherungspflichtig – bitte prüfen.`;
 
 /**
  * Yearly view of a regular monthly pay: twelve times the month plus the one-off payments the person
@@ -275,7 +290,7 @@ const massgeblicheJaeg: HintTest = {
     on = '',
     art = '',
   ]) =>
-    `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist`,
+    `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist; ab 2027 bei anderer Antwort zwischen der Grenze nach § 6 Abs. 8 SGB V und der allgemeinen: prüfen`,
   run: ([
     fixed,
     expected,
@@ -315,6 +330,19 @@ const massgeblicheJaeg: HintTest = {
         uncertain: true,
         detail: [
           `Regelmäßiges Jahresarbeitsentgelt: ${facts}. Für ${year} ist die ${label} in der App nicht hinterlegt – bitte selbst prüfen.`,
+        ],
+      };
+    }
+    const bestand = special ? undefined : jaegBestand2026(year, y2002);
+    if (bestand !== undefined && yearly > bestand && yearly <= limit) {
+      return {
+        holds: true,
+        uncertain: true,
+        detail: [
+          `Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(limit)}.`,
+          BESTAND_2026_NOTE(bestand),
+          ...pay.notes,
+          ...insured.notes,
         ],
       };
     }
@@ -1035,7 +1063,12 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       const special = y2002 === 'ja';
       const jaeg = cents(RECHENGROESSEN[year]?.[special ? 'jaegBesondersJahr' : 'jaegJahr'] ?? '');
       const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
-      const unknown = jaeg === undefined || mains.some((row) => row.cents === undefined);
+      // A main job between the limit of § 6 Abs. 8 SGB V and the general one may be free as well.
+      const bestand = special ? undefined : jaegBestand2026(year, y2002);
+      const unknown =
+        jaeg === undefined ||
+        mains.some((row) => row.cents === undefined) ||
+        (bestand !== undefined && main > bestand && main <= jaeg);
       if (!unknown && main <= (jaeg ?? 0)) return { holds: false, detail: [] };
       const limit = cents(RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0;
       const together =
@@ -1106,9 +1139,13 @@ const weitererMinijobUeberJaeg: HintTest = {
     const mine = (payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0) * 12;
     const total = main + later + mine;
     if (total <= jaeg) return { holds: false, detail: [] };
+    // Above the limit of § 6 Abs. 8 SGB V the main job may already be free (see jaegBestand2026).
+    const bestand = y2002 === 'ja' ? undefined : jaegBestand2026(year, y2002);
     return {
       holds: true,
-      ...(mains.some((row) => row.cents === undefined) ? { uncertain: true } : {}),
+      ...(mains.some((row) => row.cents === undefined) || (bestand !== undefined && main > bestand)
+        ? { uncertain: true }
+        : {}),
       detail: [
         `Hauptbeschäftigung ${euro(main)} und weitere Minijobs zusammen ${euro(total)} im Jahr: erst mit diesem Minijob über der Jahresarbeitsentgeltgrenze von ${euro(jaeg)} – zunächst krankenversicherungspflichtig; die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten Jahr überschritten wird (Geringfügigkeits-Richtlinien B 2.2.2.8).`,
       ],
@@ -1374,19 +1411,32 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
         ? { holds: later > earlier, detail: [] }
         : undefined,
   },
+  // From 2027 the BBG of the Pflegeversicherung (§ 55 Abs. 2 SGB XI) lies below the one of the
+  // Krankenversicherung (§ 223 Abs. 4 SGB V): the lower one counts, both are named.
   ueberBeitragsbemessungsgrenze: overLimit(
     (year) => {
       const kv = rechengroesse(year, 'bbgKvMonat');
+      const pv = rechengroesse(year, 'bbgPvMonat');
       const rv = rechengroesse(year, 'bbgRvMonat');
-      return kv === undefined || rv === undefined
-        ? undefined
-        : {
+      if (kv === undefined || pv === undefined || rv === undefined) return undefined;
+      const rest = `Renten- und Arbeitslosenversicherung: ${euro(rv)}`;
+      return kv === pv
+        ? {
             monthly: kv,
-            label: `Beitragsbemessungsgrenze Kranken- und Pflegeversicherung (Renten- und Arbeitslosenversicherung: ${euro(rv)})`,
-          };
+            label: `Beitragsbemessungsgrenze Kranken- und Pflegeversicherung (${rest})`,
+          }
+        : pv < kv
+          ? {
+              monthly: pv,
+              label: `Beitragsbemessungsgrenze Pflegeversicherung (Krankenversicherung: ${euro(kv)}; ${rest})`,
+            }
+          : {
+              monthly: kv,
+              label: `Beitragsbemessungsgrenze Krankenversicherung (Pflegeversicherung: ${euro(pv)}; ${rest})`,
+            };
     },
     ([own = '', others = '', on = '']) =>
-      `„${own}“ und „${others}“ zusammen die Beitragsbemessungsgrenze der Krankenversicherung des Jahres von „${on}“ übersteigen`,
+      `„${own}“ und „${others}“ zusammen die Beitragsbemessungsgrenze der Kranken- oder Pflegeversicherung des Jahres von „${on}“ übersteigen`,
   ),
   regelaltersgrenzeErreicht: ragTest(
     (reached, on) => reached <= on,

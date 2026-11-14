@@ -10,9 +10,15 @@ Grundlage der Liste `gkvKrankenkassen202610` (`src/logic/data/krankenkassen.ts`,
   BKK PFAFF nach Rechtskreis) oder keine belegt ist (BMW BKK: Website nicht erreichbar). Dann wählt die
   Kanzlei die Nummer.
 - **Nicht aufgenommen:** Nummern der Pflegekassen, der Datenannahmestellen und veraltete Nummern.
-- **Gültigkeit:** Angekündigt sind Fusionen zum 01.01.2027 (BKK Rieker.RICOSTA.Weisser in die BKK firmus,
-  Zustimmung des BAS steht aus) und zum 01.07.2027 (Heimat Krankenkasse und BKK firmus). Erst wenn sie
-  feststehen, bekommen die Einträge ein Gültig-bis bzw. Gültig-ab. Die Liste zum Jahreswechsel neu prüfen.
+- **Gültigkeit (Stand 14.11.2026):** Angekündigt sind Fusionen zum 01.01.2027 – BKK Rieker • RICOSTA •
+  Weisser in die BKK firmus (Name bleibt BKK firmus; Pressemitteilung BKK firmus 02.10.2026) und BKK Pfalz
+  mit der mkk – meine krankenkasse (Name mkk – meine krankenkasse; Pressemitteilung mkk 10.07.2026,
+  https://www.meine-krankenkasse.de/presse-politik/fusion-bkk-pfalz-und-mkk-meine-krankenkasse-zum-1-januar-2027) –,
+  beide „vorbehaltlich der Genehmigung durch das Bundesamt für Soziale Sicherung“, sowie zum 01.07.2027
+  Heimat Krankenkasse und BKK firmus (bisher nur angekündigt, 21.08.2026). Abgesagt: BKK firmus mit BKK
+  PFAFF, vivida bkk mit BKK Scheufelen. Erst wenn eine Fusion genehmigt ist, bekommen die Einträge ein
+  Gültig-bis bzw. Gültig-ab (der Personalfragebogen-Entwurf 1.1.0 gilt auch für einen Beginn 2027, der
+  Hinweis `listeneintragNichtGueltig` greift dann). Die Liste zum Jahreswechsel neu prüfen.
 - Keine Rechtsberatung, keine Gewähr; der GKV-Spitzenverband erlaubt unverändertes Zitieren mit
   Quellenangabe.
 

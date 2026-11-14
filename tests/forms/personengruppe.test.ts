@@ -227,11 +227,11 @@ describe('Personengruppe proposed from the answers', () => {
     const result = proposal({
       ...MINIJOB,
       agMonatsentgelt: '520,00',
-      agBeschaeftigungsbeginn: '04.01.2027',
+      agBeschaeftigungsbeginn: '04.01.2028',
     });
     expect(result).toMatchObject({ value: '109', check: true });
     expect(result.detail.join(' ')).toContain(
-      'Für 2027 ist die Geringfügigkeitsgrenze in der App nicht hinterlegt',
+      'Für 2028 ist die Geringfügigkeitsgrenze in der App nicht hinterlegt',
     );
   });
 

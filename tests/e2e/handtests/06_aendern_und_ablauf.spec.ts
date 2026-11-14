@@ -564,7 +564,7 @@ test('MT-52: the flow plan lists each station’s questions in interview order, 
   await expect(page.locator(`h2[id="${id}"]`)).toBeInViewport();
   const below = (selector: string) => page.locator(`h2[id="${id}"] ~ ${selector}`).first();
   await expect(below('p:has(strong)')).toHaveText(
-    'Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.',
+    'Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027.',
   );
   await expect(below('.limits h3')).toHaveText('Was dieser Fragebogen nicht abdeckt');
   const order = below('.order');
@@ -619,24 +619,29 @@ test('MT-54: a start of employment outside the validity is kept, but blocks clos
     .locator('.form-list li')
     .filter({ has: page.getByRole('button', { name: FORM, exact: true }) });
   await expect(entry).toContainText(
-    'gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026',
+    'gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027',
   );
   await startForm(app, 'Arbeitgeber');
   await walk(app, EMPLOYER, { stopAt: 'agBeschaeftigungsbeginn' });
-  await app.locator('.question input').first().fill('04.01.2027');
+  await app.locator('.question input').first().fill('03.01.2028');
   await step(app, primary(app));
   await expect(
     note(app, 'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung.'),
   ).toHaveClass(/banner-warning/);
+  // No version of this app covers 2028: it says so instead of sending the person to look for one.
+  const none =
+    'Für dieses Datum gibt es in dieser App noch keine Fassung dieses Fragebogens. Bitte wenden Sie sich an Ihre Kanzlei.';
+  await expect(note(app, 'Dieses Datum liegt außerhalb der Gültigkeit')).toContainText(none);
   await walk(app, EMPLOYER);
   await expect(
     note(
       app,
-      'Der Stichtag 04.01.2027 liegt außerhalb der Gültigkeit dieser Formularfassung (sie gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026).',
+      'Der Stichtag 03.01.2028 liegt außerhalb der Gültigkeit dieser Formularfassung (sie gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027).',
     ),
   ).toHaveClass(/banner-warning/);
+  await expect(note(app, 'Der Stichtag 03.01.2028')).toContainText(none);
   // The date is kept; only closing is blocked.
-  await expect(row(app, 'Tag der Beschäftigungsaufnahme')).toContainText('04.01.2027');
+  await expect(row(app, 'Tag der Beschäftigungsaufnahme')).toContainText('03.01.2028');
   await expect(missing(app)).toHaveCount(0);
   await expect(toClose(app)).toBeDisabled();
 
@@ -666,7 +671,7 @@ test('MT-55: the overview, the PDF and the Kanzlei name what the questionnaire d
     (await card('Stand').boundingBox())?.y ?? 0,
   );
   await expect(scope).toContainText(
-    'Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.',
+    'Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027.',
   );
   await expect(scope.locator('details')).toHaveAttribute('open', '');
   await expect(scope.locator('details summary')).toHaveText('Was dieser Fragebogen nicht abdeckt');
@@ -681,7 +686,7 @@ test('MT-55: the overview, the PDF and the Kanzlei name what the questionnaire d
   // The list can begin a page earlier; it ends above the legal notes, before the Prüfblatt.
   const front = pages.slice(0, sheet).join(' ');
   const validity =
-    'Diese Formularfassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2026.';
+    'Diese Formularfassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027.';
   expect(front.indexOf(validity)).toBeGreaterThan(0);
   const covered = front.indexOf('Was dieser Fragebogen nicht abdeckt:');
   expect(covered).toBeGreaterThan(front.indexOf(validity));

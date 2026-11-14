@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-13T23:58",
+  "revised": "2026-11-14T20:06",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -678,7 +678,7 @@
           "type": "choice",
           "label": "Regelaltersgrenze erreicht",
           "question": "Haben Sie zu Beginn dieser Beschäftigung die Regelaltersgrenze für die Altersrente erreicht?",
-          "help": "Für den Jahrgang 1959 liegt sie bei 66 Jahren und 2 Monaten, für den Jahrgang 1960 bei 66 Jahren und 4 Monaten. Sie gilt auch, wenn Sie keine Rente beziehen.",
+          "help": "Für den Jahrgang 1959 liegt sie bei 66 Jahren und 2 Monaten, für den Jahrgang 1960 bei 66 Jahren und 4 Monaten, für den Jahrgang 1961 bei 66 Jahren und 6 Monaten. Sie gilt auch, wenn Sie keine Rente beziehen.",
           "required": true,
           "showIf": {
             "all": [
@@ -690,11 +690,11 @@
               },
               {
                 "field": "geburtsdatum",
-                "onOrBefore": "1960-09-01"
+                "onOrBefore": "1961-07-01"
               }
             ]
           },
-          "because": "Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.09.1960 hängt es vom Beginn der Beschäftigung im Jahr 2026 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).",
+          "because": "Nur bei einem Geburtsdatum zwischen dem 02.11.1959 und dem 01.07.1961 hängt es vom Beginn der Beschäftigung in den Jahren 2026 und 2027 ab, ob die Regelaltersgrenze erreicht ist; davor ist sie sicher erreicht, danach nicht (§ 235 Abs. 2 SGB VI).",
           "purpose": "Aktivrente (§ 3 Nr. 21 EStG), Versicherungsfreiheit in der Arbeitslosenversicherung (§ 28 Abs. 1 Nr. 1 SGB III) und Rentenversicherung (§ 5 Abs. 4 SGB VI)",
           "options": [
             {
@@ -1476,7 +1476,7 @@
             },
             {
               "id": "minijob",
-              "label": "einen Minijob (bis 603 € im Monat)"
+              "label": "einen Minijob (2026 bis 603 €, 2027 bis 633 € im Monat)"
             },
             {
               "id": "aushilfe",
@@ -2034,7 +2034,7 @@
           "type": "choice",
           "label": "Am 31.12.2002 privat versichert",
           "question": "Waren Sie am 31. Dezember 2002 privat krankenversichert, weil Ihr Verdienst damals über der Versicherungspflichtgrenze lag?",
-          "help": "Dann gilt für Sie eine niedrigere Verdienstgrenze: 2026 sind es 69.750 € statt 77.400 € im Jahr.",
+          "help": "Dann gilt für Sie eine niedrigere Verdienstgrenze: 2026 sind es 69.750 € statt 77.400 € im Jahr, 2027 sind es 72.900 € statt 84.150 €.",
           "required": true,
           "purpose": "Besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)",
           "showIf": {
@@ -2278,7 +2278,7 @@
           "type": "choice",
           "label": "Befreiung von der Rentenversicherungspflicht im Minijob",
           "question": "Möchten Sie sich im Minijob von der Rentenversicherungspflicht befreien lassen?",
-          "help": "Im Minijob zahlen Sie einen kleinen Eigenanteil zur Rentenversicherung (2026: 3,6 % des Verdiensts). Den Befreiungsantrag stellen Sie auf Papier mit eigenhändiger Unterschrift; Ihr Arbeitgeber gibt Ihnen das Formular. Die Befreiung gilt für alle Ihre Minijobs. Seit Juli 2026 können Sie eine Befreiung einmal für die Zukunft wieder aufheben, ebenfalls auf Papier.",
+          "help": "Im Minijob zahlen Sie einen kleinen Eigenanteil zur Rentenversicherung (derzeit 3,6 % des Verdiensts). Den Befreiungsantrag stellen Sie auf Papier mit eigenhändiger Unterschrift; Ihr Arbeitgeber gibt Ihnen das Formular. Die Befreiung gilt für alle Ihre Minijobs. Seit Juli 2026 können Sie eine Befreiung einmal für die Zukunft wieder aufheben, ebenfalls auf Papier.",
           "required": true,
           "purpose": "Befreiung von der Rentenversicherungspflicht (§ 6 Abs. 1b SGB VI); Eingangstag beim Arbeitgeber (§ 8 Abs. 2 Nr. 4a BVV)",
           "showIf": {
@@ -3844,7 +3844,7 @@
           "type": "boolean",
           "label": "Verdienst über der Jahresarbeitsentgeltgrenze",
           "question": "Liegt der Verdienst voraussichtlich über der Jahresarbeitsentgeltgrenze?",
-          "help": "2026: 77.400 € im Jahr (6.450 € im Monat), einschließlich zugesagter Einmalzahlungen. Für Personen, die am 31.12.2002 privat versichert waren, gilt eine niedrigere Grenze (69.750 €). Dann ist die Person in der Krankenversicherung versicherungsfrei.",
+          "help": "2026: 77.400 € im Jahr (6.450 € im Monat), 2027: 84.150 € im Jahr (7.012,50 € im Monat), einschließlich zugesagter Einmalzahlungen. Niedriger ist die Grenze für Personen, die am 31.12.2002 privat versichert waren (2026: 69.750 €, 2027: 72.900 €), und 2027 für Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren (80.550 €). Dann ist die Person in der Krankenversicherung versicherungsfrei.",
           "required": true,
           "initial": false,
           "purpose": "Versicherungsfreiheit in der Krankenversicherung (§ 6 Abs. 1 Nr. 1, Abs. 6, 7 SGB V); Beitragsgruppe und Beitragszahlung bei freiwilliger Versicherung"
@@ -3894,7 +3894,7 @@
           "type": "choice",
           "label": "Vorgesehene Art der Beschäftigung",
           "question": "Wie ist die Beschäftigung vorgesehen?",
-          "help": "Maßgeblich ist der Verdienst: Bis 603 € im Monat – im Jahr 7.236 € einschließlich zugesagter Einmalzahlungen – ist es ein Minijob, darüber eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich). Die lohnabrechnende Stelle prüft das anhand aller Angaben; die Person macht dazu eine eigene Angabe.",
+          "help": "Maßgeblich ist der Verdienst: Bis 603 € im Monat – im Jahr 7.236 € einschließlich zugesagter Einmalzahlungen –, bei einem Beginn im Jahr 2027 bis 633 € im Monat (7.596 € im Jahr) ist es ein Minijob, darüber eine versicherungspflichtige Beschäftigung (bis 2.000 € im Monat im Übergangsbereich). Die lohnabrechnende Stelle prüft das anhand aller Angaben; die Person macht dazu eine eigene Angabe.",
           "required": true,
           "purpose": "Personengruppe und Beitragsgruppen in den Meldungen; Prüfung der Versicherungsfreiheit (§ 8 SGB IV)",
           "options": [
@@ -3904,7 +3904,7 @@
             },
             {
               "id": "minijob",
-              "label": "Minijob (bis 603 € im Monat)"
+              "label": "Minijob (2026 bis 603 €, 2027 bis 633 € im Monat)"
             },
             {
               "id": "kurzfristig",
@@ -5057,7 +5057,7 @@
           "type": "number",
           "label": "Vereinbarte Wochenstunden bei Arbeit auf Abruf",
           "question": "Wie viele Stunden pro Woche sind vereinbart?",
-          "help": "Ist keine Zahl vereinbart, gelten nach dem Gesetz 20 Stunden pro Woche – das ist 2026 mehr als ein Minijob erlaubt. Dann bitte 20 eintragen.",
+          "help": "Ist keine Zahl vereinbart, gelten nach dem Gesetz 20 Stunden pro Woche – das ist mehr, als ein Minijob erlaubt. Dann bitte 20 eintragen.",
           "required": true,
           "purpose": "Arbeit auf Abruf (§ 12 TzBfG): ohne vereinbarte Wochenstunden gelten 20 Stunden",
           "showIf": {
@@ -6833,8 +6833,8 @@
           "bavZuschuss"
         ]
       },
-      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
-      "source": "§ 6 Abs. 1 Nr. 1, Abs. 6, 7, § 257 SGB V"
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
+      "source": "§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 257 SGB V"
     },
     {
       "id": "jaegNichtAngegeben",
@@ -6914,12 +6914,12 @@
   "validity": {
     "field": "agBeschaeftigungsbeginn",
     "from": "2026-01-01",
-    "until": "2026-12-31"
+    "until": "2027-12-31"
   },
   "limits": [
     "Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.",
     "Sonderfälle (Heimarbeit, Werkstätten und Einrichtungen, Seefahrt, knappschaftliche Betriebe, mitarbeitende Familienangehörige und Nebenerwerbslandwirte in der Landwirtschaft, unständige Beschäftigung, Haushaltsscheck, FELEG, Vorstände von Aktiengesellschaften, Geistliche und Ordensangehörige, Beschäftigte mit beamtenrechtlicher Absicherung) schließt er über Vorfragen aus: Dann sind Abschließen und Weitergeben gesperrt.",
-    "Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn im Jahr 2026.",
+    "Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € im Jahr 2026 und 633 € im Jahr 2027 und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn in den Jahren 2026 und 2027; maßgeblich sind jeweils die Werte des Jahres, in dem die Beschäftigung beginnt.",
     "Bei mehreren Beschäftigungen erfasst er die Entgelte und weist auf die Beitragsbemessungs- und die Jahresarbeitsentgeltgrenze hin. Die anteilige Beitragsberechnung und das Verfahren mit der Krankenkasse übernimmt die Lohnabrechnung.",
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal sind nur vorläufige Angaben für die erste Abrechnung; maßgeblich sind die abgerufenen ELStAM.",
     "Erklärungen, die eigenhändig unterschrieben werden (Befreiung von der Rentenversicherung im Minijob, ihre Aufhebung, der Verzicht auf die Versicherungsfreiheit, die Kirchensteuererklärung bei Pauschalsteuer), bleiben auf Papier; der Fragebogen fragt den Wunsch ab und dokumentiert den Eingang.",

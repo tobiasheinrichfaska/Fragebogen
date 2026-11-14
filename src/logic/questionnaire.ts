@@ -122,7 +122,7 @@ export const TRANSITION_MESSAGES: Readonly<Record<TransitionCode, string>> = {
   fixedByOtherRole:
     'Diese Angabe hat eine andere Rolle in ihrem abgeschlossenen Teil festgelegt; sie wird von dort übernommen.',
   outsideValidity:
-    'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
+    'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung; so lässt sich nicht abschließen.',
   outOfScope:
     'Für diesen Sonderfall ist der Fragebogen nicht gedacht. Abschließen und Weitergeben sind gesperrt; bitte bei der Stelle nachfragen, die den Fragebogen bekommt.',
   dateOrder: 'Zwei Daten passen nicht zueinander.',
