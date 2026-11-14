@@ -695,6 +695,7 @@ function Workspace({
       {session && screen.kind === 'interview' && (
         <InterviewScreen
           session={session}
+          forms={registry.forms.map((form) => form.definition)}
           onSession={setSession}
           onBanner={setBanner}
           onSign={() => setScreen({ kind: 'sign' })}

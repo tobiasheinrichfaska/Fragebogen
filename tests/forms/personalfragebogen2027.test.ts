@@ -11,7 +11,11 @@ import { interviewSummary } from '../../src/logic/interview';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import { regelaltersgrenze } from '../../src/logic/regelaltersgrenze';
-import { describeValidity } from '../../src/logic/validity';
+import {
+  describeValidity,
+  outsideValidityAdviceFor,
+  versionValidFor,
+} from '../../src/logic/validity';
 import {
   definitionFiles,
   DRAFTS_DIR,
@@ -402,5 +406,35 @@ describe('a further Minijob next to a main job between the JAEG limits of 2027',
   it('marks a main job lifted above the JAEG by this Minijob as open in that range', () => {
     expect(lifted?.run(args('6800.00', 'nein'))).toMatchObject({ holds: true, uncertain: true });
     expect(lifted?.run(args('6800.00', 'ja'))).toMatchObject({ holds: false });
+  });
+});
+
+// Tobias 2026-11-14 („ja“): a start outside the validity must not send the person looking for a
+// version the app does not carry — the public app holds only 1.0.0 (2026) until 1.1.0 is published.
+describe('a start outside the validity names the version that fits, or that there is none', () => {
+  const both = [published.definition, draft.definition];
+  const employerData = (start: string) => ({ agBeschaeftigungsbeginn: start });
+
+  it('finds another version of the same form that is valid for the day', () => {
+    expect(versionValidFor(both, published.definition, '2027-01-04')?.version).toBe('1.1.0');
+    expect(versionValidFor([published.definition], published.definition, '2027-01-04')).toBe(
+      undefined,
+    );
+    expect(versionValidFor(both, draft.definition, '2028-01-03')).toBe(undefined);
+  });
+
+  it('says what to do in the app with only 1.0.0 and in the one with 1.1.0', () => {
+    const advice = (forms: FormDefinition[], start: string) =>
+      outsideValidityAdviceFor(forms, published.definition, 'arbeitgeber', employerData(start));
+    expect(advice([published.definition], '2027-01-04')).toBe(
+      'Für dieses Datum gibt es in dieser App noch keine Fassung dieses Fragebogens. Bitte wenden Sie sich an Ihre Kanzlei.',
+    );
+    expect(advice(both, '2027-01-04')).toBe(
+      'Für dieses Datum gilt die Fassung 1.1.0 dieses Fragebogens: bitte damit einen neuen Fragebogen beginnen.',
+    );
+    expect(advice(both, '2026-10-01')).toBe(undefined);
+    expect(
+      outsideValidityAdviceFor(both, draft.definition, 'person', employerData('2027-01-04')),
+    ).toBe(undefined);
   });
 });

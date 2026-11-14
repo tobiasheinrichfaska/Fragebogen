@@ -11,7 +11,8 @@ import { availableOptions } from '../logic/optionConditions';
 import type { InterviewStep } from '../logic/interview';
 import { masterDataKeyFor, masterDataOf, mergedMasterData } from '../logic/masterData';
 import { MASTER_DATA_LINK_MESSAGES, masterDataFragment } from '../logic/masterDataLink';
-import type { FieldId } from '../logic/model';
+import { ISSUE_MESSAGES } from '../logic/issues';
+import type { FieldId, FormDefinition } from '../logic/model';
 import { currentPart, latestSealed } from '../logic/questionnaire';
 import {
   acknowledge,
@@ -35,6 +36,7 @@ import {
   summaryOf,
   type Session,
 } from '../logic/session';
+import { outsideValidityAdviceFor } from '../logic/validity';
 import { Banner, Card, Explainer, NoticeText, type BannerMessage } from './common';
 import { MasterDataLink } from './MasterDataLink';
 import { isTextLike } from './fieldKinds';
@@ -44,6 +46,8 @@ import { usePendingCommit, usePendingRef, type PendingRef } from './pendingCommi
 
 interface Props {
   session: Session;
+  /** The form versions this app carries: a reference date outside the validity names the one that fits. */
+  forms: readonly FormDefinition[];
   onSession: (session: Session) => void;
   onBanner: (message: BannerMessage | undefined) => void;
   onSign: () => void;
@@ -51,6 +55,30 @@ interface Props {
   onPause: (session: Session) => void;
   onSaveInterim: () => void;
   onDiscard: () => void;
+}
+
+/** What to do about the role's reference date outside the validity, with the app's versions. */
+function validityAdvice(session: Session, forms: readonly FormDefinition[]): string | undefined {
+  const role = session.role;
+  if (role === undefined) return undefined;
+  const data = currentPart(session.questionnaire, role)?.data ?? {};
+  return outsideValidityAdviceFor(forms, session.form.definition, role, data);
+}
+
+/** The warnings of an answer as one banner; the validity warning says what to do about it. */
+function warningBanner(
+  session: Session,
+  forms: readonly FormDefinition[],
+  warnings: readonly string[],
+): BannerMessage | undefined {
+  if (warnings.length === 0) return undefined;
+  const advice = validityAdvice(session, forms);
+  const texts = warnings.map((warning) =>
+    warning === ISSUE_MESSAGES['validity.outside'] && advice !== undefined
+      ? `${warning} ${advice}`
+      : warning,
+  );
+  return { tone: 'warning', text: texts.join(' ') };
 }
 
 /** How the summary names a value nobody has changed yet: whose preselection it is. */
@@ -240,6 +268,7 @@ function Nav({
 
 function QuestionStep({
   session,
+  forms,
   onSession,
   onBanner,
   step,
@@ -265,9 +294,7 @@ function QuestionStep({
       return undefined;
     }
     setError(undefined);
-    onBanner(
-      result.warnings.length > 0 ? { tone: 'warning', text: result.warnings.join(' ') } : undefined,
-    );
+    onBanner(warningBanner(result.session, forms, result.warnings));
     return result.session;
   });
   if (!field) return null;
@@ -283,9 +310,7 @@ function QuestionStep({
       return undefined;
     }
     setError(undefined);
-    onBanner(
-      result.warnings.length > 0 ? { tone: 'warning', text: result.warnings.join(' ') } : undefined,
-    );
+    onBanner(warningBanner(result.session, forms, result.warnings));
     return result.session;
   };
 
@@ -423,7 +448,7 @@ function QuestionStep({
   );
 }
 
-function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Props) {
+function SummaryStep({ session, forms, onSession, onBanner, onSign, onSaveInterim }: Props) {
   const summary = summaryOf(session);
   const role = session.role;
   const definition = session.form.definition;
@@ -546,7 +571,7 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
         <Banner
           message={{
             tone: 'warning',
-            text: `Der Stichtag ${summary.outsideValidity.value} liegt außerhalb der Gültigkeit dieser Formularfassung (sie ${summary.outsideValidity.validity}). So lässt sich nicht unterschreiben; bitte die Fassung verwenden, die für diesen Tag gilt.`,
+            text: `Der Stichtag ${summary.outsideValidity.value} liegt außerhalb der Gültigkeit dieser Formularfassung (sie ${summary.outsideValidity.validity}). So lässt sich nicht unterschreiben. ${validityAdvice(session, forms) ?? ''}`.trim(),
           }}
         />
       )}

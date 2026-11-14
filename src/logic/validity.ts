@@ -4,6 +4,7 @@
 // value outside the period blocks signing the part that holds it and passing the questionnaire on.
 import { formatGermanDate } from './dates';
 import { fieldsById } from './form';
+import { compareVersions } from './formRegistry';
 import type { FieldDefinition, FormDefinition, FormValidity, RoleId } from './model';
 import type { PartData } from './form';
 
@@ -66,4 +67,51 @@ export function outsideValidity(
   const value = data[validity.field];
   if (typeof value !== 'string' || withinValidity(value, validity)) return undefined;
   return shown(field, value);
+}
+
+/**
+ * Another version of the same form among `forms` that is valid for the reference date (`YYYY-MM-DD`
+ * or `YYYY-MM`), the highest one first — or undefined when the app has none for it (Tobias
+ * 2026-11-14: a start in 2027 while only the 2026 version is published must not send the person
+ * looking for a version that does not exist).
+ */
+export function versionValidFor(
+  forms: readonly FormDefinition[],
+  definition: FormDefinition,
+  value: string,
+): FormDefinition | undefined {
+  return forms
+    .filter(
+      (other) =>
+        other.id === definition.id &&
+        other.version !== definition.version &&
+        other.validity !== undefined &&
+        withinValidity(value, other.validity),
+    )
+    .sort((a, b) => compareVersions(b.version, a.version))[0];
+}
+
+/**
+ * This role's reference date lies outside the validity: what to do about it, with the versions the
+ * app carries (`forms`); undefined when it fits or is not stated.
+ */
+export function outsideValidityAdviceFor(
+  forms: readonly FormDefinition[],
+  definition: FormDefinition,
+  role: RoleId,
+  data: PartData,
+): string | undefined {
+  const field = definition.validity?.field;
+  const value = field === undefined ? undefined : data[field];
+  if (typeof value !== 'string' || outsideValidity(definition, role, data) === undefined) {
+    return undefined;
+  }
+  return outsideValidityAdvice(versionValidFor(forms, definition, value));
+}
+
+/** What to do about a reference date outside the validity: the version that fits, or none here. */
+export function outsideValidityAdvice(other: FormDefinition | undefined): string {
+  return other === undefined
+    ? 'Für dieses Datum gibt es in dieser App noch keine Fassung dieses Fragebogens. Bitte wenden Sie sich an Ihre Kanzlei.'
+    : `Für dieses Datum gilt die Fassung ${other.version} dieses Fragebogens: bitte damit einen neuen Fragebogen beginnen.`;
 }

@@ -174,7 +174,7 @@ export const BLOCKER_MESSAGES: Readonly<Record<BlockerCode, string>> = {
   outOfScope:
     'Für diesen Sonderfall ist der Fragebogen nicht gedacht; er kann so nicht weitergegeben werden. Bitte bei der Stelle nachfragen, die den Fragebogen bekommt.',
   outsideValidity:
-    'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung. Bitte die Fassung verwenden, die für diesen Tag gilt.',
+    'Der Stichtag liegt außerhalb der Gültigkeit dieser Formularfassung; so lässt sich der Fragebogen nicht weitergeben.',
   partsNotLinked:
     'Zwei Teile verweisen nicht aufeinander. Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; nach einer Änderung muss neu abgeschlossen werden.',
 };

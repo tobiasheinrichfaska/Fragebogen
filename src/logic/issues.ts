@@ -117,7 +117,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'deuev.ende':
     'Hinweis: So darf die Angabe für die Meldung zur Sozialversicherung nicht enden. Bitte prüfen.',
   'validity.outside':
-    'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung. Unterschreiben und weitergeben lässt sich der Fragebogen so nicht; bitte die Fassung verwenden, die für dieses Datum gilt.',
+    'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung. Unterschreiben und weitergeben lässt sich der Fragebogen so nicht.',
   'iban.format': 'Eine IBAN beginnt mit dem Länderkürzel und zwei Prüfziffern, zum Beispiel DE.',
   'iban.length': 'Die IBAN hat für dieses Land nicht die richtige Länge.',
   'iban.checksum': 'Die IBAN stimmt nicht (Prüfziffer). Bitte noch einmal vergleichen.',

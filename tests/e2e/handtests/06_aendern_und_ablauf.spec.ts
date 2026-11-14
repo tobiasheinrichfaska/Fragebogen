@@ -628,6 +628,10 @@ test('MT-54: a start of employment outside the validity is kept, but blocks clos
   await expect(
     note(app, 'Dieses Datum liegt außerhalb der Gültigkeit dieser Formularfassung.'),
   ).toHaveClass(/banner-warning/);
+  // No version of this app covers 2028: it says so instead of sending the person to look for one.
+  const none =
+    'Für dieses Datum gibt es in dieser App noch keine Fassung dieses Fragebogens. Bitte wenden Sie sich an Ihre Kanzlei.';
+  await expect(note(app, 'Dieses Datum liegt außerhalb der Gültigkeit')).toContainText(none);
   await walk(app, EMPLOYER);
   await expect(
     note(
@@ -635,6 +639,7 @@ test('MT-54: a start of employment outside the validity is kept, but blocks clos
       'Der Stichtag 03.01.2028 liegt außerhalb der Gültigkeit dieser Formularfassung (sie gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027).',
     ),
   ).toHaveClass(/banner-warning/);
+  await expect(note(app, 'Der Stichtag 03.01.2028')).toContainText(none);
   // The date is kept; only closing is blocked.
   await expect(row(app, 'Tag der Beschäftigungsaufnahme')).toContainText('03.01.2028');
   await expect(missing(app)).toHaveCount(0);
