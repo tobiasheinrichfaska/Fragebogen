@@ -5,11 +5,11 @@
 
 | Angabe | Wert |
 | --- | --- |
-| Formular | steuerfreigabe, Version 0.1.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
+| Formular | steuerfreigabe, Version 1.0.0 |
+| Status | Veröffentlicht und eingefroren |
 | Gültigkeit | gilt für „Datum des Anschreibens“ ab 01.01.2026 |
 | Stand | zuletzt überarbeitet am 13.11.2026 um 12:58 |
-| Definition (SHA-256) | d148b63b2c7c7ec2f815c8e93afd0bdb6b481a117c93f1219af5c9442c68c364 |
+| Definition (SHA-256) | 8f51a3fc3b3853f4d75708e9354d712995e470aa9e29e18eaf8a26e58c8ced4b |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Zustimmung zur Übermittlung an das Finanzamt schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die Erklärungen, die Ihnen die Kanzlei mit dem genannten Schreiben übersandt hat. |
 | Empfänger | Kanzlei |

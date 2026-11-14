@@ -23,8 +23,11 @@ const help = (definition: FormDefinition, id: string) =>
 const notice = (definition: FormDefinition, id: string) =>
   definition.infoBlocks.find((b) => b.id === id)?.text ?? '';
 
+// The Zustimmung was fixed as a draft and is published since 2026-11-14 as 1.0.0.
+const FIXED = [...DRAFTS, load(FORMS_DIR, 'steuerfreigabe', '1.0.0').definition];
+
 describe('B1: privacy notices tell of the browser memory of the hosted app', () => {
-  it.each(DRAFTS.map((d) => [`${d.id} ${d.version}`, d] as const))(
+  it.each(FIXED.map((d) => [`${d.id} ${d.version}`, d] as const))(
     '%s never says the app keeps nothing',
     (_name, definition) => {
       for (const block of definition.infoBlocks) {
@@ -92,7 +95,7 @@ describe('Personalfragebogen 1.1.0: texts', () => {
 
 // Part 2 B4: the spouse saw the client's restriction under „Ihre Einschränkungen“, as if his own.
 describe('Zustimmung: restrictions are named after whose they are', () => {
-  const zustimmung = load(DRAFTS_DIR, 'steuerfreigabe', '0.1.0').definition;
+  const zustimmung = load(FORMS_DIR, 'steuerfreigabe', '1.0.0').definition;
   const label = (id: string) =>
     zustimmung.sections.flatMap((s) => s.fields).find((f) => f.id === id)?.label;
   it('labels each restriction field with its role, read alike from every role', () => {

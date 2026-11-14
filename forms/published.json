@@ -33,5 +33,10 @@
     "id": "personalfragebogen",
     "version": "1.0.0",
     "definitionHash": "456b4da4c22f7b88307e683c84ade032b50ea07fecbaa7d448dbb61836f7864a"
+  },
+  {
+    "id": "steuerfreigabe",
+    "version": "1.0.0",
+    "definitionHash": "8f51a3fc3b3853f4d75708e9354d712995e470aa9e29e18eaf8a26e58c8ced4b"
   }
 ]
