@@ -222,10 +222,15 @@ function choiceFor(
   role: RoleId,
   choices: readonly VersionChoice[],
   fresh: readonly MergeDecision[],
+  groupId: string,
 ): VersionChoice | undefined {
   const own = choices.filter((d) => d.role === role);
   const isFresh = (d: VersionChoice) => fresh.some((f) => canonicalize(f) === canonicalize(d));
-  const ruling = own.some(isFresh) ? own.filter(isFresh) : own;
+  const human = own.filter(isFresh);
+  // Among the human's choices, one made for the group as it now is (its id, as the conflict view
+  // sends it) replaces those made before questionnaires were joined (loop 2 of the audit).
+  const forGroup = human.filter((d) => d.questionnaireId === groupId);
+  const ruling = forGroup.length > 0 ? forGroup : human.length > 0 ? human : own;
   const [first] = ruling;
   return first && ruling.every((d) => d.contentHash === first.contentHash) ? first : undefined;
 }
@@ -245,7 +250,7 @@ function mergeGroup(
   const choices = relevant.filter((d): d is VersionChoice => d.kind === 'chooseVersion');
   const ruling = uniqueSorted(
     choices.flatMap((d) => {
-      const holds = choiceFor(d.role, choices, fresh);
+      const holds = choiceFor(d.role, choices, fresh, groupId);
       return holds ? [holds] : [];
     }),
   );
