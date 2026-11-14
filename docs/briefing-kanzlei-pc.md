@@ -60,13 +60,14 @@ Bescheid geben, damit die Cloud-Sitzung sie bekommt.
   Zwischenstände der neuen App kennzeichnen Vorbelegungen; ältere heruntergeladene App-Kopien
   lehnen solche Zwischenstände ab (die gehostete App ist immer aktuell).
 
-## 4 · Privates Repo `Fragebogen-lokal` anlegen (Tobias: ja, auch die SV-Fälle des Portals)
+## 4 · Privates Repo `Fragebogen-privat` (angelegt am 14.11.2026; Tobias: ja, auch die SV-Fälle des Portals)
 
 Zweck: Die Dateien, die nicht öffentlich sein dürfen, liegen bisher nur auf diesem PC. Mit einem
 privaten Repo können die Cloud-Sitzungen alle Tests laufen lassen und alle Fassungen bauen.
 
-1. Repo anlegen (privat, leer): `gh repo create tobiasheinrichfaska/Fragebogen-lokal --private`
-   (oder auf github.com).
+1. Erledigt am 14.11.2026: `tobiasheinrichfaska/Fragebogen-privat` ist angelegt, die Claude-GitHub-App
+   hat Zugriff, und die Cloud-Sitzung hat es angebunden. Die Punkte 2 bis 5 beschreiben, was
+   hineingehört und was nicht.
 2. Gleiche Ordnerstruktur wie im Projekt; hinein kommen genau:
    - `config/kanzlei.local.json`
    - `config/export.local.json`
@@ -83,8 +84,8 @@ privaten Repo können die Cloud-Sitzungen alle Tests laufen lassen und alle Fass
 5. Vor dem Push mit `git ls-files` prüfen, dass nur das Genannte drin ist; dann pushen.
 6. Tobias gibt der Claude-GitHub-App Zugriff auf das neue Repo, falls sie nur ausgewählte Repos
    sieht: https://github.com/apps/claude/installations/select_target
-7. Danach ist `Fragebogen-lokal` die Quelle dieser Dateien. Änderungen macht die Cloud; der PC
-   holt sie vor dem Bauen (`git pull` im Klon von `Fragebogen-lokal`) und kopiert sie in das
+7. Danach ist `Fragebogen-privat` die Quelle dieser Dateien. Änderungen macht die Cloud; der PC
+   holt sie vor dem Bauen (`git pull` im Klon von `Fragebogen-privat`) und kopiert sie in das
    Projekt. Schlag Tobias vor, das in Auslieferung als ersten Schritt eines Uploads einzubauen.
 
 ## 5 · Was Claude Code auf dem PC nicht mehr machen muss
@@ -95,8 +96,8 @@ privaten Repo können die Cloud-Sitzungen alle Tests laufen lassen und alle Fass
 | Vor jedem Upload alle E2E-Tests in drei Browsern laufen lassen                                 | Die GitHub-Prüfung (`.github/workflows/tests.yml`) läuft bei jedem Push und PR in Chromium, Firefox und WebKit. Vor dem Upload nur prüfen, dass der Commit einen grünen Haken hat (GitHub, Reiter „Actions“, oder `gh run list --branch main --limit 3`) |
 | Fehlschläge nachstellen und Ursachen suchen                                                    | Melden; die Cloud stellt nach und behebt. Bei MT-34/35 die Dateien aus `.tmp/e2e-fehlschlaege/` mitgeben                                                                                                                                                 |
 | `npm run catalogue` (Kataloge, Ablaufplan, SV-Berichte, Hilfeseiten)                           | Erledigt die Cloud-Sitzung mit jeder Formularänderung                                                                                                                                                                                                    |
-| Tests mit den lokalen Dateien (`exportLocal`, `svVorgabenLokal`, E2E mit `kanzlei.local.json`) | Sobald `Fragebogen-lokal` in den Cloud-Sitzungen angebunden ist, laufen sie dort. Bis dahin noch einmal hier, vor einem Upload                                                                                                                           |
-| Testberichte auswerten                                                                         | In der Cloud, sobald sie im privaten Repo liegen (Entscheidung Tobias, siehe 4.4)                                                                                                                                                                        |
+| Tests mit den lokalen Dateien (`exportLocal`, `svVorgabenLokal`, E2E mit `kanzlei.local.json`) | Laufen seit dem 14.11.2026 in der Cloud-Sitzung mit `Fragebogen-privat` (die GitHub-Prüfung überspringt sie, weil ihre Protokolle öffentlich sind)                                                                                                       |
+| Testberichte auswerten                                                                         | In der Cloud: Testberichte in `import/` von `Fragebogen-privat` ablegen und pushen                                                                                                                                                                       |
 
 **Bleibt lokal:** Repo aktualisieren, die privaten Dateien holen, bauen und hochladen
 (`npm run hochladen -- -Ziel …`, öffentlich nur mit Tobias' Freigabe), Serverkonfiguration
