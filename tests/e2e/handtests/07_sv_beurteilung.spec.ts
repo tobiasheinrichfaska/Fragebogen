@@ -326,78 +326,47 @@ test('MT-60: the pay comes before the kind of employment', async ({ page }) => {
   await expectQuiet(page, found);
 });
 
-for (const [betrag, gruppe] of [
-  ['550,00', '102'],
-  ['300,00', '121'],
-] as const) {
-  test(`MT-61: an Azubi with ${betrag} € gets Personengruppe ${gruppe}, no Minijob hint`, async ({
-    page,
-  }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(page, 'personalfragebogen-azubi-entgelt-offen');
-    await expectHeading(app, 'Wie wird die Person bezahlt?');
-    await choose(app, 'Ausbildungsvergütung');
-    await addRow(app, {
-      Ausbildungsjahr: '1',
-      Vergütung: betrag,
-      'gültig ab': '01.09.2026',
-    });
-    await next(app);
-    await forward(app, {}, { stopAt: 'agBeschaeftigungsart' });
-    await choose(app, 'Ausbildung');
-    await forward(app, {
-      agAusbildungsberuf: 'Verkäuferin',
-      agAusbildungEnde: '31.08.2029',
-      agAusserbetrieblich: 'Nein',
-    });
-    await closeEmployer(app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'azubi.pdf'));
-    const line = await expectProposal(app, PERSONENGRUPPE, gruppe, false);
-    if (gruppe === '121') await expect(line).toContainText('Geringverdienergrenze: 325,00 €');
-    await expect(app.locator('.banner li').filter({ hasText: 'Minijob' })).toHaveCount(0);
-    await expectQuiet(page, found);
-  });
-}
+// The SV cases themselves run one level lower, from the same start points and with the same
+// expectations down to the line the Kanzlei reads (tests/testbereich/startPointsSv.test.ts, moved
+// 2026-11-14: the suite took 20 minutes, most of it these cases played to the Kanzlei through a
+// PDF). Here stays one case each that proposals and hints reach the screen and the check sheet.
 
-for (const anspruch of ['Ja', 'Nein'] as const) {
-  test(`MT-62: a Minijob with Weihnachtsgeld, Rechtsanspruch ${anspruch}`, async ({
-    page,
-  }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(page);
-    await personThenEmployer(page, app, {
-      ...PERSON,
-      artLautVereinbarung: 'minijob',
-      rvBefreiungWunsch: 'nein',
-      steuerart: 'elstam',
-    });
-    await forward(app, { ...EMPLOYER, agMonatsentgelt: '600,00' }, { stopAt: 'agEinmalzahlungen' });
-    await addRow(app, {
-      Art: 'Weihnachtsgeld',
-      Betrag: '300,00',
-      'Monat der Zahlung': 'November',
-      'Rechtsanspruch?': anspruch,
-    });
-    await next(app);
-    await forward(app, { ...EMPLOYER, agBeschaeftigungsart: 'minijob' });
-    await closeEmployer(app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'minijob.pdf'));
-    const minijobHint = app.getByText(
-      /^Als Minijob vorgesehen, aber der Verdienst übersteigt die Geringfügigkeitsgrenze im Jahr/,
-    );
-    if (anspruch === 'Ja') {
-      await expect(minijobHint).toBeVisible();
-      await expect(hints(app)).toContainText(
-        '12 × 600,00 € + Einmalzahlungen mit Anspruch 300,00 € = 7.500,00 € im Jahr; Geringfügigkeitsgrenze 2026: 12 × 603,00 € = 7.236,00 €.',
-      );
-      await expectProposal(app, PERSONENGRUPPE, '101', true);
-    } else {
-      await expect(minijobHint).toHaveCount(0);
-      await expectProposal(app, PERSONENGRUPPE, '109', false);
-    }
-    await expectQuiet(page, found);
+// The whole way of one person and employer on one device, a table row typed, a hint on screen.
+test('MT-62: a Minijob with Weihnachtsgeld owed — the hint and the proposal to check', async ({
+  page,
+}, testInfo) => {
+  test.slow();
+  const { found, app } = await openTestApp(page);
+  await personThenEmployer(page, app, {
+    ...PERSON,
+    artLautVereinbarung: 'minijob',
+    rvBefreiungWunsch: 'nein',
+    steuerart: 'elstam',
   });
-}
+  await forward(app, { ...EMPLOYER, agMonatsentgelt: '600,00' }, { stopAt: 'agEinmalzahlungen' });
+  await addRow(app, {
+    Art: 'Weihnachtsgeld',
+    Betrag: '300,00',
+    'Monat der Zahlung': 'November',
+    'Rechtsanspruch?': 'Ja',
+  });
+  await next(app);
+  await forward(app, { ...EMPLOYER, agBeschaeftigungsart: 'minijob' });
+  await closeEmployer(app);
+  await readInAtKanzlei(app, await pdf(page, app, testInfo, 'minijob.pdf'));
+  await expect(
+    app.getByText(
+      /^Als Minijob vorgesehen, aber der Verdienst übersteigt die Geringfügigkeitsgrenze im Jahr/,
+    ),
+  ).toBeVisible();
+  await expect(hints(app)).toContainText(
+    '12 × 600,00 € + Einmalzahlungen mit Anspruch 300,00 € = 7.500,00 € im Jahr; Geringfügigkeitsgrenze 2026: 12 × 603,00 € = 7.236,00 €.',
+  );
+  await expectProposal(app, PERSONENGRUPPE, '101', true);
+  // Hints block nothing (MT-44).
+  await expect(app.getByRole('button', { name: 'PDF für die Personalakte' })).toBeEnabled();
+  await expectQuiet(page, found);
+});
 
 const SPECIAL_CASES = [
   {
@@ -507,27 +476,6 @@ for (const [art, extra] of [
   });
 }
 
-test('MT-64: without the exemption notice ticked the Kanzlei asks to request it', async ({
-  page,
-}, testInfo) => {
-  test.slow();
-  const { found, app } = await openTestApp(page);
-  await personThenEmployer(page, app, {
-    ...PERSON,
-    ...PRIVATE,
-    krankenversicherung: 'privat',
-    kvBefreiung: 'ja',
-    kvBefreiungGrund: 'jaeg',
-  });
-  await forward(app, EMPLOYER);
-  await closeEmployer(app);
-  await readInAtKanzlei(app, await pdf(page, app, testInfo, 'befreiung.pdf'));
-  await expect(hints(app)).toContainText(
-    'Befreiung von der Krankenversicherungspflicht angegeben: Bescheid der Krankenkasse anfordern.',
-  );
-  await expectQuiet(page, found);
-});
-
 test('MT-65: name parts, nationality and address come from the official lists', async ({
   page,
 }) => {
@@ -581,373 +529,33 @@ test('MT-65: name parts, nationality and address come from the official lists', 
   await expectQuiet(page, found);
 });
 
-for (const kldb of ['71402', ''] as const) {
-  test(`MT-66: Beitragsgruppen, Übergangsbereich and Tätigkeitsschlüssel ${
-    kldb === '' ? 'without' : 'with'
-  } the Berufskennziffer`, async ({ page }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(
-      page,
-      'personalfragebogen-teilzeit-berufskennziffer-offen',
-    );
-    await expectHeading(app, 'Kennen Sie die fünfstellige Berufskennziffer?');
-    await forward(app, kldb === '' ? {} : { agKldb: kldb });
-    await closeEmployer(app);
-    const station = await pdf(page, app, testInfo, 'teilzeit.pdf');
-    await readInAtKanzlei(app, station);
-    if (kldb === '') {
-      await expectProposal(app, TAETIGKEIT, '?????4412', true);
-      await expectQuiet(page, found);
-      return;
-    }
-    await expectProposal(app, PERSONENGRUPPE, '101', false);
-    const groups = await expectProposal(app, BEITRAGSGRUPPEN, '1111', false);
-    for (const branch of ['KV 1:', 'RV 1:', 'AV 1:', 'PV 1:']) {
-      await expect(groups).toContainText(branch);
-    }
-    await expectProposal(app, UEBERGANG, '1', false);
-    await expectProposal(app, TAETIGKEIT, '714024412', false);
-
-    // In the PDF the proposals stand only on the check sheet, apart from what was signed.
-    const withKey = (await pdfPages(station)).filter((text) => text.includes('714024412'));
-    expect(withKey).toHaveLength(1);
-    expect(withKey[0]).toMatch(/^\s*Prüfblatt /);
-    expect(withKey[0]).toContain('Vorschlag Tätigkeitsschlüssel: 714024412 – ');
-    expect(withKey[0]).toContain('(Die App entscheidet das nicht.)');
-    await expectQuiet(page, found);
-  });
-}
-
-test('MT-67: Firmenzahler is asked only above the Jahresarbeitsentgeltgrenze', async ({
-  page,
-}, testInfo) => {
-  test.slow();
-  const { found, app } = await openTestApp(page);
-  await personThenEmployer(page, app, PERSON);
-  await forward(app, { ...EMPLOYER, agMonatsentgelt: '7.000,00' }, { stopAt: 'agUeberJaeg' });
-  await expect(app.getByRole('radio', { name: 'Nein', exact: true })).toHaveAttribute(
-    'aria-checked',
-    'true',
-  );
-  await next(app);
-  await expect
-    .poll(() => heading(app))
-    .not.toBe('Liegt der Verdienst voraussichtlich über der Jahresarbeitsentgeltgrenze?');
-  expect(fieldAt(await heading(app))?.id).not.toBe('agFirmenzahler');
-  await forward(app, EMPLOYER);
-  await closeEmployer(app);
-  const first = await pdf(page, app, testInfo, 'jaeg.pdf');
-  await readInAtKanzlei(app, first);
-  await expect(hints(app)).toContainText(
-    'Laut den Verdienstangaben – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – liegt das regelmäßige Jahresarbeitsentgelt über der maßgeblichen Jahresarbeitsentgeltgrenze, der Arbeitgeber hat „nicht über der Grenze“ angegeben',
-  );
-  await expectProposal(app, BEITRAGSGRUPPEN, '9111', true);
-
-  await press(app, 'Zur Startseite');
-  await app.locator('input[type=file]').first().setInputFiles(first);
-  await app
-    .locator('li.role')
-    .filter({ hasText: 'Arbeitgeber' })
-    .getByRole('button', { name: 'Neue Fassung beginnen' })
-    .click();
-  await expectHeading(app, 'Zusammenfassung');
-  await app
-    .locator('.summary-row')
-    .filter({ hasText: /^Verdienst über der Jahresarbeitsentgeltgrenze/ })
-    .getByRole('button', { name: 'ändern' })
-    .click();
-  await choose(app, 'Ja');
-  await expectHeading(
-    app,
-    'Ist die Person freiwillig gesetzlich krankenversichert – zahlen Sie dann die Beiträge zur Kranken- und Pflegeversicherung an die Krankenkasse?',
-  );
-  await choose(app, 'Nein, die Person zahlt selbst (Selbstzahler)');
-  if ((await heading(app)) !== 'Zusammenfassung') await press(app, 'Zurück zur Zusammenfassung');
-  await expectHeading(app, 'Zusammenfassung');
-  await closeEmployer(app);
-  await readInAtKanzlei(app, await pdf(page, app, testInfo, 'selbstzahler.pdf'));
-  await expectProposal(app, BEITRAGSGRUPPEN, '0111', false);
-  await expectQuiet(page, found);
-});
-
-const AUSHILFE = [
-  { bis: '31.08.2026', tage: '78', entgelt: undefined, gruppe: '110', check: false, bgr: '0000' },
-  { bis: '01.09.2026', tage: '79', entgelt: undefined, gruppe: '101', check: true, bgr: '1111' },
-  { bis: '01.09.2026', tage: '79', entgelt: '500,00', gruppe: '109', check: true, bgr: '6100' },
-  // Either limit is enough: over three months with at most 70 working days stays kurzfristig.
-  { bis: '30.09.2026', tage: '70', entgelt: undefined, gruppe: '110', check: false, bgr: '0000' },
-] as const;
-
-for (const run of AUSHILFE) {
-  test(`MT-96: an Aushilfe until ${run.bis} on ${run.tage} days${
-    run.entgelt === undefined ? '' : ` with ${run.entgelt} €`
-  } gets ${run.gruppe}`, async ({ page }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(page, 'personalfragebogen-aushilfe-art-offen');
-    await expectHeading(app, 'Wie ist die Beschäftigung vorgesehen?');
-    if (run.entgelt !== undefined) {
-      await backTo(app, 'Wie hoch ist das Monatsentgelt brutto?');
-      await type(app, run.entgelt);
-      await next(app);
-      await forward(app, {}, { stopAt: 'agBeschaeftigungsart' });
-    }
-    await forward(app, {
-      agBeschaeftigungsart: 'kurzfristig',
-      agKurzfristigBis: run.bis,
-      agKurzfristigArbeitstage: run.tage,
-      agRahmenvereinbarung: 'Nein',
-      agBesteuerung: 'elstam',
-    });
-    await closeEmployer(app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'aushilfe.pdf'));
-    const line = await expectProposal(app, PERSONENGRUPPE, run.gruppe, run.check);
-    if (run.gruppe === '101') {
-      await expect(line).toContainText(
-        'Von vornherein länger als drei Monate (bis 31.08.2026) und mehr als 70 Arbeitstage',
-      );
-    }
-    await expectProposal(app, BEITRAGSGRUPPEN, run.bgr, false);
-    await expectQuiet(page, found);
-  });
-}
-
-const WERKSTUDENT = [
-  { hours: '20', entgelt: undefined, gruppe: '106', bgr: '0100', randzeiten: false },
-  { hours: '25', entgelt: undefined, gruppe: '101', bgr: '1111', randzeiten: true },
-  // A Minijob comes before the Werkstudent rule.
-  { hours: '12', entgelt: '600,00', gruppe: '109', bgr: '6100', randzeiten: false },
-] as const;
-
-for (const run of WERKSTUDENT) {
-  test(`MT-97: a Werkstudent with ${run.hours} hours${
-    run.entgelt === undefined ? '' : ` and ${run.entgelt} €`
-  } gets ${run.gruppe}`, async ({ page }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(page, 'personalfragebogen-werkstudent-stunden-offen');
-    await expectHeading(
-      app,
-      'Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?',
-    );
-    await choose(app, 'Nein');
-    await expectHeading(
-      app,
-      'Wie viele Stunden pro Woche arbeitet die Person in der Vorlesungszeit?',
-    );
-    await type(app, run.hours);
-    await next(app);
-    const randzeiten = 'Liegen die Stunden über 20 hinaus am Wochenende, abends oder nachts?';
-    if (run.randzeiten) {
-      await expectHeading(app, randzeiten);
-      await choose(app, 'Nein');
-    } else {
-      await expect
-        .poll(() => heading(app))
-        .not.toBe('Wie viele Stunden pro Woche arbeitet die Person in der Vorlesungszeit?');
-      expect(await heading(app)).not.toBe(randzeiten);
-    }
-    if (run.entgelt !== undefined) {
-      await backTo(app, 'Wie hoch ist das Monatsentgelt brutto?');
-      await type(app, run.entgelt);
-      await next(app);
-    }
-    await forward(app);
-    await closeEmployer(app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'werkstudent.pdf'));
-    const line = await expectProposal(app, PERSONENGRUPPE, run.gruppe, false);
-    if (run.gruppe === '101') await expect(line).toContainText('mehr als 20 Wochenstunden');
-    await expectProposal(app, BEITRAGSGRUPPEN, run.bgr, false);
-    await expectQuiet(page, found);
-  });
-}
-
-test('MT-97: only in the semester breaks no hours are asked and it stays 106', async ({
-  page,
-}, testInfo) => {
-  test.slow();
-  const { found, app } = await openTestApp(page, 'personalfragebogen-werkstudent-stunden-offen');
-  await expectHeading(
-    app,
-    'Arbeitet die Person nur in der vorlesungsfreien Zeit (Semesterferien)?',
-  );
-  const seen: string[] = [];
-  await forward(app, { agNurSemesterferien: 'Ja' }, { seen });
-  expect(seen).not.toContain('agVorlesungszeitStunden');
-  await closeEmployer(app);
-  await readInAtKanzlei(app, await pdf(page, app, testInfo, 'semesterferien.pdf'));
-  await expectProposal(app, PERSONENGRUPPE, '106', false);
-  await expectQuiet(page, found);
-});
-
-const STUDIUM = [
-  { semester: '4', versorgungswerk: false, gruppe: '106', check: false, bgr: '0100' },
-  { semester: '27', versorgungswerk: false, gruppe: '101', check: true, bgr: '1111' },
-  { semester: '4', versorgungswerk: true, gruppe: '190', check: false, bgr: '0000' },
-] as const;
-
-for (const run of STUDIUM) {
-  test(`MT-98: a student in semester ${run.semester}${
-    run.versorgungswerk ? ' in a Versorgungswerk' : ''
-  } gets ${run.gruppe}`, async ({ page }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(
-      page,
-      'personalfragebogen-werkstudent-fachsemester-offen',
-    );
-    await expectHeading(app, 'Im wievielten Fachsemester studieren Sie?');
-    await type(app, run.semester);
-    await next(app);
-    if (run.versorgungswerk) {
-      await forward(app, {}, { stopAt: 'versorgungswerk' });
-      await choose(app, 'Ja, die Befreiung für diese Beschäftigung ist beantragt oder erteilt');
-      await expectHeading(app, 'Welchem Versorgungswerk gehören Sie an?');
-      await type(app, 'Versorgungswerk der Musterkammer');
-      await next(app);
-    }
-    await forward(app);
-    await closePerson(page, app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'studentin.pdf'));
-    const line = await expectProposal(app, PERSONENGRUPPE, run.gruppe, run.check);
-    // Only a presumption: shown as such, to be checked.
-    if (run.gruppe === '101') {
-      await expect(line).toContainText('Mehr als 25 Fachsemester');
-      await expect(line).toContainText('Vermutung kann widerlegt werden; dann gilt 106.');
-    }
-    await expectProposal(app, BEITRAGSGRUPPEN, run.bgr, false);
-    if (run.versorgungswerk) await expectProposal(app, UEBERGANG, '0', false);
-    await expectQuiet(page, found);
-  });
-}
-
-const STUNDEN_WECHSELND = {
-  agArbeitszeitmodell: 'wechselnd',
-  agArbeitstageProWoche: '2',
-};
-
-for (const run of [
-  { hours: '5', gruppe: '106', bgr: '0100', bgrCheck: true },
-  { hours: '15', gruppe: '101', bgr: '1111', bgrCheck: false },
-] as const) {
-  test(`MT-102: two Minijobs of a student above the limit together, ${run.hours} + 7 hours`, async ({
-    page,
-  }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(
-      page,
-      'personalfragebogen-zwei-minijobs-arbeitszeit-offen',
-    );
-    await expectHeading(app, 'Wie ist die Arbeitszeit vereinbart?');
-    await forward(app, { ...STUNDEN_WECHSELND, agWochenstunden: run.hours });
-    await closeEmployer(app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'zwei-minijobs.pdf'));
-    const line = await expectProposal(app, PERSONENGRUPPE, run.gruppe, true);
-    await expectProposal(app, BEITRAGSGRUPPEN, run.bgr, run.bgrCheck);
-    if (run.gruppe === '106') {
-      await expect(line).toContainText('5 + 7 Stunden anderer Beschäftigungen = 12 Wochenstunden');
-      await expectProposal(app, UEBERGANG, '1', true);
-    }
-    await expectQuiet(page, found);
-  });
-}
-
-test('MT-102: a part-time study gets no Werkstudent proposal', async ({ page }, testInfo) => {
-  test.slow();
-  const { found, app } = await openTestApp(
-    page,
-    'personalfragebogen-zwei-minijobs-arbeitszeit-offen',
-  );
-  await expectHeading(app, 'Wie ist die Arbeitszeit vereinbart?');
-  await forward(app, { ...STUNDEN_WECHSELND, agWochenstunden: '5' });
-  await closeEmployer(app);
-  await pdf(page, app, testInfo, 'arbeitgeber.pdf');
-  await toOverview(app);
-  await app
-    .locator('li.role')
-    .filter({ hasText: 'Beschäftigte Person' })
-    .getByRole('button', { name: 'Neue Fassung beginnen' })
-    .click();
-  await expectHeading(app, 'Zusammenfassung');
-  await app
-    .locator('.summary-row')
-    .filter({ hasText: /^Art des Studiums/ })
-    .getByRole('button', { name: 'ändern' })
-    .click();
-  await expectHeading(app, 'Wie studieren Sie?');
-  await choose(app, 'Teilzeitstudium');
-  if ((await heading(app)) !== 'Zusammenfassung') await press(app, 'Zurück zur Zusammenfassung');
-  await expectHeading(app, 'Zusammenfassung');
-  await closePerson(page, app);
-  await readInAtKanzlei(app, await pdf(page, app, testInfo, 'teilzeitstudium.pdf'));
-  await expectProposal(app, PERSONENGRUPPE, '101', true);
-  await expectQuiet(page, found);
-});
-
-test('MT-102: without weekly hours (shift work) the app does not guess', async ({
+// Without the Berufskennziffer (?????4412, to check): tests/testbereich/startPointsSv.test.ts.
+test('MT-66: Beitragsgruppen, Übergangsbereich and Tätigkeitsschlüssel with the Berufskennziffer', async ({
   page,
 }, testInfo) => {
   test.slow();
   const { found, app } = await openTestApp(
     page,
-    'personalfragebogen-zwei-minijobs-arbeitszeit-offen',
+    'personalfragebogen-teilzeit-berufskennziffer-offen',
   );
-  await expectHeading(app, 'Wie ist die Arbeitszeit vereinbart?');
-  await forward(app, {
-    agArbeitszeitmodell: 'schicht',
-    agZyklusWochen: '4',
-    agArbeitstageZyklus: '8',
-    agStundenZyklus: '20',
-  });
+  await expectHeading(app, 'Kennen Sie die fünfstellige Berufskennziffer?');
+  await forward(app, { agKldb: '71402' });
   await closeEmployer(app);
-  await readInAtKanzlei(app, await pdf(page, app, testInfo, 'schicht.pdf'));
-  await expectProposal(app, PERSONENGRUPPE, '101', true);
+  const station = await pdf(page, app, testInfo, 'teilzeit.pdf');
+  await readInAtKanzlei(app, station);
+  await expectProposal(app, PERSONENGRUPPE, '101', false);
+  const groups = await expectProposal(app, BEITRAGSGRUPPEN, '1111', false);
+  for (const branch of ['KV 1:', 'RV 1:', 'AV 1:', 'PV 1:']) {
+    await expect(groups).toContainText(branch);
+  }
+  await expectProposal(app, UEBERGANG, '1', false);
+  await expectProposal(app, TAETIGKEIT, '714024412', false);
+
+  // In the PDF the proposals stand only on the check sheet, apart from what was signed.
+  const withKey = (await pdfPages(station)).filter((text) => text.includes('714024412'));
+  expect(withKey).toHaveLength(1);
+  expect(withKey[0]).toMatch(/^\s*Prüfblatt /);
+  expect(withKey[0]).toContain('Vorschlag Tätigkeitsschlüssel: 714024412 – ');
+  expect(withKey[0]).toContain('(Die App entscheidet das nicht.)');
   await expectQuiet(page, found);
 });
-
-const VORBESCHAEFTIGUNG = {
-  Arbeitgeber: 'Muster AG',
-  von: '01.01.2026',
-  bis: '31.03.2026',
-  Art: 'mehr als geringfügig',
-  Verdienst: '3.000,00',
-};
-
-for (const seit of ['', '01.04.2026'] as const) {
-  test(`MT-103: a housewife's earlier full-time job ${
-    seit === '' ? 'counts' : 'before leaving working life does not count'
-  }`, async ({ page }, testInfo) => {
-    test.slow();
-    const { found, app } = await openTestApp(
-      page,
-      'personalfragebogen-hausfrau-vorbeschaeftigung-offen',
-    );
-    const earlier =
-      'Haben Sie in diesem Kalenderjahr schon anderswo gearbeitet – auch kurz, auch im Ausland?';
-    const left = 'Seit wann sind Sie nicht mehr berufstätig?';
-    await expectHeading(app, earlier);
-    // Not asked without earlier jobs this year.
-    await choose(app, 'Nein');
-    await expect.poll(() => heading(app)).not.toBe(earlier);
-    expect(await heading(app)).not.toBe(left);
-    await backTo(app, earlier);
-    await choose(app, 'Ja');
-    await expectHeading(app, 'Wo haben Sie in diesem Jahr schon gearbeitet?');
-    await addRow(app, VORBESCHAEFTIGUNG);
-    await next(app);
-    await expectHeading(app, left);
-    if (seit !== '') await type(app, seit);
-    await next(app);
-    await forward(app);
-    await closePerson(page, app);
-    await readInAtKanzlei(app, await pdf(page, app, testInfo, 'hausfrau.pdf'));
-    if (seit === '') {
-      await expectProposal(app, PERSONENGRUPPE, '101', true);
-      await expectProposal(app, BEITRAGSGRUPPEN, '3111', true);
-    } else {
-      const line = await expectProposal(app, PERSONENGRUPPE, '110', false);
-      await expect(line).toContainText(
-        'Frühere Beschäftigungen vor dem Ausscheiden aus dem Berufsleben am 01.04.2026 zählen nicht für die Berufsmäßigkeit (Geringfügigkeits-Richtlinien B 2.3.3.3).',
-      );
-      await expectProposal(app, BEITRAGSGRUPPEN, '0000', false);
-    }
-    await expectQuiet(page, found);
-  });
-}

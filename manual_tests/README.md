@@ -46,23 +46,28 @@ und mit einem nachgestellten Handy.
 ## Automatisiert (seit 08.11.2026)
 
 Diese früheren Handtests laufen als automatische Tests in `tests/e2e/handtests/`
-(`npm run test:e2e`). Bei „teilweise“ ist der Rest oben als Handtest geblieben.
+(`npm run test:e2e`). Bei „teilweise“ ist der Rest oben als Handtest geblieben. Die Ergebnisse
+der SV-Fälle (Vorschläge, Begründungen, Prüfhinweise, welche Fragen kommen) prüft seit 14.11.2026
+der schnellere Unit-Test `tests/testbereich/startPointsSv.test.ts` mit denselben Startpunkten; im
+Browser bleibt je ein Fall, der zeigt, dass sie auf Bildschirm, Prüfblatt und Personalakte-PDF
+ankommen.
 
-| Frühere Tests                                                            | Automatischer Test              |
-| ------------------------------------------------------------------------ | ------------------------------- |
-| MT-01, MT-03 (teilweise), MT-02                                          | `01_start.spec.ts`              |
-| MT-10 bis MT-19, MT-26, MT-27, MT-116, MT-118 (teilweise)                | `02_ausfuellen.spec.ts`         |
-| MT-20, MT-21 (teilweise), MT-22 bis MT-25                                | `03_abschluss.spec.ts`          |
-| MT-30 bis MT-37 und MT-132 (teilweise, MT-31, MT-32 ganz)                | `04_pdf.spec.ts`                |
-| MT-40 bis MT-45, MT-68 und MT-70 (teilweise), MT-69, MT-71, MT-72, MT-88 | `05_kanzlei.spec.ts`            |
-| MT-50 bis MT-58, MT-86, MT-87, MT-99 bis MT-101, MT-109                  | `06_aendern_und_ablauf.spec.ts` |
-| MT-60 bis MT-67, MT-96 bis MT-98, MT-102, MT-103                         | `07_sv_beurteilung.spec.ts`     |
-| MT-81 (teilweise)                                                        | `08_auslieferung.spec.ts`       |
-| MT-85 (teilweise), MT-130, MT-133                                        | `08_testbereich.spec.ts`        |
-| MT-94, MT-95                                                             | `09_monatsmeldung.spec.ts`      |
-| MT-104 bis MT-108, MT-117, MT-134                                        | `10_eingabepruefung.spec.ts`    |
-| MT-110 bis MT-115                                                        | `11_eigenbeleg.spec.ts`         |
-| MT-119 bis MT-129, MT-131                                                | `12_sepa_mandat.spec.ts`        |
+| Frühere Tests                                                                                           | Automatischer Test                                    |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| MT-01, MT-03 (teilweise), MT-02                                                                         | `01_start.spec.ts`                                    |
+| MT-10 bis MT-19, MT-26, MT-27, MT-116, MT-118 (teilweise)                                               | `02_ausfuellen.spec.ts`                               |
+| MT-20, MT-21 (teilweise), MT-22 bis MT-25                                                               | `03_abschluss.spec.ts`                                |
+| MT-30 bis MT-37 und MT-132 (teilweise, MT-31, MT-32 ganz)                                               | `04_pdf.spec.ts`                                      |
+| MT-40 bis MT-43, MT-45 (Anzeige), MT-68 und MT-70 (teilweise), MT-69, MT-71, MT-72                      | `05_kanzlei.spec.ts`                                  |
+| MT-50 bis MT-58, MT-86, MT-87, MT-99 bis MT-101, MT-109                                                 | `06_aendern_und_ablauf.spec.ts`                       |
+| MT-60, MT-62 und MT-66 (je ein Fall), MT-63 bis MT-65                                                   | `07_sv_beurteilung.spec.ts`                           |
+| MT-44, MT-45, MT-61, MT-62, MT-64, MT-66, MT-67, MT-88, MT-96 bis MT-98, MT-102, MT-103 (SV-Ergebnisse) | `tests/testbereich/startPointsSv.test.ts` (Unit-Test) |
+| MT-81 (teilweise)                                                                                       | `08_auslieferung.spec.ts`                             |
+| MT-85 (teilweise), MT-130, MT-133                                                                       | `08_testbereich.spec.ts`                              |
+| MT-94, MT-95                                                                                            | `09_monatsmeldung.spec.ts`                            |
+| MT-104 bis MT-108, MT-117, MT-134                                                                       | `10_eingabepruefung.spec.ts`                          |
+| MT-110 bis MT-115                                                                                       | `11_eigenbeleg.spec.ts`                               |
+| MT-119 bis MT-129, MT-131                                                                               | `12_sepa_mandat.spec.ts`                              |
 
 ## Im Testbereich
 
