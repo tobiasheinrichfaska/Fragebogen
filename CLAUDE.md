@@ -1309,8 +1309,7 @@ Every finding went to an independent refuter first; survivors were fixed with a 
 that failed before; three further review loops on the fixes (loop 2 found that two fixes deleted
 own answers — replaced by check hints). Notable: the last, smaller QR code of a page was never read
 from a scan (b9c454b); crafted files/links crashed the app (039f83f); PDF writing 3x and interview
-steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). **Open for Tobias:** tester login
-names in this file (hand-over 2026-11-04 evening); third-party data in the git history of the removed
+steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). **Open for Tobias:** third-party data in the git history of the removed
 `e-rechnung/`; the reopen gap of the takeover hints; a link-filled marker for S5; refusing huge
 photos by their header; a merged file a station continues fails verification (`mergeAltered`) and its parts drop out of the next merge — renew the merge hash on every transition or drop the record (pre-audit behaviour; until decided, give stations the original files, not a merged one). E2E here only in Chromium (preinstalled build via a gitignored
 `.tmp/e2e/` config); tests whose output path holds „—“ or „€“ cannot hand their file to the page in
@@ -1563,8 +1562,8 @@ edits are committed (4269bf5). Everything below from the evening hand-over still
 two "next" items.
 
 **Hand-over 2026-11-04 evening:** pushed through c141ecb + this session's later
-commits; test folder uploaded (seven testers added; passwords
-only in the chat). Done today: Eigenbeleg draft 0.1.0 (+ start points MT-110–115), Sofortmeldung draft
+commits; test folder uploaded (seven testers added; their logins only in the upload tool's local list,
+passwords only in the chat). Done today: Eigenbeleg draft 0.1.0 (+ start points MT-110–115), Sofortmeldung draft
 1.1.0 (sector `agBranche` in the link, short ID-papers notice, birth example neue Bundesländer —
 production needs Tobias's OK), browser memory in the hosted app (`logic/resume.ts`), „Teilen“ on
 phones (`logic/delivery.ts`), working days before hours, hints shown while filling
