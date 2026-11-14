@@ -3,7 +3,8 @@
 // visible (probed 2026-10-30). The page layout therefore keeps wide white gaps between codes, and
 // reading first cuts the image along white rows and columns into cells, each decoded on its own;
 // the whole image is tried last (a photo of a single code). A cell jsQR cannot read is tried again
-// in black and white and at half size (full-page scans, 2026-11-08).
+// in black and white and at half size (full-page scans, 2026-11-08) and enlarged by half (photos
+// with about four pixels per module, 2026-11-14).
 import jsQR from 'jsqr';
 import qrcode from 'qrcode-generator';
 
@@ -60,13 +61,22 @@ export function readQrCodes(image: RgbaImage): Uint8Array[] {
 }
 
 /**
- * One cell, three ways: as it is (jsQR binarises locally), in black and white by the image's
- * mid-grey, at half size. On full-page scans at 200, 300 and 600 dpi each way alone missed codes,
- * the three together none of 330 (probe 2026-11-08; tests/io/qrScan.test.ts).
+ * One cell, four ways: as it is (jsQR binarises locally), in black and white by the image's
+ * mid-grey, at half size, enlarged by half. On full-page scans at 200, 300 and 600 dpi each of the
+ * first three alone missed codes, the three together none of 330 (probe 2026-11-08;
+ * tests/io/qrScan.test.ts). Photos with about four pixels per module still lost a code now and then
+ * (MT-35 on the Kanzlei PC, 2026-11-14: 11 of 12): jsQR samples the modules at a phase that falls
+ * on their edges; enlarged by half, all 39 such codes of a sweep from 2 to 4 pixels per point were
+ * read (tests/io/qr.test.ts).
  */
 function decodeCell(image: RgbaImage, dark: Uint8Array, box: Box): Uint8Array | undefined {
   const cell = crop(image, box);
-  return decode(cell) ?? decode(blackAndWhite(dark, image.width, box)) ?? decode(halved(cell));
+  return (
+    decode(cell) ??
+    decode(blackAndWhite(dark, image.width, box)) ??
+    decode(halved(cell)) ??
+    decode(enlarged(cell, 1.5))
+  );
 }
 
 function decode(image: RgbaImage): Uint8Array | undefined {
@@ -119,6 +129,42 @@ function halved(image: RgbaImage): RgbaImage {
       const at = (y * width + x) * 4;
       data[at] = data[at + 1] = data[at + 2] = grey;
       data[at + 3] = 255;
+    }
+  }
+  return { data, width, height };
+}
+
+/** The image larger by `factor`, in grey, each pixel interpolated between its four neighbours. */
+function enlarged(image: RgbaImage, factor: number): RgbaImage {
+  const width = Math.round(image.width * factor);
+  const height = Math.round(image.height * factor);
+  const grey = new Float64Array(image.width * image.height);
+  for (let i = 0; i < grey.length; i++) {
+    grey[i] =
+      0.299 * (image.data[i * 4] ?? 255) +
+      0.587 * (image.data[i * 4 + 1] ?? 255) +
+      0.114 * (image.data[i * 4 + 2] ?? 255);
+  }
+  const at = (x: number, y: number) => grey[y * image.width + x] ?? 255;
+  const data = new Uint8ClampedArray(width * height * 4);
+  for (let y = 0; y < height; y++) {
+    const sy = Math.min(image.height - 1, Math.max(0, (y + 0.5) / factor - 0.5));
+    const y0 = Math.floor(sy);
+    const y1 = Math.min(image.height - 1, y0 + 1);
+    const dy = sy - y0;
+    for (let x = 0; x < width; x++) {
+      const sx = Math.min(image.width - 1, Math.max(0, (x + 0.5) / factor - 0.5));
+      const x0 = Math.floor(sx);
+      const x1 = Math.min(image.width - 1, x0 + 1);
+      const dx = sx - x0;
+      const value =
+        at(x0, y0) * (1 - dx) * (1 - dy) +
+        at(x1, y0) * dx * (1 - dy) +
+        at(x0, y1) * (1 - dx) * dy +
+        at(x1, y1) * dx * dy;
+      const to = (y * width + x) * 4;
+      data[to] = data[to + 1] = data[to + 2] = value;
+      data[to + 3] = 255;
     }
   }
   return { data, width, height };
