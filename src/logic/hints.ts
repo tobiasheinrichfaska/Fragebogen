@@ -1630,18 +1630,17 @@ function fromRoleHints(
       });
       continue;
     }
-    if (decided === null) continue;
-    if (same(own, decided)) continue;
+    // What the other role decided or proposes: its newest sealed version, as taken over
+    // (fromOtherRoles); without one its current part. A draft of its next version does not count
+    // (loop 4 of the audit: it hid the hint and made the Kanzlei's read „geändert“).
+    const decidedNow = decidedSealed === undefined ? decided : decidedSealed;
+    if (decidedNow === null) continue;
+    if (same(own, decidedNow)) continue;
     if (source.type === 'choice' && !optionsOf(source).some((option) => option.id === own))
       continue;
     // A proposal the role was free to change is news for the other role, not a contradiction —
     // unless the role still holds what the other role proposed before.
-    const newProposal =
-      from.changeable === true &&
-      heldEarlier &&
-      decidedSealed !== undefined &&
-      decidedSealed !== null &&
-      same(decidedSealed, decided);
+    const newProposal = from.changeable === true && heldEarlier;
     results.push({
       ...hint,
       earlier: newProposal,
@@ -1649,9 +1648,9 @@ function fromRoleHints(
       message:
         from.changeable === true
           ? newProposal
-            ? `Im Teil „${fromRole}“ steht für „${field.label}“ jetzt der Vorschlag „${displayValue(source, decided)}“; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
-            : `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decided)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
-          : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decided)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
+            ? `Im Teil „${fromRole}“ steht für „${field.label}“ jetzt der Vorschlag „${displayValue(source, decidedNow)}“; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
+            : `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decidedNow)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
+          : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decidedNow)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
     });
   }
   return results;

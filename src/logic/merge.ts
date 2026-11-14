@@ -259,9 +259,13 @@ function mergeGroup(
   const containerIds = uniqueSorted(items.map((item) => item.source.questionnaire.questionnaireId));
   const group: MergeGroup = {
     questionnaireId: groupId,
+    // Linked ids of trusted files only: an altered merge record joins nothing (loop 4 of the audit:
+    // its ids put other groups' files and choices on this group).
     sourceIds: uniqueSorted([
       ...containerIds,
-      ...items.flatMap((item) => [...linkedQuestionnaireIds(item.source.questionnaire)]),
+      ...items.flatMap((item) =>
+        item.trusted ? [...linkedQuestionnaireIds(item.source.questionnaire)] : [],
+      ),
     ]),
     notes,
     conflicts,

@@ -342,10 +342,16 @@ describe('a decision the other role no longer makes in a new version', () => {
     person = must(enterRole(sessionWith(q), 'person'));
     const ids = fillingHints(person.questionnaire, form.definition, 'person').map((h) => h.id);
     expect(ids).not.toContain('fromRoleWithdrawn:steuerart');
-    const message = checkHints(withdrawn(), form.definition)
-      .concat(fillingHints(withdrawnWithPerson(), form.definition, 'person'))
-      .find((h) => h.id === 'fromRoleWithdrawn:steuerart')?.message;
-    expect(message).toMatch(/im Teil „Arbeitgeber“ festgelegt; dessen neue Fassung/);
+    // The same words for the person (before signing) and for the Kanzlei.
+    const both = withdrawnWithPerson();
+    for (const hints of [
+      fillingHints(both, form.definition, 'person'),
+      checkHints(both, form.definition),
+    ]) {
+      expect(hints.find((h) => h.id === 'fromRoleWithdrawn:steuerart')?.message).toMatch(
+        /im Teil „Arbeitgeber“ festgelegt; dessen neue Fassung/,
+      );
+    }
   });
 
   it('never deletes an answer the person gives herself, however often she comes back', () => {
