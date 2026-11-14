@@ -4,7 +4,7 @@
 Status 2026-11-03: all stations exist — filling in, interview, signing, PDF and import (steps 6–8),
 the Kanzlei station with merge, receipts and LuG hand-over (step 9) and the hardened build with E2E
 in three engines (step 10). Sofortmeldung 1.0.0 is in production. A checked box means: covered by
-the named automated test (the audit re-runs them); unchecked paths are guarded by unit tests and
+the named automated test (the audit re-runs them; audit 2026-11-14: the four boxes ticked then ran green in Chromium and in the unit suite — the clients-only notice stays open, its tests need `config/kanzlei.local.json`); unchecked paths are guarded by unit tests and
 `manual_tests/` but not yet pinned to one named check here.
 
 ## Offline & privacy (applies to every path)
@@ -12,18 +12,18 @@ the named automated test (the audit re-runs them); unchecked paths are guarded b
 - [x] **Open the single HTML file by double-click (file://)** — app renders, no console errors (`tests/e2e/flow.spec.ts`, console guard in three engines)
 - [x] **No network traffic** — no request other than file:/data:/blob: during any flow; CSP blocks the rest (`tests/e2e/guards.ts` via `npm run test:e2e`, three engines)
 - [x] **Nothing persisted in the browser** — localStorage/IndexedDB empty after every flow (`tests/e2e/guards.ts`, `expectClean`)
-- [ ] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean (e2e: `tests/e2e/handtests/02_ausfuellen.spec.ts`, former MT-17)
+- [x] **"Alle Daten auf diesem Gerät löschen"** — clears state, revokes blob URLs, reloads clean (e2e: `tests/e2e/handtests/02_ausfuellen.spec.ts`, former MT-17)
 
 - [ ] **Clients-only notice** — with `accessNotice` configured, the hosted app shows nothing before the notice is ticked; „Antwort für die Zukunft merken“ keeps it in the browser (no cookie), „Alle Daten auf diesem Gerät löschen“ removes it; a downloaded copy does not ask (`tests/e2e/handtests/14_zugang.spec.ts`)
 
 ## Station 1 — fill in & sign (e.g. Arbeitnehmer/in)
 
 - [ ] **Choose a form and fill in own fields** — only own role's fields editable; validation messages in German
-- [ ] **Two dates in order** — a date bound to an earlier one of the same role (`notBefore`/`notAfter`) is refused on the wrong side as it is typed; moving the earlier one lists the pair in the summary and blocks signing (`src/logic/dateOrder.test.ts`, `tests/forms/dateOrderForms.test.ts`)
+- [x] **Two dates in order** — a date bound to an earlier one of the same role (`notBefore`/`notAfter`) is refused on the wrong side as it is typed; moving the earlier one lists the pair in the summary and blocks signing (`src/logic/dateOrder.test.ts`, `tests/forms/dateOrderForms.test.ts`)
 - [ ] **Interview** (default for person and employer) — one question per screen in form order; a follow-up appears right after the answer that opens it; back and forward; progress; the summary lists missing, deferred and no longer applicable answers before signing
 - [ ] **"Vorerst überspringen"** — a button next to "Weiter" puts a question back; it is asked again at the end and survives saving the interim state; in the summary each skipped question offers "beantworten" and, if voluntary, "leer lassen"; a required one must be answered before signing
 - [ ] **"Fragebogen verwerfen"** — in the interview and on the overview; always asks first, then the questionnaire is gone from the app (downloaded files stay)
-- [ ] **Change answers afterwards** — "Zur Zusammenfassung" from any question, taking over what was typed on that page (a refused input stays with its message; "Unterbrechen" too — Chrome evaluation 2026-11-13, `tests/e2e/handtests/13_chrome_auswertung.spec.ts`); "ändern" in the summary returns to the summary after the follow-ups the change opened (not through every later question); a voluntary yes/no or single choice can be taken back ("Auswahl aufheben"); while revising, "Weiter" or "Zur nächsten fehlenden Angabe"; after signing via "Unterschrift zurücknehmen" or "Neue Fassung beginnen"
+- [x] **Change answers afterwards** — "Zur Zusammenfassung" from any question, taking over what was typed on that page (a refused input stays with its message; "Unterbrechen" too — Chrome evaluation 2026-11-13, `tests/e2e/handtests/13_chrome_auswertung.spec.ts`); "ändern" in the summary returns to the summary after the follow-ups the change opened (not through every later question); a voluntary yes/no or single choice can be taken back ("Auswahl aufheben"); while revising, "Weiter" or "Zur nächsten fehlenden Angabe"; after signing via "Unterschrift zurücknehmen" or "Neue Fassung beginnen"
 - [ ] **Answers another station decides** (`fromRole`, e.g. the employer's kind of wage tax in a Minijob) — taken over from that station's sealed part, not asked and shown as "festgelegt von: …"; asked when that part is missing; a later contradiction becomes a check hint
 - [ ] **Answers kept while their condition is off** — switching a precondition off and on again brings the answer back; only signing drops it (shown in the summary)
 - [ ] **Field logic** — a field accepts input only once its precondition holds (`showIf`); required always or by condition (`requiredIf`, e.g. phone or e-mail); the reason is shown in German
@@ -72,7 +72,7 @@ the named automated test (the audit re-runs them); unchecked paths are guarded b
 
 - [ ] **Help pages "Wo finde ich …?"** — per data item the documents to pick, a watermarked sample zooming to the spot with source, "Nichts davon" with how to get it; no script, nothing external; every `explainer` path leads to a page
 
-- [ ] **Test page in the test folder** — the manual tests (and local `L-` tests) next to the app; an overview with one box per test by area (done ones coloured, "Erledigte ausblenden"), one test at a time with "Zurück zur Testübersicht"; opening a test asks whether to restart the app with its entry and shows the test from its heading; per test start, result ("Wie erwartet" / "Klappt nicht"), comment and correctable time; the run survives a reload; the header restarts the app, resets it fully (the results stay) and downloads the report; the report PDF lists results, times (with the date on another day) and comments, and a report leaves its tests out of the next one unless the tester takes them in again; tests that cannot run there are marked with the reason; references to other tests open them; a test rewritten after the tester's result says "geändert seit Ihrem Test" (overview, test, report); never in the public build; its browser memory is its own — it neither offers nor deletes the public app's interrupted questionnaire at the same address (`tests/e2e/resume.spec.ts`, 2026-11-13)
+- [x] **Test page in the test folder** — the manual tests (and local `L-` tests) next to the app; an overview with one box per test by area (done ones coloured, "Erledigte ausblenden"), one test at a time with "Zurück zur Testübersicht"; opening a test asks whether to restart the app with its entry and shows the test from its heading; per test start, result ("Wie erwartet" / "Klappt nicht"), comment and correctable time; the run survives a reload; the header restarts the app, resets it fully (the results stay) and downloads the report; the report PDF lists results, times (with the date on another day) and comments, and a report leaves its tests out of the next one unless the tester takes them in again; tests that cannot run there are marked with the reason; references to other tests open them; a test rewritten after the tester's result says "geändert seit Ihrem Test" (overview, test, report); never in the public build; its browser memory is its own — it neither offers nor deletes the public app's interrupted questionnaire at the same address (`tests/e2e/resume.spec.ts`, 2026-11-13)
 
 ## Documentation
 
