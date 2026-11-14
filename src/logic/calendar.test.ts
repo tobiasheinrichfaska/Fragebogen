@@ -120,6 +120,15 @@ describe('the month as weeks', () => {
 });
 
 describe('reading a calendar', () => {
+  // Audit 2026-11-14: a day that does not exist passed the shape check and made the display throw —
+  // a crafted file could not be shown in the form view, the summary or the PDF.
+  it('leaves out a day that does not exist instead of throwing', () => {
+    const crafted = ['2026-02-30:urlaub', '2026-02-03:urlaub'];
+    expect(calendarEntries(crafted)).toEqual([{ date: '2026-02-03', mark: 'urlaub' }]);
+    expect(() => describeCalendar(crafted, MARKS)).not.toThrow();
+    expect(() => displayValue(FIELD, crafted)).not.toThrow();
+  });
+
   const value = [
     '2026-11-03:urlaub',
     '2026-11-04:urlaub',

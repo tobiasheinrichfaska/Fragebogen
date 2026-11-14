@@ -203,6 +203,59 @@ describe('mergeSources — one questionnaire', () => {
     expect(verifyQuestionnaire(q, { registry }).level).toBe('ok');
   });
 
+  // Audit 2026-11-14: decisions carried in merged files and the human's new ones were sorted by hash
+  // and the first choice for a role won — a new choice could lose against an older one, and two
+  // files with opposite choices were settled by the app without a word.
+  describe('choices carried in merged files', () => {
+    const hashOf = (q: Questionnaire) => latestSealed(q, 'person')?.seal?.contentHash ?? '';
+    const choose = (contentHash: string): MergeDecision => ({
+      kind: 'chooseVersion',
+      questionnaireId: QUESTIONNAIRE_ID,
+      role: 'person',
+      contentHash,
+    });
+    const versions = [personSigned(), competingPerson()].sort((a, b) =>
+      hashOf(a) < hashOf(b) ? -1 : 1,
+    );
+    const [lower, higher] = versions as [Questionnaire, Questionnaire];
+    const both = (): MergeSource[] => [
+      { questionnaire: personSigned(), fileSha256: sha('1') },
+      { questionnaire: competingPerson(), fileSha256: sha('2') },
+    ];
+    const mergedChoosing = (q: Questionnaire) => merged(only(merge(both(), [choose(hashOf(q))])));
+
+    it('lets a new choice replace the one a merged file carries', () => {
+      const group = only(
+        merge(
+          [
+            { questionnaire: mergedChoosing(lower), fileSha256: sha('3') },
+            { questionnaire: higher, fileSha256: sha('4') },
+          ],
+          [choose(hashOf(higher))],
+        ),
+      );
+      expect(group.conflicts).toEqual([]);
+      const q = merged(group);
+      expect(q.parts.person?.map((p) => p.seal?.contentHash)).toEqual([hashOf(higher)]);
+      expect(q.mergeRecord?.decisions).toEqual([choose(hashOf(higher))]);
+    });
+
+    it('shows opposite choices of two merged files as a conflict instead of picking one', () => {
+      const group = only(
+        merge([
+          { questionnaire: mergedChoosing(lower), fileSha256: sha('3') },
+          { questionnaire: mergedChoosing(higher), fileSha256: sha('4') },
+        ]),
+      );
+      expect(group.conflicts.map((c) => c.code)).toEqual(['versionConflict']);
+    });
+
+    it('keeps a carried choice when nothing contradicts it', () => {
+      const group = only(merge([{ questionnaire: mergedChoosing(higher), fileSha256: sha('3') }]));
+      expect(merged(group).mergeRecord?.decisions).toEqual([choose(hashOf(higher))]);
+    });
+  });
+
   it('reports a choice that names no present version', () => {
     const group = only(
       merge(

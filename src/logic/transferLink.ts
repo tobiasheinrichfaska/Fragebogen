@@ -141,6 +141,10 @@ export function parseTransferFragment(hash: string): ParsedTransferLink | undefi
   ) {
     return { ok: false, issue: 'unknownVersion' };
   }
+  // The app never writes a longer one (audit 2026-11-14: a long link was inflated before any check).
+  if (`#${hash.startsWith('#') ? hash.slice(1) : hash}`.length > TRANSFER_LINK_MAX_LENGTH) {
+    return { ok: false, issue: 'damaged' };
+  }
   const digest = params.getAll('pruef');
   const data = params.getAll('daten');
   if (digest.length !== 1 || data.length !== 1 || !DIGEST.test(digest[0] ?? '')) {
@@ -196,15 +200,22 @@ export function transferPackageText(
   const hash = typeof form?.definitionHash === 'string' ? form.definitionHash : undefined;
   const definition = hash === undefined ? undefined : carried(hash);
   if (definition === undefined) return { ok: false, issue: 'unknownForm' };
-  return {
-    ok: true,
-    text: canonicalize({
-      format: PACKAGE_FORMAT,
-      formatVersion: PACKAGE_FORMAT_VERSION,
-      questionnaire,
-      definition,
-    }),
-  };
+  // Anyone can compute a link's digest, so the text is untrusted: a value the canonical form
+  // refuses (a number out of range, a lone surrogate, deep nesting) makes the link damaged instead
+  // of an exception while the app renders (audit 2026-11-14: a blank page on every reload).
+  try {
+    return {
+      ok: true,
+      text: canonicalize({
+        format: PACKAGE_FORMAT,
+        formatVersion: PACKAGE_FORMAT_VERSION,
+        questionnaire,
+        definition,
+      }),
+    };
+  } catch {
+    return { ok: false, issue: 'damaged' };
+  }
 }
 
 export type TransferOffer =
