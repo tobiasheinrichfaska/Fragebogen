@@ -63,19 +63,24 @@ const jpeg = (w: number, h: number, frame = 0xc0) =>
     u16be(w),
     [3, 1, 0x22, 0, 2, 0x11, 1, 3, 0x11, 1],
   );
+/** An ISO box: size, type, content. */
+const box = (type: string, ...content: number[][]) => {
+  const body = content.flat();
+  return [...u32be(8 + body.length), ...ascii(type), ...body];
+};
+/** HEIC as an iPhone writes it: ftyp, then meta (full box) → iprp → ipco → one ispe per picture. */
 const heic = (...pictures: [number, number][]) =>
   bytes(
-    u32be(24),
-    ascii('ftypheic'),
-    u32be(0),
-    ascii('mif1heic'),
-    ...pictures.map(([w, h]) => [
-      ...u32be(20),
-      ...ascii('ispe'),
-      ...u32be(0),
-      ...u32be(w),
-      ...u32be(h),
-    ]),
+    box('ftyp', ascii('heic'), u32be(0), ascii('mif1heic')),
+    box(
+      'meta',
+      u32be(0),
+      box('hdlr', u32be(0), u32be(0), ascii('pict'), u32be(0), u32be(0), u32be(0), [0]),
+      box(
+        'iprp',
+        box('ipco', ...pictures.map(([w, h]) => box('ispe', u32be(0), u32be(w), u32be(h)))),
+      ),
+    ),
   );
 
 describe('imageSize', () => {
@@ -103,6 +108,32 @@ describe('imageSize', () => {
     ['nothing', new Uint8Array()],
   ])('gives no size for %s', (_label, data) => {
     expect(imageSize(data)).toBeUndefined();
+  });
+
+  // Review of 7ed45b2: the letters "ispe" in picture data or metadata text were read as a size.
+  it('reads the size of a HEIC only from its property boxes, not from any four letters', () => {
+    const photo = heic([4032, 3024]);
+    const withText = bytes([...photo], box('free', ascii('<dc:title>Whispering pines</dc:title>')));
+    expect(imageSize(withText)).toEqual({ width: 4032, height: 3024 });
+    const noBoxes = bytes(
+      box('ftyp', ascii('heic')),
+      box('mdat', ascii('xxispe'), u32be(90000), u32be(90000)),
+    );
+    expect(imageSize(noBoxes)).toBeUndefined();
+  });
+
+  it('finds the property boxes behind a large box, too', () => {
+    const padded = bytes(box('ftyp', ascii('heic')), box('free', Array(1_200_000).fill(0)), [
+      ...heic([30000, 30000]).subarray(24),
+    ]);
+    expect(imageSize(padded)).toEqual({ width: 30000, height: 30000 });
+  });
+
+  // Review of 7ed45b2: decoders skip stray bytes between JPEG segments, so must the check.
+  it('reads a JPEG frame header behind stray bytes between segments', () => {
+    const plain = jpeg(30000, 30000);
+    const stray = bytes([...plain.subarray(0, 18)], [0x00, 0x00], [...plain.subarray(18)]);
+    expect(imageSize(stray)).toEqual({ width: 30000, height: 30000 });
   });
 
   it('reads a header inside a larger buffer', () => {

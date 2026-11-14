@@ -184,9 +184,10 @@ const same = (a: FieldValue, b: FieldValue) => JSON.stringify(a) === JSON.string
 /**
  * Fills the available master-data fields of the role's open draft from a remembered record, in
  * form order (a filled answer may open the next question). Call it on entering the role and after
- * every answer with the `fills` it returned. Only a field never answered or holding a
- * preselection (the form's or the link's own, Part.preset) is filled; the value is then marked as
- * the link's. Keys of other forms are ignored.
+ * every answer with the `fills` it returned. Only an empty field or one holding a preselection
+ * (the form's or the link's own, Part.preset) is filled — never a value a person gave or changed;
+ * a link value a person emptied stays empty while the questionnaire is open. The filled value is
+ * marked as the link's. Keys of other forms are ignored.
  */
 export function applyMasterData(
   questionnaire: Questionnaire,
@@ -214,10 +215,18 @@ export function applyMasterData(
     const choice = masterDataKeyFor(field, visibleValues(definition, role, data));
     const target = choice !== undefined && Object.hasOwn(stored, choice.key) ? choice : undefined;
     const fill = fills[field.id];
-    if (present !== undefined && mark !== 'initial' && mark !== 'link') {
-      // An answer — given, changed or cleared — is never touched (Tobias 2026-11-14).
+    // Empty is no answer: a field never answered, left empty or signed empty in an earlier version
+    // is filled — except one emptied in this session after the link had filled it (the person
+    // took the link's value out; `fills` remembers that while the questionnaire is open).
+    const clearedHere = present === null && mark === undefined && fill !== undefined;
+    if (clearedHere && fill.state !== 'refused') {
+      fills[field.id] = { ...fill, value: null, state: 'released' };
+      continue;
+    }
+    if (present !== undefined && present !== null && mark !== 'initial' && mark !== 'link') {
+      // An answer — given or changed — is never touched (Tobias 2026-11-14).
       if (target !== undefined && fill?.state !== 'released') {
-        if (present !== null) kept.push(field.id);
+        kept.push(field.id);
         fills[field.id] = { key: target.key, value: present, state: 'released' };
       }
       continue;
