@@ -536,7 +536,7 @@ erforderlichen Rollen vorhanden und alle <code>partLinks</code> verknüpft.</p>
 </table>
 <table>
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
-  <tr><td><code>roleRequirement</code> · <code>roleRequirements</code></td><td><code>(definition, q, role) =&gt; RoleRequirement</code></td><td>Ist die Rolle jetzt erforderlich? <code>always</code> · <code>pending</code> (auslösender Teil noch nicht gesiegelt) · <code>minor</code> · <code>adult</code> · <code>ageUnknown</code>, jeweils mit Unterschriftstag und Alter</td></tr>
+  <tr><td><code>roleRequirement</code></td><td><code>(definition, q, role) =&gt; RoleRequirement</code></td><td>Ist die Rolle jetzt erforderlich? <code>always</code> · <code>pending</code> (auslösender Teil noch nicht gesiegelt) · <code>minor</code> · <code>adult</code> · <code>ageUnknown</code>, jeweils mit Unterschriftstag und Alter</td></tr>
   <tr><td><code>transmissionBlockers</code></td><td><code>(q, form: RegisteredForm) =&gt; Blocker[]</code></td><td>Alles, was die Übermittlung verhindert; wirft bei einem fremden Formular</td></tr>
   <tr><td><code>completenessGaps</code></td><td><code>(q, form) =&gt; Blocker[]</code></td><td>Sperren plus fehlende erforderliche Rollen und fehlende Verknüpfungen (<code>partLinks</code>)</td></tr>
   <tr><td colspan="3"><code>src/logic/masterData.ts</code></td></tr>

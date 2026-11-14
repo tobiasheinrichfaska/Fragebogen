@@ -250,6 +250,43 @@ describe('mergeSources — one questionnaire', () => {
       expect(group.conflicts.map((c) => c.code)).toEqual(['versionConflict']);
     });
 
+    // Loop 2 of the audit: two questionnaires each resolved by a choice, then linked — the choice
+    // made for the joined group (its id, as the conflict view sends it) must hold, whichever
+    // candidate it names; before, two own choices under different ids cancelled each other.
+    it('lets the choice for a joined group hold over the choices made before joining', () => {
+      const personIn = (id: string, nachname: string, nonce: string) => {
+        let q = ok(startPart(createQuestionnaire(id, form), form, 'person'));
+        q = fill(q, 'person', { ...PERSON_VALUES, nachname });
+        return ok(sealPart(q, form, 'person', personSealInput({ nonce: nonce.repeat(32) })));
+      };
+      const a = [
+        personIn(QUESTIONNAIRE_ID, 'Muster', 'a'),
+        personIn(QUESTIONNAIRE_ID, 'Muster-A', 'b'),
+      ];
+      const b = [personIn(OTHER_ID, 'Muster', 'c'), personIn(OTHER_ID, 'Muster-B', 'd')];
+      const sources = [...a, ...b].map((questionnaire, i) => ({
+        questionnaire,
+        fileSha256: sha(String(i + 1)),
+      }));
+      const groupId = QUESTIONNAIRE_ID < OTHER_ID ? QUESTIONNAIRE_ID : OTHER_ID;
+      const otherId = groupId === QUESTIONNAIRE_ID ? OTHER_ID : QUESTIONNAIRE_ID;
+      const pick = (id: string, q: Questionnaire): MergeDecision => ({
+        kind: 'chooseVersion',
+        questionnaireId: id,
+        role: 'person',
+        contentHash: hashOf(q),
+      });
+      const link: MergeDecision = { kind: 'link', questionnaireIds: [QUESTIONNAIRE_ID, OTHER_ID] };
+      const earlierOther = pick(otherId, (otherId === OTHER_ID ? b : a)[0] as Questionnaire);
+      for (const candidate of [...a, ...b]) {
+        const group = only(merge(sources, [link, earlierOther, pick(groupId, candidate)]));
+        expect(group.conflicts.map((c) => c.code)).toEqual([]);
+        expect(merged(group).parts.person?.map((p) => p.seal?.contentHash)).toEqual([
+          hashOf(candidate),
+        ]);
+      }
+    });
+
     it('keeps a carried choice when nothing contradicts it', () => {
       const group = only(merge([{ questionnaire: mergedChoosing(higher), fileSha256: sha('3') }]));
       expect(merged(group).mergeRecord?.decisions).toEqual([choose(hashOf(higher))]);

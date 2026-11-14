@@ -137,9 +137,10 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
 
   // Writing the PDF stands the page still for seconds: locked meanwhile, so a second click does not
   // write a second PDF (audit 2026-11-14).
-  const [writing, setWriting] = useState(false);
+  // The group whose PDF is being written; the others' buttons are locked too, but keep their label.
+  const [writing, setWriting] = useState<string | undefined>();
   const write = async (group: MergeGroup, kind: 'pdf' | 'json') => {
-    if (writing) return;
+    if (writing !== undefined) return;
     const result = withKanzleiReceipts(group, inbox, APP_VERSION);
     const form = result && forms.byHash(result.questionnaire.form.definitionHash);
     if (!result || !form) {
@@ -170,7 +171,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
         source: 'file',
       },
     );
-    setWriting(true);
+    setWriting(group.questionnaireId);
     try {
       // Paint „PDF wird erstellt …“ before the work blocks the page.
       await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
@@ -180,7 +181,7 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
         detail: [...(created.message.detail ?? []), ...refused],
       });
     } finally {
-      setWriting(false);
+      setWriting(undefined);
     }
   };
 
@@ -429,10 +430,12 @@ export function KanzleiScreen({ registry, remembered, initialInbox, onBack }: Pr
                 <button
                   type="button"
                   className="primary"
-                  disabled={writing}
+                  disabled={writing !== undefined}
                   onClick={() => void write(group, 'pdf')}
                 >
-                  {writing ? 'PDF wird erstellt …' : 'PDF für die Personalakte'}
+                  {writing === group.questionnaireId
+                    ? 'PDF wird erstellt …'
+                    : 'PDF für die Personalakte'}
                 </button>
               </div>
             )}
