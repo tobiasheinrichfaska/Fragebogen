@@ -523,7 +523,9 @@ describe('voucher data', () => {
   it('names the months of the transaction and of the voucher, nothing about an effect', () => {
     const later = draftWith(PARKEN, { ausstellungsdatum: '03.11.2026' });
     const hint = checkHints(later, form.definition).find((h) => h.id === 'spaeterErstellt');
-    expect(hint?.detail).toEqual(['Vorgang im Oktober 2026, Eigenbeleg erstellt im November 2026.']);
+    expect(hint?.detail).toEqual([
+      'Vorgang im Oktober 2026, Eigenbeleg erstellt im November 2026.',
+    ]);
   });
 
   it('requires an explanation only for "aus einem anderen Grund"', () => {
