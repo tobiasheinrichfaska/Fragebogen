@@ -233,6 +233,7 @@ describe('check hints — definition rules', () => {
     expect(Object.keys(HINT_TESTS).sort()).toEqual([
       'ab55Jahren',
       'andereBeschaeftigungAusbildung',
+      'belegSpaeterErstellt',
       'bicPasstNichtZurIban',
       'geringfuegigEntlohnt',
       'geringfuegigNebenKurzfristigen',

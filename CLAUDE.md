@@ -257,6 +257,7 @@ UI/IO-free, exhaustively unit-tested — enforced by ESLint `no-restricted-impor
 | `tests/e2e/flow.spec.ts`                                     | E2E from `file://`: Sofortmeldung employer → person signs → PDF → reopen → Kanzlei → PDF for the personnel file; CSP refuses a fetch; the built file carries the policy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `tests/e2e/guards.ts`                                        | Guards for every E2E run: only file:/data:/blob: requests, no CSP violation, no console error, nothing in browser storage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `tests/e2e/handtests/13_chrome_auswertung.spec.ts`           | App findings of the Claude-in-Chrome evaluation 2026-11-13: links keep typed input (part 2 B1), „Weiter“ keeps its place on a phone (B24), a new page starts at its top (B28)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `tests/e2e/handtests/15_zustimmung.spec.ts`                  | The Zustimmung 1.0.0 in the public build (2026-11-14): the Kanzlei prefills and completes without a signature after its confirmation (AGB sent with the returns), the client gets only the page of the Finanzverwaltung, signs typed; the PDF holds that page and not those of the banks, the Unternehmensregister or the spouse                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `tests/e2e/handtests/14_zugang.spec.ts`                      | The access notice: nothing of the app before the tick, asked again unless remembered, never a cookie, „Alle Daten löschen“ takes it away, a downloaded copy does not ask; without a configured notice the app opens at once. Other hosted tests pre-remember it (`rememberAccess` in `tests/e2e/guards.ts`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `tests/e2e/app.ts`                                           | Shared steps of the end-to-end tests that took over the manual tests (2026-11-08): `openApp` (public build) and `openTestApp` (test build, `?startpunkt=<id>` opens a start point at once), `press` (a button or label by its first word(s); "Weiter" never "Weitere Zeile"), `heading`, `formFields` + `answerUntil` (answers by field id until the summary), `sign`, `download`, `pdfPages`, `expectQuiet`, `toOverview` (done screen → overview, either button label)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `tests/e2e/handtests/`                                       | The former manual tests as Playwright specs, one per manual_tests file (Tobias 2026-11-08: „reduziere die Handtests auf die Dinge, die wir nicht mit virtuellen Browsern abbilden können“); mapping former MT id → spec in `manual_tests/README.md` („Automatisiert“). Prepared states via `?startpunkt=`, fixed clocks, emulated phones (Pixel 7, iPhone 13), the hosted builds served at an https address by `page.route`; tests that need `config/*.local.json` skip without it. `08_testbereich.spec.ts`: the test page (MT-85/130/133) with its sample tests chosen from manual_tests/ by kind, so it keeps working as tests come and go. MT-34/35 keep the PDF and the images of a failed run: attached to the result and copied to `.tmp/e2e-fehlschlaege/<time>_<test>_<browser>_<retry>/`, which the next run does not empty (2026-11-14)                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
@@ -660,6 +661,12 @@ Key design decisions (details in `docs/plan.md`):
   `tests/fixtures/sv-vorgaben-lokal/` over the checkout as the setup script does, and only then run
   tests, builds or read the research. Selecting both repositories when starting a session spares
   that step. Never commit those files.
+- **GitHub actions without asking (Tobias 2026-11-14: „github Aktionen, die reversibel sind, kannst du
+  ohne Rücksprache durchführen“):** what can be undone needs no question — pushing to the work branch,
+  opening and updating pull requests, merging one once its CI is green (undone by a revert), creating
+  branches, re-running CI. Still asked first: force-pushes and history rewrites, deleting branches,
+  tags, releases or repositories, repository settings and permissions, and comments or reviews that
+  speak for him. Uploads (SFTP) are no GitHub action: the public app still only on his explicit OK.
 - **Briefing for the PC session:** `docs/briefing-kanzlei-pc.md` (reset to the rewritten main, one
   full local test run, upload rules, creating the private repo, what the PC no longer does).
 
@@ -887,7 +894,8 @@ Key design decisions (details in `docs/plan.md`):
   restrictions are possible, the client's and the spouse's only as a check hint for the Kanzlei.
   The pages are bundled per recipient, so a page cannot name which returns it covers — the list
   stands in the Kanzlei part above the signature. No place of signing (the seal carries the time).
-  No e2e hand test yet.
+  E2E since 2026-11-14 (`tests/e2e/handtests/15_zustimmung.spec.ts`: Kanzlei prefills, client
+  consents and signs, the PDF carries only the pages that apply).
 - **Automated manual tests (2026-11-08):** `tests/e2e/handtests/` replays the former manual tests in
   virtual browsers; what only a person or a real device shows (look of a real PDF program, finger and
   pen, camera and scanner, share sheet and phone keyboard, DATEV import, upload) stays in
@@ -967,10 +975,10 @@ Key design decisions (details in `docs/plan.md`):
 
 - **2026-11-04:** frozen versions (Sofortmeldung ≤ 1.0.0) carry no `revised`, so they show no
   „zuletzt überarbeitet“. „Teilen“ needs a browser that shares files (Web Share API); an interim
-  file (JSON) is usually not accepted by the share sheet and is downloaded instead. The Eigenbeleg
-  hint `spaeterErstellt` shows the RV detail „Wirkt ab 01.MM.JJJJ.“ of the shared test
-  `inSpaeteremMonat` (misleading there; neutral detail still to do). PLZ → Ort suggestion decided
-  (OpenPLZ, ODbL) but not built; colours of the Kanzlei homepage and fixed button positions still to do.
+  file (JSON) is usually not accepted by the share sheet and is downloaded instead. PLZ → Ort
+  suggestion decided (OpenPLZ, ODbL) but not built. (The Eigenbeleg hint `spaeterErstellt` names the
+  two months since 2026-11-14, test `belegSpaeterErstellt`; before, it showed the RV detail „Wirkt ab
+  …“.)
 
 - **Field limits** (2026-11-03): a device with a wrong clock moves the birth-date bound (`today`)
   with it. DEÜV character rules approximate „Buchstaben“ by the Latin script; postcode formats exist
@@ -979,8 +987,8 @@ Key design decisions (details in `docs/plan.md`):
   older questionnaires or links are checked by the rules of the version that reads them.
 - **Start links in the test area** (2026-11-03): built for the Sofortmeldung chain, the SV cases and the
   Kanzlei cases (station opened with prepared inputs; MT-41–45, 68–70, 88); since 2026-11-07 every test
-  starts in its own environment (MT-40 makes its two real files from two start points with one label,
-  MT-95 from a signed Monatsmeldung start point). A start point signs with a typed name, so a drawn
+  starts in its own environment (MT-40 makes both its real files in one run, MT-95 starts from a signed
+  Monatsmeldung start point). A start point signs with a typed name, so a drawn
   signature is tested in MT-21 only; prepared inputs carry no file of their own and the same time for
   every part. Two start points share one questionnaire only while the test page stays open — after a
   reload the second one builds a new questionnaire.
@@ -1006,17 +1014,14 @@ Key design decisions (details in `docs/plan.md`):
   berufstätig?" (only for the household with earlier jobs in the year). For students only the time since
   the start of studies should count; that start is not asked, so such a case needs the lohnabrechnende
   Stelle's look.
-- **WebKit full-flow E2E was load-sensitive** (2026-11-01: twice the 180 s timeout with four
-  parallel workers, alone 41 s): `playwright.config.ts` now runs two workers (two consecutive full
-  runs 15/15). A timeout again on an idle machine is a real finding.
-- **E2E covers the release build only** (`npm run test:e2e`, Chromium, Firefox and WebKit under
-  `file://`): Sofortmeldung employer → person signs with the mouse → PDF → reopened → Kanzlei →
-  PDF for the personnel file, with the no-network / CSP / console / storage guards. The drafts
-  (preview build), conflicts, QR scans and the interview helpers are checked by unit tests and
-  throw-away headless smoke runs only. WebKit on Windows is not Safari on an iPhone; touch/pen on
-  real devices: manual tests MT-21.
-- **Kanzlei conflicts, QR scans and link proposals** are not in the E2E yet (unit tests + smoke
-  runs 2026-10-30). Manual tests: `manual_tests/05_kanzlei.md`.
+- **WebKit E2E is load-sensitive:** with four parallel workers WebKit hit the 180 s limit
+  (2026-11-01); `playwright.config.ts` runs three. A timeout again on an idle machine is a real finding.
+- **E2E runs the public build and the test build** (`npm run test:e2e`; specs in Chromium, Firefox and
+  WebKit under `file://` and at a served https address, the former manual tests in Chromium and the
+  `@webkit` ones in WebKit): the whole Sofortmeldung chain, drafts through start points, Kanzlei
+  conflicts and link decisions (MT-42/43), QR scans and photos (MT-34/35), with the no-network / CSP /
+  console / storage guards. Playwright's WebKit is not Safari on an iPhone, an emulated phone is not a
+  real one; touch and pen on real devices: `manual_tests/03_abschluss.md`.
 - **The Kanzlei cannot correct values** — it sees, decides between versions and files; a correction
   note with reason ("Korrekturvermerk") is planned later (Tobias 2026-11-01: e.g. a free entry
   „Duetschland“ signed by the person, „Deutschland“ signed by the Kanzlei, both visible in the
@@ -1057,8 +1062,9 @@ Key design decisions (details in `docs/plan.md`):
   confirmed notices live in the draft (`Part.acknowledged`) and survive the interim state — the
   former "re-confirm after loading" was an early implementation note, not a decision; "Alle Daten
   auf diesem Gerät löschen" always asks.
-- **Test page**: the catalogue holds all 65 manual tests, including those only the Kanzlei can run
-  (upload, PDF counter-checks); a tester picks by area. Times come from the device clock; a run lives
+- **Test page**: the catalogue holds the manual tests that remain since 2026-11-08 (23, only what
+  needs a person or a real device), including those only the Kanzlei can run (upload, PDF
+  counter-checks); a tester picks by area. Times come from the device clock; a run lives
   in one browser only (no sync between devices) until the report PDF is sent.
 - **No integrity watcher for the hosted files yet** (deferred by Tobias 2026-11-01): only the upload
   tool compares the hosted file's SHA-256 once after each upload. The `.htaccess` protects visitors
@@ -1106,9 +1112,8 @@ Key design decisions (details in `docs/plan.md`):
   employer behind the gate "Verdienst über der JAEG?" (Tobias 2026-10-30; preselected Nein, a hint compares
   it with the computed yearly pay); without that answer a voluntarily insured person is proposed as
   Firmenzahler (9, "check"); the reduced KV contribution
-  for a full Erwerbsminderungsrente and for jobs fixed to at most ten weeks rests on §§ 44, 50 SGB V,
-  which are not in the local legal texts ("check"); the adding up of several Minijobs is not computed
-  (check); the AV proposal "2" after the Regelaltersgrenze is still "1" in the month it is reached
+  for a full Erwerbsminderungsrente rests on § 50 SGB V, not checked in the text ("check"; jobs fixed
+  to less than ten weeks: see the notes of 2026-11-03); the AV proposal "2" after the Regelaltersgrenze is still "1" in the month it is reached
   (check). Übergangsbereich: the marker 2 (inside and outside in one report) is not proposed. The
   Tätigkeitsschlüssel needs the KldB code from the employer, else "?????" (check).
 - **Health-insurer list, open points:** numbers stem from the insurers' websites (31.10.2026), not from an
@@ -1135,10 +1140,9 @@ Key design decisions (details in `docs/plan.md`):
   a year (test `personalfragebogen2027.test.ts`).
 - **One version per form at a time:** the start screen offers the newest version; picking the
   version by reference date (several valid versions side by side) is not built yet.
-- **Notice confirmations are not saved in the interim file** — they must be given again in the
-  session that signs (deliberate: they belong to the signing).
-- **CSP only as a meta tag** (step 10): `frame-ancestors` and other header-only directives need
-  the hosting headers (step 12). The policy allows exactly the hashes of the inlined script and
+- **CSP as a meta tag** (step 10): `frame-ancestors` and other header-only directives come from the
+  hosting headers (`deploy/.htaccess`: `frame-ancestors 'none'`, `X-Frame-Options DENY`) — a downloaded
+  copy opened from `file://` has none of them. The policy allows exactly the hashes of the inlined script and
   style; any change to the build that adds another inline script or style needs no manual hash
   but a rebuild.
 - **Simple electronic signature only** (eIDAS Art. 3 Nr. 10) — not qualified; device time is not
@@ -1150,11 +1154,11 @@ Key design decisions (details in `docs/plan.md`):
   only records the wish and the employer's day of receipt of the paper original. Other forms that
   need written form still need paper
   (or QES / scan + advanced employer signature); paper notices are handed out on paper.
-- **iPhone/iPad cannot run the HTML file locally** — they need the hosted copy (step 12). Android:
-  Chrome only, via the Files app.
+- **iPhone/iPad cannot run the HTML file locally** — they need the hosted copy on the subdomain.
+  Android: Chrome only, via the Files app.
 - **Printing and re-scanning** a PDF destroys the machine-readable text lines of the data pages
-  (OCR of base64 is unreliable). QR codes on the data pages are decided (Tobias 2026-10-29) and
-  arrive with step 8; until then paper is a readable copy only.
+  (OCR of base64 is unreliable); the QR codes on the data pages carry the same package and are read
+  from a scan or photos instead (see the QR entries below).
 - **Browser memory (2026-11-04, hosted app only):** unsaved changes are kept in localStorage at once
   on every change, at most 7 days; a downloaded copy (`file://`) keeps nothing and warns on closing.
   Two tabs of the hosted app share one record — the last change wins. Safari may wipe it after 7 days
@@ -1223,7 +1227,7 @@ Key design decisions (details in `docs/plan.md`):
   React ≈ 0.2 MB, fonts, QR libraries). Start in Chromium from `file://`: about 0.4 s, 1.8 s at a
   fourfold slowed CPU; without pdf.js it would be about 0.1 s less, so it is not split off.
 - **PDF/A-2u not yet externally validated** — the PDF carries the PDF/A markers (tested) but no
-  veraPDF run yet: no Java locally, veraPDF + qpdf move to the CI (step 12). Acrobat Preflight is
+  veraPDF run yet; the CI (since 2026-11-14) does not run veraPDF or qpdf yet. Acrobat Preflight is
   optional (MT-90). Never advertise "PDF/A" before that.
 - **QR paper path tested with synthetic images only** (rendered codes, image-only PDF, two
   "photos" — headless Edge 2026-10-30). Real prints, scanners and phone cameras: MT-34/MT-35.
@@ -1240,7 +1244,8 @@ Key design decisions (details in `docs/plan.md`):
 - **Help pages "Wo finde ich …?"** (pilot 2026-10-31: Steuer-ID, Versicherungsnummer): positions on
   documents without an official layout (payslip, Meldebescheinigung, most notices) are not stated by any
   source and are shown as such; the Einkommensteuerbescheid position ("oben links") is stated by NRW
-  only. Not yet hosted (step 12); the frozen Sofortmeldung 0.1.0 has no `explainer` paths.
+  only. Hosted with the public app (`docs/hilfe/` → `hilfe/`); the frozen Sofortmeldung 0.1.0 has no
+  `explainer` paths.
 - **Master-data link:** the fragment never reaches the server but stays in bookmarks and the browser
   history — fine for the employer's own data, never for the person's. What the link filled is
   marked in the draft (`Part.preset`, since 2026-11-14), so it holds after an interim file too;
@@ -1272,11 +1277,9 @@ Key design decisions (details in `docs/plan.md`):
   only; a renamed field in another form is not recognised. It replaces preselections only
   (`Part.preset`), never an answer — also not one that equals the form's preselection — and takes
   only answers: a preselection in a draft of the other file stays behind.
-- **No bundled form has a table yet** — the table step is covered by unit tests only; its manual test
-  follows with the Personalfragebogen test version.
 - **`forms/published.json` immutability** is only checked against the current files; removing or
-  editing an entry _together with_ its file is caught once CI compares with the last release (step
-  12). Golden files guard only the fixture form so far.
+  editing an entry _together with_ its file is not caught — the CI (since 2026-11-14) does not compare
+  with the last release yet. Golden files guard only the fixture form so far.
 - **Age check relies on self-reported data:** the birth date is the person's own answer and the
   signing day comes from the device clock; a wrong birth date or a manipulated clock is not
   detectable (a signature dated after a receipt is flagged as implausible).

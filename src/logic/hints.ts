@@ -1400,6 +1400,26 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
       return { holds, detail: holds ? [`Wirkt ab 01.${mm}.${year}.`] : [] };
     },
   },
+  // A voucher written in a later month than the transaction (Eigenbeleg; the RV wording of
+  // inSpaeteremMonat said nothing about a voucher, known since 2026-11-04): names the two months.
+  belegSpaeterErstellt: {
+    args: ['date', 'date'],
+    describe: ([later = '', earlier = '']) =>
+      `„${later}“ in einem späteren Kalendermonat als „${earlier}“ liegt`,
+    run: ([later, earlier]) => {
+      if (typeof later !== 'string' || typeof earlier !== 'string') return undefined;
+      if (!isIsoDate(later) || !isIsoDate(earlier)) return undefined;
+      const holds = later.slice(0, 7) > earlier.slice(0, 7);
+      return {
+        holds,
+        detail: holds
+          ? [
+              `Vorgang im ${germanMonth(earlier.slice(0, 7))}, Eigenbeleg erstellt im ${germanMonth(later.slice(0, 7))}.`,
+            ]
+          : [],
+      };
+    },
+  },
   spaeterAls: {
     args: ['date', 'date'],
     describe: ([later = '', earlier = '']) => `„${later}“ nach „${earlier}“ liegt`,

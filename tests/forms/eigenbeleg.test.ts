@@ -518,6 +518,16 @@ describe('voucher data', () => {
     expect(hintIds(before)).not.toContain('spaeterErstellt');
   });
 
+  // Known since 2026-11-04: the hint borrowed the detail of the RV exemption („Wirkt ab 01.11.2026.“),
+  // which says nothing about a voucher. It names the two months instead.
+  it('names the months of the transaction and of the voucher, nothing about an effect', () => {
+    const later = draftWith(PARKEN, { ausstellungsdatum: '03.11.2026' });
+    const hint = checkHints(later, form.definition).find((h) => h.id === 'spaeterErstellt');
+    expect(hint?.detail).toEqual([
+      'Vorgang im Oktober 2026, Eigenbeleg erstellt im November 2026.',
+    ]);
+  });
+
   it('requires an explanation only for "aus einem anderen Grund"', () => {
     const other = draftWith(PARKEN, { grundOhneOriginal: 'andererGrund' }, END);
     expect(sealed(other)).toMatchObject({ ok: false, detail: ['grundErlaeuterung'] });

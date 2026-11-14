@@ -231,7 +231,9 @@ steht er vorn. `because` ist mit `showIf` Pflicht und nur mit ihm erlaubt.
   mit festen Feldtypen: `regelaltersgrenzeErreicht`, `regelaltersgrenzeNichtErreicht`,
   `regelaltersgrenzeInnerhalbEinesJahres` (Geburtsdatum, Stichtag); `spaeterAls` (Datum, Datum: das
   erste liegt nach dem zweiten); `inSpaeteremMonat` (Datum, Datum: das erste liegt in einem späteren
-  Kalendermonat); `werkstudentenprivileg` (Ja/Nein, Zahl, Ja/Nein, Ja/Nein, Datum, Datum, Ja/Nein,
+  Kalendermonat; nennt den Monatsersten, ab dem es wirkt – für die Rentenversicherung);
+  `belegSpaeterErstellt` (Datum, Datum: wie zuvor, nennt aber beide Monate – für Belege);
+  `werkstudentenprivileg` (Ja/Nein, Zahl, Ja/Nein, Ja/Nein, Datum, Datum, Ja/Nein,
   Zahl-Spalte: nur Semesterferien, Wochenstunden der Vorlesungszeit, Stunden über 20 am Wochenende/abends/nachts,
   befristet, Beginn, befristet bis, über 20 Stunden in den letzten 12 Monaten, Stunden der weiteren
   Beschäftigungen – das Werkstudentenprivileg gilt); `werkstudentenprivilegNachArbeitszeit` (Auswahl
