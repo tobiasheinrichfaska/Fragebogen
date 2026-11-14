@@ -505,7 +505,9 @@ function SummaryStep({ session, onSession, onBanner, onSign, onSaveInterim }: Pr
           </p>
           <ul>
             {checks.map((check) => {
-              const target = check.fields.find((id) => visible.has(id));
+              // Never a field another station decided: it has no question here, and "ändern"
+              // led to the first step instead (audit 2026-11-14).
+              const target = check.fields.find((id) => visible.has(id) && !fixed.has(id));
               return (
                 <li key={check.id}>
                   <span>

@@ -23,7 +23,7 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
 const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
@@ -288,5 +288,48 @@ describe('definition rules for fromRole and because', () => {
       expect.stringContaining('only fields with showIf, requiredIf or fromRole explain them'),
       expect.stringContaining('only conditional roles explain their condition'),
     ]);
+  });
+});
+
+// Audit 2026-11-14: catching up from the summary dropped the page of a table, so "Zur nächsten
+// fehlenden Angabe" landed on the table's first page again and again and never reached the further
+// page (draft Monatsmeldung: Urlaub und Krankheit per employee).
+describe('catching up reaches the further page of a table', () => {
+  const monat = registeredFrom(readJson(join(DRAFTS_DIR, 'lohnmeldung', '0.1.0.json')));
+
+  it('goes to the page, not to the first page of its table', () => {
+    let s = must(
+      enterRole(
+        sessionFromFile(
+          {
+            questionnaire: createQuestionnaire(QUESTIONNAIRE_ID, monat),
+            form: monat,
+            origin: 'published',
+          },
+          { ...at, source: 'file' },
+        ),
+        'arbeitgeber',
+      ),
+    );
+    for (const [id, value] of Object.entries({
+      abrechnungsmonat: '11.2026',
+      agFirma: 'Beispiel GmbH',
+      agBetriebsnummer: '12345671',
+      mandantennummer: '12345',
+      ansprechpartner: 'Erika Muster',
+      mitarbeitende: [
+        { rowId: 'r1', maName: 'Max', maVerguetungsart: 'monatsentgelt', maVerguetung: '2000' },
+      ],
+    })) {
+      s = must(answer(s, id, value));
+    }
+    s = editFromSummary(goTo(s, 'summary'), 'ansprechpartner');
+    const seen: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      s = skipToMissing(s);
+      seen.push(s.stepKey ?? '');
+    }
+    expect(seen).toContain('question:mitarbeitende:fehltage');
+    expect(new Set(seen).size).toBeGreaterThan(1);
   });
 });
