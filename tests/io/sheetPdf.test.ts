@@ -13,6 +13,7 @@ import { buildLugImport, neededInputs } from '../../src/logic/lugImport';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
 import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { keepForPdfa } from '../support/pdfaOut';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const font = (name: string) =>
@@ -77,6 +78,7 @@ describe('Erfassungsblatt as PDF', () => {
       },
       FONTS,
     );
+    keepForPdfa('erfassungsblatt.pdf', written.bytes);
   }, 60_000);
 
   it('is named by numbers only (Gemeinsame Grundsätze § 9a BVV)', () => {

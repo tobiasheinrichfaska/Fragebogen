@@ -41,6 +41,7 @@ import {
 import { verifyQuestionnaire } from '../../src/logic/verify';
 import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, QUESTIONNAIRE_ID } from '../support/sample';
+import { keepForPdfa } from '../support/pdfaOut';
 
 const raw = readJson(join(FORMS_DIR, 'steuerfreigabe', '1.0.0.json'));
 const form: RegisteredForm = registeredFrom(raw);
@@ -641,6 +642,7 @@ describe('the PDF', () => {
       },
       FONTS,
     );
+    keepForPdfa('zustimmung.pdf', written.bytes);
     const text = (await readPdfText(pdfjs as unknown as PdfJsLike, written.bytes)).lines.join('\n');
     expect(text).toContain('Bundeszentralamt für Steuern');
     expect(text).toContain('Allgemeine Geschäftsbedingungen und Datenschutz');

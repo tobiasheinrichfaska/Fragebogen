@@ -57,3 +57,38 @@ jobs:
             .tmp/e2e-fehlschlaege/
           retention-days: 14
           if-no-files-found: ignore
+
+  # PDF/A-2u (Tobias 2026-11-14 „A ja“): the PDFs the app claims as PDF/A, written by the PDF tests
+  # from fictitious data, validated with veraPDF in its official image (pinned) on GitHub's runner.
+  pdfa:
+    name: PDF/A-2u mit veraPDF
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: PDFs schreiben
+        run: >-
+          PDFA_OUT="$RUNNER_TEMP/pdfa" npx vitest run tests/io/pdf.test.ts tests/io/sheetPdf.test.ts
+          tests/io/testReportPdf.test.ts tests/forms/steuerfreigabe.test.ts
+      - name: Mit veraPDF prüfen
+        run: |
+          cd "$RUNNER_TEMP/pdfa"
+          files=(*.pdf)
+          ls -l "${files[@]}"
+          docker run --rm -v "$RUNNER_TEMP/pdfa:/data:ro" verapdf/cli:v1.30.3 \
+            --flavour 2u --format xml "${files[@]/#//data/}" > "$RUNNER_TEMP/verapdf.xml" || true
+          node "$GITHUB_WORKSPACE/tests/support/verapdfReport.ts" "$RUNNER_TEMP/verapdf.xml" "${#files[@]}"
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verapdf
+          path: |
+            ${{ runner.temp }}/pdfa/
+            ${{ runner.temp }}/verapdf.xml
+          retention-days: 14
+          if-no-files-found: ignore
