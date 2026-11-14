@@ -1328,8 +1328,14 @@ not b9c454b (the old cutting missed the same codes), but the raster — at 2.65 
 point nearly every PDF lost full-size codes (jsQR samples modules on their edges); a cell is now
 also tried enlarged by half: 0 of 1792 phases and 0 of the real-PDF sweep 2.0–4.0 missed (before
 51 and dozens). Regression tests in `src/io/qr.test.ts` (7 red before). MT-34/35 keep their files
-on failure. Next: branch into main, history rewrite, force-push after his go, then the Kanzlei PC
-resets to the new main, runs all tests and uploads.
+on failure. Then (his instruction) the branch went into main (PR #1, merge commit), the history was
+rewritten without the tester names and, on his „go“, force-pushed: `main` d33d4d3 → 3a417c5 (223
+commits, 106 new SHAs from 70b71b1 on — every SHA of 2026-11-04 to 2026-11-14 in this file and in
+the reports names the old commit; authors, dates, messages and the final tree unchanged). The branch
+`claude/inspiring-faraday-4jyldv` could not be deleted (the cloud's git proxy drops deletions) and was
+reset to the new main instead. GitHub still keeps the old commits through the refs of PR #1
+(`refs/pull/1/head`, `/merge`); only GitHub Support removes those. Next: the Kanzlei PC resets to the
+new main, runs all tests and uploads.
 
 **Audit 2026-11-14 (cloud session, PR tobiasheinrichfaska/Fragebogen#1):** Tobias: „Fehler und
 Effizienz“, then „kompletten Audit mit Bereinigungsschleifen … Befunde müssen erst eine Prüfung
