@@ -1234,6 +1234,15 @@ Key design decisions (details in `docs/plan.md`):
   count), so it depends on the station order whether the person is asked. Whole **roles** can depend on another role's sealed
   answers (`requiredIf: { kind: 'answer' }`, e.g. the spouse at a joint assessment). No date/age
   comparisons in conditions.
+- **A taken-over answer the other role later withdraws or changes stays** (audit 2026-11-14): a part
+  does not record who gave a value, so a copy (`fromRole`) or a proposal (`changeable`) that the
+  deciding role's newer sealed version no longer holds, or proposes otherwise, is kept and only
+  named — the check hints `fromRoleWithdrawn:<field>` and „… steht noch der frühere Vorschlag …“,
+  shown to the role under „Bitte prüfen“ before it signs and to the Kanzlei. Changing the data
+  instead deleted answers the role gave itself (loop 2 of the audit). The history comes from sealed
+  versions: when the deciding role **takes its seal back** („Unterschrift/Abschluss zurücknehmen“)
+  instead of starting a new version, the old version is gone and no hint appears — open (a marker in
+  the draft or refusing that reopen would change the file format or the flow; decision Tobias).
 - **Verification proves consistency, not authorship:** anyone can produce a fresh, self-consistent
   seal; only confirmations (other roles' seals, receipts, later the DATEV filing) raise the level,
   and receipts are as trustworthy as the station that wrote them.
@@ -1279,6 +1288,20 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 ---
 
 ## Status / next step
+
+**Audit 2026-11-14 (cloud session, PR tobiasheinrichfaska/Fragebogen#1):** Tobias: „Fehler und
+Effizienz“, then „kompletten Audit mit Bereinigungsschleifen … Befunde müssen erst eine Prüfung
+bestehen, die versucht, sie zu widerlegen“. Report: `reports/2026-11-14_11-30-00_audit-report.md`.
+Every finding went to an independent refuter first; survivors were fixed with a regression test
+that failed before; three further review loops on the fixes (loop 2 found that two fixes deleted
+own answers — replaced by check hints). Notable: the last, smaller QR code of a page was never read
+from a scan (b9c454b); crafted files/links crashed the app (039f83f); PDF writing 3x and interview
+steps 20x faster (13776bc). Not uploaded (no SFTP from the cloud). **Open for Tobias:** tester login
+names in this file (hand-over 2026-11-04 evening); third-party data in the git history of the removed
+`e-rechnung/`; the reopen gap of the takeover hints; a link-filled marker for S5; refusing huge
+photos by their header. E2E here only in Chromium (preinstalled build via a gitignored
+`.tmp/e2e/` config); tests whose output path holds „—“ or „€“ cannot hand their file to the page in
+this Linux environment (also on the pre-audit build) — not an app fault.
 
 **Hand-over 2026-11-14:** Tobias: „aktualisiere die öffentlichen Apps“ → public app uploaded at
 819810e (all app changes of 2026-11-13). Then „nimm die Übermittlungsbestätigung auf die öffentliche
