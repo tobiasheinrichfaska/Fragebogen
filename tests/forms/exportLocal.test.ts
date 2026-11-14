@@ -90,8 +90,12 @@ function questionnaire(person: Answers = PERSON, employer: Answers = EMPLOYER): 
   return filled(form, 'arbeitgeber', employer, filled(form, 'person', person, base));
 }
 
-describe.skipIf(!existsSync(FILE))('local export mappings (config/export.local.json)', () => {
-  const parsed = parseExportMappings(JSON.parse(readFileSync(FILE, 'utf8')));
+// Vitest runs the body of a skipped suite too (to collect its tests), so the file is read only where
+// it exists — reading it unconditionally made the whole file fail without it (found 2026-11-14).
+const HAS_FILE = existsSync(FILE);
+
+describe.skipIf(!HAS_FILE)('local export mappings (config/export.local.json)', () => {
+  const parsed = parseExportMappings(HAS_FILE ? JSON.parse(readFileSync(FILE, 'utf8')) : []);
   const mappings = parsed.ok ? parsed.mappings : [];
   const lug = mappings.find((m) => mappingFor(m, form.definition)) as ExportMapping;
   const build = (q: Questionnaire, entries: LugEntries = {}) =>
