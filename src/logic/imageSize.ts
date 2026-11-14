@@ -89,7 +89,12 @@ function jpegSize(
 ): ImageSize | undefined {
   let offset = 2;
   while (fits(offset, 4)) {
-    if (bytes[offset] !== 0xff) return undefined;
+    // Bytes between segments are skipped, as decoders do (review of 7ed45b2: one stray byte hid
+    // the frame header from this check while Chromium decoded the picture).
+    if (bytes[offset] !== 0xff) {
+      offset += 1;
+      continue;
+    }
     const marker = bytes[offset + 1] ?? 0;
     if (marker === 0xff) {
       offset += 1;
@@ -115,20 +120,70 @@ function jpegSize(
 }
 
 /**
- * HEIC and AVIF state each picture's size in an `ispe` box; a large picture is stored as tiles
- * with one box for the whole, so the largest one counts. Only the first 1 MB is searched.
+ * HEIC and AVIF state each picture's size in an `ispe` property (meta → iprp → ipco); a large
+ * picture is stored as tiles with one property for the whole, so the largest one counts. The boxes
+ * are walked, not searched: the four letters may occur anywhere in picture data or metadata text
+ * (review of 7ed45b2: a title in XMP made a 640 × 480 photo "too large").
  */
 function isobmffSize(bytes: Uint8Array, view: DataView, fits: Fits): ImageSize | undefined {
+  const meta = childBox(bytes, view, fits, 0, bytes.length, 'meta');
+  // `meta` is a full box: version and flags come before its children.
+  const iprp = meta && childBox(bytes, view, fits, meta.start + 4, meta.end, 'iprp');
+  const ipco = iprp && childBox(bytes, view, fits, iprp.start, iprp.end, 'ipco');
+  if (!ipco) return undefined;
   let best: ImageSize | undefined;
-  const end = Math.min(bytes.length, 1_000_000);
-  for (let i = 4; i + 16 <= end; i++) {
-    if (bytes[i] !== 0x69 || bytes[i + 1] !== 0x73 || bytes[i + 2] !== 0x70) continue;
-    if (bytes[i + 3] !== 0x65 || !fits(i + 8, 8)) continue;
-    const width = view.getUint32(i + 8);
-    const height = view.getUint32(i + 12);
+  for (const box of boxes(bytes, view, fits, ipco.start, ipco.end)) {
+    if (box.type !== 'ispe' || !fits(box.start + 4, 8) || box.start + 12 > box.end) continue;
+    const width = view.getUint32(box.start + 4);
+    const height = view.getUint32(box.start + 8);
     if (width > 0 && height > 0 && width * height > (best ? best.width * best.height : 0)) {
       best = { width, height };
     }
   }
   return best;
+}
+
+interface Box {
+  type: string;
+  /** First byte of the content, after the header. */
+  start: number;
+  end: number;
+}
+
+function childBox(
+  bytes: Uint8Array,
+  view: DataView,
+  fits: Fits,
+  start: number,
+  end: number,
+  type: string,
+): Box | undefined {
+  for (const box of boxes(bytes, view, fits, start, end)) if (box.type === type) return box;
+  return undefined;
+}
+
+/** The boxes between start and end; stops at the first one whose size does not fit. */
+function* boxes(
+  bytes: Uint8Array,
+  view: DataView,
+  fits: Fits,
+  start: number,
+  end: number,
+): Generator<Box> {
+  let offset = start;
+  while (offset + 8 <= end && fits(offset, 8)) {
+    let size = view.getUint32(offset);
+    let header = 8;
+    if (size === 1) {
+      if (!fits(offset + 8, 8) || view.getUint32(offset + 8) !== 0) return;
+      size = view.getUint32(offset + 12);
+      header = 16;
+    } else if (size === 0) {
+      size = end - offset;
+    }
+    if (size < header || offset + size > end) return;
+    const type = String.fromCharCode(...bytes.subarray(offset + 4, offset + 8));
+    yield { type, start: offset + header, end: offset + size };
+    offset += size;
+  }
 }

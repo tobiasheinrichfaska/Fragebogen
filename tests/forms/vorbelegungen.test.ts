@@ -111,10 +111,15 @@ describe('the link and the interim file', () => {
     expect(value(reopened, 'kanzlei', 'glaeubigerStrasse')).toBe('Andere Straße 2');
   });
 
-  it('leaves a link value cleared by hand empty', () => {
+  // Empty is no answer: a link value a person takes out stays out while the questionnaire is open,
+  // but an empty field is filled again later — marked as the link's, so it says "bitte prüfen".
+  it('leaves a link value emptied by hand empty while open, and fills the empty field later', () => {
     const cleared = must(answer(kanzleiDraft(LINK), 'glaeubigerStrasse', null));
+    const again = withLink(must(answer(cleared, 'mandantName', 'Erika M.')));
+    expect(value(again, 'kanzlei', 'glaeubigerStrasse')).toBeNull();
     const reopened = throughInterimFile(cleared, 'kanzlei', LINK);
-    expect(value(reopened, 'kanzlei', 'glaeubigerStrasse')).toBeNull();
+    expect(value(reopened, 'kanzlei', 'glaeubigerStrasse')).toBe('Beispielweg 1');
+    expect(filledFromLink(reopened, 'glaeubigerStrasse')).toBe(true);
   });
 });
 
@@ -262,5 +267,65 @@ describe('a proposal of another role follows it while nobody changes it', () => 
     );
     expect(value(back, 'kontoinhaber', 'weitereKontoinhaber')).toBe(false);
     expect(currentPart(back.questionnaire, 'kontoinhaber')?.acknowledged).toEqual(['datenschutz']);
+  });
+});
+
+// Review of 7ed45b2: sealing stores every visible unanswered field as null, so a new version or a
+// reopened part held nulls the link took for answers — it filled nothing there any more (before
+// the marks it did, and App.continueRole relies on it).
+describe('the link in a new version or a reopened part', () => {
+  const pfb = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
+  const EMPLOYER = {
+    agFirma: 'Beispiel Bau GmbH',
+    agBetriebsnummer: '12345671',
+    agFamilienname: 'Musterfrau',
+    agVorname: 'Erika',
+    agBeschaeftigungsbeginn: '02.11.2026',
+    agArbeitsortBundesland: 'BW',
+    agBeschaeftigungsart: 'minijob',
+    agTaetigkeit: 'Aushilfe im Verkauf',
+    agBefristet: false,
+    agArbeitszeitform: 'teilzeit',
+    agArbeitszeitmodell: 'monatsstunden',
+    agMonatsstunden: '40',
+    agArbeitstageProWoche: '2',
+    agUrlaubstage: '8',
+    agUrlaubBezug: 'individuell',
+    agEntgeltArt: 'stundenlohn',
+    agStundenlohn: '14,50',
+    agErwartetMonat: '520,00',
+    agSteuernummer: '21/815/08150',
+    agBav: 'keine',
+    agSchwerbehinderung: 'nein',
+    agBeziehung: 'keine',
+    agBesteuerung: 'elstam',
+  };
+  const FIRM: MasterData = {
+    tarifvertrag: 'Manteltarifvertrag Beispielbranche',
+    betriebsstaette: 'Filiale Beispielstadt',
+  };
+  function employerSealedWithoutLink(): Session {
+    const entered = must(enterRole(startSession(pfb, QUESTIONNAIRE_ID), 'arbeitgeber'));
+    const filled = answerAll(entered, EMPLOYER);
+    const sealed = must(
+      seal(filled, { nonce: 'd4'.repeat(16), systemNote: note(AT.local, AT.utc), now: AT }),
+    );
+    expect(latestSealed(sealed.questionnaire, 'arbeitgeber')?.data.agTarif).toBeNull();
+    return sealed;
+  }
+
+  it.each(['newVersion', 'reopen'] as const)('fills what was signed empty (%s)', (how) => {
+    const sealed = employerSealedWithoutLink();
+    const opened = must(
+      how === 'newVersion' ? startNewVersion(sealed, 'arbeitgeber') : reopen(sealed, 'arbeitgeber'),
+    );
+    const linked = withLink(opened, FIRM);
+    expect(value(linked, 'arbeitgeber', 'agTarif')).toBe('Manteltarifvertrag Beispielbranche');
+    expect(value(linked, 'arbeitgeber', 'agBetriebsstaette')).toBe('Filiale Beispielstadt');
+    expect(filledFromLink(linked, 'agTarif')).toBe(true);
+    // A value signed earlier stays — it is an answer.
+    expect(value(withLink(opened, { firma: 'Andere GmbH' }), 'arbeitgeber', 'agFirma')).toBe(
+      'Beispiel Bau GmbH',
+    );
   });
 });
