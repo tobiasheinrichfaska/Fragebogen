@@ -1,7 +1,7 @@
 // App frame: start, overview ("Wer füllt jetzt aus?"), interview, signature, completion. All state
 // is in memory (session.ts); files are the way out. Only the hosted app keeps unsaved changes in
 // this browser for a while (logic/resume.ts). Rules come from the logic layer.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { APP_NAME, APP_VERSION } from '../appInfo';
 import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
@@ -229,6 +229,13 @@ function Workspace({
       received?.session ??
       (linked ? startSession(linked, newQuestionnaireId()) : undefined),
   );
+  // The session as it is now, for work that awaits: writing a PDF or reading a scan freezes the page
+  // for seconds, and a click queued meanwhile runs before the work ends (audit 2026-11-14: the old
+  // session was then put back — a blank interview screen, a withdrawn signature undone).
+  const currentSession = useRef(session);
+  useLayoutEffect(() => {
+    currentSession.current = session;
+  }, [session]);
   const [screen, setScreen] = useState<Screen>(
     start
       ? { kind: START_SCREENS[start.screen] }
@@ -441,6 +448,12 @@ function Workspace({
     if (!session) return;
     const opened = await readOpened(file);
     if (opened?.kind !== 'session') return;
+    if (currentSession.current !== session) {
+      return setBanner({
+        tone: 'warning',
+        text: 'Der Fragebogen wurde geändert, während die Datei gelesen wurde. Bitte die Datei noch einmal übernehmen.',
+      });
+    }
     const result = takeOver(session, {
       questionnaire: opened.session.questionnaire,
       form: opened.session.form,
@@ -469,8 +482,10 @@ function Workspace({
     await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
     try {
       const result = await createPdf(session, password);
-      setSession(result.session);
       setBanner(result.message);
+      // Something done while the page stood still wins; the PDF shows the state it was made for.
+      if (currentSession.current !== session) return;
+      setSession(result.session);
       if (result.message.tone === 'success') setPdfMadeFor(result.session);
     } finally {
       setPdfBusy(false);
