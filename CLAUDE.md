@@ -973,10 +973,10 @@ Key design decisions (details in `docs/plan.md`):
 
 - **2026-11-04:** frozen versions (Sofortmeldung ≤ 1.0.0) carry no `revised`, so they show no
   „zuletzt überarbeitet“. „Teilen“ needs a browser that shares files (Web Share API); an interim
-  file (JSON) is usually not accepted by the share sheet and is downloaded instead. The Eigenbeleg
-  hint `spaeterErstellt` shows the RV detail „Wirkt ab 01.MM.JJJJ.“ of the shared test
-  `inSpaeteremMonat` (misleading there; neutral detail still to do). PLZ → Ort suggestion decided
-  (OpenPLZ, ODbL) but not built.
+  file (JSON) is usually not accepted by the share sheet and is downloaded instead. PLZ → Ort
+  suggestion decided (OpenPLZ, ODbL) but not built. (The Eigenbeleg hint `spaeterErstellt` names the
+  two months since 2026-11-14, test `belegSpaeterErstellt`; before, it showed the RV detail „Wirkt ab
+  …“.)
 
 - **Field limits** (2026-11-03): a device with a wrong clock moves the birth-date bound (`today`)
   with it. DEÜV character rules approximate „Buchstaben“ by the Latin script; postcode formats exist
