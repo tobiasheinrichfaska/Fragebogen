@@ -25,11 +25,13 @@ import {
 import type { RegisteredForm } from './formRegistry';
 import { SHA256_HEX } from './hash';
 import type { IssueCode } from './issues';
+import { mergeHashOf } from './mergeRecord';
 import type {
   FieldId,
   FieldValue,
   FormDefinition,
   Part,
+  PresetSource,
   Questionnaire,
   Receipt,
   ReceivedPart,
@@ -191,7 +193,18 @@ function withVersions(questionnaire: Questionnaire, role: RoleId, versions: Part
   const parts = { ...questionnaire.parts };
   if (versions.length === 0) Reflect.deleteProperty(parts, role);
   else parts[role] = versions;
-  return { ...questionnaire, parts };
+  return withMergeHash(questionnaire, { ...questionnaire, parts });
+}
+
+/**
+ * A merged file stays valid through the app's own transitions (audit 2026-11-14, Tobias: renew the
+ * hash): a station that continues it changes the parts, so the merge hash is computed anew — but
+ * only where it held before, so a record altered outside the app stays reported as altered. The
+ * hash carries no secret; anyone could renew it, the app just does not repair a broken one.
+ */
+function withMergeHash(before: Questionnaire, after: Questionnaire): Questionnaire {
+  if (after.mergeRecord === undefined || before.mergeHash !== mergeHashOf(before)) return after;
+  return { ...after, mergeHash: mergeHashOf(after) };
 }
 
 function matchesForm(questionnaire: Questionnaire, form: RegisteredForm): boolean {
@@ -211,9 +224,100 @@ export function startPart(
   if (!roleOf(form.definition, role)) return refuse('unknownRole', [role]);
   if (currentPart(questionnaire, role)?.status === 'draft') return refuse('draftExists', [role]);
   const previous = latestSealed(questionnaire, role);
+  // A new version starts from what the role signed — answers, every one; the first version starts
+  // with the form's preselections, marked as such (Part.preset).
   const data = previous ? { ...previous.data } : initialData(form.definition, role);
-  const draft: Part = { role, status: 'draft', data };
+  const preset = previous ? {} : Object.fromEntries(Object.keys(data).map((id) => [id, 'initial']));
+  const draft = withPreset(
+    { role, status: 'draft', data },
+    preset as Record<FieldId, PresetSource>,
+  );
   return done(withVersions(questionnaire, role, [...versionsOf(questionnaire, role), draft]));
+}
+
+/** Where the app's preselection in the role's draft came from; undefined for an answer. */
+export function presetOf(part: Part | undefined, fieldId: FieldId): PresetSource | undefined {
+  return part?.status === 'draft' &&
+    part.preset !== undefined &&
+    Object.hasOwn(part.preset, fieldId)
+    ? part.preset[fieldId]
+    : undefined;
+}
+
+/**
+ * Marks a value the app put into the role's draft as a preselection (Part.preset) — e.g. after
+ * filling it from the master-data link through setValue. Without a draft or a value nothing
+ * changes.
+ */
+export function markPreset(
+  questionnaire: Questionnaire,
+  role: RoleId,
+  fieldId: FieldId,
+  source: PresetSource,
+): Questionnaire {
+  const draft = currentPart(questionnaire, role);
+  if (draft?.status !== 'draft' || (draft.data[fieldId] ?? null) === null) return questionnaire;
+  if (presetOf(draft, fieldId) === source) return questionnaire;
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = withPreset(draft, { ...draft.preset, [fieldId]: source });
+  return withVersions(questionnaire, role, versions);
+}
+
+/**
+ * Takes a preselection back: the field returns to the form's own preselection, or to never
+ * answered. Refused for an answer — only the app's own value may go (e.g. the link value of a case
+ * that no longer holds).
+ */
+export function resetPreset(
+  questionnaire: Questionnaire,
+  form: RegisteredForm,
+  role: RoleId,
+  fieldId: FieldId,
+): Transition {
+  if (!matchesForm(questionnaire, form)) return refuse('wrongForm');
+  const draft = currentPart(questionnaire, role);
+  if (draft?.status !== 'draft') return refuse('noDraft', [role]);
+  if (presetOf(draft, fieldId) === undefined) return refuse('alreadyAnswered', [fieldId]);
+  const initial = fieldsOfRole(form.definition, role).find((f) => f.id === fieldId)?.initial;
+  const data = { ...draft.data };
+  const preset = { ...draft.preset };
+  if (initial === undefined) {
+    Reflect.deleteProperty(data, fieldId);
+    Reflect.deleteProperty(preset, fieldId);
+  } else {
+    data[fieldId] = initial;
+    preset[fieldId] = 'initial';
+  }
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = withPreset({ ...draft, data }, preset);
+  return done(withVersions(questionnaire, role, versions));
+}
+
+/** Makes the app's preselection an answer as it stands (e.g. another file gives the same answer). */
+export function endPreset(
+  questionnaire: Questionnaire,
+  role: RoleId,
+  fieldId: FieldId,
+): Questionnaire {
+  const draft = currentPart(questionnaire, role);
+  if (presetOf(draft, fieldId) === undefined || !draft) return questionnaire;
+  const versions = [...versionsOf(questionnaire, role)];
+  versions[versions.length - 1] = withoutPreset(draft, fieldId);
+  return withVersions(questionnaire, role, versions);
+}
+
+function withPreset(part: Part, preset: Readonly<Record<FieldId, PresetSource>>): Part {
+  const copy: Part = { ...part };
+  Reflect.deleteProperty(copy, 'preset');
+  return Object.keys(preset).length === 0 ? copy : { ...copy, preset: { ...preset } };
+}
+
+/** The draft's marks without the field's — once a person changed or cleared its value. */
+function withoutPreset(part: Part, fieldId: FieldId): Part {
+  if (part.preset === undefined || !Object.hasOwn(part.preset, fieldId)) return part;
+  const preset = { ...part.preset };
+  Reflect.deleteProperty(preset, fieldId);
+  return withPreset(part, preset);
 }
 
 /** Normalises and stores one value in the role's draft. */
@@ -246,7 +350,12 @@ export function setValue(
       : '';
     return refuse('fieldNotAvailable', [fieldId, reason]);
   }
-  const updated: Part = { ...draft, data: { ...draft.data, [fieldId]: value.value } };
+  // A value that differs from the app's preselection (also an empty one) is an answer now; the
+  // same value again leaves it a preselection, as "Weiter" without a change does.
+  const before = draft.data[fieldId];
+  const answered =
+    before === undefined || !sameValue(before, value.value) ? withoutPreset(draft, fieldId) : draft;
+  const updated: Part = { ...answered, data: { ...draft.data, [fieldId]: value.value } };
   // The second of two ordered dates is refused on the wrong side; moving the first one is allowed
   // and caught by the summary and the seal.
   const [misordered] = dateOrderProblems(form.definition, role, updated.data, fieldId);
@@ -283,30 +392,9 @@ export function fixedByOtherRoles(
   definition: FormDefinition,
   role: RoleId,
 ): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
-  return fromOtherRoles(questionnaire, definition, role, false);
-}
-
-/**
- * The answers other roles only propose (`fromRole.changeable`, e.g. the account data the Kanzlei
- * prefills): copied into fields never answered, then the role's own answers.
- */
-export function proposedByOtherRoles(
-  questionnaire: Questionnaire,
-  definition: FormDefinition,
-  role: RoleId,
-): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
-  return fromOtherRoles(questionnaire, definition, role, true);
-}
-
-function fromOtherRoles(
-  questionnaire: Questionnaire,
-  definition: FormDefinition,
-  role: RoleId,
-  changeable: boolean,
-): ReadonlyMap<FieldId, { value: FieldValue; from: RoleId }> {
   const found = new Map<FieldId, { value: FieldValue; from: RoleId }>();
   for (const field of fieldsOfRole(definition, role)) {
-    if (!field.fromRole || (field.fromRole.changeable === true) !== changeable) continue;
+    if (!field.fromRole || field.fromRole.changeable === true) continue;
     const { role: from, field: source } = field.fromRole;
     const value = latestSealed(questionnaire, from)?.data[source] ?? null;
     if (value !== null) found.set(field.id, { value, from });
@@ -315,50 +403,61 @@ function fromOtherRoles(
 }
 
 /**
- * Copies the answers other roles decided into the role's draft (see fixedByOtherRoles) and ends
- * "Weiß ich gerade nicht" on them. `replaced` names fields whose earlier answer differed.
- * Without a draft nothing changes.
+ * Copies what other roles decide or propose (fromRole) into the role's draft, as the latest sealed
+ * part of that role says, and ends "Weiß ich gerade nicht" on them. A copy is marked as such
+ * (Part.preset `otherRole`) and follows its source while nobody changes it: a newer value replaces
+ * it, a value the source no longer gives takes it out again (`withdrawn`) — so a role that took
+ * its seal back and changed its answer leaves no stale copy behind. A decision (fixed) replaces
+ * an own answer too (`replaced`); a proposal never touches an answer, even one left empty on
+ * purpose. Without a draft nothing changes.
  */
 export function adoptFromOtherRoles(
   questionnaire: Questionnaire,
   form: RegisteredForm,
   role: RoleId,
-): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[] } {
+): { questionnaire: Questionnaire; adopted: FieldId[]; replaced: FieldId[]; withdrawn: FieldId[] } {
   const draft = currentPart(questionnaire, role);
-  const fixed = fixedByOtherRoles(questionnaire, form.definition, role);
-  const proposed = proposedByOtherRoles(questionnaire, form.definition, role);
-  const unchanged = { questionnaire, adopted: [], replaced: [] };
-  if (
-    !matchesForm(questionnaire, form) ||
-    draft?.status !== 'draft' ||
-    fixed.size + proposed.size === 0
-  ) {
-    return unchanged;
-  }
+  const unchanged = { questionnaire, adopted: [], replaced: [], withdrawn: [] };
+  if (!matchesForm(questionnaire, form) || draft?.status !== 'draft') return unchanged;
   const adopted: FieldId[] = [];
   const replaced: FieldId[] = [];
+  const withdrawn: FieldId[] = [];
   const data = { ...draft.data };
-  for (const [id, { value }] of fixed) {
-    const before = data[id] ?? null;
-    if (sameValue(before, value)) continue;
-    if (before !== null) replaced.push(id);
+  const preset = { ...draft.preset };
+  for (const field of fieldsOfRole(form.definition, role)) {
+    if (!field.fromRole) continue;
+    const { id } = field;
+    const source = latestSealed(questionnaire, field.fromRole.role)?.data[field.fromRole.field];
+    const before = data[id];
+    const copy = preset[id] === 'otherRole';
+    if (source === undefined || source === null) {
+      if (copy) {
+        Reflect.deleteProperty(data, id);
+        Reflect.deleteProperty(preset, id);
+        withdrawn.push(id);
+      }
+      continue;
+    }
+    if (before !== undefined && sameValue(before, source)) continue;
+    if (field.fromRole.changeable === true && before !== undefined && !copy) continue;
+    if (before !== undefined && before !== null) replaced.push(id);
     adopted.push(id);
-    data[id] = value;
+    data[id] = source;
+    preset[id] = 'otherRole';
   }
-  // A proposal never overwrites: an answer, even one left empty on purpose, is the role's own.
-  for (const [id, { value }] of proposed) {
-    if (data[id] !== undefined) continue;
-    adopted.push(id);
-    data[id] = value;
-  }
-  if (adopted.length === 0) return unchanged;
+  if (adopted.length === 0 && withdrawn.length === 0) return unchanged;
   const updated = withDeferred(
-    { ...draft, data },
+    withPreset({ ...draft, data }, preset),
     (draft.deferred ?? []).filter((id) => !adopted.includes(id)),
   );
   const versions = [...versionsOf(questionnaire, role)];
   versions[versions.length - 1] = updated;
-  return { questionnaire: withVersions(questionnaire, role, versions), adopted, replaced };
+  return {
+    questionnaire: withVersions(questionnaire, role, versions),
+    adopted,
+    replaced,
+    withdrawn,
+  };
 }
 
 /**
@@ -697,7 +796,9 @@ export function addReceipt(questionnaire: Questionnaire, receipt: Receipt): Tran
       unknown.map((ref) => `${ref.role} ${ref.contentHash}`),
     );
   const copy: Receipt = { ...receipt, parts: receipt.parts.map((ref) => ({ ...ref })) };
-  return done({ ...questionnaire, receipts: [...questionnaire.receipts, copy] });
+  return done(
+    withMergeHash(questionnaire, { ...questionnaire, receipts: [...questionnaire.receipts, copy] }),
+  );
 }
 
 /** Receipt note for a sealed part of another role, as stored in the receiving station's seal. */

@@ -9,6 +9,7 @@ import {
   ACKNOWLEDGEMENT_KINDS,
   INPUT_TYPES,
   PART_STATUSES,
+  PRESET_SOURCES,
   RECEIPT_SOURCES,
   RECEIVED_SOURCES,
   UA_SOURCES,
@@ -116,6 +117,7 @@ function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
     'seal',
     'deferred',
     'acknowledged',
+    'preset',
   ]);
   if (!o) return undefined;
   const role = d.string(o.role, `${path}.role`, ID);
@@ -134,7 +136,21 @@ function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
     o.acknowledged === undefined
       ? undefined
       : d.array(o.acknowledged, `${path}.acknowledged`, (v, p) => d.string(v, p, ID), 1);
+  const preset =
+    o.preset === undefined
+      ? undefined
+      : d.record(o.preset, `${path}.preset`, ID, (v, p) => d.literal(v, p, PRESET_SOURCES));
   if (role === undefined || status === undefined || data === undefined) return undefined;
+  if (preset !== undefined && status !== 'draft') {
+    return d.report(`${path}.preset`, 'only drafts hold preselections');
+  }
+  if (preset !== undefined && Object.keys(preset).length === 0) {
+    return d.report(`${path}.preset`, 'is empty');
+  }
+  const unset = Object.keys(preset ?? {}).filter((id) => (data[id] ?? null) === null);
+  if (unset.length > 0) {
+    return d.report(`${path}.preset`, `marks fields without a value: ${unset.join(', ')}`);
+  }
   if (acknowledged !== undefined && status !== 'draft') {
     return d.report(`${path}.acknowledged`, 'only drafts hold confirmed notices');
   }
@@ -155,6 +171,7 @@ function decodePart(d: Decoder, raw: unknown, path: string): Part | undefined {
     ...(seal === undefined ? {} : { seal }),
     ...(deferred === undefined ? {} : { deferred }),
     ...(acknowledged === undefined ? {} : { acknowledged }),
+    ...(preset === undefined ? {} : { preset }),
   };
 }
 

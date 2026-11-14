@@ -107,7 +107,8 @@ describe('filling the link into the Personalfragebogen', () => {
     expect(value(s, 'agBesteuerung')).toBe('pauschal25');
     expect(value(s, 'agPauschalsteuerAbgewaelzt')).toBe(false);
     s = must(answer(s, 'agBeschaeftigungsart', 'pruefen'));
-    expect(value(s, 'agBesteuerung')).toBeNull();
+    // Back to never answered (Part.preset): asked again, and a later case may fill it.
+    expect(value(s, 'agBesteuerung')).toBeUndefined();
     expect(filledFromLink(s, 'agBesteuerung')).toBe(false);
   });
 
