@@ -1,7 +1,7 @@
 {
   "id": "sofortmeldung",
   "version": "1.1.0",
-  "revised": "2026-11-15T21:36",
+  "revised": "2026-11-15T23:39",
   "title": "Personalfragebogen: Angaben für die Sofortmeldung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -16,29 +16,29 @@
       "id": "vertretung",
       "label": "Gesetzliche Vertretung",
       "stationHeading": "Unterschrift der gesetzlichen Vertretung",
-      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. Ich versichere, dass ich so unterschreiben darf, wie ich es angegeben habe; unterschreibe ich mit Einverständnis des anderen Elternteils, liegt dieses Einverständnis vor.",
       "signature": "required",
       "requiredIf": {
         "kind": "minorOnSigning",
         "birthDateField": "geburtsdatum"
       },
-      "because": "Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.",
+      "because": "Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben und die Hinweise auf die Pflichten der Person mit ihrer Unterschrift.",
       "signerNameField": "vertretungName"
     },
     {
       "id": "vertretung2",
       "label": "Zweite gesetzliche Vertretung",
       "stationHeading": "Unterschrift der zweiten gesetzlichen Vertretung",
-      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "confirmationText": "Als zweite gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
       "signature": "required",
       "requiredIf": {
         "kind": "answer",
         "when": {
-          "field": "vertretungAlleinSorge",
-          "equals": false
+          "field": "vertretungUnterschrift",
+          "equals": "gemeinsam"
         }
       },
-      "because": "Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.",
+      "because": "Haben beide Eltern das Sorgerecht und unterschreibt keiner mit Einverständnis des anderen allein, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch der andere Elternteil.",
       "signerNameField": "vertretung2Name"
     },
     {
@@ -456,19 +456,33 @@
           "type": "text",
           "label": "Vor- und Familienname der gesetzlichen Vertretung",
           "question": "Wie lautet Ihr Vor- und Familienname?",
-          "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil.",
+          "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person – als Elternteil, Vormund oder Pfleger.",
           "required": true,
           "purpose": "Nachweis, wer für die minderjährige Person unterschreibt"
         },
         {
-          "id": "vertretungAlleinSorge",
+          "id": "vertretungUnterschrift",
           "role": "vertretung",
-          "type": "boolean",
-          "label": "Allein sorgeberechtigt",
-          "question": "Haben Sie das Sorgerecht allein?",
-          "help": "Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB); dann unterschreibt auch der andere Elternteil.",
+          "type": "choice",
+          "label": "Art der Unterschrift",
+          "question": "Wie unterschreiben Sie für die minderjährige Person?",
+          "help": "Haben beide Eltern das Sorgerecht, vertreten sie ihr Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Ist der andere Elternteil einverstanden, können Sie allein unterschreiben; eine besondere Form braucht sein Einverständnis nicht. Wissen Sie nicht sicher, ob er einverstanden ist, wählen Sie „Gemeinsam“.",
           "required": true,
-          "purpose": "Ob eine zweite gesetzliche Vertretung unterschreiben muss"
+          "purpose": "Ob eine zweite gesetzliche Vertretung unterschreiben muss (§ 1629 Abs. 1 Satz 2 BGB; Vollmacht des anderen Elternteils, BGH, Beschluss vom 29.04.2020 – XII ZB 112/19)",
+          "options": [
+            {
+              "id": "allein",
+              "label": "Allein – ich habe das Sorgerecht allein, oder ich bin Vormund oder für diese Angelegenheit bestellter Pfleger"
+            },
+            {
+              "id": "einverstanden",
+              "label": "Allein mit Einverständnis – wir haben das Sorgerecht gemeinsam, und der andere Elternteil ist einverstanden, dass ich allein unterschreibe"
+            },
+            {
+              "id": "gemeinsam",
+              "label": "Gemeinsam – der andere Elternteil unterschreibt ebenfalls"
+            }
+          ]
         }
       ]
     },
@@ -679,7 +693,8 @@
   "legalNotes": [
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für die Angaben zur Sofortmeldung schreibt das Gesetz keine besondere Form vor.",
     "Dieser Fragebogen ist nicht die Sofortmeldung selbst. Der Arbeitgeber meldet den Beginn der Beschäftigung bei deren Aufnahme an die Datenstelle der Träger der Rentenversicherung (§ 28a Abs. 4 SGB IV).",
-    "Den Hinweis auf die Pflicht, Ausweispapiere mitzuführen, gibt der Arbeitgeber nachweislich und schriftlich (§ 2a Abs. 2 SchwarzArbG). Er wird deshalb auf Papier ausgehändigt; im Fragebogen wird nur die Aushändigung bestätigt."
+    "Den Hinweis auf die Pflicht, Ausweispapiere mitzuführen, gibt der Arbeitgeber nachweislich und schriftlich (§ 2a Abs. 2 SchwarzArbG). Er wird deshalb auf Papier ausgehändigt; im Fragebogen wird nur die Aushändigung bestätigt.",
+    "Die Unterschrift der gesetzlichen Vertretung bestätigt die Angaben im Fragebogen. Sie ersetzt nicht ihre Zustimmung zum Arbeits- oder Ausbildungsvertrag; bei gemeinsamer Sorge stimmen beide Eltern zu oder einer mit Vollmacht des anderen."
   ],
   "partLinks": [["person", "arbeitgeber"]],
   "signatureBasis": "Für Ihre Angaben schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Die Zeit stammt von diesem Gerät; Gewissheit über den Zeitpunkt gibt erst die Ablage beim Arbeitgeber.",

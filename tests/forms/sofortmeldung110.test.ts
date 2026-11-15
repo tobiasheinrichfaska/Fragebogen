@@ -143,10 +143,16 @@ describe('Sofortmeldung 1.1.0: texts', () => {
 
   it('changes nothing else against 1.0.0 but the sector, the exclusion, these texts and the foreign postcode', () => {
     // 2026-11-13: the employer gets the person's names proposed (fromRole), and under joint
-    // custody a second representative signs (role vertretung2, field vertretungAlleinSorge).
+    // custody a second representative signs (role vertretung2, field vertretungUnterschrift;
+    // since 2026-11-15 alone, alone with consent or together, with its confirmation and note).
     const strip = (d: typeof definition) => ({
       ...d,
-      roles: d.roles.filter((r) => r.id !== 'vertretung2'),
+      roles: d.roles
+        .filter((r) => r.id !== 'vertretung2')
+        .map((r) => (r.id === 'vertretung' ? { ...r, confirmationText: '', because: '' } : r)),
+      legalNotes: d.legalNotes.filter(
+        (note) => !note.startsWith('Die Unterschrift der gesetzlichen Vertretung'),
+      ),
       version: '',
       revised: '',
       exclusions: [],
@@ -161,7 +167,7 @@ describe('Sofortmeldung 1.1.0: texts', () => {
         .map((s) => ({
           ...s,
           fields: s.fields
-            .filter((f) => f.id !== 'agBranche' && f.id !== 'vertretungAlleinSorge')
+            .filter((f) => f.id !== 'agBranche' && f.id !== 'vertretungUnterschrift')
             .map((f) => {
               const rest = { ...f };
               if (f.id === 'agFamilienname' || f.id === 'agVorname') {
@@ -170,7 +176,9 @@ describe('Sofortmeldung 1.1.0: texts', () => {
               }
               return rest;
             })
-            .map((f) => (f.id === 'geborenInDeutschland' ? { ...f, help: '' } : f))
+            .map((f) =>
+              f.id === 'geborenInDeutschland' || f.id === 'vertretungName' ? { ...f, help: '' } : f,
+            )
             // The foreign postcode is required unless the state has none (Tobias 2026-11-06).
             .map((f) => {
               if (f.id !== 'postleitzahlAusland') return f;

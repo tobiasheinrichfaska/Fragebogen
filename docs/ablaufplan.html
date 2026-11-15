@@ -576,7 +576,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="personalfragebogen-1.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">1.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>075bd5ed8fd5b81c15a2f7c795703047f720bbca3391789857900cb52c22ef9b</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>a94687d9512afa36a628683e01c527d75a1a1839b637897e0a9924e4b9c8a224</code></p>
 <p class="meta">Ersetzt die ältere Fassung 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
@@ -610,7 +610,7 @@ wird aber nicht mit unterschrieben.</p>
 <li>Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Art der Lohnsteuer“, „Sozialkassenverfahren“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt. Ist „Beschäftigte Person“ zuerst dran, wird „Art der Lohnsteuer“, „Sozialkassenverfahren“ dort gefragt.</li>
 <li>Empfohlen: Beschäftigte Person zuerst. Dann übernimmt der Fragebogen „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ in den Teil „Arbeitgeber“ und fragt dort nur, was dazu passt. Ist „Arbeitgeber“ zuerst dran, wird „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ dort gefragt.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
-<li>Zweite gesetzliche Vertretung kommt nur dazu, wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist.</li>
+<li>Zweite gesetzliche Vertretung kommt nur dazu, wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist.</li>
 </ul></div>
 <section class="station" id="personalfragebogen-1.1.0-person">
 <h3>Station: Beschäftigte Person</h3>
@@ -782,14 +782,14 @@ wird aber nicht mit unterschrieben.</p>
 <h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
 <ol class="flow">
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Haben Sie das Sorgerecht allein?</span><div class="meta">Allein sorgeberechtigt · Ja/Nein · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie unterschreiben Sie für die minderjährige Person?</span><div class="meta">Art der Unterschrift · Auswahl: Allein – ich habe das Sorgerecht allein, oder ich bin Vormund oder für diese Angelegenheit bestellter Pfleger · Allein mit Einverständnis – wir haben das Sorgerecht gemeinsam, und der andere Elternteil ist einverstanden, dass ich allein unterschreibe · Gemeinsam – der andere Elternteil unterschreibt ebenfalls · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <section class="station" id="personalfragebogen-1.1.0-vertretung2">
 <h3>Station: Zweite gesetzliche Vertretung</h3>
-<p class="meta">Wird gebraucht: nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist · unterschreibt</p>
-<p class="why">Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.</p>
+<p class="meta">Wird gebraucht: nur wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist · unterschreibt</p>
+<p class="why">Warum: Haben beide Eltern das Sorgerecht und unterschreibt keiner mit Einverständnis des anderen allein, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch der andere Elternteil.</p>
 <h4>Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)</h4>
 <ol class="flow">
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der zweiten gesetzlichen Vertretung · Text · Pflicht</div></li>
@@ -957,7 +957,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="sofortmeldung-1.1.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">1.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>fe8c10d7cdabf11ba7ce8df9a260de6d9dfe75ad5d458345fbcf5207acacb50b</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>103e87845abe910b9da3e31a4b274a4899d276be35ed067b80945857ed03741f</code></p>
 <p class="meta">Ersetzt die ältere Fassung 0.2.0 (eingefroren), 0.3.0 (eingefroren), 0.4.0 (eingefroren), 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
@@ -973,7 +973,7 @@ wird aber nicht mit unterschrieben.</p>
 <li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
 <li>Empfohlen: Beschäftigte Person zuerst. Dann übernimmt der Fragebogen „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ in den Teil „Arbeitgeber“ und fragt dort nur, was dazu passt. Ist „Arbeitgeber“ zuerst dran, wird „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ dort gefragt.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
-<li>Zweite gesetzliche Vertretung kommt nur dazu, wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist.</li>
+<li>Zweite gesetzliche Vertretung kommt nur dazu, wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist.</li>
 </ul></div>
 <section class="station" id="sofortmeldung-1.1.0-person">
 <h3>Station: Beschäftigte Person</h3>
@@ -1014,18 +1014,18 @@ wird aber nicht mit unterschrieben.</p>
 <section class="station" id="sofortmeldung-1.1.0-vertretung">
 <h3>Station: Gesetzliche Vertretung</h3>
 <p class="meta">Wird gebraucht: nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist · unterschreibt</p>
-<p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift.</p>
+<p class="why">Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben und die Hinweise auf die Pflichten der Person mit ihrer Unterschrift.</p>
 <h4>Gesetzliche Vertretung (nur bei Minderjährigen)</h4>
 <ol class="flow">
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der gesetzlichen Vertretung · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Haben Sie das Sorgerecht allein?</span><div class="meta">Allein sorgeberechtigt · Ja/Nein · Pflicht</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie unterschreiben Sie für die minderjährige Person?</span><div class="meta">Art der Unterschrift · Auswahl: Allein – ich habe das Sorgerecht allein, oder ich bin Vormund oder für diese Angelegenheit bestellter Pfleger · Allein mit Einverständnis – wir haben das Sorgerecht gemeinsam, und der andere Elternteil ist einverstanden, dass ich allein unterschreibe · Gemeinsam – der andere Elternteil unterschreibt ebenfalls · Pflicht</div></li>
 </ol>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <section class="station" id="sofortmeldung-1.1.0-vertretung2">
 <h3>Station: Zweite gesetzliche Vertretung</h3>
-<p class="meta">Wird gebraucht: nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist · unterschreibt</p>
-<p class="why">Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.</p>
+<p class="meta">Wird gebraucht: nur wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist · unterschreibt</p>
+<p class="why">Warum: Haben beide Eltern das Sorgerecht und unterschreibt keiner mit Einverständnis des anderen allein, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch der andere Elternteil.</p>
 <h4>Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)</h4>
 <ol class="flow">
 <li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Vor- und Familienname?</span><div class="meta">Vor- und Familienname der zweiten gesetzlichen Vertretung · Text · Pflicht</div></li>

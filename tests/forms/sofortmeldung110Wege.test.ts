@@ -131,12 +131,16 @@ function personSigns(s: Session, answers: Answers): Session {
   );
 }
 
-function guardianSigns(s: Session, name: string, alone = true): Session {
+function guardianSigns(
+  s: Session,
+  name: string,
+  how: 'allein' | 'einverstanden' | 'gemeinsam' = 'allein',
+): Session {
   return must(
     seal(
       fill(must(enterRole(s, 'vertretung')), {
         vertretungName: name,
-        vertretungAlleinSorge: alone,
+        vertretungUnterschrift: how,
       }),
       {
         nonce: NONCE_GUARDIAN,
@@ -167,6 +171,8 @@ interface Way {
   guardian?: string;
   /** Joint custody: the first representative is not alone, this one signs too. */
   secondGuardian?: string;
+  /** Joint custody, the first signs alone with the other parent's consent (2026-11-15). */
+  withConsent?: true;
   /** What the person sees under "Stand" once person and employer have sealed. */
   blockersBeforeGuardian?: string[];
   /** Text the PDF must show for this way. */
@@ -247,6 +253,16 @@ const WAYS: Way[] = [
     blockersBeforeGuardian: ['guardianMissing'],
     shows: ['01.03.2010', 'Max Musterfrau', 'Erika Musterfrau'],
   },
+  // Tobias 2026-11-15 („ja“): with the other parent's consent one parent signs alone — the consent
+  // needs no form (BGH, Beschluss vom 29.04.2020 – XII ZB 112/19).
+  {
+    name: 'a minor whose parents share custody: one signs with the other’s consent',
+    person: { geburtsdatum: '01.03.2010', versicherungsnummer: undefined },
+    guardian: 'Max Musterfrau',
+    withConsent: true,
+    blockersBeforeGuardian: ['guardianMissing'],
+    shows: ['01.03.2010', 'Max Musterfrau', 'Allein mit Einverständnis'],
+  },
   {
     name: 'a family name that differs between employer and person',
     employer: { agFamilienname: 'Mustermann' },
@@ -289,7 +305,13 @@ describe.each(WAYS)('Sofortmeldung 1.1.0 to the end: $name', (way) => {
       way.blockersBeforeGuardian ?? [],
     );
     if (way.guardian !== undefined) {
-      session = guardianSigns(session, way.guardian, way.secondGuardian === undefined);
+      const how =
+        way.secondGuardian !== undefined
+          ? 'gemeinsam'
+          : way.withConsent
+            ? 'einverstanden'
+            : 'allein';
+      session = guardianSigns(session, way.guardian, how);
     }
     if (way.secondGuardian !== undefined) {
       expect(transmissionBlockers(session.questionnaire, form).map((b) => b.code)).toEqual([

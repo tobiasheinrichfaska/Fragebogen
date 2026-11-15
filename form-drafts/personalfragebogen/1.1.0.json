@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-15T21:36",
+  "revised": "2026-11-15T23:39",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -16,7 +16,7 @@
       "id": "vertretung",
       "label": "Gesetzliche Vertretung",
       "stationHeading": "Unterschrift der gesetzlichen Vertretung",
-      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. Ich versichere, dass ich so unterschreiben darf, wie ich es angegeben habe; unterschreibe ich mit Einverständnis des anderen Elternteils, liegt dieses Einverständnis vor.",
       "signature": "required",
       "requiredIf": {
         "kind": "minorOnSigning",
@@ -29,16 +29,16 @@
       "id": "vertretung2",
       "label": "Zweite gesetzliche Vertretung",
       "stationHeading": "Unterschrift der zweiten gesetzlichen Vertretung",
-      "confirmationText": "Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
+      "confirmationText": "Als zweite gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.",
       "signature": "required",
       "requiredIf": {
         "kind": "answer",
         "when": {
-          "field": "vertretungAlleinSorge",
-          "equals": false
+          "field": "vertretungUnterschrift",
+          "equals": "gemeinsam"
         }
       },
-      "because": "Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung.",
+      "because": "Haben beide Eltern das Sorgerecht und unterschreibt keiner mit Einverständnis des anderen allein, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch der andere Elternteil.",
       "signerNameField": "vertretung2Name"
     },
     {
@@ -3105,19 +3105,33 @@
           "type": "text",
           "label": "Vor- und Familienname der gesetzlichen Vertretung",
           "question": "Wie lautet Ihr Vor- und Familienname?",
-          "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil.",
+          "help": "Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person – als Elternteil, Vormund oder Pfleger.",
           "required": true,
           "purpose": "Nachweis, wer für die minderjährige Person unterschreibt"
         },
         {
-          "id": "vertretungAlleinSorge",
+          "id": "vertretungUnterschrift",
           "role": "vertretung",
-          "type": "boolean",
-          "label": "Allein sorgeberechtigt",
-          "question": "Haben Sie das Sorgerecht allein?",
-          "help": "Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB); dann unterschreibt auch der andere Elternteil.",
+          "type": "choice",
+          "label": "Art der Unterschrift",
+          "question": "Wie unterschreiben Sie für die minderjährige Person?",
+          "help": "Haben beide Eltern das Sorgerecht, vertreten sie ihr Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Ist der andere Elternteil einverstanden, können Sie allein unterschreiben; eine besondere Form braucht sein Einverständnis nicht. Wissen Sie nicht sicher, ob er einverstanden ist, wählen Sie „Gemeinsam“.",
           "required": true,
-          "purpose": "Ob eine zweite gesetzliche Vertretung unterschreiben muss"
+          "purpose": "Ob eine zweite gesetzliche Vertretung unterschreiben muss (§ 1629 Abs. 1 Satz 2 BGB; Vollmacht des anderen Elternteils, BGH, Beschluss vom 29.04.2020 – XII ZB 112/19)",
+          "options": [
+            {
+              "id": "allein",
+              "label": "Allein – ich habe das Sorgerecht allein, oder ich bin Vormund oder für diese Angelegenheit bestellter Pfleger"
+            },
+            {
+              "id": "einverstanden",
+              "label": "Allein mit Einverständnis – wir haben das Sorgerecht gemeinsam, und der andere Elternteil ist einverstanden, dass ich allein unterschreibe"
+            },
+            {
+              "id": "gemeinsam",
+              "label": "Gemeinsam – der andere Elternteil unterschreibt ebenfalls"
+            }
+          ]
         }
       ]
     },
@@ -6124,7 +6138,8 @@
     "Die Elterneigenschaft und die Zahl der Kinder unter 25 ruft der Arbeitgeber digital beim Bundeszentralamt für Steuern ab (§ 55a SGB XI); er erfährt dabei keine Namen oder Geburtsdaten. Einzelangaben fragt der Fragebogen nur für Kinder, die dort voraussichtlich fehlen; sie werden mit einer Urkundenkopie nachgewiesen, die als eigene Unterlage aufbewahrt wird.",
     "Die Beiträge zur privaten Kranken- und Pflegeversicherung erhält der Arbeitgeber seit 2026 als elektronische Lohnsteuerabzugsmerkmale (§ 39 Abs. 4 Nr. 4 EStG); der Fragebogen fragt deshalb keinen Betrag ab. Die Bescheinigung des Versicherers über die Zuschussfähigkeit (§ 257 Abs. 2a SGB V) bleibt nötig.",
     "Der Fragebogen sammelt die Tatsachen für die versicherungsrechtliche Beurteilung; die Personengruppe und die Beitragsgruppen legt die lohnabrechnende Stelle fest.",
-    "Der Antrag auf Befreiung von der Rentenversicherungspflicht im Minijob, ihre Aufhebung und der Verzicht auf die Rentenversicherungsfreiheit werden auf Papier mit eigenhändiger Unterschrift erklärt; das Original gehört mit Eingangsdatum zu den Entgeltunterlagen. Der Fragebogen fragt nur den Wunsch ab und dokumentiert den Eingang."
+    "Der Antrag auf Befreiung von der Rentenversicherungspflicht im Minijob, ihre Aufhebung und der Verzicht auf die Rentenversicherungsfreiheit werden auf Papier mit eigenhändiger Unterschrift erklärt; das Original gehört mit Eingangsdatum zu den Entgeltunterlagen. Der Fragebogen fragt nur den Wunsch ab und dokumentiert den Eingang.",
+    "Die Unterschrift der gesetzlichen Vertretung bestätigt die Angaben im Fragebogen. Sie ersetzt nicht ihre Zustimmung zum Arbeits- oder Ausbildungsvertrag; bei gemeinsamer Sorge stimmen beide Eltern zu oder einer mit Vollmacht des anderen."
   ],
   "partLinks": [["person", "arbeitgeber"]],
   "signatureBasis": "Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab.",

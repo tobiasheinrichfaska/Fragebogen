@@ -84,7 +84,14 @@ describe('Personalfragebogen: the end of a fixed term', () => {
   // And (2026-11-13) the employer's proposed names, the second representative under joint custody,
   // the documents offered only where they fit (option conditions, tests/forms/unterlagen.test.ts).
   it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules, help texts and 2027', () => {
-    const SECOND = ['vertretung2', 'vertretungAlleinSorge'];
+    const SECOND = ['vertretung2', 'vertretungUnterschrift'];
+    // 2026-11-15 (Tobias: „ja“): alone, alone with the other parent's consent, or together — the
+    // guardian's confirmation says so, a legal note names the consent to the contract.
+    const CUSTODY = {
+      confirmation:
+        'Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an.',
+      note: 'Die Unterschrift der gesetzlichen Vertretung bestätigt die Angaben im Fragebogen.',
+    };
     // 2026-11-15 (Tobias: „ich folge deiner Empfehlung“): the question about 31.12.2026 and its
     // answer as the last argument of the JAEG tests (tests/forms/personalfragebogen2027.test.ts).
     const BESTAND_2026 = 'pkvBestand2026';
@@ -104,10 +111,14 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         if (key === 'because' && typeof value === 'string' && value.includes('vorbelegt')) {
           return undefined;
         }
+        if (key === 'confirmationText' && typeof value === 'string') {
+          return value.startsWith(CUSTODY.confirmation) ? CUSTODY.confirmation : value;
+        }
         if (Array.isArray(value)) {
           return value.filter(
             (item: unknown) =>
               item !== BESTAND_2026 &&
+              !(typeof item === 'string' && item.startsWith(CUSTODY.note)) &&
               !(
                 typeof item === 'object' &&
                 item !== null &&
