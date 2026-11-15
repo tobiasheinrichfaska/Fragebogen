@@ -17,7 +17,7 @@ import {
   textsOf,
   type ManualTestCase,
 } from '../../../src/logic/manualTests';
-import { pdfPages, TEST_APP } from '../app';
+import { APP, expectQuiet as expectQuietFile, openTestApp, pdfPages, TEST_APP } from '../app';
 
 const MANUAL = fileURLToPath(new URL('../../../manual_tests/', import.meta.url));
 const FILES = readdirSync(MANUAL)
@@ -746,5 +746,38 @@ test.describe('MT-85 on an iPhone', { tag: '@webkit' }, () => {
   }, testInfo) => {
     const text = await onPhone(page, context, testInfo.outputPath('bericht.pdf'));
     expect(text).toMatch(/Gerät laut Browser: iPhone · /);
+  });
+});
+
+// „Tester einladen“ (Tobias 2026-11-15, Testumgebung docs/plan.md): the test version links the login
+// script's invitation page of its protected zone; a plain navigation in the same tab, which the page
+// answers with „Zurück zur App“. Only the test build, and only where it is served at an https address.
+test.describe('„Tester einladen“ in the footer of the test version', () => {
+  const invite = (page: Page) =>
+    page.locator('.test-app footer').getByRole('link', { name: 'Tester einladen', exact: true });
+
+  test('leads to the invitation page of the login script, in the same tab', async ({
+    context,
+    page,
+  }) => {
+    const seen = await open(context, page);
+    await expect(invite(page)).toHaveAttribute('href', '/_zugang/einladen');
+    expect(await invite(page).getAttribute('target')).toBeNull();
+    await expectQuiet(page, seen);
+  });
+
+  test('is not offered by a downloaded test file, where it would lead nowhere', async ({
+    page,
+  }) => {
+    const { found, app } = await openTestApp(page);
+    await expect(app).toContainText('Neuer Fragebogen');
+    await expect(invite(page)).toHaveCount(0);
+    await expectQuietFile(page, found);
+  });
+
+  test('never reaches the live version', () => {
+    const html = readFileSync(APP, 'utf8');
+    expect(html).not.toContain('/_zugang/einladen');
+    expect(html).not.toContain('Tester einladen');
   });
 });

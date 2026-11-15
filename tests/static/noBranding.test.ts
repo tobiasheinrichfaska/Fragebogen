@@ -8,6 +8,10 @@ import { join } from 'node:path';
 const ROOT = join(__dirname, '..', '..');
 const local = join(ROOT, 'config', 'kanzlei.local.json');
 
+// Domains where anyone gets a subdomain: the domain itself names nobody, the subdomain may (the test
+// area's own bunny.net pull zone, 2026-11-15). The docs name these domains freely.
+const SHARED_DOMAINS: ReadonlySet<string> = new Set(['b-cdn.net']);
+
 function markersOf(raw: Record<string, unknown>): string[] {
   const markers: string[] = [];
   if (typeof raw.kanzleiName === 'string' && raw.kanzleiName.trim().length >= 4) {
@@ -16,12 +20,29 @@ function markersOf(raw: Record<string, unknown>): string[] {
   for (const key of ['appAddress', 'explainerBase', 'testAddress']) {
     const value = raw[key];
     if (typeof value !== 'string' || !value.startsWith('https://')) continue;
-    // The registrable domain (e.g. "kanzlei-beispiel.de"), whatever subdomain the docs use.
-    const host = new URL(value).hostname.split('.').slice(-2).join('.');
-    markers.push(host);
+    // The registrable domain (e.g. "kanzlei-beispiel.de"), whatever subdomain the docs use; on a
+    // shared domain the whole host.
+    const hostname = new URL(value).hostname;
+    const registrable = hostname.split('.').slice(-2).join('.');
+    markers.push(SHARED_DOMAINS.has(registrable) ? hostname : registrable);
   }
   return [...new Set(markers)];
 }
+
+describe('markers of the local configuration', () => {
+  it('take the registrable domain of a Kanzlei address, whatever subdomain the docs use', () => {
+    expect(markersOf({ appAddress: 'https://fragebogen.kanzlei-beispiel.de/' })).toEqual([
+      'kanzlei-beispiel.de',
+    ]);
+  });
+
+  it('take the whole host on a shared CDN domain, whose name says nothing (2026-11-15)', () => {
+    // A bunny.net pull zone is "<name>.b-cdn.net": the docs name b-cdn.net, the name is the marker.
+    expect(markersOf({ testAddress: 'https://beispiel-test.b-cdn.net/' })).toEqual([
+      'beispiel-test.b-cdn.net',
+    ]);
+  });
+});
 
 describe('committed files', () => {
   // Scans every committed file; slow in parallel full runs (flaked at 5 s, 2026-11-03).

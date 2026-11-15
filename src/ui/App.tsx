@@ -12,6 +12,8 @@ import { clearResume, loadResume, saveResume } from '../io/resumeStore';
 import { accessGateNeeded, accessToken } from '../logic/accessGate';
 import { AccessGate } from './AccessGate';
 import { LegalFooter, LegalLinks } from './LegalLinks';
+import { TEST_AREA } from './testbereich/catalogue';
+import { TesterInvite } from './testbereich/TesterInvite';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import type { Inbox } from '../logic/kanzlei';
 import { fileNameFor } from '../logic/fileNames';
@@ -756,6 +758,7 @@ function Workspace({
           </>
         )}
         <LegalLinks />
+        {TEST_AREA && <TesterInvite />}
       </footer>
     </main>
   );
