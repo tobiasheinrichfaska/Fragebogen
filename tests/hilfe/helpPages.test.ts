@@ -129,3 +129,30 @@ describe('rendered help page', () => {
     );
   });
 });
+
+describe('Impressum and Datenschutz on the help pages (Tobias 2026-11-15)', () => {
+  const { musters, pages } = load();
+  const [page] = pages;
+  if (!page) throw new Error('example');
+  const links = [
+    { label: 'Impressum' as const, href: 'https://www.example.org/impressum.html' },
+    { label: 'Datenschutz' as const, href: 'https://www.example.org/datenschutz.html?a=1&b=2' },
+  ];
+
+  it('links both in the footer of every page and of the overview', () => {
+    const footer =
+      '<p class="legal"><a href="https://www.example.org/impressum.html">Impressum</a> · ' +
+      '<a href="https://www.example.org/datenschutz.html?a=1&amp;b=2">Datenschutz</a></p>';
+    const html = renderHelpPage(page, musters, links);
+    expect(html).toContain(footer);
+    expect(html.indexOf(footer)).toBeGreaterThan(html.indexOf('<footer'));
+    expect(renderHelpIndex(pages, links)).toContain(`<footer class="muted">${footer}</footer>`);
+  });
+
+  it('links nothing without them, so the pages in the repo stay neutral', () => {
+    expect(renderHelpPage(page, musters)).not.toContain('class="legal"');
+    expect(renderHelpPage(page, musters, [])).toBe(renderHelpPage(page, musters));
+    expect(renderHelpIndex(pages, [])).toBe(renderHelpIndex(pages));
+    expect(renderHelpIndex(pages)).not.toContain('<footer');
+  });
+});

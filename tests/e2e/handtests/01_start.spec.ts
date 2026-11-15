@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { compareVersions } from '../../../src/logic/formRegistry';
 import { answerUntil, expectQuiet, formFields, heading, openApp, openTestApp, press } from '../app';
-import { expectClean } from '../guards';
+import { LEGAL_LINKS, expectClean } from '../guards';
 
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 
@@ -80,8 +80,12 @@ test('MT-01: the downloaded file opens on the start page with the published form
   for (const title of drafts) {
     await expect(app.getByRole('button', { name: title, exact: true }), title).toHaveCount(0);
   }
+  // Then Impressum · Datenschutz of the Kanzlei homepage, where the configuration names them.
+  const legal = LEGAL_LINKS.map((link) => link.label).join(' · ');
   await expect(app.locator('footer')).toHaveText(
-    /^Fragebogen \d+\.\d+\.\d+( · .+)? · läuft vollständig auf diesem Gerät$/,
+    new RegExp(
+      `^Fragebogen \\d+\\.\\d+\\.\\d+( · .+)? · läuft vollständig auf diesem Gerät${legal}$`,
+    ),
   );
   await expectClean(page, found);
 });

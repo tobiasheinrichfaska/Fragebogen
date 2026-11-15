@@ -11,6 +11,7 @@ import {
   type TransferLinkIssue,
 } from '../logic/transferLink';
 import { Card } from './common';
+import { LegalFooter } from './LegalLinks';
 
 export function UnlockLinkScreen({
   locked,
@@ -102,6 +103,7 @@ export function UnlockLinkScreen({
           </>
         )}
       </Card>
+      <LegalFooter />
     </main>
   );
 }

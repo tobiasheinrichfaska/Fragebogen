@@ -35,8 +35,14 @@ describe('deploy/upload.json', () => {
     expect(spec.targets.oeffentlich?.files.map((f) => [f.from, f.to])).toEqual([
       ['dist/index.html', 'index.html'],
       ['deploy/.htaccess', '.htaccess'],
-      ['docs/hilfe/', 'hilfe/'],
+      ['dist/hilfe/', 'hilfe/'],
     ]);
+  });
+
+  it('uploads the help pages the build wrote with the Impressum, never the neutral docs/hilfe/ (2026-11-15)', () => {
+    for (const target of Object.values(spec.targets)) {
+      expect(target.files.map((f) => f.from)).not.toContain('docs/hilfe/');
+    }
   });
 
   it('changes the rules of the subdomain folder with "regeln" alone, never the app (2026-11-07)', () => {
@@ -49,7 +55,7 @@ describe('deploy/upload.json', () => {
 
   it('gives the test folder its own help pages (Tobias 2026-11-01)', () => {
     expect(spec.targets.test?.files.map((f) => [f.from, f.to])).toContainEqual([
-      'docs/hilfe/',
+      'dist-test/hilfe/',
       'hilfe/',
     ]);
   });

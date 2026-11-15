@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { accessToken } from '../../src/logic/accessGate';
-import { parseAppConfig } from '../../src/logic/appConfig';
+import { legalLinks, parseAppConfig, type LegalLink } from '../../src/logic/appConfig';
 
 // The configuration the builds were made with, as vite.config.ts reads it: the local Kanzlei
 // configuration where it exists, else the neutral example of the public repo.
@@ -16,6 +16,10 @@ const parsedConfig = parseAppConfig(
 );
 /** The access notice the hosted app asks before it opens (none in the public repo). */
 export const ACCESS_NOTICE = parsedConfig.ok ? parsedConfig.config.accessNotice : undefined;
+/** Impressum and Datenschutz of the Kanzlei homepage in every footer (none in the public repo). */
+export const LEGAL_LINKS: readonly LegalLink[] = parsedConfig.ok
+  ? legalLinks(parsedConfig.config)
+  : [];
 const ACCESS_KEY = 'fragebogen-zugang';
 
 /**

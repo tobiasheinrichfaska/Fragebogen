@@ -11,6 +11,7 @@ import { clearAccess, loadAccess, saveAccess } from '../io/accessStore';
 import { clearResume, loadResume, saveResume } from '../io/resumeStore';
 import { accessGateNeeded, accessToken } from '../logic/accessGate';
 import { AccessGate } from './AccessGate';
+import { LegalFooter, LegalLinks } from './LegalLinks';
 import { buildPackage, packageText } from '../logic/dataPackage';
 import type { Inbox } from '../logic/kanzlei';
 import { fileNameFor } from '../logic/fileNames';
@@ -121,6 +122,7 @@ export function App({ start }: { start?: PreparedStart }) {
             detail: BUNDLED_FORMS.issues.map((issue) => `${issue.path}: ${issue.message}`),
           }}
         />
+        <LegalFooter />
       </main>
     );
   }
@@ -600,6 +602,7 @@ function Workspace({
             setAccessOpen(false);
           }}
         />
+        <LegalFooter />
       </main>
     );
   }
@@ -752,6 +755,7 @@ function Workspace({
               : ''}
           </>
         )}
+        <LegalLinks />
       </footer>
     </main>
   );

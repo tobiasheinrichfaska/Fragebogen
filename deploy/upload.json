@@ -9,7 +9,7 @@
       "files": [
         { "from": "dist/index.html", "to": "index.html", "verify": true },
         { "from": "deploy/.htaccess", "to": ".htaccess" },
-        { "from": "docs/hilfe/", "to": "hilfe/" }
+        { "from": "dist/hilfe/", "to": "hilfe/" }
       ]
     },
     "test": {
@@ -22,7 +22,7 @@
       "testers": "deploy/.local/tester.json",
       "files": [
         { "from": "dist-test/index.html", "to": "index.html", "verify": true },
-        { "from": "docs/hilfe/", "to": "hilfe/" }
+        { "from": "dist-test/hilfe/", "to": "hilfe/" }
       ]
     },
     "mehrfachbearbeitung": {

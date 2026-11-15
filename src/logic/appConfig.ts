@@ -29,6 +29,19 @@ export interface AppConfig {
    * in the local config. Without it the app asks nothing.
    */
   accessNotice?: string;
+  /**
+   * The Kanzlei's Impressum on its homepage (Tobias 2026-11-15), linked in the footer of every screen
+   * and of the hosted help pages — https only, and only in the local config (it names the Kanzlei).
+   */
+  imprintAddress?: string;
+  /** The Kanzlei's privacy policy on its homepage, linked next to the Impressum. */
+  privacyAddress?: string;
+}
+
+/** A link of the footer: Impressum or Datenschutz. */
+export interface LegalLink {
+  label: 'Impressum' | 'Datenschutz';
+  href: string;
 }
 
 export interface KanzleiColors {
@@ -141,6 +154,8 @@ export function parseAppConfig(
     'testAddress',
     'colors',
     'accessNotice',
+    'imprintAddress',
+    'privacyAddress',
   ]);
   if (!o) return { ok: false, issues: d.issues };
   const kanzleiName =
@@ -160,6 +175,14 @@ export function parseAppConfig(
     o.accessNotice === undefined
       ? undefined
       : d.string(o.accessNotice, '$.accessNotice', NOT_BLANK);
+  const imprintAddress =
+    o.imprintAddress === undefined
+      ? undefined
+      : httpsAddress(d, o.imprintAddress, '$.imprintAddress');
+  const privacyAddress =
+    o.privacyAddress === undefined
+      ? undefined
+      : httpsAddress(d, o.privacyAddress, '$.privacyAddress');
   if (d.issues.length > 0) return { ok: false, issues: d.issues };
   return {
     ok: true,
@@ -170,8 +193,22 @@ export function parseAppConfig(
       ...(testAddress === undefined ? {} : { testAddress }),
       ...(colors === undefined ? {} : { colors }),
       ...(accessNotice === undefined ? {} : { accessNotice }),
+      ...(imprintAddress === undefined ? {} : { imprintAddress }),
+      ...(privacyAddress === undefined ? {} : { privacyAddress }),
     },
   };
+}
+
+/** The footer links of the configuration: Impressum first, then Datenschutz; none without them. */
+export function legalLinks(config: AppConfig): LegalLink[] {
+  return [
+    ...(config.imprintAddress === undefined
+      ? []
+      : [{ label: 'Impressum' as const, href: config.imprintAddress }]),
+    ...(config.privacyAddress === undefined
+      ? []
+      : [{ label: 'Datenschutz' as const, href: config.privacyAddress }]),
+  ];
 }
 
 /** Full video address for a frozen path, or undefined without a configured base. */

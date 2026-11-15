@@ -1,4 +1,10 @@
-import { colorVariables, contrastRatio, explainerUrl, parseAppConfig } from './appConfig';
+import {
+  colorVariables,
+  contrastRatio,
+  explainerUrl,
+  legalLinks,
+  parseAppConfig,
+} from './appConfig';
 
 describe('parseAppConfig', () => {
   it('takes the help pages as a relative folder, so each hosted folder links to its own', () => {
@@ -49,10 +55,47 @@ describe('parseAppConfig', () => {
     ['an unknown key', { logo: 'x.png' }, 'unknown property'],
     ['a test path leaving the folder', { testAddress: '../geheim/' }, 'not an address'],
     ['a test link with a script', { testAddress: 'javascript:alert(1)' }, 'https'],
+    ['an imprint over http', { imprintAddress: 'http://www.example.org/impressum.html' }, 'https'],
+    ['a relative imprint', { imprintAddress: 'impressum.html' }, 'not an address'],
+    ['a privacy link with a script', { privacyAddress: 'javascript:alert(1)' }, 'https'],
   ])('refuses %s', (_label, raw, message) => {
     const result = parseAppConfig(raw);
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.issues.map((i) => i.message).join(' ')).toContain(message);
+  });
+});
+
+describe('legal links (Tobias 2026-11-15: Impressum and Datenschutz of the Kanzlei homepage)', () => {
+  it('takes both addresses of the homepage as https', () => {
+    expect(
+      parseAppConfig({
+        imprintAddress: 'https://www.example.org/impressum.html',
+        privacyAddress: 'https://www.example.org/datenschutzerklaerung.html',
+      }),
+    ).toEqual({
+      ok: true,
+      config: {
+        imprintAddress: 'https://www.example.org/impressum.html',
+        privacyAddress: 'https://www.example.org/datenschutzerklaerung.html',
+      },
+    });
+  });
+
+  it('names them Impressum and Datenschutz, in that order, only those configured', () => {
+    expect(
+      legalLinks({
+        privacyAddress: 'https://www.example.org/datenschutz.html',
+        imprintAddress: 'https://www.example.org/impressum.html',
+      }),
+    ).toEqual([
+      { label: 'Impressum', href: 'https://www.example.org/impressum.html' },
+      { label: 'Datenschutz', href: 'https://www.example.org/datenschutz.html' },
+    ]);
+    expect(legalLinks({ imprintAddress: 'https://www.example.org/impressum.html' })).toEqual([
+      { label: 'Impressum', href: 'https://www.example.org/impressum.html' },
+    ]);
+    // The public repo's neutral configuration links nothing.
+    expect(legalLinks({})).toEqual([]);
   });
 });
 
