@@ -127,6 +127,10 @@ Kanzlei-PC:
 - **Ändert sich hier ein Header, muss er auch in der Edge Rule geändert werden.** Das geht nur im
   Dashboard, also auf dem Kanzlei-PC. Eine Cloud-Sitzung, die die `.htaccess` ändert, schreibt das in
   ihre Übergabe.
+- **Die Testzone weicht beim Zwischenspeicher ab** (umgestellt am 15.11.2026 abends, mit `curl -I`
+  geprüft): Ihre Edge Rule „Kein Zwischenspeicher“ setzt `Cache-Control: private, no-store`, die
+  Cache-Zeit im CDN bleibt 0. Hinter dem Login soll auch der Browser nichts aufheben. Die Live-Zone
+  bleibt bei der Tabelle oben.
 - Die `.htaccess` selbst geht nicht nach bunny.net; dort wäre sie nur eine lesbare Datei.
 - Außerdem eingestellt: TLS ab 1.2, Logs ohne IP-Adressen, Auslieferung nur über Rechenzentren in
   EU-Staaten.
