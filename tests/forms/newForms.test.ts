@@ -323,6 +323,39 @@ describe('Dienstwagen draft — standard only', () => {
     expect(ids({ ...commuting, agFahrtenWohnung: false })).not.toContain('agPauschal15');
   });
 
+  // DW-4, checked 2026-11-15 in BMF vom 03.03.2022 Rz. 19, 20 and BMF vom 05.11.2021 Rz. 22: the
+  // employer's ban needs a record at the Lohnkonto, no paper; only the person's waiver is
+  // „schriftlich“. For employees the first hand-over decides, not the purchase.
+  it('asks where a ban is laid down, also for commuting, and wants paper only for a waiver', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
+    const place = { agErsteTaetigkeitsstaette: 'ja' };
+    expect(ids({ ...place, agPrivatnutzung: true, agFahrtenWohnung: false })).toContain(
+      'agNutzungsverbot',
+    );
+    expect(ids({ ...place, agPrivatnutzung: true, agFahrtenWohnung: true })).not.toContain(
+      'agNutzungsverbot',
+    );
+    const ban = form.definition.sections
+      .flatMap((s) => s.fields)
+      .find((f) => f.id === 'agNutzungsverbot');
+    const labels = ban?.options?.map((o) => o.label) ?? [];
+    expect(labels.filter((label) => label.includes('Papier'))).toEqual([
+      expect.stringContaining('Verzicht der Person'),
+    ]);
+    expect(ban?.help).toContain('als Datei');
+  });
+
+  it('asks the purchase only without CO2, and the first hand-over for every electric drive', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
+    expect(ids({ agAntrieb: 'plugin' })).not.toContain('agAnschaffung');
+    expect(ids({ agAntrieb: 'plugin' })).toContain('agErstUeberlassung');
+    expect(ids({ agAntrieb: 'brennstoff' })).toEqual(
+      expect.arrayContaining(['agAnschaffung', 'agErstUeberlassung']),
+    );
+  });
+
   // Tobias 2026-11-15 (DW-2): the employer decides the erste Tätigkeitsstätte (§ 9 Abs. 4 EStG), so
   // the employer names it; the person sees it in the question about the drives to work.
   it('lets the employer name the erste Tätigkeitsstätte and asks about drives only when there is one', () => {
