@@ -288,7 +288,7 @@ describe('manual_tests/ as the catalogue', () => {
     expect(kinds.filter((k) => k === 'home').length).toBeGreaterThanOrEqual(2);
     // The rest begins elsewhere; a test listed here lost its start link or names its entry oddly.
     expect(offered.filter((c) => testEnvironment(c).kind === 'elsewhere').map((c) => c.id)).toEqual(
-      ['MT-80', 'MT-85'],
+      ['MT-80', 'MT-85', 'MT-135'],
     );
   });
 });

@@ -6,11 +6,16 @@ keine Daten: Er liefert nur die Datei aus, die App sendet nichts.
 
 ## Dateien für den Ordner der Subdomain
 
-| Datei        | Woher                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------- |
-| `index.html` | `dist/index.html` nach `npm run build` (gehostete App, ohne Zuordnung zum Lohnprogramm) |
-| `.htaccess`  | diese Vorlage, `deploy/.htaccess` (unverändert)                                         |
-| `hilfe/`     | die Hilfeseiten „Wo finde ich …?“ aus `dist/hilfe/` nach `npm run build`                |
+| Datei                                  | Woher                                                                                   |
+| -------------------------------------- | --------------------------------------------------------------------------------------- |
+| `index.html`                           | `dist/index.html` nach `npm run build` (gehostete App, ohne Zuordnung zum Lohnprogramm) |
+| `.htaccess`                            | diese Vorlage, `deploy/.htaccess` (unverändert)                                         |
+| `hilfe/`                               | die Hilfeseiten „Wo finde ich …?“ aus `dist/hilfe/` nach `npm run build`                |
+| `manifest.json`, `sw.js`, vier `*.png` | aus `dist/` nach `npm run build`: installierbar, Start ohne Netz (seit 15.11.2026)      |
+
+Ohne die sechs Dateien neben `index.html` läuft die App wie bisher, lässt sich aber nicht installieren
+und startet ohne Netz nicht. `sw.js` muss als JavaScript ausgeliefert werden (`.js`, wie üblich), das
+Manifest als JSON. Der Testbereich bekommt dieselben Dateien aus `dist-test/`.
 
 Die Hilfeseiten in `dist/hilfe/` tragen unten Impressum und Datenschutz der Kanzlei aus
 `config/kanzlei.local.json` (seit 15.11.2026). `docs/hilfe/` ist die neutrale Fassung im Repo und

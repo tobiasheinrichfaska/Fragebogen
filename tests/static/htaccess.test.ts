@@ -2,6 +2,7 @@
 // keeps build-specific hashes out of it — the script/style policy lives in the meta tag of each build.
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { WEB_APP_FILES } from '../../src/logic/webApp';
 
 const HTACCESS = readFileSync(new URL('../../deploy/.htaccess', import.meta.url), 'utf8');
 const directives = HTACCESS.split('\n').filter((line) => !line.trim().startsWith('#'));
@@ -49,7 +50,14 @@ describe('deploy/.htaccess', () => {
   it('never refuses a file the subdomain serves', () => {
     const pattern = new RegExp(SCRIPT_BLOCK.exec(active)?.[1] ?? '$^', 'i');
     expect(helpFiles.length).toBeGreaterThan(0);
-    for (const name of ['index.html', ...helpFiles, 'x.plist', 'x.phpx', 'shop.html']) {
+    for (const name of [
+      'index.html',
+      ...Object.values(WEB_APP_FILES),
+      ...helpFiles,
+      'x.plist',
+      'x.phpx',
+      'shop.html',
+    ]) {
       expect(pattern.test(name.split(/[\\/]/).at(-1) ?? name), name).toBe(false);
     }
   });

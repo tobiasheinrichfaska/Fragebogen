@@ -4,11 +4,12 @@
 // source there — any file containing it is refused outside the folders that allow it.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { WEB_APP_FILES } from '../../src/logic/webApp';
 
 interface Target {
   folder: string;
   access: string;
-  files: { from: string; to: string }[];
+  files: { from: string; to: string; verify?: boolean }[];
   allowMarkers?: string[];
   testers?: string;
   authName?: string;
@@ -24,6 +25,9 @@ interface Spec {
 const ROOT = join(__dirname, '..', '..');
 const text = (path: string) => readFileSync(join(ROOT, path), 'utf8');
 const spec = JSON.parse(text('deploy/upload.json')) as Spec;
+/** Manifest, icons and service worker of an installable build, each next to its page. */
+const webApp = (dist: string) =>
+  Object.values(WEB_APP_FILES).map((name) => [`${dist}/${name}`, name]);
 
 describe('deploy/upload.json', () => {
   it('uses the access "fragebogen" of the upload tool', () => {
@@ -36,7 +40,17 @@ describe('deploy/upload.json', () => {
       ['dist/index.html', 'index.html'],
       ['deploy/.htaccess', '.htaccess'],
       ['dist/hilfe/', 'hilfe/'],
+      ...webApp('dist'),
     ]);
+  });
+
+  it('uploads manifest, icons and service worker next to both hosted pages (2026-11-15)', () => {
+    const pairs = (target: Target | undefined) => target?.files.map((f) => [f.from, f.to]);
+    expect(pairs(spec.targets.test)).toEqual(expect.arrayContaining(webApp('dist-test')));
+    for (const target of [spec.targets.oeffentlich, spec.targets.test]) {
+      const verified = target?.files.filter((f) => f.verify === true).map((f) => f.to);
+      expect(verified).toEqual(['index.html', WEB_APP_FILES.manifest, WEB_APP_FILES.serviceWorker]);
+    }
   });
 
   it('uploads the help pages the build wrote with the Impressum, never the neutral docs/hilfe/ (2026-11-15)', () => {

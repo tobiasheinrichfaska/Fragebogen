@@ -7,6 +7,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 import type { Plugin } from 'vite';
 import { withCsp } from './src/build/csp';
 import { readHelpContent, writeHelpPages } from './src/build/helpFiles';
+import { writeWebAppFiles } from './src/build/webApp';
 import { escapeReplacementChar } from './src/build/replacementChar';
 import { legalLinks, parseAppConfig, type AppConfig } from './src/logic/appConfig';
 import { parseExportMappings } from './src/logic/exportMapping';
@@ -51,21 +52,52 @@ function previewTitle(): Plugin {
  * written file, because that step inlines during generateBundle after the other plugins.
  */
 function contentSecurityPolicy(): Plugin {
+  let webApp = false;
   return {
     name: 'content-security-policy',
     apply: 'build',
+    configResolved: (resolved) => {
+      webApp = HOSTED_MODES.has(resolved.mode);
+    },
     writeBundle: (options, bundle) => {
       for (const file of Object.values(bundle)) {
         if (file.type !== 'asset' || !file.fileName.endsWith('.html') || !options.dir) continue;
         const path = join(options.dir, file.fileName);
-        writeFileSync(path, withCsp(readFileSync(path, 'utf8')));
+        writeFileSync(path, withCsp(readFileSync(path, 'utf8'), { webApp }));
       }
     },
   };
 }
 
-/** The builds that are uploaded with the help pages: the public app and the test folder. */
-const HELP_PAGE_MODES: ReadonlySet<string> = new Set(['production', 'testbereich']);
+/**
+ * The builds that are uploaded: the public app and the test folder. They carry the help pages and
+ * are installable web apps (manifest, icons, service worker — Tobias 2026-11-15, „1b“).
+ */
+const HOSTED_MODES: ReadonlySet<string> = new Set(['production', 'testbereich']);
+
+/** Manifest, icons and service worker next to the uploaded page (src/build/webApp.ts). */
+function webAppFiles(config: AppConfig): Plugin {
+  let outDir: string | undefined;
+  let name = 'Fragebogen';
+  return {
+    name: 'web-app-files',
+    apply: 'build',
+    configResolved: (resolved) => {
+      outDir = HOSTED_MODES.has(resolved.mode)
+        ? resolve(resolved.root, resolved.build.outDir)
+        : undefined;
+      name = PREVIEW_TITLES[resolved.mode] ?? 'Fragebogen';
+    },
+    closeBundle: () => {
+      if (outDir === undefined) return;
+      const html = readFileSync(join(outDir, 'index.html'), 'utf8');
+      writeWebAppFiles(outDir, html, { name, accent: config.colors?.accent ?? APP_ACCENT });
+    },
+  };
+}
+
+/** The app's own accent colour (styles.css `--accent`) where the configuration names none. */
+const APP_ACCENT = '#1f5fa8';
 
 /**
  * Writes the help pages next to the uploaded app (dist/hilfe/, dist-test/hilfe/) with the Kanzlei's
@@ -77,7 +109,7 @@ function helpPages(config: AppConfig): Plugin {
     name: 'help-pages',
     apply: 'build',
     configResolved: (resolved) => {
-      outDir = HELP_PAGE_MODES.has(resolved.mode)
+      outDir = HOSTED_MODES.has(resolved.mode)
         ? resolve(resolved.root, resolved.build.outDir)
         : undefined;
     },
@@ -120,10 +152,13 @@ export default defineConfig(({ mode }) => ({
     previewTitle(),
     contentSecurityPolicy(),
     helpPages(kanzleiConfig.config),
+    webAppFiles(kanzleiConfig.config),
   ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),
+    // The hosted builds link their manifest and register the service worker (at https only).
+    __WEB_APP__: JSON.stringify(HOSTED_MODES.has(mode)),
     // Only the Kanzlei build, the review preview and the test folder build (behind IPs or a tester
     // login, Tobias 2026-11-01) carry the mapping — never the public app.
     __EXPORT_MAPPINGS__: JSON.stringify(
