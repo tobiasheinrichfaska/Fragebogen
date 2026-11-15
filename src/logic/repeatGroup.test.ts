@@ -10,6 +10,7 @@ import { fieldStates, fieldsById } from './form';
 import { checkFormDefinition } from './formDefinition';
 import { canonicalize } from './jcs';
 import type { FieldDefinition, Questionnaire } from './model';
+import { issueMessage } from './issues';
 import { MAX_ROWS, missingCells, nextRowId, normalizeRows } from './normalize';
 import { createQuestionnaire, currentPart, sealPart, setValue, startPart } from './questionnaire';
 import { verifyQuestionnaire } from './verify';
@@ -82,6 +83,49 @@ describe('normalizeRows', () => {
     ],
   ])('refuses %s and names the cell', (_label, raw, expected) => {
     expect(normalizeRows(table, raw)).toEqual({ ok: false, ...expected });
+  });
+});
+
+// Tobias 2026-11-15: „30 reichen vorerst, erweitere aber vorsichtshalber auf 100“ — a table may name
+// its own limit up to 100; without one it keeps 30, so frozen forms take what they took.
+describe('maxRows', () => {
+  const rows = (count: number) =>
+    Array.from({ length: count }, (_, i) => ({ rowId: `r${i + 1}`, kindName: 'X' }));
+  const wide: FieldDefinition = { ...table, maxRows: 100 };
+
+  it('takes 30 rows without a limit of its own and as many as the table names', () => {
+    expect(MAX_ROWS).toBe(30);
+    expect(normalizeRows(table, rows(30)).ok).toBe(true);
+    expect(normalizeRows(table, rows(31))).toEqual({ ok: false, issue: 'rows.tooMany' });
+    expect(normalizeRows(wide, rows(100)).ok).toBe(true);
+    expect(normalizeRows(wide, rows(101))).toEqual({ ok: false, issue: 'rows.tooMany' });
+  });
+
+  it('names the limit in the message', () => {
+    expect(issueMessage('rows.tooMany', table)).toBe(
+      'Die Tabelle hat zu viele Zeilen (höchstens 30).',
+    );
+    expect(issueMessage('rows.tooMany', wide)).toBe(
+      'Die Tabelle hat zu viele Zeilen (höchstens 100).',
+    );
+  });
+
+  it('belongs to tables only and goes up to 100', () => {
+    const problems = (change: (definition: typeof form.definition) => void) => {
+      const definition = structuredClone(form.definition);
+      change(definition);
+      return checkFormDefinition(definition).map((issue) => issue.message);
+    };
+    const group = (definition: typeof form.definition) =>
+      definition.sections[0]?.fields.find((f) => f.id === 'kinder') as FieldDefinition;
+    expect(problems((d) => (group(d).maxRows = 100))).toEqual([]);
+    expect(problems((d) => (group(d).maxRows = 101))).toEqual(['at most 100 rows']);
+    expect(
+      problems((d) => {
+        const column = group(d).columns?.[0];
+        if (column) column.maxRows = 5;
+      }),
+    ).toEqual(['only tables have maxRows']);
   });
 });
 

@@ -1,6 +1,8 @@
 // Result type and user-facing issue codes of input normalisation and validation. The logic layer
 // returns codes; the UI shows ISSUE_MESSAGES (German product text).
 
+import { MAX_ROWS } from './model';
+
 export type IssueCode =
   | 'text.illFormed'
   | 'value.type'
@@ -139,7 +141,7 @@ export const ISSUE_MESSAGES: Readonly<Record<IssueCode, string>> = {
   'choice.unknown': 'Bitte eine der angebotenen Möglichkeiten wählen.',
   'choice.notInList':
     'Diese Angabe steht nicht in der amtlichen Liste. Bitte einen Eintrag aus den Vorschlägen wählen.',
-  'rows.tooMany': 'Die Tabelle hat zu viele Zeilen (höchstens 30).',
+  'rows.tooMany': 'Die Tabelle hat zu viele Zeilen (höchstens {maxRows}).',
   'rows.rowId': 'Eine Tabellenzeile ist fehlerhaft gekennzeichnet.',
   'rows.unknownColumn': 'Eine Tabellenzeile enthält eine unbekannte Spalte.',
   'calendar.format': 'Ein Kalendertag ist fehlerhaft eingetragen.',
@@ -162,6 +164,7 @@ export function reject<T = never>(issue: IssueCode): Checked<T> {
 /** The bounds a message may name; from the field definition. */
 export interface IssueBounds {
   maxLength?: number;
+  maxRows?: number;
   min?: number;
   max?: number;
   step?: number;
@@ -178,6 +181,7 @@ const germanDay = (value: string | undefined) =>
 export function issueMessage(issue: IssueCode, bounds: IssueBounds = {}): string {
   return ISSUE_MESSAGES[issue]
     .replace('{maxLength}', germanNumber(bounds.maxLength))
+    .replace('{maxRows}', germanNumber(bounds.maxRows ?? MAX_ROWS))
     .replace('{min}', germanNumber(bounds.min))
     .replace('{max}', germanNumber(bounds.max))
     .replace('{step}', germanNumber(bounds.step))

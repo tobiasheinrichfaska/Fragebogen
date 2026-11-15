@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-15T21:36",
+  "revised": "2026-11-15T23:14",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -152,14 +152,14 @@
           "role": "arbeitgeber",
           "type": "date",
           "label": "Kauf- oder Leasingbeginn beim Arbeitgeber",
-          "help": "Entscheidet bei Elektro- und Hybridfahrzeugen, welche Grenzen gelten.",
+          "help": "Entscheidet, bis zu welchem Listenpreis der Ansatz mit einem Viertel gilt (60.000, 70.000 oder 100.000 €).",
           "required": true,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
+          "purpose": "Preisgrenze des Viertel-Ansatzes (§ 6 Abs. 1 Nr. 4 Satz 2 Nr. 3, § 52 Abs. 12 Satz 4 bis 6 EStG)",
           "showIf": {
             "field": "agAntrieb",
-            "in": ["elektro", "plugin", "brennstoff"]
+            "in": ["elektro", "brennstoff"]
           },
-          "because": "Nur bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der Anschaffung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG)."
+          "because": "Nur bei Fahrzeugen ohne CO2-Ausstoß: Bis zu welchem Listenpreis der Viertel-Ansatz gilt, knüpft das Gesetz an die Anschaffung (§ 52 Abs. 12 Satz 5, 6 EStG); ob die Finanzverwaltung bei Beschäftigten auch hier auf die erste Überlassung abstellt, ist nicht geklärt."
         },
         {
           "id": "agErstUeberlassung",
@@ -167,12 +167,13 @@
           "type": "date",
           "label": "Erstmals einer beschäftigten Person zur Privatnutzung überlassen am",
           "required": true,
-          "purpose": "Maßgeblicher Zeitpunkt für die Begünstigung von Elektro- und Hybridfahrzeugen",
+          "purpose": "Maßgeblicher Zeitpunkt für den geringeren Ansatz bei Elektro-, Brennstoffzellen- und Plug-in-Hybridfahrzeugen (BMF-Schreiben vom 05.11.2021 Rz. 22)",
           "showIf": {
             "field": "agAntrieb",
             "in": ["elektro", "plugin", "brennstoff"]
           },
-          "because": "Bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der ersten Überlassung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG)."
+          "because": "Bei Beschäftigten entscheidet für den geringeren Ansatz der Tag, an dem der Arbeitgeber das Fahrzeug erstmals einer beschäftigten Person zur privaten Nutzung überlassen hat – nicht Kauf oder Leasingbeginn (BMF-Schreiben vom 05.11.2021 Rz. 22).",
+          "help": "Auch wenn es eine andere Person war."
         },
         {
           "id": "agCo2",
@@ -236,41 +237,44 @@
           "type": "boolean",
           "label": "Privatnutzung erlaubt",
           "question": "Darf die Person das Fahrzeug privat nutzen?",
-          "help": "Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger).",
+          "help": "Dann gilt die 1-%-Regelung: monatlich 1 % des Listenpreises (bei Elektro-, Brennstoffzellen- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger).",
           "required": true,
           "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)"
         },
         {
-          "id": "agNutzungsverbot",
+          "id": "agErsteTaetigkeitsstaette",
           "role": "arbeitgeber",
           "type": "choice",
-          "label": "Regelung des Nutzungsverbots",
-          "help": "Das Dokument gehört zum Lohnkonto.",
+          "label": "Erste Tätigkeitsstätte zugeordnet",
+          "question": "Hat die Person eine erste Tätigkeitsstätte?",
+          "help": "Erste Tätigkeitsstätte ist die ortsfeste betriebliche Einrichtung – Ihre, die eines verbundenen Unternehmens oder eines Kunden –, der Sie die Person dauerhaft zugeordnet haben, meist im Arbeitsvertrag. Fehlt eine solche Zuordnung, ist es die Einrichtung, an der sie dauerhaft arbeitstäglich, an zwei vollen Tagen je Woche oder mit mindestens einem Drittel ihrer Arbeitszeit arbeiten soll (§ 9 Abs. 4 EStG).",
           "required": true,
-          "purpose": "Geldwerter Vorteil nach der 1-%-Regelung (§ 8 Abs. 2 Satz 2, § 6 Abs. 1 Nr. 4 Satz 2 EStG)",
-          "showIf": {
-            "field": "agPrivatnutzung",
-            "equals": false
-          },
-          "because": "Ohne Privatnutzung entfällt die 1-%-Regelung nur, wenn ein Nutzungsverbot vereinbart ist; deshalb wird seine Grundlage gebraucht.",
+          "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG)",
           "options": [
             {
-              "id": "arbeitsvertrag",
-              "label": "Arbeitsvertrag"
+              "id": "ja",
+              "label": "Ja"
             },
             {
-              "id": "vereinbarung",
-              "label": "Dienstwagenvereinbarung"
-            },
-            {
-              "id": "betriebsvereinbarung",
-              "label": "Betriebsvereinbarung"
-            },
-            {
-              "id": "verzicht",
-              "label": "schriftlicher Verzicht der Person (auf Papier)"
+              "id": "keine",
+              "label": "Nein – z. B. Außendienst mit wechselnden Einsatzorten"
             }
           ]
+        },
+        {
+          "id": "agErsteTaetigkeitsstaetteAnschrift",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Anschrift der ersten Tätigkeitsstätte",
+          "question": "Wo ist die erste Tätigkeitsstätte der Person?",
+          "help": "Die Anschrift der betrieblichen Einrichtung, z. B. „Musterstraße 1, 12345 Musterstadt“. Die Person sieht sie bei der Frage nach ihren Fahrten.",
+          "required": true,
+          "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG); die Person misst die Entfernung dorthin",
+          "showIf": {
+            "field": "agErsteTaetigkeitsstaette",
+            "equals": "ja"
+          },
+          "because": "Die erste Tätigkeitsstätte legt der Arbeitgeber fest (§ 9 Abs. 4 EStG); die Person braucht ihre Anschrift, um die Entfernung zu nennen."
         },
         {
           "id": "agFahrtenWohnung",
@@ -278,9 +282,55 @@
           "type": "boolean",
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt",
           "question": "Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?",
-          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).",
+          "help": "Gemeint ist die erste Tätigkeitsstätte, die Sie eben genannt haben.",
           "required": true,
-          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)",
+          "showIf": {
+            "field": "agErsteTaetigkeitsstaette",
+            "equals": "ja"
+          },
+          "because": "Ohne erste Tätigkeitsstätte gibt es keine Fahrten dorthin, für die 0,03 % je Entfernungskilometer anzusetzen wären (§ 8 Abs. 2 Satz 3 EStG)."
+        },
+        {
+          "id": "agNutzungsverbot",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Grundlage des Nutzungsverbots",
+          "help": "Legen Sie das Dokument zum Lohnkonto – auf Papier oder als Datei, z. B. als PDF; eine besondere Form ist dafür nicht vorgeschrieben.",
+          "required": true,
+          "purpose": "Kein geldwerter Vorteil für verbotene Nutzungen (§ 8 Abs. 2 Satz 2 und 3 EStG; BMF-Schreiben vom 03.03.2022 Rz. 19, 20)",
+          "showIf": {
+            "any": [
+              {
+                "field": "agPrivatnutzung",
+                "equals": false
+              },
+              {
+                "field": "agFahrtenWohnung",
+                "equals": false
+              }
+            ]
+          },
+          "because": "Ist die Privatnutzung oder sind die Fahrten zur ersten Tätigkeitsstätte nicht erlaubt, entfällt der Vorteil dafür nur, wenn das Verbot durch Unterlagen beim Lohnkonto belegt ist (BMF-Schreiben vom 03.03.2022 Rz. 19).",
+          "options": [
+            {
+              "id": "arbeitsvertrag",
+              "label": "Arbeitsvertrag"
+            },
+            {
+              "id": "vereinbarung",
+              "label": "Dienstwagenvereinbarung oder Dienstwagenrichtlinie"
+            },
+            {
+              "id": "betriebsvereinbarung",
+              "label": "Betriebsvereinbarung"
+            },
+            {
+              "id": "verzicht",
+              "label": "Verzicht der Person, auf Papier unterschrieben – nur wenn ein Verbot von Ihnen aus anderen als steuerlichen Gründen nicht möglich ist"
+            }
+          ],
+          "question": "Wo ist das Verbot geregelt, das Fahrzeug privat oder für Fahrten zur ersten Tätigkeitsstätte zu nutzen?"
         },
         {
           "id": "agPauschal15",
@@ -388,12 +438,27 @@
           "because": "Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt."
         },
         {
+          "id": "ersteTaetigkeitsstaette",
+          "role": "person",
+          "type": "text",
+          "label": "Erste Tätigkeitsstätte",
+          "question": "Wo ist Ihre erste Tätigkeitsstätte?",
+          "help": "Der Betrieb oder Ort, dem Ihr Arbeitgeber Sie dauerhaft zugeordnet hat, meist im Arbeitsvertrag. Wissen Sie es nicht, lassen Sie das Feld leer; Ihr Arbeitgeber trägt es ein.",
+          "required": false,
+          "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG)",
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agErsteTaetigkeitsstaetteAnschrift"
+          },
+          "because": "Die erste Tätigkeitsstätte legt der Arbeitgeber fest (§ 9 Abs. 4 EStG); hat er sie schon eingetragen, wird sie übernommen und hier nicht gefragt."
+        },
+        {
           "id": "fahrtenWohnung",
           "role": "person",
           "type": "boolean",
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte",
-          "question": "Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?",
-          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).",
+          "question": "Fahren Sie mit dem Dienstwagen zwischen Ihrer Wohnung und Ihrer ersten Tätigkeitsstätte {ersteTaetigkeitsstaette}?",
+          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, dem Ihr Arbeitgeber Sie dauerhaft zugeordnet hat (§ 9 Abs. 4 EStG).",
           "required": true,
           "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
         },
@@ -456,7 +521,7 @@
       "id": "pflichten",
       "role": "person",
       "title": "Was Ihre Angaben bewirken",
-      "text": "Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.",
+      "text": "Darf das Fahrzeug privat genutzt werden, versteuern Sie jeden Monat einen Vorteil von 1 % des Listenpreises (bei Elektro-, Brennstoffzellen- und Plug-in-Hybridfahrzeugen unter Bedingungen weniger). Für Fahrten zwischen Wohnung und erster Tätigkeitsstätte kommen 0,03 % je Entfernungskilometer hinzu. Melden Sie einen Umzug oder einen Wechsel der Tätigkeitsstätte sofort.",
       "asOf": "2026-11-13",
       "acknowledgement": "read"
     }
@@ -492,11 +557,11 @@
   "legalNotes": [
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). Für diese Angaben schreibt das Gesetz keine Form vor.",
     "Der Fragebogen deckt den Standard ab: 1-%-Regelung, Fahrten zwischen Wohnung und erster Tätigkeitsstätte mit 0,03 % je Entfernungskilometer und die Pauschalierung mit 15 %. Sonderfälle (Fahrtenbuch, Einzelbewertung, Zuzahlungen, Familienheimfahrten u. a.) klärt die lohnabrechnende Stelle gesondert.",
-    "Dieser Fragebogen ist weder die Dienstwagenvereinbarung noch ein Nutzungsverbot; beides regelt der Arbeitsvertrag. Einen Nutzungsverzicht erklärt die Person auf Papier.",
+    "Dieser Fragebogen ist weder die Dienstwagenvereinbarung noch ein Nutzungsverbot oder ein Nutzungsverzicht. Das Dokument mit dem Verbot gehört zum Lohnkonto und darf als Datei aufbewahrt werden (§ 147 Abs. 2 AO); einen Nutzungsverzicht erklärt die Person auf Papier.",
     "Den geldwerten Vorteil berechnet die Lohnabrechnung, nicht die App. Bei einem Fahrzeugwechsel ist ein neuer Fragebogen nötig, bei geänderten Bedingungen eine neue Fassung."
   ],
   "partLinks": [["arbeitgeber", "person"]],
-  "signatureBasis": "Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Einen Verzicht auf die private Nutzung erklären Sie auf Papier.",
+  "signatureBasis": "Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Nur einen Verzicht auf die Nutzung erklärt die Person auf Papier, weil die Finanzverwaltung ihn „schriftlich“ verlangt (BMF-Schreiben vom 03.03.2022 Rz. 20).",
   "validity": {
     "field": "agUeberlassenAb",
     "from": "2026-01-01"
@@ -504,6 +569,19 @@
   "limits": [
     "Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.",
     "Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.",
+    "Nicht abgedeckt: die Minderung des Listenpreises um das Batteriesystem bei älteren Elektro- und Hybridfahrzeugen (§ 6 Abs. 1 Nr. 4 Satz 2 Nr. 1 EStG).",
+    "Ohne erste Tätigkeitsstätte fragt er nicht nach Fahrten zu einem Sammelpunkt oder in ein weiträumiges Tätigkeitsgebiet (§ 9 Abs. 1 Satz 3 Nr. 4a Satz 3 EStG); das klärt die lohnabrechnende Stelle.",
     "Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung."
+  ],
+  "checkHints": [
+    {
+      "id": "nutzungsverzicht",
+      "when": {
+        "field": "agNutzungsverbot",
+        "equals": "verzicht"
+      },
+      "message": "Nutzungsverzicht statt Verbot: Er zählt nur, wenn ein Verbot des Arbeitgebers aus außersteuerlichen Gründen nicht in Betracht kommt; die Person muss ihn ausdrücklich für die Zukunft schriftlich erklären, er gehört als Beleg zum Lohnkonto.",
+      "source": "BMF-Schreiben vom 03.03.2022 Rz. 20"
+    }
   ]
 }

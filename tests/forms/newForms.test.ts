@@ -3,13 +3,14 @@
 // per drive, both parts sealable). Fictitious data.
 import { join } from 'node:path';
 import { answerSuggestions } from '../../src/logic/answerSuggestions';
-import { displayValue } from '../../src/logic/display';
+import { displayValue, fillPlaceholders } from '../../src/logic/display';
 import { missingRequired, visibleFields } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
 import type { FieldValue, FormDefinition, Questionnaire } from '../../src/logic/model';
 import { prefillFrom } from '../../src/logic/prefill';
 import {
+  adoptFromOtherRoles,
   createQuestionnaire,
   currentPart,
   receivedPartFor,
@@ -244,6 +245,38 @@ describe('Lohnmeldung draft — taken over from last month', () => {
       ]),
     );
   });
+
+  // Tobias 2026-11-15: „30 reichen vorerst, erweitere aber vorsichtshalber auf 100“.
+  it('takes up to 100 employees and 100 rows of values each month', () => {
+    const start = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber'));
+    const people = (count: number) =>
+      Array.from({ length: count }, (_, i) => ({
+        rowId: `r${i + 1}`,
+        maName: `Beispiel, Person ${i + 1}`,
+        maVerguetungsart: 'monatsentgelt',
+        maVerguetung: '2.400',
+      }));
+    expect(setValue(start, form, 'arbeitgeber', 'mitarbeitende', people(100)).ok).toBe(true);
+    expect(setValue(start, form, 'arbeitgeber', 'mitarbeitende', people(101))).toMatchObject({
+      ok: false,
+    });
+    const values = Array.from({ length: 100 }, (_, i) => ({
+      rowId: `r${i + 1}`,
+      monatPerson: `Beispiel, Person ${i + 1}`,
+      monatLohnart: '1000 Stundenlohn',
+      monatWert: '100',
+    }));
+    expect(setValue(start, form, 'arbeitgeber', 'monatWerte', values).ok).toBe(true);
+    const fields = form.definition.sections.flatMap((section) => section.fields);
+    expect(
+      fields.filter((field) => field.type === 'repeatGroup').map((field) => field.maxRows),
+    ).toEqual([100, 100, 100]);
+  });
+
+  // LM-5, Tobias 2026-11-15: „nein“ — the report is no reason to pay on last month's values.
+  it('does not promise payroll on last month’s values when the report is missing', () => {
+    expect(JSON.stringify(form.definition)).not.toContain('Werten des Vormonats');
+  });
 });
 
 describe('table row rule (carryRowsIf) — definition rules', () => {
@@ -285,8 +318,58 @@ describe('Dienstwagen draft — standard only', () => {
     // Review 2026-11-15 (DW-5): the purchase date decides only for electric and hybrid drives.
     expect(ids({ agAntrieb: 'verbrenner' })).not.toContain('agAnschaffung');
     expect(ids({ agAntrieb: 'elektro' })).toContain('agAnschaffung');
-    expect(ids({ agFahrtenWohnung: true })).toContain('agPauschal15');
-    expect(ids({ agFahrtenWohnung: false })).not.toContain('agPauschal15');
+    const commuting = { agErsteTaetigkeitsstaette: 'ja' };
+    expect(ids({ ...commuting, agFahrtenWohnung: true })).toContain('agPauschal15');
+    expect(ids({ ...commuting, agFahrtenWohnung: false })).not.toContain('agPauschal15');
+  });
+
+  // DW-4, checked 2026-11-15 in BMF vom 03.03.2022 Rz. 19, 20 and BMF vom 05.11.2021 Rz. 22: the
+  // employer's ban needs a record at the Lohnkonto, no paper; only the person's waiver is
+  // „schriftlich“. For employees the first hand-over decides, not the purchase.
+  it('asks where a ban is laid down, also for commuting, and wants paper only for a waiver', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
+    const place = { agErsteTaetigkeitsstaette: 'ja' };
+    expect(ids({ ...place, agPrivatnutzung: true, agFahrtenWohnung: false })).toContain(
+      'agNutzungsverbot',
+    );
+    expect(ids({ ...place, agPrivatnutzung: true, agFahrtenWohnung: true })).not.toContain(
+      'agNutzungsverbot',
+    );
+    const ban = form.definition.sections
+      .flatMap((s) => s.fields)
+      .find((f) => f.id === 'agNutzungsverbot');
+    const labels = ban?.options?.map((o) => o.label) ?? [];
+    expect(labels.filter((label) => label.includes('Papier'))).toEqual([
+      expect.stringContaining('Verzicht der Person'),
+    ]);
+    expect(ban?.help).toContain('als Datei');
+  });
+
+  it('asks the purchase only without CO2, and the first hand-over for every electric drive', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
+    expect(ids({ agAntrieb: 'plugin' })).not.toContain('agAnschaffung');
+    expect(ids({ agAntrieb: 'plugin' })).toContain('agErstUeberlassung');
+    expect(ids({ agAntrieb: 'brennstoff' })).toEqual(
+      expect.arrayContaining(['agAnschaffung', 'agErstUeberlassung']),
+    );
+  });
+
+  // Tobias 2026-11-15 (DW-2): the employer decides the erste Tätigkeitsstätte (§ 9 Abs. 4 EStG), so
+  // the employer names it; the person sees it in the question about the drives to work.
+  it('lets the employer name the erste Tätigkeitsstätte and asks about drives only when there is one', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
+    expect(ids({ agErsteTaetigkeitsstaette: 'ja' })).toEqual(
+      expect.arrayContaining(['agErsteTaetigkeitsstaetteAnschrift', 'agFahrtenWohnung']),
+    );
+    expect(ids({ agErsteTaetigkeitsstaette: 'keine' })).not.toContain(
+      'agErsteTaetigkeitsstaetteAnschrift',
+    );
+    expect(ids({ agErsteTaetigkeitsstaette: 'keine', agFahrtenWohnung: true })).not.toEqual(
+      expect.arrayContaining(['agFahrtenWohnung', 'agPauschal15']),
+    );
   });
 
   // Review 2026-11-15 (DW-1): where the person starts only matters for drives to work.
@@ -297,26 +380,30 @@ describe('Dienstwagen draft — standard only', () => {
     expect(ids({ fahrtenWohnung: true })).toContain('wohnungMeldeanschrift');
   });
 
+  const EMPLOYER = {
+    agFirma: 'Beispiel Bau GmbH',
+    agFamilienname: 'Musterfrau',
+    agVorname: 'Erika',
+    agKennzeichen: 'KA-B 1234',
+    agFahrzeug: 'Beispielmarke Modell E',
+    agErstzulassung: '01.03.2026',
+    agListenpreis: '48.900',
+    agSonderausstattung: '2.100',
+    agAntrieb: 'elektro',
+    agAnschaffung: '01.03.2026',
+    agErstUeberlassung: '01.04.2026',
+    agUeberlassenAb: '01.04.2026',
+    agPrivatnutzung: true,
+    agErsteTaetigkeitsstaette: 'ja',
+    agErsteTaetigkeitsstaetteAnschrift: 'Musterstraße 1, 12345 Musterstadt',
+    agFahrtenWohnung: true,
+    agPauschal15: true,
+    agSonderfaelle: ['keine'],
+  };
+
   it('seals the employer part and then the person part over it', () => {
     let q = seal(
-      fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', {
-        agFirma: 'Beispiel Bau GmbH',
-        agFamilienname: 'Musterfrau',
-        agVorname: 'Erika',
-        agKennzeichen: 'KA-B 1234',
-        agFahrzeug: 'Beispielmarke Modell E',
-        agErstzulassung: '01.03.2026',
-        agListenpreis: '48.900',
-        agSonderausstattung: '2.100',
-        agAntrieb: 'elektro',
-        agAnschaffung: '01.03.2026',
-        agErstUeberlassung: '01.04.2026',
-        agUeberlassenAb: '01.04.2026',
-        agPrivatnutzung: true,
-        agFahrtenWohnung: true,
-        agPauschal15: true,
-        agSonderfaelle: ['keine'],
-      }),
+      fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', EMPLOYER),
       form,
       'arbeitgeber',
       0,
@@ -340,5 +427,29 @@ describe('Dienstwagen draft — standard only', () => {
     expect(transmissionBlockers(q, form)).toEqual([]);
     expect(completenessGaps(q, form)).toEqual([]);
     expect(currentPart(q, 'person')?.data.entfernungKm).toBe('23');
+  });
+
+  it('shows the person the erste Tätigkeitsstätte the employer named', () => {
+    const employer = seal(
+      fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', EMPLOYER),
+      form,
+      'arbeitgeber',
+      0,
+    );
+    const person = adoptFromOtherRoles(ok(startPart(employer, form, 'person')), form, 'person');
+    expect(person.adopted).toContain('ersteTaetigkeitsstaette');
+    const data = currentPart(person.questionnaire, 'person')?.data ?? {};
+    const fields = new Map(
+      form.definition.sections.flatMap((section) => section.fields).map((f) => [f.id, f]),
+    );
+    expect(
+      fillPlaceholders(
+        fields.get('fahrtenWohnung')?.question ?? '',
+        (id) => fields.get(id),
+        (id) => data[id],
+      ),
+    ).toBe(
+      'Fahren Sie mit dem Dienstwagen zwischen Ihrer Wohnung und Ihrer ersten Tätigkeitsstätte „Musterstraße 1, 12345 Musterstadt“?',
+    );
   });
 });

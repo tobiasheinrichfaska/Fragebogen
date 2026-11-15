@@ -252,6 +252,12 @@ export interface FieldDefinition {
    * from a file) is refused; e.g. 30 for a name in the DEÜV report.
    */
   maxLength?: number;
+  /**
+   * `repeatGroup` only: at most this many rows (1–100; without it 30). E.g. 100 for the employees
+   * of the monthly report (Tobias 2026-11-15: „30 reichen vorerst, erweitere aber vorsichtshalber
+   * auf 100“). Frozen forms keep 30, because they do not name it.
+   */
+  maxRows?: number;
   /** `text` only: the character rules of a DEÜV data field, checked as hints, never refused. */
   deuevRule?: DeuevRule;
   /** `number` only: the smallest value. */
@@ -653,3 +659,8 @@ export interface Questionnaire {
   mergeRecord?: MergeRecord;
   mergeHash?: Sha256Hex;
 }
+
+/** Rows of a table without its own `maxRows`. */
+export const MAX_ROWS = 30;
+/** The most rows a table may name (`maxRows`, 2026-11-15). */
+export const TABLE_ROWS_LIMIT = 100;

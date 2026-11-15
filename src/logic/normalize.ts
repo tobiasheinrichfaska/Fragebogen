@@ -16,6 +16,7 @@ import type {
   IsoDate,
   TextFormat,
 } from './model';
+import { MAX_ROWS } from './model';
 import { listOptionFor, optionsOf, REFERENCE_LISTS, suggestionsOf } from './options';
 import {
   checkBetriebsnummer,
@@ -424,7 +425,10 @@ const FIELD_NORMALIZERS: Readonly<Record<FieldType, FieldNormalizer>> = {
 /** Row ids of a table: "r1", "r2", … — a new row takes the next free number, ids never shift. */
 export const ROW_ID = /^r[1-9][0-9]{0,2}$/;
 export const ROW_ID_KEY = 'rowId';
-export const MAX_ROWS = 30;
+export { MAX_ROWS };
+
+/** The rows a table takes: its own `maxRows`, else 30. */
+export const maxRowsOf = (field: FieldDefinition): number => field.maxRows ?? MAX_ROWS;
 
 export type RowsResult =
   | { ok: true; value: FieldValue; warnings: readonly IssueCode[] }
@@ -439,7 +443,7 @@ export type RowsResult =
 export function normalizeRows(field: FieldDefinition, raw: unknown): RowsResult {
   if (raw === null) return { ok: true, value: null, warnings: [] };
   if (!Array.isArray(raw)) return { ok: false, issue: 'value.type' };
-  if (raw.length > MAX_ROWS) return { ok: false, issue: 'rows.tooMany' };
+  if (raw.length > maxRowsOf(field)) return { ok: false, issue: 'rows.tooMany' };
   const columns = field.columns ?? [];
   const allowed = new Set([ROW_ID_KEY, ...columns.map((column) => column.id)]);
   const seen = new Set<string>();

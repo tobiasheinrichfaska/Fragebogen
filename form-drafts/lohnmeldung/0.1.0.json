@@ -1,7 +1,7 @@
 {
   "id": "lohnmeldung",
   "version": "0.1.0",
-  "revised": "2026-11-15T21:36",
+  "revised": "2026-11-15T23:03",
   "title": "Monatsmeldung: Lohn- und Gehaltsdaten",
   "signaturePolicy": "electronic",
   "roles": [
@@ -138,6 +138,7 @@
           "role": "arbeitgeber",
           "type": "repeatGroup",
           "label": "Mitarbeitende",
+          "maxRows": 100,
           "required": true,
           "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
           "question": "Wer war im Abrechnungsmonat beschäftigt?",
@@ -306,6 +307,7 @@
           "role": "arbeitgeber",
           "type": "repeatGroup",
           "label": "Werte für den Abrechnungsmonat",
+          "maxRows": 100,
           "required": false,
           "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
           "question": "Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?",
@@ -374,6 +376,7 @@
           "role": "arbeitgeber",
           "type": "repeatGroup",
           "label": "Werte für den Vormonat",
+          "maxRows": 100,
           "required": true,
           "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)",
           "question": "Welche Werte sollen noch für den Vormonat abgerechnet werden?",
@@ -451,7 +454,7 @@
       "id": "abgabe",
       "role": "arbeitgeber",
       "title": "Bis wann die Meldung gebraucht wird",
-      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt. Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.",
+      "text": "Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt.",
       "asOf": "2026-11-01",
       "acknowledgement": "read"
     },
@@ -481,6 +484,7 @@
   "limits": [
     "Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.",
     "Ein- und Austritte, Änderungen und Pfändungen nennt sie nur als Besonderheiten; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.",
-    "Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung."
+    "Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung.",
+    "Sie fasst höchstens 100 Beschäftigte und je Tabelle der Monatswerte höchstens 100 Zeilen."
   ]
 }

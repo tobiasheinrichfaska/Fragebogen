@@ -286,15 +286,24 @@ BVV). Ab 01.01.2027 sind die Unterlagen ausnahmslos elektronisch zu führen.
 
 ## 7. Dienstwagen (Kfz-Gestellung)
 
-- **Keine gesetzliche Form** für die Überlassung; die einfache elektronische Signatur genügt. Das
-  BMF verlangt aber für einzelne Erklärungen „schriftlich“ (Fahrtage der Einzelbewertung,
-  Nutzungsverzicht, Kostenerklärung; BMF vom 03.03.2022). Ob die einfache elektronische Signatur
-  das erfüllt, ist _nicht verifiziert_ — den Nutzungsverzicht vorerst auf Papier.
+- **Keine gesetzliche Form** für die Überlassung; die einfache elektronische Signatur genügt.
+- **Nutzungsverbot** (geprüft 2026-11-15): Der Arbeitgeber belegt es mit Unterlagen beim Lohnkonto,
+  z. B. dem Arbeitsvertrag; eine Form ist nicht vorgeschrieben, die Unterlagen dürfen elektronisch
+  aufbewahrt werden (BMF vom 03.03.2022 Rz. 19; § 147 Abs. 2 AO). Das gilt auch für ein Verbot der
+  Fahrten zur ersten Tätigkeitsstätte. Ein Verzicht der Person steht dem Verbot nur gleich, wenn ein
+  Verbot aus außersteuerlichen Gründen nicht in Betracht kommt, und muss „schriftlich“ erklärt sein
+  (Rz. 20).
+- **„Schriftlich“ beim BMF:** Fahrtage der Einzelbewertung, Nutzungsverzicht, Kostenerklärung (BMF
+  vom 03.03.2022). Ob die einfache elektronische Signatur das erfüllt, ist _nicht verifiziert_ —
+  den Nutzungsverzicht vorerst auf Papier.
 - **Listenpreis:** inländischer Bruttolistenpreis bei Erstzulassung plus werkseitige
   Sonderausstattung, abgerundet auf volle 100 € (R 8.1 Abs. 9 Nr. 1 S. 6 LStR).
 - **Elektro 0,25 %:** keine CO2-Emission und Listenpreis höchstens 100.000 € bei Anschaffung nach
-  dem 30.06.2025 (§ 52 Abs. 12 S. 6 EStG). Welches Datum bei Arbeitnehmern entscheidet
-  (Anschaffung oder erstmalige Überlassung), ist _nicht verifiziert_ — der Entwurf fragt beide.
+  dem 30.06.2025, 70.000 € vom 01.01.2024 bis 30.06.2025, 60.000 € davor (§ 52 Abs. 12 S. 4 bis 6
+  EStG). Bei Arbeitnehmern entscheidet für den geringeren Ansatz die erstmalige Überlassung an eine
+  beschäftigte Person, nicht die Anschaffung (BMF vom 05.11.2021 Rz. 22, geprüft 2026-11-15). Ob das
+  auch für die Preisgrenzen von 2024 und 2025 gilt, ist _nicht geklärt_ — der Entwurf fragt bei
+  Fahrzeugen ohne CO2-Ausstoß deshalb auch die Anschaffung.
 - **Einzelbewertung der Fahrten Wohnung – erste Tätigkeitsstätte:** 0,002 % je Fahrt, höchstens
   180 Fahrten im Jahr, monatliche Angabe der Fahrtage mit Datum (BMF vom 03.03.2022).
 - **Ladestrom ab 2026:** keine Monatspauschalen mehr; Strompreispauschale 2026 34 Cent/kWh oder
