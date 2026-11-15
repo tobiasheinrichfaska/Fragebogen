@@ -1440,11 +1440,14 @@ planned club.
   - Later through a separate private "Freigabe" repo: GitHub Actions, each run started by Tobias by
     hand. That repo is never attached to a cloud session.
   - The first upload to bunny.net already goes that way; the local upload tool has no bunny.net
-    path. Until then the copy at IONOS stays and the Kanzlei PC updates it as before. Cloud sessions
-    never upload.
-- **Access notice (`accessNotice`): draft only, adopt only with Tobias' OK.**
-  - The existing notice gets a disclaimer. `[Kanzlei]` stands for the name from the local config,
-    which never goes into this repo. Draft:
+    path. Until then the copy at IONOS stays as it is. Cloud sessions never upload.
+  - **No upload until the move** (Tobias 2026-11-15: „Nichts, erst Umzug“): neither the public app
+    nor the test folder at IONOS is updated any more; the Kanzlei PC only pulls the new state and
+    runs the tests. The next public upload is the first one to bunny.net.
+- **Access notice (`accessNotice`): adopted 2026-11-15** (Tobias: „So übernehmen“; in
+  Fragebogen-privat, its PR #1). It goes online with the first upload to bunny.net.
+  - The notice gets a disclaimer. `[Kanzlei]` stands for the name from the local config (taken from
+    the former notice), which never goes into this repo. The text:
 
     > Dieser Fragebogen ist ein Angebot der [Kanzlei] für ihre Mandanten und deren Beschäftigte.
     > Bitte nutzen Sie ihn nur in Absprache mit uns. Er ersetzt keine Rechts- oder Steuerberatung und
