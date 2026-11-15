@@ -1438,8 +1438,14 @@ in the cloud the same day):**
   downloaded test file would lead nowhere. E2E in `tests/e2e/handtests/08_testbereich.spec.ts`: the
   link, none in a file:// copy, `dist/index.html` carries neither address nor text.
 
+**Moved (Tobias 2026-11-15 evening: „wir sind umgezogen“; checked from the cloud the same evening with
+`curl -I`):** the live app is served by BunnyCDN with the headers of the table below (HSTS, the CSP
+addition, `X-Frame-Options`, `Cache-Control: max-age=0`), and the test zone answers with a login
+(`WWW-Authenticate`). `testAddress` points to the test zone (companion `704c800`). Where the plan below
+still says „until the move“, that time is over.
+
 **Hosting move decided (Kanzlei PC session, 2026-11-15; bunny account and pull zone set up the same
-day, nothing uploaded, DNS unchanged):** Tobias: the Fragebogen
+day):** Tobias: the Fragebogen
 and the E-Rechnungs-Prüfer move **first**, and **as the Kanzlei**, not privately and not yet as the
 planned club.
 
