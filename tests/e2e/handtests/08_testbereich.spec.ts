@@ -193,7 +193,14 @@ test.describe('MT-85: the shared test page with the Fragebogen', () => {
     await action(page, 'oeffnen', '.tr-test').first().click();
     await action(page, 'ergebnis', '[data-wert="bestanden"]').click();
     // What the public app at the root keeps shares the address and stays (2026-11-13).
-    await page.evaluate(() => localStorage.setItem('fragebogen-angefangen', 'öffentliche App'));
+    await page.evaluate(() => {
+      localStorage.setItem('fragebogen-angefangen', 'öffentliche App');
+      // A remembered access notice exists only where the local config names one: set it here as
+      // well, so the reset is checked without the config too (the CI has none).
+      if (localStorage.getItem('fragebogen-zugang@/test/') === null) {
+        localStorage.setItem('fragebogen-zugang@/test/', 'gemerkt');
+      }
+    });
     // The test folder's own keys: the remembered access notice and the interrupted questionnaire.
     expect(await storedKeys(page)).toEqual(
       [
