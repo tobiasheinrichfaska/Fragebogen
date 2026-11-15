@@ -1,12 +1,15 @@
 # Wochenprüfung Fragebogen
 
-Die geplante Aufgabe „Wochenprüfung“ arbeitet diese Liste jeden Montag ab. Tobias, 14.11.2026: eine
+Die geplante Aufgabe „Wochenprüfung“ arbeitet diese Liste jeden Sonntag um 3:42 Uhr ab (seit
+15.11.2026; vorher war Montag geplant). Tobias, 14.11.2026: eine
 wöchentliche Routine, „die prüft, ob irgendwelche der rechtlichen Basisdaten sich verändert haben
 … oder Krankenkassen fusioniert haben“, und die wir „Stück für Stück erweitern“.
 
 **Erweitern** heißt: hier einen Eintrag ergänzen. Die Aufgabe selbst bleibt gleich; sie liest diese
 Datei bei jedem Lauf vom Hauptzweig. Prüfungen über alle Projekte (Sicherheit, täglicher
-Integritätsauftrag, neue Projekte) stehen im Auftrag der geplanten Aufgabe selbst, nicht hier.
+Integritätsauftrag, neue Projekte) stehen nicht hier, sondern in `aufgaben/wochenpruefung.md` im
+privaten Repo `tobiasheinrichfaska/Pruefvorgaenge`. Der Auftrag der geplanten Aufgabe verweist nur
+auf diese Dateien.
 
 ## Regeln für jeden Lauf
 
