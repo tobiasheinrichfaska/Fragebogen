@@ -1419,7 +1419,9 @@ planned club.
 - **Upload:**
   - Later through a separate private "Freigabe" repo: GitHub Actions, each run started by Tobias by
     hand. That repo is never attached to a cloud session.
-  - Until it exists, the Kanzlei PC uploads as before. Cloud sessions never upload.
+  - The first upload to bunny.net already goes that way; the local upload tool has no bunny.net
+    path. Until then the copy at IONOS stays and the Kanzlei PC updates it as before. Cloud sessions
+    never upload.
 - **Access notice (`accessNotice`): draft only, adopt only with Tobias' OK.**
   - The existing notice gets a disclaimer. `[Kanzlei]` stands for the name from the local config,
     which never goes into this repo. Draft:
