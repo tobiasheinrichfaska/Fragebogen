@@ -671,16 +671,19 @@ Key design decisions (details in `docs/plan.md`):
 - **Briefing for the PC session:** `docs/briefing-kanzlei-pc.md` (reset to the rewritten main, one
   full local test run, upload rules, creating the private repo, what the PC no longer does).
 - **Weekly scheduled task „Wochenprüfung“ (Tobias 2026-11-14: „ja, erstelle die wöchentliche
-  Prüfliste“):** Mondays, a fresh cloud session each time, push message to Tobias. Its prompt holds
-  the checks across all projects: every repository's `docs/wochenpruefung.md` (Fragebogen: legal
-  base data, tests with the private files), security of every repository, also without a new push
+  Prüfliste“):** Sundays at 03:42 Berlin time (since 2026-11-15; Mondays were planned first), a
+  fresh cloud session each time, push message to Tobias. Its prompt only points to files: first
+  `aufgaben/wochenpruefung.md` in the private repo `tobiasheinrichfaska/Pruefvorgaenge` (the checks
+  across all projects), then every attached repository's `docs/wochenpruefung.md` (Fragebogen: legal
+  base data, tests with the private files). The cross-project file covers security of every repository, also without a new push
   (npm audit of the lock file — new advisories appear without one; fixes as a PR only in a repository
   pushed in the last 90 days —, red CI on main, no credentials in the private repos, no private files
   in the public ones), whether the daily integrity task exists or which projects allow it yet (their
   private repo keeps `auslieferung/<Ziel>.json` after each upload — proposal in the PC briefing), and
   new projects without a checklist. It opens PRs but never merges, uploads, publishes or creates
-  scheduled tasks. Extend a project's checks in its file; change the cross-project part by asking any
-  session to update the task's prompt.
+  scheduled tasks. Extend a project's checks in its file and the cross-project part in
+  `Pruefvorgaenge`; the task's prompt stays as it is. Its PRs for this file are never merged by a
+  session: legal data are Tobias's decision.
 
 ### Monatsmeldung rebuilt (draft, Tobias 2026-11-01)
 
