@@ -20,6 +20,8 @@ auf diese Dateien.
   von `CLAUDE.md`. Dazu gehört: eine geänderte Liste bekommt eine neue Id; eine veröffentlichte
   Fassung in `forms/` wird nie geändert, Formularänderungen gibt es nur in einem Entwurf.
 - PRs dieser Liste werden **nicht** gemergt: Rechtsdaten entscheidet Tobias.
+- Auch eine Änderung an dieser Datei selbst mergt nur Tobias (15.11.2026): Sie ist ein Auftrag an die
+  geplante Aufgabe.
 - Nie hochladen, nie eine Fassung veröffentlichen.
 - Ist das „Ende“ eines Eintrags erreicht, wird der Eintrag im selben PR gestrichen (oder in einem
   eigenen, wenn sonst nichts zu ändern ist).
