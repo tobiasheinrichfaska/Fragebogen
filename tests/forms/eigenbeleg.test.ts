@@ -4,7 +4,7 @@
 // Belegnummer is optional. Fictitious data.
 import { join } from 'node:path';
 import { activeExclusions, checkHints } from '../../src/logic/hints';
-import { visibleFields } from '../../src/logic/form';
+import { activeInfoBlocks, visibleFields } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import type { Questionnaire } from '../../src/logic/model';
 import {
@@ -406,6 +406,73 @@ describe('Bewirtung is selectable with a warning', () => {
     const q = draftWith(PARKEN, { ...BEWIRTUNG, bewirtungOrt: 'wohnung' });
     expect(hintIds(q)).toContain('bewirtungWohnung');
     expect(hintIds(q)).not.toContain('bewirtungGaststaette');
+  });
+});
+
+// Tobias 2026-11-15 (EB-5): „ja“ — a Bewirtungsbeleg to a restaurant bill the issuer has. In a
+// Gaststätte the law asks only for the occasion and the participants next to its bill
+// (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG); the Vorsteuer comes from that bill.
+describe('Bewirtungsbeleg to an existing restaurant bill', () => {
+  const BELEG: Values = {
+    vorgangsart: 'bewirtungsbeleg',
+    vorgangsdatum: '15.10.2026',
+    bbGaststaette: 'Gasthaus Beispiel, Musterstadt',
+    bbAnlass: 'Besprechung des Auftrags Neubau Musterstraße mit der Beispiel GmbH',
+    bbTeilnehmer: 'Erika Musterfrau\nMax Mustermann, Beispiel GmbH',
+    bbRechnungsbetrag: '86,40',
+    bbTrinkgeld: '8,00',
+    bbBezahlt: 'betrieb',
+  };
+  const notices = (q: Questionnaire) =>
+    activeInfoBlocks(form.definition, ROLE, currentPart(q, ROLE)?.data ?? {}).map((b) => b.id);
+
+  it('asks the occasion and the participants, nothing about a missing original', () => {
+    expect(asked(draftWith(BELEG, END))).toEqual([
+      'firma',
+      'mandantennummer',
+      'ausstellerName',
+      'vorgangsart',
+      'vorgangsdatum',
+      'bbGaststaette',
+      'bbAnlass',
+      'bbTeilnehmer',
+      'bbRechnungsbetrag',
+      'bbTrinkgeld',
+      'bbBezahlt',
+      'belegnummer',
+      'ausstellungsdatum',
+    ]);
+  });
+
+  it('says the bill belongs to it, and not that there is no Vorsteuer', () => {
+    const q = draftWith(BELEG, END);
+    expect(notices(q)).toContain('bewirtungsbelegRechnung');
+    expect(notices(q)).not.toContain('keineVorsteuer');
+    expect(notices(draftWith(PARKEN, END))).toContain('keineVorsteuer');
+    expect(notices(draftWith(PARKEN, END))).not.toContain('bewirtungsbelegRechnung');
+  });
+
+  it('seals without a tip and gives the Kanzlei its own hint, not those of an Eigenbeleg', () => {
+    const q = draftWith(BELEG, { bbTrinkgeld: null, bbRechnungsbetrag: '312,00' }, END);
+    const signed = ok(
+      sealPart(q, form, ROLE, {
+        nonce: 'e3'.repeat(16),
+        systemNote: note(AT.local, AT.utc),
+        acknowledged: notices(q),
+        signature: { method: 'typed', name: 'Erika Musterfrau' },
+      }),
+    );
+    expect(transmissionBlockers(signed, form)).toEqual([]);
+    expect(completenessGaps(signed, form)).toEqual([]);
+    expect(hintIds(q)).toContain('bewirtungsbeleg');
+    expect(hintIds(q)).not.toEqual(expect.arrayContaining(['ohneVorsteuer']));
+    expect(hintIds(q)).not.toContain('hoherBetrag');
+    expect(excluded(q)).toEqual([]);
+  });
+
+  it('suggests booking a privately paid Bewirtung as an Einlage', () => {
+    expect(hintIds(draftWith(BELEG, { bbBezahlt: 'privat' }))).toContain('bewirtungsbelegPrivat');
+    expect(hintIds(draftWith(BELEG))).not.toContain('bewirtungsbelegPrivat');
   });
 });
 

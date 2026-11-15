@@ -1,8 +1,8 @@
 {
   "id": "eigenbeleg",
   "version": "0.1.0",
-  "revised": "2026-11-15T21:36",
-  "title": "Eigenbeleg: Ausgabe ohne Originalbeleg, Entnahme, Einlage oder Geldtransit",
+  "revised": "2026-11-15T23:03",
+  "title": "Eigenbeleg: Ausgabe ohne Originalbeleg, Bewirtungsbeleg, Entnahme, Einlage oder Geldtransit",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für Eigenbelege schreibt kein Gesetz eine Form vor. Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Für den digitalen Bewirtungs-Eigenbeleg lässt die Finanzverwaltung eine elektronische Unterschrift oder Genehmigung genügen, wenn der Zeitpunkt aufgezeichnet wird und die Angaben nicht unbemerkt geändert werden können (BMF-Schreiben vom 19.11.2025 Rn. 19, 22). Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung).",
   "roles": [
@@ -67,11 +67,15 @@
           "type": "choice",
           "label": "Art des Vorgangs",
           "question": "Was möchten Sie mit diesem Eigenbeleg belegen?",
-          "help": "Eine Ausgabe des Betriebs, zu der Ihnen kein Beleg vorliegt, oder Geld, das aus dem Betrieb genommen, in den Betrieb gegeben oder zwischen Kasse und Bank bewegt wurde. Haben Sie eine Ausgabe des Betriebs privat bezahlt und den Beleg noch, geben Sie einfach den Beleg ab.",
+          "help": "Eine Ausgabe des Betriebs, zu der Ihnen kein Beleg vorliegt; die Angaben zu einer Bewirtung in einer Gaststätte, deren Rechnung Sie haben; oder Geld, das aus dem Betrieb genommen, in den Betrieb gegeben oder zwischen Kasse und Bank bewegt wurde. Haben Sie eine andere Ausgabe des Betriebs privat bezahlt und den Beleg noch, geben Sie einfach den Beleg ab.",
           "required": true,
-          "purpose": "Art des Geschäftsvorfalls: Ausgaben (§ 4 Abs. 4 EStG), Entnahmen und Einlagen (§ 4 Abs. 1 Satz 2 und 8 EStG) und Geldtransit werden verschieden gebucht",
+          "purpose": "Art des Geschäftsvorfalls: Ausgaben (§ 4 Abs. 4 EStG), Bewirtungen (§ 4 Abs. 5 Satz 1 Nr. 2 EStG), Entnahmen und Einlagen (§ 4 Abs. 1 Satz 2 und 8 EStG) und Geldtransit werden verschieden gebucht",
           "options": [
             { "id": "ausgabe", "label": "eine Ausgabe ohne Originalbeleg" },
+            {
+              "id": "bewirtungsbeleg",
+              "label": "die Angaben zu einer Bewirtung in einer Gaststätte, deren Rechnung Sie haben (Bewirtungsbeleg)"
+            },
             {
               "id": "privatentnahme",
               "label": "eine Privatentnahme: Geld, das für private Zwecke aus dem Betrieb genommen wurde"
@@ -131,9 +135,94 @@
           "maxDate": "today",
           "label": "Tag des Vorgangs",
           "question": "An welchem Tag wurde bezahlt oder das Geld bewegt?",
-          "help": "Bei einer Ausgabe der Tag der Zahlung, sonst der Tag, an dem das Geld entnommen, eingelegt oder gebracht wurde. Er bestimmt, in welchen Monat der Vorgang gehört.",
+          "help": "Bei einer Ausgabe der Tag der Zahlung, bei einem Bewirtungsbeleg der Tag der Bewirtung, sonst der Tag, an dem das Geld entnommen, eingelegt oder gebracht wurde. Er bestimmt, in welchen Monat der Vorgang gehört.",
           "required": true,
           "purpose": "Belegdatum, Pflichtangabe (GoBD Rz. 77; § 146 Abs. 1 Satz 1 AO); Stichtag der Gültigkeit dieser Fassung"
+        }
+      ]
+    },
+    {
+      "id": "bewirtungsbeleg",
+      "title": "Bewirtung mit Rechnung der Gaststätte",
+      "fields": [
+        {
+          "id": "bbGaststaette",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Gaststätte",
+          "question": "In welcher Gaststätte fand die Bewirtung statt?",
+          "help": "Name und Ort, wie auf der Rechnung, z. B. „Gasthaus Beispiel, Musterstadt“.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+          "because": "Nur beim Bewirtungsbeleg zur Rechnung einer Gaststätte.",
+          "purpose": "Zuordnung zur Rechnung der Gaststätte; Ort der Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG)"
+        },
+        {
+          "id": "bbAnlass",
+          "role": "aussteller",
+          "type": "text",
+          "label": "Anlass der Bewirtung",
+          "question": "Was war der geschäftliche Anlass der Bewirtung?",
+          "help": "Möglichst genau, z. B. „Besprechung des Auftrags Neubau Musterstraße mit der Beispiel GmbH“. Allgemeine Worte wie „Arbeitsessen“ oder „Kundenpflege“ genügen nicht.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+          "because": "Bei einer Bewirtung in einer Gaststätte verlangt das Gesetz den Anlass schriftlich, neben deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG).",
+          "purpose": "Anlass der Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG)"
+        },
+        {
+          "id": "bbTeilnehmer",
+          "role": "aussteller",
+          "type": "text",
+          "multiline": true,
+          "label": "Teilnehmende der Bewirtung",
+          "question": "Wer hat an der Bewirtung teilgenommen?",
+          "help": "Alle Personen mit Namen, auch Sie selbst; bei Geschäftspartnern auch ihr Unternehmen. Eine Person je Zeile.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+          "because": "Bei einer Bewirtung in einer Gaststätte verlangt das Gesetz die Teilnehmenden schriftlich, neben deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG).",
+          "purpose": "Teilnehmer der Bewirtung (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG)"
+        },
+        {
+          "id": "bbRechnungsbetrag",
+          "role": "aussteller",
+          "type": "money",
+          "label": "Betrag der Rechnung",
+          "question": "Welchen Betrag nennt die Rechnung der Gaststätte?",
+          "help": "Den Endbetrag mit Umsatzsteuer, ohne ein Trinkgeld, das nicht auf der Rechnung steht.",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+          "because": "Nur beim Bewirtungsbeleg zur Rechnung einer Gaststätte.",
+          "purpose": "Höhe der Aufwendungen (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG); Abgleich mit der Rechnung"
+        },
+        {
+          "id": "bbTrinkgeld",
+          "role": "aussteller",
+          "type": "money",
+          "label": "Trinkgeld",
+          "question": "Wie viel Trinkgeld haben Sie zusätzlich gegeben?",
+          "help": "Nur Trinkgeld, das nicht auf der Rechnung steht. Lassen Sie es sich am besten von der Bedienung auf der Rechnung bestätigen. Ohne Trinkgeld lassen Sie das Feld leer.",
+          "required": false,
+          "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+          "because": "Nur beim Bewirtungsbeleg zur Rechnung einer Gaststätte.",
+          "purpose": "Höhe der Aufwendungen einschließlich Trinkgeld (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG)"
+        },
+        {
+          "id": "bbBezahlt",
+          "role": "aussteller",
+          "type": "choice",
+          "label": "Bezahlt von",
+          "question": "Wer hat die Rechnung bezahlt?",
+          "required": true,
+          "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+          "because": "Nur beim Bewirtungsbeleg zur Rechnung einer Gaststätte.",
+          "purpose": "Buchung: aus dem Betrieb bezahlt oder privat (dann Einlage, § 4 Abs. 1 Satz 8 EStG)",
+          "options": [
+            {
+              "id": "betrieb",
+              "label": "der Betrieb – aus der Kasse, vom Geschäftskonto oder mit einer Karte des Betriebs"
+            },
+            { "id": "privat", "label": "ich privat – bar oder mit einer privaten Karte" }
+          ]
         }
       ]
     },
@@ -639,10 +728,7 @@
           "question": "Wie viel Geld war es, in Euro?",
           "help": "Der genaue Betrag.",
           "required": true,
-          "showIf": {
-            "field": "vorgangsart",
-            "in": ["privatentnahme", "einlage", "geldtransit"]
-          },
+          "showIf": { "field": "vorgangsart", "in": ["privatentnahme", "einlage", "geldtransit"] },
           "because": "Nur bei einer Entnahme, einer Einlage oder einem Geldtransit; eine Ausgabe hat eine eigene Frage nach dem Betrag.",
           "purpose": "Zu buchender Betrag, Pflichtangabe (GoBD Rz. 77)"
         },
@@ -748,8 +834,8 @@
       "id": "wannEigenbeleg",
       "role": "aussteller",
       "title": "Wann ein Eigenbeleg hilft",
-      "text": "Ein Eigenbeleg ist ein Notbehelf. Er belegt eine Ausgabe, zu der Sie keinen Beleg bekommen haben oder deren Beleg fehlt, oder Geld, das aus dem Betrieb genommen, in den Betrieb gegeben oder zwischen Kasse und Bank bewegt wurde. Fragen Sie bei einer Ausgabe zuerst beim Zahlungsempfänger nach einem Beleg oder einer Zweitschrift; das ist fast immer besser.\n\nFür Spenden, Löhne, die eigene Verpflegung auf Reisen und Fahrten mit dem privaten Fahrzeug genügt ein Eigenbeleg nicht. Bei einer Bewirtung in einer Gaststätte ersetzt er deren Rechnung nicht.",
-      "asOf": "2026-11-04",
+      "text": "Ein Eigenbeleg ist ein Notbehelf. Er belegt eine Ausgabe, zu der Sie keinen Beleg bekommen haben oder deren Beleg fehlt, oder Geld, das aus dem Betrieb genommen, in den Betrieb gegeben oder zwischen Kasse und Bank bewegt wurde. Fragen Sie bei einer Ausgabe zuerst beim Zahlungsempfänger nach einem Beleg oder einer Zweitschrift; das ist fast immer besser.\n\nFür Spenden, Löhne, die eigene Verpflegung auf Reisen und Fahrten mit dem privaten Fahrzeug genügt ein Eigenbeleg nicht. Bei einer Bewirtung in einer Gaststätte ersetzt er deren Rechnung nicht; liegt die Rechnung vor, hält er als Bewirtungsbeleg Anlass und Teilnehmende fest.",
+      "asOf": "2026-11-15",
       "acknowledgement": "read"
     },
     {
@@ -758,7 +844,19 @@
       "title": "Keine Vorsteuer",
       "text": "Aus einem Eigenbeleg können Sie keine Umsatzsteuer als Vorsteuer abziehen, auch nicht bei kleinen Beträgen; dafür braucht es eine Rechnung des Verkäufers (§ 15 Abs. 1 Satz 1 Nr. 1 Satz 2 UStG). Geben Sie bei einer Ausgabe deshalb den ganzen gezahlten Betrag an.",
       "asOf": "2026-11-04",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": { "not": { "field": "vorgangsart", "equals": "bewirtungsbeleg" } },
+      "because": "Ein Bewirtungsbeleg ergänzt die Rechnung der Gaststätte; die Vorsteuer kommt dann aus deren Rechnung, nicht aus diesem Beleg."
+    },
+    {
+      "id": "bewirtungsbelegRechnung",
+      "role": "aussteller",
+      "title": "Die Rechnung der Gaststätte gehört dazu",
+      "text": "Ein Bewirtungsbeleg ergänzt die Rechnung der Gaststätte; er ersetzt sie nicht. Die Rechnung muss von der elektronischen Kasse der Gaststätte erstellt sein – auf Papier oder digital (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG). Geben Sie sie zusammen mit der PDF dieses Belegs ab; dieser Fragebogen kann keine Dateien anhängen.",
+      "asOf": "2026-11-15",
+      "acknowledgement": "read",
+      "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+      "because": "Nur beim Bewirtungsbeleg: Ohne die Rechnung der Gaststätte ist die Bewirtung nicht abziehbar (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG)."
     },
     {
       "id": "aufbewahrung",
@@ -787,11 +885,11 @@
   "validity": { "field": "vorgangsdatum", "from": "2025-01-01" },
   "limits": [
     "Ein Vorgang je Eigenbeleg: eine Ausgabe oder eine Geldbewegung; kein Sammelbeleg.",
+    "Ein Vorgang je Bewirtungsbeleg; er gilt nur für eine Bewirtung in einer Gaststätte, deren Rechnung getrennt abgegeben wird.",
     "Geldbewegungen nur als Geld in Euro. Nicht abgedeckt sind Sachentnahmen (z. B. Waren für den privaten Bedarf), die private Nutzung von Gegenständen des Betriebs und Sacheinlagen.",
     "Keine Einnahmen: Erlöse ohne Beleg gehören in die Kassen- oder Erlösaufzeichnung.",
     "Keine Aufteilung in Nettobetrag und Umsatzsteuer; kein Vorsteuerabzug.",
     "Nicht für eigene Verpflegung auf Reisen, Fahrten mit privaten Fahrzeugen, Löhne und Spenden. Eine Bewirtung lässt sich erfassen, die fehlende Rechnung einer Gaststätte ersetzt der Eigenbeleg aber nicht.",
-    "Nicht gedacht als Bewirtungsbeleg zu einer vorhandenen Rechnung der Gaststätte.",
     "Dateien lassen sich nicht anhängen; Zahlungsnachweise, Belege der Bank und beschädigte Originale werden getrennt abgegeben.",
     "Der Fragebogen vergibt keine Belegnummern und prüft nicht, ob eine Nummer schon benutzt wurde.",
     "Eine fremde Währung nimmt er nur bei Ausgaben auf, als Angabe; er rechnet nicht um.",
@@ -910,6 +1008,18 @@
       "when": { "field": "bewirtungOrt", "equals": "wohnung" },
       "message": "Bewirtung in der eigenen Wohnung: in der Regel Kosten der Lebensführung, keine Betriebsausgabe.",
       "source": "R 4.10 Abs. 6 Satz 8 EStR; § 12 Nr. 1 EStG"
+    },
+    {
+      "id": "bewirtungsbeleg",
+      "when": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
+      "message": "Bewirtungsbeleg zur Rechnung der Gaststätte: die Rechnung prüfen (von der elektronischen Kasse erstellt) und mit diesem Beleg zusammen ablegen; 70 % der angemessenen Aufwendungen als Betriebsausgabe, gesondert aufzeichnen.",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 2, Abs. 7 EStG; R 4.10 Abs. 8 EStR"
+    },
+    {
+      "id": "bewirtungsbelegPrivat",
+      "when": { "field": "bbBezahlt", "equals": "privat" },
+      "message": "Bewirtung privat bezahlt: als Einlage buchen; bei einer Kapitalgesellschaft über das Verrechnungskonto der Gesellschafterin oder des Gesellschafters, bei Beschäftigten als Erstattung ihrer Auslage.",
+      "source": "§ 4 Abs. 1 Satz 8 EStG; GoBD Rz. 37"
     },
     {
       "id": "fremdwaehrungOhneUmrechnung",
