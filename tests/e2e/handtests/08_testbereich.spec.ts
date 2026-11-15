@@ -8,7 +8,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { devices, expect, test, type BrowserContext, type Page } from '@playwright/test';
-import { passAccessGate, rememberAccess } from '../guards';
+import { passAccessGate, rememberAccess, webAppFile } from '../guards';
 import {
   inlineMarkdown,
   parseManualTests,
@@ -112,6 +112,8 @@ async function serve(context: BrowserContext, page: Page): Promise<Seen> {
     if (url.origin === ORIGIN && ['/test/', '/test/index.html'].includes(url.pathname)) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    const file = webAppFile(url.href, { [`${ORIGIN}/test/`]: TEST_APP });
+    if (file) return route.fulfill(file);
     seen.foreign.push(url.href);
     return route.abort();
   });

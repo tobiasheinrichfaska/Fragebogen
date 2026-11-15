@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { protect, requestLink, toOverview } from './app';
-import { expectClean, guard, rememberAccess } from './guards';
+import { expectClean, guard, rememberAccess, webAppFile } from './guards';
 
 const APP = fileURLToPath(new URL('../../dist/index.html', import.meta.url));
 // The app starts the newest published version; its labels drive the steps.
@@ -302,6 +302,8 @@ async function serveHosted(page: Page): Promise<string[]> {
     if (url === `${ORIGIN}/`) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    const file = webAppFile(url, { [`${ORIGIN}/`]: APP });
+    if (file) return route.fulfill(file);
     if (!/^(data|blob):/.test(url)) foreign.push(url);
     return route.abort();
   });

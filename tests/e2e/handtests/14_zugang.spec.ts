@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { APP } from '../app';
-import { ACCESS_NOTICE } from '../guards';
+import { ACCESS_NOTICE, webAppFile } from '../guards';
 
 const ORIGIN = 'https://fragebogen.test';
 
@@ -19,6 +19,8 @@ async function serve(page: Page): Promise<string[]> {
     if (url === `${ORIGIN}/`) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    const file = webAppFile(url, { [`${ORIGIN}/`]: APP });
+    if (file) return route.fulfill(file);
     if (!/^(data|blob):/.test(url)) foreign.push(url);
     return route.abort();
   });
