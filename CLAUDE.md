@@ -1403,6 +1403,28 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**Task (Kanzlei PC session, 2026-11-15, Tobias): test reports without free text, sent to the server.**
+
+- Spec: private repo `Testumgebung`, `docs/testbericht.md` (format `testbericht/1`).
+- On the test page (`src/ui/testbereich/`):
+  - **remove every free-text field:** the comments per test, the closing comment, the corrected
+    minutes;
+  - per test „Bestanden“ / „Nicht bestanden“;
+  - for „Nicht bestanden“ the failed steps, chosen from the step numbers of the manual test, each with
+    one reason from the fixed list („Anderes Ergebnis als erwartet“, „Fehlermeldung“, „Knopf oder Text
+    fehlt“, „Lädt nicht oder hängt“, „Darstellung falsch“);
+  - tests not touched count as „nicht getestet“.
+- **The time starts by itself** when a test is opened, pauses when it is left and stops when the
+  result is chosen; no manual correction.
+- **„Bericht senden“** POSTs the report to the relative address `/_zugang/bericht`.
+  - `version` comes from `package.json`, `stand` from the commit at build time.
+  - Show „Bericht gesendet“, or the script's message on 400.
+  - The PDF download may stay as a copy for the tester, also without free text.
+- **CSP:** only the test build (`--mode testbereich`) gets `connect-src 'self'`; the live build keeps
+  `connect-src 'none'`, and a test checks that.
+- The receiving side (validation, storage, overview for the fixed testers) is built in `Testumgebung`;
+  until then „Bericht senden“ gets 404, which the page shows.
+
 **Task (Kanzlei PC session, 2026-11-15, Tobias): footer link „Tester einladen“ in the test build.**
 
 - The test version runs in a protected test zone of its own at bunny.net, separate from the live
