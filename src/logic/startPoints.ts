@@ -253,6 +253,11 @@ export function buildStartPoint(
       if (result.ok) session = result.session;
       else problems.push(`${part.role}.${id}: ${[result.message, ...result.detail].join(' – ')}`);
     }
+    // A notice with a condition appears only once the answers open it (e.g. the Vorsteuer notice
+    // of an expense, 2026-11-15); it is read like the others.
+    for (const step of stepsFor(session)) {
+      if (step.kind === 'notice') session = acknowledge(session, step.infoBlockId, true);
+    }
     if (part.seal === undefined) continue;
     const sealed = seal(session, {
       nonce: env.nonce(),

@@ -8,8 +8,8 @@
 | Formular | eigenbeleg, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag des Vorgangs“ ab 01.01.2025 |
-| Stand | zuletzt überarbeitet am 15.11.2026 um 23:14 |
-| Definition (SHA-256) | 72885e809b789a1d246c1afeda63112e0496faf3ef17b9761a43ca06da4b5c52 |
+| Stand | zuletzt überarbeitet am 15.11.2026 um 23:17 |
+| Definition (SHA-256) | d29e19f06439bf92e30237e8ee6c11f687ab8abe39d56e9378ea15edb764fc75 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für Eigenbelege schreibt das Gesetz keine Form vor; nur die Angaben zu einer Bewirtung verlangt es schriftlich (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG). Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Die Angaben zu einer Bewirtung erkennt die Finanzverwaltung elektronisch an, wenn sie zeitnah erfasst und elektronisch unterschrieben oder genehmigt werden, die Zeitpunkte von Erstellung und Unterschrift aufgezeichnet sind, die Angaben nicht undokumentiert geändert werden können und der Beleg nach den GoBD mit Verfahrensdokumentation elektronisch aufbewahrt wird – bei einer Gaststätte zusammen mit deren Rechnung (BMF-Schreiben vom 19.11.2025 Rn. 19, 20, 22). Die Aufbewahrung und die Verfahrensdokumentation leistet der Betrieb, nicht diese App. Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung). |
 | Empfänger | Buchhaltung oder Kanzlei |
@@ -186,8 +186,8 @@ Alle übrigen Angaben sind unabhängig.
 - Kenntnisnahme durch: Ausstellende Person
 - Art: wird in der App gelesen und bestätigt
 - Stand: 04.11.2026
-- Nur wenn nicht zutrifft, dass bei „Art des Vorgangs“ „die Angaben zu einer Bewirtung in einer Gaststätte, deren Rechnung Sie haben (Bewirtungsbeleg)“ gewählt ist
-- Warum: Ein Bewirtungsbeleg ergänzt die Rechnung der Gaststätte; die Vorsteuer kommt dann aus deren Rechnung, nicht aus diesem Beleg.
+- Nur wenn bei „Art des Vorgangs“ „eine Ausgabe ohne Originalbeleg“ gewählt ist
+- Warum: Nur bei einer Ausgabe ohne Originalbeleg: Entnahmen, Einlagen und Geldtransit tragen keine Umsatzsteuer, und beim Bewirtungsbeleg kommt die Vorsteuer aus der Rechnung der Gaststätte.
 
 > Aus einem Eigenbeleg können Sie keine Umsatzsteuer als Vorsteuer abziehen, auch nicht bei kleinen Beträgen; dafür braucht es eine Rechnung des Verkäufers (§ 15 Abs. 1 Satz 1 Nr. 1 Satz 2 UStG). Geben Sie bei einer Ausgabe deshalb den ganzen gezahlten Betrag an.
 
