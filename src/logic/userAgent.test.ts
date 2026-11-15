@@ -1,7 +1,4 @@
-import {
-  platformFromClientHints,
-  platformFromUserAgent,
-} from './userAgent';
+import { platformFromClientHints, platformFromUserAgent } from './userAgent';
 
 describe('platformFromUserAgent', () => {
   it.each<[string, string, string, string]>([

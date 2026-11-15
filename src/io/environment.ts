@@ -4,11 +4,7 @@
 import { APP_VERSION } from '../appInfo';
 import type { InputType, SystemNote } from '../logic/model';
 import { PASSWORD_LENGTH, proposedPassword } from '../logic/passwords';
-import {
-  platformFromClientHints,
-  platformFromUserAgent,
-  type Platform,
-} from '../logic/userAgent';
+import { platformFromClientHints, platformFromUserAgent, type Platform } from '../logic/userAgent';
 
 function randomBytes(count: number): Uint8Array {
   return crypto.getRandomValues(new Uint8Array(count));
