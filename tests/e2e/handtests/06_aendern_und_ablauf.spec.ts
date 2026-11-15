@@ -201,7 +201,7 @@ async function openInNewTab(page: Page, link: string) {
   const tab = await page.context().newPage();
   const found = await guard(tab);
   await tab.goto(pathToFileURL(TEST_APP).href + fragmentOf(link));
-  const app = tab.locator('.test-app');
+  const app = tab.locator('.tr-app');
   await expect(app.locator('main')).toBeVisible();
   return { tab, found, app };
 }

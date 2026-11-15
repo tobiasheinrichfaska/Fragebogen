@@ -585,8 +585,9 @@ test('the built file carries the policy and loads nothing from outside', () => {
 
 test('the hosted build carries no test page (test folder build only)', () => {
   const html = readFileSync(APP, 'utf8');
-  // "Testbereich" may appear: the start page links to the test folder when configured.
-  for (const marker of ['Testbericht', 'Test beginnen', 'fragebogen-testlauf']) {
+  // "Testbereich" may appear: the start page links to the test folder when configured. Since
+  // 2026-11-15 the test page is the shared one of Testumgebung (testrahmen/).
+  for (const marker of ['tr-huelle', 'testrahmen:', 'Bericht senden']) {
     expect(html.includes(marker), marker).toBe(false);
   }
 });

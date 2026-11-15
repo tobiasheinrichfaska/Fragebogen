@@ -5,7 +5,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { compareVersions } from '../../../src/logic/formRegistry';
 import { answerUntil, expectQuiet, formFields, heading, openApp, openTestApp, press } from '../app';
 import { LEGAL_LINKS, expectClean } from '../guards';
@@ -281,19 +281,16 @@ test('MT-03: the dark palette keeps every text readable in the app', async ({ pa
   await expectClean(page, found);
 });
 
-const caseBox = (page: Page, id: string): Locator =>
-  page.locator('.test-grid').getByRole('button', { name: new RegExp(`^${id}: `) });
-
+// Since 2026-11-15 the test page is the shared one of Testumgebung (testrahmen/), with its own dark
+// palette; a test opens from its box in the overview.
 test('MT-03: the dark palette keeps the test page readable too', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   const { found } = await openTestApp(page);
   await expectDark(page, 'test overview');
-  await caseBox(page, 'MT-03').click();
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: 'App so lassen', exact: true })
-    .click();
-  await expect(page.locator('.test-case h2')).toContainText('MT-03:');
+  const side = page.locator('.tr-feld');
+  await side.locator('[data-aktion="oeffnen"].tr-test[data-id="MT-03"]').click();
+  await expect(side.locator('[data-aktion="ergebnis"]').first()).toBeVisible();
+  await expect(side).toContainText('MT-03');
   await expectDark(page, 'test text');
   await expectQuiet(page, found);
 });

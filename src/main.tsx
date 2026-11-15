@@ -2,7 +2,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './ui/App';
 import { TEST_AREA } from './ui/testbereich/catalogue';
-import { TestShell } from './ui/testbereich/TestShell';
 import { APP_CONFIG } from './config';
 import { colorVariables } from './logic/appConfig';
 import { offerInstallation } from './io/webApp';
@@ -16,15 +15,16 @@ for (const [name, value] of Object.entries(colorVariables(APP_CONFIG.colors))) {
 // The hosted builds can be installed and start offline (only at an https address).
 offerInstallation();
 
-const root = document.getElementById('root');
-if (!root) throw new Error('Root element #root is missing');
-
-createRoot(root).render(
-  <StrictMode>
-    {TEST_AREA ? (
-      <TestShell>{(start) => <App {...(start ? { start } : {})} />}</TestShell>
-    ) : (
+if (TEST_AREA) {
+  // Only the test folder build carries the shared test page: the condition is fixed at build time,
+  // so the live build holds neither the page nor its styles (tests/e2e/flow.spec.ts).
+  void import('./ui/testbereich/testbereich').then(({ startTestArea }) => startTestArea());
+} else {
+  const root = document.getElementById('root');
+  if (!root) throw new Error('Root element #root is missing');
+  createRoot(root).render(
+    <StrictMode>
       <App />
-    )}
-  </StrictMode>,
-);
+    </StrictMode>,
+  );
+}

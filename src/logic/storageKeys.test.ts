@@ -33,11 +33,11 @@ describe('browser storage per folder of the site (2026-11-13)', () => {
       'fragebogen-angefangen',
       'fragebogen-angefangen@/test/',
       'fragebogen-angefangen@/mehrfachbearbeitung/',
-      'fragebogen-testlauf',
+      'testrahmen:fragebogen',
       'something-else',
     ];
     expect(appKeysOfFolder(keys, '/test/index.html')).toEqual(['fragebogen-angefangen@/test/']);
     expect(appKeysOfFolder(keys, '/')).toEqual(['fragebogen-angefangen']);
-    expect(appKeysOfFolder(['fragebogen-testlauf'], '/test/')).toEqual([]);
+    expect(appKeysOfFolder(['testrahmen:fragebogen'], '/test/')).toEqual([]);
   });
 });

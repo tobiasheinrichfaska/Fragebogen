@@ -37,7 +37,7 @@ Personalisierung → Farben → „Dunkel“; iPhone: Einstellungen → Anzeige 
 
 1. Öffnen Sie die App (im Testbereich oder als Datei) bzw. laden Sie sie neu.
    - **Danach:** Die Seite erscheint mit dunklem Hintergrund und heller Schrift. Alles bleibt gut
-     lesbar – im Testbereich auch die Testanleitung.
+     lesbar – im Testbereich auch die Testseite.
 
 **Erwartet:**
 

@@ -49,9 +49,9 @@ test('on a phone the PDF is shared, not downloaded at once', async ({ page }) =>
   let downloads = 0;
   page.on('download', () => (downloads += 1));
 
-  await page.locator('.test-app').getByRole('button', { name: 'PDF erstellen' }).click();
+  await page.locator('.tr-app').getByRole('button', { name: 'PDF erstellen' }).click();
   await protect(page, 'Ohne Kennwort');
-  const banner = page.locator('.test-app .banner-success').filter({ hasText: 'PDF „' });
+  const banner = page.locator('.tr-app .banner-success').filter({ hasText: 'PDF „' });
   await expect(banner).toBeVisible();
   await expect(banner.getByRole('button', { name: 'Speichern' })).toBeVisible();
   expect(downloads).toBe(0);
@@ -78,12 +78,12 @@ test('on a computer the PDF downloads at once as before', async ({ page }) => {
   const [file] = await Promise.all([
     page.waitForEvent('download'),
     (async () => {
-      await page.locator('.test-app').getByRole('button', { name: 'PDF erstellen' }).click();
+      await page.locator('.tr-app').getByRole('button', { name: 'PDF erstellen' }).click();
       await protect(page, 'Ohne Kennwort');
     })(),
   ]);
   expect(file.suggestedFilename()).toMatch(/\.pdf$/);
-  const banner = page.locator('.test-app .banner-success').filter({ hasText: 'PDF „' });
+  const banner = page.locator('.tr-app .banner-success').filter({ hasText: 'PDF „' });
   await expect(banner).toBeVisible();
   await expect(banner.getByRole('button', { name: 'Speichern' })).toHaveCount(0);
   expect(found.external).toEqual([]);

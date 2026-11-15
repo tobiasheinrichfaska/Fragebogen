@@ -818,19 +818,7 @@ geändert, verweist <code>footnote</code> auf deren Zeile; so ist ein abweichend
   <tr><td><code>Block</code></td><td><code>{ kind: 'text', text }</code> | <code>{ kind: 'list', ordered, items, notes? }</code> | <code>{ kind: 'code', text }</code></td><td>ja</td><td>Absatz, Liste (eingerückte Zeilen setzen einen Punkt fort), Codeblock</td></tr>
   <tr><td><code>Block.notes</code></td><td><code>string[][]</code> je Schritt</td><td>nein</td><td>Nur bei nummerierten Schritten mit Ergebnissen (Tobias 2026-11-06): eingerückt <code>- **Danach:** …</code> direkt unter dem Schritt (<code>STEP_NOTE_LABEL</code>). Kleine Schritte: eine falsche Eingabe ist ein eigener Schritt mit der Fehlermeldung als Ergebnis, die richtige Eingabe der nächste. „Achten Sie gleich auf …“ vor einem Schritt gibt es nicht mehr; ein Test scheitert daran, ebenso an „Schritt N: …“ unter „Erwartet“.</td></tr>
 </table>
-<h3>TestRun · TestEntry</h3>
-<table>
-  <tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Bedeutung</th></tr>
-  <tr><td><code>TestRun.tester</code></td><td>string (≤ 80)</td><td>ja</td><td>Name, den der Tester selbst einträgt; steht im Bericht und im Dateinamen</td></tr>
-  <tr><td><code>TestRun.entries</code></td><td>Record&lt;Test-ID, TestEntry&gt;</td><td>ja</td><td>Je Test der Stand</td></tr>
-  <tr><td><code>TestRun.comment</code></td><td>string (≤ 8000)</td><td>ja</td><td>Gesamteindruck</td></tr>
-  <tr><td><code>TestEntry.started</code> · <code>ended</code></td><td>ISO-Zeit (Gerät)</td><td>nein</td><td>„Test beginnen“ bzw. Ergebnis; ein zweites „beginnen“ ändert den Beginn nicht</td></tr>
-  <tr><td><code>TestEntry.result</code></td><td><code>bestanden</code> („wie erwartet“) | <code>nichtBestanden</code> („klappt nicht“)</td><td>nein</td><td>Setzt das Ende. Seit 2026-11-07 nur zwei Ergebnisse (Tobias: „ja oder nein“); ein gespeichertes <code>teilweise</code> wird als <code>nichtBestanden</code> gelesen</td></tr>
-  <tr><td><code>TestEntry.comment</code></td><td>string (≤ 4000)</td><td>ja</td><td>Bleibt beim Zurücksetzen</td></tr>
-  <tr><td><code>TestEntry.correctedMinutes</code></td><td>ganze Zahl 0–600</td><td>nein</td><td>Vom Tester korrigierte Dauer; zählt statt der gemessenen</td></tr>
-  <tr><td><code>TestEntry.version</code></td><td>12 Hex-Zeichen</td><td>nein</td><td><code>caseVersion</code> des Testtexts, für den das Ergebnis gilt; weicht der heutige Text ab, zeigt die Testseite „geändert seit Ihrem Test“ (seit 01.11.2026; ältere Ergebnisse haben keine)</td></tr>
-  <tr><td><code>TestEntry.reported</code></td><td>ISO-Zeit (Gerät)</td><td>nein</td><td>Wann der Test in einem Testbericht stand (seit 2026-11-07 automatisch nach jedem Bericht, <code>markReported</code>): Die Übersicht zeigt ihn weiter als erledigt („berichtet“), der nächste Bericht lässt ihn weg, außer der Tester nimmt die gemeldeten beim Herunterladen mit (<code>forReport(run, true)</code>); ändern sich Ergebnis, Kommentar, Beginn oder Dauer, kommt er wieder hinein. Bei jedem Test, den ein Bericht nennen kann (<code>inReport</code>: Ergebnis, Beginn oder Kommentar).</td></tr>
-</table>
+<p>Der Lauf eines Testers (Ergebnisse, Zeiten, Schritte mit Grund) gehört seit dem 15.11.2026 zur gemeinsamen Testseite aus <code>Testumgebung</code> (<code>testrahmen/</code>, Schlüssel <code>testrahmen:fragebogen</code>); sein Format beschreibt <code>docs/testbericht.md</code> dort.</p>
 <h3>Methoden</h3>
 <table>
   <tr><th>Funktion</th><th>Signatur</th><th>Zweck</th></tr>
