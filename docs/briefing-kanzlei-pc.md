@@ -142,7 +142,10 @@ den täglichen Auftrag legt sie danach erst auf Tobias' OK an.
 
 ## 7 · Noch offen bei Tobias
 
-- Die sieben Tester-Logins in Auslieferung umbenennen: Die Vornamen waren öffentlich.
+- ~~Die sieben Tester-Logins umbenennen~~ – entfällt (Tobias, 15.11.2026): Vorerst gibt es keine
+  Tester. Die alten Logins bleiben beim Testordner bei IONOS, der nichts mehr bekommt und mit dem
+  Umzug von der Subdomain verschwindet. Tester kommen später über eine eigene Testplattform mit
+  ganz neuen Logins dazu.
 - Beim GitHub-Support beantragen, die alten Commits von PR #1 zu entfernen („Removing sensitive
   data“, `refs/pull/1/head` und `/merge`). Erst dann sind die Namen auch dort weg.
 - Ob `import/` und `import-archiv/` in das private Repo dürfen.

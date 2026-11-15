@@ -1464,6 +1464,15 @@ planned club.
     reaches it.
   - A DPA with bunny.net: accepted and filed (2026-11-15).
   - The Kanzlei's Impressum applies.
+- **Testers (Tobias 2026-11-15: „das machen wir ganz frisch“, „Tester kommen später neu hinzu über
+  eine eigene Testplattform“):**
+  - For now there are no testers. The e2e suite covers the former manual tests; the 23 that need
+    a real device or program are done by the Kanzlei when they are due (e.g. once on an iPhone
+    after the move). A lay reading of the texts can be repeated with Claude in Chrome.
+  - The seven old tester logins are not renamed: they stay with the IONOS test folder, which gets
+    no upload any more and leaves the subdomain with the move.
+  - Testers return later through a test platform of its own, with fresh logins. That fits the
+    decision of 2026-11-06 to move the test logic into a shared tool (see below).
 - **Later, a separate step:**
   - A neutral version for everyone (`kanzlei.example.json`, no Kanzlei name, its own neutral domain),
     offered by the planned club.
