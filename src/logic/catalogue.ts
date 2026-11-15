@@ -148,6 +148,7 @@ function fieldKind(
   if (field.multiline) kind += ', mehrzeilig';
   if (field.textFormat !== undefined) kind += `, ${TEXT_FORMAT_LABELS[field.textFormat]}`;
   if (field.maxLength !== undefined) kind += `, höchstens ${field.maxLength} Zeichen`;
+  if (field.maxRows !== undefined) kind += `, höchstens ${field.maxRows} Zeilen`;
   if (field.deuevRule !== undefined)
     kind += ', Hinweis bei Zeichen, die die Meldung zur Sozialversicherung nicht annimmt';
   if (field.type === 'number') {

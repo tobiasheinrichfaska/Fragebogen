@@ -8,8 +8,8 @@
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Abrechnungsmonat“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 15.11.2026 um 21:36 |
-| Definition (SHA-256) | ba0e1fc18d49fde8f703e262111fcce9f10cf2e24bd5c62160378d352ab23887 |
+| Stand | zuletzt überarbeitet am 15.11.2026 um 23:03 |
+| Definition (SHA-256) | e08ddd361bf2143550ea33c298854a6cb04fc12dd29025e679beb454d5f68bc4 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -40,7 +40,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Mitarbeitende (mitarbeitende)<br>Frage: Wer war im Abrechnungsmonat beschäftigt?<br>Hilfe: Eine Zeile je Person, auch Neue und Ausscheidende. Mit der Meldung des Vormonats sind alle schon da; prüfen Sie die Vergütung. Personen, die ausscheiden, fehlen in der nächsten Meldung. | Arbeitgeber | Tabelle; übernommen werden nur Zeilen, bei denen nicht zutrifft, dass „scheidet in diesem Monat aus“ mit „Ja“ beantwortet ist | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
+| Mitarbeitende (mitarbeitende)<br>Frage: Wer war im Abrechnungsmonat beschäftigt?<br>Hilfe: Eine Zeile je Person, auch Neue und Ausscheidende. Mit der Meldung des Vormonats sind alle schon da; prüfen Sie die Vergütung. Personen, die ausscheiden, fehlen in der nächsten Meldung. | Arbeitgeber | Tabelle, höchstens 100 Zeilen; übernommen werden nur Zeilen, bei denen nicht zutrifft, dass „scheidet in diesem Monat aus“ mit „Ja“ beantwortet ist | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 | – Familienname, Vorname (maName) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 | – Personalnummer (maPersonalnummer) | Arbeitgeber | Text | immer | optional | Zuordnung bei der lohnabrechnenden Stelle |
 | – Art der Vergütung (maVerguetungsart) | Arbeitgeber | Auswahl: Stundenlohn, festes Monatsentgelt, Ausbildungsvergütung | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
@@ -56,7 +56,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Werte für den Abrechnungsmonat (monatWerte)<br>Frage: Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?<br>Hilfe: Eine Zeile je Person und Lohnart, zum Beispiel „1000 Stundenlohn“ mit 100 Stunden. Zuschläge (Nacht, Sonntag, Feiertag) ebenso; Überstunden bitte als eigene Zeile, nicht in den gearbeiteten Stunden. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
+| Werte für den Abrechnungsmonat (monatWerte)<br>Frage: Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?<br>Hilfe: Eine Zeile je Person und Lohnart, zum Beispiel „1000 Stundenlohn“ mit 100 Stunden. Zuschläge (Nacht, Sonntag, Feiertag) ebenso; Überstunden bitte als eigene Zeile, nicht in den gearbeiteten Stunden. | Arbeitgeber | Tabelle, höchstens 100 Zeilen; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 | – Person (monatPerson) | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 | – Lohnart (monatLohnart)<br>Hilfe: Aus der Liste wählen oder eintippen, zum Beispiel „1000 Stundenlohn“. | Arbeitgeber | Text | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 | – Wert (monatWert)<br>Hilfe: Stunden, Tage oder Betrag – die Einheit ergibt sich aus der Lohnart. | Arbeitgeber | Zahl, 2 Nachkommastellen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
@@ -67,7 +67,7 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Nachträge für den Vormonat (fragVormonat)<br>Frage: Gibt es Werte, die noch für den Vormonat abgerechnet werden sollen, zum Beispiel Zuschläge? | Arbeitgeber | Ja/Nein; vorbelegt: Nein; wird nicht aus einer anderen Datei übernommen | immer | Pflicht | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
-| Werte für den Vormonat (vormonatWerte)<br>Frage: Welche Werte sollen noch für den Vormonat abgerechnet werden?<br>Hilfe: Eine Zeile je Person und Lohnart, wie bei den Werten des Abrechnungsmonats. | Arbeitgeber | Tabelle; wird nicht aus einer anderen Datei übernommen | erst wenn „Nachträge für den Vormonat“ mit „Ja“ beantwortet ist<br>Warum: Nur wenn es Nachträge für den Vormonat gibt, kommt diese Seite. | Pflicht | Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV) |
+| Werte für den Vormonat (vormonatWerte)<br>Frage: Welche Werte sollen noch für den Vormonat abgerechnet werden?<br>Hilfe: Eine Zeile je Person und Lohnart, wie bei den Werten des Abrechnungsmonats. | Arbeitgeber | Tabelle, höchstens 100 Zeilen; wird nicht aus einer anderen Datei übernommen | erst wenn „Nachträge für den Vormonat“ mit „Ja“ beantwortet ist<br>Warum: Nur wenn es Nachträge für den Vormonat gibt, kommt diese Seite. | Pflicht | Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV) |
 | – Person (vormonatPerson) | Arbeitgeber | Text | immer | Pflicht | Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV) |
 | – Lohnart (vormonatLohnart)<br>Hilfe: Aus der Liste wählen oder eintippen, zum Beispiel „1000 Stundenlohn“. | Arbeitgeber | Text | immer | Pflicht | Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV) |
 | – Wert (vormonatWert)<br>Hilfe: Stunden, Tage oder Betrag – die Einheit ergibt sich aus der Lohnart. | Arbeitgeber | Zahl, 2 Nachkommastellen | immer | Pflicht | Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV) |
@@ -96,7 +96,7 @@ Alle übrigen Angaben sind unabhängig.
 - Art: wird in der App gelesen und bestätigt
 - Stand: 01.11.2026
 
-> Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt. Fehlt sie, wird mit den Werten des Vormonats gerechnet; Differenzen werden im Folgemonat ausgeglichen.
+> Die Beiträge zur Sozialversicherung sind am drittletzten Bankarbeitstag des Monats fällig; der Beitragsnachweis muss zwei Arbeitstage vorher bei den Krankenkassen sein (§ 23 Abs. 1, § 28f Abs. 3 SGB IV). Bitte geben Sie die Meldung deshalb bis zu dem Tag ab, den Ihre lohnabrechnende Stelle Ihnen nennt.
 
 ### Arbeitszeit aufzeichnen
 
@@ -123,6 +123,7 @@ Keine.
 - Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.
 - Ein- und Austritte, Änderungen und Pfändungen nennt sie nur als Besonderheiten; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.
 - Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung.
+- Sie fasst höchstens 100 Beschäftigte und je Tabelle der Monatswerte höchstens 100 Zeilen.
 
 ## Sonderfälle, die Abschließen und Weitergeben sperren
 

@@ -119,7 +119,9 @@ export function TableStep({ session, field, step, onSession, pending }: Props) {
         ...(check.column === undefined ? {} : { column: check.column }),
         text: issueMessage(
           check.issue,
-          field.columns?.find((candidate) => candidate.id === check.column),
+          check.column === undefined
+            ? field
+            : field.columns?.find((candidate) => candidate.id === check.column),
         ),
       });
       return undefined;

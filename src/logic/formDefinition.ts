@@ -36,6 +36,7 @@ import {
   TEXT_FORMATS,
   DEUEV_RULES,
   MASTER_DATA_FORM_KEY,
+  TABLE_ROWS_LIMIT,
 } from './model';
 
 /** Form id, also the folder name under forms/. */
@@ -396,6 +397,7 @@ export const FIELD_KEYS = [
   'suggestedText',
   'textFormat',
   'maxLength',
+  'maxRows',
   'deuevRule',
   'unit',
   'decimals',
@@ -534,6 +536,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
       : d.literal(o.textFormat, `${path}.textFormat`, TEXT_FORMATS);
   const maxLength =
     o.maxLength === undefined ? undefined : d.integer(o.maxLength, `${path}.maxLength`, 1);
+  const maxRows = o.maxRows === undefined ? undefined : d.integer(o.maxRows, `${path}.maxRows`, 1);
   const deuevRule =
     o.deuevRule === undefined
       ? undefined
@@ -603,6 +606,7 @@ function decodeField(d: Decoder, raw: unknown, path: string): FieldDefinition | 
     ...(suggestedText === undefined ? {} : { suggestedText }),
     ...(textFormat === undefined ? {} : { textFormat }),
     ...(maxLength === undefined ? {} : { maxLength }),
+    ...(maxRows === undefined ? {} : { maxRows }),
     ...(deuevRule === undefined ? {} : { deuevRule }),
     ...(unit === undefined ? {} : { unit }),
     ...(decimals === undefined ? {} : { decimals }),
@@ -1057,6 +1061,11 @@ function fieldShapes({ fields, roleIds, report }: CheckContext): void {
     if (field.step !== undefined && field.step <= 0) report(`${path}.step`, 'must be above 0');
     if (field.warnAbove !== undefined && field.max !== undefined && field.warnAbove >= field.max) {
       report(`${path}.warnAbove`, 'must be below "max"');
+    }
+    if (field.maxRows !== undefined) {
+      if (field.type !== 'repeatGroup') report(`${path}.maxRows`, 'only tables have maxRows');
+      else if (field.maxRows > TABLE_ROWS_LIMIT)
+        report(`${path}.maxRows`, `at most ${TABLE_ROWS_LIMIT} rows`);
     }
     for (const key of ['maxLength', 'deuevRule'] as const) {
       if (field[key] !== undefined && field.type !== 'text') {
