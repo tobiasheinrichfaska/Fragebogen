@@ -430,6 +430,10 @@ export { MAX_ROWS };
 /** The rows a table takes: its own `maxRows`, else 30. */
 export const maxRowsOf = (field: FieldDefinition): number => field.maxRows ?? MAX_ROWS;
 
+/** Whether a table with `count` rows may take one more (the "Weitere Zeile" button). */
+export const canAddRow = (field: FieldDefinition, count: number): boolean =>
+  count < maxRowsOf(field);
+
 export type RowsResult =
   | { ok: true; value: FieldValue; warnings: readonly IssueCode[] }
   | { ok: false; issue: IssueCode; row?: number; column?: string };

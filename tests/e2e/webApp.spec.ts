@@ -116,7 +116,9 @@ test.describe('at an https address', () => {
   });
 });
 
-test('a downloaded copy links nothing and registers no service worker', async ({ page }) => {
+// No service worker either: the same condition (an https address) links the manifest and registers it,
+// and every test runs with service workers blocked (playwright.config.ts), so only the links show here.
+test('a downloaded copy links neither manifest nor touch icon', async ({ page }) => {
   const { found } = await openApp(page);
   expect(await page.locator('head link[rel="manifest"]').count()).toBe(0);
   expect(await page.locator('head link[rel="apple-touch-icon"]').count()).toBe(0);

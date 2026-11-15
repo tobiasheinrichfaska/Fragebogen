@@ -18,7 +18,10 @@ describe('the copy of the shared test page', () => {
     expect((pruefeKopie as () => string[])()).toEqual([]);
   });
 
-  it('is bound without a problem: app, version, commit, manual tests and start points', () => {
+  // Audit 2026-11-15: `bindingProblems` reads app, version, commit form and start points, not the
+  // manual tests; the real binding of the test build (its commit, its manual tests) is checked in
+  // the e2e test tests/e2e/handtests/08_testbereich.spec.ts.
+  it('takes this app, its version and its start points without a problem', () => {
     const points = readdirSync(join(MANUAL, 'startpunkte'))
       .filter((name) => name.endsWith('.json'))
       .map((name) => {

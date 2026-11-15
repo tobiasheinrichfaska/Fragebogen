@@ -44,7 +44,8 @@ export function startTestArea(): void {
     startpunkte: [...START_POINTS.values()].map((point) => ({ id: point.id, titel: point.title })),
     laden: (id) => {
       const prepared = prepare(id);
-      if (typeof prepared === 'string') show(undefined, prepared);
+      // A start point that cannot be built still starts the app plainly, without the last link.
+      if (typeof prepared === 'string') launch(undefined, prepared);
       else launch(prepared);
     },
     neuStarten: () => launch(undefined),

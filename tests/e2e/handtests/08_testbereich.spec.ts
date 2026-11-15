@@ -240,6 +240,33 @@ test.describe('MT-85: the shared test page with the Fragebogen', () => {
     await expectQuiet(page, seen);
   });
 
+  // Audit 2026-11-15: a start point that no longer builds mounted the app afresh with the link of the
+  // last test still in the address, so the app opened that link once more.
+  test('a start point that no longer builds leaves no earlier link in the address', async ({
+    context,
+    page,
+  }) => {
+    const point = needed(LINK_POINT, 'start point with a link');
+    const failing = needed(
+      CASES.find((c) => {
+        const env = testEnvironment(c);
+        return env.kind === 'start' && env.id === 'sofortmeldung-vollstaendig';
+      }),
+      'that begins with the complete Sofortmeldung',
+    );
+    // A device clock before the person's birth date: that start point cannot be built.
+    await page.clock.install({ time: new Date('1985-06-01T10:00:00+02:00') });
+    const seen = await open(context, page, `?startpunkt=${point.id}`);
+    await expect(app(page)).toContainText('aus Ihrem Lesezeichen.');
+    await action(page, 'oeffnen', `.tr-test[data-id="${failing.id}"]`).click();
+    await action(page, 'startpunkt', '[data-id="sofortmeldung-vollstaendig"]').first().click();
+    await action(page, 'ja').click();
+    await expect(app(page).locator('.test-start-problem')).toContainText('passt nicht mehr');
+    expect(await page.evaluate(() => location.hash)).toBe('');
+    await expect(app(page)).not.toContainText('aus Ihrem Lesezeichen');
+    await expectQuiet(page, seen);
+  });
+
   test('an unknown start point in the address is named, the app starts plainly', async ({
     context,
     page,
@@ -285,11 +312,32 @@ test.describe('the report names this app and build', () => {
     expect(body?.version).toBe(VERSION);
     expect(body?.stand).toMatch(/^[0-9a-f]{7,40}$/);
     expect(body?.tests.find((t) => t.id === first.id)?.ergebnis).toBe('bestanden');
+    expect(
+      body?.tests.filter((t) => t.id !== first.id).map((t) => t.ergebnis),
+      'the tests not opened',
+    ).toEqual(CASES.filter((c) => c.id !== first.id).map(() => 'nicht getestet'));
     // Every test of manual_tests/ is in it; local tests never are.
     expect(body?.tests.map((t) => t.id).sort()).toEqual(CASES.map((c) => c.id).sort());
     await expectQuiet(page, seen);
   });
 });
+
+/** On a phone the page shows a tab at a time; a start point from the address shows the app. */
+async function twoTabs(context: BrowserContext, page: Page): Promise<void> {
+  const seen = await serve(context, page);
+  await page.goto(PAGE_URL);
+  const tab = (name: string) => page.locator('.tr-reiter').getByRole('button', { name });
+  await expect(tab('Tests')).toHaveAttribute('aria-pressed', 'true');
+  await expect(side(page)).toBeVisible();
+  await expect(app(page)).toBeHidden();
+  await tab('App').click();
+  await expect(app(page).locator('main')).toBeVisible();
+
+  await page.goto(`${PAGE_URL}?startpunkt=sofortmeldung-person-ab-geburtsdatum`);
+  await expect(tab('App')).toHaveAttribute('aria-pressed', 'true');
+  await expect(app(page)).toContainText('Vorbereitet:');
+  await expectQuiet(page, seen);
+}
 
 test.describe('MT-85 on a phone', () => {
   const { viewport, deviceScaleFactor, userAgent } = devices['Pixel 7'];
@@ -297,19 +345,21 @@ test.describe('MT-85 on a phone', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'an Android phone runs Chrome');
 
   test('two tabs; a start point in the address shows the app first', async ({ context, page }) => {
-    const seen = await serve(context, page);
-    await page.goto(PAGE_URL);
-    const tab = (name: string) => page.locator('.tr-reiter').getByRole('button', { name });
-    await expect(tab('Tests')).toHaveAttribute('aria-pressed', 'true');
-    await expect(side(page)).toBeVisible();
-    await expect(app(page)).toBeHidden();
-    await tab('App').click();
-    await expect(app(page).locator('main')).toBeVisible();
+    await twoTabs(context, page);
+  });
+});
 
-    await page.goto(`${PAGE_URL}?startpunkt=sofortmeldung-person-ab-geburtsdatum`);
-    await expect(tab('App')).toHaveAttribute('aria-pressed', 'true');
-    await expect(app(page)).toContainText('Vorbereitet:');
-    await expectQuiet(page, seen);
+// The iPhone runs WebKit: the tabs once more there (audit 2026-11-15: only Chromium checked them).
+test.describe('MT-85 on an iPhone', () => {
+  const { viewport, deviceScaleFactor, userAgent } = devices['iPhone 13'];
+  test.use({ viewport, deviceScaleFactor, userAgent, isMobile: true, hasTouch: true });
+  test.skip(({ browserName }) => browserName !== 'webkit', 'an iPhone runs Safari');
+
+  test('two tabs; a start point in the address shows the app first @webkit', async ({
+    context,
+    page,
+  }) => {
+    await twoTabs(context, page);
   });
 });
 

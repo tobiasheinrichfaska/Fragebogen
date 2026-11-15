@@ -11,7 +11,7 @@ import { checkFormDefinition } from './formDefinition';
 import { canonicalize } from './jcs';
 import type { FieldDefinition, Questionnaire } from './model';
 import { issueMessage } from './issues';
-import { MAX_ROWS, missingCells, nextRowId, normalizeRows } from './normalize';
+import { canAddRow, MAX_ROWS, missingCells, nextRowId, normalizeRows } from './normalize';
 import { createQuestionnaire, currentPart, sealPart, setValue, startPart } from './questionnaire';
 import { verifyQuestionnaire } from './verify';
 import { registryOf } from './formRegistry';
@@ -99,6 +99,15 @@ describe('maxRows', () => {
     expect(normalizeRows(table, rows(31))).toEqual({ ok: false, issue: 'rows.tooMany' });
     expect(normalizeRows(wide, rows(100)).ok).toBe(true);
     expect(normalizeRows(wide, rows(101))).toEqual({ ok: false, issue: 'rows.tooMany' });
+  });
+
+  it('offers "Weitere Zeile" up to the same limit (audit 2026-11-15: the button stopped at 30)', () => {
+    expect(canAddRow(table, 29)).toBe(true);
+    expect(canAddRow(table, 30)).toBe(false);
+    expect(canAddRow(wide, 30)).toBe(true);
+    expect(canAddRow(wide, 99)).toBe(true);
+    expect(canAddRow(wide, 100)).toBe(false);
+    expect(canAddRow({ ...table, maxRows: 5 }, 5)).toBe(false);
   });
 
   it('names the limit in the message', () => {

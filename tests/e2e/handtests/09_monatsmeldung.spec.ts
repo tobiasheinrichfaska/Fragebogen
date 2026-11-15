@@ -168,6 +168,34 @@ test('MT-94: a calendar per person, hours only with an hourly wage, suggested wa
   await expectQuiet(page, found);
 });
 
+test('a table takes as many rows as its form allows: 100 people in the Monatsmeldung', async ({
+  page,
+}) => {
+  // The draft lets its tables take 100 rows (Tobias 2026-11-15); the button used to stop at 30.
+  const { found, app } = await openTestApp(page);
+  await press(app, FORM);
+  if ((await heading(app)) === 'Wer füllt jetzt aus?') await press(app, 'Ich bin: Arbeitgeber');
+  await answerUntil(
+    app,
+    FIELDS,
+    {
+      abrechnungsmonat: '11.2026',
+      agFirma: 'Beispiel Bau GmbH',
+      agBetriebsnummer: '12345671',
+      mandantennummer: '99999',
+      ansprechpartner: 'Jürgen Beispiel',
+      ansprechpartnerEmail: 'lohn@example.org',
+      lohnarten: '1000 Stundenlohn',
+    },
+    'mitarbeitende',
+  );
+  await press(app, 'Mitarbeiter/in hinzufügen');
+  for (let n = 2; n <= 100; n++) await press(app, `Weitere Zeile: Mitarbeiter/in ${n}`);
+  await expect(app.locator('fieldset.table-row')).toHaveCount(100);
+  await expect(app.getByRole('button', { name: /^Weitere Zeile/ })).toHaveCount(0);
+  await expectQuiet(page, found);
+});
+
 test("MT-95: last month's report fills the next one", async ({ page }, testInfo) => {
   test.slow();
   await page.clock.setFixedTime(new Date('2026-11-08T10:00:00+01:00'));
