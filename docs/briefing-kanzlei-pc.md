@@ -66,6 +66,10 @@ Gut zu wissen für diesen Upload:
   lehnen solche Zwischenstände ab; die gehostete App ist immer aktuell.
 - Er bringt auch den neuen Zugangshinweis mit Haftungsausschluss (in `Fragebogen-privat`,
   freigegeben am 15.11.2026). Jeder Besucher bestätigt ihn einmal neu.
+- Seit 15.11.2026 verlinkt die App unten auf jedem Bildschirm Impressum und Datenschutz der
+  Kanzlei-Homepage (`imprintAddress`, `privacyAddress` in `Fragebogen-privat`). Die Hilfeseiten mit
+  diesen Links schreibt `npm run build` nach `dist/hilfe/`. Von dort holt sie `deploy/upload.json`,
+  nicht mehr aus `docs/hilfe/`.
 
 ## 4 · Privates Repo `Fragebogen-privat` (angelegt am 14.11.2026; Tobias: ja, auch die SV-Fälle des Portals)
 

@@ -1,12 +1,14 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import type { Plugin } from 'vite';
 import { withCsp } from './src/build/csp';
+import { readHelpContent, writeHelpPages } from './src/build/helpFiles';
 import { escapeReplacementChar } from './src/build/replacementChar';
-import { parseAppConfig } from './src/logic/appConfig';
+import { legalLinks, parseAppConfig, type AppConfig } from './src/logic/appConfig';
 import { parseExportMappings } from './src/logic/exportMapping';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
@@ -62,6 +64,31 @@ function contentSecurityPolicy(): Plugin {
   };
 }
 
+/** The builds that are uploaded with the help pages: the public app and the test folder. */
+const HELP_PAGE_MODES: ReadonlySet<string> = new Set(['production', 'testbereich']);
+
+/**
+ * Writes the help pages next to the uploaded app (dist/hilfe/, dist-test/hilfe/) with the Kanzlei's
+ * Impressum and Datenschutz from the configuration (Tobias 2026-11-15); docs/hilfe/ stays neutral.
+ */
+function helpPages(config: AppConfig): Plugin {
+  let outDir: string | undefined;
+  return {
+    name: 'help-pages',
+    apply: 'build',
+    configResolved: (resolved) => {
+      outDir = HELP_PAGE_MODES.has(resolved.mode)
+        ? resolve(resolved.root, resolved.build.outDir)
+        : undefined;
+    },
+    closeBundle: () => {
+      if (outDir === undefined) return;
+      const content = readHelpContent(fileURLToPath(new URL('./hilfe', import.meta.url)));
+      writeHelpPages(join(outDir, 'hilfe'), content, legalLinks(config));
+    },
+  };
+}
+
 // Kanzlei branding stays out of the public repo: config/kanzlei.local.json (gitignored) wins over
 // the neutral example. An invalid file stops the build instead of shipping a broken link.
 const localConfig = new URL('./config/kanzlei.local.json', import.meta.url);
@@ -92,6 +119,7 @@ export default defineConfig(({ mode }) => ({
     viteSingleFile(),
     previewTitle(),
     contentSecurityPolicy(),
+    helpPages(kanzleiConfig.config),
   ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),

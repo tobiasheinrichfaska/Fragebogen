@@ -6,11 +6,15 @@ keine Daten: Er liefert nur die Datei aus, die App sendet nichts.
 
 ## Dateien für den Ordner der Subdomain
 
-| Datei             | Woher                                                                                   |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| `index.html`      | `dist/index.html` nach `npm run build` (gehostete App, ohne Zuordnung zum Lohnprogramm) |
-| `.htaccess`       | diese Vorlage, `deploy/.htaccess` (unverändert)                                         |
-| `hilfe/` (später) | die Hilfeseiten „Wo finde ich …?“ aus `docs/hilfe/`                                     |
+| Datei        | Woher                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `index.html` | `dist/index.html` nach `npm run build` (gehostete App, ohne Zuordnung zum Lohnprogramm) |
+| `.htaccess`  | diese Vorlage, `deploy/.htaccess` (unverändert)                                         |
+| `hilfe/`     | die Hilfeseiten „Wo finde ich …?“ aus `dist/hilfe/` nach `npm run build`                |
+
+Die Hilfeseiten in `dist/hilfe/` tragen unten Impressum und Datenschutz der Kanzlei aus
+`config/kanzlei.local.json` (seit 15.11.2026). `docs/hilfe/` ist die neutrale Fassung im Repo und
+wird nicht hochgeladen.
 
 **Nie hochladen:** `dist-preview/` (Entwürfe **und** Zuordnung), `config/*.local.json`, `import/`,
 `.tmp/`. `dist-kanzlei/` (mit der lokalen Zuordnung zum Lohnprogramm) nur in den Kanzlei-Ordner, der
@@ -62,7 +66,7 @@ Die `.htaccess` der geschützten Ordner erzeugt das Werkzeug aus den IP-Adressen
   die erzeugten Zugriffsregeln (`erzeugt/<Ziel>/.htaccess`, `.htpasswd`). Das Werkzeug schreibt dorthin
   nur, wenn Git den Ordner wirklich ignoriert.
 - **Was hochgeladen wird**, steht in `deploy/upload.json` (Ziel `oeffentlich`: `dist/index.html`, diese
-  `.htaccess` und `docs/hilfe/`). Vorher prüft das Werkzeug: keine Datei aus `dist-preview/`, `config/`,
+  `.htaccess` und `dist/hilfe/`). Vorher prüft das Werkzeug: keine Datei aus `dist-preview/`, `config/`,
   `import/`, `.tmp/`, `deploy/.local/`; **keine Datei, die die Zuordnung zum Lohnprogramm enthält**
   (die Masken aus `config/export.local.json`), außer in `test/` und `mehrfachbearbeitung/`. Fehlt die
   Zuordnungsdatei, sagt es das. Die Prüfung nennt nur die Datei, nie den gefundenen Inhalt.

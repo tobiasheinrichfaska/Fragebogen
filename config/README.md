@@ -28,6 +28,11 @@ ausgeschlossen.
 - `testAddress` setzt auf der Startseite den Link „Testbereich (für Tester)“: ein einfacher relativer
   Pfad wie `test/` (Buchstaben, Ziffern, `-`, `_`, `/`) oder eine `https://`-Adresse. Er erscheint nur,
   wenn die App über https läuft – in einer heruntergeladenen Datei führte er ins Leere.
+- `imprintAddress` und `privacyAddress` (freiwillig, seit 15.11.2026): Impressum und
+  Datenschutzerklärung der Kanzlei-Homepage, je als `https://`-Adresse. Die App verlinkt beide unten
+  auf jedem Bildschirm, auch auf dem Zugangshinweis; sie öffnen in einem neuen Tab. Der Build für den
+  Upload schreibt sie auch unten in jede Hilfeseite (`dist/hilfe/`, `dist-test/hilfe/`). Ohne die
+  Einträge verlinkt die App nichts.
 - `accessNotice` (freiwillig, seit 13.11.2026) ist der Text, den die Online-Fassung vor dem Öffnen
   bestätigen lässt, z. B. „Ich bestätige, dass ich Mandant der Kanzlei … bin. Die Nutzung dieser
   Tools ist Mandanten vorbehalten.“ Mit „Antwort für die Zukunft merken“ merkt sich der Browser die

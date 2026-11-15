@@ -551,6 +551,10 @@ textarea {
   color: var(--muted);
 }
 
+.footer .legal {
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 30rem) {
   .summary-row {
     grid-template-columns: 1fr auto;

@@ -2,6 +2,7 @@
 // the Kanzlei homepage: no script, no external resources. The tiles are anchors, a chosen document is
 // shown with :target; its Muster zooms to the spot and marks it (CSS animation, a still picture when
 // the system asks for reduced motion). Every Muster carries the "MUSTER" watermark.
+import type { LegalLink } from '../logic/appConfig';
 import type { HelpChoice, HelpPage, Muster, MusterItem } from '../logic/helpPages';
 
 const esc = (text: string) =>
@@ -152,8 +153,21 @@ function shell(title: string, body: string): string {
   );
 }
 
+/**
+ * Impressum and Datenschutz of the Kanzlei (Tobias 2026-11-15): only in the build for the upload,
+ * from the local configuration — the pages in docs/hilfe/ are rendered without them and stay neutral.
+ */
+function legalLine(links: readonly LegalLink[]): string {
+  if (links.length === 0) return '';
+  return `<p class="legal">${links.map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join(' · ')}</p>`;
+}
+
 /** One help page as a self-contained HTML document. */
-export function renderHelpPage(page: HelpPage, musters: readonly Muster[]): string {
+export function renderHelpPage(
+  page: HelpPage,
+  musters: readonly Muster[],
+  links: readonly LegalLink[] = [],
+): string {
   const byId = new Map(musters.map((m) => [m.id, m] as const));
   const tiles = page.choices.map((c) => `<li><a href="#${c.id}">${esc(c.label)}</a></li>`).join('');
   return shell(
@@ -166,15 +180,20 @@ export function renderHelpPage(page: HelpPage, musters: readonly Muster[]): stri
         ? `<h2>Nicht verwechseln</h2><div class="traps">${page.traps.map((t) => `<p>${esc(t)}</p>`).join('')}</div>`
         : '') +
       `<footer class="muted"><p>Die Muster sind vereinfacht und enthalten nur erfundene Werte. ` +
-      `Keine Rechts- oder Steuerberatung. Stand ${esc(page.stand.split('-').reverse().join('.'))}.</p></footer>`,
+      `Keine Rechts- oder Steuerberatung. Stand ${esc(page.stand.split('-').reverse().join('.'))}.</p>` +
+      `${legalLine(links)}</footer>`,
   );
 }
 
 /** Overview of all help pages (relative links, works from any folder). */
-export function renderHelpIndex(pages: readonly HelpPage[]): string {
+export function renderHelpIndex(
+  pages: readonly HelpPage[],
+  links: readonly LegalLink[] = [],
+): string {
   const items = [...pages]
     .sort((a, b) => a.title.localeCompare(b.title, 'de'))
     .map((p) => `<li><a href="${p.path}/">${esc(p.title)}</a></li>`)
     .join('');
-  return shell('Hilfe zum Fragebogen', `<h1>Hilfe zum Fragebogen</h1><ul>${items}</ul>`);
+  const footer = links.length === 0 ? '' : `<footer class="muted">${legalLine(links)}</footer>`;
+  return shell('Hilfe zum Fragebogen', `<h1>Hilfe zum Fragebogen</h1><ul>${items}</ul>${footer}`);
 }
