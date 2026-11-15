@@ -1403,6 +1403,21 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**Task (Kanzlei PC session, 2026-11-15, Tobias): footer link „Tester einladen“ in the test build.**
+
+- The test version runs in a protected test zone of its own at bunny.net, separate from the live
+  zone. The login script comes from the private repo `Testumgebung` (`zugang/`): testers log in once,
+  then a cookie recognises the device.
+- Add a link **„Tester einladen“** to the footer of the test version, pointing to the relative address
+  `/_zugang/einladen`. That page of the login script makes a one-time invitation link (7 days) and
+  leads back with „Zurück zur App“.
+- **Only in the test build (`build:test`, `--mode testbereich`), never in the live build.** A test
+  checks that `dist/index.html` does not contain `/_zugang/einladen`.
+- Style it like the rest of the test page. It is a plain navigation, no fetch, so the CSP stays as it
+  is. Nothing else is needed: whoever sees the test version is logged in.
+- Background: `Testumgebung` `docs/plan.md`, „Fußzeile ‚Tester einladen‘“. The login script does not
+  insert the link itself, because the app's CSP rightly forbids foreign styling.
+
 **Hosting move decided (Kanzlei PC session, 2026-11-15; bunny account and pull zone set up the same
 day, nothing uploaded, DNS unchanged):** Tobias: the Fragebogen
 and the E-Rechnungs-Prüfer move **first**, and **as the Kanzlei**, not privately and not yet as the
