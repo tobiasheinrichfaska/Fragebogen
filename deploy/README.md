@@ -101,6 +101,29 @@ Sie **beschränkt den Zugriff nicht** – jeder darf die Seite aufrufen. Die Con
 Hash-Werten von Skript und Stil steht als Meta-Tag in `index.html` selbst; die `.htaccess` ergänzt nur,
 was ein Meta-Tag nicht kann. Bei einem Update der App bleibt sie unverändert.
 
+## Auf bunny.net (geplant; eingestellt am 15.11.2026)
+
+Die öffentliche App zieht zu bunny.net um (`CLAUDE.md`, „Hosting move decided“). bunny.net liest keine
+`.htaccess`. Was sie hier tut, ist dort im Dashboard der Pull Zone eingestellt, von Hand auf dem
+Kanzlei-PC:
+
+| `.htaccess` hier                                                                               | auf bunny.net                                                                                 |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `http://` → `https://`                                                                         | „Force SSL“ je Hostname                                                                       |
+| HSTS, CSP-Ergänzung, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, COOP, CORP | Edge Rule „Sicherheits-Header“ mit denselben Werten                                           |
+| `Cache-Control "no-cache"`                                                                     | Edge Rule „Kein Zwischenspeicher“: Cache-Zeit im CDN und im Browser 0                         |
+| keine Ordnerlisten, keine versteckten Dateien                                                  | gibt es dort nicht; hochgeladen wird nur die feste Liste der gebauten Dateien                 |
+| Skript-Sperre                                                                                  | entfällt, bunny.net führt nichts aus; dazu „Block POST requests“ und nur GET und HEAD erlaubt |
+
+- **Ändert sich hier ein Header, muss er auch in der Edge Rule geändert werden.** Das geht nur im
+  Dashboard, also auf dem Kanzlei-PC. Eine Cloud-Sitzung, die die `.htaccess` ändert, schreibt das in
+  ihre Übergabe.
+- Die `.htaccess` selbst geht nicht nach bunny.net; dort wäre sie nur eine lesbare Datei.
+- Außerdem eingestellt: TLS ab 1.2, Logs ohne IP-Adressen, Auslieferung nur über Rechenzentren in
+  EU-Staaten.
+- Geprüft wird mit `curl -I` nach dem ersten Upload. Bis dahin ist der Speicher leer, und der
+  DNS-Eintrag der Subdomain zeigt weiter auf IONOS.
+
 ## Prüfen nach dem Hochladen
 
 Handtest MT-80 in [`manual_tests/08_auslieferung.md`](../manual_tests/08_auslieferung.md).

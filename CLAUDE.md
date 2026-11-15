@@ -1391,7 +1391,8 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
-**Hosting move decided (Kanzlei PC session, 2026-11-15; nothing moved yet):** Tobias: the Fragebogen
+**Hosting move decided (Kanzlei PC session, 2026-11-15; bunny account and pull zone set up the same
+day, nothing uploaded, DNS unchanged):** Tobias: the Fragebogen
 and the E-Rechnungs-Prüfer move **first**, and **as the Kanzlei**, not privately and not yet as the
 planned club.
 
@@ -1406,14 +1407,35 @@ planned club.
     E-Rechnung test copy and the side-project folders. At the moment of the switch they would be
     offline.
   - Old links into those folders are forwarded by bunny.net edge rules.
+  - Tobias 2026-11-15: the side projects are rescued later. Idea, not decided: a second IONOS
+    subdomain on the **same** webspace folder (no file moves), so they keep running under a new
+    address; their browser storage and saved logins stay behind at the old address.
+  - This subdomain's DNS record changes only after the first upload has been checked on the pull
+    zone's own `….b-cdn.net` address, with the TTL lowered the day before. Until then nothing changes
+    for users.
 - **To adapt with the move** (`config/kanzlei.local.json` in the private companion):
   - `testAddress` as an `https://` address, because the test area is no longer a sub-folder;
   - `explainerBase`, if the explainer pages move.
-- **Headers:**
-  - bunny.net serves no `.htaccess`. Everything `deploy/.htaccess` sets must be recreated as bunny.net
-    edge rules: CSP, HSTS, X-Frame-Options, Permissions-Policy, COOP/CORP, Referrer-Policy, nosniff,
-    Cache-Control, the HTTPS redirect and the script block.
-  - Check them by hand after the first upload (`curl -I`).
+- **Headers and pull zone (set in the bunny dashboard 2026-11-15, by hand on the Kanzlei PC; checked
+  with `curl -I` only after the first upload):** table in `deploy/README.md`, „Auf bunny.net“.
+  - bunny.net serves no `.htaccess`. An edge rule sends exactly the headers of `deploy/.htaccess`
+    (CSP addition `frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'`,
+    HSTS one year, X-Frame-Options, nosniff, `no-referrer`, Permissions-Policy, COOP and CORP
+    `same-origin`). "Force SSL" replaces the HTTPS redirect.
+  - **Keep both in step:** a header changed in `deploy/.htaccess` must also be changed in that edge
+    rule, which only the Kanzlei PC can do; a cloud session says so in its hand-over. The header CSP
+    adds to the `<meta>` CSP of the build, so a feature needing a form submission, an `<object>` or a
+    `<base>` fails online even where the meta CSP allows it.
+  - Cache: an edge rule sets the cache time in the CDN and in the browser to 0, so every upload
+    arrives at once without a purge (fallback of the zone: 3 hours). Replaces `no-cache`.
+  - The script block is not recreated: bunny.net runs nothing, the upload takes only the fixed list
+    of built files, POST is refused and only GET and HEAD are allowed. `deploy/.htaccess` itself is
+    not uploaded there.
+  - Also set: TLS 1.2 and newer only, logs without IP addresses, delivery only through data centres
+    in EU member states.
+  - **User data never in the path or query string:** master-data and transfer links carry their data
+    after `#`, which the browser never sends, so bunny.net sees none of it (logs, firewall). A new
+    feature must keep it that way.
 - **Upload:**
   - Later through a separate private "Freigabe" repo: GitHub Actions, each run started by Tobias by
     hand. That repo is never attached to a cloud session.
@@ -1435,8 +1457,9 @@ planned club.
   - No liability clause of its own: for clients the engagement applies (§ 67a StBerG).
 - **Kanzlei to-dos outside this repo:**
   - The privacy policy of the Kanzlei homepage gets a sentence on bunny.net: the CDN processes IP
-    addresses.
-  - A DPA with bunny.net.
+    addresses for delivery, its logs keep none, delivery only from the EU, and the form data never
+    reaches it.
+  - A DPA with bunny.net: accepted and filed (2026-11-15).
   - The Kanzlei's Impressum applies.
 - **Later, a separate step:**
   - A neutral version for everyone (`kanzlei.example.json`, no Kanzlei name, its own neutral domain),
