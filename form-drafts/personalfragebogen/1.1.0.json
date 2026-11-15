@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-14T20:06",
+  "revised": "2026-11-15T21:28",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -2052,6 +2052,35 @@
             ]
           },
           "because": "Die niedrigere Jahresarbeitsentgeltgrenze gilt nur für Personen, die am 31.12.2002 privat versichert waren (§ 6 Abs. 7 SGB V). Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss.",
+          "options": [
+            {
+              "id": "nein",
+              "label": "Nein"
+            },
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "unbekannt",
+              "label": "Weiß ich nicht."
+            }
+          ]
+        },
+        {
+          "id": "pkvBestand2026",
+          "role": "person",
+          "type": "choice",
+          "label": "Am 31.12.2026 privat versichert",
+          "question": "Waren Sie am 31. Dezember 2026 privat krankenversichert, weil Ihr Verdienst über der Versicherungspflichtgrenze lag?",
+          "help": "Liegt der Tag noch vor Ihnen: Wie wird es an diesem Tag sein? Wichtig ist das nur, wenn Ihre Beschäftigung 2027 beginnt: Dann gilt für Sie eine niedrigere Verdienstgrenze, 80.550 € statt 84.150 € im Jahr.",
+          "required": true,
+          "purpose": "Jahresarbeitsentgeltgrenze ab 2027 (§ 6 Abs. 8 SGB V)",
+          "showIf": {
+            "field": "pkvBestand2002",
+            "in": ["nein", "unbekannt"]
+          },
+          "because": "Die Grenze nach § 6 Abs. 8 SGB V gilt ab 2027 nur für Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren. Wer schon am 31.12.2002 privat versichert war, hat die noch niedrigere Grenze nach § 6 Abs. 7 SGB V; dann entfällt die Frage.",
           "options": [
             {
               "id": "nein",
@@ -6830,7 +6859,8 @@
           "jobSeit",
           "agBav",
           "bavBeitrag",
-          "bavZuschuss"
+          "bavZuschuss",
+          "pkvBestand2026"
         ]
       },
       "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
@@ -6856,7 +6886,8 @@
           "jobSeit",
           "agBav",
           "bavBeitrag",
-          "bavZuschuss"
+          "bavZuschuss",
+          "pkvBestand2026"
         ]
       },
       "message": "Laut den Verdienstangaben – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – liegt das regelmäßige Jahresarbeitsentgelt über der maßgeblichen Jahresarbeitsentgeltgrenze, der Arbeitgeber hat „nicht über der Grenze“ angegeben: klären; bei freiwilliger Versicherung Firmen- oder Selbstzahler erfragen.",
@@ -9266,7 +9297,8 @@
               "agBav",
               "bavBeitrag",
               "bavZuschuss",
-              "pkvBestand2002"
+              "pkvBestand2002",
+              "pkvBestand2026"
             ]
           },
           "check": true
@@ -9310,7 +9342,8 @@
               "agBav",
               "bavBeitrag",
               "bavZuschuss",
-              "pkvBestand2002"
+              "pkvBestand2002",
+              "pkvBestand2026"
             ]
           },
           "check": true
@@ -9641,7 +9674,8 @@
               "jobSeit",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "pkvBestand2026"
             ]
           },
           "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert, Firmenzahler laut Arbeitgeber."
@@ -9674,7 +9708,8 @@
               "jobSeit",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "pkvBestand2026"
             ]
           },
           "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert, Selbstzahler laut Arbeitgeber."
@@ -9699,7 +9734,8 @@
               "jobSeit",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "pkvBestand2026"
             ]
           },
           "check": true,
@@ -9726,7 +9762,8 @@
               "jobSeit",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "pkvBestand2026"
             ]
           }
         },
@@ -9747,7 +9784,8 @@
               "jobSeit",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "pkvBestand2026"
             ]
           },
           "check": true
@@ -11762,7 +11800,8 @@
               "agBav",
               "bavBeitrag",
               "bavZuschuss",
-              "pkvBestand2002"
+              "pkvBestand2002",
+              "pkvBestand2026"
             ]
           },
           "check": true
@@ -11968,7 +12007,8 @@
               "jobSeit",
               "agBav",
               "bavBeitrag",
-              "bavZuschuss"
+              "bavZuschuss",
+              "pkvBestand2026"
             ]
           }
         },

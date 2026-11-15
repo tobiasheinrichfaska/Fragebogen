@@ -6,7 +6,7 @@
 import { join } from 'node:path';
 import { RECHENGROESSEN } from '../../src/logic/data/rechengroessen';
 import { visibleFields } from '../../src/logic/form';
-import { checkHints, HINT_TESTS } from '../../src/logic/hints';
+import { checkHints, HINT_TESTS, hintTestProblem } from '../../src/logic/hints';
 import { interviewSummary } from '../../src/logic/interview';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
@@ -292,6 +292,42 @@ const LIMITS: Limit[] = [
     employer: employer('svpflichtig', '2027-03-01', monthly('6700.00')),
     shown: ['101', '1111 (p)', '0'],
   },
+  // Tobias 2026-11-15 („ich folge deiner Empfehlung“): the draft asks about 31.12.2026, so the band
+  // between 80.550 € and 84.150 € is decided — only „Weiß ich nicht“ keeps the check.
+  {
+    label:
+      'am 31.12.2026 versicherungsfrei privat versichert, 6.800 € ab 2027: über 80.550 € – frei',
+    person: person('festeStelle', { ...PRIVAT, pkvBestand2026: 'ja' }),
+    employer: employer('svpflichtig', '2027-03-01', monthly('6800.00')),
+    shown: ['101', '0110', '0'],
+  },
+  {
+    label:
+      'am 31.12.2026 nicht so versichert, 6.800 € ab 2027: unter 84.150 € – versicherungspflichtig',
+    person: person('festeStelle', { ...PRIVAT, pkvBestand2026: 'nein' }),
+    employer: employer('svpflichtig', '2027-03-01', monthly('6800.00')),
+    shown: ['101', '1111 (p)', '0'],
+  },
+  {
+    label: '31.12.2026 „Weiß ich nicht“, 6.800 € ab 2027: zwischen den Grenzen – prüfen',
+    person: person('festeStelle', { ...PRIVAT, pkvBestand2026: 'unbekannt' }),
+    employer: employer('svpflichtig', '2027-03-01', monthly('6800.00')),
+    shown: ['101', '0110 (p)', '0'],
+  },
+  {
+    label:
+      'am 31.12.2026 versicherungsfrei privat versichert, genau 6.712,50 € ab 2027 (Jahr = 80.550 €)',
+    person: person('festeStelle', { ...PRIVAT, pkvBestand2026: 'ja' }),
+    employer: employer('svpflichtig', '2027-03-01', monthly('6712.50')),
+    shown: ['101', '1111 (p)', '0'],
+  },
+  {
+    label:
+      'am 31.12.2026 versicherungsfrei privat versichert, 6.800 € ab 2026: die Grenze von 2026',
+    person: person('festeStelle', { ...PRIVAT, pkvBestand2026: 'ja' }),
+    employer: employer('svpflichtig', '2026-03-01', monthly('6800.00')),
+    shown: ['101', '0110', '0'],
+  },
   {
     label: 'am 31.12.2002 privat versichert, genau 6.075,00 € ab 2027 (Jahr = 72.900 €)',
     person: person('festeStelle', { ...PRIVAT, pkvBestand2002: 'ja' }),
@@ -305,6 +341,52 @@ const LIMITS: Limit[] = [
     shown: ['101', '0110', '0'],
   },
 ];
+
+describe('the question about 31.12.2026 (§ 6 Abs. 8 SGB V)', () => {
+  const asked = (answers: Answers) =>
+    visibleFields(
+      draft.definition,
+      'person',
+      Object.fromEntries(
+        Object.entries(person('festeStelle', answers)).filter(([, value]) => value !== undefined),
+      ) as Parameters<typeof visibleFields>[2],
+    ).map((field) => field.id);
+
+  it('is asked of the privately insured outside the 2002 group, right after that question', () => {
+    const order = asked(PRIVAT);
+    expect(order.indexOf('pkvBestand2026')).toBe(order.indexOf('pkvBestand2002') + 1);
+    expect(asked({ ...PRIVAT, pkvBestand2002: 'unbekannt' })).toContain('pkvBestand2026');
+  });
+
+  it('is the last argument of the JAEG tests, which the published 1.0.0 leaves out', () => {
+    const jaeg = HINT_TESTS.ueberMassgeblicheJahresarbeitsentgeltgrenze;
+    const full = jaeg?.args.length ?? 0;
+    // Fields and table columns of the draft (a JAEG test reads the other jobs' columns).
+    const all = draft.definition.sections
+      .flatMap((section) => section.fields)
+      .flatMap((field) => [field, ...(field.columns ?? [])]);
+    const fieldOf = (id: string) => all.find((field) => field.id === id);
+    const usedBy = (definition: FormDefinition) =>
+      JSON.stringify(definition).match(
+        /"fn":"ueberMassgeblicheJahresarbeitsentgeltgrenze","args":\[([^\]]*)\]/,
+      )?.[1];
+    expect(usedBy(draft.definition)?.split(',')).toHaveLength(full);
+    expect(usedBy(draft.definition)).toMatch(/"pkvBestand2026"$/);
+    expect(usedBy(published.definition)?.split(',')).toHaveLength(full - 1);
+    const args = (usedBy(draft.definition) ?? '').split(',').map((id) => JSON.parse(id) as string);
+    const test = { fn: 'ueberMassgeblicheJahresarbeitsentgeltgrenze', args };
+    expect(hintTestProblem(test, fieldOf)).toBeUndefined();
+    expect(hintTestProblem({ ...test, args: args.slice(0, -1) }, fieldOf)).toBeUndefined();
+    expect(hintTestProblem({ ...test, args: args.slice(0, -2) }, fieldOf)).toBe(
+      `"ueberMassgeblicheJahresarbeitsentgeltgrenze" takes ${full - 1} to ${full} fields`,
+    );
+  });
+
+  it('is not asked after „Ja“ for 31.12.2002, nor of the statutorily insured', () => {
+    expect(asked({ ...PRIVAT, pkvBestand2002: 'ja' })).not.toContain('pkvBestand2026');
+    expect(asked({})).not.toContain('pkvBestand2026');
+  });
+});
 
 describe('limits of 2027 to the cent', () => {
   it.each(LIMITS.map((l) => [l.label, l] as const))('%s', (_label, limit) => {
@@ -325,7 +407,11 @@ describe('limits of 2027 to the cent', () => {
   });
 
   it('gives the published 1.0.0 the same proposals for a start in 2026', () => {
-    for (const limit of LIMITS.filter((l) => String(l.employer.agBeschaeftigungsbeginn) < '2027')) {
+    // 1.0.0 does not ask about 31.12.2026: cases with that answer are only for the draft.
+    const in2026 = LIMITS.filter(
+      (l) => String(l.employer.agBeschaeftigungsbeginn) < '2027' && !('pkvBestand2026' in l.person),
+    );
+    for (const limit of in2026) {
       expect(actual(assess(limit.person, limit.employer))).toEqual(
         actual(assess(limit.person, limit.employer, draft)),
       );

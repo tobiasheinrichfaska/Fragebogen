@@ -914,8 +914,10 @@ Key design decisions (details in `docs/plan.md`):
   07.10.2026, BR-Drs. 576/26; Bundesrat and BGBl. outstanding) — compare before publishing; the BBG
   PV 2027 is 6.075 € under § 55 Abs. 2 SGB XI in force, 6.375 € if the Pflegeneuordnungsgesetz
   (BT-Drs. 21/8869) passes. Whether a privately insured person was exempt and privately insured on
-  31.12.2026 (JAEG 80.550 € instead of 84.150 €, § 6 Abs. 8 SGB V) is not asked: a pay between the
-  two is proposed as free with a check. Not used by the app: the Minijob KV flat rate of 17,5 % from
+  31.12.2026 (JAEG 80.550 € instead of 84.150 €, § 6 Abs. 8 SGB V) is asked since 2026-11-15
+  (`pkvBestand2026`, Tobias: „ich folge deiner Empfehlung“); only „Weiß ich nicht“ — and the
+  published 1.0.0, which does not ask — leaves a pay between the two free with a check. The person
+  does not know the start year, so the question comes for a start in 2026 too. Not used by the app: the Minijob KV flat rate of 17,5 % from
   2027 (§ 249b SGB V, BGBl. 2026 I Nr. 228; Beitragsgruppe 6 unchanged) and the new factor F. The
   Minijob flat-rate tax stays „2 %“ in the labels — a rise to 5 % is only a draft (Einkommensteuer-
   reformgesetz 2027). Mergers of health insurers on 01.01.2027 await the BAS
@@ -1581,8 +1583,9 @@ the rules read the values of the start year, so one version covers both. Values 
 the primary texts (MiLoV5, BMAS notice 07.11.2025, government draft SVBezGrV 2027, BGBl. 2026 I
 Nr. 228, § 55 SGB XI, BT-Drs. 21/8869; research and sources in the session). New in the logic: the
 BBG PV may lie below the BBG KV (2027), the JAEG of § 6 Abs. 8 SGB V gives a check band. Tests:
-`personalfragebogen2027.test.ts` (5 red on the old logic, 4 on the old draft). Open for Tobias: a
-question about 31.12.2026 instead of the check band? Publishing waits for the Bundesrat's consent and the BGBl.
+`personalfragebogen2027.test.ts` (5 red on the old logic, 4 on the old draft). Since 2026-11-15 the
+draft asks about 31.12.2026 instead of the check band (Tobias: „ich folge deiner Empfehlung“).
+Publishing waits for the Bundesrat's consent and the BGBl.
 
 **Local check of c7ab0eb (Kanzlei PC, 2026-11-14 evening):** unit 5681 passed (local files present),
 e2e 213 passed, 2 skipped, 1 failed: MT-35 read 11 of 12 photographed codes (Teil 7), green when

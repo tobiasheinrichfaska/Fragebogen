@@ -53,6 +53,12 @@ export function hintLine(hint: HintResult): string {
 
 interface HintTest {
   args: readonly FieldType[];
+  /**
+   * How many of the last arguments a form may leave out — added to a test after a form version that
+   * uses it was frozen (e.g. the answer about 31.12.2026, 2026-11-15). A left-out one reads as
+   * unanswered.
+   */
+  optional?: number;
   /** German clause for the catalogue, from the argument labels. */
   describe: (labels: readonly string[]) => string;
   /**
@@ -155,15 +161,53 @@ const rechengroesse = (year: string, key: 'bbgKvMonat' | 'bbgPvMonat' | 'bbgRvMo
 };
 
 /**
- * From 2027 the JAEG of those exempt and privately insured on 31.12.2026 (§ 6 Abs. 8 SGB V): the
- * questionnaire does not ask that, so for a privately insured person outside the 2002 group (the
- * 2002 question is asked only to the privately insured) a pay between this limit and the general one
- * decides nothing for sure. Undefined where it cannot matter.
+ * From 2027 the JAEG of those exempt and privately insured on 31.12.2026 (§ 6 Abs. 8 SGB V). The
+ * Personalfragebogen asks it since its draft 1.1.0 (Tobias 2026-11-15, `y2026`); without an answer
+ * („Weiß ich nicht“, or a form version that does not ask) a privately insured person outside the
+ * 2002 group earning between this limit and the general one is decided by nobody for sure — this
+ * band is returned. Undefined where it cannot matter.
  */
-function jaegBestand2026(year: string, y2002: FieldValue | undefined): number | undefined {
+function jaegBestand2026(
+  year: string,
+  y2002: FieldValue | undefined,
+  y2026?: FieldValue,
+): number | undefined {
   if (y2002 !== 'nein' && y2002 !== 'unbekannt') return undefined;
+  if (y2026 === 'ja' || y2026 === 'nein') return undefined;
   const value = RECHENGROESSEN[year]?.jaegBestand2026Jahr;
   return value === undefined ? undefined : cents(value);
+}
+
+/**
+ * The JAEG that applies to the person: the special one of § 6 Abs. 7 SGB V for those privately
+ * insured on 31.12.2002, from 2027 the one of § 6 Abs. 8 SGB V for those exempt and privately
+ * insured on 31.12.2026, else the general one. `value` is undefined for a year without data.
+ */
+function jaegFor(
+  year: string,
+  y2002: FieldValue | undefined,
+  y2026?: FieldValue,
+): { value: number | undefined; label: string; special: boolean } {
+  const of = (key: 'jaegJahr' | 'jaegBesondersJahr' | 'jaegBestand2026Jahr') => {
+    const value = RECHENGROESSEN[year]?.[key];
+    return value === undefined ? undefined : cents(value);
+  };
+  if (y2002 === 'ja') {
+    return {
+      value: of('jaegBesondersJahr'),
+      label: 'besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)',
+      special: true,
+    };
+  }
+  const bestand = y2026 === 'ja' ? of('jaegBestand2026Jahr') : undefined;
+  if (bestand !== undefined) {
+    return {
+      value: bestand,
+      label: 'Jahresarbeitsentgeltgrenze nach § 6 Abs. 8 SGB V',
+      special: true,
+    };
+  }
+  return { value: of('jaegJahr'), label: 'Jahresarbeitsentgeltgrenze', special: false };
 }
 
 const BESTAND_2026_NOTE = (limit: number) =>
@@ -279,7 +323,9 @@ const massgeblicheJaeg: HintTest = {
     'choice',
     'date',
     ...UMWANDLUNG_ARGS,
+    'choice',
   ],
+  optional: 1,
   describe: ([
     fixed = '',
     expected = '',
@@ -289,8 +335,15 @@ const massgeblicheJaeg: HintTest = {
     y2002 = '',
     on = '',
     art = '',
+    ,
+    ,
+    ,
+    ,
+    y2026,
   ]) =>
-    `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist; ab 2027 bei anderer Antwort zwischen der Grenze nach § 6 Abs. 8 SGB V und der allgemeinen: prüfen`,
+    y2026 === undefined
+      ? `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist; ab 2027 bei anderer Antwort zwischen der Grenze nach § 6 Abs. 8 SGB V und der allgemeinen: prüfen`
+      : `zwölfmal „${fixed}“ bzw. „${expected}“ und „${others}“ der laut „${art}“ versicherungspflichtigen anderen Beschäftigungen mit „${oneOff}“ (nur bei „${entitled}“) die Jahresarbeitsentgeltgrenze des Jahres von „${on}“ übersteigen – die besondere, wenn „${y2002}“ Ja ist; ab 2027 die nach § 6 Abs. 8 SGB V, wenn „${y2026}“ Ja ist, und bei „Weiß ich nicht“ zwischen dieser und der allgemeinen: prüfen`,
   run: ([
     fixed,
     expected,
@@ -304,6 +357,7 @@ const massgeblicheJaeg: HintTest = {
     kind,
     beitrag,
     zuschuss,
+    y2026,
   ]) => {
     const pay = payOf(fixed, expected, kind, beitrag, zuschuss, on);
     const mine = pay.cents;
@@ -318,12 +372,7 @@ const massgeblicheJaeg: HintTest = {
       'Geringfügigkeits-Richtlinien B 2.2.2.8',
     );
     const { yearly, facts } = yearlyPay(mine + insured.cents, oneOff ?? null, entitled ?? null);
-    const special = y2002 === 'ja';
-    const label = special
-      ? 'besondere Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V)'
-      : 'Jahresarbeitsentgeltgrenze';
-    const value = RECHENGROESSEN[year]?.[special ? 'jaegBesondersJahr' : 'jaegJahr'];
-    const limit = value === undefined ? undefined : cents(value);
+    const { value: limit, label, special } = jaegFor(year, y2002, y2026);
     if (limit === undefined) {
       return {
         holds: true,
@@ -333,7 +382,7 @@ const massgeblicheJaeg: HintTest = {
         ],
       };
     }
-    const bestand = special ? undefined : jaegBestand2026(year, y2002);
+    const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
     if (bestand !== undefined && yearly > bestand && yearly <= limit) {
       return {
         holds: true,
@@ -1028,7 +1077,8 @@ const geringfuegigNebenKurzfristigen: HintTest = {
  */
 function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
   return {
-    args: [...MINIJOB_ARGS, 'choice'],
+    args: [...MINIJOB_ARGS, 'choice', 'choice'],
+    optional: 1,
     describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
       `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze besteht${bisGrenze ? ' und die Minijobs zusammen die Geringfügigkeitsgrenze einhalten' : ''}`,
     run: ([
@@ -1044,6 +1094,7 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       beitrag,
       zuschuss,
       y2002,
+      y2026,
     ]) => {
       const own = geringfuegigkeit(true).run(
         [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
@@ -1060,11 +1111,10 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       if (mains.length === 0 || !earlier || year === undefined) {
         return { holds: false, detail: [] };
       }
-      const special = y2002 === 'ja';
-      const jaeg = cents(RECHENGROESSEN[year]?.[special ? 'jaegBesondersJahr' : 'jaegJahr'] ?? '');
+      const { value: jaeg, special } = jaegFor(year, y2002, y2026);
       const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
       // A main job between the limit of § 6 Abs. 8 SGB V and the general one may be free as well.
-      const bestand = special ? undefined : jaegBestand2026(year, y2002);
+      const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
       const unknown =
         jaeg === undefined ||
         mains.some((row) => row.cents === undefined) ||
@@ -1097,7 +1147,8 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
  * the next one. Arguments as `weitererMinijobNebenJaegFreierHauptbeschaeftigung`.
  */
 const weitererMinijobUeberJaeg: HintTest = {
-  args: [...MINIJOB_ARGS, 'choice'],
+  args: [...MINIJOB_ARGS, 'choice', 'choice'],
+  optional: 1,
   describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
     `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt, laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze besteht und erst dieser weitere Minijob die Grenze überschreitet`,
   run: ([
@@ -1113,6 +1164,7 @@ const weitererMinijobUeberJaeg: HintTest = {
     beitrag,
     zuschuss,
     y2002,
+    y2026,
   ]) => {
     const own = geringfuegigkeit(true).run(
       [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
@@ -1129,9 +1181,7 @@ const weitererMinijobUeberJaeg: HintTest = {
     );
     const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
     if (mains.length === 0 || !earlier || year === undefined) return { holds: false, detail: [] };
-    const jaeg = cents(
-      RECHENGROESSEN[year]?.[y2002 === 'ja' ? 'jaegBesondersJahr' : 'jaegJahr'] ?? '',
-    );
+    const { value: jaeg, special } = jaegFor(year, y2002, y2026);
     if (jaeg === undefined) return { holds: false, uncertain: true, detail: [] };
     const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
     if (main > jaeg) return { holds: false, detail: [] };
@@ -1140,7 +1190,7 @@ const weitererMinijobUeberJaeg: HintTest = {
     const total = main + later + mine;
     if (total <= jaeg) return { holds: false, detail: [] };
     // Above the limit of § 6 Abs. 8 SGB V the main job may already be free (see jaegBestand2026).
-    const bestand = y2002 === 'ja' ? undefined : jaegBestand2026(year, y2002);
+    const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
     return {
       holds: true,
       ...(mains.some((row) => row.cents === undefined) || (bestand !== undefined && main > bestand)
@@ -1480,7 +1530,12 @@ export function hintTestProblem(
 ): string | undefined {
   const spec = HINT_TESTS[test.fn];
   if (!spec) return `unknown test "${test.fn}"`;
-  if (test.args.length !== spec.args.length) return `"${test.fn}" takes ${spec.args.length} fields`;
+  const fewest = spec.args.length - (spec.optional ?? 0);
+  if (test.args.length < fewest || test.args.length > spec.args.length) {
+    return fewest === spec.args.length
+      ? `"${test.fn}" takes ${spec.args.length} fields`
+      : `"${test.fn}" takes ${fewest} to ${spec.args.length} fields`;
+  }
   for (const [i, id] of test.args.entries()) {
     const field = fieldOf(id);
     if (!field) return `unknown field "${id}"`;

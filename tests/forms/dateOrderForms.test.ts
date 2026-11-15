@@ -76,6 +76,9 @@ describe('Personalfragebogen: the end of a fixed term', () => {
   // the documents offered only where they fit (option conditions, tests/forms/unterlagen.test.ts).
   it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules, help texts and 2027', () => {
     const SECOND = ['vertretung2', 'vertretungAlleinSorge'];
+    // 2026-11-15 (Tobias: „ich folge deiner Empfehlung“): the question about 31.12.2026 and its
+    // answer as the last argument of the JAEG tests (tests/forms/personalfragebogen2027.test.ts).
+    const BESTAND_2026 = 'pkvBestand2026';
     const text = JSON.stringify(pfb110.definition);
     for (const [now] of UNDO_2027) expect(text, now).toContain(now);
     const undone = UNDO_2027.reduce((all, [now, before]) => all.split(now).join(before), text);
@@ -95,10 +98,11 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         if (Array.isArray(value)) {
           return value.filter(
             (item: unknown) =>
+              item !== BESTAND_2026 &&
               !(
                 typeof item === 'object' &&
                 item !== null &&
-                SECOND.includes((item as { id?: string }).id ?? '')
+                [...SECOND, BESTAND_2026].includes((item as { id?: string }).id ?? '')
               ),
           );
         }
