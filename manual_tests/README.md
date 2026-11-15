@@ -3,17 +3,17 @@
 Diese Anleitungen richten sich an Testerinnen und Tester **ohne Entwicklerkenntnisse**. Seit
 08.11.2026 stehen hier nur noch Tests, die ein Mensch oder ein echtes Gerät braucht: das Aussehen
 in einem echten PDF-Programm, Finger und Stift, Kamera und Scanner, Teilen-Menü und Tastatur am
-Handy, der Upload am Kanzlei-PC. Alles, was ein Browser selbst nachspielen kann, prüfen die
-automatischen Tests (siehe **Automatisiert** unten) – auch in Chrome, Firefox und Safari (WebKit)
-und mit einem nachgestellten Handy.
+Handy, Anmeldung und Einladung in der Testzone. Alles, was ein Browser selbst nachspielen kann,
+prüfen die automatischen Tests (siehe **Automatisiert** unten) – auch in Chrome, Firefox und Safari
+(WebKit) und mit einem nachgestellten Handy.
 
 ## Was Sie brauchen
 
 - Einen Windows-PC oder Mac mit einem aktuellen Browser (Edge, Chrome, Firefox oder Safari).
 - Für spätere Tests: ein Tablet oder Smartphone (iPad/iPhone nur über die gehostete Fassung).
-- **Am einfachsten: den Testbereich** auf der Homepage (Adresse von der Kanzlei; von außerhalb mit
-  Anmeldung). Dort steht die App links, die Tests rechts – am Handy über die Reiter „App“ und
-  „Tests“. Seit 15.11.2026 ist das die gemeinsame Testseite aller Apps (aus „Testumgebung“).
+- **Am einfachsten: den Testbereich** (eigene Adresse von der Kanzlei, immer mit Anmeldung; Tester
+  kommen per Einladung). Dort steht die App links, die Tests rechts – am Handy über die Reiter „App“
+  und „Tests“. Seit 15.11.2026 ist das die gemeinsame Testseite aller Apps (aus „Testumgebung“).
 - Oder die Datei `index.html` aus dem Ordner `dist/` (`npm run build`), z. B. zugeschickt.
 - Erfundene Testdaten. **Bitte nie echte Personendaten verwenden.**
 
@@ -25,23 +25,23 @@ und mit einem nachgestellten Handy.
    falsche Eingabe ist ein eigener Schritt (danach: die Fehlermeldung), die richtige Eingabe der
    nächste. Was zu keinem einzelnen Schritt gehört, steht darunter unter „**Erwartet**“. Achten Sie
    besonders auf Punkte, die mit _Nicht offensichtlich_ markiert sind.
-4. Werte zum Eintragen stehen grau hinterlegt: markieren, kopieren und in der App einfügen. Werte,
-   die wie eine Taste aussehen, tippen Sie bitte selbst – dort wird das Tippen geprüft (z. B. die
-   Datumsmaske).
+4. Werte zum Eintragen stehen in Schreibmaschinenschrift mit Rahmen: markieren, kopieren und in
+   der App einfügen – außer der Schritt sagt, dass Sie den Wert selbst tippen sollen; dort wird das
+   Tippen geprüft (z. B. die Datumsmaske).
 5. Notieren Sie Abweichungen mit Testfall-Nummer, Browser, Gerät und einem Bildschirmfoto. Das
    Bildschirmfoto darf keine echten Daten zeigen.
 
 ## Testfälle
 
-| Datei                                            | Bereich                                                                                                                                                                                           |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`01_start.md`](01_start.md)                     | Datei per Doppelklick öffnen (MT-01), dunkle Darstellung am echten Bildschirm (MT-03)                                                                                                             |
-| [`02_ausfuellen.md`](02_ausfuellen.md)           | Tastatur und Kalender des Handys beim Datum (MT-118)                                                                                                                                              |
-| [`03_abschluss.md`](03_abschluss.md)             | Unterschrift mit Finger und Stift auf Tablet oder Handy (MT-21)                                                                                                                                   |
-| [`04_pdf.md`](04_pdf.md)                         | PDF im echten PDF-Programm (MT-30), mit Acrobat geändert (MT-33), Druck und Scan (MT-34), Fotos (MT-35), Link (MT-36), Teilen am Handy (MT-37), Kennwort in Chrome, Acrobat und Vorschau (MT-132) |
-| [`05_kanzlei.md`](05_kanzlei.md)                 | Übergabe an Lohn und Gehalt: Import in DATEV (MT-68, MT-70)                                                                                                                                       |
-| [`08_auslieferung.md`](08_auslieferung.md)       | Subdomain mit `.htaccess` (MT-80), Hilfeseiten am echten Handy (MT-81), Hochladen, Ordner, Tester (MT-82–84), Testseite am echten Handy (MT-85), Startbildschirm und ohne Netz (MT-135)           |
-| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                                                                          |
+| Datei                                            | Bereich                                                                                                                                                                                                                                         |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`01_start.md`](01_start.md)                     | Datei per Doppelklick öffnen (MT-01), dunkle Darstellung am echten Bildschirm (MT-03)                                                                                                                                                           |
+| [`02_ausfuellen.md`](02_ausfuellen.md)           | Tastatur und Kalender des Handys beim Datum (MT-118)                                                                                                                                                                                            |
+| [`03_abschluss.md`](03_abschluss.md)             | Unterschrift mit Finger und Stift auf Tablet oder Handy (MT-21)                                                                                                                                                                                 |
+| [`04_pdf.md`](04_pdf.md)                         | PDF im echten PDF-Programm (MT-30), mit Acrobat geändert (MT-33), Druck und Scan (MT-34), Fotos (MT-35), Link (MT-36), Teilen am Handy (MT-37), Kennwort in Chrome, Acrobat und Vorschau (MT-132)                                               |
+| [`05_kanzlei.md`](05_kanzlei.md)                 | Übergabe an Lohn und Gehalt: Import in DATEV (MT-68, MT-70)                                                                                                                                                                                     |
+| [`08_auslieferung.md`](08_auslieferung.md)       | Öffentliche App auf bunny.net (MT-80), Hilfeseiten am echten Handy (MT-81), Hochladen über Freigabe (MT-82), Testzone mit Anmeldung (MT-83), Tester einladen (MT-84), Testseite am echten Handy (MT-85), Startbildschirm und ohne Netz (MT-135) |
+| [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                                                                                                                        |
 
 ## Automatisiert (seit 08.11.2026)
 
@@ -63,7 +63,7 @@ ankommen.
 | MT-60, MT-62 und MT-66 (je ein Fall), MT-63 bis MT-65                                                   | `07_sv_beurteilung.spec.ts`                           |
 | MT-44, MT-45, MT-61, MT-62, MT-64, MT-66, MT-67, MT-88, MT-96 bis MT-98, MT-102, MT-103 (SV-Ergebnisse) | `tests/testbereich/startPointsSv.test.ts` (Unit-Test) |
 | MT-81 (teilweise)                                                                                       | `08_auslieferung.spec.ts`                             |
-| MT-85 (teilweise), MT-130, MT-133                                                                       | `08_testbereich.spec.ts`                              |
+| MT-85 (teilweise)                                                                                       | `08_testbereich.spec.ts`                              |
 | MT-94, MT-95                                                                                            | `09_monatsmeldung.spec.ts`                            |
 | MT-104 bis MT-108, MT-117, MT-134                                                                       | `10_eingabepruefung.spec.ts`                          |
 | MT-110 bis MT-115                                                                                       | `11_eigenbeleg.spec.ts`                               |
@@ -76,19 +76,22 @@ ankommen.
   einem anderen Ort (ein Handy, die öffentliche Adresse). Beginnt ein Test mit einem Startlink,
   tippen Sie darauf; die Seite fragt vorher nach. Ihre Testergebnisse bleiben dabei, nur die
   Eingaben in der App sind dann weg.
-- **Startlinks (▶):** Viele Tests beginnen mit einem Knopf wie **„▶ Zum Unterschreiben öffnen“**. Er
-  startet die App rechts neu, mit einem vorbereiteten Fragebogen voller erfundener Angaben – zum
-  Beispiel hat der Arbeitgeber schon abgeschlossen, und Sie beginnen genau bei der Frage, um die es
-  im Test geht – oder die Kanzlei-Station mit schon eingelesenen Eingängen. Für eine Gegenprobe
-  öffnen Sie den Startlink einfach noch einmal. Ihre
+- **Startlinks:** Viele Tests beginnen mit einem Knopf wie **„Zum Unterschreiben öffnen“**. Nach der
+  Rückfrage „Vorbereiteten Stand laden?“ und **„Laden“** startet er die App links neu (am Handy im
+  Reiter „App“; der Reiter „Tests“ bleibt offen, bis Sie auf „App“ tippen), mit einem vorbereiteten
+  Fragebogen voller erfundener Angaben – zum Beispiel hat der Arbeitgeber schon abgeschlossen, und
+  Sie beginnen genau bei der Frage, um die es im Test geht – oder die Kanzlei-Station mit schon
+  eingelesenen Eingängen. Für eine Gegenprobe öffnen Sie den Startlink einfach noch einmal. Ihre
   Testergebnisse bleiben dabei erhalten, nur die Eingaben in der App sind weg.
 - **Verweise auf andere Tests** (z. B. „siehe MT-37“) sind anklickbar und nur zum Nachlesen; nötig
   ist der andere Test nie.
 - **Oben auf der Testseite:** „App neu starten“, „App vollständig zurücksetzen“ (löscht alles, was
   die App im Browser gespeichert hat; die Testergebnisse bleiben), „Bericht senden“ und „Tester
   einladen“.
-- **„Nicht im Testbereich“:** Manche Tests gehen nur mit der heruntergeladenen Datei oder nur am
-  Kanzlei-PC (z. B. MT-01, MT-82–84). Ihr Kästchen ist in der Testübersicht blasser, der Test nennt den Grund.
+- **„Nicht im Testbereich“:** Manche Tests gehen nicht auf der Testseite – nur mit der
+  heruntergeladenen Datei, nur in Freigabe oder in einem privaten Fenster ohne Anmeldung (z. B.
+  MT-01, MT-82–84). In der Testübersicht steht bei ihnen „· nicht im Testbereich“, der Test nennt
+  den Grund.
 - **„Fassung mit Entwürfen“** ist im Testbereich schon geladen; der Hinweis auf
   `npm run build:preview` gilt nur für Entwickler.
 - **Ergebnis (seit 15.11.2026 ohne Freitext):** je Test **„Bestanden“** oder **„Nicht
@@ -102,9 +105,9 @@ ankommen.
 ## Für alle, die Tests schreiben (Format seit 06.11.2026)
 
 Kleine Schritte, je eine Handlung; darunter, um 3 Leerzeichen eingerückt, was sie bewirkt. Die
-Testseite zeigt es grün direkt unter dem Schritt. Eine falsche Eingabe ist ein eigener Schritt mit
-der Fehlermeldung als Ergebnis, die richtige Eingabe der nächste (Tobias 2026-11-06: ein Hinweis
-„Achten Sie gleich auf …“ vor dem Schritt half nicht):
+Testseite zeigt es grau unter „Danach:“ direkt unter dem Schritt. Eine falsche Eingabe ist ein
+eigener Schritt mit der Fehlermeldung als Ergebnis, die richtige Eingabe der nächste (Tobias
+2026-11-06: ein Hinweis „Achten Sie gleich auf …“ vor dem Schritt half nicht):
 
 ```markdown
 1. Bei der Gläubiger-ID `DE97ZZZ09999999999` eingeben.
@@ -118,8 +121,9 @@ der Fehlermeldung als Ergebnis, die richtige Eingabe der nächste (Tobias 2026-1
 - Keine Verweise wie „ausfüllen wie in MT-121“ in den Schritten: die Schritte ausschreiben, mit den
   Werten.
 
-- Werte zum Eintragen in Backticks (`` `…` ``) – die Testseite zeigt sie grau hinterlegt; Werte, die
-  absichtlich getippt werden sollen, als `<kbd>…</kbd>`. Kein Fett um Backticks.
+- Werte zum Eintragen in Backticks (`` `…` ``); Werte, die absichtlich getippt werden sollen, als
+  `<kbd>…</kbd>`. Die Testseite zeigt beide gleich (Schreibmaschinenschrift mit Rahmen), also sagt
+  der Schritt selbst, wenn getippt werden soll. Kein Fett um Backticks.
 - Unter „**Erwartet**“ steht nur, was zu keinem Schritt gehört; ein Eintrag „Schritt 3: …“ dort lässt
   einen automatischen Test scheitern (`tests/testbereich/manualTests.test.ts`), ebenso ein
   „Achten Sie gleich auf“.
