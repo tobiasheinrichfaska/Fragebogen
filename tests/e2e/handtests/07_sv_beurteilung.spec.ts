@@ -430,17 +430,29 @@ const PRIVATE = {
   pkvBescheinigung: 'liegtBei',
   pkvAusland: 'Nein',
   pkvBestand2002: 'nein',
+  pkvBestand2026: 'nein',
   gkvLetzte5Jahre: 'nein',
 };
-const EXEMPTION = ['kvBefreiung', 'kvBefreiungGrund', 'kvBefreiungAb', 'pkvBestand2002'];
+const EXEMPTION = [
+  'kvBefreiung',
+  'kvBefreiungGrund',
+  'kvBefreiungAb',
+  'pkvBestand2002',
+  'pkvBestand2026',
+];
 
-test('MT-64: a private insurance asks for the exemption and the 31.12.2002', async ({ page }) => {
+test('MT-64: a private insurance asks for the exemption, the 31.12.2002 and the 31.12.2026', async ({
+  page,
+}) => {
   const { found, app } = await openTestApp(page);
   await startNew(app, 'Beschäftigte Person');
   await forward(app, PERSON, { stopAt: 'krankenversicherung' });
   await choose(app, 'privat');
   await forward(app, PRIVATE, { stopAt: 'pkvBestand2002' });
   await expect(app.locator('.question .help')).toContainText('69.750 € statt 77.400 €');
+  // Tobias 2026-11-15: right after it the question about 31.12.2026 (§ 6 Abs. 8 SGB V).
+  await forward(app, PRIVATE, { stopAt: 'pkvBestand2026' });
+  await expect(app.locator('.question .help')).toContainText('80.550 € statt 84.150 €');
   await forward(app, PRIVATE, { stopAt: 'kvBefreiung' });
   await choose(app, 'Ja');
   await expectHeading(app, 'Weshalb wurden Sie befreit?');
