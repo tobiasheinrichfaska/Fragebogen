@@ -191,6 +191,21 @@ export default defineConfig(({ mode }) => ({
     modulePreload: { polyfill: false },
     chunkSizeWarningLimit: 5000,
   },
+  // Only the test folder build carries the shared test page (Testumgebung, testrahmen/); every
+  // other build gets a stand-in, so neither its code nor its styles reach the live app.
+  resolve: {
+    alias:
+      mode === 'testbereich'
+        ? []
+        : [
+            {
+              find: './ui/testbereich/testbereich',
+              replacement: fileURLToPath(
+                new URL('./src/ui/testbereich/ohneTestbereich.ts', import.meta.url),
+              ),
+            },
+          ],
+  },
   server: { port: 5178, strictPort: true },
   test: {
     include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],

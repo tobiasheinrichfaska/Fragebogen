@@ -148,38 +148,29 @@
 
 **Einstieg:** Der Testbereich selbst – Sie sind schon da.
 
-**Voraussetzungen:** Der Testordner ist hochgeladen. Ein echtes Handy (iPhone oder Android), wenn
-vorhanden auch ein iPad. Alles andere an der Testseite – Übersicht, Ergebnisse,
-Neustart-Fragen, Zurücksetzen, Testbericht, die Ansicht am Handy nachgestellt – prüfen die
-automatischen Tests in `tests/e2e/handtests/08_testbereich.spec.ts`.
+**Voraussetzungen:** Der Testbereich ist hochgeladen. Ein echtes Handy (iPhone oder Android), wenn
+vorhanden auch ein iPad. Die Testseite ist seit dem 15.11.2026 die gemeinsame aus „Testumgebung“;
+ihr Verhalten prüfen die Tests dort, die Anbindung an den Fragebogen (Handtests, vorbereitete
+Stände, Neustart, Zurücksetzen, Bericht, die Ansicht am Handy nachgestellt) prüft
+`tests/e2e/handtests/08_testbereich.spec.ts`.
 
 **Schritte:**
 
 1. Am Handy den Testbereich öffnen.
-   - **Danach:** Oben die Umschalter **„Testanleitung“** und **„App“**, darunter die Testübersicht.
-     Alles lässt sich ohne Zoomen lesen und antippen.
-2. Ein Kästchen antippen und bei der Frage **„App so lassen“** tippen.
-   - **Danach:** Der Test beginnt oben mit seiner Überschrift.
-3. In den Schritten auf ⧉ neben einem Wert tippen.
-   - **Danach:** Das Zeichen wird zu ✓ – oder daneben steht „(bitte markieren und kopieren)“.
-4. Oben auf **„App“** wechseln, einen Fragebogen beginnen und den kopierten Wert in das erste Feld
-   einfügen.
-   - **Danach:** Der Wert steht im Feld. _Nicht offensichtlich:_ ⧉ trägt selbst nichts in die App
-     ein.
-5. Oben auf **„Testanleitung“** wechseln, dann wieder auf **„App“**.
-   - **Danach:** Die Eingabe in der App ist noch da.
-6. Auf **„Testanleitung“** wechseln, **„✗ Nicht bestanden“** tippen und bei Schritt 1 einen Grund
-   wählen.
+   - **Danach:** Oben die Reiter **„App“** und **„Tests“**, darunter die Testübersicht. Alles lässt
+     sich ohne Zoomen lesen und antippen.
+2. Einen Test antippen, dessen Einstieg ein vorbereiteter Stand ist, und dort auf den Knopf des
+   Einstiegs tippen. Die Rückfrage mit **„Ja“** beantworten.
+   - **Danach:** Der Reiter **„App“** zeigt den vorbereiteten Fragebogen.
+3. Auf **„Tests“** wechseln, dann wieder auf **„App“**.
+   - **Danach:** Die App steht noch an derselben Stelle.
+4. Auf **„Tests“** wechseln, **„Nicht bestanden“** tippen und bei Schritt 1 einen Grund wählen.
    - **Danach:** Die Auswahl der Gründe lässt sich am Handy bedienen und ist ganz zu lesen.
-7. **„✓ Bestanden“** tippen und ganz oben auf der Seite **„Kopie als PDF“** tippen.
-   - **Danach:** Die PDF lässt sich öffnen, teilen oder speichern. Oben steht „Gerät laut Browser:
-     iPhone · Safari …“ bzw. „Android-Smartphone · Chrome …“.
-8. Ganz oben **„Bericht senden“** tippen und mit **„Senden“** bestätigen.
-   - **Danach:** „Bericht gesendet.“ – oder, solange der Testbereich noch keine Berichte annimmt,
-     der Hinweis mit „Antwort 404“.
-9. Am iPad die Schritte 1, 2 und 7 wiederholen.
-   - **Danach:** _Nicht offensichtlich:_ Safari meldet sich am iPad wie ein Mac; in der Kopie
-     steht trotzdem „iPad“.
+5. **„Bestanden“** tippen, dann oben **„Bericht senden“** und die Rückfrage mit **„Ja“**
+   beantworten.
+   - **Danach:** Eine Meldung, dass der Bericht gespeichert ist.
+6. Am iPad die Schritte 1, 2 und 5 wiederholen.
+   - **Danach:** Wie am Handy; breit stehen App und Tests nebeneinander.
 
 ---
 

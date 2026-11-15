@@ -202,10 +202,12 @@ test.describe('on a touch screen', () => {
     const pad = app.locator('canvas.signature-pad');
     await expect(pad).toHaveCSS('touch-action', 'none');
     await pad.scrollIntoViewIfNeeded();
+    // In the test build the app scrolls inside the test page's container (Testumgebung's shared
+    // test page, since 2026-11-15), not the window.
     const scroll = () =>
-      page.evaluate(() => ({
-        y: scrollY,
-        max: document.documentElement.scrollHeight - innerHeight,
+      app.evaluate((element) => ({
+        y: element.scrollTop,
+        max: element.scrollHeight - element.clientHeight,
       }));
     const before = await scroll();
     // Without room to scroll the check below would prove nothing.

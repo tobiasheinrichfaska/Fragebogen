@@ -1,0 +1,148 @@
+/* The shared test page (Testumgebung, testrahmen/). Every class starts with "tr-", so nothing of
+   the app is touched. The app bundles this file into its test build; the page itself sets no
+   inline style, which the apps' CSP forbids. */
+
+.tr-huelle {
+  --tr-grund: #f6f8fa;
+  --tr-flaeche: #ffffff;
+  --tr-text: #1f2328;
+  --tr-leise: #59636e;
+  --tr-linie: #d1d9e0;
+  --tr-knopf: #0b57d0;
+  --tr-knopf-text: #ffffff;
+  --tr-gut: #1a7f37;
+  --tr-gut-grund: #dafbe1;
+  --tr-schlecht: #b42318;
+  --tr-schlecht-grund: #ffebe9;
+  --tr-laeuft: #8a5300;
+  --tr-laeuft-grund: #fff4d4;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+  height: 100vh;
+  height: 100dvh;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tr-huelle {
+    --tr-grund: #151b23;
+    --tr-flaeche: #0d1117;
+    --tr-text: #e6edf3;
+    --tr-leise: #9198a1;
+    --tr-linie: #3d444d;
+    --tr-knopf: #4493f8;
+    --tr-knopf-text: #0d1117;
+    --tr-gut: #3fb950;
+    --tr-gut-grund: #12261e;
+    --tr-schlecht: #f85149;
+    --tr-schlecht-grund: #2d1214;
+    --tr-laeuft: #d29922;
+    --tr-laeuft-grund: #2b2111;
+  }
+}
+
+.tr-app {
+  position: relative;
+  min-width: 0;
+  overflow: auto;
+}
+
+.tr-feld {
+  overflow: auto;
+  border-left: 1px solid var(--tr-linie);
+  background: var(--tr-grund);
+  color: var(--tr-text);
+  padding: 12px 16px 40px;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.tr-feld h2 { font-size: 1.05rem; margin: 1rem 0 0.5rem; }
+.tr-feld h3 { font-size: 0.95rem; margin: 1rem 0 0.25rem; }
+.tr-feld p { margin: 0.4rem 0; }
+.tr-feld ol, .tr-feld ul { padding-left: 1.4rem; margin: 0.4rem 0; }
+.tr-feld li { margin: 0.35rem 0; }
+.tr-feld code, .tr-feld kbd { font: 0.9em ui-monospace, Consolas, monospace; background: var(--tr-flaeche); border: 1px solid var(--tr-linie); border-radius: 4px; padding: 0 3px; }
+.tr-feld pre { overflow: auto; background: var(--tr-flaeche); border: 1px solid var(--tr-linie); border-radius: 6px; padding: 8px; }
+.tr-feld a { color: var(--tr-knopf); }
+
+.tr-feld button, .tr-reiter button, .tr-einladen {
+  font: inherit;
+  font-size: 0.9rem;
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--tr-linie);
+  background: var(--tr-flaeche);
+  color: var(--tr-text);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tr-feld button:focus-visible, .tr-reiter button:focus-visible, .tr-feld select:focus-visible, .tr-einladen:focus-visible {
+  outline: 2px solid var(--tr-knopf);
+  outline-offset: 2px;
+}
+
+.tr-feld button:disabled { opacity: 0.6; cursor: default; }
+.tr-feld .tr-haupt { background: var(--tr-knopf); border-color: var(--tr-knopf); color: var(--tr-knopf-text); }
+
+.tr-kopf { border-bottom: 1px solid var(--tr-linie); padding-bottom: 8px; }
+.tr-titel { font-weight: 600; }
+.tr-titel span { color: var(--tr-leise); font-weight: 400; }
+.tr-knoepfe { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.tr-stand { color: var(--tr-leise); font-size: 0.9rem; }
+
+.tr-meldung { border-radius: 6px; padding: 6px 10px; }
+.tr-ok { background: var(--tr-gut-grund); color: var(--tr-text); border-left: 4px solid var(--tr-gut); }
+.tr-fehler { background: var(--tr-schlecht-grund); color: var(--tr-text); border-left: 4px solid var(--tr-schlecht); }
+
+.tr-frage { margin: 10px 0; padding: 10px 12px; border: 2px solid var(--tr-knopf); border-radius: 8px; background: var(--tr-flaeche); }
+.tr-frage-titel { font-weight: 600; }
+
+.tr-zeile label { display: inline-flex; gap: 6px; align-items: center; }
+.tr-feld .tr-tests, .tr-feld .tr-staende { list-style: none; padding: 0; }
+.tr-staende li { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.tr-feld .tr-test {
+  width: 100%;
+  display: block;
+  text-align: left;
+  border-left-width: 6px;
+}
+.tr-id { font-weight: 600; margin-right: 4px; }
+.tr-status { display: block; font-size: 0.8rem; color: var(--tr-leise); }
+.tr-feld .tr-bestanden { border-left-color: var(--tr-gut); background: var(--tr-gut-grund); }
+.tr-feld .tr-nicht-bestanden { border-left-color: var(--tr-schlecht); background: var(--tr-schlecht-grund); }
+.tr-feld .tr-laeuft { border-left-color: var(--tr-laeuft); background: var(--tr-laeuft-grund); }
+
+.tr-blaettern { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.tr-bereichsname { color: var(--tr-leise); font-size: 0.85rem; margin-bottom: 0; }
+.tr-danach { color: var(--tr-leise); margin: 0.15rem 0 0.4rem; }
+.tr-danach span { font-weight: 600; }
+.tr-feld .tr-verweis, .tr-feld .tr-start { min-height: 0; padding: 0 6px; font-size: 0.9em; }
+.tr-feld .tr-start { border-color: var(--tr-knopf); color: var(--tr-knopf); }
+
+.tr-bewertung { margin-top: 1rem; padding-top: 8px; border-top: 1px solid var(--tr-linie); }
+.tr-uhr { color: var(--tr-leise); }
+.tr-feld .tr-ergebnis[aria-pressed="true"].tr-bestanden { background: var(--tr-gut); border-color: var(--tr-gut); color: var(--tr-flaeche); }
+.tr-feld .tr-ergebnis[aria-pressed="true"].tr-nicht-bestanden { background: var(--tr-schlecht); border-color: var(--tr-schlecht); color: var(--tr-flaeche); }
+.tr-feld .tr-ergebnis[aria-pressed="false"] { background: var(--tr-flaeche); }
+.tr-schritte label { display: flex; flex-direction: column; gap: 4px; }
+.tr-schritte select { font: inherit; min-height: 36px; max-width: 100%; color: var(--tr-text); background: var(--tr-flaeche); border: 1px solid var(--tr-linie); border-radius: 6px; }
+.tr-schritt { font-size: 0.9rem; }
+
+.tr-reiter { display: none; }
+
+@media (max-width: 899px) {
+  .tr-huelle { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .tr-reiter { display: flex; gap: 6px; padding: 6px 8px; background: var(--tr-grund); border-bottom: 1px solid var(--tr-linie); }
+  .tr-reiter button { flex: 1; justify-content: center; }
+  .tr-reiter button[aria-pressed="true"] { background: var(--tr-knopf); border-color: var(--tr-knopf); color: var(--tr-knopf-text); }
+  .tr-feld { border-left: 0; }
+  .tr-huelle[data-reiter="app"] .tr-feld { display: none; }
+  .tr-huelle[data-reiter="tests"] .tr-app { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-huelle * { scroll-behavior: auto; }
+}

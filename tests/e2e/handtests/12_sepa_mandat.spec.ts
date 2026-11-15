@@ -161,7 +161,7 @@ async function openHosted(
     return route.abort();
   });
   await page.goto(to.startsWith(ORIGIN) ? to : `${ORIGIN}${to}`);
-  const app = page.locator(build === TEST_APP ? '.test-app' : '#root');
+  const app = page.locator(build === TEST_APP ? '.tr-app' : '#root');
   await expect(app.locator('main')).toBeVisible();
   return {
     app,

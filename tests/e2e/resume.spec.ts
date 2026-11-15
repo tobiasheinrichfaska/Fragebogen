@@ -178,17 +178,14 @@ test.describe('the test folder keeps its own browser memory', () => {
     await expect.poll(() => stored(page)).not.toBeNull();
 
     await page.goto(`${ORIGIN}/test/`);
-    await expect(page.locator('.test-app main')).toContainText('Neuer Fragebogen');
+    await expect(page.locator('.tr-app main')).toContainText('Neuer Fragebogen');
     await expect(page.getByRole('heading', { name: OFFER })).toHaveCount(0);
-    await page
-      .locator('.test-header')
-      .getByRole('button', { name: 'App vollständig zurücksetzen' })
-      .click();
-    await page
-      .getByRole('dialog')
-      .getByRole('button', { name: 'Zurücksetzen', exact: true })
-      .click();
-    await expect(page.getByText('nichts mehr vom Testbereich in diesem Browser')).toBeVisible();
+    // The shared test page (Testumgebung, since 2026-11-15) asks before it resets the app.
+    const side = page.locator('.tr-feld');
+    await side.locator('[data-aktion="frage"][data-frage="zuruecksetzen"]').click();
+    await side.locator('[data-aktion="ja"]').click();
+    await expect(side.locator('.tr-frage')).toHaveCount(0);
+    await expect(page.locator('.tr-app main')).toBeVisible();
     expect(await stored(page)).not.toBeNull();
 
     await page.goto(`${ORIGIN}/`);
@@ -202,7 +199,7 @@ test.describe('the test folder keeps its own browser memory', () => {
   test('a questionnaire begun in the test folder stays there', async ({ page }) => {
     const foreign = await serveBoth(page);
     await page.goto(`${ORIGIN}/test/`);
-    const app = page.locator('.test-app');
+    const app = page.locator('.tr-app');
     await app
       .getByRole('button', { name: /Personalfragebogen: Angaben für die Sofortmeldung/ })
       .click();

@@ -42,7 +42,7 @@ export async function openTestApp(page: Page, startpunkt?: string): Promise<Open
   const found = await guard(page);
   const query = startpunkt === undefined ? '' : `?startpunkt=${encodeURIComponent(startpunkt)}`;
   await page.goto(pathToFileURL(TEST_APP).href + query);
-  const app = page.locator('.test-app');
+  const app = page.locator('.tr-app');
   await expect(app.locator('main')).toBeVisible();
   return { found, app };
 }

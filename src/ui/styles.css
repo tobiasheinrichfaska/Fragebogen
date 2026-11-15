@@ -932,353 +932,11 @@ table.sheet tr.sheet-mask th {
   padding-top: 0.75rem;
 }
 
-/* Test folder build: a header, the test page next to the app; two tabs on a narrow screen. */
-.test-header {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  height: var(--test-header);
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-:root {
-  --test-header: 3.5rem;
-}
-
-.test-header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.test-header button {
-  min-height: 2.25rem;
-  padding: 0.25rem 0.75rem;
-}
-
-.test-banner {
-  padding: 0 1rem;
-}
-
-.test-shell {
-  display: grid;
-  grid-template-columns: minmax(20rem, 30rem) minmax(0, 1fr);
-  min-height: calc(100vh - var(--test-header));
-}
-
-/* Opened from far down the list, a test begins at its heading, below the sticky header and tabs. */
-.test-case {
-  scroll-margin-top: 4.5rem;
-}
-
-.choice-dialog-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-.test-tabs {
-  display: none;
-}
-
-/* A start link of a test: opens a prepared questionnaire in the app. */
-button.start-link {
-  min-height: 2.25rem;
-  margin: 0.125rem 0;
-  padding: 0.25rem 0.75rem;
-  border-color: var(--accent);
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.test-panel {
-  position: sticky;
-  top: var(--test-header);
-  height: calc(100vh - var(--test-header));
-  overflow-y: auto;
-  border-right: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.test-panel-inner {
-  padding: 1rem 1rem 3rem;
-}
-
-.test-panel-inner h1 {
-  margin: 0 0 0.75rem;
-  font-size: 1.3rem;
-}
-
-.test-panel-inner h2 {
-  font-size: 1.15rem;
-}
-
-.test-panel-inner h3 {
-  margin: 1rem 0 0.25rem;
-  font-size: 1rem;
-}
-
-.test-panel-inner pre {
-  overflow-x: auto;
-  padding: 0.5rem;
-  border-radius: 0.4rem;
-  background: var(--bg);
-}
-
-.test-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin: 0.75rem 0;
-}
-
-.test-field input,
-.test-field select,
-.test-field textarea {
-  font: inherit;
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 0.4rem;
-  background: var(--bg);
-  color: var(--fg);
-}
-
-/* The overview (Tobias 2026-11-07, like the Arbeitszeitplaner's): one box per test, by area. */
-.test-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 1rem;
-  align-items: end;
-}
-
-.test-filters .test-field {
-  flex: 1 1 14rem;
-  min-width: 0;
-}
-
-.test-check {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  margin: 0.75rem 0;
-}
-
-.test-grid-row {
-  margin: 0.6rem 0;
-}
-
-.test-grid-area {
-  display: block;
-  margin-bottom: 0.2rem;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-.test-grid-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-button.test-chip {
-  min-width: 2.9rem;
-  min-height: 2rem;
-  padding: 0.1rem 0.35rem;
-  border-radius: 0.35rem;
-  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
-  font-size: 0.8rem;
-}
-
-button.test-chip.bestanden {
-  border-color: var(--success-border);
-  background: var(--success-bg);
-}
-
-button.test-chip.nichtBestanden {
-  border-color: var(--danger);
-  background: var(--error-bg);
-  color: var(--danger);
-}
-
-button.test-chip.changed {
-  border-style: dashed;
-}
-
-button.test-chip.elsewhere {
-  opacity: 0.55;
-}
-
-button.test-chip[aria-current='true'] {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-.test-case-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.test-summary,
-.test-controls {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.test-intro {
-  font-size: 0.92rem;
-  color: var(--muted);
-}
-
-/* A failed test: per step a reason from the fixed list (2026-11-15, no free text). */
-.test-steps {
-  margin: 0.75rem 0;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.4rem;
-}
-
-.test-steps legend {
-  font-weight: 600;
-  padding: 0 0.25rem;
-}
-
-.test-step-reason {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 0.75rem;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0.4rem 0;
-}
-
-.test-step-reason span {
-  flex: 1 1 14rem;
-  min-width: 0;
-}
-
-.test-step-reason select {
-  font: inherit;
-  padding: 0.35rem;
-  border: 1px solid var(--border);
-  border-radius: 0.4rem;
-  background: var(--bg);
-  color: var(--fg);
-}
-
-.test-steps-missing {
-  color: var(--danger);
-  margin: 0.25rem 0;
-}
-
-@media (max-width: 900px) {
-  .test-header {
-    position: static;
-    height: auto;
-  }
-
-  .test-shell {
-    display: block;
-  }
-
-  .test-tabs {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-  }
-
-  .test-tabs button {
-    flex: 1;
-  }
-
-  .test-panel {
-    position: static;
-    height: auto;
-    border-right: none;
-  }
-
-  .test-shell[data-tab='app'] .test-panel,
-  .test-shell[data-tab='anleitung'] .test-app {
-    display: none;
-  }
-}
-
 /* Signing: everything the signature covers stands above the confirmation (Tobias 2026-11-06). */
 .signing-overview {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
-}
-
-/* Steps of a manual test: the expectation right at the step (Tobias 2026-11-06). */
-.test-step {
-  margin-bottom: 0.6rem;
-}
-
-.test-step .step-do {
-  margin: 0.15rem 0;
-}
-
-.step-note {
-  margin: 0.25rem 0;
-  padding: 0.3rem 0.5rem;
-  border-left: 3px solid var(--info-border);
-  border-radius: 0.25rem;
-  background: var(--info-bg);
-  font-size: 0.95em;
-}
-
-.step-after {
-  border-left-color: var(--success-border);
-  background: var(--success-bg);
-}
-
-.copy-value {
-  white-space: nowrap;
-}
-
-.copy-button {
-  margin-left: 0.2rem;
-  padding: 0 0.35rem;
-  min-height: 0;
-  font-size: 0.9em;
-  line-height: 1.4;
-  border: 1px solid var(--border);
-  border-radius: 0.3rem;
-  background: var(--surface);
-  color: var(--fg);
-  cursor: pointer;
-}
-
-.test-panel-inner kbd {
-  padding: 0 0.3rem;
-  border: 1px solid var(--border);
-  border-bottom-width: 2px;
-  border-radius: 0.3rem;
-  background: var(--surface);
-  font-family: inherit;
-}
-
-.test-changed {
-  color: var(--danger);
-  font-weight: 600;
 }
 
 /* "Mit Kennwort schützen" under "Als Link weitergeben" and the password to read out */
@@ -1307,8 +965,7 @@ button.test-chip[aria-current='true'] {
 }
 
 /* "Geschützte PDF": the password of a protected PDF while it is read */
-.password-dialog,
-.choice-dialog {
+.password-dialog {
   width: min(28rem, calc(100% - 2rem));
   padding: 1.25rem;
   border: 1px solid var(--border);
@@ -1317,17 +974,20 @@ button.test-chip[aria-current='true'] {
   color: var(--fg);
 }
 
-.password-dialog::backdrop,
-.choice-dialog::backdrop {
+.password-dialog::backdrop {
   background: rgb(0 0 0 / 0.45);
 }
 
-.password-dialog h2,
-.choice-dialog h2 {
+.password-dialog h2 {
   margin-top: 0;
 }
 
 .password-dialog input {
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Test folder build: why a start point could not be opened, above the app */
+.test-start-problem {
+  padding: 0.5rem 1rem 0;
 }

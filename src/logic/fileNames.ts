@@ -88,11 +88,3 @@ export function sheetFileName(
   ];
   return `${safeFileName(parts)}.pdf`;
 }
-
-/**
- * Copy of a tester's report, e.g. "Testbericht_2026_11_01_1430.pdf" — no name since 2026-11-15:
- * the test zone knows the tester from the login, the page asks for none.
- */
-export function testReportFileName(local: string): string {
-  return `${safeFileName(['Testbericht', local.slice(0, 10), local.slice(11, 16).replace(':', '')])}.pdf`;
-}

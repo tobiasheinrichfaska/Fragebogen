@@ -74,7 +74,7 @@ jobs:
       - name: PDFs schreiben
         run: >-
           PDFA_OUT="$RUNNER_TEMP/pdfa" npx vitest run tests/io/pdf.test.ts tests/io/sheetPdf.test.ts
-          tests/io/testReportPdf.test.ts tests/forms/steuerfreigabe.test.ts
+          tests/forms/steuerfreigabe.test.ts
       - name: Mit veraPDF prüfen
         run: |
           cd "$RUNNER_TEMP/pdfa"

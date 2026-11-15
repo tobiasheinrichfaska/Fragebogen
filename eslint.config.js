@@ -7,7 +7,15 @@ import prettier from 'eslint-config-prettier';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist', 'coverage', '.tmp', 'playwright-report', 'test-results']),
+  globalIgnores([
+    'dist',
+    'coverage',
+    '.tmp',
+    'playwright-report',
+    'test-results',
+    // A copy of the shared test page (Testumgebung), checked by its stamp, never changed here.
+    'testrahmen',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, tseslint.configs.strict],

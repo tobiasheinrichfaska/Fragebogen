@@ -12,8 +12,8 @@ und mit einem nachgestellten Handy.
 - Einen Windows-PC oder Mac mit einem aktuellen Browser (Edge, Chrome, Firefox oder Safari).
 - Für spätere Tests: ein Tablet oder Smartphone (iPad/iPhone nur über die gehostete Fassung).
 - **Am einfachsten: den Testbereich** auf der Homepage (Adresse von der Kanzlei; von außerhalb mit
-  Anmeldung). Dort stehen diese Tests links, die App rechts – am Handy über die Reiter
-  „Testanleitung“ und „App“.
+  Anmeldung). Dort steht die App links, die Tests rechts – am Handy über die Reiter „App“ und
+  „Tests“. Seit 15.11.2026 ist das die gemeinsame Testseite aller Apps (aus „Testumgebung“).
 - Oder die Datei `index.html` aus dem Ordner `dist/` (`npm run build`), z. B. zugeschickt.
 - Erfundene Testdaten. **Bitte nie echte Personendaten verwenden.**
 
@@ -25,9 +25,9 @@ und mit einem nachgestellten Handy.
    falsche Eingabe ist ein eigener Schritt (danach: die Fehlermeldung), die richtige Eingabe der
    nächste. Was zu keinem einzelnen Schritt gehört, steht darunter unter „**Erwartet**“. Achten Sie
    besonders auf Punkte, die mit _Nicht offensichtlich_ markiert sind.
-4. Werte zum Eintragen haben im Testbereich ein Kopiersymbol (⧉): anklicken, dann in der App
-   einfügen. Werte, die wie eine Taste aussehen, tippen Sie bitte selbst – dort wird das Tippen
-   geprüft (z. B. die Datumsmaske).
+4. Werte zum Eintragen stehen grau hinterlegt: markieren, kopieren und in der App einfügen. Werte,
+   die wie eine Taste aussehen, tippen Sie bitte selbst – dort wird das Tippen geprüft (z. B. die
+   Datumsmaske).
 5. Notieren Sie Abweichungen mit Testfall-Nummer, Browser, Gerät und einem Bildschirmfoto. Das
    Bildschirmfoto darf keine echten Daten zeigen.
 
@@ -73,9 +73,9 @@ ankommen.
 
 - **Jeder Test für sich (seit 07.11.2026):** Kein Test setzt einen anderen voraus. Jeder sagt in
   der ersten Zeile, wo er beginnt: auf der **Startseite der App**, mit einem **Startlink** oder an
-  einem anderen Ort (ein Handy, die öffentliche Adresse). Öffnen Sie einen Test, fragt die Seite, ob
-  die App dafür neu starten soll – mit genau diesem Einstieg. Ihre Testergebnisse bleiben dabei, nur
-  die Eingaben in der App sind dann weg.
+  einem anderen Ort (ein Handy, die öffentliche Adresse). Beginnt ein Test mit einem Startlink,
+  tippen Sie darauf; die Seite fragt vorher nach. Ihre Testergebnisse bleiben dabei, nur die
+  Eingaben in der App sind dann weg.
 - **Startlinks (▶):** Viele Tests beginnen mit einem Knopf wie **„▶ Zum Unterschreiben öffnen“**. Er
   startet die App rechts neu, mit einem vorbereiteten Fragebogen voller erfundener Angaben – zum
   Beispiel hat der Arbeitgeber schon abgeschlossen, und Sie beginnen genau bei der Frage, um die es
@@ -84,8 +84,9 @@ ankommen.
   Testergebnisse bleiben dabei erhalten, nur die Eingaben in der App sind weg.
 - **Verweise auf andere Tests** (z. B. „siehe MT-37“) sind anklickbar und nur zum Nachlesen; nötig
   ist der andere Test nie.
-- **Kopfzeile:** „App neu starten“, „App vollständig zurücksetzen“ (löscht alles, was die App im
-  Browser gespeichert hat; die Testergebnisse bleiben), „Kopie als PDF“ und „Bericht senden“.
+- **Oben auf der Testseite:** „App neu starten“, „App vollständig zurücksetzen“ (löscht alles, was
+  die App im Browser gespeichert hat; die Testergebnisse bleiben), „Bericht senden“ und „Tester
+  einladen“.
 - **„Nicht im Testbereich“:** Manche Tests gehen nur mit der heruntergeladenen Datei oder nur am
   Kanzlei-PC (z. B. MT-01, MT-82–84). Ihr Kästchen ist in der Testübersicht blasser, der Test nennt den Grund.
 - **„Fassung mit Entwürfen“** ist im Testbereich schon geladen; der Hinweis auf
@@ -96,7 +97,7 @@ ankommen.
   dem Ergebnis.
 - Am Ende **„Bericht senden“**: Er geht an den Testbereich, mit Ihrem Login als Absender. Er enthält
   nur Ergebnisse, Zeiten und Schritte, keinen Namen und keinen Text. Ein gesendetes Ergebnis kommt
-  erst wieder mit, wenn Sie es ändern. „Kopie als PDF“ ist eine Kopie für Sie.
+  erst wieder mit, wenn Sie es ändern. Eine Kopie als PDF gibt es nicht mehr (Tobias 15.11.2026).
 
 ## Für alle, die Tests schreiben (Format seit 06.11.2026)
 
@@ -117,7 +118,7 @@ der Fehlermeldung als Ergebnis, die richtige Eingabe der nächste (Tobias 2026-1
 - Keine Verweise wie „ausfüllen wie in MT-121“ in den Schritten: die Schritte ausschreiben, mit den
   Werten.
 
-- Werte zum Eintragen in Backticks (`` `…` ``) – im Schritt bekommen sie das Kopiersymbol; Werte, die
+- Werte zum Eintragen in Backticks (`` `…` ``) – die Testseite zeigt sie grau hinterlegt; Werte, die
   absichtlich getippt werden sollen, als `<kbd>…</kbd>`. Kein Fett um Backticks.
 - Unter „**Erwartet**“ steht nur, was zu keinem Schritt gehört; ein Eintrag „Schritt 3: …“ dort lässt
   einen automatischen Test scheitern (`tests/testbereich/manualTests.test.ts`), ebenso ein

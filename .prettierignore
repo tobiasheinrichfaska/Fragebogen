@@ -16,3 +16,5 @@ docs/hilfe/
 docs/sv-wirkung/
 docs/sv-varianten/
 docs/sv-vorgaben/
+# A copy of the shared test page (Testumgebung), never changed here
+testrahmen/
