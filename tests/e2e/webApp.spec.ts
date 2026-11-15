@@ -136,6 +136,11 @@ test('both hosted builds carry their files; the test build its own name', () => 
       readFileSync(join(dirname(index), WEB_APP_FILES.manifest), 'utf8'),
     ) as { name: string };
     expect(manifest.name).toBe(name);
+    // Only the test build sends its test reports to its own address (2026-11-15).
+    const csp = /http-equiv="Content-Security-Policy" content="([^"]+)"/.exec(
+      readFileSync(index, 'utf8'),
+    )?.[1];
+    expect(csp).toContain(index === TEST_APP ? "connect-src 'self'" : "connect-src 'none'");
     expect(pathToFileURL(index).href).toMatch(/index\.html$/);
   }
 });

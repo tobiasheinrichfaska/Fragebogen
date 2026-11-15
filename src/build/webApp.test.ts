@@ -314,4 +314,12 @@ describe('where the app offers installation', () => {
     expect(policy).toContain("connect-src 'none'");
     expect(cspFor(["'sha256-a'"], ["'sha256-b'"])).not.toMatch(/'self'|manifest-src/);
   });
+
+  it('lets only the test build connect, to its own address for the test report (2026-11-15)', () => {
+    const live = cspFor(["'sha256-a'"], ["'sha256-b'"], { webApp: true });
+    const test = cspFor(["'sha256-a'"], ["'sha256-b'"], { webApp: true, report: true });
+    expect(live).toContain("connect-src 'none'");
+    expect(test).toContain("connect-src 'self'");
+    expect(test.replace("connect-src 'self'", "connect-src 'none'")).toBe(live);
+  });
 });

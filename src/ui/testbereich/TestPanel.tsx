@@ -1,30 +1,36 @@
-// The test page next to the app (Tobias 2026-11-01): the manual tests as a catalogue; per test
-// "Test beginnen", a result, a comment and the time (correctable). Since 2026-11-07 like the
-// Arbeitszeitplaner's: an overview with one box per test (done ones coloured, hideable), and one
-// test at a time with "Zurück zur Testübersicht"; the report comes from the header (TestShell).
-// All rules live in logic/testRun.ts and logic/manualTests.ts; this only renders and dispatches.
+// The test page next to the app (Tobias 2026-11-01): the manual tests as a catalogue. Since
+// 2026-11-07 like the Arbeitszeitplaner's: an overview with one box per test (done ones coloured,
+// hideable), and one test at a time with "Zurück zur Testübersicht". Since 2026-11-15 without any
+// free text (Testumgebung docs/testbericht.md): per test „Bestanden“ or „Nicht bestanden“ with the
+// failed steps and a reason from a fixed list; the clock runs while a test is open. The report is
+// sent from the header (TestShell). All rules live in logic/testRun.ts and logic/manualTests.ts;
+// this only renders and dispatches.
 import { useEffect, useRef, useState } from 'react';
 import { deviceNow } from '../../io/environment';
 import {
   caseVersion,
   inlineMarkdown,
+  stepsOf,
   testAreaOf,
   type ManualTestCase,
 } from '../../logic/manualTests';
 import {
-  LONGEST_TEST_MINUTES,
   RESULTS,
   RESULT_LABELS,
+  STEP_REASONS,
+  STEP_REASON_LABELS,
   changedSince,
-  correctDuration,
-  measuredMinutes,
-  needsCorrection,
+  checkpoint,
+  elapsedSeconds,
+  leaveTest,
+  minutesOf,
+  openTest,
   resetTest,
-  setComment,
   setResult,
-  startTest,
+  setStep,
   testTime,
   totalsOf,
+  type StepReason,
   type TestEntry,
   type TestResult,
   type TestRun,
@@ -36,8 +42,8 @@ import { Blocks, Inline, type RefHandler } from './Markdown';
 const SYMBOL: Readonly<Record<TestResult, string>> = { bestanden: '✓', nichtBestanden: '✗' };
 
 const BUTTON: Readonly<Record<TestResult, string>> = {
-  bestanden: '✓ Wie erwartet',
-  nichtBestanden: '✗ Klappt nicht',
+  bestanden: '✓ Bestanden',
+  nichtBestanden: '✗ Nicht bestanden',
 };
 
 const plain = (text: string) =>
@@ -70,7 +76,7 @@ function chipLabel(testCase: TestCase, entry: TestEntry | undefined): string {
   return [
     `${testCase.id}: ${plain(testCase.title)}`,
     entry?.result && RESULT_LABELS[entry.result],
-    entry?.reported && 'berichtet',
+    entry?.reported && 'gesendet',
     changedSince(entry, caseVersion(testCase)) && 'geändert seit Ihrem Test',
     !testAreaOf(testCase).offered && 'nicht im Testbereich',
   ]
@@ -84,7 +90,7 @@ export function TestPanel({
   onRun,
   onOpenTest,
   onStart,
-  onReport,
+  onSend,
 }: {
   run: TestRun;
   stored: boolean;
@@ -92,7 +98,7 @@ export function TestPanel({
   /** A test other than the last one was opened: TestShell asks whether to restart the app. */
   onOpenTest: (testCase: ManualTestCase) => void;
   onStart: (id: string) => void;
-  onReport: () => void;
+  onSend: () => void;
 }) {
   const [area, setArea] = useState('');
   const [hideDone, setHideDone] = useState(false);
@@ -106,13 +112,43 @@ export function TestPanel({
   const current = TEST_CASES.find((c) => c.id === selected);
   const totals = totalsOf(run);
   const intro = TEST_FILES.find((file) => file.area === area)?.intro ?? [];
+  // The run as last rendered, for the page's own events (hidden, closed).
+  const current$ = useRef({ run, selected, onRun });
+  useEffect(() => {
+    current$.current = { run, selected, onRun };
+  });
+  /** Leaving one test pauses its clock, opening another starts it (logic/testRun.ts). */
   const open = (id: string | undefined) => {
+    const now = deviceNow().local;
+    let next = selected === undefined ? run : leaveTest(run, selected, now);
+    if (id !== undefined) next = openTest(next, id, now);
+    if (next !== run) onRun(next);
     setSelected(id);
     const testCase = TEST_CASES.find((c) => c.id === id);
     if (!testCase || testCase.id === last) return;
     setLast(testCase.id);
     onOpenTest(testCase);
   };
+  // A hidden page keeps the time so far; a closed one stops the clock of the open test.
+  useEffect(() => {
+    const store = (stop: boolean) => {
+      const { run: now$, selected: id, onRun: save } = current$.current;
+      if (id === undefined) return;
+      const now = deviceNow().local;
+      const next = stop ? leaveTest(now$, id, now) : checkpoint(now$, id, now);
+      if (next !== now$) save(next);
+    };
+    const hidden = () => {
+      if (document.visibilityState === 'hidden') store(false);
+    };
+    const closed = () => store(true);
+    document.addEventListener('visibilitychange', hidden);
+    window.addEventListener('pagehide', closed);
+    return () => {
+      document.removeEventListener('visibilitychange', hidden);
+      window.removeEventListener('pagehide', closed);
+    };
+  }, []);
   // Back in the overview, the box of the test just left stands in view.
   useEffect(() => {
     if (selected === undefined && last !== undefined) {
@@ -150,26 +186,18 @@ export function TestPanel({
         <TestCaseView
           key={current.id}
           testCase={current}
-          entry={run.entries[current.id] ?? { comment: '' }}
+          entry={run.entries[current.id] ?? { seconds: 0 }}
           run={run}
           refs={refs}
           position={`${at + 1} von ${shown.length}`}
           onRun={onRun}
-          onOverview={() => setSelected(undefined)}
+          onOverview={() => open(undefined)}
           {...(at > 0 ? { onPrevious: () => open(shown[at - 1]?.id) } : {})}
           {...(at + 1 < shown.length ? { onNext: () => open(shown[at + 1]?.id) } : {})}
         />
       ) : (
         <>
           <h2>Testübersicht</h2>
-          <label className="test-field">
-            Ihr Name (erscheint im Testbericht)
-            <input
-              value={run.tester}
-              maxLength={80}
-              onChange={(event) => onRun({ ...run, tester: event.target.value })}
-            />
-          </label>
           <div className="test-filters">
             <label className="test-field">
               Bereich
@@ -195,7 +223,7 @@ export function TestPanel({
             <strong>{totals.tested}</strong> von {TEST_CASES.length} geprüft · {SYMBOL.bestanden}{' '}
             {RESULT_LABELS.bestanden} {totals.byResult.bestanden} · {SYMBOL.nichtBestanden}{' '}
             {RESULT_LABELS.nichtBestanden} {totals.byResult.nichtBestanden} · Zeit{' '}
-            {totals.countedMinutes} Min.
+            {minutesOf(totals.seconds)} Min.
           </p>
           {intro.length > 0 && (
             <div className="test-intro">
@@ -247,22 +275,14 @@ export function TestPanel({
             )}
           </div>
           <div className="test-summary">
-            <label className="test-field">
-              Gesamteindruck (freiwillig)
-              <textarea
-                rows={4}
-                value={run.comment}
-                onChange={(event) => onRun({ ...run, comment: event.target.value })}
-              />
-            </label>
-            <button type="button" className="primary" onClick={onReport}>
-              Testbericht herunterladen
+            <button type="button" className="primary" onClick={onSend}>
+              Bericht senden
             </button>
             <p className="muted">
-              Die PDF enthält Ihre Ergebnisse, Zeiten und Kommentare – bitte per E-Mail an die
-              Kanzlei schicken. Ihre Eingaben in der App kommen nicht hinein. Tests aus einem
-              Bericht fehlen im nächsten, außer Sie ändern sie oder nehmen sie beim Herunterladen
-              wieder mit.
+              Der Bericht enthält nur, welche Tests bestanden sind, welche nicht und in welchen
+              Schritten, dazu die gemessene Zeit – keinen Namen und keinen Text. Ihre Eingaben in
+              der App kommen nicht hinein. Ein gesendetes Ergebnis kommt erst wieder mit, wenn Sie
+              es ändern.
             </p>
           </div>
         </>
@@ -292,7 +312,7 @@ function TestCaseView({
   onPrevious?: () => void;
   onNext?: () => void;
 }) {
-  const running = entry.started !== undefined && entry.result === undefined;
+  const running = entry.openedAt !== undefined;
   const top = useRef<HTMLElement>(null);
   // Tobias 2026-11-07: a test opened from far down the list began at its bottom.
   useEffect(() => bringIntoView(top.current, 'start'), []);
@@ -303,9 +323,9 @@ function TestCaseView({
     return () => clearInterval(timer);
   }, [running]);
   const now = () => deviceNow().local;
-  const clock = (local: string | undefined) => testTime(local, now());
-  const measured = measuredMinutes(entry);
-  const elapsed = running ? measuredMinutes({ ...entry, ended: now() }) : undefined;
+  const minutes = minutesOf(elapsedSeconds(entry, now()));
+  const steps = stepsOf(testCase);
+  const reasonOf = (nr: number) => entry.steps?.find((step) => step.nr === nr)?.reason ?? '';
   const area = testAreaOf(testCase);
   const nav = (
     <div className="test-case-nav">
@@ -329,7 +349,7 @@ function TestCaseView({
       </h2>
       <p className="muted">
         {testCase.area}
-        {entry.reported ? ` · im Testbericht vom ${testTime(entry.reported, '')}` : ''}
+        {entry.reported ? ` · gesendet ${testTime(entry.reported, '')}` : ''}
       </p>
       {nav}
       {changedSince(entry, caseVersion(testCase)) && (
@@ -364,23 +384,11 @@ function TestCaseView({
         ))}
 
       <div className="test-controls">
-        {entry.started === undefined ? (
-          <button
-            type="button"
-            className="primary"
-            onClick={() => onRun(startTest(run, testCase.id, now()))}
-          >
-            Test beginnen (Zeit läuft)
-          </button>
-        ) : (
-          <p className="muted">
-            Begonnen {clock(entry.started)}
-            {running && elapsed !== undefined ? ` · läuft seit etwa ${elapsed} Min.` : ''}
-            {entry.ended
-              ? ` · beendet ${clock(entry.ended)} · gemessen ${measured ?? '–'} Min.`
-              : ''}
-          </p>
-        )}
+        <p className="muted">
+          {running
+            ? `Zeit läuft: ${minutes} Min. – sie hält an, wenn Sie den Test verlassen, und endet mit dem Ergebnis.`
+            : `Zeit: ${minutes} Min.`}
+        </p>
         <div className="choices choices-inline" role="radiogroup" aria-label="Ergebnis">
           {RESULTS.map((result) => (
             <button
@@ -397,52 +405,58 @@ function TestCaseView({
             </button>
           ))}
         </div>
-        <p className="muted">
-          Hat es nur zum Teil geklappt? Bitte „Klappt nicht“ und im Kommentar, was.
-        </p>
-        {needsCorrection(entry) && (
-          <Banner
-            message={{
-              tone: 'warning',
-              text: `Gemessen sind ${measured ?? '–'} Minuten (Beginn ${clock(entry.started)}). Bitte tragen Sie die Dauer ein, die der Test wirklich gebraucht hat – höchstens ${LONGEST_TEST_MINUTES} Minuten.`,
-            }}
-          />
+        {entry.result === 'nichtBestanden' ? (
+          <fieldset className="test-steps">
+            <legend>In welchen Schritten gab es ein Problem?</legend>
+            {(entry.steps ?? []).length === 0 && (
+              <p className="test-steps-missing">
+                Bitte mindestens einen Schritt mit seinem Grund wählen.
+              </p>
+            )}
+            {steps.map((text, i) => {
+              const nr = i + 1;
+              return (
+                <label key={nr} className="test-step-reason">
+                  <span>
+                    Schritt {nr}: {text.length > 70 ? `${text.slice(0, 69)}…` : text}
+                  </span>
+                  <select
+                    value={reasonOf(nr)}
+                    onChange={(event) =>
+                      onRun(
+                        setStep(
+                          run,
+                          testCase.id,
+                          nr,
+                          event.target.value === ''
+                            ? undefined
+                            : (event.target.value as StepReason),
+                        ),
+                      )
+                    }
+                  >
+                    <option value="">in Ordnung</option>
+                    {STEP_REASONS.map((reason) => (
+                      <option key={reason} value={reason}>
+                        {STEP_REASON_LABELS[reason]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              );
+            })}
+          </fieldset>
+        ) : (
+          <p className="muted">
+            Hat es nur zum Teil geklappt? Bitte „Nicht bestanden“ und dann den Schritt wählen.
+          </p>
         )}
-        {entry.result && (
-          <label className="test-field">
-            Dauer korrigieren (Minuten, z. B. ohne Pause) – leer = gemessen
-            <input
-              type="text"
-              inputMode="numeric"
-              value={entry.correctedMinutes ?? ''}
-              onChange={(event) => {
-                const text = event.target.value.trim();
-                const minutes = Number(text);
-                onRun(
-                  correctDuration(
-                    run,
-                    testCase.id,
-                    text === '' || !Number.isFinite(minutes) ? undefined : minutes,
-                  ),
-                );
-              }}
-            />
-          </label>
-        )}
-        <label className="test-field">
-          Kommentar – was ist aufgefallen?
-          <textarea
-            rows={4}
-            value={entry.comment}
-            onChange={(event) => onRun(setComment(run, testCase.id, event.target.value))}
-          />
-        </label>
         <div className="nav">
-          {(entry.started || entry.result) && (
+          {entry.result && (
             <button
               type="button"
               className="link"
-              onClick={() => onRun(resetTest(run, testCase.id))}
+              onClick={() => onRun(resetTest(run, testCase.id, now()))}
             >
               Test zurücksetzen
             </button>

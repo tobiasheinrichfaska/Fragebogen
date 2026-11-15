@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,6 +16,19 @@ import { parseExportMappings } from './src/logic/exportMapping';
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
   version: string;
 };
+
+/** The commit the build is made from — the `stand` of a test report; empty outside a git checkout. */
+function buildCommit(): string {
+  try {
+    return execFileSync('git', ['rev-parse', '--short=12', 'HEAD'], {
+      cwd: fileURLToPath(new URL('.', import.meta.url)),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return '';
+  }
+}
 
 /** Escapes U+FFFD in every chunk before the single-file step inlines it (see replacementChar.ts). */
 function asciiReplacementChar(): Plugin {
@@ -53,17 +67,20 @@ function previewTitle(): Plugin {
  */
 function contentSecurityPolicy(): Plugin {
   let webApp = false;
+  let report = false;
   return {
     name: 'content-security-policy',
     apply: 'build',
     configResolved: (resolved) => {
       webApp = HOSTED_MODES.has(resolved.mode);
+      // Only the test build sends its test reports to its own address (2026-11-15).
+      report = resolved.mode === 'testbereich';
     },
     writeBundle: (options, bundle) => {
       for (const file of Object.values(bundle)) {
         if (file.type !== 'asset' || !file.fileName.endsWith('.html') || !options.dir) continue;
         const path = join(options.dir, file.fileName);
-        writeFileSync(path, withCsp(readFileSync(path, 'utf8'), { webApp }));
+        writeFileSync(path, withCsp(readFileSync(path, 'utf8'), { webApp, report }));
       }
     },
   };
@@ -156,6 +173,7 @@ export default defineConfig(({ mode }) => ({
   ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+    __APP_COMMIT__: JSON.stringify(buildCommit()),
     __KANZLEI_CONFIG__: JSON.stringify(kanzleiConfig.config),
     // The hosted builds link their manifest and register the service worker (at https only).
     __WEB_APP__: JSON.stringify(HOSTED_MODES.has(mode)),
