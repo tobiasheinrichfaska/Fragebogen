@@ -1395,22 +1395,20 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 and the E-Rechnungs-Prüfer move **first**, and **as the Kanzlei**, not privately and not yet as the
 planned club.
 
-- **Where:**
-  - The public Kanzlei version (target `oeffentlich`) moves to bunny.net, a static CDN without PHP.
-    It uses the Kanzlei's own bunny account and a **new Kanzlei subdomain**.
-  - bunny.net has no login, so only public targets go there. The test area stays at IONOS behind
-    its login; later it gets a subdomain of its own.
-- **The old address keeps working for good:**
-  - Its root `.htaccess` (target `regeln`) forwards the app's files to the new address.
-  - The side-project folders below it stay untouched until they move.
-  - "For good" because `appAddress` is printed into every PDF already handed out. Check that links
-    carrying a state in the fragment still arrive.
-- **Interrupted questionnaires** (browser storage, at most 7 days) are bound to the origin and do not
-  move. Switch at a quiet time.
+- **Where (changed the same day, Tobias):**
+  - The public Kanzlei version (target `oeffentlich`) moves to bunny.net, a static CDN without PHP,
+    under the Kanzlei's own bunny account.
+  - It **keeps its subdomain**: only the DNS entry moves. `appAddress` stays as it is, and so do
+    interrupted questionnaires (bound to the origin) and every address printed in a PDF.
+  - bunny.net has no login, so only public targets go there.
+- **Order:**
+  - Everything else under this subdomain leaves **before** the DNS switch: the test area, the
+    E-Rechnung test copy and the side-project folders. At the moment of the switch they would be
+    offline.
+  - Old links into those folders are forwarded by bunny.net edge rules.
 - **To adapt with the move** (`config/kanzlei.local.json` in the private companion):
-  - `appAddress`;
-  - `explainerBase`, if the explainer pages move;
-  - `testAddress` as an `https://` address, because the test area is no longer a sub-folder.
+  - `testAddress` as an `https://` address, because the test area is no longer a sub-folder;
+  - `explainerBase`, if the explainer pages move.
 - **Headers:**
   - bunny.net serves no `.htaccess`. Everything `deploy/.htaccess` sets must be recreated as bunny.net
     edge rules: CSP, HSTS, X-Frame-Options, Permissions-Policy, COOP/CORP, Referrer-Policy, nosniff,
