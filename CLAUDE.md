@@ -1391,6 +1391,60 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**Hosting move decided (Kanzlei PC session, 2026-11-15; nothing moved yet):** Tobias: the Fragebogen
+and the E-Rechnungs-Prüfer move **first**, and **as the Kanzlei**, not privately and not yet as the
+planned club.
+
+- **Where:**
+  - The public Kanzlei version (target `oeffentlich`) moves to bunny.net, a static CDN without PHP.
+    It uses the Kanzlei's own bunny account and a **new Kanzlei subdomain**.
+  - bunny.net has no login, so only public targets go there. The test area stays at IONOS behind
+    its login; later it gets a subdomain of its own.
+- **The old address keeps working for good:**
+  - Its root `.htaccess` (target `regeln`) forwards the app's files to the new address.
+  - The side-project folders below it stay untouched until they move.
+  - "For good" because `appAddress` is printed into every PDF already handed out. Check that links
+    carrying a state in the fragment still arrive.
+- **Interrupted questionnaires** (browser storage, at most 7 days) are bound to the origin and do not
+  move. Switch at a quiet time.
+- **To adapt with the move** (`config/kanzlei.local.json` in the private companion):
+  - `appAddress`;
+  - `explainerBase`, if the explainer pages move;
+  - `testAddress` as an `https://` address, because the test area is no longer a sub-folder.
+- **Headers:**
+  - bunny.net serves no `.htaccess`. Everything `deploy/.htaccess` sets must be recreated as bunny.net
+    edge rules: CSP, HSTS, X-Frame-Options, Permissions-Policy, COOP/CORP, Referrer-Policy, nosniff,
+    Cache-Control, the HTTPS redirect and the script block.
+  - Check them by hand after the first upload (`curl -I`).
+- **Upload:**
+  - Later through a separate private "Freigabe" repo: GitHub Actions, each run started by Tobias by
+    hand. That repo is never attached to a cloud session.
+  - Until it exists, the Kanzlei PC uploads as before. Cloud sessions never upload.
+- **Access notice (`accessNotice`): draft only, adopt only with Tobias' OK.**
+  - The existing notice gets a disclaimer. `[Kanzlei]` stands for the name from the local config,
+    which never goes into this repo. Draft:
+
+    > Dieser Fragebogen ist ein Angebot der [Kanzlei] für ihre Mandanten und deren Beschäftigte.
+    > Bitte nutzen Sie ihn nur in Absprache mit uns. Er ersetzt keine Rechts- oder Steuerberatung und
+    > kann trotz sorgfältiger Prüfung Fehler enthalten. Wir prüfen Ihre Angaben vor der
+    > Weiterverarbeitung. Ihre Eingaben bleiben in Ihrem Browser, bis Sie die fertige Datei selbst
+    > weitergeben.
+
+  - The text lives only in the companion's `config/kanzlei.local.json`; a changed text is asked
+    again.
+  - No liability clause of its own: for clients the engagement applies (§ 67a StBerG).
+- **Kanzlei to-dos outside this repo:**
+  - The privacy policy of the Kanzlei homepage gets a sentence on bunny.net: the CDN processes IP
+    addresses.
+  - A DPA with bunny.net.
+  - The Kanzlei's Impressum applies.
+- **Later, a separate step:**
+  - A neutral version for everyone (`kanzlei.example.json`, no Kanzlei name, its own neutral domain),
+    offered by the planned club.
+  - Its notice says "soll … in Absprache" instead of "nur": many users have no tax adviser, and a
+    hard condition does not fit the AGPL.
+  - Before that, check the rules on unpaid help in tax matters.
+
 **Personalfragebogen for 2027 (cloud session, 2026-11-14 night):** Tobias: „also mit einer Fassung,
 die 2026 und 2027 kann? ja“. The draft 1.1.0 is valid for a start from 01.01.2026 to 31.12.2027;
 the rules read the values of the start year, so one version covers both. Values 2027 checked in
