@@ -23,8 +23,13 @@ const help = (definition: FormDefinition, id: string) =>
 const notice = (definition: FormDefinition, id: string) =>
   definition.infoBlocks.find((b) => b.id === id)?.text ?? '';
 
-// The Zustimmung was fixed as a draft and is published since 2026-11-14 as 1.0.0.
-const FIXED = [...DRAFTS, load(FORMS_DIR, 'steuerfreigabe', '1.0.0').definition];
+// The Zustimmung was fixed as a draft and is published since 2026-11-14 as 1.0.0, the SEPA-Mandat
+// 1.2.0 since 2026-11-15 (Tobias: „ja“).
+const FIXED = [
+  ...DRAFTS,
+  load(FORMS_DIR, 'steuerfreigabe', '1.0.0').definition,
+  load(FORMS_DIR, 'sepa-mandat', '1.2.0').definition,
+];
 
 describe('B1: privacy notices tell of the browser memory of the hosted app', () => {
   it.each(FIXED.map((d) => [`${d.id} ${d.version}`, d] as const))(
@@ -40,7 +45,7 @@ describe('B1: privacy notices tell of the browser memory of the hosted app', () 
   it.each(['datenschutz', 'datenschutzMitinhaber'])(
     'SEPA-Mandat 1.2.0 (%s) names the memory of at most 7 days',
     (id) => {
-      const text = notice(load(DRAFTS_DIR, 'sepa-mandat', '1.2.0').definition, id);
+      const text = notice(load(FORMS_DIR, 'sepa-mandat', '1.2.0').definition, id);
       expect(text).toContain('merkt sich die Online-Fassung einen angefangenen Fragebogen');
       expect(text).toContain('höchstens 7 Tage');
     },
@@ -49,7 +54,7 @@ describe('B1: privacy notices tell of the browser memory of the hosted app', () 
 
 describe('SEPA-Mandat 1.2.0', () => {
   const sepa110 = load(FORMS_DIR, 'sepa-mandat', '1.1.0').definition;
-  const sepa120 = load(DRAFTS_DIR, 'sepa-mandat', '1.2.0').definition;
+  const sepa120 = load(FORMS_DIR, 'sepa-mandat', '1.2.0').definition;
 
   it('B20: words the payment for another person as the legitimate interest it cites', () => {
     const text = notice(sepa120, 'datenschutz');

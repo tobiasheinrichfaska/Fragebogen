@@ -30,6 +30,11 @@
     "definitionHash": "962b251944221382e0a4b97188dfa641ab3728cfa8eb0c5fa8b237a12b470998"
   },
   {
+    "id": "sepa-mandat",
+    "version": "1.2.0",
+    "definitionHash": "f6895b514cda82d2d1b937eafdffa978aa4919c28407eb631d028ff1b22b67db"
+  },
+  {
     "id": "personalfragebogen",
     "version": "1.0.0",
     "definitionHash": "456b4da4c22f7b88307e683c84ade032b50ea07fecbaa7d448dbb61836f7864a"
