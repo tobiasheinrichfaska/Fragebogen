@@ -183,8 +183,9 @@ automatischen Tests in `tests/e2e/handtests/08_testbereich.spec.ts`.
 
 **Einstieg:** Sie starten auf der Startseite der App (im Testbereich: „App neu starten“) einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“ als „Beschäftigte Person“ und gehen bis zur Frage nach der Steuer-Identifikationsnummer.
 
-**Voraussetzungen:** Ein echtes Handy mit Internet. Die Hilfeseiten (`docs/hilfe/`) liegen auf der
-Homepage unter dem Pfad, den die Kanzlei-Konfiguration als `explainerBase` nennt.
+**Voraussetzungen:** Ein echtes Handy mit Internet. Die Hilfeseiten (`dist/hilfe/` nach
+`npm run build`) liegen auf der Homepage unter dem Pfad, den die Kanzlei-Konfiguration als
+`explainerBase` nennt.
 
 **Schritte:**
 
@@ -199,6 +200,8 @@ Homepage unter dem Pfad, den die Kanzlei-Konfiguration als `explainerBase` nennt
    wieder antippen.
    - **Danach:** Keine Animation – das ganze Blatt mit der Markierung erscheint sofort.
 5. „Bewegung reduzieren“ wieder ausschalten.
+6. Unten auf der Hilfeseite auf „Impressum“ tippen, zurück, dann auf „Datenschutz“.
+   - **Danach:** Es öffnen sich das Impressum und die Datenschutzerklärung der Kanzlei-Homepage.
 
 **Erwartet:**
 
