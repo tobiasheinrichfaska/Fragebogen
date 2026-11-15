@@ -417,6 +417,7 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     vorgangsart: 'bewirtungsbeleg',
     vorgangsdatum: '15.10.2026',
     bbGaststaette: 'Gasthaus Beispiel, Musterstadt',
+    bbRechnungsnummer: '4711',
     bbAnlass: 'Besprechung des Auftrags Neubau Musterstraße mit der Beispiel GmbH',
     bbTeilnehmer: 'Erika Musterfrau\nMax Mustermann, Beispiel GmbH',
     bbRechnungsbetrag: '86,40',
@@ -434,6 +435,7 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
       'vorgangsart',
       'vorgangsdatum',
       'bbGaststaette',
+      'bbRechnungsnummer',
       'bbAnlass',
       'bbTeilnehmer',
       'bbRechnungsbetrag',
@@ -468,6 +470,23 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     expect(hintIds(q)).not.toEqual(expect.arrayContaining(['ohneVorsteuer']));
     expect(hintIds(q)).not.toContain('hoherBetrag');
     expect(excluded(q)).toEqual([]);
+  });
+
+  // BMF-Schreiben vom 19.11.2025 Rn. 13, 20, 22 (checked 2026-11-15): a TSE-secured bill, kept
+  // together with this record and pointing to it.
+  it('names the TSE and ties the record to the bill by its number', () => {
+    const block = form.definition.infoBlocks.find((b) => b.id === 'bewirtungsbelegRechnung');
+    expect(block?.text).toContain('Sicherheitseinrichtung (TSE)');
+    expect(asked(draftWith(BELEG, { bbRechnungsnummer: null }))).toContain('bbRechnungsnummer');
+    const q = draftWith(BELEG, { bbRechnungsnummer: null }, END);
+    expect(
+      sealPart(q, form, ROLE, {
+        nonce: 'e4'.repeat(16),
+        systemNote: note(AT.local, AT.utc),
+        acknowledged: notices(q),
+        signature: { method: 'typed', name: 'Erika Musterfrau' },
+      }),
+    ).toMatchObject({ ok: false, code: 'missingRequired', detail: ['bbRechnungsnummer'] });
   });
 
   it('suggests booking a privately paid Bewirtung as an Einlage', () => {

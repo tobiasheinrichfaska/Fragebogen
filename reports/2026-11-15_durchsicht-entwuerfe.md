@@ -37,6 +37,41 @@ Tobias, 15.11.2026: „Durchsicht: sieh durch“. Ein unabhängiger Prüf-Agent 
     Forstwirtschaft, wie der Entwurf.
   - SM-2: „im Gebiet der heutigen neuen Bundesländer“ statt „in den neuen Bundesländern“.
 
+**Am 15.11.2026 abends nach Tobias' Antworten umgesetzt** (PR tobiasheinrichfaska/Fragebogen#16):
+
+- Monatsmeldung:
+  - LM-1: Eine Tabelle darf bis 100 Zeilen nennen (`maxRows`); die drei Tabellen nehmen 100.
+  - LM-5 („nein“): Der Satz über die Werte des Vormonats ist gestrichen.
+- Dienstwagen:
+  - DW-2 („ja“): Der Arbeitgeber nennt die erste Tätigkeitsstätte.
+  - DW-4, geprüft mit BMF vom 03.03.2022 Rz. 19 und 20: Das Verbot braucht kein Papier, nur der
+    Verzicht der Person bleibt auf Papier. Das Verbot gilt auch für Fahrten zur ersten
+    Tätigkeitsstätte.
+  - Nach BMF vom 05.11.2021 Rz. 22 entscheidet bei Beschäftigten die erste Überlassung.
+  - Grenze: Die Batterieminderung (DW-6) ist nicht abgedeckt.
+- Eigenbeleg:
+  - EB-5 („ja“): Bewirtungsbeleg zur vorhandenen Rechnung der Gaststätte, mit deren Nummer.
+  - EB-2 und EB-9: Wortlaut nach BMF vom 19.11.2025 Rn. 13, 19, 20 und 22 (TSE, Verknüpfung mit
+    der Rechnung), gelesen in einer Wiedergabe der NWB-Datenbank.
+- Austritt, geprüft mit dem BEA-Datensatz 4.6, dem Vordruck BA II 2 – 08/2023 und § 312 SGB III:
+  - AUS-21: Sozialauswahl, ursprüngliches Ende der Befristung und Agentur verlangt die
+    Arbeitsbescheinigung. Die Agentur ist die, die die Sozialauswahl geprüft hat. Die Zustellung
+    verlangt sie nur bei einer Kündigung durch den Arbeitgeber, mit zwei Werten.
+  - Ergänzt:
+    - Abschluss, Verlängerung und Aussicht auf Weiterbeschäftigung bei einer Befristung;
+    - Sozialauswahl und weitere Vereinbarungen auch beim Aufhebungsvertrag;
+    - Abmahnung auch bei einer hypothetischen Kündigung;
+    - „steht noch nicht fest“ beim Arbeitsentgelt über das Ende;
+    - Vorruhestandsleistung;
+    - Höhe der Abfindung als Prüfhinweis.
+  - AUS-10: Insolvenz, Arbeitskampf, Heimarbeit, Transfergesellschaft und eine vorzeitig endende
+    Altersteilzeit sind ausgeschlossen. Endet eine Altersteilzeit wie vereinbart, gibt es nur einen
+    Prüfhinweis.
+  - AUS-22: Die Entgeltfortzahlung über das Ende hinaus (§ 8 EFZG) steht in der Hilfe, ohne Grund.
+  - AUS-20: Nr. 9 ist richtig, im Gesetzestext gelesen; die Sperrzeit von einer Woche ist ergänzt.
+  - AUS-3: Bei einem Ende mit der Regelaltersgrenze genügt Textform (§ 41 Abs. 3 SGB VI, gelesen).
+- Zustimmung: ZST-1 („nein“) bleibt, wie es ist.
+
 **Offen** (Umbau oder Entscheidung von Tobias, siehe den Bericht unten und „Questions only Tobias
 can decide“):
 
@@ -47,11 +82,8 @@ can decide“):
   - Eigenbeleg: EB-3, EB-4, EB-5, EB-7, EB-8.
   - Monatsmeldung: LM-1 (30 Zeilen), LM-5, LM-6.
   - Weitere: PFB-1 bis PFB-5, SM-3, ZST-1, ZST-2, X-1, X-3.
-- Nicht geprüft, weil gesetze-im-internet.de hier nicht erreichbar war:
-  - AUS-20 (§ 159 Abs. 1 S. 2 Nr. 7 oder Nr. 9 SGB III). Die eigene Recherche sagt Nr. 9.
-  - Die Textform bei AUS-3.
-  - EB-9 (BMF-Schreiben vom 19.11.2025).
-  - DW-6 (100.000 €).
+- Am 15.11.2026 abends geprüft (siehe oben): AUS-20, die Textform bei AUS-3, EB-9 und DW-6. Bei
+  DW-6 enthält der Entwurf keine Beträge; die Grenzen stehen jetzt in der Hilfe zur Anschaffung.
 
 ---
 
