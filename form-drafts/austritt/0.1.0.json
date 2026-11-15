@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-15T21:36",
+  "revised": "2026-11-15T23:14",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -96,7 +96,7 @@
           "type": "choice",
           "label": "Art des Endes",
           "question": "Wodurch endet das Arbeitsverhältnis mit {agVorname} {agFamilienname}?",
-          "help": "Wurde einer oder einem Auszubildenden gekündigt, wählen Sie die Kündigung. Ein Wechsel in eine andere Beschäftigung bei Ihnen ist kein Austritt; dann meldet die lohnabrechnende Stelle die Beschäftigung nur um.",
+          "help": "Wurde einer oder einem Auszubildenden gekündigt, wählen Sie die Kündigung. Ein Wechsel in eine andere Beschäftigung bei Ihnen ist kein Austritt; dann meldet die lohnabrechnende Stelle die Beschäftigung nur um. Eine Altersgrenze im Arbeitsvertrag ist eine Befristung: Wählen Sie dann „Ende einer Befristung“; „kraft Gesetzes oder Tarifvertrags“ gilt nur für eine Altersgrenze aus dem Tarifvertrag.",
           "required": true,
           "purpose": "Abgabegrund der Abmeldung zur Sozialversicherung (§ 28a SGB IV; Gemeinsames Rundschreiben Meldeverfahren, Anlagen 1 und 3); Grund der Beendigung in der Arbeitsbescheinigung (§ 312 Abs. 1 S. 1 SGB III)",
           "options": [
@@ -107,10 +107,7 @@
               "id": "befristung",
               "label": "Ende einer Befristung (das Datum ist erreicht oder der Zweck erfüllt)"
             },
-            {
-              "id": "ausbildungsende",
-              "label": "Ende der Ausbildung ohne Weiterbeschäftigung"
-            },
+            { "id": "ausbildungsende", "label": "Ende der Ausbildung ohne Weiterbeschäftigung" },
             {
               "id": "gesetzTarif",
               "label": "Ende kraft Gesetzes oder Tarifvertrags, z. B. durch eine tarifliche Altersgrenze"
@@ -124,6 +121,34 @@
               "id": "betriebsuebergang",
               "label": "Übergang des Betriebs oder Betriebsteils auf einen neuen Inhaber"
             }
+          ]
+        },
+        {
+          "id": "agSonderfall",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Sonderfälle",
+          "question": "Trifft einer dieser Fälle zu?",
+          "help": "Für diese Fälle verlangt die Arbeitsbescheinigung Angaben, die dieser Fragebogen nicht erfasst; die lohnabrechnende Stelle klärt sie direkt mit Ihnen. Treffen mehrere zu, wählen Sie den ersten.",
+          "required": true,
+          "purpose": "Fälle, die dieser Fragebogen nicht abdeckt (Arbeitsbescheinigung nach § 312 SGB III, Abmeldung nach § 28a SGB IV)",
+          "options": [
+            { "id": "keiner", "label": "Nein, keiner davon" },
+            {
+              "id": "insolvenz",
+              "label": "Insolvenz: Ein Insolvenzverfahren über Ihr Vermögen ist beantragt oder eröffnet"
+            },
+            {
+              "id": "arbeitskampf",
+              "label": "Das Ende hängt mit einem Streik oder einer Aussperrung zusammen"
+            },
+            {
+              "id": "heimarbeit",
+              "label": "Die Person arbeitet in Heimarbeit (Heimarbeitsgesetz)"
+            },
+            { "id": "transfer", "label": "Die Person wechselt in eine Transfergesellschaft" },
+            { "id": "altersteilzeitVorzeitig", "label": "Eine Altersteilzeit endet vorzeitig" },
+            { "id": "altersteilzeit", "label": "Eine Altersteilzeit endet wie vereinbart" }
           ]
         },
         {
@@ -149,10 +174,7 @@
           "purpose": "Ende des Beschäftigungsverhältnisses in der Arbeitsbescheinigung (§ 312 SGB III); Fortbestand der versicherungspflichtigen Beschäftigung (§ 7 Abs. 3 SGB IV)",
           "options": [
             { "id": "keine", "label": "Nein, die Person arbeitet bis zum Ende" },
-            {
-              "id": "widerruflich",
-              "label": "Ja, aber Sie können sie zurückholen (widerruflich)"
-            },
+            { "id": "widerruflich", "label": "Ja, aber Sie können sie zurückholen (widerruflich)" },
             {
               "id": "unwiderruflichEinvernehmlich",
               "label": "Ja, unwiderruflich und bezahlt, im Einvernehmen mit der Person"
@@ -189,10 +211,7 @@
           "help": "Auch eine Befristung bis zum Erreichen eines Zwecks zählt, etwa eine Vertretung.",
           "required": true,
           "showIf": {
-            "not": {
-              "field": "agBeendigungsart",
-              "in": ["befristung", "ausbildungsende", "tod"]
-            }
+            "not": { "field": "agBeendigungsart", "in": ["befristung", "ausbildungsende", "tod"] }
           },
           "because": "Beim Ende einer Befristung steht die Befristung schon fest; das Ende einer Ausbildung und der Tod brauchen die Angabe nicht.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): befristetes Arbeitsverhältnis und wann die Befristung geendet hätte"
@@ -218,32 +237,11 @@
           ]
         },
         {
-          "id": "agBefristungSchriftlich",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Befristung schriftlich vereinbart",
-          "question": "Wurde die Befristung schriftlich vereinbart?",
-          "help": "Schriftlich heißt: vor dem ersten Arbeitstag von beiden Seiten eigenhändig unterschrieben oder mit qualifizierter elektronischer Signatur versehen. Ohne diese Form gilt das Arbeitsverhältnis in der Regel als unbefristet.",
-          "required": true,
-          "showIf": {
-            "any": [
-              { "field": "agBeendigungsart", "equals": "befristung" },
-              { "field": "agBefristet", "equals": true }
-            ]
-          },
-          "because": "Eine Befristung ist nur mit schriftlicher Vereinbarung wirksam; sonst gilt das Arbeitsverhältnis als unbefristet (§ 14 Abs. 4, § 16 TzBfG).",
-          "purpose": "Wirksamkeit der Befristung (§ 14 Abs. 4, § 16 TzBfG); Arbeitsbescheinigung (§ 312 SGB III)",
-          "options": [
-            { "id": "ja", "label": "Ja" },
-            { "id": "nein", "label": "Nein" }
-          ]
-        },
-        {
           "id": "agBefristungUrspruenglichBis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Befristet laut erstem Vertrag bis",
-          "question": "Bis wann war das Arbeitsverhältnis im ersten Vertrag befristet?",
+          "question": "Bis wann war das Arbeitsverhältnis bei Abschluss des Arbeitsvertrags befristet?",
           "help": "Wurde die Befristung verlängert: das Ende laut dem ersten befristeten Vertrag. Bei einer Zweckbefristung: wann das Arbeitsverhältnis damals voraussichtlich enden sollte.",
           "required": true,
           "showIf": {
@@ -256,16 +254,105 @@
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): ursprüngliche Befristung"
         },
         {
+          "id": "agBefristungAbschluss",
+          "notAfter": "agBefristungUrspruenglichBis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Befristeter Vertrag geschlossen am",
+          "question": "Wann wurde der befristete Arbeitsvertrag geschlossen?",
+          "help": "Der Tag, an dem der erste befristete Vertrag zustande kam.",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "agBeendigungsart", "equals": "befristung" },
+              { "field": "agBefristet", "equals": true }
+            ]
+          },
+          "because": "Nur bei einer Befristung; die Arbeitsbescheinigung fragt danach.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Abschluss des befristeten Vertrags"
+        },
+        {
+          "id": "agBefristungVerlaengert",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Befristung verlängert",
+          "question": "Wurde der befristete Arbeitsvertrag verlängert?",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "agBeendigungsart", "equals": "befristung" },
+              { "field": "agBefristet", "equals": true }
+            ]
+          },
+          "because": "Nur bei einer Befristung; die Arbeitsbescheinigung fragt danach.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Verlängerung der Befristung"
+        },
+        {
+          "id": "agBefristungVerlaengertAm",
+          "notBefore": "agBefristungAbschluss",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Zuletzt verlängert am",
+          "question": "Wann wurde er zuletzt verlängert?",
+          "help": "Der Tag, an dem die letzte Verlängerung vereinbart wurde.",
+          "required": true,
+          "showIf": { "field": "agBefristungVerlaengert", "equals": true },
+          "because": "Nur nach einer Verlängerung.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Befristung zuletzt verlängert am"
+        },
+        {
           "id": "agBefristetBis",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Befristet bis",
-          "question": "Bis wann war das Arbeitsverhältnis zuletzt befristet?",
-          "help": "Nach einer Verlängerung das neue Ende; bei einer Zweckbefristung das voraussichtliche Ende.",
+          "question": "Bis wann wurde er zuletzt verlängert?",
+          "help": "Das Ende laut der letzten Verlängerung; bei einer Zweckbefristung das voraussichtliche Ende.",
           "required": true,
-          "showIf": { "field": "agBefristet", "equals": true },
-          "because": "Endet ein befristetes Arbeitsverhältnis vorzeitig auf andere Weise, fragt die Arbeitsbescheinigung, wann die Befristung geendet hätte.",
-          "purpose": "Ende der Beschäftigung in der Lohnabrechnung; Arbeitsbescheinigung (§ 312 SGB III): wann die Befristung geendet hätte"
+          "showIf": { "field": "agBefristungVerlaengert", "equals": true },
+          "because": "Nur nach einer Verlängerung fragt die Arbeitsbescheinigung, bis wann sie lief; sonst gilt das Ende laut erstem Vertrag.",
+          "purpose": "Ende der Beschäftigung in der Lohnabrechnung; Arbeitsbescheinigung (§ 312 SGB III): Befristung zuletzt verlängert bis"
+        },
+        {
+          "id": "agBefristungSchriftlich",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Befristung schriftlich vereinbart",
+          "question": "Wurde die Befristung schriftlich vereinbart?",
+          "help": "Schriftlich heißt: vor dem ersten Arbeitstag von beiden Seiten eigenhändig unterschrieben oder mit qualifizierter elektronischer Signatur versehen. Ausnahme: Endet das Arbeitsverhältnis mit dem Erreichen der Regelaltersgrenze, genügt Textform, etwa eine E-Mail oder ein PDF mit den Namen beider Seiten (§ 41 Abs. 3 SGB VI). Ohne die nötige Form gilt das Arbeitsverhältnis in der Regel als unbefristet.",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "agBeendigungsart", "equals": "befristung" },
+              { "field": "agBefristet", "equals": true }
+            ]
+          },
+          "because": "Eine Befristung ist nur mit schriftlicher Vereinbarung wirksam, bei einem Ende mit dem Erreichen der Regelaltersgrenze genügt Textform; sonst gilt das Arbeitsverhältnis als unbefristet (§ 14 Abs. 4, § 16 TzBfG; § 41 Abs. 3 SGB VI).",
+          "purpose": "Wirksamkeit der Befristung (§ 14 Abs. 4, § 16 TzBfG; § 41 Abs. 3 SGB VI); Arbeitsbescheinigung (§ 312 SGB III)",
+          "options": [
+            { "id": "ja", "label": "Ja" },
+            {
+              "id": "textformRegelaltersgrenze",
+              "label": "Nur in Textform, etwa per E-Mail – das Arbeitsverhältnis endet mit dem Erreichen der Regelaltersgrenze"
+            },
+            { "id": "nein", "label": "Nein" }
+          ]
+        },
+        {
+          "id": "agBefristungWeiterbeschaeftigung",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Mindestens zwei Monate, Weiterbeschäftigung in Aussicht gestellt",
+          "question": "War die Befristung für mindestens zwei Monate vorgesehen, und haben Sie bei Abschluss des Vertrags eine Weiterbeschäftigung in Aussicht gestellt?",
+          "help": "Ja nur, wenn beides zutrifft.",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "agBeendigungsart", "equals": "befristung" },
+              { "field": "agBefristet", "equals": true }
+            ]
+          },
+          "because": "Nur bei einer Befristung; die Arbeitsbescheinigung fragt danach.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Befristung von mindestens zwei Monaten mit Aussicht auf Weiterbeschäftigung"
         }
       ]
     },
@@ -311,7 +398,7 @@
             "in": ["kuendigungArbeitgeber", "kuendigungPerson"]
           },
           "because": "Nur bei einer Kündigung.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Tag der Kündigung"
+          "purpose": "Prüfung der Reihenfolge: Abmahnung vor der Kündigung, Schreiben nicht nach dem Zugang"
         },
         {
           "id": "agKuendigungZugang",
@@ -337,18 +424,14 @@
           "label": "Zustellung der Kündigung",
           "question": "Wie wurde die Kündigung zugestellt?",
           "required": true,
-          "showIf": {
-            "field": "agBeendigungsart",
-            "in": ["kuendigungArbeitgeber", "kuendigungPerson"]
-          },
-          "because": "Nur bei einer Kündigung.",
+          "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
+          "because": "Die Arbeitsbescheinigung fragt die Zustellung nur bei einer Kündigung durch den Arbeitgeber.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Art der Zustellung",
           "options": [
             { "id": "persoenlich", "label": "Persönlich übergeben" },
-            { "id": "post", "label": "Per Post" },
             {
-              "id": "bote",
-              "label": "Durch einen Boten, z. B. Einwurf in den Briefkasten"
+              "id": "nichtPersoenlich",
+              "label": "Nicht persönlich, z. B. per Post oder durch Einwurf in den Briefkasten"
             }
           ]
         },
@@ -367,18 +450,9 @@
           "because": "Nur bei einer Kündigung.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III); Ruhen des Arbeitslosengelds bei einer Abfindung (§ 158 SGB III)",
           "options": [
-            {
-              "id": "ordentlich",
-              "label": "Ordentlich, mit Kündigungsfrist"
-            },
-            {
-              "id": "fristlos",
-              "label": "Fristlos (außerordentlich)"
-            },
-            {
-              "id": "auslauffrist",
-              "label": "Außerordentlich mit einer Auslauffrist"
-            }
+            { "id": "ordentlich", "label": "Ordentlich, mit Kündigungsfrist" },
+            { "id": "fristlos", "label": "Fristlos (außerordentlich)" },
+            { "id": "auslauffrist", "label": "Außerordentlich mit einer Auslauffrist" }
           ]
         },
         {
@@ -392,21 +466,6 @@
           "showIf": { "field": "agKuendigungArt", "equals": "ordentlich" },
           "because": "Nur bei einer ordentlichen Kündigung kommt es auf die Frist an; in der Probezeit ist sie kürzer (§ 622 Abs. 3 BGB).",
           "purpose": "Maßgebende Kündigungsfrist in der Arbeitsbescheinigung (§ 312 SGB III)"
-        },
-        {
-          "id": "agZusatzvereinbarung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Weitere Vereinbarung über das Ende",
-          "question": "Gibt es neben der Kündigung eine weitere Vereinbarung über das Ende, z. B. einen Abwicklungsvertrag oder einen gerichtlichen Vergleich?",
-          "help": "Hat ein Vergleich das Ende verschoben, ändern Sie in diesem Fragebogen auch den Tag, an dem das Arbeitsverhältnis endet.",
-          "required": true,
-          "showIf": {
-            "field": "agBeendigungsart",
-            "in": ["kuendigungArbeitgeber", "kuendigungPerson"]
-          },
-          "because": "Nur bei einer Kündigung.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): zusätzliche Vereinbarungen zur Kündigung"
         },
         {
           "id": "agKuendigungsschutzklage",
@@ -461,37 +520,8 @@
               "label": "Ohne solchen Grund – das Kündigungsschutzgesetz gilt nicht (Kleinbetrieb oder weniger als sechs Monate beschäftigt)"
             }
           ],
-          "showIf": {
-            "field": "agBeendigungsart",
-            "equals": "kuendigungArbeitgeber"
-          },
+          "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
           "because": "Nur bei einer Kündigung durch Sie; nach dem Grund richten sich die weiteren Fragen (§ 1 Abs. 2 KSchG)."
-        },
-        {
-          "id": "agAbmahnung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Abmahnung wegen desselben Verhaltens",
-          "question": "Haben Sie die Person wegen desselben Verhaltens schon abgemahnt?",
-          "required": true,
-          "showIf": {
-            "field": "agKuendigungsgrund",
-            "equals": "verhaltensbedingt"
-          },
-          "because": "Nur bei einer Kündigung wegen des Verhaltens fragt die Arbeitsbescheinigung nach einer Abmahnung.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Abmahnung"
-        },
-        {
-          "id": "agAbmahnungDatum",
-          "role": "arbeitgeber",
-          "type": "date",
-          "label": "Datum der letzten Abmahnung",
-          "question": "Wann haben Sie die Person zuletzt wegen dieses Verhaltens abgemahnt?",
-          "help": "Bei mehreren Abmahnungen die jüngste.",
-          "required": true,
-          "showIf": { "field": "agAbmahnung", "equals": true },
-          "because": "Nur nach einer Abmahnung.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Datum der Abmahnung"
         },
         {
           "id": "agAbfindungsangebot1a",
@@ -501,61 +531,9 @@
           "question": "Haben Sie im Kündigungsschreiben eine Abfindung für den Fall angeboten, dass die Person nicht klagt (§ 1a KSchG)?",
           "help": "„Ja“ nur, wenn dieser Hinweis im Kündigungsschreiben steht (§ 1a KSchG). Eine betriebsbedingte Kündigung ohne dieses Angebot ist „Nein“.",
           "required": true,
-          "showIf": {
-            "field": "agKuendigungsgrund",
-            "equals": "betriebsbedingt"
-          },
+          "showIf": { "field": "agKuendigungsgrund", "equals": "betriebsbedingt" },
           "because": "Das Angebot nach § 1a KSchG gibt es nur bei einer Kündigung aus betrieblichen Gründen.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): betriebsbedingte Kündigung mit Abfindungsangebot"
-        },
-        {
-          "id": "agSozialauswahl",
-          "role": "arbeitgeber",
-          "type": "choice",
-          "label": "Sozialauswahl",
-          "question": "Haben Sie vor der Kündigung eine Sozialauswahl getroffen?",
-          "help": "Bei einer Kündigung aus betrieblichen Gründen wählen Sie unter vergleichbaren Beschäftigten nach Betriebszugehörigkeit, Lebensalter, Unterhaltspflichten und Schwerbehinderung aus (§ 1 Abs. 3 KSchG).",
-          "required": true,
-          "showIf": {
-            "field": "agKuendigungsgrund",
-            "equals": "betriebsbedingt"
-          },
-          "because": "Eine Sozialauswahl gibt es nur bei einer Kündigung aus betrieblichen Gründen (§ 1 Abs. 3 KSchG).",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Sozialauswahl",
-          "options": [
-            {
-              "id": "ja",
-              "label": "Ja"
-            },
-            {
-              "id": "nein",
-              "label": "Nein"
-            }
-          ]
-        },
-        {
-          "id": "agMassenentlassung",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Teil einer angezeigten Massenentlassung",
-          "question": "Gehört die Kündigung zu einer Massenentlassung, die Sie der Agentur für Arbeit angezeigt haben?",
-          "help": "Das betrifft nur Betriebe mit mehr als 20 Beschäftigten, die innerhalb von 30 Tagen mehrere Beschäftigte entlassen (§ 17 KSchG).",
-          "required": true,
-          "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
-          "because": "Eine Massenentlassung zeigt nur der kündigende Arbeitgeber an (§ 17 KSchG).",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Prüfung der Sozialauswahl durch die Agentur für Arbeit"
-        },
-        {
-          "id": "agMassenentlassungAgentur",
-          "role": "arbeitgeber",
-          "type": "text",
-          "label": "Agentur für Arbeit der Anzeige",
-          "question": "Welche Agentur für Arbeit hat die Anzeige erhalten?",
-          "help": "Der Ort genügt, z. B. „Agentur für Arbeit Musterstadt“; die lohnabrechnende Stelle ergänzt die Nummer der Agentur.",
-          "required": true,
-          "showIf": { "field": "agMassenentlassung", "equals": true },
-          "because": "Nur bei einer angezeigten Massenentlassung.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Agentur der Anzeige"
         }
       ]
     },
@@ -587,15 +565,84 @@
           "because": "Nur bei einem Aufhebungsvertrag; er bedarf der Schriftform (§ 623 BGB).",
           "purpose": "Wirksamkeit des Aufhebungsvertrags (§ 623 BGB)",
           "options": [
-            {
-              "id": "papier",
-              "label": "Auf Papier, von beiden Seiten eigenhändig unterschrieben"
-            },
+            { "id": "papier", "label": "Auf Papier, von beiden Seiten eigenhändig unterschrieben" },
             {
               "id": "anders",
               "label": "Anders, z. B. per E-Mail, als Scan, elektronisch signiert oder mündlich"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "weitereVereinbarung",
+      "title": "Weitere Vereinbarungen über das Ende",
+      "fields": [
+        {
+          "id": "agZusatzvereinbarung",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Weitere Vereinbarung über das Ende",
+          "question": "Gibt es neben der Kündigung oder dem Aufhebungsvertrag eine weitere Vereinbarung über das Ende, z. B. einen Abwicklungsvertrag oder einen gerichtlichen Vergleich?",
+          "help": "Hat ein Vergleich das Ende verschoben, ändern Sie in diesem Fragebogen auch den Tag, an dem das Arbeitsverhältnis endet.",
+          "required": true,
+          "showIf": {
+            "field": "agBeendigungsart",
+            "in": ["kuendigungArbeitgeber", "kuendigungPerson", "aufhebungsvertrag"]
+          },
+          "because": "Bei einer Kündigung und einem Aufhebungsvertrag fragt die Arbeitsbescheinigung nach weiteren Vereinbarungen.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): zusätzliche Vereinbarungen zur Kündigung"
+        }
+      ]
+    },
+    {
+      "id": "sozialauswahl",
+      "title": "Sozialauswahl",
+      "fields": [
+        {
+          "id": "agSozialauswahl",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Sozialauswahl",
+          "question": "Haben Sie eine Sozialauswahl getroffen?",
+          "help": "Bei einer Kündigung oder einem Aufhebungsvertrag aus betrieblichen Gründen wählen Sie unter vergleichbaren Beschäftigten nach Betriebszugehörigkeit, Lebensalter, Unterhaltspflichten und Schwerbehinderung aus (§ 1 Abs. 3 KSchG). Die Angabe sagt nur, was geschehen ist; ob eine Sozialauswahl nötig war, bewertet sie nicht.",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "agKuendigungsgrund", "equals": "betriebsbedingt" },
+              { "field": "agBeendigungsart", "equals": "aufhebungsvertrag" }
+            ]
+          },
+          "because": "Die Arbeitsbescheinigung fragt nach der Sozialauswahl bei einer Kündigung durch den Arbeitgeber und bei einem Aufhebungsvertrag; bei einer Kündigung wegen der Person oder ihres Verhaltens folgt die Antwort aus dem Grund.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Sozialauswahl",
+          "options": [
+            { "id": "ja", "label": "Ja" },
+            { "id": "nein", "label": "Nein" }
+          ]
+        },
+        {
+          "id": "agSozialauswahlGeprueft",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Sozialauswahl von der Agentur für Arbeit geprüft",
+          "question": "Hat die Agentur für Arbeit die Sozialauswahl geprüft (Sammelentscheidung)?",
+          "help": "Das kommt vor allem bei Massenentlassungen vor, die der Agentur für Arbeit angezeigt wurden (§ 17 KSchG).",
+          "required": true,
+          "showIf": { "field": "agSozialauswahl", "equals": "ja" },
+          "because": "Nur nach einer Sozialauswahl fragt die Arbeitsbescheinigung, ob die Agentur für Arbeit sie geprüft hat.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Prüfung der Sozialauswahl durch die Agentur für Arbeit"
+        },
+        {
+          "id": "agSozialauswahlAgentur",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Agentur für Arbeit, die geprüft hat",
+          "question": "Welche Agentur für Arbeit hat die Sozialauswahl geprüft?",
+          "help": "Der Ort genügt, z. B. „Agentur für Arbeit Musterstadt“; die lohnabrechnende Stelle ergänzt die Nummer der Agentur.",
+          "required": true,
+          "showIf": { "field": "agSozialauswahlGeprueft", "equals": true },
+          "because": "Nur wenn die Agentur für Arbeit die Sozialauswahl geprüft hat.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Agentur, die die Sozialauswahl geprüft hat"
         }
       ]
     },
@@ -629,13 +676,14 @@
           "type": "date",
           "label": "Hätte gekündigt am",
           "question": "An welchem Tag hätten Sie gekündigt?",
-          "required": true,
+          "required": false,
           "showIf": {
             "field": "agHaetteGekuendigt",
             "in": ["selberZeitpunkt", "andererZeitpunkt"]
           },
-          "because": "Nur wenn Sie sonst selbst gekündigt hätten.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Kündigung des Arbeitgebers am"
+          "because": "Nur wenn Sie sonst selbst gekündigt hätten; zum selben Zeitpunkt verlangt die Arbeitsbescheinigung den Tag, zu einem anderen Zeitpunkt ist er freiwillig.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Kündigung des Arbeitgebers am",
+          "requiredIf": { "field": "agHaetteGekuendigt", "equals": "selberZeitpunkt" }
         },
         {
           "id": "agHaetteGekuendigtZum",
@@ -645,13 +693,14 @@
           "label": "Hätte gekündigt zum",
           "question": "Zu welchem Tag hätten Sie gekündigt?",
           "help": "Der letzte Tag, den das Arbeitsverhältnis dann gehabt hätte.",
-          "required": true,
+          "required": false,
           "showIf": {
             "field": "agHaetteGekuendigt",
             "in": ["selberZeitpunkt", "andererZeitpunkt"]
           },
-          "because": "Nur wenn Sie sonst selbst gekündigt hätten.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Kündigung des Arbeitgebers zum"
+          "because": "Nur wenn Sie sonst selbst gekündigt hätten; zum selben Zeitpunkt verlangt die Arbeitsbescheinigung den Tag, zu einem anderen Zeitpunkt ist er freiwillig.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Kündigung des Arbeitgebers zum",
+          "requiredIf": { "field": "agHaetteGekuendigt", "equals": "selberZeitpunkt" }
         },
         {
           "id": "agHaetteVertragswidrig",
@@ -667,6 +716,40 @@
           },
           "because": "Nur wenn Sie sonst selbst gekündigt hätten.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Anlass der Kündigung, die erfolgt wäre"
+        }
+      ]
+    },
+    {
+      "id": "abmahnung",
+      "title": "Abmahnung",
+      "fields": [
+        {
+          "id": "agAbmahnung",
+          "role": "arbeitgeber",
+          "type": "boolean",
+          "label": "Abmahnung wegen desselben Verhaltens",
+          "question": "Haben Sie die Person wegen desselben Verhaltens schon abgemahnt?",
+          "required": true,
+          "showIf": {
+            "any": [
+              { "field": "agKuendigungsgrund", "equals": "verhaltensbedingt" },
+              { "field": "agHaetteVertragswidrig", "equals": true }
+            ]
+          },
+          "because": "Nur wenn das Verhalten der Person Anlass der Kündigung war oder gewesen wäre, fragt die Arbeitsbescheinigung nach einer Abmahnung.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Abmahnung"
+        },
+        {
+          "id": "agAbmahnungDatum",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Datum der letzten Abmahnung",
+          "question": "Wann haben Sie die Person zuletzt wegen dieses Verhaltens abgemahnt?",
+          "help": "Bei mehreren Abmahnungen die jüngste.",
+          "required": true,
+          "showIf": { "field": "agAbmahnung", "equals": true },
+          "because": "Nur nach einer Abmahnung.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Datum der Abmahnung"
         }
       ]
     },
@@ -920,15 +1003,15 @@
           "role": "arbeitgeber",
           "type": "boolean",
           "label": "Abfindung auch bei Kündigung durch den Arbeitgeber",
-          "question": "Hätten Sie die Abfindung auch gezahlt, wenn Sie selbst gekündigt hätten?",
+          "question": "Hätten Sie die Abfindung auch gezahlt, wenn Sie gekündigt hätten?",
           "required": true,
           "showIf": {
             "all": [
               { "field": "agAbfindung", "equals": "ja" },
-              { "field": "agHaetteGekuendigt", "in": ["selberZeitpunkt", "andererZeitpunkt"] }
+              { "field": "agBeendigungsart", "in": ["kuendigungPerson", "aufhebungsvertrag"] }
             ]
           },
-          "because": "Nur bei einer Abfindung und wenn Sie sonst selbst gekündigt hätten.",
+          "because": "Bei einer Kündigung durch die Person und einem Aufhebungsvertrag fragt die Arbeitsbescheinigung, ob die Abfindung auch bei einer Kündigung durch Sie gezahlt worden wäre.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Abfindung auch bei Kündigung durch den Arbeitgeber"
         },
         {
@@ -945,14 +1028,97 @@
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Betriebs- oder Unternehmenszugehörigkeit"
         },
         {
+          "id": "agEntgeltUeberEnde",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Arbeitsentgelt über das Ende hinaus",
+          "question": "Zahlen Sie Arbeitsentgelt für eine Zeit nach dem letzten Tag des Arbeitsverhältnisses?",
+          "help": "Etwa wenn ein Vergleich Lohn für eine Zeit nach dem Ende vorsieht, oder bei Entgeltfortzahlung im Krankheitsfall über das Ende hinaus (§ 8 EFZG). Abfindung und offene Urlaubstage zählen hier nicht.",
+          "required": true,
+          "showIf": { "not": { "field": "agBeendigungsart", "equals": "tod" } },
+          "because": "Nach dem Tod gibt es kein Arbeitsentgelt für spätere Zeiten.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Arbeitsentgelt über das Ende hinaus",
+          "options": [
+            { "id": "nein", "label": "Nein" },
+            { "id": "ja", "label": "Ja" },
+            {
+              "id": "offen",
+              "label": "Steht noch nicht fest, z. B. wegen eines Gerichtsverfahrens"
+            }
+          ]
+        },
+        {
+          "id": "agEntgeltUeberEndeBis",
+          "notBefore": "agEndeArbeitsverhaeltnis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Arbeitsentgelt über das Ende hinaus bis",
+          "question": "Bis zu welchem Tag zahlen Sie Arbeitsentgelt?",
+          "required": true,
+          "showIf": { "field": "agEntgeltUeberEnde", "equals": "ja" },
+          "because": "Nur bei Arbeitsentgelt über das Ende hinaus.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Arbeitsentgelt über das Ende hinaus bis"
+        },
+        {
+          "id": "agVorruhestand",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Vorruhestandsleistung",
+          "question": "Erhält die Person wegen des Endes eine Vorruhestandsleistung oder eine vergleichbare Leistung?",
+          "help": "Eine Leistung, die vereinbart ist, damit die Person aus dem Erwerbsleben ausscheidet, z. B. ein Vorruhestandsgeld. Ohne eine solche Vereinbarung gehört eine Zahlung zur Frage nach der Abfindung.",
+          "required": true,
+          "showIf": { "not": { "field": "agBeendigungsart", "equals": "tod" } },
+          "because": "Nach dem Tod gibt es keine Vorruhestandsleistung.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Vorruhestandsleistung",
+          "options": [
+            { "id": "nein", "label": "Nein" },
+            { "id": "ja", "label": "Ja" },
+            { "id": "offen", "label": "Steht noch nicht fest" }
+          ]
+        },
+        {
+          "id": "agVorruhestandAb",
+          "notBefore": "agEndeArbeitsverhaeltnis",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Vorruhestandsleistung ab",
+          "question": "Ab wann wird die Vorruhestandsleistung gezahlt?",
+          "required": true,
+          "showIf": { "field": "agVorruhestand", "equals": "ja" },
+          "because": "Nur bei einer Vorruhestandsleistung.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Beginn der Vorruhestandsleistung"
+        },
+        {
+          "id": "agVorruhestandProzent",
+          "role": "arbeitgeber",
+          "type": "number",
+          "decimals": 2,
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "label": "Vorruhestandsleistung in Prozent",
+          "question": "Wie hoch ist sie in Prozent des Bruttoarbeitsentgelts?",
+          "help": "Zum Beispiel 65 für 65 % des bisherigen Bruttoarbeitsentgelts.",
+          "required": true,
+          "showIf": { "field": "agVorruhestand", "equals": "ja" },
+          "because": "Nur bei einer Vorruhestandsleistung.",
+          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Höhe der Vorruhestandsleistung in Prozent des Bruttoarbeitsentgelts"
+        },
+        {
           "id": "agUngewissGrund",
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Grund, warum die Leistung offen ist",
           "question": "Warum steht die Leistung noch nicht fest?",
           "required": true,
-          "showIf": { "field": "agAbfindung", "equals": "offen" },
-          "because": "Nur wenn eine Abfindung noch nicht feststeht.",
+          "showIf": {
+            "any": [
+              { "field": "agAbfindung", "equals": "offen" },
+              { "field": "agEntgeltUeberEnde", "equals": "offen" },
+              { "field": "agVorruhestand", "equals": "offen" }
+            ]
+          },
+          "because": "Steht eine Leistung wegen des Endes noch nicht fest, fragt die Arbeitsbescheinigung nach dem Grund.",
           "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Grund einer ungewissen Leistung",
           "options": [
             {
@@ -963,30 +1129,6 @@
             { "id": "abrechnung", "label": "Die Abrechnung ist noch nicht abgeschlossen" },
             { "id": "sonstiges", "label": "Aus einem anderen Grund" }
           ]
-        },
-        {
-          "id": "agEntgeltUeberEnde",
-          "role": "arbeitgeber",
-          "type": "boolean",
-          "label": "Arbeitsentgelt über das Ende hinaus",
-          "question": "Zahlen Sie Arbeitsentgelt für eine Zeit nach dem letzten Tag des Arbeitsverhältnisses?",
-          "help": "Selten, etwa wenn ein Vergleich Lohn für eine Zeit nach dem Ende vorsieht. Abfindung und offene Urlaubstage zählen hier nicht.",
-          "required": true,
-          "showIf": { "not": { "field": "agBeendigungsart", "equals": "tod" } },
-          "because": "Nach dem Tod gibt es kein Arbeitsentgelt für spätere Zeiten.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Arbeitsentgelt über das Ende hinaus"
-        },
-        {
-          "id": "agEntgeltUeberEndeBis",
-          "notBefore": "agEndeArbeitsverhaeltnis",
-          "role": "arbeitgeber",
-          "type": "date",
-          "label": "Arbeitsentgelt über das Ende hinaus bis",
-          "question": "Bis zu welchem Tag zahlen Sie Arbeitsentgelt?",
-          "required": true,
-          "showIf": { "field": "agEntgeltUeberEnde", "equals": true },
-          "because": "Nur bei Arbeitsentgelt über das Ende hinaus.",
-          "purpose": "Arbeitsbescheinigung (§ 312 SGB III): Arbeitsentgelt über das Ende hinaus bis"
         }
       ]
     },
@@ -1407,8 +1549,8 @@
       "id": "hinweisArbeitsuche",
       "role": "arbeitgeber",
       "title": "Hinweis an die beschäftigte Person",
-      "text": "Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9 SGB III). Für betriebliche Auszubildende gilt die Meldepflicht nicht.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
-      "asOf": "2026-11-03",
+      "text": "Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III). Für betriebliche Auszubildende gilt die Meldepflicht nicht.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
+      "asOf": "2026-11-15",
       "acknowledgement": "read"
     }
   ],
@@ -1437,8 +1579,8 @@
     {
       "id": "befristungNichtSchriftlich",
       "when": { "field": "agBefristungSchriftlich", "equals": "nein" },
-      "message": "Die Befristung wurde nicht schriftlich vereinbart; dann gilt das Arbeitsverhältnis in der Regel als unbefristet. Das Ende mit dem Arbeitgeber klären.",
-      "source": "§ 14 Abs. 4, § 16 TzBfG"
+      "message": "Die Befristung wurde weder schriftlich noch – bei einem Ende mit der Regelaltersgrenze – in Textform vereinbart; dann gilt das Arbeitsverhältnis in der Regel als unbefristet, wenn die Person innerhalb von drei Wochen nach dem vereinbarten Ende klagt. Das Ende mit dem Arbeitgeber klären.",
+      "source": "§ 14 Abs. 4, §§ 16, 17 TzBfG; § 41 Abs. 3 SGB VI"
     },
     {
       "id": "schreibenNachZugang",
@@ -1453,10 +1595,7 @@
     },
     {
       "id": "aufhebungNachEnde",
-      "test": {
-        "fn": "spaeterAls",
-        "args": ["agAufhebungsvertragAm", "agEndeArbeitsverhaeltnis"]
-      },
+      "test": { "fn": "spaeterAls", "args": ["agAufhebungsvertragAm", "agEndeArbeitsverhaeltnis"] },
       "message": "Der Aufhebungsvertrag wurde erst nach dem angegebenen Ende des Arbeitsverhältnisses geschlossen. Daten prüfen."
     },
     {
@@ -1513,8 +1652,8 @@
           { "field": "agAbfindungBrutto", "answered": false }
         ]
       },
-      "message": "Eine Abfindung ist vereinbart, ihre Höhe fehlt noch. Nachfordern; ändert sie sich später, ist eine übermittelte Arbeitsbescheinigung zu ersetzen.",
-      "source": "§ 312 Abs. 1 SGB III"
+      "message": "Eine Abfindung ist vereinbart, ihre Höhe fehlt noch. Die Arbeitsbescheinigung braucht den Bruttobetrag: nachfordern; ändert er sich später, ist eine übermittelte Arbeitsbescheinigung zu ersetzen.",
+      "source": "§ 312 Abs. 1 SGB III; BEA-Datensatz, Datenbaustein DBKE (Fehler DBKE307)"
     },
     {
       "id": "abfindungRuhen",
@@ -1601,6 +1740,18 @@
         ]
       },
       "message": "Der Arbeitgeber hat Angaben als „Steht noch nicht fest“ markiert oder offen gelassen (z. B. Klage, Abfindung, Urlaub, Überstunden, Arbeitszeitkonto oder letzte Zahlungen). Vor der letzten Abrechnung eine neue Fassung dieses Fragebogens anfordern."
+    },
+    {
+      "id": "altersteilzeitEnde",
+      "when": { "field": "agSonderfall", "equals": "altersteilzeit" },
+      "message": "Altersteilzeit endet wie vereinbart: In der Arbeitsbescheinigung den Grund der Arbeitszeitänderung und das Entgelt ohne Altersteilzeit aus der Abrechnung angeben; ein Wertguthaben und eine gesonderte Meldung für den Rentenantrag (Abgabegrund 57) prüfen.",
+      "source": "BEA-Schlüsselverzeichnis; Gemeinsames Rundschreiben Meldeverfahren, Anlage 3; § 194 SGB VI"
+    },
+    {
+      "id": "vorruhestand",
+      "when": { "field": "agVorruhestand", "equals": "ja" },
+      "message": "Vorruhestandsleistung wegen des Endes: in der Arbeitsbescheinigung Beginn und Höhe angeben; Meldungen und Beiträge zur Vorruhestandsleistung gesondert prüfen.",
+      "source": "BEA-Datensatz, Datenbaustein DBKE"
     }
   ],
   "exclusions": [
@@ -1615,6 +1766,36 @@
       "when": { "field": "agBeendigungsart", "equals": "betriebsuebergang" },
       "message": "Betriebsübergang: Der neue Inhaber tritt in die Arbeitsverhältnisse ein; dafür ist dieser Fragebogen nicht gedacht. Bitte wenden Sie sich an die lohnabrechnende Stelle.",
       "source": "§ 613a Abs. 1 S. 1 BGB"
+    },
+    {
+      "id": "sonderfallInsolvenz",
+      "when": { "field": "agSonderfall", "equals": "insolvenz" },
+      "message": "Insolvenz: Abmeldung und Arbeitsbescheinigung folgen eigenen Regeln (z. B. Abgabegründe 71 und 72, Freistellung wegen Insolvenz). Bitte klären Sie das Ende direkt mit der lohnabrechnenden Stelle.",
+      "source": "Gemeinsames Rundschreiben Meldeverfahren, Anlage 3; BEA-Schlüsselverzeichnis (Fehlzeitart 12)"
+    },
+    {
+      "id": "sonderfallArbeitskampf",
+      "when": { "field": "agSonderfall", "equals": "arbeitskampf" },
+      "message": "Arbeitskampf: Folgt die Arbeitslosigkeit aus einem Arbeitskampf, müssen Sie das in der Arbeitsbescheinigung darlegen und eine Stellungnahme der Betriebsvertretung beifügen. Bitte klären Sie das direkt mit der lohnabrechnenden Stelle.",
+      "source": "§ 312 Abs. 2 SGB III"
+    },
+    {
+      "id": "sonderfallHeimarbeit",
+      "when": { "field": "agSonderfall", "equals": "heimarbeit" },
+      "message": "Heimarbeit: Die Arbeitsbescheinigung hat dafür eigene Angaben (Urlaubstage und Urlaubsentgelt). Bitte klären Sie das Ende direkt mit der lohnabrechnenden Stelle.",
+      "source": "Vordruck Arbeitsbescheinigung nach § 312 SGB III (BA II 2 – 08/2023), Nr. 84 bis 87"
+    },
+    {
+      "id": "sonderfallTransfer",
+      "when": { "field": "agSonderfall", "equals": "transfer" },
+      "message": "Wechsel in eine Transfergesellschaft: Dreiseitiger Vertrag und Transferleistungen gehören nicht in diesen Fragebogen. Bitte klären Sie das Ende direkt mit der lohnabrechnenden Stelle.",
+      "source": "BA-Verfahrensbeschreibung BEA (Stand 01.09.2026): Entlassungsentschädigung"
+    },
+    {
+      "id": "sonderfallAltersteilzeitVorzeitig",
+      "when": { "field": "agSonderfall", "equals": "altersteilzeitVorzeitig" },
+      "message": "Vorzeitiges Ende einer Altersteilzeit: Wertguthaben (Störfall), Meldungen und Arbeitsbescheinigung folgen eigenen Regeln. Bitte klären Sie das direkt mit der lohnabrechnenden Stelle.",
+      "source": "§ 23b Abs. 2 SGB IV; Gemeinsames Rundschreiben Meldeverfahren, Anlage 3 (Abgabegrund 55)"
     }
   ],
   "derivations": [
@@ -1715,13 +1896,28 @@
         },
         {
           "value": "ja",
-          "when": { "field": "agEntgeltUeberEnde", "equals": true },
+          "when": { "field": "agEntgeltUeberEnde", "equals": "ja" },
           "reason": "Arbeitsentgelt wird über das Ende hinaus gezahlt."
+        },
+        {
+          "value": "ja",
+          "when": { "field": "agVorruhestand", "equals": "ja" },
+          "reason": "Eine Vorruhestandsleistung wird wegen des Endes gezahlt."
         },
         {
           "value": "ungewiss",
           "when": { "field": "agAbfindung", "equals": "offen" },
           "reason": "Eine Abfindung steht noch nicht fest."
+        },
+        {
+          "value": "ungewiss",
+          "when": { "field": "agEntgeltUeberEnde", "equals": "offen" },
+          "reason": "Ob Arbeitsentgelt über das Ende hinaus gezahlt wird, steht noch nicht fest."
+        },
+        {
+          "value": "ungewiss",
+          "when": { "field": "agVorruhestand", "equals": "offen" },
+          "reason": "Eine Vorruhestandsleistung steht noch nicht fest."
         },
         {
           "value": "ungewiss",
@@ -1737,7 +1933,7 @@
         {
           "value": "nein",
           "when": { "not": { "field": "agBeendigungsart", "equals": "tod" } },
-          "reason": "Weder Abfindung noch Urlaubsabgeltung noch Arbeitsentgelt über das Ende hinaus."
+          "reason": "Weder Abfindung noch Urlaubsabgeltung, Arbeitsentgelt über das Ende hinaus oder Vorruhestandsleistung."
         }
       ]
     },
@@ -1758,13 +1954,50 @@
           "reason": "Ohne Schriftform ist die Kündigung unwirksam (§ 623 BGB); vor der Bescheinigung klären."
         }
       ]
+    },
+    {
+      "id": "sozialauswahl",
+      "label": "Arbeitsbescheinigung: Sozialauswahl vorgenommen",
+      "source": "BEA-Datensatz, Datenbaustein DBKE (Feld SAW); Vordruck Nr. 54 und 55",
+      "rules": [
+        {
+          "value": "ja",
+          "when": { "field": "agSozialauswahl", "equals": "ja" },
+          "reason": "Eine Sozialauswahl wurde getroffen."
+        },
+        {
+          "value": "nein",
+          "when": { "field": "agSozialauswahl", "equals": "nein" },
+          "reason": "Eine Sozialauswahl wurde nicht getroffen."
+        },
+        {
+          "value": "entfällt",
+          "when": {
+            "all": [
+              { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
+              { "field": "agKuendigungsgrund", "equals": "personenbedingt" }
+            ]
+          },
+          "reason": "Personenbedingte Kündigung: Die Sozialauswahl entfällt."
+        },
+        {
+          "value": "nein",
+          "when": {
+            "all": [
+              { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
+              { "field": "agKuendigungsgrund", "in": ["verhaltensbedingt", "ohneKschg"] }
+            ]
+          },
+          "reason": "Kündigung wegen des Verhaltens oder ohne Kündigungsschutzgesetz: keine Sozialauswahl."
+        }
+      ]
     }
   ],
   "validity": { "field": "agEndeArbeitsverhaeltnis", "from": "2026-01-01" },
   "limits": [
     "Der Fragebogen ist keine Kündigung und kein Aufhebungsvertrag und prüft nicht, ob das Arbeitsverhältnis wirksam endet.",
     "Ein Wechsel in eine andere Beschäftigung beim selben Arbeitgeber und ein Betriebsübergang sind kein Austritt; dafür sind Abschließen und Weitergeben gesperrt.",
-    "Nicht abgedeckt: Insolvenz, Altersteilzeit, Vorruhestandsleistungen, Heimarbeit, Arbeitskampf, Saison- und Transferkurzarbeit.",
+    "Nicht abgedeckt: Insolvenz, Arbeitskampf, Heimarbeit, der Wechsel in eine Transfergesellschaft und eine vorzeitig endende Altersteilzeit – der Fragebogen fragt danach und sperrt dann. Angaben zu Saison-Kurzarbeit und Altersteilzeit für die Arbeitsbescheinigung kommen aus der Lohnabrechnung.",
     "Ein Wertguthaben (Langzeitkonto) erfasst er nur als Prüfhinweis; die Auflösung rechnet die lohnabrechnende Stelle gesondert ab.",
     "Nicht abgedeckt: die Arbeitsbescheinigung für Zwecke des über- und zwischenstaatlichen Rechts (§ 312a SGB III) und die Bescheinigung über Nebeneinkommen (§ 313 SGB III).",
     "Fehlzeiten, Entgelte und Sozialversicherungsdaten für die Arbeitsbescheinigung kommen aus der Lohnabrechnung; Zeiten, bevor die lohnabrechnende Stelle die Abrechnung übernommen hat, klärt sie gesondert.",
