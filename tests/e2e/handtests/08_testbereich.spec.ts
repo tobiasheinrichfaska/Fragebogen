@@ -1,5 +1,7 @@
 // Former manual tests MT-85, MT-130 and MT-133 of manual_tests/08_auslieferung.md: the test page of
 // the test folder (Tobias 2026-11-08: only what a virtual browser cannot check stays a manual test).
+// Since 2026-11-15 without free text: „Bestanden“ / „Nicht bestanden“ with the failed steps, the
+// time measured by the page, the report sent to the test zone (Testumgebung docs/testbericht.md).
 // The test folder build is served at an https address as the hosted test folder is — Playwright
 // answers it itself, nothing goes on the network — so every engine keeps the run in its storage.
 // The tests it opens are chosen from manual_tests/ by their kind (a prepared start, the start page,
@@ -14,6 +16,7 @@ import {
   parseManualTests,
   testAreaOf,
   testEnvironment,
+  stepsOf,
   textsOf,
   type ManualTestCase,
 } from '../../../src/logic/manualTests';
@@ -102,8 +105,19 @@ interface Seen {
   errors: string[];
 }
 
-/** The test folder at its https address; anything else asked for is refused and noted. */
-async function serve(context: BrowserContext, page: Page): Promise<Seen> {
+/** The test zone's answer to a report: status and text; the bodies it received are kept. */
+interface ReportEndpoint {
+  answers: { status: number; text: string }[];
+  received: unknown[];
+}
+
+const REPORT_URL = `${ORIGIN}/_zugang/bericht`;
+
+/**
+ * The test folder at its https address; anything else asked for is refused and noted. With
+ * `reports` the login script's report address answers as given, one answer per report.
+ */
+async function serve(context: BrowserContext, page: Page, reports?: ReportEndpoint): Promise<Seen> {
   await rememberAccess(context);
   const html = readFileSync(TEST_APP);
   const seen: Seen = { foreign: [], errors: [] };
@@ -112,6 +126,11 @@ async function serve(context: BrowserContext, page: Page): Promise<Seen> {
     if (url.origin === ORIGIN && ['/test/', '/test/index.html'].includes(url.pathname)) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    if (reports && url.href === REPORT_URL && route.request().method() === 'POST') {
+      reports.received.push(JSON.parse(route.request().postData() ?? 'null'));
+      const answer = reports.answers.shift() ?? { status: 200, text: '' };
+      return route.fulfill({ status: answer.status, contentType: 'text/plain', body: answer.text });
+    }
     const file = webAppFile(url.href, { [`${ORIGIN}/test/`]: TEST_APP });
     if (file) return route.fulfill(file);
     seen.foreign.push(url.href);
@@ -119,7 +138,8 @@ async function serve(context: BrowserContext, page: Page): Promise<Seen> {
   });
   page.on('request', (request) => {
     const url = request.url();
-    if (!/^(data|blob):/.test(url) && !url.startsWith(`${ORIGIN}/test/`)) seen.foreign.push(url);
+    if (/^(data|blob):/.test(url) || url.startsWith(`${ORIGIN}/test/`)) return;
+    if (!(reports && url === REPORT_URL)) seen.foreign.push(url);
   });
   page.on('console', (message) => {
     if (message.type() === 'error') seen.errors.push(message.text());
@@ -134,8 +154,13 @@ async function serve(context: BrowserContext, page: Page): Promise<Seen> {
   return seen;
 }
 
-async function open(context: BrowserContext, page: Page, query = ''): Promise<Seen> {
-  const seen = await serve(context, page);
+async function open(
+  context: BrowserContext,
+  page: Page,
+  query = '',
+  reports?: ReportEndpoint,
+): Promise<Seen> {
+  const seen = await serve(context, page, reports);
   await page.goto(PAGE_URL + query);
   await expect(page.locator('.test-app main')).toBeVisible();
   return seen;
@@ -175,15 +200,18 @@ async function toOverview(page: Page): Promise<void> {
   await expect(grid(page)).toBeVisible();
 }
 
-const result = (page: Page, name: '✓ Wie erwartet' | '✗ Klappt nicht') =>
+const result = (page: Page, name: '✓ Bestanden' | '✗ Nicht bestanden') =>
   panel(page).getByRole('radiogroup', { name: 'Ergebnis' }).getByRole('radio', { name });
+/** The reason chosen for a step of a failed test. */
+const stepReason = (page: Page, nr: number) =>
+  panel(page)
+    .locator('.test-step-reason')
+    .filter({ hasText: `Schritt ${nr}:` })
+    .locator('select');
 
-/** Downloads the test report — from the header, or with `answer` from the question it asked. */
-async function report(page: Page, path: string, answer?: string): Promise<string> {
-  const button =
-    answer === undefined
-      ? header(page).getByRole('button', { name: 'Testbericht herunterladen' })
-      : dialog(page).getByRole('button', { name: answer, exact: true });
+/** Downloads the copy of the report from the header. */
+async function copy(page: Page, path: string): Promise<string> {
+  const button = header(page).getByRole('button', { name: 'Kopie als PDF' });
   const [file] = await Promise.all([page.waitForEvent('download'), button.click()]);
   await file.saveAs(path);
   return (await pdfPages(path)).join('\n');
@@ -200,9 +228,8 @@ test.describe('MT-85: the test page', () => {
     for (const name of ['App neu starten', 'App vollständig zurücksetzen']) {
       await expect(header(page).getByRole('button', { name, exact: true })).toBeVisible();
     }
-    await expect(
-      header(page).getByRole('button', { name: 'Testbericht herunterladen' }),
-    ).toBeVisible();
+    await expect(header(page).getByRole('button', { name: 'Kopie als PDF' })).toBeVisible();
+    await expect(header(page).getByRole('button', { name: 'Bericht senden' })).toBeVisible();
     await expect(panel(page).getByRole('heading', { name: 'Testübersicht' })).toBeVisible();
     const areas = await grid(page).locator('.test-grid-area').allTextContents();
     expect(areas.slice(0, FILES.filter((f) => f.cases.length > 0).length)).toEqual(
@@ -217,18 +244,21 @@ test.describe('MT-85: the test page', () => {
       `${sample.id}: ${plain(sample.title)}`,
     );
     await expect(panel(page)).toContainText(
-      `0 von ${boxes.length} geprüft · ✓ wie erwartet 0 · ✗ klappt nicht 0 · Zeit 0 Min.`,
+      `0 von ${boxes.length} geprüft · ✓ Bestanden 0 · ✗ Nicht bestanden 0 · Zeit 0 Min.`,
     );
     await expectQuiet(page, seen);
   });
 
-  test('one test at a time: from its top, two results only, coloured boxes, kept on reload', async ({
+  test('one test at a time: from its top, two results, failed steps with a reason, kept on reload', async ({
     context,
     page,
   }) => {
     const seen = await open(context, page);
     const total = await grid(page).locator('.test-chip').count();
-    await panel(page).getByLabel('Ihr Name (erscheint im Testbericht)').fill('Probe Tester');
+    // No free text anywhere on the test page (Tobias 2026-11-15).
+    await expect(panel(page).locator('input[type=text], textarea, input:not([type])')).toHaveCount(
+      0,
+    );
     const testCase = needed(HOME_CASE, 'that begins on the start page');
     await openCase(page, testCase);
     await expect(grid(page)).toBeHidden();
@@ -237,36 +267,50 @@ test.describe('MT-85: the test page', () => {
     for (const name of ['‹ Vorheriger', 'Nächster ›']) {
       await expect(panel(page).getByRole('button', { name, exact: true })).toBeVisible();
     }
-
-    await panel(page).getByRole('button', { name: 'Test beginnen (Zeit läuft)' }).click();
-    await expect(panel(page).getByText(/^Begonnen \d\d:\d\d Uhr/)).toBeVisible();
+    // The clock runs at once; there is nothing to start.
+    await expect(panel(page).getByText(/^Zeit läuft: \d+ Min\./)).toBeVisible();
+    await expect(panel(page).getByRole('button', { name: /Test beginnen/ })).toHaveCount(0);
     await expect(
       panel(page).getByRole('radiogroup', { name: 'Ergebnis' }).getByRole('radio'),
-    ).toHaveText(['✓ Wie erwartet', '✗ Klappt nicht']);
+    ).toHaveText(['✓ Bestanden', '✗ Nicht bestanden']);
+
+    await result(page, '✗ Nicht bestanden').click();
+    await expect(
+      panel(page).getByRole('group', { name: 'In welchen Schritten gab es ein Problem?' }),
+    ).toBeVisible();
     await expect(panel(page)).toContainText(
-      'Hat es nur zum Teil geklappt? Bitte „Klappt nicht“ und im Kommentar, was.',
+      'Bitte mindestens einen Schritt mit seinem Grund wählen.',
     );
-    await result(page, '✗ Klappt nicht').click();
-    await panel(page).getByLabel('Kommentar – was ist aufgefallen?').fill('Probe');
-    await panel(page)
-      .getByLabel(/^Dauer korrigieren/)
-      .fill('7');
+    await expect(panel(page).locator('.test-step-reason')).toHaveCount(stepsOf(testCase).length);
+    await expect(stepReason(page, 1).locator('option')).toHaveText([
+      'in Ordnung',
+      'Anderes Ergebnis als erwartet',
+      'Fehlermeldung',
+      'Knopf oder Text fehlt',
+      'Lädt nicht oder hängt',
+      'Darstellung falsch',
+    ]);
+    await stepReason(page, 1).selectOption({ label: 'Fehlermeldung' });
+    await expect(panel(page)).not.toContainText('Bitte mindestens einen Schritt');
+    await expect(panel(page).getByText(/^Zeit: \d+ Min\.$/)).toBeVisible();
     await toOverview(page);
     const box = chip(page, testCase.id);
     await expect(box).toHaveText(`✗ ${short(testCase.id)}`);
     await expect(box).toHaveClass(/\bnichtBestanden\b/);
     await expect(box).toHaveAttribute('aria-current', 'true');
-    await expect(box).toHaveAccessibleName(/– klappt nicht/);
+    await expect(box).toHaveAccessibleName(/– Nicht bestanden/);
 
     // The same test again asks nothing: it is the one opened last.
     await box.click();
     await expect(dialog(page)).toBeHidden();
-    await result(page, '✓ Wie erwartet').click();
+    await expect(stepReason(page, 1)).toHaveValue('fehlermeldung');
+    await result(page, '✓ Bestanden').click();
+    await expect(panel(page).locator('.test-steps')).toHaveCount(0);
     await toOverview(page);
     await expect(box).toHaveText(`✓ ${short(testCase.id)}`);
     await expect(box).toHaveClass(/\bbestanden\b/);
     await expect(panel(page)).toContainText(
-      new RegExp(`1 von ${total} geprüft · ✓ wie erwartet 1 · ✗ klappt nicht 0 · Zeit 7 Min\\.`),
+      new RegExp(`1 von ${total} geprüft · ✓ Bestanden 1 · ✗ Nicht bestanden 0 · Zeit \\d+ Min\\.`),
     );
 
     await panel(page).getByLabel('Erledigte ausblenden').check();
@@ -275,13 +319,10 @@ test.describe('MT-85: the test page', () => {
     await panel(page).getByLabel('Erledigte ausblenden').uncheck();
 
     await page.reload();
-    await expect(panel(page).getByLabel('Ihr Name (erscheint im Testbericht)')).toHaveValue(
-      'Probe Tester',
-    );
     await expect(box).toHaveText(`✓ ${short(testCase.id)}`);
     await box.click();
     await choose(page, 'App so lassen');
-    await expect(panel(page).getByLabel('Kommentar – was ist aufgefallen?')).toHaveValue('Probe');
+    await expect(result(page, '✓ Bestanden')).toHaveAttribute('aria-checked', 'true');
     await expectQuiet(page, seen);
   });
 
@@ -375,15 +416,16 @@ test.describe('MT-85: the test page', () => {
     await expectQuiet(page, seen);
   });
 
-  test('a test changed after its rating asks for a new one; "teilweise" reads as "Klappt nicht"', async ({
+  test('a test changed after its rating asks for a new one; an older run loses its texts', async ({
     context,
     page,
   }, testInfo) => {
     const [changed, older] = offered;
     if (!changed || !older) throw new Error('two manual tests needed');
+    // A run stored before 2026-11-15, with a name, comments and „teilweise“.
     const run = {
       tester: 'Probe Tester',
-      comment: '',
+      comment: 'Insgesamt gut.',
       entries: {
         [changed.id]: {
           result: 'bestanden',
@@ -405,7 +447,7 @@ test.describe('MT-85: the test page', () => {
     await expect(chip(page, changed.id)).toHaveClass(/\bchanged\b/);
     await expect(chip(page, changed.id)).toHaveAccessibleName(/– geändert seit Ihrem Test/);
     await expect(chip(page, older.id)).toHaveText(`✗ ${short(older.id)}`);
-    await expect(chip(page, older.id)).toHaveAccessibleName(/– klappt nicht/);
+    await expect(chip(page, older.id)).toHaveAccessibleName(/– Nicht bestanden/);
 
     await chip(page, changed.id).click();
     await choose(page, 'App so lassen');
@@ -415,14 +457,15 @@ test.describe('MT-85: the test page', () => {
     await toOverview(page);
     await chip(page, older.id).click();
     await choose(page, 'App so lassen');
-    await expect(result(page, '✗ Klappt nicht')).toHaveAttribute('aria-checked', 'true');
-    await expect(panel(page).getByLabel('Kommentar – was ist aufgefallen?')).toHaveValue(
-      'Hälfte ging',
+    await expect(result(page, '✗ Nicht bestanden')).toHaveAttribute('aria-checked', 'true');
+    await expect(panel(page)).toContainText(
+      'Bitte mindestens einen Schritt mit seinem Grund wählen.',
     );
 
-    const text = await report(page, testInfo.outputPath('bericht.pdf'));
+    const text = await copy(page, testInfo.outputPath('bericht.pdf'));
     expect(text).toContain('Hinweis: Der Test wurde nach diesem Ergebnis geändert.');
-    expect(text).toContain('Kommentar: Hälfte ging');
+    expect(text).toContain('Ergebnis: Bestanden · Zeit 5 Min.');
+    expect(text).not.toMatch(/Hälfte ging|Probe Tester|Insgesamt gut/);
     await expectQuiet(page, seen);
   });
 
@@ -433,7 +476,8 @@ test.describe('MT-85: the test page', () => {
       };
     });
     await open(context, page);
-    await panel(page).getByLabel('Ihr Name (erscheint im Testbericht)').fill('Probe');
+    await openCase(page, needed(HOME_CASE, 'that begins on the start page'));
+    await result(page, '✓ Bestanden').click();
     await expect(panel(page)).toContainText(
       'Dieser Browser speichert die Testergebnisse nicht (z. B. privates Fenster).',
     );
@@ -515,7 +559,7 @@ test.describe('MT-133: opening a test restarts the app with its entry', () => {
     const rated = needed(HOME_CASE, 'that begins on the start page');
     await chip(page, rated.id).click();
     await choose(page, 'App so lassen');
-    await result(page, '✓ Wie erwartet').click();
+    await result(page, '✓ Bestanden').click();
     await toOverview(page);
 
     await header(page).getByRole('button', { name: 'App neu starten', exact: true }).click();
@@ -575,99 +619,136 @@ test.describe('MT-133: opening a test restarts the app with its entry', () => {
   });
 });
 
-test.describe('MT-130: reported tests leave the next report', () => {
+// The report goes to the test zone (Tobias 2026-11-15; Testumgebung docs/testbericht.md). Here the
+// login script's address answers as each step needs: not there yet (404), a refusal (400), arrived.
+test.describe('the report goes to the test zone, without any text', () => {
   test.use({ timezoneId: 'Europe/Berlin' });
 
-  test('the first report asks nothing; then "Nein", "nur neue und geänderte" and "Ja, alle"', async ({
+  test('a failed test needs its step; 404 and 400 are said; a sent result leaves the next report', async ({
     context,
     page,
   }, testInfo) => {
-    const [first, second, third] = offered;
-    if (!first || !second || !third) throw new Error('three manual tests needed');
-    const seen = await open(context, page);
-    await panel(page).getByLabel('Gesamteindruck (freiwillig)').fill('Insgesamt gut.');
-    const rate = async (testCase: ManualTestCase, name?: '✓ Wie erwartet' | '✗ Klappt nicht') => {
-      await openCase(page, testCase);
-      if (name) await result(page, name).click();
-      else
-        await panel(page).getByLabel('Kommentar – was ist aufgefallen?').fill('Nur ein Kommentar');
-      await toOverview(page);
+    const [first, second] = offered;
+    if (!first || !second) throw new Error('two manual tests needed');
+    const reports: ReportEndpoint = {
+      answers: [
+        { status: 404, text: '' },
+        { status: 400, text: 'Unbekanntes Feld „kommentar“.' },
+        { status: 200, text: '' },
+      ],
+      received: [],
     };
-    await rate(first, '✓ Wie erwartet');
-    await rate(second, '✗ Klappt nicht');
-    await rate(third);
-    const heading = (c: ManualTestCase) => `${c.id} ${plain(c.title)}`;
+    const seen = await open(context, page, '', reports);
+    const banner = page.locator('.test-banner');
+    const send = async () => {
+      await header(page).getByRole('button', { name: 'Bericht senden' }).click();
+      await expect(dialog(page)).toHaveAccessibleName('Bericht senden?');
+      await expect(dialog(page)).toContainText(
+        'Gesendet werden nur die Ergebnisse, die Zeiten und die Schritte mit Problem – kein Name, kein Text.',
+      );
+      await choose(page, 'Senden');
+    };
 
-    let text = await report(page, testInfo.outputPath('erster.pdf'));
-    for (const c of [first, second, third]) expect(text).toContain(heading(c));
-    expect(text).toContain('Kommentar: Nur ein Kommentar');
-    for (const c of [first, second, third]) {
-      await expect(chip(page, c.id)).toHaveAccessibleName(/– berichtet/);
-    }
-    await expect(chip(page, first.id)).toHaveClass(/\bbestanden\b/);
-    await expect(chip(page, second.id)).toHaveClass(/\bnichtBestanden\b/);
     await openCase(page, first);
-    await expect(panel(page).locator('.test-case')).toContainText('im Testbericht vom ');
+    await result(page, '✓ Bestanden').click();
     await toOverview(page);
-
-    await header(page).getByRole('button', { name: 'Testbericht herunterladen' }).click();
-    await expect(dialog(page)).toHaveAccessibleName('Schon gemeldete Tests mitnehmen?');
-    await expect(dialog(page)).toContainText(
-      '3 Tests standen schon in einem früheren Testbericht; 0 sind neu oder geändert.',
-    );
-    await expect(dialog(page).locator('button')).toHaveText([
-      'Abbrechen',
-      'Ja, alle mitnehmen',
-      'Nein (Bericht ohne Tests)',
-    ]);
-    text = await report(page, testInfo.outputPath('ohne.pdf'), 'Nein (Bericht ohne Tests)');
-    for (const c of [first, second, third]) expect(text).not.toContain(heading(c));
-    expect(text).toContain('Testbericht Fragebogen-Test');
-    expect(text).toContain('Getestet: 0');
-    expect(text).toContain('Insgesamt gut.');
-
     await openCase(page, second);
-    await panel(page).getByLabel('Kommentar – was ist aufgefallen?').fill('Jetzt mit Kommentar');
+    await result(page, '✗ Nicht bestanden').click();
     await toOverview(page);
-    await header(page).getByRole('button', { name: 'Testbericht herunterladen' }).click();
-    await expect(dialog(page)).toContainText(
-      '2 Tests standen schon in einem früheren Testbericht; 1 ist neu oder geändert.',
+    await header(page).getByRole('button', { name: 'Bericht senden' }).click();
+    await expect(banner).toContainText(
+      `Bei „Nicht bestanden“ fehlt noch der Schritt mit dem Problem: ${second.id}.`,
     );
-    text = await report(page, testInfo.outputPath('geaendert.pdf'), 'Nein, nur neue und geänderte');
-    expect(text).toContain(heading(second));
-    expect(text).toContain('Kommentar: Jetzt mit Kommentar');
-    for (const c of [first, third]) expect(text).not.toContain(heading(c));
+    // The test opened last opens again without the restart question.
+    await chip(page, second.id).click();
+    await stepReason(page, 2).selectOption({ label: 'Lädt nicht oder hängt' });
+    await toOverview(page);
 
-    await header(page).getByRole('button', { name: 'Testbericht herunterladen' }).click();
-    text = await report(page, testInfo.outputPath('alle.pdf'), 'Ja, alle mitnehmen');
-    for (const c of [first, second, third]) expect(text).toContain(heading(c));
+    await send();
+    await expect(banner).toContainText(
+      'Der Testbereich nimmt noch keine Berichte an (Antwort 404).',
+    );
+    await expect(chip(page, first.id)).not.toHaveAccessibleName(/– gesendet/);
+    await send();
+    await expect(banner).toContainText(
+      'Der Testbereich hat den Bericht abgelehnt: Unbekanntes Feld „kommentar“.',
+    );
+    await send();
+    await expect(banner).toContainText('Bericht gesendet.');
+    for (const c of [first, second]) {
+      await expect(chip(page, c.id)).toHaveAccessibleName(/– gesendet/);
+    }
+
+    expect(reports.received).toHaveLength(3);
+    const body = reports.received[2] as {
+      format: string;
+      app: string;
+      version: string;
+      stand: string;
+      tests: { id: string; ergebnis: string; sekunden?: number; schritte?: unknown }[];
+    };
+    expect(body).toMatchObject({ format: 'testbericht/1', app: 'fragebogen' });
+    expect(body.version).toMatch(/^\d{1,3}\.\d{1,3}\.\d{1,3}$/);
+    expect(body.stand).toMatch(/^[0-9a-f]{7,40}$/);
+    expect(Object.keys(body).sort()).toEqual(['app', 'format', 'stand', 'tests', 'version']);
+    const byId = new Map(body.tests.map((t) => [t.id, t]));
+    expect(byId.get(first.id)).toEqual({
+      id: first.id,
+      ergebnis: 'bestanden',
+      sekunden: expect.any(Number) as unknown,
+    });
+    expect(byId.get(second.id)).toEqual({
+      id: second.id,
+      ergebnis: 'nicht bestanden',
+      sekunden: expect.any(Number) as unknown,
+      schritte: [{ nr: 2, grund: 'haengt' }],
+    });
+    const untested = CASES.filter((c) => c !== first && c !== second && /^MT-/.test(c.id));
+    for (const c of untested)
+      expect(byId.get(c.id)).toEqual({ id: c.id, ergebnis: 'nicht getestet' });
+
+    // Sent once is enough; a changed result goes again.
+    await header(page).getByRole('button', { name: 'Bericht senden' }).click();
+    await expect(banner).toContainText('Es gibt kein neues Ergebnis zu senden.');
+
+    const text = await copy(page, testInfo.outputPath('kopie.pdf'));
+    expect(text).toContain(`${second.id} ${plain(second.title)}`);
+    expect(text).toContain('Schritt 2: Lädt nicht oder hängt');
+    expect(text).toMatch(/Ergebnis: Bestanden · Zeit \d+ Min\. · gesendet \d\d:\d\d Uhr/);
+    // A browser may log the two refusals the test zone gave on purpose (Chromium does); nothing else.
+    expect(seen.errors.filter((error) => !/status of (404|400)\b/.test(error))).toEqual([]);
+    seen.errors.length = 0;
     await expectQuiet(page, seen);
   });
 
-  test('a test begun one day and rated the next asks to correct its duration', async ({
+  test('the clock runs while a test is open, pauses outside it and ends with the result', async ({
     context,
     page,
-  }, testInfo) => {
-    await page.clock.install({ time: new Date('2026-11-01T14:42:00+01:00') });
+  }) => {
+    await page.clock.install({ time: new Date('2026-11-15T14:00:00+01:00') });
     const testCase = needed(HOME_CASE, 'that begins on the start page');
     await open(context, page);
+    await openCase(page, testCase);
+    await page.clock.setSystemTime(new Date('2026-11-15T14:05:00+01:00'));
+    await toOverview(page);
+    // An hour in the overview does not count.
+    await page.clock.setSystemTime(new Date('2026-11-15T15:05:00+01:00'));
     await chip(page, testCase.id).click();
-    await choose(page, 'App so lassen');
-    await panel(page).getByRole('button', { name: 'Test beginnen (Zeit läuft)' }).click();
-    await page.clock.setSystemTime(new Date('2026-11-02T10:00:00+01:00'));
-    await result(page, '✓ Wie erwartet').click();
-    await expect(panel(page)).toContainText(
-      'Gemessen sind 1158 Minuten (Beginn 01.11. 14:42 Uhr). Bitte tragen Sie die Dauer ein, die der Test wirklich gebraucht hat – höchstens 600 Minuten.',
-    );
-    const text = await report(page, testInfo.outputPath('bericht.pdf'));
-    expect(text).toContain('Beginn 01.11. 14:42 Uhr');
+    await page.clock.setSystemTime(new Date('2026-11-15T15:07:00+01:00'));
+    await result(page, '✓ Bestanden').click();
+    await expect(panel(page).getByText('Zeit: 7 Min.', { exact: true })).toBeVisible();
+    // After the result the clock stands still.
+    await page.clock.setSystemTime(new Date('2026-11-15T16:00:00+01:00'));
+    await toOverview(page);
+    await chip(page, testCase.id).click();
+    await expect(panel(page).getByText('Zeit: 7 Min.', { exact: true })).toBeVisible();
   });
 });
 
 /** The report on a phone: downloaded at once, or saved from the "Speichern" the page offers. */
 async function phoneReport(page: Page, path: string): Promise<string> {
   const downloaded = page.waitForEvent('download');
-  await header(page).getByRole('button', { name: 'Testbericht herunterladen' }).click();
+  await header(page).getByRole('button', { name: 'Kopie als PDF' }).click();
   const save = page.getByRole('button', { name: 'Speichern', exact: true });
   const file = await Promise.race([
     downloaded,
@@ -698,11 +779,9 @@ async function onPhone(page: Page, context: BrowserContext, path: string): Promi
   const env = testEnvironment(testCase);
   const point = env.kind === 'start' ? env : undefined;
   await tab('Testanleitung').tap();
-  await panel(page).getByLabel('Ihr Name (erscheint im Testbericht)').fill('Probe Handy');
   await chip(page, testCase.id).tap();
   await choose(page, 'Mit diesem Einstieg neu starten');
   await expect(tab('Testanleitung')).toHaveAttribute('aria-selected', 'true');
-  await panel(page).getByRole('button', { name: 'Test beginnen (Zeit läuft)' }).tap();
   await panel(page)
     .getByRole('button', { name: `▶ ${point?.text ?? ''}` })
     .first()
@@ -716,9 +795,9 @@ async function onPhone(page: Page, context: BrowserContext, path: string): Promi
   ).toBeVisible();
 
   await tab('Testanleitung').tap();
-  await result(page, '✓ Wie erwartet').tap();
+  await result(page, '✓ Bestanden').tap();
   const text = await phoneReport(page, path);
-  expect(text).toContain('Tester: Probe Handy');
+  expect(text).toContain(`${testCase.id} ${plain(testCase.title)}`);
   await expectQuiet(page, seen);
   return text;
 }

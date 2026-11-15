@@ -1142,6 +1142,47 @@ button.test-chip[aria-current='true'] {
   color: var(--muted);
 }
 
+/* A failed test: per step a reason from the fixed list (2026-11-15, no free text). */
+.test-steps {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+}
+
+.test-steps legend {
+  font-weight: 600;
+  padding: 0 0.25rem;
+}
+
+.test-step-reason {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.4rem 0;
+}
+
+.test-step-reason span {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.test-step-reason select {
+  font: inherit;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.test-steps-missing {
+  color: var(--danger);
+  margin: 0.25rem 0;
+}
+
 @media (max-width: 900px) {
   .test-header {
     position: static;

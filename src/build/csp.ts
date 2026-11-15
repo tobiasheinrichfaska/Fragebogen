@@ -17,6 +17,11 @@ export interface CspOptions {
    * Connections stay forbidden; the service worker is the only script besides the inlined one.
    */
   webApp?: boolean;
+  /**
+   * The test build sends its test reports to its own address (`POST /_zugang/bericht`, Testumgebung
+   * docs/testbericht.md): `connect-src 'self'`. Every other build connects nowhere.
+   */
+  report?: boolean;
 }
 
 /** The policy for these inline script and style hashes. */
@@ -32,7 +37,7 @@ export function cspFor(
     `style-src ${styleHashes.join(' ')}`,
     own ? "img-src 'self' data: blob:" : 'img-src data: blob:',
     'font-src data:',
-    "connect-src 'none'",
+    options.report === true ? "connect-src 'self'" : "connect-src 'none'",
     own ? "worker-src 'self'" : "worker-src 'none'",
     ...(own ? ["manifest-src 'self'"] : []),
     "object-src 'none'",

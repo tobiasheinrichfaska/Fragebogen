@@ -290,3 +290,20 @@ export function startLinksOf(file: ManualTestFile): string[] {
     inlineMarkdown(text).flatMap((token) => (token.kind === 'start' ? [token.id] : [])),
   );
 }
+
+/**
+ * The steps of a test as the report numbers them (`schritte[].nr`, Testumgebung
+ * docs/testbericht.md): the items of the numbered list under „Schritte“, as plain text. Every
+ * manual test has exactly one such list (guarded by a test), so the numbers are those printed.
+ */
+export function stepsOf(testCase: Pick<ManualTestCase, 'parts'>): string[] {
+  return testCase.parts
+    .filter((part) => part.label === 'Schritte')
+    .flatMap((part) => part.blocks)
+    .flatMap((block) => (block.kind === 'list' && block.ordered ? block.items : []))
+    .map((item) =>
+      inlineMarkdown(item)
+        .map((token) => token.text)
+        .join(''),
+    );
+}

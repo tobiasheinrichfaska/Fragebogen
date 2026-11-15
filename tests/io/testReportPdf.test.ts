@@ -1,18 +1,12 @@
-// The tester's report of the test page (Tobias 2026-11-01): results, times (with the correction)
-// and comments of the tests worked on, totals, the closing comment — readable PDF/A, nothing active.
+// The tester's copy of a report (since 2026-11-15 without free text): results, the measured time
+// and the failed steps with their reasons, the totals — readable PDF/A, nothing active, no name.
 import { readFileSync } from 'node:fs';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { readPdfText, type PdfJsLike } from '../../src/io/pdfReader';
 import type { PdfFonts } from '../../src/io/pdfWriter';
 import { writeTestReportPdf } from '../../src/io/testReportPdf';
 import { testReportFileName } from '../../src/logic/fileNames';
-import {
-  correctDuration,
-  emptyRun,
-  setComment,
-  setResult,
-  startTest,
-} from '../../src/logic/testRun';
+import { emptyRun, markReported, openTest, setResult, setStep } from '../../src/logic/testRun';
 import { keepForPdfa } from '../support/pdfaOut';
 
 const font = (name: string) =>
@@ -23,81 +17,70 @@ const FONTS: PdfFonts = {
   mono: font('NotoSansMono-Regular.subset.ttf'),
 };
 
-const T0 = '2026-11-01T10:00:00.000+01:00';
-let run = { ...emptyRun(), tester: 'Erika Mustermann', comment: 'Gut verständlich.' };
-run = setResult(
-  startTest(run, 'MT-13', T0),
+const T0 = '2026-11-15T10:00:00.000+01:00';
+let run = setResult(
+  openTest(emptyRun(), 'MT-13', T0),
   'MT-13',
   'nichtBestanden',
-  '2026-11-01T10:07:30.000+01:00',
+  '2026-11-15T10:07:30.000+01:00',
 );
-run = correctDuration(run, 'MT-13', 5);
-run = setComment(run, 'MT-13', 'Text zu lang.');
-run = setResult(run, 'MT-14', 'bestanden', '2026-11-01T10:10:00.000+01:00', 'aaaaaaaaaaaa');
-run = setComment(run, 'MT-15', 'Nicht geschafft, Datei nicht gefunden.');
-// iPhone report 2026-11-06: begun days before the result, the times read as minutes only.
-run = setResult(
-  startTest(run, 'MT-17', '2026-10-27T14:42:00.000+01:00'),
-  'MT-17',
-  'bestanden',
-  '2026-11-01T10:20:00.000+01:00',
-);
+run = setStep(run, 'MT-13', 2, 'fehlermeldung');
+run = setStep(run, 'MT-13', 3, 'darstellung');
+run = setResult(run, 'MT-14', 'bestanden', '2026-11-15T10:10:00.000+01:00', 'aaaaaaaaaaaa');
+run = markReported(run, ['MT-14'], '2026-11-15T10:30:00.000+01:00');
+run = openTest(run, 'MT-15', T0);
 const CASES = [
   {
     id: 'MT-13',
     title: 'Hinweise und „Vorerst überspringen“ (Person)',
     area: 'Ausfüllen (Interview)',
+    steps: ['Den Fragebogen öffnen.', '„Weiter“ tippen.', 'Die Hinweise lesen.'],
   },
   { id: 'MT-14', title: 'Folgefragen', area: 'Ausfüllen (Interview)', version: 'bbbbbbbbbbbb' },
   { id: 'MT-15', title: 'Zwischenstand speichern', area: 'Ausfüllen (Interview)' },
-  { id: 'MT-16', title: 'Nicht bearbeitet', area: 'Ausfüllen (Interview)' },
-  { id: 'MT-17', title: 'Alle Daten löschen', area: 'Ausfüllen (Interview)' },
 ];
 
-describe('test report as PDF', () => {
+describe('test report copy as PDF', () => {
   let written: Awaited<ReturnType<typeof writeTestReportPdf>>;
+  let all = '';
   beforeAll(async () => {
     written = await writeTestReportPdf(
       {
         run,
         cases: CASES,
         appVersion: '0.1.0',
+        appCommit: 'd4ce28b0a1b2',
         device: 'iPhone · Safari 18 · Bildschirm 390 × 844',
-        created: { local: '2026-11-01T11:00:00.000+01:00', utc: '2026-11-01T10:00:00.000Z' },
+        created: { local: '2026-11-15T11:00:00.000+01:00', utc: '2026-11-15T10:00:00.000Z' },
       },
       FONTS,
     );
     keepForPdfa('testbericht.pdf', written.bytes);
+    all = (await readPdfText(pdfjs as unknown as PdfJsLike, written.bytes)).lines.join('\n');
   }, 60_000);
 
-  it('is named after the tester and the day', () => {
-    expect(written.fileName).toBe('Testbericht_Erika_Mustermann_2026_11_01.pdf');
-    expect(testReportFileName('  ', '2026-11-01')).toBe('Testbericht_Tester_2026_11_01.pdf');
+  it('is named after the day and time, never after a person', () => {
+    expect(written.fileName).toBe('Testbericht_2026_11_15_1100.pdf');
+    expect(testReportFileName('2026-11-01T09:05:00+01:00')).toBe('Testbericht_2026_11_01_0905.pdf');
   });
 
-  it('lists results, times with the correction, comments and the totals', async () => {
-    const text = await readPdfText(pdfjs as unknown as PdfJsLike, written.bytes);
-    const all = text.lines.join('\n');
+  it('lists results, the measured time, the failed steps with their reasons and the totals', () => {
     for (const expected of [
-      'Tester: Erika Mustermann · erstellt am 01.11.2026, 11:00 Uhr laut Gerät · App 0.1.0',
-      // 2026-11-05: the report named no device, so an iPhone test could not be told apart.
+      'Erstellt am 15.11.2026, 11:00 Uhr laut Gerät · App 0.1.0 (Stand d4ce28b0a1b2)',
       'Gerät laut Browser: iPhone · Safari 18 · Bildschirm 390 × 844',
-      'Getestet: 3 (wie erwartet 2, klappt nicht 1)',
+      'Getestet: 2 (bestanden 1, nicht bestanden 1) · Zeit 8 Min.',
       'MT-13 Hinweise und „Vorerst überspringen“ (Person)',
-      'Ergebnis: klappt nicht · Beginn 10:00 Uhr · Ende 10:07 Uhr · gemessen 8 Min. · korrigiert 5 Min. (gezählt 5 Min.)',
-      'Kommentar: Text zu lang.',
-      'Ergebnis: wie erwartet · Beginn 10:10 Uhr · Ende 10:10 Uhr · gemessen 1 Min.',
+      'Ergebnis: Nicht bestanden · Zeit 8 Min.',
+      'Schritt 2: Fehlermeldung – „Weiter“ tippen.',
+      'Schritt 3: Darstellung falsch – Die Hinweise lesen.',
+      'Ergebnis: Bestanden · Zeit 0 Min. · gesendet 10:30 Uhr',
       'Hinweis: Der Test wurde nach diesem Ergebnis geändert.',
-      'Ergebnis: nicht abgeschlossen',
-      'Kommentar: Nicht geschafft, Datei nicht gefunden.',
-      'Ergebnis: wie erwartet · Beginn 27.10. 14:42 Uhr · Ende 10:20 Uhr · gemessen 6938 Min.',
-      'Gesamteindruck',
-      'Gut verständlich.',
       'Seite 1 von 1',
     ]) {
       expect(all).toContain(expected);
     }
-    expect(all).not.toContain('Nicht bearbeitet');
+    expect(all).not.toContain('Zwischenstand speichern');
+    expect(all).not.toMatch(/Tester|Kommentar|Gesamteindruck/);
   });
 
   it('carries PDF/A markers, but no script, attachment or launch action', () => {

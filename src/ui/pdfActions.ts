@@ -6,7 +6,7 @@
 import boldUrl from '../../assets/fonts/NotoSans-SemiBold.subset.ttf?inline';
 import sansUrl from '../../assets/fonts/NotoSans-Regular.subset.ttf?inline';
 import monoUrl from '../../assets/fonts/NotoSansMono-Regular.subset.ttf?inline';
-import { APP_VERSION } from '../appInfo';
+import { APP_COMMIT, APP_VERSION } from '../appInfo';
 import { imageTooLarge, imageTooLargeMessage } from '../logic/imageSize';
 import { APP_CONFIG } from '../config';
 import { deviceForReport, deviceNow, type DeviceNow } from '../io/environment';
@@ -23,7 +23,7 @@ import {
 } from '../io/pdfReader';
 import { writeQuestionnairePdf } from '../io/pdfWriter';
 import { writeSheetPdf, type SheetPdfInput } from '../io/sheetPdf';
-import { writeTestReportPdf } from '../io/testReportPdf';
+import { writeTestReportPdf, type TestReportInput } from '../io/testReportPdf';
 import { readQrCodes } from '../io/qr';
 import { decodePackage, ORIGIN_MESSAGES } from '../logic/dataPackage';
 import { DATA_LINES_MESSAGES, decodeDataLines } from '../logic/dataPages';
@@ -150,7 +150,7 @@ export async function createSheetPdf(
 /** The tester's report of the test page (test folder build only). */
 export async function createTestReportPdf(
   run: TestRun,
-  cases: readonly { id: string; title: string; area: string; version?: string }[],
+  cases: TestReportInput['cases'],
 ): Promise<BannerMessage> {
   try {
     const now = deviceNow();
@@ -159,6 +159,7 @@ export async function createTestReportPdf(
         run,
         cases,
         appVersion: APP_VERSION,
+        appCommit: APP_COMMIT,
         device: deviceForReport(),
         created: { local: now.local, utc: now.utc },
       },
@@ -168,7 +169,7 @@ export async function createTestReportPdf(
     return {
       file,
       tone: 'success',
-      text: `Testbericht „${result.fileName}“ erstellt (${result.pages} Seiten). Bitte per E-Mail an die Kanzlei schicken.`,
+      text: `Kopie des Testberichts „${result.fileName}“ erstellt (${result.pages} Seiten).`,
     };
   } catch (error) {
     return {

@@ -7,6 +7,7 @@ import {
   caseVersion,
   inlineMarkdown,
   parseManualTests,
+  stepsOf,
   testAreaOf,
   testEnvironment,
   textsOf,
@@ -277,6 +278,23 @@ describe('manual_tests/ as the catalogue', () => {
     const mt81 = byId('MT-81').parts[0]?.blocks[0];
     expect(mt81?.kind === 'text' && mt81.text).toContain(
       'einen neuen Fragebogen „Personalfragebogen: Angaben für die Lohnabrechnung“',
+    );
+  });
+
+  // The report names a failed step by its number (Testumgebung docs/testbericht.md, 2026-11-15):
+  // one numbered list under „Schritte“, at most 99 steps, so the numbers are the printed ones.
+  it('numbers the steps of every test in one list, as the report names them', () => {
+    for (const c of cases) {
+      const lists = c.parts
+        .filter((part) => part.label === 'Schritte')
+        .flatMap((part) => part.blocks)
+        .filter((block) => block.kind === 'list' && block.ordered);
+      expect(lists.length, c.id).toBe(1);
+      expect(stepsOf(c).length, c.id).toBeGreaterThan(0);
+      expect(stepsOf(c).length, c.id).toBeLessThanOrEqual(99);
+    }
+    expect(stepsOf(byId('MT-81'))[0]).toBe(
+      'Bei der Steuer-Identifikationsnummer auf „Wo finde ich das?“ tippen.',
     );
   });
 

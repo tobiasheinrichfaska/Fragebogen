@@ -1,16 +1,16 @@
-// The tester's report of a run on the test page (Tobias 2026-11-01): who tested which build when,
-// per test the result, the times (start, end, measured, corrected) and the comment, the totals and a
-// closing comment — a PDF/A-2u to send. Only tests with a result, a start or a comment appear.
+// The tester's copy of a report (since 2026-11-15 without free text, Testumgebung
+// docs/testbericht.md): which build was tested when on which device, per test the result, the time
+// the page measured and the failed steps with their reasons, the totals — a PDF/A-2u. The report
+// itself goes to the test zone (io/testReportSend.ts); the copy carries no name.
 import fontkit from '@cantoo/fontkit';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { testReportFileName } from '../logic/fileNames';
 import { formatLocalDateTime } from '../logic/time';
 import {
   RESULT_LABELS,
+  STEP_REASON_LABELS,
   changedSince,
-  countedMinutes,
-  inReport,
-  measuredMinutes,
+  minutesOf,
   testTime,
   totalsOf,
   type TestRun,
@@ -19,14 +19,27 @@ import { Layout, MARGIN, MUTED, printable, type PdfFonts } from './pdfWriter';
 
 export interface TestReportInput {
   run: TestRun;
-  /** `version`: the current caseVersion — a result given for an older text is marked. */
-  cases: readonly { id: string; title: string; area: string; version?: string }[];
+  /**
+   * `version`: the current caseVersion — a result given for an older text is marked; `steps`: the
+   * texts of the numbered steps, to name a failed one.
+   */
+  cases: readonly {
+    id: string;
+    title: string;
+    area: string;
+    version?: string;
+    steps?: readonly string[];
+  }[];
   appVersion: string;
+  /** The commit of the build („Stand“), empty if unknown. */
+  appCommit: string;
   /** Device kind, browser and screen as the browser reports them (`deviceDescription`). */
   device: string;
   /** Device time of creation. */
   created: { local: string; utc: string };
 }
+
+const shortened = (text: string) => (text.length > 90 ? `${text.slice(0, 89)}…` : text);
 
 export async function writeTestReportPdf(
   input: TestReportInput,
@@ -41,9 +54,7 @@ export async function writeTestReportPdf(
     mono: await doc.embedFont(fontBytes.mono, { subset: true }),
   };
   const created = new Date(input.created.utc);
-  const tester = run.tester.trim() || 'ohne Namen';
-  doc.setTitle(`Testbericht Fragebogen – ${tester}`);
-  doc.setAuthor(tester);
+  doc.setTitle('Testbericht Fragebogen');
   doc.setCreator(`Fragebogen ${input.appVersion}`);
   doc.setProducer(`Fragebogen ${input.appVersion}`);
   doc.setLanguage('de-DE');
@@ -53,51 +64,47 @@ export async function writeTestReportPdf(
   const layout = new Layout(doc, fonts);
   const small = { size: 8.5, color: MUTED } as const;
   const totals = totalsOf(run);
+  const stand = input.appCommit === '' ? '' : ` (Stand ${input.appCommit})`;
   layout.text('Testbericht Fragebogen-Test', { font: fonts.bold, size: 16, gap: 2 });
   layout.text(
-    `Tester: ${tester} · erstellt am ${formatLocalDateTime(input.created.local)} laut Gerät · App ${input.appVersion}`,
+    `Erstellt am ${formatLocalDateTime(input.created.local)} laut Gerät · App ${input.appVersion}${stand}`,
     { ...small, gap: 2 },
   );
   layout.text(`Gerät laut Browser: ${input.device}`, { ...small, gap: 6 });
   layout.text(
-    `Getestet: ${totals.tested} (wie erwartet ${totals.byResult.bestanden}, ` +
-      `klappt nicht ${totals.byResult.nichtBestanden}) · Zeit gemessen ${totals.measuredMinutes} Min., ` +
-      `gezählt (mit Korrekturen) ${totals.countedMinutes} Min.`,
+    `Getestet: ${totals.tested} (bestanden ${totals.byResult.bestanden}, ` +
+      `nicht bestanden ${totals.byResult.nichtBestanden}) · Zeit ${minutesOf(totals.seconds)} Min.`,
     { font: fonts.bold, size: 10, gap: 4 },
   );
 
   for (const testCase of input.cases) {
     const entry = run.entries[testCase.id];
-    if (!entry || !inReport(entry)) continue;
+    if (!entry?.result) continue;
     layout.heading(`${testCase.id} ${testCase.title}`, 10);
     layout.text(testCase.area, small);
-    const measured = measuredMinutes(entry);
-    const clock = (local: string | undefined) => testTime(local, input.created.local);
+    const sent =
+      entry.reported === undefined
+        ? ''
+        : ` · gesendet ${testTime(entry.reported, input.created.local)}`;
     layout.text(
-      `Ergebnis: ${entry.result ? RESULT_LABELS[entry.result] : 'nicht abgeschlossen'} · Beginn ${clock(entry.started)} · ` +
-        `Ende ${clock(entry.ended)} · gemessen ${measured === undefined ? '–' : `${measured} Min.`}` +
-        (entry.correctedMinutes === undefined
-          ? ''
-          : ` · korrigiert ${entry.correctedMinutes} Min. (gezählt ${countedMinutes(entry)} Min.)`),
+      `Ergebnis: ${RESULT_LABELS[entry.result]} · Zeit ${minutesOf(entry.seconds)} Min.${sent}`,
       { size: 9 },
     );
-    if (testCase.version !== undefined && changedSince(entry, testCase.version)) {
-      layout.text('Hinweis: Der Test wurde nach diesem Ergebnis geändert.', {
-        ...small,
-        size: 8.5,
-      });
+    for (const step of entry.steps ?? []) {
+      const text = testCase.steps?.[step.nr - 1];
+      layout.text(
+        `Schritt ${step.nr}: ${STEP_REASON_LABELS[step.reason]}${text === undefined ? '' : ` – ${shortened(text)}`}`,
+        { size: 9 },
+      );
     }
-    if (entry.comment.trim() !== '') layout.text(`Kommentar: ${entry.comment.trim()}`, { size: 9 });
-  }
-
-  if (run.comment.trim() !== '') {
-    layout.heading('Gesamteindruck', 10);
-    layout.text(run.comment.trim(), { size: 9 });
+    if (testCase.version !== undefined && changedSince(entry, testCase.version)) {
+      layout.text('Hinweis: Der Test wurde nach diesem Ergebnis geändert.', small);
+    }
   }
 
   const pages = doc.getPages();
   pages.forEach((page, i) => {
-    page.drawText(printable(`Testbericht · ${tester} · Seite ${i + 1} von ${pages.length}`), {
+    page.drawText(printable(`Testbericht · Seite ${i + 1} von ${pages.length}`), {
       x: MARGIN,
       y: 28,
       size: 7.5,
@@ -107,9 +114,5 @@ export async function writeTestReportPdf(
   });
   doc.convertToPDFA({ conformance: '2U' });
   const bytes = await doc.save({ useObjectStreams: false });
-  return {
-    bytes,
-    fileName: testReportFileName(run.tester, input.created.local.slice(0, 10)),
-    pages: pages.length,
-  };
+  return { bytes, fileName: testReportFileName(input.created.local), pages: pages.length };
 }

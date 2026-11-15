@@ -5,11 +5,14 @@
 // the app with the environment that suits it. A link start point opens the app as its bookmark link
 // would; every other start leaves no link in the address bar for the next test.
 import { Fragment, useRef, useState, type ReactNode } from 'react';
+import { APP_COMMIT, APP_VERSION } from '../../appInfo';
 import { BUNDLED_FORMS } from '../../io/bundledForms';
 import { deviceNow, newNonce, newQuestionnaireId, systemNoteFor } from '../../io/environment';
+import { canSendReport, sendTestReport } from '../../io/testReportSend';
 import {
   caseVersion,
   inlineMarkdown,
+  stepsOf,
   testAreaOf,
   testEnvironment,
   type ManualTestCase,
@@ -21,7 +24,7 @@ import {
   isLinkStart,
   type StartEnvironment,
 } from '../../logic/startPoints';
-import { forReport, markReported, reportCounts, type TestRun } from '../../logic/testRun';
+import { markReported, reportPlan, type TestRun } from '../../logic/testRun';
 import type { SystemNote } from '../../logic/model';
 import type { PreparedStart } from '../App';
 import { Banner, type BannerMessage } from '../common';
@@ -264,42 +267,60 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
     }
   };
 
-  const writeReport = async (withReported: boolean) => {
-    const message = await createTestReportPdf(
-      forReport(run, withReported),
-      TEST_CASES.map((c) => ({
-        id: c.id,
-        title: plain(c.title),
-        area: c.area,
-        version: caseVersion(c),
-      })),
+  // Tobias 2026-11-15: no free text; the report goes to the test zone (Testumgebung
+  // docs/testbericht.md), a PDF copy stays for the tester.
+  const send = () => {
+    const plan = reportPlan(
+      latest.current,
+      TEST_CASES.map((c) => c.id),
+      { app: 'fragebogen', version: APP_VERSION, stand: APP_COMMIT },
     );
-    setBanner(message);
-    // Tobias 2026-11-07: tests in a report leave the next one by themselves.
-    if (message.tone === 'success') update(markReported(latest.current, deviceNow().local));
-  };
-  const report = () => {
-    const counts = reportCounts(run);
-    if (counts.reported === 0) {
-      void writeReport(false);
+    if (!plan.ok) {
+      setBanner({ tone: 'error', text: plan.problem });
       return;
     }
+    if (!canSendReport()) {
+      setBanner({
+        tone: 'error',
+        text: 'Senden geht nur im Testbereich im Internet (https). Hier können Sie eine Kopie als PDF herunterladen.',
+      });
+      return;
+    }
+    const tests = plan.body.tests;
+    const count = (ergebnis: string) => tests.filter((t) => t.ergebnis === ergebnis).length;
     setQuestion({
-      title: 'Schon gemeldete Tests mitnehmen?',
+      title: 'Bericht senden?',
       text: [
-        `${counts.reported} ${counts.reported === 1 ? 'Test stand' : 'Tests standen'} schon in einem früheren Testbericht; ${counts.open} ${counts.open === 1 ? 'ist' : 'sind'} neu oder geändert.`,
-        'Sollen die schon gemeldeten Tests wieder in diesen Bericht?',
+        `Bestanden: ${count('bestanden')} · nicht bestanden: ${count('nicht bestanden')} · nicht getestet: ${count('nicht getestet')}.`,
+        'Gesendet werden nur die Ergebnisse, die Zeiten und die Schritte mit Problem – kein Name, kein Text.',
       ],
       choices: [
         { label: 'Abbrechen' },
-        { label: 'Ja, alle mitnehmen', onChoose: () => void writeReport(true) },
         {
-          label: counts.open === 0 ? 'Nein (Bericht ohne Tests)' : 'Nein, nur neue und geänderte',
+          label: 'Senden',
           primary: true,
-          onChoose: () => void writeReport(false),
+          onChoose: () =>
+            void sendTestReport(plan.body).then((outcome) => {
+              setBanner({ tone: outcome.sent ? 'success' : 'error', text: outcome.message });
+              if (outcome.sent) update(markReported(latest.current, plan.sent, deviceNow().local));
+            }),
         },
       ],
     });
+  };
+  const copy = async () => {
+    setBanner(
+      await createTestReportPdf(
+        latest.current,
+        TEST_CASES.map((c) => ({
+          id: c.id,
+          title: plain(c.title),
+          area: c.area,
+          version: caseVersion(c),
+          steps: stepsOf(c),
+        })),
+      ),
+    );
   };
 
   return (
@@ -313,8 +334,11 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
           <button type="button" onClick={askReset}>
             App vollständig zurücksetzen
           </button>
-          <button type="button" className="primary" onClick={report}>
-            Testbericht herunterladen
+          <button type="button" onClick={() => void copy()}>
+            Kopie als PDF
+          </button>
+          <button type="button" className="primary" onClick={send}>
+            Bericht senden
           </button>
         </div>
       </header>
@@ -351,7 +375,7 @@ export function TestShell({ children }: { children: (start?: PreparedStart) => R
             onRun={update}
             onOpenTest={openTest}
             onStart={openStart}
-            onReport={report}
+            onSend={send}
           />
         </aside>
         <div className="test-app">

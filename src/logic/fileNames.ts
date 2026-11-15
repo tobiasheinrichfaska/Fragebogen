@@ -89,7 +89,10 @@ export function sheetFileName(
   return `${safeFileName(parts)}.pdf`;
 }
 
-/** Report of a tester's run, e.g. "Testbericht_Erika_M_2026-11-01.pdf". */
-export function testReportFileName(tester: string, day: string): string {
-  return `${safeFileName(['Testbericht', tester.trim() || 'Tester', day])}.pdf`;
+/**
+ * Copy of a tester's report, e.g. "Testbericht_2026_11_01_1430.pdf" — no name since 2026-11-15:
+ * the test zone knows the tester from the login, the page asks for none.
+ */
+export function testReportFileName(local: string): string {
+  return `${safeFileName(['Testbericht', local.slice(0, 10), local.slice(11, 16).replace(':', '')])}.pdf`;
 }

@@ -155,8 +155,7 @@ automatischen Tests in `tests/e2e/handtests/08_testbereich.spec.ts`.
 
 **Schritte:**
 
-1. Am Handy den Testordner öffnen und bei „Ihr Name (erscheint im Testbericht)“ den eigenen Namen
-   eintragen.
+1. Am Handy den Testbereich öffnen.
    - **Danach:** Oben die Umschalter **„Testanleitung“** und **„App“**, darunter die Testübersicht.
      Alles lässt sich ohne Zoomen lesen und antippen.
 2. Ein Kästchen antippen und bei der Frage **„App so lassen“** tippen.
@@ -169,12 +168,17 @@ automatischen Tests in `tests/e2e/handtests/08_testbereich.spec.ts`.
      ein.
 5. Oben auf **„Testanleitung“** wechseln, dann wieder auf **„App“**.
    - **Danach:** Die Eingabe in der App ist noch da.
-6. Auf **„Testanleitung“** wechseln, **„✓ Wie erwartet“** tippen und ganz oben auf der Seite
-   **„Testbericht herunterladen“** tippen.
+6. Auf **„Testanleitung“** wechseln, **„✗ Nicht bestanden“** tippen und bei Schritt 1 einen Grund
+   wählen.
+   - **Danach:** Die Auswahl der Gründe lässt sich am Handy bedienen und ist ganz zu lesen.
+7. **„✓ Bestanden“** tippen und ganz oben auf der Seite **„Kopie als PDF“** tippen.
    - **Danach:** Die PDF lässt sich öffnen, teilen oder speichern. Oben steht „Gerät laut Browser:
      iPhone · Safari …“ bzw. „Android-Smartphone · Chrome …“.
-7. Am iPad die Schritte 1, 2 und 6 wiederholen.
-   - **Danach:** _Nicht offensichtlich:_ Safari meldet sich am iPad wie ein Mac; im Testbericht
+8. Ganz oben **„Bericht senden“** tippen und mit **„Senden“** bestätigen.
+   - **Danach:** „Bericht gesendet.“ – oder, solange der Testbereich noch keine Berichte annimmt,
+     der Hinweis mit „Antwort 404“.
+9. Am iPad die Schritte 1, 2 und 7 wiederholen.
+   - **Danach:** _Nicht offensichtlich:_ Safari meldet sich am iPad wie ein Mac; in der Kopie
      steht trotzdem „iPad“.
 
 ---

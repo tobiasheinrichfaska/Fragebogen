@@ -85,13 +85,18 @@ ankommen.
 - **Verweise auf andere Tests** (z. B. „siehe MT-37“) sind anklickbar und nur zum Nachlesen; nötig
   ist der andere Test nie.
 - **Kopfzeile:** „App neu starten“, „App vollständig zurücksetzen“ (löscht alles, was die App im
-  Browser gespeichert hat; die Testergebnisse bleiben) und „Testbericht herunterladen“.
+  Browser gespeichert hat; die Testergebnisse bleiben), „Kopie als PDF“ und „Bericht senden“.
 - **„Nicht im Testbereich“:** Manche Tests gehen nur mit der heruntergeladenen Datei oder nur am
   Kanzlei-PC (z. B. MT-01, MT-82–84). Ihr Kästchen ist in der Testübersicht blasser, der Test nennt den Grund.
 - **„Fassung mit Entwürfen“** ist im Testbereich schon geladen; der Hinweis auf
   `npm run build:preview` gilt nur für Entwickler.
-- Am Ende **„Testbericht herunterladen“** und per E-Mail an die Kanzlei. Schon gemeldete Tests
-  fehlen im nächsten Bericht, außer Sie nehmen sie beim Herunterladen mit.
+- **Ergebnis (seit 15.11.2026 ohne Freitext):** je Test **„Bestanden“** oder **„Nicht
+  bestanden“**; bei „Nicht bestanden“ wählen Sie die Schritte mit Problem, je mit einem Grund aus
+  der Liste. Die Zeit misst die Seite selbst: Sie läuft, solange der Test offen ist, und endet mit
+  dem Ergebnis.
+- Am Ende **„Bericht senden“**: Er geht an den Testbereich, mit Ihrem Login als Absender. Er enthält
+  nur Ergebnisse, Zeiten und Schritte, keinen Namen und keinen Text. Ein gesendetes Ergebnis kommt
+  erst wieder mit, wenn Sie es ändern. „Kopie als PDF“ ist eine Kopie für Sie.
 
 ## Für alle, die Tests schreiben (Format seit 06.11.2026)
 

@@ -1,81 +1,116 @@
-// A tester's run on the test page (Tobias 2026-11-01): per test a result, a comment and the time —
-// start and end measured, the duration correctable by the tester; the whole run summed up. Pure
-// state transitions; the page keeps the run in its own browser storage and prints it as a PDF.
+// A tester's run on the test page. Since 2026-11-15 without any free text (Tobias: „es zählt nur
+// noch, welche Tests bestehen oder nicht bestehen und wenn sie nicht bestehen, in welchen Schritten
+// sie nicht bestehen“; format: Testumgebung docs/testbericht.md, `testbericht/1`): per test the
+// result, the seconds the page measured and, for a failed test, the steps with a reason from a fixed
+// list. The clock runs while a test is open and has no result; leaving the test pauses it, the
+// result ends it — no correction by hand. Pure state transitions; the page keeps the run in its own
+// browser storage, sends it to the test zone and prints a copy.
 
-// Two results (Tobias 2026-11-07: "ja oder nein … teilweise kann über den Text kommen"); the keys
-// stay those stored since 2026-11-01.
 export const RESULTS = ['bestanden', 'nichtBestanden'] as const;
 export type TestResult = (typeof RESULTS)[number];
 
 export const RESULT_LABELS: Readonly<Record<TestResult, string>> = {
-  bestanden: 'wie erwartet',
-  nichtBestanden: 'klappt nicht',
+  bestanden: 'Bestanden',
+  nichtBestanden: 'Nicht bestanden',
 };
 
-/** "teilweise", stored until 2026-11-07, reads as "klappt nicht"; the comment says what worked. */
-const STORED_RESULTS: Readonly<Record<string, TestResult>> = {
-  bestanden: 'bestanden',
-  teilweise: 'nichtBestanden',
-  nichtBestanden: 'nichtBestanden',
+/** The fixed reasons of a failed step, keys as the report sends them. */
+export const STEP_REASONS = [
+  'anderes-ergebnis',
+  'fehlermeldung',
+  'fehlt',
+  'haengt',
+  'darstellung',
+] as const;
+export type StepReason = (typeof STEP_REASONS)[number];
+
+export const STEP_REASON_LABELS: Readonly<Record<StepReason, string>> = {
+  'anderes-ergebnis': 'Anderes Ergebnis als erwartet',
+  fehlermeldung: 'Fehlermeldung',
+  fehlt: 'Knopf oder Text fehlt',
+  haengt: 'Lädt nicht oder hängt',
+  darstellung: 'Darstellung falsch',
 };
+
+export interface FailedStep {
+  /** The number of the step in the manual test (1 … 99). */
+  nr: number;
+  reason: StepReason;
+}
 
 export interface TestEntry {
-  /** ISO times from the device clock. */
-  started?: string;
-  ended?: string;
+  /** Seconds the test was open before `openedAt` (whole seconds, at most a day). */
+  seconds: number;
+  /** While the test is open and has no result: when the clock started this time (ISO). */
+  openedAt?: string;
   result?: TestResult;
-  comment: string;
-  /** The tester's own duration in minutes, when the measured one is wrong (a break, a phone call). */
-  correctedMinutes?: number;
+  /** Only with „nicht bestanden“: the steps with a problem, by number. */
+  steps?: FailedStep[];
   /** caseVersion of the test text the result was given for (12 hex digits). */
   version?: string;
-  /**
-   * When the test went into a report (ISO time): the list still shows it done, the next report
-   * leaves it out until its result, comment or duration changes — or the tester takes it in again.
-   */
+  /** When the result was sent (ISO): the next report leaves it out until it changes. */
   reported?: string;
 }
 
-/** The longest duration a tester can enter; a longer measured one spans a break. */
-export const LONGEST_TEST_MINUTES = 600;
-
 export interface TestRun {
-  tester: string;
   entries: Record<string, TestEntry>;
-  comment: string;
 }
 
-export const emptyRun = (): TestRun => ({ tester: '', entries: {}, comment: '' });
+/** The longest time a report may name for one test (`tests[].sekunden`). */
+export const MAX_SECONDS = 86_400;
+export const MAX_STEP = 99;
 
-const entryOf = (run: TestRun, id: string): TestEntry => run.entries[id] ?? { comment: '' };
+export const emptyRun = (): TestRun => ({ entries: {} });
+
+const entryOf = (run: TestRun, id: string): TestEntry => run.entries[id] ?? { seconds: 0 };
 
 const withEntry = (run: TestRun, id: string, entry: TestEntry): TestRun => ({
   ...run,
   entries: { ...run.entries, [id]: entry },
 });
 
-/** A changed entry belongs in the next report again. */
+/** A changed result belongs in the next report again. */
 function unreported(entry: TestEntry): TestEntry {
   const rest: TestEntry = { ...entry };
   delete rest.reported;
   return rest;
 }
 
-/** Whether a report has anything to say about the test: a result, a start or a comment. */
-export function inReport(entry: TestEntry | undefined): boolean {
-  return (
-    entry !== undefined &&
-    (entry.result !== undefined || entry.started !== undefined || entry.comment.trim() !== '')
-  );
+/** The seconds the test has been open so far, the running part up to `now` included. */
+export function elapsedSeconds(entry: TestEntry | undefined, now: string): number {
+  if (!entry) return 0;
+  const running =
+    entry.openedAt === undefined ? 0 : (Date.parse(now) - Date.parse(entry.openedAt)) / 1000;
+  const total = entry.seconds + (Number.isFinite(running) && running > 0 ? running : 0);
+  return Math.min(MAX_SECONDS, Math.floor(total));
 }
 
-/** "Test beginnen": starts the clock; a test begun again keeps its first start. */
-export function startTest(run: TestRun, id: string, now: string): TestRun {
+/** The test is opened: its clock runs, unless it has a result already. */
+export function openTest(run: TestRun, id: string, now: string): TestRun {
   const entry = entryOf(run, id);
-  return entry.started ? run : withEntry(run, id, { ...unreported(entry), started: now });
+  if (entry.result !== undefined || entry.openedAt !== undefined) return run;
+  return withEntry(run, id, { ...entry, openedAt: now });
 }
 
-/** A result stops the clock (started now if the tester never pressed "beginnen"). */
+/** The test is left (another test, the overview, the page closed): its clock pauses. */
+export function leaveTest(run: TestRun, id: string, now: string): TestRun {
+  const entry = run.entries[id];
+  if (entry?.openedAt === undefined) return run;
+  const rest: TestEntry = { ...entry, seconds: elapsedSeconds(entry, now) };
+  delete rest.openedAt;
+  return withEntry(run, id, rest);
+}
+
+/**
+ * The page is hidden (another app, the phone locked): the time so far is stored while the clock
+ * goes on — a page closed for good then loses only the time since.
+ */
+export function checkpoint(run: TestRun, id: string, now: string): TestRun {
+  const entry = run.entries[id];
+  return entry?.openedAt === undefined ? run : openTest(leaveTest(run, id, now), id, now);
+}
+
+/** A result ends the clock. „Bestanden“ drops the failed steps, „nicht bestanden“ keeps them. */
 export function setResult(
   run: TestRun,
   id: string,
@@ -84,15 +119,42 @@ export function setResult(
   version?: string,
 ): TestRun {
   const entry = entryOf(run, id);
-  const rest: TestEntry = unreported(entry);
+  const rest: TestEntry = { ...unreported(entry), seconds: elapsedSeconds(entry, now) };
+  delete rest.openedAt;
   delete rest.version;
+  if (result === 'bestanden') delete rest.steps;
   return withEntry(run, id, {
     ...rest,
-    started: entry.started ?? now,
-    ended: now,
     result,
     ...(version === undefined ? {} : { version }),
   });
+}
+
+/** A step of a failed test with its reason; `undefined` takes it out again. */
+export function setStep(
+  run: TestRun,
+  id: string,
+  nr: number,
+  reason: StepReason | undefined,
+): TestRun {
+  const entry = run.entries[id];
+  if (entry?.result !== 'nichtBestanden' || !Number.isInteger(nr) || nr < 1 || nr > MAX_STEP) {
+    return run;
+  }
+  const others = (entry.steps ?? []).filter((step) => step.nr !== nr);
+  const steps = (reason === undefined ? others : [...others, { nr, reason }]).sort(
+    (a, b) => a.nr - b.nr,
+  );
+  const rest: TestEntry = unreported(entry);
+  delete rest.steps;
+  return withEntry(run, id, steps.length === 0 ? rest : { ...rest, steps });
+}
+
+/** Back to „nicht getestet“: result, steps and time gone; an open test starts its clock anew. */
+export function resetTest(run: TestRun, id: string, now?: string): TestRun {
+  const entries = Object.fromEntries(Object.entries(run.entries).filter(([key]) => key !== id));
+  const reset = { ...run, entries };
+  return now === undefined ? reset : openTest(reset, id, now);
 }
 
 /**
@@ -103,54 +165,22 @@ export function changedSince(entry: TestEntry | undefined, current: string): boo
   return entry?.result !== undefined && entry.version !== undefined && entry.version !== current;
 }
 
-export function setComment(run: TestRun, id: string, comment: string): TestRun {
-  const entry = entryOf(run, id);
-  return withEntry(run, id, {
-    ...(entry.comment === comment ? entry : unreported(entry)),
-    comment,
-  });
+/** Failed tests whose steps are still missing — a report cannot be sent with them. */
+export function missingSteps(run: TestRun): string[] {
+  return Object.entries(run.entries)
+    .filter(([, entry]) => entry.result === 'nichtBestanden' && (entry.steps ?? []).length === 0)
+    .map(([id]) => id)
+    .sort();
 }
 
-/** A corrected duration in whole minutes (0–600); undefined drops the correction. */
-export function correctDuration(run: TestRun, id: string, minutes: number | undefined): TestRun {
-  const entry = entryOf(run, id);
-  const rest: TestEntry = unreported(entry);
-  delete rest.correctedMinutes;
-  if (minutes === undefined) return withEntry(run, id, rest);
-  const clean = Math.min(LONGEST_TEST_MINUTES, Math.max(0, Math.round(minutes)));
-  return withEntry(run, id, { ...rest, correctedMinutes: clean });
-}
-
-/** Back to "not tested": result, times and correction gone, the comment stays. */
-export function resetTest(run: TestRun, id: string): TestRun {
-  return withEntry(run, id, { comment: entryOf(run, id).comment });
-}
-
-/** Measured minutes (rounded up to whole minutes, at least 1), if the test was started and ended. */
-export function measuredMinutes(entry: TestEntry): number | undefined {
-  if (!entry.started || !entry.ended) return undefined;
-  const ms = Date.parse(entry.ended) - Date.parse(entry.started);
-  return Number.isFinite(ms) && ms >= 0 ? Math.max(1, Math.ceil(ms / 60_000)) : undefined;
-}
-
-/** The minutes that count: the tester's correction, else the measured ones. */
-export function countedMinutes(entry: TestEntry): number | undefined {
-  return entry.correctedMinutes ?? measuredMinutes(entry);
-}
-
-/** Measured over more than a tester can enter (a test begun one day, rated another) and uncorrected. */
-export function needsCorrection(entry: TestEntry): boolean {
-  const measured = measuredMinutes(entry);
-  return (
-    entry.correctedMinutes === undefined &&
-    measured !== undefined &&
-    measured > LONGEST_TEST_MINUTES
-  );
+/** Whole minutes for the page (at least 1 once a second counted). */
+export function minutesOf(seconds: number): number {
+  return seconds <= 0 ? 0 : Math.ceil(seconds / 60);
 }
 
 /**
  * A device time for the page and the report: "14:42 Uhr" on the given day, else with the date
- * ("01.11. 14:42 Uhr") — a test begun days before its result read as minutes only (2026-11-06).
+ * ("01.11. 14:42 Uhr").
  */
 export function testTime(local: string | undefined, day: string): string {
   if (local === undefined || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(local)) return '–';
@@ -160,100 +190,232 @@ export function testTime(local: string | undefined, day: string): string {
   return `${local.slice(0, 4) === day.slice(0, 4) ? date : `${date}${local.slice(0, 4)}`} ${clock}`;
 }
 
-/**
- * A report was written (Tobias 2026-11-06, automatic since 2026-11-07): every test it can name is
- * marked now; the list keeps showing it done, the next report leaves it out unless asked to.
- */
-export function markReported(run: TestRun, now: string): TestRun {
-  const entries = Object.fromEntries(
-    Object.entries(run.entries).map(([id, entry]) => [
-      id,
-      inReport(entry) && !entry.reported ? { ...entry, reported: now } : entry,
-    ]),
-  );
-  return { ...run, entries };
-}
-
-/** The run as the next report shows it: without the tests reported before, unless taken in again. */
-export function forReport(run: TestRun, withReported = false): TestRun {
-  const entries = Object.fromEntries(
-    Object.entries(run.entries).filter(
-      ([, entry]) => inReport(entry) && (withReported || entry.reported === undefined),
-    ),
-  );
-  return { ...run, entries };
-}
-
-/** How many tests a report can name: not reported yet / in an earlier report. */
-export function reportCounts(run: TestRun): { open: number; reported: number } {
-  const named = Object.values(run.entries).filter(inReport);
-  const reported = named.filter((entry) => entry.reported !== undefined).length;
-  return { open: named.length - reported, reported };
-}
-
 export interface RunTotals {
   tested: number;
   byResult: Record<TestResult, number>;
-  measuredMinutes: number;
-  countedMinutes: number;
+  seconds: number;
 }
 
 export function totalsOf(run: TestRun): RunTotals {
   const totals: RunTotals = {
     tested: 0,
     byResult: { bestanden: 0, nichtBestanden: 0 },
-    measuredMinutes: 0,
-    countedMinutes: 0,
+    seconds: 0,
   };
   for (const entry of Object.values(run.entries)) {
     if (!entry.result) continue;
     totals.tested += 1;
     totals.byResult[entry.result] += 1;
-    totals.measuredMinutes += measuredMinutes(entry) ?? 0;
-    totals.countedMinutes += countedMinutes(entry) ?? 0;
+    totals.seconds += entry.seconds;
   }
   return totals;
 }
+
+// --- The report (`testbericht/1`) -------------------------------------------------------------
+
+/** The ids a report may name (`tests[].id`); local tests („L-…“) stay out of it. */
+export const REPORT_ID = /^MT-\d{2,3}(-\d{2})?[a-z]?$/;
+export const MAX_REPORT_TESTS = 300;
+
+export interface ReportBuild {
+  app: string;
+  /** Version of the app from package.json. */
+  version: string;
+  /** Commit of the build. */
+  stand: string;
+}
+
+export type ReportTest =
+  | { id: string; ergebnis: 'bestanden'; sekunden: number }
+  | {
+      id: string;
+      ergebnis: 'nicht bestanden';
+      sekunden: number;
+      schritte: { nr: number; grund: StepReason }[];
+    }
+  | { id: string; ergebnis: 'nicht getestet' };
+
+export interface ReportBody extends ReportBuild {
+  format: 'testbericht/1';
+  tests: ReportTest[];
+}
+
+export type ReportPlan =
+  | {
+      ok: true;
+      body: ReportBody;
+      /** The results it sends, to be marked once it arrived. */ sent: string[];
+    }
+  | { ok: false; problem: string };
+
+/**
+ * The report to send: every result not sent yet, and every test of the catalogue without a result
+ * as „nicht getestet“; results sent before stay out (they were counted). Refused while a failed
+ * test names no step, or when there is no new result at all.
+ */
+export function reportPlan(
+  run: TestRun,
+  caseIds: readonly string[],
+  build: ReportBuild,
+): ReportPlan {
+  if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(build.version) || !/^[0-9a-f]{7,40}$/.test(build.stand)) {
+    return {
+      ok: false,
+      problem:
+        'Diese Fassung der App kennt ihre Version oder ihren Stand nicht und kann keinen Bericht senden.',
+    };
+  }
+  const ids = [...new Set(caseIds)].filter((id) => REPORT_ID.test(id));
+  const missing = missingSteps(run).filter((id) => ids.includes(id));
+  if (missing.length > 0) {
+    return {
+      ok: false,
+      problem: `Bei „Nicht bestanden“ fehlt noch der Schritt mit dem Problem: ${missing.join(', ')}.`,
+    };
+  }
+  const tests: ReportTest[] = [];
+  const sent: string[] = [];
+  for (const id of ids) {
+    const entry = run.entries[id];
+    if (entry?.result === undefined) {
+      tests.push({ id, ergebnis: 'nicht getestet' });
+      continue;
+    }
+    if (entry.reported !== undefined) continue;
+    sent.push(id);
+    const sekunden = Math.min(MAX_SECONDS, entry.seconds);
+    tests.push(
+      entry.result === 'bestanden'
+        ? { id, ergebnis: 'bestanden', sekunden }
+        : {
+            id,
+            ergebnis: 'nicht bestanden',
+            sekunden,
+            schritte: (entry.steps ?? []).map((step) => ({ nr: step.nr, grund: step.reason })),
+          },
+    );
+  }
+  if (sent.length === 0) {
+    return { ok: false, problem: 'Es gibt kein neues Ergebnis zu senden.' };
+  }
+  return {
+    ok: true,
+    body: { format: 'testbericht/1', ...build, tests: tests.slice(0, MAX_REPORT_TESTS) },
+    sent,
+  };
+}
+
+/** The report arrived: its results are marked and leave the next one until they change. */
+export function markReported(run: TestRun, ids: readonly string[], now: string): TestRun {
+  let next = run;
+  for (const id of ids) {
+    const entry = next.entries[id];
+    if (entry?.result !== undefined) next = withEntry(next, id, { ...entry, reported: now });
+  }
+  return next;
+}
+
+/** What the page says after sending, from the answer of the test zone (status and text). */
+export function sendOutcome(status: number, text: string): { sent: boolean; message: string } {
+  if (status >= 200 && status < 300) return { sent: true, message: 'Bericht gesendet.' };
+  const said = text.replace(/\s+/g, ' ').trim().slice(0, 300);
+  if (status === 400) {
+    return {
+      sent: false,
+      message: `Der Testbereich hat den Bericht abgelehnt${said === '' ? '.' : `: ${said}`}`,
+    };
+  }
+  if (status === 401 || status === 403) {
+    return {
+      sent: false,
+      message: 'Bitte im Testbereich anmelden und den Bericht noch einmal senden.',
+    };
+  }
+  if (status === 404) {
+    return {
+      sent: false,
+      message:
+        'Der Testbereich nimmt noch keine Berichte an (Antwort 404). Bitte den Bericht vorerst als PDF herunterladen.',
+    };
+  }
+  return {
+    sent: false,
+    message: `Der Testbereich antwortet mit Fehler ${status}. Bitte später noch einmal senden.`,
+  };
+}
+
+// --- Stored run -----------------------------------------------------------------------------
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 const isTime = (value: unknown): value is string =>
   typeof value === 'string' && !Number.isNaN(Date.parse(value));
 
-/** The run kept in the page's browser storage; anything malformed is dropped, never trusted. */
-export function decodeRun(raw: unknown): TestRun {
-  if (!isRecord(raw)) return emptyRun();
-  const entries: Record<string, TestEntry> = {};
-  if (isRecord(raw.entries)) {
-    for (const [id, value] of Object.entries(raw.entries)) {
-      if (!isRecord(value) || !/^MT-\d+[a-z]?$|^L-\d+[a-z]?$/.test(id)) continue;
-      const result =
-        typeof value.result === 'string' && Object.hasOwn(STORED_RESULTS, value.result)
-          ? STORED_RESULTS[value.result]
-          : undefined;
-      const minutes = value.correctedMinutes;
-      const entry: TestEntry = {
-        comment: typeof value.comment === 'string' ? value.comment.slice(0, 4000) : '',
-        ...(isTime(value.started) ? { started: value.started } : {}),
-        ...(isTime(value.ended) ? { ended: value.ended } : {}),
-        ...(result ? { result } : {}),
-        ...(typeof value.version === 'string' && /^[0-9a-f]{12}$/.test(value.version)
-          ? { version: value.version }
-          : {}),
-        ...(typeof minutes === 'number' &&
-        Number.isInteger(minutes) &&
-        minutes >= 0 &&
-        minutes <= LONGEST_TEST_MINUTES
-          ? { correctedMinutes: minutes }
-          : {}),
-      };
-      entries[id] =
-        inReport(entry) && isTime(value.reported) ? { ...entry, reported: value.reported } : entry;
+/** Results stored before: „teilweise“ (until 2026-11-07) reads as „nicht bestanden“. */
+const STORED_RESULTS: Readonly<Record<string, TestResult>> = {
+  bestanden: 'bestanden',
+  teilweise: 'nichtBestanden',
+  nichtBestanden: 'nichtBestanden',
+};
+
+function storedSeconds(value: Record<string, unknown>): number {
+  if (typeof value.seconds === 'number' && Number.isInteger(value.seconds)) {
+    return Math.min(MAX_SECONDS, Math.max(0, value.seconds));
+  }
+  // Until 2026-11-15 a start and an end were stored; their difference is the measured time.
+  if (isTime(value.started) && isTime(value.ended)) {
+    const seconds = (Date.parse(value.ended) - Date.parse(value.started)) / 1000;
+    if (seconds >= 0 && seconds <= MAX_SECONDS) return Math.floor(seconds);
+  }
+  return 0;
+}
+
+function storedSteps(value: unknown): FailedStep[] {
+  if (!Array.isArray(value)) return [];
+  const steps = new Map<number, StepReason>();
+  for (const step of value) {
+    if (!isRecord(step)) continue;
+    const { nr, reason } = step;
+    if (
+      typeof nr === 'number' &&
+      Number.isInteger(nr) &&
+      nr >= 1 &&
+      nr <= MAX_STEP &&
+      typeof reason === 'string' &&
+      (STEP_REASONS as readonly string[]).includes(reason)
+    ) {
+      steps.set(nr, reason as StepReason);
     }
   }
-  return {
-    tester: typeof raw.tester === 'string' ? raw.tester.slice(0, 80) : '',
-    entries,
-    comment: typeof raw.comment === 'string' ? raw.comment.slice(0, 8000) : '',
-  };
+  return [...steps].sort(([a], [b]) => a - b).map(([nr, reason]) => ({ nr, reason }));
+}
+
+/**
+ * The run kept in the page's browser storage; anything malformed is dropped, never trusted. A clock
+ * still running from an earlier visit is stopped where it was last saved: the time the page was
+ * closed does not count. Comments, the tester's name and corrected minutes of the former run are
+ * dropped (2026-11-15: no free text).
+ */
+export function decodeRun(raw: unknown): TestRun {
+  if (!isRecord(raw) || !isRecord(raw.entries)) return emptyRun();
+  const entries: Record<string, TestEntry> = {};
+  for (const [id, value] of Object.entries(raw.entries)) {
+    if (!isRecord(value) || !/^MT-\d+[a-z]?$|^L-\d+[a-z]?$/.test(id)) continue;
+    const result =
+      typeof value.result === 'string' && Object.hasOwn(STORED_RESULTS, value.result)
+        ? STORED_RESULTS[value.result]
+        : undefined;
+    const steps = result === 'nichtBestanden' ? storedSteps(value.steps) : [];
+    const entry: TestEntry = {
+      seconds: storedSeconds(value),
+      ...(result ? { result } : {}),
+      ...(steps.length > 0 ? { steps } : {}),
+      ...(result && typeof value.version === 'string' && /^[0-9a-f]{12}$/.test(value.version)
+        ? { version: value.version }
+        : {}),
+      ...(result && isTime(value.reported) ? { reported: value.reported } : {}),
+    };
+    if (entry.result !== undefined || entry.seconds > 0) entries[id] = entry;
+  }
+  return { entries };
 }
