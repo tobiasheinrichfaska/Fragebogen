@@ -289,7 +289,10 @@ test('MT-23: a minor needs the signature of the legal representative', async ({ 
   await expect(pdf).toBeDisabled();
 
   await press(guardian, 'Ich bin: Gesetzliche Vertretung');
-  await answerUntil(app, SOFORT, { vertretungName: 'Max Musterfrau', vertretungAlleinSorge: 'Ja' });
+  await answerUntil(app, SOFORT, {
+    vertretungName: 'Max Musterfrau',
+    vertretungUnterschrift: 'allein',
+  });
   await press(app, 'Weiter zum Abschluss');
   await press(app, 'Als gesetzliche Vertretung der minderjährigen Person');
   await sign(page);

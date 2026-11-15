@@ -564,7 +564,7 @@ test('MT-124: the Kanzlei part passes on as a link instead of a PDF', async ({
   if (copied !== undefined) expect(copied).toBe(link);
 
   // Another device: a fresh browser with the same app at the same address — a link of the test
-  // area opens the test area, where a draft (SEPA-Mandat 1.2.0 since 2026-11-13) is known.
+  // area opens the test area, which knows every version the link may name.
   const other = await browser.newContext();
   const device = await other.newPage();
   const there = await openHosted(device, TEST_APP, link);

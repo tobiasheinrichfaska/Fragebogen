@@ -6,7 +6,7 @@
 | Angabe | Wert |
 | --- | --- |
 | Formular | sepa-mandat, Version 1.2.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
+| Status | Veröffentlicht und eingefroren |
 | Gültigkeit | gilt für „Datum“ ab 01.01.2026 |
 | Stand | zuletzt überarbeitet am 15.11.2026 um 21:36 |
 | Definition (SHA-256) | f6895b514cda82d2d1b937eafdffa978aa4919c28407eb631d028ff1b22b67db |

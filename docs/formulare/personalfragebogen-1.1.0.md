@@ -8,8 +8,8 @@
 | Formular | personalfragebogen, Version 1.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027 |
-| Stand | zuletzt überarbeitet am 15.11.2026 um 21:36 |
-| Definition (SHA-256) | 075bd5ed8fd5b81c15a2f7c795703047f720bbca3391789857900cb52c22ef9b |
+| Stand | zuletzt überarbeitet am 15.11.2026 um 23:39 |
+| Definition (SHA-256) | a94687d9512afa36a628683e01c527d75a1a1839b637897e0a9924e4b9c8a224 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -19,8 +19,8 @@
 | Rolle | Unterschrift | Erforderlich | Name der unterzeichnenden Person | Bestätigungstext |
 | --- | --- | --- | --- | --- |
 | Beschäftigte Person (person) | Pflicht | immer | – | Ich versichere, dass meine Angaben richtig und vollständig sind. Ändert sich etwas, vor allem bei weiteren Beschäftigungen, teile ich das meinem Arbeitgeber unverzüglich mit. |
-| Gesetzliche Vertretung (vertretung) | Pflicht | nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist<br>Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift. | aus „Vor- und Familienname der gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
-| Zweite gesetzliche Vertretung (vertretung2) | Pflicht | nur wenn „Allein sorgeberechtigt“ mit „Nein“ beantwortet ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinschaftlich (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch die zweite gesetzliche Vertretung. | aus „Vor- und Familienname der zweiten gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
+| Gesetzliche Vertretung (vertretung) | Pflicht | nur wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist<br>Warum: Wer am Tag der eigenen Unterschrift noch minderjährig ist (§§ 187, 188 BGB), ist nur beschränkt geschäftsfähig (§ 106 BGB). Deshalb bestätigt die gesetzliche Vertretung die Angaben mit ihrer Unterschrift. | aus „Vor- und Familienname der gesetzlichen Vertretung“ | Als gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. Ich versichere, dass ich so unterschreiben darf, wie ich es angegeben habe; unterschreibe ich mit Einverständnis des anderen Elternteils, liegt dieses Einverständnis vor. |
+| Zweite gesetzliche Vertretung (vertretung2) | Pflicht | nur wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist (nach dem abgeschlossenen Teil, der das angibt)<br>Warum: Haben beide Eltern das Sorgerecht und unterschreibt keiner mit Einverständnis des anderen allein, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Deshalb unterschreibt auch der andere Elternteil. | aus „Vor- und Familienname der zweiten gesetzlichen Vertretung“ | Als zweite gesetzliche Vertretung der minderjährigen Person schließe ich mich ihrer Erklärung an. |
 | Arbeitgeber (arbeitgeber) | freiwillig | immer | – | Ich bestätige die Angaben des Arbeitgebers. |
 
 ## Felder
@@ -240,8 +240,8 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Vor- und Familienname der gesetzlichen Vertretung (vertretungName)<br>Frage: Wie lautet Ihr Vor- und Familienname?<br>Hilfe: Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person, zum Beispiel als Elternteil. | Gesetzliche Vertretung | Text | immer | Pflicht | Nachweis, wer für die minderjährige Person unterschreibt |
-| Allein sorgeberechtigt (vertretungAlleinSorge)<br>Frage: Haben Sie das Sorgerecht allein?<br>Hilfe: Haben beide Eltern das Sorgerecht, vertreten sie das Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB); dann unterschreibt auch der andere Elternteil. | Gesetzliche Vertretung | Ja/Nein | immer | Pflicht | Ob eine zweite gesetzliche Vertretung unterschreiben muss |
+| Vor- und Familienname der gesetzlichen Vertretung (vertretungName)<br>Frage: Wie lautet Ihr Vor- und Familienname?<br>Hilfe: Sie unterschreiben als gesetzliche Vertretung der minderjährigen Person – als Elternteil, Vormund oder Pfleger. | Gesetzliche Vertretung | Text | immer | Pflicht | Nachweis, wer für die minderjährige Person unterschreibt |
+| Art der Unterschrift (vertretungUnterschrift)<br>Frage: Wie unterschreiben Sie für die minderjährige Person?<br>Hilfe: Haben beide Eltern das Sorgerecht, vertreten sie ihr Kind gemeinsam (§ 1629 Abs. 1 Satz 2 BGB). Ist der andere Elternteil einverstanden, können Sie allein unterschreiben; eine besondere Form braucht sein Einverständnis nicht. Wissen Sie nicht sicher, ob er einverstanden ist, wählen Sie „Gemeinsam“. | Gesetzliche Vertretung | Auswahl: Allein – ich habe das Sorgerecht allein, oder ich bin Vormund oder für diese Angelegenheit bestellter Pfleger, Allein mit Einverständnis – wir haben das Sorgerecht gemeinsam, und der andere Elternteil ist einverstanden, dass ich allein unterschreibe, Gemeinsam – der andere Elternteil unterschreibt ebenfalls | immer | Pflicht | Ob eine zweite gesetzliche Vertretung unterschreiben muss (§ 1629 Abs. 1 Satz 2 BGB; Vollmacht des anderen Elternteils, BGH, Beschluss vom 29.04.2020 – XII ZB 112/19) |
 
 ### 17. Zweite gesetzliche Vertretung (nur bei gemeinsamer Sorge)
 
@@ -1010,3 +1010,4 @@ Zusammengesetzt aus: Stellen 1–5 (Tätigkeit nach KldB 2010) · Stelle 6 (Schu
 - Die Beiträge zur privaten Kranken- und Pflegeversicherung erhält der Arbeitgeber seit 2026 als elektronische Lohnsteuerabzugsmerkmale (§ 39 Abs. 4 Nr. 4 EStG); der Fragebogen fragt deshalb keinen Betrag ab. Die Bescheinigung des Versicherers über die Zuschussfähigkeit (§ 257 Abs. 2a SGB V) bleibt nötig.
 - Der Fragebogen sammelt die Tatsachen für die versicherungsrechtliche Beurteilung; die Personengruppe und die Beitragsgruppen legt die lohnabrechnende Stelle fest.
 - Der Antrag auf Befreiung von der Rentenversicherungspflicht im Minijob, ihre Aufhebung und der Verzicht auf die Rentenversicherungsfreiheit werden auf Papier mit eigenhändiger Unterschrift erklärt; das Original gehört mit Eingangsdatum zu den Entgeltunterlagen. Der Fragebogen fragt nur den Wunsch ab und dokumentiert den Eingang.
+- Die Unterschrift der gesetzlichen Vertretung bestätigt die Angaben im Fragebogen. Sie ersetzt nicht ihre Zustimmung zum Arbeits- oder Ausbildungsvertrag; bei gemeinsamer Sorge stimmen beide Eltern zu oder einer mit Vollmacht des anderen.
