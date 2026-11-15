@@ -59,7 +59,7 @@ test('MT-110: a donation is blocked, a business meal only warned', async ({ page
   await at(app, 'Wofür wurde bezahlt?');
   await choose(app, 'eine Spende');
   await expect(banner).toContainText(
-    'Für eine Spende brauchen Sie eine Zuwendungsbestätigung des Empfängers; ein Eigenbeleg genügt nicht.',
+    'Für eine Spende brauchen Sie eine Zuwendungsbestätigung des Empfängers – bis 300 € genügen auch der Kontoauszug und ein vom Empfänger vorgedruckter Beleg (vereinfachter Nachweis, § 50 Abs. 4 EStDV). Ein Eigenbeleg genügt nicht.',
   );
   await expect(banner.locator('p').first()).toHaveText(
     /bei der Stelle nach, die den Fragebogen bekommt \(hier: Buchhaltung oder Kanzlei\)\.$/,

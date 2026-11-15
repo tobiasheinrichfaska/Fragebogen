@@ -216,7 +216,12 @@ export function describeFieldRules(
   definition: FormDefinition,
   field: FieldDefinition,
 ): { input: string; requirement: string } {
-  const fields = fieldsById(definition);
+  // A column's condition names columns of its own table (e.g. the hours of absence only for an
+  // hourly wage): they are looked up next to the top-level fields — ids are unique in a form.
+  const fields = new Map(fieldsById(definition));
+  for (const top of definition.sections.flatMap((section) => section.fields)) {
+    for (const column of top.columns ?? []) fields.set(column.id, column);
+  }
   const input = field.showIf ? `erst wenn ${describeCondition(field.showIf, fields)}` : 'immer';
   let requirement = field.voluntary ? 'freiwillige Angabe' : 'optional';
   if (field.required) requirement = 'Pflicht';

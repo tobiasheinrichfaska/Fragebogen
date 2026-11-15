@@ -34,6 +34,15 @@ const UNDO_2027: [string, string][] = [
     'Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.',
   ],
   ['§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 257 SGB V', '§ 6 Abs. 1 Nr. 1, Abs. 6, 7, § 257 SGB V'],
+  // Review of the drafts 2026-11-15 (X-2): the data also leave as a link; the memory ends with more.
+  [
+    'verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben.',
+    'verlassen das Gerät nur als Datei, die Sie selbst weitergeben.',
+  ],
+  [
+    '– bis Sie eine PDF oder einen Zwischenstand speichern oder den Fragebogen schließen oder verwerfen, höchstens 7 Tage.',
+    '– bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage.',
+  ],
 ];
 const austritt = registeredFrom(readJson(join(DRAFTS_DIR, 'austritt', '0.1.0.json')));
 
@@ -76,6 +85,9 @@ describe('Personalfragebogen: the end of a fixed term', () => {
   // the documents offered only where they fit (option conditions, tests/forms/unterlagen.test.ts).
   it('1.1.0 differs from 1.0.0 only in its version, its stamp, the date rules, help texts and 2027', () => {
     const SECOND = ['vertretung2', 'vertretungAlleinSorge'];
+    // 2026-11-15 (Tobias: „ich folge deiner Empfehlung“): the question about 31.12.2026 and its
+    // answer as the last argument of the JAEG tests (tests/forms/personalfragebogen2027.test.ts).
+    const BESTAND_2026 = 'pkvBestand2026';
     const text = JSON.stringify(pfb110.definition);
     for (const [now] of UNDO_2027) expect(text, now).toContain(now);
     const undone = UNDO_2027.reduce((all, [now, before]) => all.split(now).join(before), text);
@@ -95,10 +107,11 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         if (Array.isArray(value)) {
           return value.filter(
             (item: unknown) =>
+              item !== BESTAND_2026 &&
               !(
                 typeof item === 'object' &&
                 item !== null &&
-                SECOND.includes((item as { id?: string }).id ?? '')
+                [...SECOND, BESTAND_2026].includes((item as { id?: string }).id ?? '')
               ),
           );
         }

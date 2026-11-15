@@ -29,6 +29,15 @@ describe('docs/formulare/', () => {
     },
   );
 
+  // Review of the drafts 2026-11-15 (X-4): a table column's condition named its sibling column as
+  // „(unbekanntes Feld)“, so the text the expert approves was incomplete.
+  it('names every field a condition reads, also a column of the same table', () => {
+    const unknown = entries
+      .filter(({ form, status }) => formCatalogue(form, status).includes('(unbekanntes Feld)'))
+      .map((entry) => entry.name);
+    expect(unknown).toEqual([]);
+  });
+
   it('holds no catalogue of a removed form or draft', () => {
     const known = new Set(entries.map((entry) => entry.name));
     const stale = readdirSync(CATALOGUE_DIR).filter(

@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-13T23:26",
+  "revised": "2026-11-15T21:36",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -132,7 +132,7 @@
           "type": "date",
           "label": "Ende des Arbeitsverhältnisses",
           "question": "An welchem Tag endet das Arbeitsverhältnis?",
-          "help": "Der rechtlich letzte Tag: bei einer Kündigung der Tag, zu dem gekündigt wurde; sonst das Ende der Befristung oder der Tag laut Aufhebungsvertrag; beim Tod der Sterbetag. Nicht der letzte Arbeitstag vor Resturlaub oder Freistellung.",
+          "help": "Der rechtlich letzte Tag: bei einer Kündigung der Tag, zu dem gekündigt wurde; sonst das Ende der Befristung oder der Tag laut Aufhebungsvertrag; beim Tod der Sterbetag. Bei einer Ausbildung der Tag, an dem das Ergebnis der bestandenen Abschlussprüfung bekannt gegeben wurde – auch vor dem vereinbarten Ende (§ 21 Abs. 2 BBiG); arbeitet die Person danach weiter, ist das kein Austritt (§ 24 BBiG). Nicht der letzte Arbeitstag vor Resturlaub oder Freistellung.",
           "required": true,
           "purpose": "Abmeldung zur Sozialversicherung (§ 28a Abs. 1 S. 1 Nr. 2 SGB IV, § 8 Abs. 1 DEÜV); Ende des Dienstverhältnisses an das Bundeszentralamt für Steuern (§ 39e Abs. 4 S. 5 EStG); Abschluss des Lohnkontos (§ 41b Abs. 1 EStG); Arbeitsbescheinigung (§ 312 SGB III)"
         },
@@ -223,7 +223,7 @@
           "type": "choice",
           "label": "Befristung schriftlich vereinbart",
           "question": "Wurde die Befristung schriftlich vereinbart?",
-          "help": "Schriftlich heißt: auf Papier, von beiden Seiten eigenhändig unterschrieben, vor dem ersten Arbeitstag. Ohne diese Form gilt das Arbeitsverhältnis in der Regel als unbefristet.",
+          "help": "Schriftlich heißt: vor dem ersten Arbeitstag von beiden Seiten eigenhändig unterschrieben oder mit qualifizierter elektronischer Signatur versehen. Ohne diese Form gilt das Arbeitsverhältnis in der Regel als unbefristet.",
           "required": true,
           "showIf": {
             "any": [
@@ -680,7 +680,7 @@
           "type": "number",
           "label": "Kündigungsfrist des Arbeitgebers (Zahl)",
           "question": "Welche Frist hätte für eine ordentliche Kündigung durch Sie gegolten? Bitte zuerst nur die Zahl.",
-          "help": "Gemeint ist immer die Frist für Ihre Kündigung als Arbeitgeber – auch wenn die Person gekündigt hat oder Sie einen Aufhebungsvertrag geschlossen haben –, und zwar am Tag der Kündigung oder des Vertrags. Sie ergibt sich aus dem Gesetz, einem Tarifvertrag oder dem Arbeitsvertrag; in einer vereinbarten Probezeit sind es zwei Wochen. Beispiel „2 Monate zum Monatsende“: Tragen Sie 2 ein. Die App berechnet die Frist nicht.",
+          "help": "Gemeint ist immer die Frist für Ihre Kündigung als Arbeitgeber – auch wenn die Person gekündigt hat oder Sie einen Aufhebungsvertrag geschlossen haben –, und zwar am Tag der Kündigung oder des Vertrags. Sie ergibt sich aus dem Gesetz, einem Tarifvertrag oder dem Arbeitsvertrag; in einer vereinbarten Probezeit sind es zwei Wochen. War die ordentliche Kündigung ausgeschlossen, tragen Sie die Frist ein, die ohne den Ausschluss gegolten hätte; nach dem Ausschluss fragt der Fragebogen danach. Beispiel „2 Monate zum Monatsende“: Tragen Sie 2 ein. Die App berechnet die Frist nicht.",
           "required": true,
           "showIf": {
             "field": "agBeendigungsart",
@@ -1000,7 +1000,7 @@
           "type": "number",
           "label": "Offene Urlaubstage am Ende",
           "question": "Wie viele Urlaubstage sind am letzten Tag des Arbeitsverhältnisses noch offen?",
-          "help": "Gesetzlicher, vertraglicher und Zusatzurlaub, auch übertragener Urlaub aus dem Vorjahr. Urlaub verfällt in der Regel nur, wenn Sie die Person rechtzeitig darauf hingewiesen haben. Urlaub, der bis zum Ende noch fest geplant ist, zählt als genommen; beim Tod zählen die am Sterbetag offenen Tage. Offene Tage werden ausgezahlt; 0, wenn alles genommen ist. Steht die Zahl noch nicht fest, lassen Sie das Feld leer und tragen sie vor der letzten Abrechnung in der neuen Fassung nach.",
+          "help": "Gesetzlicher, vertraglicher und Zusatzurlaub, auch übertragener Urlaub aus dem Vorjahr. Urlaub verfällt in der Regel nur, wenn Sie die Person rechtzeitig darauf hingewiesen haben. Urlaub, der bis zum Ende noch fest geplant ist, zählt als genommen; beim Tod zählen die am Sterbetag offenen Tage. Scheidet die Person in der ersten Jahreshälfte aus, steht ihr für dieses Jahr in der Regel nur ein Zwölftel des Jahresurlaubs je vollen Monat zu (§ 5 Abs. 1 BUrlG); im Zweifel rechnet die lohnabrechnende Stelle nach. Offene Tage werden ausgezahlt; 0, wenn alles genommen ist. Steht die Zahl noch nicht fest, lassen Sie das Feld leer und tragen sie vor der letzten Abrechnung in der neuen Fassung nach.",
           "required": false,
           "purpose": "Urlaubsabgeltung (§ 7 Abs. 4 BUrlG, § 17 Abs. 3 BEEG); Arbeitsbescheinigung (§ 312 SGB III); Urlaubsbescheinigung (§ 6 Abs. 2 BUrlG)",
           "decimals": 1,
@@ -1244,7 +1244,7 @@
           "type": "boolean",
           "label": "Neue Pfändung oder Abtretung",
           "question": "Ist bei Ihnen eine Pfändung oder Abtretung des Lohns eingegangen, die die lohnabrechnende Stelle noch nicht kennt?",
-          "help": "Bitte schicken Sie das Schreiben sofort an die lohnabrechnende Stelle; die Erklärung als Drittschuldner ist binnen zwei Wochen fällig (§ 840 ZPO).",
+          "help": "Bitte schicken Sie das Schreiben sofort an die lohnabrechnende Stelle; bei einer Pfändung ist die Erklärung als Drittschuldner binnen zwei Wochen fällig (§ 840 ZPO).",
           "required": true,
           "showIf": { "not": { "field": "agBeendigungsart", "equals": "tod" } },
           "because": "Nach dem Tod fragt der Fragebogen offene Punkte gesammelt bei den Zahlungen an die Erben.",
@@ -1536,8 +1536,8 @@
     {
       "id": "wertguthabenStoerfall",
       "when": { "field": "agWertguthaben", "equals": true },
-      "message": "Es besteht ein Wertguthaben: Mit dem Ende ist es aufzulösen (Störfall); abrechnen und mit Abgabegrund 55 melden.",
-      "source": "§ 7b SGB IV; Gemeinsames Rundschreiben Meldeverfahren, Anlage 1"
+      "message": "Es besteht ein Wertguthaben: Wird es nicht auf Wunsch der Person übertragen (§ 7f SGB IV), ist es mit dem Ende aufzulösen (Störfall); dann abrechnen und mit Abgabegrund 55 melden.",
+      "source": "§ 7f, § 23b Abs. 2 SGB IV; Gemeinsames Rundschreiben Meldeverfahren, Anlage 1"
     },
     {
       "id": "todZahlungen",

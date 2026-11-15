@@ -8,8 +8,8 @@
 | Formular | lohnmeldung, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Abrechnungsmonat“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 13:25 |
-| Definition (SHA-256) | 227a4e5499d9e651825009f40f5ba85e03e76cf9270ab80e97a1e72630a78944 |
+| Stand | zuletzt überarbeitet am 15.11.2026 um 21:36 |
+| Definition (SHA-256) | ba0e1fc18d49fde8f703e262111fcce9f10cf2e24bd5c62160378d352ab23887 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -49,8 +49,8 @@
 | – Neue Vergütung gilt ab (maAenderungAb)<br>Hilfe: Nur wenn sich die Vergütung gegenüber dem Vormonat ändert. | Arbeitgeber | Datum; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 | – scheidet in diesem Monat aus (maScheidetAus) | Arbeitgeber | Ja/Nein; wird nicht aus einer anderen Datei übernommen | immer | optional | Abmeldung und Endabrechnung |
 | – Urlaub und Krankheit (maFehltage) | Arbeitgeber | Kalender: Urlaub, halber Urlaubstag, krank; wird nicht aus einer anderen Datei übernommen | immer | optional | Urlaubskonto und Entgeltfortzahlung (§ 11 BUrlG, § 3 EFZG); nur die Art der Fehlzeit, keine Diagnose |
-| – Ausgefallene Stunden Urlaub (maUrlaubStunden)<br>Hilfe: Laut Dienstplan; nur bei Stundenlohn. | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std., höchstens 744; wird nicht aus einer anderen Datei übernommen | erst wenn „maVerguetungsart“ (unbekanntes Feld)<br>Warum: Bei Stundenlohn rechnet die Lohnabrechnung mit den ausgefallenen Stunden; bei festem Entgelt genügen die Tage. | optional | Urlaubsentgelt bei Stundenlohn (§ 11 BUrlG) |
-| – Ausgefallene Stunden Krankheit (maKrankStunden)<br>Hilfe: Die Stunden, die laut Plan gearbeitet worden wären; nur bei Stundenlohn. | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std., höchstens 744; wird nicht aus einer anderen Datei übernommen | erst wenn „maVerguetungsart“ (unbekanntes Feld)<br>Warum: Bei Stundenlohn wird die Entgeltfortzahlung nach den ausgefallenen Stunden berechnet; bei festem Entgelt genügen die Tage. | optional | Entgeltfortzahlung bei Stundenlohn nach dem Lohnausfallprinzip (§ 4 Abs. 1 EFZG) |
+| – Ausgefallene Stunden Urlaub (maUrlaubStunden)<br>Hilfe: Laut Dienstplan; nur bei Stundenlohn. | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std., höchstens 744; wird nicht aus einer anderen Datei übernommen | erst wenn bei „Art der Vergütung“ „Stundenlohn“ gewählt ist<br>Warum: Bei Stundenlohn rechnet die Lohnabrechnung mit den ausgefallenen Stunden; bei festem Entgelt genügen die Tage. | optional | Urlaubsentgelt bei Stundenlohn (§ 11 BUrlG) |
+| – Ausgefallene Stunden Krankheit (maKrankStunden)<br>Hilfe: Die Stunden, die laut Plan gearbeitet worden wären; nur bei Stundenlohn. | Arbeitgeber | Zahl, 2 Nachkommastellen, in Std., höchstens 744; wird nicht aus einer anderen Datei übernommen | erst wenn bei „Art der Vergütung“ „Stundenlohn“ gewählt ist<br>Warum: Bei Stundenlohn wird die Entgeltfortzahlung nach den ausgefallenen Stunden berechnet; bei festem Entgelt genügen die Tage. | optional | Entgeltfortzahlung bei Stundenlohn nach dem Lohnausfallprinzip (§ 4 Abs. 1 EFZG) |
 
 ### 3. Werte des Abrechnungsmonats
 
@@ -77,7 +77,7 @@
 
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
-| Besonderheiten (besonderheiten)<br>Frage: Gibt es Besonderheiten in diesem Monat?<br>Hilfe: Zum Beispiel Ein- oder Austritte, eine neue Anschrift oder Bankverbindung, weitere Fehlzeiten (Kind krank, unbezahlter Urlaub, Mutterschutz, Elternzeit), Pfändungen, ein Arbeitsunfall, eine von Dritten verursachte Krankheit oder am ersten Krankheitstag noch gearbeitet. Bitte keine Diagnosen. | Arbeitgeber | Text, mehrzeilig; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
+| Besonderheiten (besonderheiten)<br>Frage: Gibt es Besonderheiten in diesem Monat?<br>Hilfe: Neue Beschäftigte melden Sie bitte vor dem ersten Arbeitstag mit dem Personalfragebogen, in Branchen mit Sofortmeldepflicht mit der Sofortmeldung – nicht erst mit dieser Meldung. Hierher gehören zum Beispiel Austritte, eine neue Anschrift oder Bankverbindung, weitere Fehlzeiten (Kind krank, unbezahlter Urlaub, Mutterschutz, Elternzeit), Pfändungen, ein Arbeitsunfall, eine von Dritten verursachte Krankheit oder am ersten Krankheitstag noch gearbeitet. Bitte keine Diagnosen. | Arbeitgeber | Text, mehrzeilig; wird nicht aus einer anderen Datei übernommen | immer | optional | Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV) |
 
 ## Abhängigkeiten
 
@@ -104,7 +104,7 @@ Alle übrigen Angaben sind unabhängig.
 - Art: wird in der App gelesen und bestätigt
 - Stand: 13.11.2026
 
-> Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über acht Stunden je Werktag ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.
+> Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über acht Stunden je Werktag ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG); nach der Rechtsprechung des Bundesarbeitsgerichts ist die gesamte Arbeitszeit aller Beschäftigten zu erfassen (Beschluss vom 13.09.2022 – 1 ABR 22/21). Diese Meldung ersetzt die Aufzeichnungen nicht.
 
 ## Verknüpfung der Teile
 
@@ -133,5 +133,5 @@ Keine.
 - Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung).
 - Die Monatsmeldung ist keine Arbeitszeitaufzeichnung nach § 17 MiLoG oder § 16 ArbZG; die Aufzeichnungen bleiben beim Arbeitgeber.
 - Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).
-- Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).
+- Krankheitstage sind Gesundheitsdaten (Art. 9 DSGVO); gemeldet werden nur Art und Zeitraum, nie eine Diagnose.
 - Eine neue Meldung entsteht aus der des Vormonats: Der Abrechnungsmonat zählt weiter, Firma, Ansprechperson, Lohnarten und die Mitarbeitenden (außer Ausscheidenden) mit ihrer Vergütung bleiben, die Vergütung des Vormonats steht zum Vergleich daneben; Fehltage, Monatswerte und Besonderheiten sind leer. Hinweise, die schon bestätigt sind und deren Text gleich blieb, gelten als bestätigt.
