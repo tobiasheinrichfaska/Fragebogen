@@ -1,7 +1,7 @@
 {
   "id": "sofortmeldung",
   "version": "1.1.0",
-  "revised": "2026-11-13T17:27",
+  "revised": "2026-11-15T21:36",
   "title": "Personalfragebogen: Angaben für die Sofortmeldung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -204,7 +204,7 @@
           "type": "boolean",
           "label": "In Deutschland geboren?",
           "question": "Sind Sie in Deutschland geboren?",
-          "help": "Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel vor 1990 in den neuen Bundesländern geboren ist, antwortet mit Ja.",
+          "help": "Es zählt, zu welchem Staat Ihr Geburtsort heute gehört. Wer zum Beispiel vor 1990 im Gebiet der heutigen neuen Bundesländer geboren ist, antwortet mit Ja.",
           "required": true,
           "purpose": "Vergabe einer Versicherungsnummer; Stammdaten für die Lohnabrechnung",
           "initial": true
@@ -635,7 +635,7 @@
       "id": "datenschutz",
       "role": "person",
       "title": "Datenschutzhinweis",
-      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den Beginn Ihrer Beschäftigung an die Datenstelle der Träger der Rentenversicherung zu melden (Sofortmeldung nach § 28a Abs. 4 SGB IV) und um Ihre Beschäftigung abzurechnen. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Sie sind gesetzlich verpflichtet, diese Angaben zu machen (§ 28o Abs. 1 SGB IV); ohne sie kann die Meldung nicht erstattet werden.\n\nVerantwortlich ist Ihr Arbeitgeber. Seine Kontaktdaten und gegebenenfalls die seines Datenschutzbeauftragten stehen in der Datenschutzinformation für Beschäftigte, die Sie von Ihrem Arbeitgeber erhalten. Empfänger sind die vom Arbeitgeber beauftragte lohnabrechnende Stelle und die Datenstelle der Träger der Rentenversicherung. Die Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen (unter anderem § 28f SGB IV, § 41 EStG).\n\nSie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.\n\nDiese App versendet Ihre Angaben nicht; sie verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
+      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den Beginn Ihrer Beschäftigung an die Datenstelle der Träger der Rentenversicherung zu melden (Sofortmeldung nach § 28a Abs. 4 SGB IV) und um Ihre Beschäftigung abzurechnen. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Sie sind gesetzlich verpflichtet, diese Angaben zu machen (§ 28o Abs. 1 SGB IV); ohne sie kann die Meldung nicht erstattet werden.\n\nVerantwortlich ist Ihr Arbeitgeber. Seine Kontaktdaten und gegebenenfalls die seines Datenschutzbeauftragten stehen in der Datenschutzinformation für Beschäftigte, die Sie von Ihrem Arbeitgeber erhalten. Empfänger sind die vom Arbeitgeber beauftragte lohnabrechnende Stelle und die Datenstelle der Träger der Rentenversicherung. Die Angaben werden aufbewahrt, solange gesetzliche Fristen es verlangen (unter anderem § 28f SGB IV, § 41 EStG).\n\nSie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.\n\nDiese App versendet Ihre Angaben nicht; sie verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis Sie eine PDF oder einen Zwischenstand speichern oder den Fragebogen schließen oder verwerfen, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
       "asOf": "2026-11-04",
       "acknowledgement": "read"
     },

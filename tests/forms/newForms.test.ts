@@ -282,8 +282,19 @@ describe('Dienstwagen draft — standard only', () => {
       visibleFields(form.definition, 'arbeitgeber', data).map((f) => f.id);
     expect(ids({ agAntrieb: 'plugin' })).toEqual(expect.arrayContaining(['agCo2', 'agReichweite']));
     expect(ids({ agAntrieb: 'verbrenner' })).not.toContain('agCo2');
+    // Review 2026-11-15 (DW-5): the purchase date decides only for electric and hybrid drives.
+    expect(ids({ agAntrieb: 'verbrenner' })).not.toContain('agAnschaffung');
+    expect(ids({ agAntrieb: 'elektro' })).toContain('agAnschaffung');
     expect(ids({ agFahrtenWohnung: true })).toContain('agPauschal15');
     expect(ids({ agFahrtenWohnung: false })).not.toContain('agPauschal15');
+  });
+
+  // Review 2026-11-15 (DW-1): where the person starts only matters for drives to work.
+  it('asks for the registered home only when the person drives to work with the car', () => {
+    const ids = (data: Record<string, FieldValue>) =>
+      visibleFields(form.definition, 'person', data).map((f) => f.id);
+    expect(ids({ fahrtenWohnung: false })).not.toContain('wohnungMeldeanschrift');
+    expect(ids({ fahrtenWohnung: true })).toContain('wohnungMeldeanschrift');
   });
 
   it('seals the employer part and then the person part over it', () => {
@@ -295,10 +306,10 @@ describe('Dienstwagen draft — standard only', () => {
         agKennzeichen: 'KA-B 1234',
         agFahrzeug: 'Beispielmarke Modell E',
         agErstzulassung: '01.03.2026',
-        agAnschaffung: '01.03.2026',
         agListenpreis: '48.900',
         agSonderausstattung: '2.100',
         agAntrieb: 'elektro',
+        agAnschaffung: '01.03.2026',
         agErstUeberlassung: '01.04.2026',
         agUeberlassenAb: '01.04.2026',
         agPrivatnutzung: true,
@@ -318,6 +329,7 @@ describe('Dienstwagen draft — standard only', () => {
         familienname: 'Musterfrau',
         vorname: 'Erika',
         fahrtenWohnung: true,
+        wohnungMeldeanschrift: true,
         entfernungKm: '23',
       }),
       form,

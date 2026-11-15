@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-13T17:27",
+  "revised": "2026-11-15T21:36",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -99,15 +99,6 @@
           "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)"
         },
         {
-          "id": "agAnschaffung",
-          "role": "arbeitgeber",
-          "type": "date",
-          "label": "Kauf- oder Leasingbeginn beim Arbeitgeber",
-          "help": "Entscheidet bei Elektro- und Hybridfahrzeugen, welche Grenzen gelten.",
-          "required": true,
-          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)"
-        },
-        {
           "id": "agListenpreis",
           "role": "arbeitgeber",
           "type": "money",
@@ -155,6 +146,20 @@
               "label": "Brennstoffzelle (Wasserstoff)"
             }
           ]
+        },
+        {
+          "id": "agAnschaffung",
+          "role": "arbeitgeber",
+          "type": "date",
+          "label": "Kauf- oder Leasingbeginn beim Arbeitgeber",
+          "help": "Entscheidet bei Elektro- und Hybridfahrzeugen, welche Grenzen gelten.",
+          "required": true,
+          "purpose": "Bemessungsgrundlage (§ 6 Abs. 1 Nr. 4 Satz 2 EStG, R 8.1 Abs. 9 Nr. 1 Satz 6 LStR)",
+          "showIf": {
+            "field": "agAntrieb",
+            "in": ["elektro", "plugin", "brennstoff"]
+          },
+          "because": "Nur bei Elektro-, Plug-in-Hybrid- und Brennstoffzellenfahrzeugen hängt der geringere Ansatz des Listenpreises vom Tag der Anschaffung ab (§ 6 Abs. 1 Nr. 4 Satz 2 EStG)."
         },
         {
           "id": "agErstUeberlassung",
@@ -397,10 +402,14 @@
           "role": "person",
           "type": "boolean",
           "label": "Fahrten von der Meldeanschrift",
-          "question": "Fahren Sie von Ihrer Meldeanschrift aus?",
+          "question": "Fahren Sie von der Wohnung ab, unter der Sie gemeldet sind?",
           "required": true,
           "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)",
-          "initial": true
+          "showIf": {
+            "field": "fahrtenWohnung",
+            "equals": true
+          },
+          "because": "Die Wohnung zählt nur, wenn Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte fahren."
         },
         {
           "id": "wohnungAnschrift",
@@ -439,7 +448,7 @@
       "id": "datenschutz",
       "role": "person",
       "title": "Datenschutzhinweis",
-      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den geldwerten Vorteil aus der Überlassung des Dienstwagens zu ermitteln und die Lohnsteuer richtig einzubehalten. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Empfänger sind die lohnabrechnende Stelle, die Finanzverwaltung und die Sozialversicherung. Die Angaben werden als Beleg zum Lohnkonto aufbewahrt (§ 41 Abs. 1 EStG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
+      "text": "Ihr Arbeitgeber verarbeitet diese Angaben, um den geldwerten Vorteil aus der Überlassung des Dienstwagens zu ermitteln und die Lohnsteuer richtig einzubehalten. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Empfänger sind die lohnabrechnende Stelle, die Finanzverwaltung und die Sozialversicherung. Die Angaben werden als Beleg zum Lohnkonto aufbewahrt (§ 41 Abs. 1 EStG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis Sie eine PDF oder einen Zwischenstand speichern oder den Fragebogen schließen oder verwerfen, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
       "asOf": "2026-11-13",
       "acknowledgement": "read"
     },

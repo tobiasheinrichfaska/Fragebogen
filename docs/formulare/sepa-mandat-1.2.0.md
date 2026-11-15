@@ -8,8 +8,8 @@
 | Formular | sepa-mandat, Version 1.2.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Datum“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 13.11.2026 um 12:28 |
-| Definition (SHA-256) | a35dba73d28b9e2edfa1b937f589883da6fb1d934af3910722b2d46ede1100d6 |
+| Stand | zuletzt überarbeitet am 15.11.2026 um 21:36 |
+| Definition (SHA-256) | f6895b514cda82d2d1b937eafdffa978aa4919c28407eb631d028ff1b22b67db |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für ein SEPA-Lastschriftmandat schreibt das Gesetz keine besondere Form vor. Deshalb unterschreiben Sie hier mit einer einfachen elektronischen Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Das Mandat gilt nur für die Angaben, die Sie vor dem Unterschreiben in der Zusammenfassung sehen. |
 | Empfänger | Kanzlei |
@@ -176,7 +176,9 @@ Alle übrigen Angaben sind unabhängig.
 - Art: wird in der App gelesen und bestätigt
 - Stand: 13.11.2026
 
-> Verantwortlich ist die Kanzlei, die Ihnen dieses Mandat vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Sie verwendet Ihre Angaben, um mit Ihrem Mandat ihre Rechnungen per Lastschrift einzuziehen (Art. 6 Abs. 1 Buchst. b DSGVO), und gibt sie dafür an ihre Bank weiter. Zahlen Sie für den Vertrag einer anderen Person, verarbeitet die Kanzlei Ihre Angaben, um die Zahlungen aus diesem Vertrag einzuziehen; das ist ihr berechtigtes Interesse (Art. 6 Abs. 1 Buchst. f DSGVO). Sie bewahrt das Mandat auf, solange es gilt, und danach, solange sie es zum Nachweis braucht. Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
+> Verantwortlich ist die Kanzlei, die Ihnen dieses Mandat vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Sie verwendet Ihre Angaben, um mit Ihrem Mandat ihre Rechnungen per Lastschrift einzuziehen (Art. 6 Abs. 1 Buchst. b DSGVO), und gibt sie dafür an ihre Bank weiter. Zahlen Sie für den Vertrag einer anderen Person, verarbeitet die Kanzlei Ihre Angaben, um die Zahlungen aus diesem Vertrag einzuziehen; das ist ihr berechtigtes Interesse (Art. 6 Abs. 1 Buchst. f DSGVO). Sie bewahrt das Mandat auf, solange es gilt, und danach, solange sie es zum Nachweis braucht. Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis Sie eine PDF oder einen Zwischenstand speichern oder den Fragebogen schließen oder verwerfen, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
+>
+> Widerspruch: Soweit die Kanzlei Ihre Angaben aufgrund ihres berechtigten Interesses verarbeitet, können Sie dem aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit widersprechen (Art. 21 DSGVO).
 
 ### SEPA-Basislastschriftmandat
 
@@ -196,7 +198,9 @@ Alle übrigen Angaben sind unabhängig.
 - Art: wird in der App gelesen und bestätigt
 - Stand: 13.11.2026
 
-> Verantwortlich ist die Kanzlei, die Ihnen dieses Mandat vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Sie verwendet Ihre Angaben, um mit Ihrem Mandat ihre Rechnungen per Lastschrift einzuziehen (Art. 6 Abs. 1 Buchst. b DSGVO), und gibt sie dafür an ihre Bank weiter. Zahlen Sie für den Vertrag einer anderen Person, verarbeitet die Kanzlei Ihre Angaben, um die Zahlungen aus diesem Vertrag einzuziehen; das ist ihr berechtigtes Interesse (Art. 6 Abs. 1 Buchst. f DSGVO). Sie bewahrt das Mandat auf, solange es gilt, und danach, solange sie es zum Nachweis braucht. Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
+> Verantwortlich ist die Kanzlei, die Ihnen dieses Mandat vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Sie verwendet Ihre Angaben, um mit Ihrem Mandat ihre Rechnungen per Lastschrift einzuziehen (Art. 6 Abs. 1 Buchst. b DSGVO), und gibt sie dafür an ihre Bank weiter. Zahlen Sie für den Vertrag einer anderen Person, verarbeitet die Kanzlei Ihre Angaben, um die Zahlungen aus diesem Vertrag einzuziehen; das ist ihr berechtigtes Interesse (Art. 6 Abs. 1 Buchst. f DSGVO). Sie bewahrt das Mandat auf, solange es gilt, und danach, solange sie es zum Nachweis braucht. Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis Sie eine PDF oder einen Zwischenstand speichern oder den Fragebogen schließen oder verwerfen, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
+>
+> Widerspruch: Soweit die Kanzlei Ihre Angaben aufgrund ihres berechtigten Interesses verarbeitet, können Sie dem aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit widersprechen (Art. 21 DSGVO).
 
 ## Verknüpfung der Teile
 

@@ -1,7 +1,7 @@
 {
   "id": "lohnmeldung",
   "version": "0.1.0",
-  "revised": "2026-11-13T13:25",
+  "revised": "2026-11-15T21:36",
   "title": "Monatsmeldung: Lohn- und Gehaltsdaten",
   "signaturePolicy": "electronic",
   "roles": [
@@ -439,7 +439,7 @@
           "required": false,
           "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
           "question": "Gibt es Besonderheiten in diesem Monat?",
-          "help": "Zum Beispiel Ein- oder Austritte, eine neue Anschrift oder Bankverbindung, weitere Fehlzeiten (Kind krank, unbezahlter Urlaub, Mutterschutz, Elternzeit), Pfändungen, ein Arbeitsunfall, eine von Dritten verursachte Krankheit oder am ersten Krankheitstag noch gearbeitet. Bitte keine Diagnosen.",
+          "help": "Neue Beschäftigte melden Sie bitte vor dem ersten Arbeitstag mit dem Personalfragebogen, in Branchen mit Sofortmeldepflicht mit der Sofortmeldung – nicht erst mit dieser Meldung. Hierher gehören zum Beispiel Austritte, eine neue Anschrift oder Bankverbindung, weitere Fehlzeiten (Kind krank, unbezahlter Urlaub, Mutterschutz, Elternzeit), Pfändungen, ein Arbeitsunfall, eine von Dritten verursachte Krankheit oder am ersten Krankheitstag noch gearbeitet. Bitte keine Diagnosen.",
           "multiline": true,
           "carryOver": false
         }
@@ -459,7 +459,7 @@
       "id": "arbeitszeit",
       "role": "arbeitgeber",
       "title": "Arbeitszeit aufzeichnen",
-      "text": "Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über acht Stunden je Werktag ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG). Diese Meldung ersetzt die Aufzeichnungen nicht.",
+      "text": "Für Minijobs (nicht im Privathaushalt) und in den Branchen nach § 2a SchwarzArbG müssen Beginn, Ende und Dauer der täglichen Arbeitszeit spätestens bis zum siebten Tag nach dem Arbeitstag aufgezeichnet und zwei Jahre aufbewahrt werden (§ 17 MiLoG). Arbeitszeit über acht Stunden je Werktag ist immer aufzuzeichnen (§ 16 Abs. 2 ArbZG); nach der Rechtsprechung des Bundesarbeitsgerichts ist die gesamte Arbeitszeit aller Beschäftigten zu erfassen (Beschluss vom 13.09.2022 – 1 ABR 22/21). Diese Meldung ersetzt die Aufzeichnungen nicht.",
       "asOf": "2026-11-13",
       "acknowledgement": "read"
     }
@@ -470,7 +470,7 @@
     "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung).",
     "Die Monatsmeldung ist keine Arbeitszeitaufzeichnung nach § 17 MiLoG oder § 16 ArbZG; die Aufzeichnungen bleiben beim Arbeitgeber.",
     "Steuerklasse, Kinderfreibeträge und Kirchensteuermerkmal ruft die lohnabrechnende Stelle elektronisch ab (§ 39e EStG); Arbeitsunfähigkeitszeiten gesetzlich Versicherter ruft sie bei der Krankenkasse ab (§ 109 SGB IV).",
-    "Fehlzeiten werden nur mit Art und Zeitraum gemeldet, nie mit einer Diagnose (Art. 9 DSGVO).",
+    "Krankheitstage sind Gesundheitsdaten (Art. 9 DSGVO); gemeldet werden nur Art und Zeitraum, nie eine Diagnose.",
     "Eine neue Meldung entsteht aus der des Vormonats: Der Abrechnungsmonat zählt weiter, Firma, Ansprechperson, Lohnarten und die Mitarbeitenden (außer Ausscheidenden) mit ihrer Vergütung bleiben, die Vergütung des Vormonats steht zum Vergleich daneben; Fehltage, Monatswerte und Besonderheiten sind leer. Hinweise, die schon bestätigt sind und deren Text gleich blieb, gelten als bestätigt."
   ],
   "signatureBasis": "Für die Monatsmeldung schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name mit dem Namen der meldenden Person (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Daten gemeldet hat.",

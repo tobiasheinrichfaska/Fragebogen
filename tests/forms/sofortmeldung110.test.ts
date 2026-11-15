@@ -123,7 +123,9 @@ describe('Sofortmeldung 1.1.0: texts', () => {
   });
 
   it('names the neue Bundesländer as the example for a birth place in Germany', () => {
-    expect(field('geborenInDeutschland')?.help).toContain('neuen Bundesländern');
+    expect(field('geborenInDeutschland')?.help).toContain(
+      'im Gebiet der heutigen neuen Bundesländer',
+    );
     expect(field('geborenInDeutschland')?.help).not.toContain('DDR');
   });
 

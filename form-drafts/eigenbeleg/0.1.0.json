@@ -1,7 +1,7 @@
 {
   "id": "eigenbeleg",
   "version": "0.1.0",
-  "revised": "2026-11-14T21:09",
+  "revised": "2026-11-15T21:36",
   "title": "Eigenbeleg: Ausgabe ohne Originalbeleg, Entnahme, Einlage oder Geldtransit",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für Eigenbelege schreibt kein Gesetz eine Form vor. Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Für den digitalen Bewirtungs-Eigenbeleg lässt die Finanzverwaltung eine elektronische Unterschrift oder Genehmigung genügen, wenn der Zeitpunkt aufgezeichnet wird und die Angaben nicht unbemerkt geändert werden können (BMF-Schreiben vom 19.11.2025 Rn. 19, 22). Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung).",
@@ -206,7 +206,7 @@
           "type": "choice",
           "label": "Hinweis zur Bewirtung",
           "question": "Wichtig bei einer Bewirtung: Ohne die Rechnung der Gaststätte ist die Ausgabe nicht abziehbar.",
-          "help": "Für ein Essen oder Getränke mit Gästen in einem Restaurant, Café oder einer anderen Gaststätte verlangt das Gesetz deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 EStG). Sie muss von der Kasse gedruckt sein. Ein selbst erstellter Beleg wie dieser ersetzt sie nicht – ohne sie zählt die Ausgabe überhaupt nicht als Betriebsausgabe. Bitten Sie die Gaststätte deshalb zuerst um eine Zweitschrift der Rechnung. Eine Bewirtung in Ihrer eigenen Wohnung ist in der Regel privat und keine Betriebsausgabe. Sie können den Eigenbeleg trotzdem ausstellen; Ihre Kanzlei prüft ihn.",
+          "help": "Für ein Essen oder Getränke mit Gästen in einem Restaurant, Café oder einer anderen Gaststätte verlangt das Gesetz deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 EStG). Sie muss von der elektronischen Kasse erstellt sein – auf Papier oder digital. Ein selbst erstellter Beleg wie dieser ersetzt sie nicht – ohne sie zählt die Ausgabe überhaupt nicht als Betriebsausgabe. Bitten Sie die Gaststätte deshalb zuerst um eine Zweitschrift der Rechnung. Eine Bewirtung in Ihrer eigenen Wohnung ist in der Regel privat und keine Betriebsausgabe. Sie können den Eigenbeleg trotzdem ausstellen; Ihre Kanzlei prüft ihn.",
           "required": true,
           "showIf": { "field": "artAusgabe", "equals": "bewirtung" },
           "because": "Nur bei einer Bewirtung: Ohne die maschinell erstellte Rechnung der Gaststätte ist die Ausgabe vom Abzug ausgeschlossen (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; R 4.10 Abs. 8 EStR; BMF-Schreiben vom 19.11.2025 Rn. 13), eine Bewirtung in der eigenen Wohnung ist in der Regel privat (R 4.10 Abs. 6 Satz 8 EStR).",
@@ -818,7 +818,7 @@
     {
       "id": "spende",
       "when": { "field": "artAusgabe", "equals": "spende" },
-      "message": "Für eine Spende brauchen Sie eine Zuwendungsbestätigung des Empfängers; ein Eigenbeleg genügt nicht.",
+      "message": "Für eine Spende brauchen Sie eine Zuwendungsbestätigung des Empfängers – bis 300 € genügen auch der Kontoauszug und ein vom Empfänger vorgedruckter Beleg (vereinfachter Nachweis, § 50 Abs. 4 EStDV). Ein Eigenbeleg genügt nicht.",
       "source": "§ 50 Abs. 1 EStDV"
     },
     {
@@ -861,8 +861,8 @@
           { "field": "grundOhneOriginal", "equals": "verloren" }
         ]
       },
-      "message": "Fahrschein oder Parkbeleg verloren: App- und Online-Tickets lassen sich meist neu abrufen; ein Fahrausweis gilt als Rechnung.",
-      "source": "§ 34 Abs. 1 UStDV"
+      "message": "Fahrschein oder Parkbeleg verloren: App- und Online-Tickets lassen sich meist neu abrufen. Ein Fahrausweis gilt als Rechnung (§ 34 Abs. 1 UStDV), ein Parkbeleg höchstens als Kleinbetragsrechnung (§ 33 UStDV).",
+      "source": "§§ 33, 34 Abs. 1 UStDV"
     },
     {
       "id": "geschenkGesondert",

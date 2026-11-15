@@ -8,8 +8,8 @@
 | Formular | personalfragebogen, Version 1.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027 |
-| Stand | zuletzt überarbeitet am 15.11.2026 um 21:28 |
-| Definition (SHA-256) | f804d246630212ea80405415dcda7e4f1179ef3654b91c6f08b0f4fd897ead82 |
+| Stand | zuletzt überarbeitet am 15.11.2026 um 21:36 |
+| Definition (SHA-256) | 075bd5ed8fd5b81c15a2f7c795703047f720bbca3391789857900cb52c22ef9b |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für die Angaben im Personalfragebogen schreibt das Gesetz keine besondere Form vor: Sie teilen sie Ihrem Arbeitgeber nur mit (§ 39e Abs. 4 EStG, § 28o Abs. 1 SGB IV). Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name. Sie ist nach Art. 3 Nr. 10 der eIDAS-Verordnung jede elektronische Angabe, die Sie zum Unterzeichnen verwenden. Erklärungen, die eigenhändig unterschrieben werden, etwa die Befreiung von der Rentenversicherung im Minijob, geben Sie auf Papier ab. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -663,7 +663,7 @@ Alle übrigen Angaben sind unabhängig.
 >
 > Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung nach Art. 15 bis 18 DSGVO, soweit die Verarbeitung auf dem Arbeitsvertrag beruht, das Recht, die von Ihnen bereitgestellten Angaben in einem gängigen, maschinenlesbaren Format zu erhalten (Art. 20 DSGVO), und das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde.
 >
-> Diese App versendet Ihre Angaben nicht; sie verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
+> Diese App versendet Ihre Angaben nicht; sie verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis Sie eine PDF oder einen Zwischenstand speichern oder den Fragebogen schließen oder verwerfen, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).
 
 ## Verknüpfung der Teile
 
