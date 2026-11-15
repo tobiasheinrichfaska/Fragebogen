@@ -54,11 +54,18 @@ Bescheid geben, damit die Cloud-Sitzung sie bekommt.
 
 ## 3 · Hochladen
 
-- Testordner: `npm run hochladen -- -Ziel test`, wenn Schritt 2 grün war.
-- Öffentliche App: **nur mit Tobias' ausdrücklicher Freigabe**. Seit dem letzten öffentlichen
-  Upload kamen das Audit vom 14.11. und seine Entscheidungen dazu. Wichtig für die Freigabe:
-  Zwischenstände der neuen App kennzeichnen Vorbelegungen; ältere heruntergeladene App-Kopien
-  lehnen solche Zwischenstände ab (die gehostete App ist immer aktuell).
+**Bis zum Umzug zu bunny.net wird nichts hochgeladen** (Tobias, 15.11.2026: „Nichts, erst Umzug“),
+weder der Testordner noch die öffentliche App bei IONOS. Der PC holt nur den neuen Stand und lässt
+die Tests laufen (Schritte 1 und 2). Der nächste öffentliche Upload ist der erste zu bunny.net, über
+das Freigabe-Repo (`CLAUDE.md`, „Hosting move decided“).
+
+Gut zu wissen für diesen Upload:
+
+- Er bringt alles seit dem letzten öffentlichen Upload: das Audit vom 14.11. und seine
+  Entscheidungen, auch die gekennzeichneten Vorbelegungen. Ältere heruntergeladene App-Kopien
+  lehnen solche Zwischenstände ab; die gehostete App ist immer aktuell.
+- Er bringt auch den neuen Zugangshinweis mit Haftungsausschluss (in `Fragebogen-privat`,
+  freigegeben am 15.11.2026). Jeder Besucher bestätigt ihn einmal neu.
 
 ## 4 · Privates Repo `Fragebogen-privat` (angelegt am 14.11.2026; Tobias: ja, auch die SV-Fälle des Portals)
 
