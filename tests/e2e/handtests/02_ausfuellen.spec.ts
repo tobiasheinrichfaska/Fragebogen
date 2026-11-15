@@ -18,7 +18,7 @@ import {
   protect,
   toOverview,
 } from '../app';
-import { expectClean, rememberAccess } from '../guards';
+import { expectClean, rememberAccess, webAppFile } from '../guards';
 
 const SOFORT = 'Personalfragebogen: Angaben für die Sofortmeldung';
 const SUMMARY_LINK = 'Zur Zusammenfassung – alle Angaben ansehen und ändern';
@@ -816,6 +816,8 @@ async function serve(context: BrowserContext): Promise<{ foreign: string[]; erro
     if (url === `${ORIGIN}/` || url === `${ORIGIN}/index.html`) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    const file = webAppFile(url, { [`${ORIGIN}/`]: APP });
+    if (file) return route.fulfill(file);
     if (!/^(data|blob):/.test(url)) seen.foreign.push(url);
     return route.abort();
   });

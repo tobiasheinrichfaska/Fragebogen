@@ -2,10 +2,12 @@
 // requests), the Content-Security-Policy is never violated, no error reaches the console and
 // nothing is left in the browser's storage.
 import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { accessToken } from '../../src/logic/accessGate';
 import { legalLinks, parseAppConfig, type LegalLink } from '../../src/logic/appConfig';
+import { WEB_APP_FILES } from '../../src/logic/webApp';
 
 // The configuration the builds were made with, as vite.config.ts reads it: the local Kanzlei
 // configuration where it exists, else the neutral example of the public repo.
@@ -42,6 +44,35 @@ export async function rememberAccess(target: Page | BrowserContext): Promise<voi
     },
     [ACCESS_KEY, accessToken(ACCESS_NOTICE)] as const,
   );
+}
+
+const WEB_APP_TYPES: Readonly<Record<string, string>> = {
+  json: 'application/json',
+  js: 'text/javascript; charset=utf-8',
+  png: 'image/png',
+};
+
+/**
+ * A file of the installable web app next to a hosted page (2026-11-15), as the web server serves
+ * it: `pages` maps the address of a page's folder (e.g. `https://fragebogen.test/`) to its build
+ * (`dist/index.html`). Browsers ask for the manifest or the touch icon on their own (Firefox and
+ * WebKit do); those requests belong to the app and are no request that left the device.
+ */
+export function webAppFile(
+  url: string,
+  pages: Readonly<Record<string, string>>,
+): { status: number; contentType: string; body: Buffer } | undefined {
+  const plain = url.split('#')[0]?.split('?')[0] ?? '';
+  for (const [folder, build] of Object.entries(pages)) {
+    const name = Object.values(WEB_APP_FILES).find((file) => plain === `${folder}${file}`);
+    if (name === undefined) continue;
+    return {
+      status: 200,
+      contentType: WEB_APP_TYPES[name.split('.').at(-1) ?? ''] ?? 'application/octet-stream',
+      body: readFileSync(join(dirname(build), name)),
+    };
+  }
+  return undefined;
 }
 
 export interface Guard {

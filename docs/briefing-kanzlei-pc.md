@@ -70,6 +70,11 @@ Gut zu wissen für diesen Upload:
   Kanzlei-Homepage (`imprintAddress`, `privacyAddress` in `Fragebogen-privat`). Die Hilfeseiten mit
   diesen Links schreibt `npm run build` nach `dist/hilfe/`. Von dort holt sie `deploy/upload.json`,
   nicht mehr aus `docs/hilfe/`.
+- Seit 15.11.2026 lässt sich die gehostete App installieren und startet ohne Netz. Dafür legt
+  `npm run build` sechs Dateien neben `dist/index.html`: `manifest.json`, `sw.js` und vier `*.png`.
+  `npm run build:test` legt sie neben `dist-test/index.html`.
+  - `deploy/upload.json` nennt sie. Hat Freigabe eine eigene Dateiliste, gehören sie dort hinein.
+  - Nach dem Upload mit `curl -I` prüfen: `sw.js` kommt als JavaScript, `manifest.json` als JSON.
 
 ## 4 · Privates Repo `Fragebogen-privat` (angelegt am 14.11.2026; Tobias: ja, auch die SV-Fälle des Portals)
 

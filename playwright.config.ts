@@ -57,6 +57,9 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     acceptDownloads: true,
+    // The hosted builds register a service worker (2026-11-15). Every test runs without it — its
+    // fetches would bypass page.route — except tests/e2e/webApp.spec.ts, which allows it.
+    serviceWorkers: 'block',
     trace: 'retain-on-failure',
     ...(Object.keys(browserEnv).length > 0 ? { launchOptions: { env: browserEnv } } : {}),
   },

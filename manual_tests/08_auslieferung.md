@@ -210,3 +210,41 @@ automatischen Tests in `tests/e2e/handtests/08_testbereich.spec.ts`.
   prüft ein automatischer Test in drei Browsern, auch auf einem nachgebildeten Handy
   (`tests/e2e/handtests/08_auslieferung.spec.ts`). Hier geht es nur um das echte Gerät und die Seiten
   auf der Homepage.
+
+---
+
+## MT-135: App auf dem Startbildschirm und ohne Netz
+
+**Einstieg:** Sie öffnen die öffentliche App auf der Subdomain im Browser des Geräts.
+
+**Voraussetzungen:** Die App ist mit Manifest, Symbolen und `sw.js` hochgeladen (seit 15.11.2026).
+Ein echtes iPhone (Safari), ein Android-Handy (Chrome) und ein PC mit Edge oder Chrome. Dass die
+Seite Manifest und Symbole verlinkt, online nichts aus dem Speicher nimmt und ohne Netz startet,
+prüft ein automatischer Test (`tests/e2e/webApp.spec.ts`). Hier geht es um die echten Geräte.
+
+**Schritte:**
+
+1. Am iPhone in Safari auf „Teilen“ und dann auf „Zum Home-Bildschirm“ tippen.
+   - **Danach:** Vorgeschlagen wird der Name „Fragebogen“ mit dem Symbol: weißes Blatt mit drei
+     Linien und Haken auf der Farbe der Kanzlei.
+2. „Hinzufügen“ tippen und die App vom Home-Bildschirm öffnen.
+   - **Danach:** Die App öffnet sich ohne Adressleiste. Der Zugangshinweis wird noch einmal
+     gefragt; die App vom Home-Bildschirm hat einen eigenen Speicher.
+3. Am Android-Handy in Chrome im Menü „Zum Startbildschirm hinzufügen“ oder „App installieren“
+   wählen und die App vom Startbildschirm öffnen.
+   - **Danach:** Das Symbol ist rund oder abgerundet beschnitten. Das Blatt ist vollständig zu
+     sehen.
+4. Am PC in Edge oder Chrome auf das Installieren-Symbol in der Adressleiste klicken.
+   - **Danach:** Die App öffnet sich in einem eigenen Fenster.
+5. Am Handy den Flugmodus einschalten und die App vom Start- bzw. Home-Bildschirm öffnen.
+   - **Danach:** Die App startet und zeigt „Neuer Fragebogen“.
+6. Im Flugmodus einen Fragebogen beginnen, eine Frage beantworten und eine PDF erstellen.
+   - **Danach:** Das geht wie online.
+7. Den Flugmodus ausschalten und die App neu öffnen.
+   - **Danach:** Sie startet wie gewohnt.
+
+**Erwartet:**
+
+- _Nicht offensichtlich:_ Ohne Netz startet die Fassung, die beim letzten Besuch mit Netz
+  gespeichert wurde. Mit Netz kommt die App immer vom Server.
+- Gespeichert ist nur die App selbst, nie eine Antwort.

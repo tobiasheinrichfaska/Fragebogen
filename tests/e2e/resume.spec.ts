@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
-import { rememberAccess } from './guards';
+import { rememberAccess, webAppFile } from './guards';
 import { sealed, type ResumeRecord } from '../../src/logic/resume';
 import { APP_STORAGE, storageKey } from '../../src/logic/storageKeys';
 
@@ -28,6 +28,8 @@ async function serve(page: Page): Promise<string[]> {
     if (url === `${ORIGIN}/` || url === `${ORIGIN}/index.html`) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    const file = webAppFile(url, { [`${ORIGIN}/`]: APP });
+    if (file) return route.fulfill(file);
     if (!/^(data|blob):/.test(url)) foreign.push(url);
     return route.abort();
   });
@@ -51,6 +53,8 @@ async function serveBoth(page: Page): Promise<string[]> {
     const url = route.request().url();
     const body = pages.get(url);
     if (body) return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body });
+    const file = webAppFile(url, { [`${ORIGIN}/`]: APP, [`${ORIGIN}/test/`]: TEST_APP });
+    if (file) return route.fulfill(file);
     if (!/^(data|blob):/.test(url)) foreign.push(url);
     return route.abort();
   });

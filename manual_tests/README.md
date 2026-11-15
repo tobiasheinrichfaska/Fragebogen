@@ -40,7 +40,7 @@ und mit einem nachgestellten Handy.
 | [`03_abschluss.md`](03_abschluss.md)             | Unterschrift mit Finger und Stift auf Tablet oder Handy (MT-21)                                                                                                                                   |
 | [`04_pdf.md`](04_pdf.md)                         | PDF im echten PDF-Programm (MT-30), mit Acrobat geändert (MT-33), Druck und Scan (MT-34), Fotos (MT-35), Link (MT-36), Teilen am Handy (MT-37), Kennwort in Chrome, Acrobat und Vorschau (MT-132) |
 | [`05_kanzlei.md`](05_kanzlei.md)                 | Übergabe an Lohn und Gehalt: Import in DATEV (MT-68, MT-70)                                                                                                                                       |
-| [`08_auslieferung.md`](08_auslieferung.md)       | Subdomain mit `.htaccess` (MT-80), Hilfeseiten am echten Handy (MT-81), Hochladen, Ordner, Tester (MT-82–84), Testseite am echten Handy (MT-85)                                                   |
+| [`08_auslieferung.md`](08_auslieferung.md)       | Subdomain mit `.htaccess` (MT-80), Hilfeseiten am echten Handy (MT-81), Hochladen, Ordner, Tester (MT-82–84), Testseite am echten Handy (MT-85), Startbildschirm und ohne Netz (MT-135)           |
 | [`90_pdf_gegenproben.md`](90_pdf_gegenproben.md) | Gegenproben mit Acrobat, DATEV und „Drucken als PDF“, bei Gelegenheit, blockieren nichts                                                                                                          |
 
 ## Automatisiert (seit 08.11.2026)

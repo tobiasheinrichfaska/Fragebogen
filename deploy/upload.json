@@ -7,9 +7,45 @@
       "folder": "",
       "access": "public",
       "files": [
-        { "from": "dist/index.html", "to": "index.html", "verify": true },
-        { "from": "deploy/.htaccess", "to": ".htaccess" },
-        { "from": "dist/hilfe/", "to": "hilfe/" }
+        {
+          "from": "dist/index.html",
+          "to": "index.html",
+          "verify": true
+        },
+        {
+          "from": "deploy/.htaccess",
+          "to": ".htaccess"
+        },
+        {
+          "from": "dist/hilfe/",
+          "to": "hilfe/"
+        },
+        {
+          "from": "dist/manifest.json",
+          "to": "manifest.json",
+          "verify": true
+        },
+        {
+          "from": "dist/sw.js",
+          "to": "sw.js",
+          "verify": true
+        },
+        {
+          "from": "dist/icon-192.png",
+          "to": "icon-192.png"
+        },
+        {
+          "from": "dist/icon-512.png",
+          "to": "icon-512.png"
+        },
+        {
+          "from": "dist/icon-maskable-512.png",
+          "to": "icon-maskable-512.png"
+        },
+        {
+          "from": "dist/apple-touch-icon.png",
+          "to": "apple-touch-icon.png"
+        }
       ]
     },
     "test": {
@@ -21,8 +57,41 @@
       "authName": "Fragebogen - Testbereich",
       "testers": "deploy/.local/tester.json",
       "files": [
-        { "from": "dist-test/index.html", "to": "index.html", "verify": true },
-        { "from": "dist-test/hilfe/", "to": "hilfe/" }
+        {
+          "from": "dist-test/index.html",
+          "to": "index.html",
+          "verify": true
+        },
+        {
+          "from": "dist-test/hilfe/",
+          "to": "hilfe/"
+        },
+        {
+          "from": "dist-test/manifest.json",
+          "to": "manifest.json",
+          "verify": true
+        },
+        {
+          "from": "dist-test/sw.js",
+          "to": "sw.js",
+          "verify": true
+        },
+        {
+          "from": "dist-test/icon-192.png",
+          "to": "icon-192.png"
+        },
+        {
+          "from": "dist-test/icon-512.png",
+          "to": "icon-512.png"
+        },
+        {
+          "from": "dist-test/icon-maskable-512.png",
+          "to": "icon-maskable-512.png"
+        },
+        {
+          "from": "dist-test/apple-touch-icon.png",
+          "to": "apple-touch-icon.png"
+        }
       ]
     },
     "mehrfachbearbeitung": {
@@ -31,13 +100,24 @@
       "folder": "mehrfachbearbeitung",
       "access": "ip",
       "allowMarkers": ["mapping"],
-      "files": [{ "from": "dist-kanzlei/index.html", "to": "index.html", "verify": true }]
+      "files": [
+        {
+          "from": "dist-kanzlei/index.html",
+          "to": "index.html",
+          "verify": true
+        }
+      ]
     },
     "regeln": {
       "description": "Nur die Regeln im Hauptordner der Subdomain (.htaccess) – die öffentliche App bleibt unverändert",
       "folder": "",
       "access": "public",
-      "files": [{ "from": "deploy/.htaccess", "to": ".htaccess" }]
+      "files": [
+        {
+          "from": "deploy/.htaccess",
+          "to": ".htaccess"
+        }
+      ]
     }
   },
   "forbidden": ["dist-preview/", "config/", "import/", ".tmp/", "deploy/.local/"],

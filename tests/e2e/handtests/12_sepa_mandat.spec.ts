@@ -17,7 +17,7 @@ import {
   TEST_APP,
   toOverview,
 } from '../app';
-import { expectClean, guard } from '../guards';
+import { expectClean, guard, webAppFile } from '../guards';
 
 const KANZLEI = 'Kanzlei (Zahlungsempfänger)';
 const KANZLEI_PART = `Angaben: ${KANZLEI} (abgeschlossen, nur lesen)`;
@@ -155,6 +155,8 @@ async function openHosted(
     if (url === `${ORIGIN}/`) {
       return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
     }
+    const file = webAppFile(url, { [`${ORIGIN}/`]: build });
+    if (file) return route.fulfill(file);
     if (!/^(data|blob):/.test(url)) foreign.push(url);
     return route.abort();
   });
