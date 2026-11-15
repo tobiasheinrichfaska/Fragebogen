@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-15T21:36",
+  "revised": "2026-11-15T23:03",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -273,14 +273,54 @@
           ]
         },
         {
+          "id": "agErsteTaetigkeitsstaette",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Erste Tätigkeitsstätte zugeordnet",
+          "question": "Hat die Person eine erste Tätigkeitsstätte?",
+          "help": "Erste Tätigkeitsstätte ist die ortsfeste betriebliche Einrichtung – Ihre, die eines verbundenen Unternehmens oder eines Kunden –, der Sie die Person dauerhaft zugeordnet haben, meist im Arbeitsvertrag. Fehlt eine solche Zuordnung, ist es die Einrichtung, an der sie dauerhaft arbeitstäglich, an zwei vollen Tagen je Woche oder mit mindestens einem Drittel ihrer Arbeitszeit arbeiten soll (§ 9 Abs. 4 EStG).",
+          "required": true,
+          "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG)",
+          "options": [
+            {
+              "id": "ja",
+              "label": "Ja"
+            },
+            {
+              "id": "keine",
+              "label": "Nein – z. B. Außendienst mit wechselnden Einsatzorten"
+            }
+          ]
+        },
+        {
+          "id": "agErsteTaetigkeitsstaetteAnschrift",
+          "role": "arbeitgeber",
+          "type": "text",
+          "label": "Anschrift der ersten Tätigkeitsstätte",
+          "question": "Wo ist die erste Tätigkeitsstätte der Person?",
+          "help": "Die Anschrift der betrieblichen Einrichtung, z. B. „Musterstraße 1, 12345 Musterstadt“. Die Person sieht sie bei der Frage nach ihren Fahrten.",
+          "required": true,
+          "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG); die Person misst die Entfernung dorthin",
+          "showIf": {
+            "field": "agErsteTaetigkeitsstaette",
+            "equals": "ja"
+          },
+          "because": "Die erste Tätigkeitsstätte legt der Arbeitgeber fest (§ 9 Abs. 4 EStG); die Person braucht ihre Anschrift, um die Entfernung zu nennen."
+        },
+        {
           "id": "agFahrtenWohnung",
           "role": "arbeitgeber",
           "type": "boolean",
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte erlaubt",
           "question": "Darf die Person mit dem Fahrzeug zwischen Wohnung und erster Tätigkeitsstätte fahren?",
-          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).",
+          "help": "Gemeint ist die erste Tätigkeitsstätte, die Sie eben genannt haben.",
           "required": true,
-          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
+          "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)",
+          "showIf": {
+            "field": "agErsteTaetigkeitsstaette",
+            "equals": "ja"
+          },
+          "because": "Ohne erste Tätigkeitsstätte gibt es keine Fahrten dorthin, für die 0,03 % je Entfernungskilometer anzusetzen wären (§ 8 Abs. 2 Satz 3 EStG)."
         },
         {
           "id": "agPauschal15",
@@ -388,12 +428,27 @@
           "because": "Hat der Arbeitgeber schon eingetragen; hier zum Prüfen vorbelegt."
         },
         {
+          "id": "ersteTaetigkeitsstaette",
+          "role": "person",
+          "type": "text",
+          "label": "Erste Tätigkeitsstätte",
+          "question": "Wo ist Ihre erste Tätigkeitsstätte?",
+          "help": "Der Betrieb oder Ort, dem Ihr Arbeitgeber Sie dauerhaft zugeordnet hat, meist im Arbeitsvertrag. Wissen Sie es nicht, lassen Sie das Feld leer; Ihr Arbeitgeber trägt es ein.",
+          "required": false,
+          "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG)",
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agErsteTaetigkeitsstaetteAnschrift"
+          },
+          "because": "Die erste Tätigkeitsstätte legt der Arbeitgeber fest (§ 9 Abs. 4 EStG); hat er sie schon eingetragen, wird sie übernommen und hier nicht gefragt."
+        },
+        {
           "id": "fahrtenWohnung",
           "role": "person",
           "type": "boolean",
           "label": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte",
-          "question": "Fahren Sie mit dem Dienstwagen zwischen Wohnung und erster Tätigkeitsstätte?",
-          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, an dem die Person dauerhaft arbeitet (§ 9 Abs. 4 EStG).",
+          "question": "Fahren Sie mit dem Dienstwagen zwischen Ihrer Wohnung und Ihrer ersten Tätigkeitsstätte {ersteTaetigkeitsstaette}?",
+          "help": "Erste Tätigkeitsstätte ist der Betrieb oder Ort, dem Ihr Arbeitgeber Sie dauerhaft zugeordnet hat (§ 9 Abs. 4 EStG).",
           "required": true,
           "purpose": "Fahrten zwischen Wohnung und erster Tätigkeitsstätte: 0,03 % je Entfernungskilometer (§ 8 Abs. 2 Satz 3 EStG)"
         },
@@ -504,6 +559,7 @@
   "limits": [
     "Nur Standardfälle: Listenpreisregel (1 %), Fahrten zur ersten Tätigkeitsstätte (0,03 %) und deren Pauschalierung mit 15 %.",
     "Nicht abgedeckt: Fahrtenbuch, Einzelbewertung der Fahrten (0,002 %), Zuzahlungen und Kostenübernahmen der Person, mehrere Fahrzeuge, Familienheimfahrten und Sammelbeförderung.",
+    "Ohne erste Tätigkeitsstätte fragt er nicht nach Fahrten zu einem Sammelpunkt oder in ein weiträumiges Tätigkeitsgebiet (§ 9 Abs. 1 Satz 3 Nr. 4a Satz 3 EStG); das klärt die lohnabrechnende Stelle.",
     "Der Fragebogen berechnet den geldwerten Vorteil nicht; das übernimmt die Lohnabrechnung."
   ]
 }

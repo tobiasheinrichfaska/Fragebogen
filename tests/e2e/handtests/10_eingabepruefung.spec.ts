@@ -373,7 +373,7 @@ test('MT-108: hours, degree of disability and number plate (drafts)', async ({ p
     agAntrieb: 'verbrenner',
     agUeberlassenAb: '01.11.2026',
     agPrivatnutzung: 'Ja',
-    agFahrtenWohnung: 'Nein',
+    agErsteTaetigkeitsstaette: 'keine',
   };
   await answerUntil(app, car, answers, 'agSonderfaelle');
   await app.getByLabel(/^keine/).check();
