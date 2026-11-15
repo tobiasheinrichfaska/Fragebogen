@@ -1,0 +1,926 @@
+{
+  "id": "steuerfreigabe",
+  "version": "1.1.0",
+  "revised": "2026-11-15T20:50",
+  "title": "Zustimmung zur elektronischen Übermittlung der Steuererklärungen",
+  "signaturePolicy": "electronic",
+  "recipient": {
+    "label": "Kanzlei"
+  },
+  "roles": [
+    {
+      "id": "kanzlei",
+      "label": "Kanzlei",
+      "stationHeading": "Vorlage der Kanzlei",
+      "confirmationText": "Wir legen die Erklärungen mit diesen Angaben zur Zustimmung vor; unsere Allgemeinen Geschäftsbedingungen haben wir mit den Erklärungen übersandt.",
+      "signature": "none",
+      "prefills": true
+    },
+    {
+      "id": "mandant",
+      "label": "Mandant / Steuerpflichtiger",
+      "stationHeading": "Zustimmung",
+      "confirmationText": "Ich habe die oben genannten Erklärungen geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen; Einschränkungen, die oben stehen, gelten dabei. Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit den Erklärungen übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden.",
+      "signature": "required",
+      "signerNameField": "unterzeichnerName"
+    },
+    {
+      "id": "ehegatte",
+      "label": "Ehegatte / Lebenspartner",
+      "stationHeading": "Zustimmung Ehegatte / Lebenspartner",
+      "confirmationText": "Ich habe die gemeinsame Einkommensteuererklärung geprüft und habe keine Änderungswünsche. Ich beauftrage die Kanzlei, sie elektronisch einzureichen; Einschränkungen, die oben stehen, gelten dabei. Die Allgemeinen Geschäftsbedingungen, die mir die Kanzlei mit der Erklärung übersandt hat, habe ich zur Kenntnis genommen und bin damit einverstanden.",
+      "signature": "required",
+      "requiredIf": {
+        "kind": "answer",
+        "when": {
+          "field": "zustimmungVeranlagung",
+          "equals": "zusammen"
+        }
+      },
+      "because": "Bei Zusammenveranlagung geben beide Ehegatten oder Lebenspartner eine gemeinsame Erklärung ab (§ 25 Abs. 3 Satz 2 EStG); deshalb stimmt auch der andere zu.",
+      "signerNameField": "ehegatteName"
+    }
+  ],
+  "sections": [
+    {
+      "id": "vorlage",
+      "title": "Vorlage der Kanzlei",
+      "fields": [
+        {
+          "id": "mandantName",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Mandant / Steuerpflichtiger",
+          "question": "Für wen legen Sie die Erklärungen vor?",
+          "help": "Vor- und Familienname oder Firma.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Wessen Erklärungen die Zustimmung betrifft"
+        },
+        {
+          "id": "vorlageDatum",
+          "role": "kanzlei",
+          "type": "date",
+          "label": "Datum des Anschreibens",
+          "question": "Von wann ist das Schreiben, mit dem Sie die Erklärungen übersandt haben?",
+          "required": true,
+          "maxDate": "today",
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO); Stichtag dieser Fassung"
+        },
+        {
+          "id": "erklaerungen",
+          "role": "kanzlei",
+          "type": "multiChoice",
+          "label": "Erklärungen",
+          "question": "Welche Erklärungen haben Sie übersandt?",
+          "help": "Alle, die mit diesem Schreiben zur Zustimmung vorliegen. Ob es von der Anlage EÜR, der Gewerbe- oder der Umsatzsteuererklärung mehrere sind und ob eine Zerlegungserklärung dazugehört, fragt der Fragebogen danach.",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "options": [
+            {
+              "id": "est",
+              "label": "Einkommensteuererklärung"
+            },
+            {
+              "id": "feststellung",
+              "label": "Gesonderte und einheitliche Feststellungserklärung"
+            },
+            {
+              "id": "euer",
+              "label": "Gewinnermittlung (Anlage EÜR)"
+            },
+            {
+              "id": "kst",
+              "label": "Körperschaftsteuererklärung"
+            },
+            {
+              "id": "gewst",
+              "label": "Gewerbesteuererklärung"
+            },
+            {
+              "id": "ust",
+              "label": "Umsatzsteuererklärung"
+            },
+            {
+              "id": "zm",
+              "label": "Zusammenfassende Meldung"
+            },
+            {
+              "id": "ebilanz",
+              "label": "E-Bilanz"
+            },
+            {
+              "id": "difin",
+              "label": "Digitaler Finanzbericht (an Banken)"
+            },
+            {
+              "id": "offenlegung",
+              "label": "Offenlegung oder Hinterlegung beim Unternehmensregister"
+            }
+          ]
+        },
+        {
+          "id": "euerAnzahl",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Anlage EÜR: Anzahl",
+          "question": "Wie viele Anlagen EÜR haben Sie übersandt?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "erklaerungen",
+            "contains": "euer"
+          },
+          "because": "Nur wenn eine Anlage EÜR vorliegt, fragt der Fragebogen, ob es eine oder mehrere sind.",
+          "options": [
+            {
+              "id": "eine",
+              "label": "Eine"
+            },
+            {
+              "id": "mehrere",
+              "label": "Mehrere"
+            }
+          ]
+        },
+        {
+          "id": "euerBezeichnungen",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Anlagen EÜR: Bezeichnungen",
+          "question": "Welche Anlagen EÜR sind es?",
+          "help": "Je Zeile eine, wie im Anschreiben bezeichnet – zum Beispiel nach Betrieb oder Jahr.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "euerAnzahl",
+            "equals": "mehrere"
+          },
+          "because": "Bei mehreren Anlagen EÜR nennt die Kanzlei jede mit ihrer Bezeichnung, damit die Zustimmung genau diese betrifft."
+        },
+        {
+          "id": "gewstAnzahl",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Gewerbesteuererklärung: Anzahl",
+          "question": "Wie viele Gewerbesteuererklärungen haben Sie übersandt?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "erklaerungen",
+            "contains": "gewst"
+          },
+          "because": "Nur wenn eine Gewerbesteuererklärung vorliegt, fragt der Fragebogen, ob es eine oder mehrere sind.",
+          "options": [
+            {
+              "id": "eine",
+              "label": "Eine"
+            },
+            {
+              "id": "mehrere",
+              "label": "Mehrere"
+            }
+          ]
+        },
+        {
+          "id": "gewstBezeichnungen",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Gewerbesteuererklärungen: Bezeichnungen",
+          "question": "Welche Gewerbesteuererklärungen sind es?",
+          "help": "Je Zeile eine, wie im Anschreiben bezeichnet – zum Beispiel nach Betrieb oder Jahr.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "gewstAnzahl",
+            "equals": "mehrere"
+          },
+          "because": "Bei mehreren Gewerbesteuererklärungen nennt die Kanzlei jede mit ihrer Bezeichnung, damit die Zustimmung genau diese betrifft."
+        },
+        {
+          "id": "zerlegung",
+          "role": "kanzlei",
+          "type": "boolean",
+          "label": "Zerlegungserklärung",
+          "question": "Gehört eine Zerlegungserklärung zur Gewerbesteuererklärung?",
+          "help": "Wenn Betriebsstätten in mehreren Gemeinden lagen (§ 28 GewStG). Bei mehreren Gewerbesteuererklärungen: zu mindestens einer von ihnen.",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "erklaerungen",
+            "contains": "gewst"
+          },
+          "because": "Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1 GewStG)."
+        },
+        {
+          "id": "zerlegungBei",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Zerlegungserklärung zu",
+          "question": "Zu welchen Gewerbesteuererklärungen gehört eine Zerlegungserklärung?",
+          "help": "Je Zeile eine, so bezeichnet wie oben bei den Gewerbesteuererklärungen.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "all": [
+              {
+                "field": "zerlegung",
+                "equals": true
+              },
+              {
+                "field": "gewstAnzahl",
+                "equals": "mehrere"
+              }
+            ]
+          },
+          "because": "Bei mehreren Gewerbesteuererklärungen nennt die Kanzlei, zu welchen eine Zerlegungserklärung gehört."
+        },
+        {
+          "id": "ustAnzahl",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Umsatzsteuererklärung: Anzahl",
+          "question": "Wie viele Umsatzsteuererklärungen haben Sie übersandt?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "erklaerungen",
+            "contains": "ust"
+          },
+          "because": "Nur wenn eine Umsatzsteuererklärung vorliegt, fragt der Fragebogen, ob es eine oder mehrere sind.",
+          "options": [
+            {
+              "id": "eine",
+              "label": "Eine"
+            },
+            {
+              "id": "mehrere",
+              "label": "Mehrere"
+            }
+          ]
+        },
+        {
+          "id": "ustBezeichnungen",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Umsatzsteuererklärungen: Bezeichnungen",
+          "question": "Welche Umsatzsteuererklärungen sind es?",
+          "help": "Je Zeile eine, wie im Anschreiben bezeichnet – zum Beispiel nach Jahr.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "ustAnzahl",
+            "equals": "mehrere"
+          },
+          "because": "Bei mehreren Umsatzsteuererklärungen nennt die Kanzlei jede mit ihrer Bezeichnung, damit die Zustimmung genau diese betrifft."
+        },
+        {
+          "id": "veranlagung",
+          "role": "kanzlei",
+          "type": "choice",
+          "label": "Veranlagung",
+          "question": "Einzel- oder Zusammenveranlagung?",
+          "required": true,
+          "purpose": "Entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt (§ 25 Abs. 3 Satz 2 EStG)",
+          "showIf": {
+            "field": "erklaerungen",
+            "contains": "est"
+          },
+          "because": "Eine Veranlagung gibt es nur bei der Einkommensteuer; sie entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt.",
+          "options": [
+            {
+              "id": "einzel",
+              "label": "Einzelveranlagung (auch von Ehegatten, § 26a EStG)"
+            },
+            {
+              "id": "zusammen",
+              "label": "Zusammenveranlagung (§ 26b EStG)"
+            }
+          ]
+        },
+        {
+          "id": "ehegatteNameKanzlei",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Ehegatte / Lebenspartner",
+          "question": "Wie heißt der Ehegatte oder Lebenspartner?",
+          "help": "Vor- und Familienname. Er stimmt mit zu.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Wer bei Zusammenveranlagung mit zustimmt",
+          "showIf": {
+            "field": "veranlagung",
+            "equals": "zusammen"
+          },
+          "because": "Nur bei Zusammenveranlagung stimmt der Ehegatte oder Lebenspartner mit zu; dafür nennt die Kanzlei seinen Namen."
+        },
+        {
+          "id": "einschraenkungenKanzlei",
+          "role": "kanzlei",
+          "type": "text",
+          "label": "Einschränkungen der Kanzlei",
+          "question": "Gibt es Einschränkungen zu den übersandten Erklärungen?",
+          "help": "Zum Beispiel „ohne die noch fehlende Spendenbescheinigung“. Der Mandant sieht sie vor dem Unterschreiben und stimmt mit ihnen zu. Leer lassen, wenn es keine gibt.",
+          "required": false,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Gehört zur übersandten Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)"
+        }
+      ]
+    },
+    {
+      "id": "zustimmungMandant",
+      "title": "Zustimmung",
+      "fields": [
+        {
+          "id": "zustimmungMandant",
+          "role": "mandant",
+          "type": "text",
+          "label": "Mandant / Steuerpflichtiger",
+          "question": "Für wen stimmen Sie zu?",
+          "help": "Vor- und Familienname oder Firma, wie im Anschreiben der Kanzlei.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Wessen Erklärungen die Zustimmung betrifft",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "mandantName"
+          },
+          "because": "Den Namen nennt die Kanzlei; liegt ihr Teil vor, steht er hier fest und wird nicht gefragt."
+        },
+        {
+          "id": "zustimmungSchreibenVom",
+          "role": "mandant",
+          "type": "date",
+          "label": "Schreiben der Kanzlei vom",
+          "question": "Von wann ist das Schreiben, mit dem Sie die Erklärungen erhalten haben?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "vorlageDatum"
+          },
+          "because": "Das Datum des Schreibens nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt."
+        },
+        {
+          "id": "zustimmungErklaerungen",
+          "role": "mandant",
+          "type": "multiChoice",
+          "label": "Erklärungen",
+          "question": "Welchen Erklärungen stimmen Sie zu?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "erklaerungen"
+          },
+          "because": "Welche Erklärungen vorliegen, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "est",
+              "label": "Einkommensteuererklärung"
+            },
+            {
+              "id": "feststellung",
+              "label": "Gesonderte und einheitliche Feststellungserklärung"
+            },
+            {
+              "id": "euer",
+              "label": "Gewinnermittlung (Anlage EÜR)"
+            },
+            {
+              "id": "kst",
+              "label": "Körperschaftsteuererklärung"
+            },
+            {
+              "id": "gewst",
+              "label": "Gewerbesteuererklärung"
+            },
+            {
+              "id": "ust",
+              "label": "Umsatzsteuererklärung"
+            },
+            {
+              "id": "zm",
+              "label": "Zusammenfassende Meldung"
+            },
+            {
+              "id": "ebilanz",
+              "label": "E-Bilanz"
+            },
+            {
+              "id": "difin",
+              "label": "Digitaler Finanzbericht (an Banken)"
+            },
+            {
+              "id": "offenlegung",
+              "label": "Offenlegung oder Hinterlegung beim Unternehmensregister"
+            }
+          ]
+        },
+        {
+          "id": "zustimmungEuerAnzahl",
+          "role": "mandant",
+          "type": "choice",
+          "label": "Anlage EÜR: Anzahl",
+          "question": "Wie viele Anlagen EÜR haben Sie erhalten?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "euer"
+          },
+          "because": "Nur wenn eine Anlage EÜR vorliegt, fragt der Fragebogen, ob es eine oder mehrere sind. Die Anzahl nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "eine",
+              "label": "Eine"
+            },
+            {
+              "id": "mehrere",
+              "label": "Mehrere"
+            }
+          ],
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "euerAnzahl"
+          }
+        },
+        {
+          "id": "zustimmungEuerBezeichnungen",
+          "role": "mandant",
+          "type": "text",
+          "label": "Anlagen EÜR: Bezeichnungen",
+          "question": "Welche Anlagen EÜR sind es?",
+          "help": "Je Zeile eine, wie im Anschreiben bezeichnet – zum Beispiel nach Betrieb oder Jahr.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungEuerAnzahl",
+            "equals": "mehrere"
+          },
+          "because": "Bei mehreren Anlagen EÜR steht jede mit ihrer Bezeichnung da, damit die Zustimmung genau diese betrifft. Die Bezeichnungen nennt die Kanzlei; liegt ihr Teil vor, stehen sie hier fest und werden nicht gefragt.",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "euerBezeichnungen"
+          }
+        },
+        {
+          "id": "zustimmungGewstAnzahl",
+          "role": "mandant",
+          "type": "choice",
+          "label": "Gewerbesteuererklärung: Anzahl",
+          "question": "Wie viele Gewerbesteuererklärungen haben Sie erhalten?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "gewst"
+          },
+          "because": "Nur wenn eine Gewerbesteuererklärung vorliegt, fragt der Fragebogen, ob es eine oder mehrere sind. Die Anzahl nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "eine",
+              "label": "Eine"
+            },
+            {
+              "id": "mehrere",
+              "label": "Mehrere"
+            }
+          ],
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "gewstAnzahl"
+          }
+        },
+        {
+          "id": "zustimmungGewstBezeichnungen",
+          "role": "mandant",
+          "type": "text",
+          "label": "Gewerbesteuererklärungen: Bezeichnungen",
+          "question": "Welche Gewerbesteuererklärungen sind es?",
+          "help": "Je Zeile eine, wie im Anschreiben bezeichnet – zum Beispiel nach Betrieb oder Jahr.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungGewstAnzahl",
+            "equals": "mehrere"
+          },
+          "because": "Bei mehreren Gewerbesteuererklärungen steht jede mit ihrer Bezeichnung da, damit die Zustimmung genau diese betrifft. Die Bezeichnungen nennt die Kanzlei; liegt ihr Teil vor, stehen sie hier fest und werden nicht gefragt.",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "gewstBezeichnungen"
+          }
+        },
+        {
+          "id": "zustimmungZerlegung",
+          "role": "mandant",
+          "type": "boolean",
+          "label": "Zerlegungserklärung",
+          "question": "Gehört eine Zerlegungserklärung zur Gewerbesteuererklärung?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "gewst"
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "zerlegung"
+          },
+          "because": "Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1 GewStG). Ob sie vorliegt, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.",
+          "help": "Bei mehreren Gewerbesteuererklärungen: zu mindestens einer von ihnen."
+        },
+        {
+          "id": "zustimmungZerlegungBei",
+          "role": "mandant",
+          "type": "text",
+          "label": "Zerlegungserklärung zu",
+          "question": "Zu welchen Gewerbesteuererklärungen gehört eine Zerlegungserklärung?",
+          "help": "Je Zeile eine, so bezeichnet wie oben bei den Gewerbesteuererklärungen.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "all": [
+              {
+                "field": "zustimmungZerlegung",
+                "equals": true
+              },
+              {
+                "field": "zustimmungGewstAnzahl",
+                "equals": "mehrere"
+              }
+            ]
+          },
+          "because": "Bei mehreren Gewerbesteuererklärungen gehört die Zerlegungserklärung zu bestimmten von ihnen. Welche, nennt die Kanzlei; liegt ihr Teil vor, steht es hier fest und wird nicht gefragt.",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "zerlegungBei"
+          }
+        },
+        {
+          "id": "zustimmungUstAnzahl",
+          "role": "mandant",
+          "type": "choice",
+          "label": "Umsatzsteuererklärung: Anzahl",
+          "question": "Wie viele Umsatzsteuererklärungen haben Sie erhalten?",
+          "required": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "ust"
+          },
+          "because": "Nur wenn eine Umsatzsteuererklärung vorliegt, fragt der Fragebogen, ob es eine oder mehrere sind. Die Anzahl nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "eine",
+              "label": "Eine"
+            },
+            {
+              "id": "mehrere",
+              "label": "Mehrere"
+            }
+          ],
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "ustAnzahl"
+          }
+        },
+        {
+          "id": "zustimmungUstBezeichnungen",
+          "role": "mandant",
+          "type": "text",
+          "label": "Umsatzsteuererklärungen: Bezeichnungen",
+          "question": "Welche Umsatzsteuererklärungen sind es?",
+          "help": "Je Zeile eine, wie im Anschreiben bezeichnet – zum Beispiel nach Jahr.",
+          "required": true,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Bezeichnet die übersandte Fassung, an die die Zustimmung gebunden ist (§ 87d Abs. 3 AO)",
+          "showIf": {
+            "field": "zustimmungUstAnzahl",
+            "equals": "mehrere"
+          },
+          "because": "Bei mehreren Umsatzsteuererklärungen steht jede mit ihrer Bezeichnung da, damit die Zustimmung genau diese betrifft. Die Bezeichnungen nennt die Kanzlei; liegt ihr Teil vor, stehen sie hier fest und werden nicht gefragt.",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "ustBezeichnungen"
+          }
+        },
+        {
+          "id": "zustimmungVeranlagung",
+          "role": "mandant",
+          "type": "choice",
+          "label": "Veranlagung",
+          "question": "Einzel- oder Zusammenveranlagung?",
+          "help": "Bei Zusammenveranlagung stimmt auch Ihr Ehegatte oder Lebenspartner zu.",
+          "required": true,
+          "purpose": "Entscheidet, ob auch der Ehegatte oder Lebenspartner zustimmt (§ 25 Abs. 3 Satz 2 EStG)",
+          "showIf": {
+            "field": "zustimmungErklaerungen",
+            "contains": "est"
+          },
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "veranlagung"
+          },
+          "because": "Eine Veranlagung gibt es nur bei der Einkommensteuer. Sie nennt die Kanzlei; liegt ihr Teil vor, steht sie hier fest und wird nicht gefragt.",
+          "options": [
+            {
+              "id": "einzel",
+              "label": "Einzelveranlagung (auch von Ehegatten, § 26a EStG)"
+            },
+            {
+              "id": "zusammen",
+              "label": "Zusammenveranlagung (§ 26b EStG)"
+            }
+          ]
+        },
+        {
+          "id": "einschraenkungenMandant",
+          "role": "mandant",
+          "type": "text",
+          "label": "Einschränkungen des Mandanten / Steuerpflichtigen",
+          "question": "Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?",
+          "help": "Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt.",
+          "required": false,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Einschränkungen der Zustimmung; die Kanzlei prüft sie vor der Übermittlung"
+        },
+        {
+          "id": "unterzeichnerName",
+          "role": "mandant",
+          "type": "text",
+          "label": "Name der unterschreibenden Person",
+          "question": "Wer unterschreibt?",
+          "help": "Vor- und Familienname. Bei einer Firma die Person, die für sie unterschreibt. Dieser Name steht an der Unterschrift.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Wer zustimmt (Name an der Unterschrift)",
+          "suggestedText": "{zustimmungMandant}"
+        }
+      ]
+    },
+    {
+      "id": "zustimmungEhegatte",
+      "title": "Zustimmung Ehegatte / Lebenspartner",
+      "fields": [
+        {
+          "id": "ehegatteName",
+          "role": "ehegatte",
+          "type": "text",
+          "label": "Ihr Vor- und Familienname",
+          "question": "Wie heißen Sie?",
+          "help": "Dieser Name steht an Ihrer Unterschrift.",
+          "required": true,
+          "maxLength": 70,
+          "purpose": "Wer mit zustimmt (Name an der Unterschrift)",
+          "fromRole": {
+            "role": "kanzlei",
+            "field": "ehegatteNameKanzlei",
+            "changeable": true
+          },
+          "because": "Den Namen nennt die Kanzlei; er steht da und kann geändert werden."
+        },
+        {
+          "id": "einschraenkungenEhegatte",
+          "role": "ehegatte",
+          "type": "text",
+          "label": "Einschränkungen des Ehegatten / Lebenspartners",
+          "question": "Möchten Sie Einschränkungen zu Ihrer Zustimmung angeben?",
+          "help": "Die Kanzlei sieht sie und prüft sie vor der Übermittlung. Leer lassen, wenn es keine gibt.",
+          "required": false,
+          "maxLength": 1000,
+          "multiline": true,
+          "purpose": "Einschränkungen der Zustimmung; die Kanzlei prüft sie vor der Übermittlung"
+        }
+      ]
+    }
+  ],
+  "infoBlocks": [
+    {
+      "id": "seiteSteuererklaerungen",
+      "role": "mandant",
+      "title": "Steuererklärungen",
+      "text": "Sie haben die Steuererklärungen, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an die Finanzverwaltung (§ 87d AO) – an das Finanzamt, die Zusammenfassende Meldung an das Bundeszentralamt für Steuern (§ 18a Abs. 1 UStG).\n\nEs bleiben Ihre Erklärungen: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nBei Zusammenveranlagung stimmt auch Ihr Ehegatte oder Lebenspartner der Einkommensteuererklärung zu.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "any": [
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "est"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "feststellung"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "euer"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "kst"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "gewst"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "ust"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "zm"
+          },
+          {
+            "field": "zustimmungErklaerungen",
+            "contains": "ebilanz"
+          }
+        ]
+      },
+      "because": "Ein Hinweis je Empfänger (Tobias 2026-11-12): diese Seite, sobald die Kanzlei eine Erklärung an die Finanzverwaltung vorlegt."
+    },
+    {
+      "id": "seiteDifin",
+      "role": "mandant",
+      "title": "Digitaler Finanzbericht",
+      "text": "Den Digitalen Finanzbericht übermittelt die Kanzlei nicht an das Finanzamt, sondern an Banken. Sie haben ihn geprüft und haben keine Änderungswünsche; mit Ihrer Zustimmung beauftragen Sie die Kanzlei, ihn elektronisch zu übermitteln.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "difin"
+      },
+      "because": "Ein Hinweis je Empfänger: diese Seite nur mit dem Digitalen Finanzbericht, der an Banken geht."
+    },
+    {
+      "id": "seiteOffenlegung",
+      "role": "mandant",
+      "title": "Offenlegung oder Hinterlegung beim Unternehmensregister",
+      "text": "Die Kanzlei übermittelt den Jahresabschluss in Ihrem Auftrag elektronisch an die das Unternehmensregister führende Stelle (§ 325 Abs. 1 HGB). Eine Kleinstkapitalgesellschaft kann stattdessen nur die Bilanz übermitteln und ihre dauerhafte Hinterlegung verlangen (§ 326 Abs. 2 HGB). Sie haben die Unterlagen geprüft und haben keine Änderungswünsche.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "zustimmungErklaerungen",
+        "contains": "offenlegung"
+      },
+      "because": "Ein Hinweis je Empfänger: diese Seite nur mit der Offenlegung oder Hinterlegung, die an das Unternehmensregister geht."
+    },
+    {
+      "id": "agbDatenschutz",
+      "role": "mandant",
+      "title": "Allgemeine Geschäftsbedingungen und Datenschutz",
+      "text": "Mit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit den Erklärungen übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
+      "asOf": "2026-11-13",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "ehegatteSeiteEst",
+      "role": "ehegatte",
+      "title": "Gemeinsame Einkommensteuererklärung",
+      "text": "Sie haben die gemeinsame Einkommensteuererklärung, die Ihnen die Kanzlei übersandt hat, auf Vollständigkeit und Richtigkeit geprüft (§ 87d Abs. 3 AO) und haben keine Änderungswünsche. Die Kanzlei übermittelt sie in Ihrem Auftrag elektronisch an das Finanzamt (§ 87d AO).\n\nEs ist auch Ihre Erklärung: Die Angaben müssen wahrheitsgemäß nach bestem Wissen und Gewissen sein (§ 150 Abs. 2 AO). Daten, die Dritte dem Finanzamt schon gemeldet haben und die übernommen wurden (zum Beispiel die Lohnsteuerbescheinigung), gelten als Ihre Angaben, wenn Sie nichts anderes angeben (§ 150 Abs. 7 AO). Erkennen Sie später einen Fehler, müssen Sie ihn unverzüglich anzeigen und richtigstellen (§ 153 AO) – sagen Sie dann bitte sofort der Kanzlei Bescheid.\n\nHaben Sie Änderungswünsche, schließen Sie nicht ab und melden Sie sich bei der Kanzlei.",
+      "asOf": "2026-11-12",
+      "acknowledgement": "read"
+    },
+    {
+      "id": "ehegatteAgbDatenschutz",
+      "role": "ehegatte",
+      "title": "Allgemeine Geschäftsbedingungen und Datenschutz",
+      "text": "Mit Ihrer Zustimmung sind Sie auch mit den Allgemeinen Geschäftsbedingungen einverstanden, die Ihnen die Kanzlei mit der Erklärung übersandt hat. Liegen sie Ihnen nicht vor, fragen Sie bitte die Kanzlei, bevor Sie zustimmen.\n\nDatenschutz: Verantwortlich ist die Kanzlei, die Ihnen diesen Fragebogen vorgelegt hat; ihre Kontaktdaten stehen in ihrer Datenschutzinformation. Rechtsgrundlage ist Art. 6 Abs. 1 Buchst. b und c DSGVO. Die Zustimmung wird in der Handakte aufbewahrt (§ 66 StBerG). Sie haben die Rechte nach Art. 15 bis 18 und 77 DSGVO. Diese App versendet nichts; Ihre Angaben verlassen das Gerät nur als Datei, die Sie selbst weitergeben. Damit eine versehentliche Unterbrechung nichts kostet, merkt sich die Online-Fassung einen angefangenen Fragebogen im Browser dieses Geräts – bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage. Beim Aufruf der Seite verarbeitet der Webserver wie bei jeder Website technische Zugriffsdaten (siehe Datenschutzerklärung der Website).",
+      "asOf": "2026-11-13",
+      "acknowledgement": "read"
+    }
+  ],
+  "consistencyRules": [
+    {
+      "kind": "equal",
+      "fields": ["mandantName", "zustimmungMandant"],
+      "message": "Der Name weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["vorlageDatum", "zustimmungSchreibenVom"],
+      "message": "Das Datum des Schreibens weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["erklaerungen", "zustimmungErklaerungen"],
+      "message": "Die Erklärungen weichen zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["zerlegung", "zustimmungZerlegung"],
+      "message": "Die Zerlegungserklärung weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["euerAnzahl", "zustimmungEuerAnzahl"],
+      "message": "Die Anzahl der Anlagen EÜR weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["euerBezeichnungen", "zustimmungEuerBezeichnungen"],
+      "message": "Die Bezeichnungen der Anlagen EÜR weichen zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["gewstAnzahl", "zustimmungGewstAnzahl"],
+      "message": "Die Anzahl der Gewerbesteuererklärungen weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["gewstBezeichnungen", "zustimmungGewstBezeichnungen"],
+      "message": "Die Bezeichnungen der Gewerbesteuererklärungen weichen zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["zerlegungBei", "zustimmungZerlegungBei"],
+      "message": "Die Gewerbesteuererklärungen mit Zerlegungserklärung weichen zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["ustAnzahl", "zustimmungUstAnzahl"],
+      "message": "Die Anzahl der Umsatzsteuererklärungen weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["ustBezeichnungen", "zustimmungUstBezeichnungen"],
+      "message": "Die Bezeichnungen der Umsatzsteuererklärungen weichen zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    },
+    {
+      "kind": "equal",
+      "fields": ["veranlagung", "zustimmungVeranlagung"],
+      "message": "Die Veranlagung weicht zwischen der Vorlage der Kanzlei und der Zustimmung ab."
+    }
+  ],
+  "matchKeys": [
+    {
+      "label": "Mandant / Steuerpflichtiger",
+      "fields": {
+        "kanzlei": "mandantName",
+        "mandant": "zustimmungMandant"
+      }
+    }
+  ],
+  "legalNotes": [
+    "Die Unterschrift in dieser App ist eine einfache elektronische Signatur (Art. 3 Nr. 10 eIDAS-Verordnung). § 87d Abs. 3 AO schreibt für die Zustimmung keine Form vor; nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe.",
+    "Bei Zusammenveranlagung stimmen beide Ehegatten oder Lebenspartner zu, weil die gemeinsame Erklärung eine Erklärung beider ist (§ 25 Abs. 3 Satz 2 EStG). Sonst stimmt eine Person zu – bei einer Firma die Person, die für sie unterschreibt.",
+    "Eine Zerlegungserklärung gibt es nur zusammen mit der Gewerbesteuererklärung (§ 14a Satz 1, § 28 Abs. 1 GewStG); deshalb fragt der Fragebogen nach ihr nur, wenn die Gewerbesteuererklärung vorliegt, und bei mehreren Gewerbesteuererklärungen, zu welchen sie gehört.",
+    "Die Zustimmung gilt für die Erklärungen, die die Kanzlei mit dem genannten Schreiben übersandt hat: Ändert die Kanzlei danach eine Erklärung, ist eine neue Zustimmung nötig.",
+    "§ 87d AO gilt für Übermittlungen an die Finanzverwaltung. Der Digitale Finanzbericht geht an Banken, die Offenlegung oder Hinterlegung an die das Unternehmensregister führende Stelle (§ 325 Abs. 1, § 326 Abs. 2 HGB); dafür ist die Zustimmung der Auftrag an die Kanzlei.",
+    "Dieser Fragebogen ist weder eine Steuererklärung noch eine Vollmacht (§ 80 AO).",
+    "Die Kanzlei bewahrt die Zustimmung in der Handakte auf (§ 66 StBerG)."
+  ],
+  "partLinks": [["kanzlei", "mandant"]],
+  "signatureBasis": "Für die Zustimmung zur Übermittlung an das Finanzamt schreibt das Gesetz keine Form vor (§ 87d Abs. 3 AO); nach den Hinweisen der Bundessteuerberaterkammer genügt für Steuererklärungen eine Freigabe. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie gilt nur für die Erklärungen, die Ihnen die Kanzlei mit dem genannten Schreiben übersandt hat.",
+  "validity": {
+    "field": "vorlageDatum",
+    "from": "2026-01-01"
+  },
+  "checkHints": [
+    {
+      "id": "einschraenkungenMandant",
+      "when": {
+        "field": "einschraenkungenMandant",
+        "answered": true
+      },
+      "message": "Der Mandant hat Einschränkungen zu seiner Zustimmung angegeben. Bitte vor der Übermittlung prüfen, ob sie zu den Erklärungen passen."
+    },
+    {
+      "id": "einschraenkungenEhegatte",
+      "when": {
+        "field": "einschraenkungenEhegatte",
+        "answered": true
+      },
+      "message": "Der Ehegatte oder Lebenspartner hat Einschränkungen zu seiner Zustimmung angegeben. Bitte vor der Übermittlung prüfen, ob sie zu der Erklärung passen."
+    }
+  ],
+  "limits": [
+    "Der Fragebogen übermittelt nichts. Er dokumentiert die Zustimmung zu den Erklärungen, die die Kanzlei mit dem genannten Schreiben übersandt hat (§ 87d AO).",
+    "Eine Erklärung, die das Gesetz eigenhändig unterschrieben verlangt, ersetzt er nicht; dafür bleibt das Papier.",
+    "Er prüft den Inhalt der Erklärungen nicht; das bleibt Sache der Kanzlei und der Mandanten.",
+    "Änderungswünsche nimmt er nicht auf: Wer nicht zustimmt, schließt nicht ab und meldet sich bei der Kanzlei. Einschränkungen dagegen können Kanzlei, Mandant und Ehegatte frei eintragen; die der Kanzlei sieht der Mandant vor dem Unterschreiben, die der anderen meldet die App der Kanzlei als Prüfhinweis.",
+    "Die Kanzlei belegt nur vor und unterschreibt nicht. Wer ohne ihren Teil beginnt, trägt Name, Datum des Schreibens und Erklärungen selbst ein; weichen sie später von den Angaben der Kanzlei ab, zeigt die App einen Widerspruch.",
+    "Mehrere Anlagen EÜR, Gewerbe- oder Umsatzsteuererklärungen nennt die Kanzlei als Text, je Zeile eine; der Fragebogen prüft nicht, ob die Bezeichnungen zu den übersandten Erklärungen passen.",
+    "Höchstens zwei Personen stimmen zu: der Mandant oder Steuerpflichtige und bei Zusammenveranlagung der Ehegatte oder Lebenspartner.",
+    "Die Allgemeinen Geschäftsbedingungen fügt die App nicht bei: Die Zustimmung bezieht sich auf die, die die Kanzlei mit den Erklärungen übersandt hat."
+  ]
+}
