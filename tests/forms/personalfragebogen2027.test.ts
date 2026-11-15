@@ -382,6 +382,29 @@ describe('the question about 31.12.2026 (§ 6 Abs. 8 SGB V)', () => {
     );
   });
 
+  // Audit 2026-11-15: the guard above read only the first call; a JAEG test that left the answer out
+  // in a further rule would have been accepted, as the published 1.0.0 must be.
+  it('is passed to every JAEG test of the draft, in hints, proposals and exclusions alike', () => {
+    const calls: { fn: string; args: string[] }[] = [];
+    const walk = (value: unknown): void => {
+      if (Array.isArray(value)) value.forEach(walk);
+      else if (value !== null && typeof value === 'object') {
+        const record = value as Record<string, unknown>;
+        if (typeof record.fn === 'string' && Array.isArray(record.args)) {
+          calls.push({ fn: record.fn, args: record.args as string[] });
+        }
+        Object.values(record).forEach(walk);
+      }
+    };
+    walk(draft.definition);
+    const optional = calls.filter((call) => (HINT_TESTS[call.fn]?.optional ?? 0) > 0);
+    expect(optional.length).toBeGreaterThanOrEqual(11);
+    for (const call of optional) {
+      expect(call.args, call.fn).toHaveLength(HINT_TESTS[call.fn]?.args.length ?? 0);
+      expect(call.args.at(-1), call.fn).toBe('pkvBestand2026');
+    }
+  });
+
   it('is not asked after „Ja“ for 31.12.2002, nor of the statutorily insured', () => {
     expect(asked({ ...PRIVAT, pkvBestand2002: 'ja' })).not.toContain('pkvBestand2026');
     expect(asked({})).not.toContain('pkvBestand2026');
@@ -463,8 +486,9 @@ describe('several jobs over the Beitragsbemessungsgrenze in 2027', () => {
 // is free in the KV depends on the JAEG; between the limit of § 6 Abs. 8 SGB V and the general one it
 // is uncertain for a privately insured person outside the 2002 group, never for the 2002 group.
 describe('a further Minijob next to a main job between the JAEG limits of 2027', () => {
-  // fixed, expected, oneOff, entitled, start, kinds, pays, since, bAV kind, contribution, subsidy, 2002
-  const args = (main: string, y2002: string) => [
+  // fixed, expected, oneOff, entitled, start, kinds, pays, since, bAV kind, contribution, subsidy, 2002,
+  // and from the draft 1.1.0 on the answer about 31.12.2026
+  const args = (main: string, y2002: string, y2026?: string) => [
     '300.00',
     null,
     null,
@@ -477,6 +501,7 @@ describe('a further Minijob next to a main job between the JAEG limits of 2027',
     null,
     null,
     y2002,
+    ...(y2026 === undefined ? [] : [y2026]),
   ];
   const free = HINT_TESTS.weitererMinijobNebenJaegFreierHauptbeschaeftigung;
   const lifted = HINT_TESTS.weitererMinijobUeberJaeg;
@@ -492,6 +517,37 @@ describe('a further Minijob next to a main job between the JAEG limits of 2027',
   it('marks a main job lifted above the JAEG by this Minijob as open in that range', () => {
     expect(lifted?.run(args('6800.00', 'nein'))).toMatchObject({ holds: true, uncertain: true });
     expect(lifted?.run(args('6800.00', 'ja'))).toMatchObject({ holds: false });
+  });
+
+  // Audit 2026-11-15: the answer about 31.12.2026 decides the range (80.550 € or 84.150 € a year).
+  it('decides that range by the answer about 31.12.2026 and names the limit it used', () => {
+    const exempt = free?.run(args('6800.00', 'nein', 'ja'));
+    expect(exempt).toMatchObject({ holds: true });
+    expect(exempt?.uncertain).toBeFalsy();
+    expect(exempt?.detail[0]).toContain(
+      'über der Jahresarbeitsentgeltgrenze nach § 6 Abs. 8 SGB V, krankenversicherungsfrei',
+    );
+    expect(free?.run(args('6800.00', 'nein', 'nein'))).toMatchObject({ holds: false });
+
+    const liftedExempt = lifted?.run(args('6600.00', 'nein', 'ja'));
+    expect(liftedExempt).toMatchObject({ holds: true });
+    expect(liftedExempt?.uncertain).toBeFalsy();
+    expect(liftedExempt?.detail[0]).toContain(
+      'über der Jahresarbeitsentgeltgrenze nach § 6 Abs. 8 SGB V von 80.550,00 €',
+    );
+    expect(lifted?.run(args('6800.00', 'nein', 'ja'))).toMatchObject({ holds: false });
+    const liftedGeneral = lifted?.run(args('6800.00', 'nein', 'nein'));
+    expect(liftedGeneral).toMatchObject({ holds: true });
+    expect(liftedGeneral?.uncertain).toBeFalsy();
+    expect(liftedGeneral?.detail[0]).toContain(
+      'über der Jahresarbeitsentgeltgrenze von 84.150,00 €',
+    );
+  });
+
+  it('names the special limit of § 6 Abs. 7 SGB V for the 2002 group', () => {
+    expect(free?.run(args('6800.00', 'ja'))?.detail[0]).toContain(
+      'über der besonderen Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V), krankenversicherungsfrei',
+    );
   });
 });
 

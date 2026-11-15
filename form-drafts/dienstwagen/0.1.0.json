@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-15T23:14",
+  "revised": "2026-11-16T00:47",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -296,7 +296,7 @@
           "role": "arbeitgeber",
           "type": "choice",
           "label": "Grundlage des Nutzungsverbots",
-          "help": "Legen Sie das Dokument zum Lohnkonto – auf Papier oder als Datei, z. B. als PDF; eine besondere Form ist dafür nicht vorgeschrieben.",
+          "help": "Für das Verbot ist keine Form vorgeschrieben; einen Verzicht erklärt die Person auf Papier mit ihrer Unterschrift. Legen Sie das Dokument zum Lohnkonto – auf Papier oder als Datei, z. B. als PDF.",
           "required": true,
           "purpose": "Kein geldwerter Vorteil für verbotene Nutzungen (§ 8 Abs. 2 Satz 2 und 3 EStG; BMF-Schreiben vom 03.03.2022 Rz. 19, 20)",
           "showIf": {
@@ -443,7 +443,7 @@
           "type": "text",
           "label": "Erste Tätigkeitsstätte",
           "question": "Wo ist Ihre erste Tätigkeitsstätte?",
-          "help": "Der Betrieb oder Ort, dem Ihr Arbeitgeber Sie dauerhaft zugeordnet hat, meist im Arbeitsvertrag. Wissen Sie es nicht, lassen Sie das Feld leer; Ihr Arbeitgeber trägt es ein.",
+          "help": "Der Betrieb oder Ort, dem Ihr Arbeitgeber Sie dauerhaft zugeordnet hat, meist im Arbeitsvertrag. Haben Sie keine, etwa im Außendienst mit wechselnden Einsatzorten, oder wissen Sie es nicht, lassen Sie das Feld leer; Ihr Arbeitgeber gibt es an.",
           "required": false,
           "purpose": "Ort der Fahrten, für die 0,03 % je Entfernungskilometer gelten (§ 8 Abs. 2 Satz 3, § 9 Abs. 4 EStG)",
           "fromRole": {
@@ -582,6 +582,40 @@
       },
       "message": "Nutzungsverzicht statt Verbot: Er zählt nur, wenn ein Verbot des Arbeitgebers aus außersteuerlichen Gründen nicht in Betracht kommt; die Person muss ihn ausdrücklich für die Zukunft schriftlich erklären, er gehört als Beleg zum Lohnkonto.",
       "source": "BMF-Schreiben vom 03.03.2022 Rz. 20"
+    },
+    {
+      "id": "fahrtenTrotzVerbot",
+      "when": {
+        "all": [
+          {
+            "field": "agFahrtenWohnung",
+            "equals": false
+          },
+          {
+            "field": "fahrtenWohnung",
+            "equals": true
+          }
+        ]
+      },
+      "message": "Die Person gibt Fahrten zwischen Wohnung und erster Tätigkeitsstätte an, der Arbeitgeber hat sie nicht erlaubt. Bitte klären, welche Angabe stimmt; sie entscheidet über den Ansatz von 0,03 % je Entfernungskilometer.",
+      "source": "§ 8 Abs. 2 Satz 3 EStG; BMF-Schreiben vom 03.03.2022 Rz. 19"
+    },
+    {
+      "id": "fahrtenOhneErsteTaetigkeitsstaette",
+      "when": {
+        "all": [
+          {
+            "field": "agErsteTaetigkeitsstaette",
+            "equals": "keine"
+          },
+          {
+            "field": "fahrtenWohnung",
+            "equals": true
+          }
+        ]
+      },
+      "message": "Der Arbeitgeber nennt keine erste Tätigkeitsstätte, die Person gibt Fahrten dorthin an. Bitte klären, ob sie eine hat, oder ob sie zu einem Sammelpunkt oder in ein weiträumiges Tätigkeitsgebiet fährt.",
+      "source": "§ 8 Abs. 2 Satz 3, § 9 Abs. 1 Satz 3 Nr. 4a Satz 3, Abs. 4 EStG"
     }
   ]
 }

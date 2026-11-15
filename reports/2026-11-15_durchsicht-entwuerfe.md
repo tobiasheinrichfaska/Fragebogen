@@ -16,7 +16,7 @@ Tobias, 15.11.2026: „Durchsicht: sieh durch“. Ein unabhängiger Prüf-Agent 
 - Austritt:
   - AUS-2: Ende einer Ausbildung, § 21 Abs. 2, § 24 BBiG.
   - AUS-3: Die qualifizierte elektronische Signatur genügt für die Befristung. Die Textform bei
-    der Regelaltersgrenze ist noch offen.
+    der Regelaltersgrenze ist noch offen (später geklärt, siehe unten).
   - AUS-6: Frist ohne den Kündigungsausschluss.
   - AUS-8: Zwölftelung des Urlaubs, § 5 Abs. 1 BUrlG.
   - AUS-14: Übertragung des Wertguthabens, § 7f SGB IV; Quelle § 23b Abs. 2 SGB IV.
@@ -72,18 +72,47 @@ Tobias, 15.11.2026: „Durchsicht: sieh durch“. Ein unabhängiger Prüf-Agent 
   - AUS-3: Bei einem Ende mit der Regelaltersgrenze genügt Textform (§ 41 Abs. 3 SGB VI, gelesen).
 - Zustimmung: ZST-1 („nein“) bleibt, wie es ist.
 
+**Am 15.11.2026 spät abends nach Tobias' Antworten umgesetzt** (PR
+tobiasheinrichfaska/Fragebogen#17):
+
+- PFB-1 und SM-4 („ja“, Commit 0d325f5): Personalfragebogen 1.1.0 und Sofortmeldung 1.1.0 fragen
+  „Wie unterschreiben Sie für die minderjährige Person?“: allein (alleiniges Sorgerecht, Vormund,
+  Pfleger), allein mit Zustimmung des anderen Elternteils oder gemeinsam. Nur „gemeinsam“ verlangt
+  die zweite Unterschrift (§ 1629 Abs. 1 Satz 2 BGB; BGH, Beschluss vom 29.04.2020 – XII ZB 112/19).
+  Die Sofortmeldung behält die Unterschrift der Eltern, wegen der Hinweise auf die Pflichten der
+  Person.
+- X-1 für das SEPA-Mandat („ja“, Commit b60b611): SEPA-Mandat 1.2.0 ist veröffentlicht; es
+  unterscheidet sich von 1.1.0 nur in den beiden Datenschutzhinweisen. 1.1.0 bleibt für laufende
+  Mandate registriert.
+
+**In der Nacht zum 16.11.2026 nach dem ersten Qualitätsaudit umgesetzt** (jeder Befund vorher von
+einem zweiten Agenten zu widerlegen versucht):
+
+- Austritt: Die Hinweise zu Schriftform, Zugang, Fristen, besonderem Kündigungsschutz und
+  Betriebsrat kommen nur noch bei einer Kündigung oder einem Aufhebungsvertrag; der Hinweis auf die
+  Arbeitsuchendmeldung nicht beim Tod und nicht nach einer Ausbildung. Die Hilfe zum letzten Tag
+  nennt alle drei Enden einer Ausbildung (§ 21 Abs. 1 bis 3 BBiG). Ein Prüfhinweis nennt eine nur
+  in Textform vereinbarte Altersgrenze in einem Vertrag von vor 2025. Eine Verlängerung kann nicht
+  vor dem Tag enden, an dem sie vereinbart wurde.
+- Dienstwagen: Prüfhinweise, wenn die Person Fahrten zur ersten Tätigkeitsstätte angibt, obwohl
+  der Arbeitgeber sie nicht erlaubt oder keine erste Tätigkeitsstätte nennt (DW-3 zur Hälfte). Die
+  Hilfe zum Nutzungsverbot sagt, dass nur der Verzicht auf Papier erklärt wird.
+- Eigenbeleg: Die TSE-Pflicht gilt nur, wenn die Gaststätte eine elektronische Kasse nutzt; die
+  Ausnahmen (Ausfall der TSE, spätere unbare Abrechnung mit Zahlungsbeleg, Ausland) sind genannt.
+- Monatsmeldung: Die Wertetabellen sagen, wohin Werte über 100 Zeilen gehen.
+
 **Offen** (Umbau oder Entscheidung von Tobias, siehe den Bericht unten und „Questions only Tobias
 can decide“):
 
-- Umbauten:
-  - Austritt: AUS-1 (formlose Kündigung), AUS-4 (Zweckbefristung), AUS-5 (Kleinbetrieb), AUS-9,
-    AUS-10, AUS-13, AUS-16 bis AUS-19, AUS-21 bis AUS-23.
-  - Dienstwagen: DW-2, DW-3, DW-4, DW-6 bis DW-10.
-  - Eigenbeleg: EB-3, EB-4, EB-5, EB-7, EB-8.
-  - Monatsmeldung: LM-1 (30 Zeilen), LM-5, LM-6.
-  - Weitere: PFB-1 bis PFB-5, SM-3, ZST-1, ZST-2, X-1, X-3.
-- Am 15.11.2026 abends geprüft (siehe oben): AUS-20, die Textform bei AUS-3, EB-9 und DW-6. Bei
-  DW-6 enthält der Entwurf keine Beträge; die Grenzen stehen jetzt in der Hilfe zur Anschaffung.
+- Austritt: AUS-1 (formlose Kündigung), AUS-4 (Zweckbefristung), AUS-5 (Kleinbetrieb), AUS-9,
+  AUS-13, AUS-16 bis AUS-19, AUS-23 (umgesetzt ist nur der Prüfhinweis bei einer Altersteilzeit,
+  der die Meldung für den Rentenantrag nennt; die Frage „Geht die Person in Altersrente?“ fehlt).
+- Dienstwagen: DW-3 (nur noch: Arbeitgeber erlaubt die Fahrten, die Person sagt „Nein“), DW-6 (bleibt eine Grenze: Der Entwurf enthält keine Beträge, die Grenzen
+  stehen in der Hilfe zur Anschaffung), DW-7 bis DW-10.
+- Eigenbeleg: EB-3, EB-4, EB-7, EB-8.
+- Monatsmeldung: LM-6.
+- Weitere: PFB-2 bis PFB-5, SM-3, ZST-2, X-1 (nur noch Sofortmeldung 1.0.0), X-3.
+- Am 15.11.2026 abends geprüft (siehe oben): AUS-20, die Textform bei AUS-3 und EB-9.
 
 ---
 

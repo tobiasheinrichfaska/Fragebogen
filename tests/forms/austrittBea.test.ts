@@ -5,7 +5,7 @@
 // apart are excluded; § 159 Abs. 1 S. 2 Nr. 9 and § 41 Abs. 3 SGB VI read in the law. Fictitious data.
 import { join } from 'node:path';
 import { derive } from '../../src/logic/derivations';
-import { visibleFields } from '../../src/logic/form';
+import { activeInfoBlocks, visibleFields } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { activeExclusions, checkHints } from '../../src/logic/hints';
 import type { Questionnaire } from '../../src/logic/model';
@@ -186,4 +186,89 @@ it('says the Sperrzeit of a late registration lasts one week, after § 159 Abs. 
   const text = form.definition.infoBlocks.find((b) => b.id === 'hinweisArbeitsuche')?.text ?? '';
   expect(text).toContain('Sperrzeit von einer Woche');
   expect(text).toContain('§ 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III');
+});
+
+// Audit 2026-11-15: every notice came for every end, the Kündigung ones also after a death, and the
+// employer had to confirm that he tells a deceased person to register as a job seeker.
+describe('the notices that fit the way the employment ends', () => {
+  const notices = (art: string) =>
+    activeInfoBlocks(
+      form.definition,
+      ROLE,
+      currentPart(draftWith({ agBeendigungsart: art }), ROLE)?.data ?? {},
+    ).map((block) => block.id);
+  it.each([
+    [
+      'kuendigungArbeitgeber',
+      [
+        'hinweisAblauf',
+        'hinweisSchriftform',
+        'hinweisZugang',
+        'hinweisFristen',
+        'hinweisBesondererSchutz',
+        'hinweisBetriebsrat',
+        'hinweisFreistellungUrlaub',
+        'hinweisArbeitsuche',
+      ],
+    ],
+    [
+      'kuendigungPerson',
+      [
+        'hinweisAblauf',
+        'hinweisSchriftform',
+        'hinweisZugang',
+        'hinweisFristen',
+        'hinweisFreistellungUrlaub',
+        'hinweisArbeitsuche',
+      ],
+    ],
+    [
+      'aufhebungsvertrag',
+      [
+        'hinweisAblauf',
+        'hinweisSchriftform',
+        'hinweisFristen',
+        'hinweisBetriebsrat',
+        'hinweisFreistellungUrlaub',
+        'hinweisArbeitsuche',
+      ],
+    ],
+    ['befristung', ['hinweisAblauf', 'hinweisFreistellungUrlaub', 'hinweisArbeitsuche']],
+    ['gesetzTarif', ['hinweisAblauf', 'hinweisFreistellungUrlaub', 'hinweisArbeitsuche']],
+    ['ausbildungsende', ['hinweisAblauf', 'hinweisFreistellungUrlaub']],
+    ['tod', ['hinweisAblauf', 'hinweisFreistellungUrlaub']],
+  ])('%s', (art, expected) => {
+    expect(notices(art).sort()).toEqual([...expected].sort());
+  });
+});
+
+// § 21 BBiG: the training ends with its time (Abs. 1), earlier on a passed exam (Abs. 2), later on
+// a failed one when the person asks (Abs. 3).
+it('names every end of a training in the help on the last day', () => {
+  const help = fieldOf('agEndeArbeitsverhaeltnis')?.help ?? '';
+  for (const part of ['§ 21 Abs. 1 BBiG', '§ 21 Abs. 2 BBiG', '§ 21 Abs. 3 BBiG']) {
+    expect(help).toContain(part);
+  }
+});
+
+// § 41 Abs. 3 SGB VI allows Textform since 01.01.2025 (Bürokratieentlastungsgesetz IV).
+it('flags an age limit agreed only in Textform in a contract from before 2025', () => {
+  const textform = { ...BEFRISTUNG, agBefristungSchriftlich: 'textformRegelaltersgrenze' };
+  expect(hintIds(draftWith({ ...textform, agBefristungAbschluss: '01.06.2020' }))).toContain(
+    'textformVor2025',
+  );
+  expect(hintIds(draftWith({ ...textform, agBefristungAbschluss: '15.01.2025' }))).not.toContain(
+    'textformVor2025',
+  );
+});
+
+it('refuses an extension that ends before the day it was agreed', () => {
+  const q = draftWith({
+    ...BEFRISTUNG,
+    agBefristungAbschluss: '01.01.2026',
+    agBefristungVerlaengert: true,
+    agBefristungVerlaengertAm: '15.06.2026',
+  });
+  expect(setValue(q, form, ROLE, 'agBefristetBis', '01.03.2026')).toMatchObject({ ok: false });
+  expect(setValue(q, form, ROLE, 'agBefristetBis', '31.12.2026').ok).toBe(true);
 });

@@ -10,6 +10,7 @@ import { pageColumns, type InterviewStep } from '../logic/interview';
 import { issueMessage } from '../logic/issues';
 import type { FieldDefinition, FieldValue } from '../logic/model';
 import {
+  canAddRow,
   columnShown,
   missingCells,
   nextRowId,
@@ -239,7 +240,7 @@ export function TableStep({ session, field, step, onSession, pending }: Props) {
             </fieldset>
           );
         })}
-        {!page && rows.length < 30 && (
+        {!page && canAddRow(field, rows.length) && (
           <button
             type="button"
             onClick={() => setRows([...rows, { rowId: nextRowId(rows), cells: {} }])}

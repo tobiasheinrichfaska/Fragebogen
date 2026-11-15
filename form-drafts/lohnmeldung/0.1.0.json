@@ -1,7 +1,7 @@
 {
   "id": "lohnmeldung",
   "version": "0.1.0",
-  "revised": "2026-11-15T23:03",
+  "revised": "2026-11-16T00:47",
   "title": "Monatsmeldung: Lohn- und Gehaltsdaten",
   "signaturePolicy": "electronic",
   "roles": [
@@ -311,7 +311,7 @@
           "required": false,
           "purpose": "Lohnabrechnung des Abrechnungsmonats (§ 41 EStG, § 28f SGB IV)",
           "question": "Welche Werte sollen für den Abrechnungsmonat abgerechnet werden?",
-          "help": "Eine Zeile je Person und Lohnart, zum Beispiel „1000 Stundenlohn“ mit 100 Stunden. Zuschläge (Nacht, Sonntag, Feiertag) ebenso; Überstunden bitte als eigene Zeile, nicht in den gearbeiteten Stunden.",
+          "help": "Eine Zeile je Person und Lohnart, zum Beispiel „1000 Stundenlohn“ mit 100 Stunden. Zuschläge (Nacht, Sonntag, Feiertag) ebenso; Überstunden bitte als eigene Zeile, nicht in den gearbeiteten Stunden. Reichen 100 Zeilen nicht, schicken Sie die übrigen Werte bitte gesondert an die lohnabrechnende Stelle, etwa als Liste aus Ihrer Zeiterfassung.",
           "rowLabel": "Zeile",
           "carryOver": false,
           "columns": [
@@ -380,7 +380,7 @@
           "required": true,
           "purpose": "Nachträgliche Abrechnung des Vormonats (§ 41 EStG, § 28f SGB IV)",
           "question": "Welche Werte sollen noch für den Vormonat abgerechnet werden?",
-          "help": "Eine Zeile je Person und Lohnart, wie bei den Werten des Abrechnungsmonats.",
+          "help": "Eine Zeile je Person und Lohnart, wie bei den Werten des Abrechnungsmonats. Reichen 100 Zeilen nicht, schicken Sie die übrigen Werte bitte gesondert an die lohnabrechnende Stelle, etwa als Liste aus Ihrer Zeiterfassung.",
           "rowLabel": "Zeile",
           "carryOver": false,
           "columns": [
@@ -485,6 +485,6 @@
     "Die Meldung ersetzt keine Arbeitszeitaufzeichnung (z. B. § 17 MiLoG); sie fasst nur zusammen, was abgerechnet werden soll.",
     "Ein- und Austritte, Änderungen und Pfändungen nennt sie nur als Besonderheiten; die Fragebögen für neue Beschäftigte und die Bescheinigungen beim Austritt kommen gesondert.",
     "Bei Urlaub und Krankheit meldet sie die Tage, bei Stundenlohn auch die ausgefallenen Stunden; Durchschnitte und Lohnfortzahlung berechnet die Lohnabrechnung.",
-    "Sie fasst höchstens 100 Beschäftigte und je Tabelle der Monatswerte höchstens 100 Zeilen."
+    "Sie fasst höchstens 100 Beschäftigte und je Tabelle der Monatswerte höchstens 100 Zeilen; weitere Werte kommen gesondert."
   ]
 }

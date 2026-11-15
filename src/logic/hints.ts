@@ -210,6 +210,9 @@ function jaegFor(
   return { value: of('jaegJahr'), label: 'Jahresarbeitsentgeltgrenze', special: false };
 }
 
+/** A label of `jaegFor` after „über der“ (audit 2026-11-15: the Minijob texts named no section). */
+const dative = (label: string) => label.replace(/^besondere /, 'besonderen ');
+
 const BESTAND_2026_NOTE = (limit: number) =>
   `Über der Jahresarbeitsentgeltgrenze für Personen, die am 31.12.2026 wegen Überschreitens der Grenze versicherungsfrei und privat versichert waren (${euro(limit)} im Jahr, § 6 Abs. 8 SGB V): Traf das zu, ist die Person versicherungsfrei, sonst versicherungspflichtig – bitte prüfen.`;
 
@@ -1111,7 +1114,7 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       if (mains.length === 0 || !earlier || year === undefined) {
         return { holds: false, detail: [] };
       }
-      const { value: jaeg, special } = jaegFor(year, y2002, y2026);
+      const { value: jaeg, label, special } = jaegFor(year, y2002, y2026);
       const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
       // A main job between the limit of § 6 Abs. 8 SGB V and the general one may be free as well.
       const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
@@ -1130,7 +1133,7 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
         holds: true,
         ...(unknown ? { uncertain: true } : {}),
         detail: [
-          `Hauptbeschäftigung ${euro(main)} im Jahr: über der Jahresarbeitsentgeltgrenze, krankenversicherungsfrei – dieser weitere Minijob wird in der KV nicht mit ihr zusammengerechnet (Geringfügigkeits-Richtlinien, Beispiele 25 und 26).`,
+          `Hauptbeschäftigung ${euro(main)} im Jahr: über der ${dative(label)}, krankenversicherungsfrei – dieser weitere Minijob wird in der KV nicht mit ihr zusammengerechnet (Geringfügigkeits-Richtlinien, Beispiele 25 und 26).`,
           within
             ? `Minijobs zusammen ${euro(together)} im Monat: innerhalb der Grenze – zusätzlich Meldung an die Minijob-Zentrale mit Personengruppe 101 und Beitragsgruppen 6000 (Pauschalbeitrag zur KV).`
             : `Minijobs zusammen ${euro(together)} im Monat: über der Grenze.`,
@@ -1181,7 +1184,7 @@ const weitererMinijobUeberJaeg: HintTest = {
     );
     const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
     if (mains.length === 0 || !earlier || year === undefined) return { holds: false, detail: [] };
-    const { value: jaeg, special } = jaegFor(year, y2002, y2026);
+    const { value: jaeg, label, special } = jaegFor(year, y2002, y2026);
     if (jaeg === undefined) return { holds: false, uncertain: true, detail: [] };
     const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
     if (main > jaeg) return { holds: false, detail: [] };
@@ -1197,7 +1200,7 @@ const weitererMinijobUeberJaeg: HintTest = {
         ? { uncertain: true }
         : {}),
       detail: [
-        `Hauptbeschäftigung ${euro(main)} und weitere Minijobs zusammen ${euro(total)} im Jahr: erst mit diesem Minijob über der Jahresarbeitsentgeltgrenze von ${euro(jaeg)} – zunächst krankenversicherungspflichtig; die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten Jahr überschritten wird (Geringfügigkeits-Richtlinien B 2.2.2.8).`,
+        `Hauptbeschäftigung ${euro(main)} und weitere Minijobs zusammen ${euro(total)} im Jahr: erst mit diesem Minijob über der ${dative(label)} von ${euro(jaeg)} – zunächst krankenversicherungspflichtig; die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten Jahr überschritten wird (Geringfügigkeits-Richtlinien B 2.2.2.8).`,
       ],
     };
   },
