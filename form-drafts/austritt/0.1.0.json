@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-15T23:14",
+  "revised": "2026-11-16T00:47",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -157,7 +157,7 @@
           "type": "date",
           "label": "Ende des Arbeitsverhältnisses",
           "question": "An welchem Tag endet das Arbeitsverhältnis?",
-          "help": "Der rechtlich letzte Tag: bei einer Kündigung der Tag, zu dem gekündigt wurde; sonst das Ende der Befristung oder der Tag laut Aufhebungsvertrag; beim Tod der Sterbetag. Bei einer Ausbildung der Tag, an dem das Ergebnis der bestandenen Abschlussprüfung bekannt gegeben wurde – auch vor dem vereinbarten Ende (§ 21 Abs. 2 BBiG); arbeitet die Person danach weiter, ist das kein Austritt (§ 24 BBiG). Nicht der letzte Arbeitstag vor Resturlaub oder Freistellung.",
+          "help": "Der rechtlich letzte Tag: bei einer Kündigung der Tag, zu dem gekündigt wurde; sonst das Ende der Befristung oder der Tag laut Aufhebungsvertrag; beim Tod der Sterbetag. Bei einer Ausbildung das Ende der Ausbildungszeit (§ 21 Abs. 1 BBiG); wird die Abschlussprüfung vorher bestanden, der Tag, an dem das Ergebnis bekannt gegeben wurde (§ 21 Abs. 2 BBiG); verlangt die Person nach einer nicht bestandenen Prüfung die Verlängerung, die nächste Wiederholungsprüfung, höchstens ein Jahr später (§ 21 Abs. 3 BBiG). Arbeitet die Person danach weiter, ist das kein Austritt (§ 24 BBiG). Nicht der letzte Arbeitstag vor Resturlaub oder Freistellung.",
           "required": true,
           "purpose": "Abmeldung zur Sozialversicherung (§ 28a Abs. 1 S. 1 Nr. 2 SGB IV, § 8 Abs. 1 DEÜV); Ende des Dienstverhältnisses an das Bundeszentralamt für Steuern (§ 39e Abs. 4 S. 5 EStG); Abschluss des Lohnkontos (§ 41b Abs. 1 EStG); Arbeitsbescheinigung (§ 312 SGB III)"
         },
@@ -310,7 +310,8 @@
           "required": true,
           "showIf": { "field": "agBefristungVerlaengert", "equals": true },
           "because": "Nur nach einer Verlängerung fragt die Arbeitsbescheinigung, bis wann sie lief; sonst gilt das Ende laut erstem Vertrag.",
-          "purpose": "Ende der Beschäftigung in der Lohnabrechnung; Arbeitsbescheinigung (§ 312 SGB III): Befristung zuletzt verlängert bis"
+          "purpose": "Ende der Beschäftigung in der Lohnabrechnung; Arbeitsbescheinigung (§ 312 SGB III): Befristung zuletzt verlängert bis",
+          "notBefore": "agBefristungVerlaengertAm"
         },
         {
           "id": "agBefristungSchriftlich",
@@ -1503,7 +1504,12 @@
       "title": "Kündigung und Aufhebungsvertrag nur auf Papier",
       "text": "Eine Kündigung und ein Aufhebungsvertrag sind nur auf Papier mit eigenhändiger Unterschrift wirksam (§ 623 BGB). E-Mail, Fax, ein eingescanntes Schreiben, eine Nachricht im Messenger und jede elektronische Signatur genügen nicht – auch nicht, wenn die beschäftigte Person kündigt. Fehlt diese Form, besteht das Arbeitsverhältnis fort, und der Lohn ist weiter zu zahlen. Dieser Fragebogen und die Unterschrift in der App ersetzen die Kündigung nicht.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-03",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "agBeendigungsart",
+        "in": ["kuendigungArbeitgeber", "kuendigungPerson", "aufhebungsvertrag"]
+      },
+      "because": "Die Schriftform des § 623 BGB gilt für die Kündigung und den Aufhebungsvertrag, nicht für ein Ende durch Befristung, Ausbildung, Gesetz oder Tod (Audit 2026-11-15)."
     },
     {
       "id": "hinweisZugang",
@@ -1511,7 +1517,12 @@
       "title": "Die Kündigung wirkt erst mit dem Zugang",
       "text": "Maßgeblich ist der Tag, an dem die Kündigung bei der anderen Seite ankommt, nicht das Datum auf dem Schreiben (§ 130 Abs. 1 BGB). Am Tag danach beginnen die Kündigungsfrist und die Frist von drei Wochen für eine Kündigungsschutzklage (§ 4 KSchG; § 187 Abs. 1 BGB). Halten Sie fest, wann und wie Sie die Kündigung übergeben oder verschickt haben, und bewahren Sie einen Nachweis auf.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-13",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "agBeendigungsart",
+        "in": ["kuendigungArbeitgeber", "kuendigungPerson"]
+      },
+      "because": "Der Zugang entscheidet nur bei einer Kündigung über Frist und Klagefrist."
     },
     {
       "id": "hinweisFristen",
@@ -1519,7 +1530,12 @@
       "title": "Kündigungsfristen",
       "text": "Ohne abweichende Regel beträgt die Frist vier Wochen zum 15. oder zum Ende eines Monats. Kündigen Sie als Arbeitgeber, verlängert sie sich nach zwei Jahren Betriebszugehörigkeit auf einen Monat und steigt bis auf sieben Monate nach zwanzig Jahren, jeweils zum Monatsende. In einer vereinbarten Probezeit von höchstens sechs Monaten gelten zwei Wochen. Ein Tarifvertrag kann andere Fristen vorsehen. Für die beschäftigte Person darf keine längere Frist gelten als für Sie (§ 622 BGB). Eine fristlose Kündigung ist nur innerhalb von zwei Wochen möglich, nachdem Sie die Gründe erfahren haben (§ 626 Abs. 2 BGB).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-03",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "agBeendigungsart",
+        "in": ["kuendigungArbeitgeber", "kuendigungPerson", "aufhebungsvertrag"]
+      },
+      "because": "Die Kündigungsfristen gelten bei einer Kündigung; beim Aufhebungsvertrag fragt der Fragebogen, ob die Frist eingehalten wurde."
     },
     {
       "id": "hinweisBesondererSchutz",
@@ -1527,7 +1543,9 @@
       "title": "Besonderer Kündigungsschutz",
       "text": "Bei manchen Beschäftigten braucht eine Kündigung durch Sie vorher die Zustimmung einer Behörde, oder sie ist zeitweise verboten. Das betrifft vor allem schwerbehinderte und ihnen gleichgestellte Menschen nach sechs Monaten Beschäftigung (vorherige Zustimmung des Integrationsamts, Beteiligung der Schwerbehindertenvertretung; §§ 151, 168, 173, 178 SGB IX), die Zeit ab dem Verlangen von Elternzeit und während der Elternzeit (§ 18 BEEG), Pflegezeit (§ 5 PflegeZG), Schwangerschaft und die Zeit nach einer Entbindung (§ 17 MuSchG) sowie Mitglieder eines Betriebsrats oder Wahlvorstands (§ 15 KSchG). Dieser Fragebogen fragt nicht, ob einer dieser Fälle vorliegt. Klären Sie das bitte vor einer Kündigung.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-03",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": { "field": "agBeendigungsart", "equals": "kuendigungArbeitgeber" },
+      "because": "Der besondere Kündigungsschutz betrifft nur eine Kündigung durch den Arbeitgeber."
     },
     {
       "id": "hinweisBetriebsrat",
@@ -1535,7 +1553,12 @@
       "title": "Betriebsrat, Massenentlassung, Ausbildung",
       "text": "Hat Ihr Betrieb einen Betriebsrat, ist er vor jeder Kündigung anzuhören; ohne Anhörung ist die Kündigung unwirksam (§ 102 Abs. 1 BetrVG). Wollen Sie innerhalb von 30 Tagen mehrere Beschäftigte entlassen, kann vorher eine Anzeige bei der Agentur für Arbeit nötig sein, in Betrieben mit mehr als 20 Beschäftigten (§ 17 Abs. 1 KSchG). Auszubildenden können Sie nach der Probezeit nur aus wichtigem Grund kündigen, schriftlich und mit Angabe der Gründe (§ 22 Abs. 2, 3 BBiG).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-03",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": {
+        "field": "agBeendigungsart",
+        "in": ["kuendigungArbeitgeber", "aufhebungsvertrag"]
+      },
+      "because": "Die Anhörung des Betriebsrats gilt vor einer Kündigung durch den Arbeitgeber; ein von ihm veranlasster Aufhebungsvertrag zählt bei einer Massenentlassung mit."
     },
     {
       "id": "hinweisFreistellungUrlaub",
@@ -1549,9 +1572,11 @@
       "id": "hinweisArbeitsuche",
       "role": "arbeitgeber",
       "title": "Hinweis an die beschäftigte Person",
-      "text": "Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III). Für betriebliche Auszubildende gilt die Meldepflicht nicht.\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
+      "text": "Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-15",
-      "acknowledgement": "read"
+      "acknowledgement": "read",
+      "showIf": { "not": { "field": "agBeendigungsart", "in": ["tod", "ausbildungsende"] } },
+      "because": "Die Meldepflicht als arbeitsuchend trifft jede Person, deren Arbeitsverhältnis endet, nicht aber nach einer betrieblichen Ausbildung und nicht beim Tod (§ 38 Abs. 1 SGB III)."
     }
   ],
   "consistencyRules": [],
@@ -1581,6 +1606,17 @@
       "when": { "field": "agBefristungSchriftlich", "equals": "nein" },
       "message": "Die Befristung wurde weder schriftlich noch – bei einem Ende mit der Regelaltersgrenze – in Textform vereinbart; dann gilt das Arbeitsverhältnis in der Regel als unbefristet, wenn die Person innerhalb von drei Wochen nach dem vereinbarten Ende klagt. Das Ende mit dem Arbeitgeber klären.",
       "source": "§ 14 Abs. 4, §§ 16, 17 TzBfG; § 41 Abs. 3 SGB VI"
+    },
+    {
+      "id": "textformVor2025",
+      "when": {
+        "all": [
+          { "field": "agBefristungSchriftlich", "equals": "textformRegelaltersgrenze" },
+          { "field": "agBefristungAbschluss", "onOrBefore": "2024-12-31" }
+        ]
+      },
+      "message": "Die Altersgrenze wurde nur in Textform vereinbart, der Vertrag aber vor dem 01.01.2025 geschlossen. Textform genügt erst für Vereinbarungen seit dem 01.01.2025; wurde die Altersgrenze schon vorher vereinbart, war Schriftform nötig. Das Ende mit dem Arbeitgeber klären.",
+      "source": "§ 41 Abs. 3 SGB VI; § 14 Abs. 4 TzBfG"
     },
     {
       "id": "schreibenNachZugang",

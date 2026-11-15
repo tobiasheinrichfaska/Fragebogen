@@ -7,6 +7,7 @@ import { displayValue, fillPlaceholders } from '../../src/logic/display';
 import { missingRequired, visibleFields } from '../../src/logic/form';
 import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
+import { checkHints } from '../../src/logic/hints';
 import type { FieldValue, FormDefinition, Questionnaire } from '../../src/logic/model';
 import { prefillFrom } from '../../src/logic/prefill';
 import {
@@ -271,6 +272,13 @@ describe('Lohnmeldung draft — taken over from last month', () => {
     expect(
       fields.filter((field) => field.type === 'repeatGroup').map((field) => field.maxRows),
     ).toEqual([100, 100, 100]);
+    // Audit 2026-11-15: one row per person and wage type fills 100 rows soon; the help says where
+    // the rest goes.
+    for (const id of ['monatWerte', 'vormonatWerte']) {
+      expect(fields.find((field) => field.id === id)?.help, id).toContain(
+        'Reichen 100 Zeilen nicht',
+      );
+    }
   });
 
   // LM-5, Tobias 2026-11-15: „nein“ — the report is no reason to pay on last month's values.
@@ -344,6 +352,8 @@ describe('Dienstwagen draft — standard only', () => {
       expect.stringContaining('Verzicht der Person'),
     ]);
     expect(ban?.help).toContain('als Datei');
+    // Audit 2026-11-15: the help says the waiver is the one that needs paper.
+    expect(ban?.help).toContain('einen Verzicht erklärt die Person auf Papier');
   });
 
   it('asks the purchase only without CO2, and the first hand-over for every electric drive', () => {
@@ -451,5 +461,54 @@ describe('Dienstwagen draft — standard only', () => {
     ).toBe(
       'Fahren Sie mit dem Dienstwagen zwischen Ihrer Wohnung und Ihrer ersten Tätigkeitsstätte „Musterstraße 1, 12345 Musterstadt“?',
     );
+  });
+
+  // Audit 2026-11-15: a person may fill in first, so the person is asked about drives to work; what
+  // contradicts the employer's answer now reaches the Kanzlei as a check hint.
+  describe('drives to work the employer did not allow or has no place for', () => {
+    const hintsFor = (employer: Record<string, FieldValue>, drives: boolean) => {
+      let q = seal(
+        fill(createQuestionnaire(QUESTIONNAIRE_ID, form), form, 'arbeitgeber', employer),
+        form,
+        'arbeitgeber',
+        0,
+      );
+      q = fill(q, form, 'person', {
+        familienname: 'Musterfrau',
+        vorname: 'Erika',
+        fahrtenWohnung: drives,
+        ...(drives ? { wohnungMeldeanschrift: true, entfernungKm: '30' } : {}),
+      });
+      return checkHints(q, form.definition).map((hint) => hint.id);
+    };
+    const noPlace: Record<string, FieldValue> = { ...EMPLOYER, agErsteTaetigkeitsstaette: 'keine' };
+    delete noPlace.agErsteTaetigkeitsstaetteAnschrift;
+    delete noPlace.agFahrtenWohnung;
+    delete noPlace.agPauschal15;
+    const banned: Record<string, FieldValue> = {
+      ...EMPLOYER,
+      agFahrtenWohnung: false,
+      agNutzungsverbot: 'arbeitsvertrag',
+    };
+    delete banned.agPauschal15;
+
+    it('names a drive to work without an erste Tätigkeitsstätte', () => {
+      expect(hintsFor(noPlace, true)).toContain('fahrtenOhneErsteTaetigkeitsstaette');
+      expect(hintsFor(noPlace, false)).not.toContain('fahrtenOhneErsteTaetigkeitsstaette');
+    });
+
+    it('names a drive to work the employer has not allowed', () => {
+      expect(hintsFor(banned, true)).toContain('fahrtenTrotzVerbot');
+      expect(hintsFor(banned, false)).not.toContain('fahrtenTrotzVerbot');
+      expect(hintsFor(EMPLOYER, true)).not.toContain('fahrtenTrotzVerbot');
+    });
+
+    it('does not tell the person the employer fills in a place he said there is none of', () => {
+      const help = form.definition.sections
+        .flatMap((s) => s.fields)
+        .find((f) => f.id === 'ersteTaetigkeitsstaette')?.help;
+      expect(help).toContain('Haben Sie keine');
+      expect(help).not.toContain('trägt es ein');
+    });
   });
 });

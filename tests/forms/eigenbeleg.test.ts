@@ -477,6 +477,19 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
   it('names the TSE and ties the record to the bill by its number', () => {
     const block = form.definition.infoBlocks.find((b) => b.id === 'bewirtungsbelegRechnung');
     expect(block?.text).toContain('Sicherheitseinrichtung (TSE)');
+    // Audit 2026-11-15: Rn. 13 asks for the TSE only where the restaurant uses an electronic till;
+    // a bill settled later without cash, a failed TSE and a restaurant abroad are other cases.
+    const conditional = 'Nutzt die Gaststätte eine elektronische Kasse';
+    expect(block?.text).toContain(conditional);
+    expect(block?.text).toContain('Zahlungsbeleg');
+    expect(block?.text).toContain('im Ausland');
+    const fields = form.definition.sections.flatMap((s) => s.fields);
+    expect(fields.find((f) => f.id === 'bewirtungHinweis')?.help).toContain(conditional);
+    for (const id of ['bewirtungGaststaette', 'bewirtungsbeleg']) {
+      expect(form.definition.checkHints?.find((h) => h.id === id)?.message, id).toMatch(
+        /elektronischen? Kasse/,
+      );
+    }
     expect(asked(draftWith(BELEG, { bbRechnungsnummer: null }))).toContain('bbRechnungsnummer');
     const q = draftWith(BELEG, { bbRechnungsnummer: null }, END);
     expect(
