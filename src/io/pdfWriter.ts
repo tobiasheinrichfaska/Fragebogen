@@ -518,22 +518,44 @@ export async function writeQuestionnairePdf(
   }
 
   // --- Signature lines -----------------------------------------------------------------------
-  // The heading stays with the first signature line, which wants 110 pt (audit 2026-11-16).
-  layout.ensure(HEADING + 110);
-  layout.heading('Unterschriften und Abschlüsse', 11);
-  for (const line of provenance.lines) {
+  // Each block — its line, the drawn picture or typed name, the system note and the hash — stays on
+  // one page, and the heading with the first block (audit 2026-11-16: 110 pt were kept, a drawn
+  // signature takes about 140).
+  const textWidth = A4[0] - 2 * MARGIN;
+  const linesOf = (text: string, font: PDFFont, size: number) =>
+    wrap(printable(text), font, size, textWidth).length * size * 1.35;
+  const signature = provenance.lines.map((line) => {
     const part = questionnaire.parts[line.role]?.find(
       (p) => p.seal?.contentHash === line.contentHash,
     );
     const note = part?.seal?.payload.systemNote;
-    layout.ensure(110);
-    layout.text(
+    const head =
       `[${line.number}] ${line.roleLabel} – Fassung ${line.version}${line.current ? '' : ' (durch eine neuere Fassung ersetzt)'} – ` +
-        `${STATUS_TEXT[line.status]} am ${formatLocalDateTime(line.signedAtLocal)} laut Gerät` +
-        (line.signerName ? ` – ${line.signerName}` : ''),
-      { font: fonts.bold, size: 9.5 },
-    );
+      `${STATUS_TEXT[line.status]} am ${formatLocalDateTime(line.signedAtLocal)} laut Gerät` +
+      (line.signerName ? ` – ${line.signerName}` : '');
+    const noteText = note
+      ? `Systemvermerk: ${note.signedAtLocal} (${note.timeZone}) = ${note.signedAtUtc} · ${note.os} · ` +
+        `${note.browser} ${note.browserVersion} · ${note.language} · Eingabe: ${describeInputTypes(note.inputTypes)} · App ${note.appVersion}`
+      : undefined;
     const path = part?.signatureStrokes ? strokesPath(part.signatureStrokes) : undefined;
+    const typed =
+      part?.seal?.payload.signature?.method === 'typed'
+        ? `Getippter Name: ${part.seal.payload.signature.typedName}`
+        : undefined;
+    const height =
+      linesOf(head, fonts.bold, 9.5) +
+      (path ? 400 * 0.2 + 6 : typed ? linesOf(typed, fonts.sans, 10) : 0) +
+      (noteText ? linesOf(noteText, fonts.sans, 7.5) : 0) +
+      linesOf(`SHA-256 ${line.contentHash}`, fonts.mono, 7) +
+      8;
+    return { line, head, noteText, path, typed, height };
+  });
+  const usable = A4[1] - MARGIN - 8 - BOTTOM;
+  layout.ensure(HEADING + Math.min(signature[0]?.height ?? 110, usable - HEADING));
+  layout.heading('Unterschriften und Abschlüsse', 11);
+  for (const { line, head, noteText, path, typed, height } of signature) {
+    layout.ensure(Math.min(height, usable));
+    layout.text(head, { font: fonts.bold, size: 9.5 });
     if (path) {
       const scale = 0.2;
       layout.ensure(400 * scale + 8);
@@ -551,16 +573,10 @@ export async function writeQuestionnairePdf(
         color: LINE,
       });
       layout.y -= 400 * scale + 6;
-    } else if (part?.seal?.payload.signature?.method === 'typed') {
-      layout.text(`Getippter Name: ${part.seal.payload.signature.typedName}`, { size: 10 });
+    } else if (typed) {
+      layout.text(typed, { size: 10 });
     }
-    if (note) {
-      layout.text(
-        `Systemvermerk: ${note.signedAtLocal} (${note.timeZone}) = ${note.signedAtUtc} · ${note.os} · ` +
-          `${note.browser} ${note.browserVersion} · ${note.language} · Eingabe: ${describeInputTypes(note.inputTypes)} · App ${note.appVersion}`,
-        { size: 7.5, color: MUTED },
-      );
-    }
+    if (noteText) layout.text(noteText, { size: 7.5, color: MUTED });
     layout.text(`SHA-256 ${line.contentHash}`, { font: fonts.mono, size: 7, color: MUTED, gap: 8 });
   }
   layout.rule();

@@ -269,7 +269,14 @@ steht er vorn. `because` ist mit `showIf` Pflicht und nur mit ihm erlaubt.
   dazu die Auswahl zum 31.12.2002: weiterer Minijob neben einer Hauptbeschäftigung über der Grenze, bzw.
   dazu die Minijobs zusammen in der Geringfügigkeitsgrenze); `weitererMinijobUeberJaeg` (dieselben
   Felder: weiterer Minijob, der eine Hauptbeschäftigung unter der Grenze erst über die
-  Jahresarbeitsentgeltgrenze hebt – zunächst krankenversicherungspflichtig); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
+  Jahresarbeitsentgeltgrenze hebt – zunächst krankenversicherungspflichtig);
+  `weitererMinijobNebenHauptbeschaeftigung` (dieselben Felder: weiterer Minijob neben einer
+  Hauptbeschäftigung, ob er sie über die Grenze hebt oder nicht – für einen Vorschlag, der an der Grenze
+  nicht umschlagen darf); `ueberJahresarbeitsentgeltgrenzeDieserBeschaeftigung` (die Felder von
+  `ueberMassgeblicheJahresarbeitsentgeltgrenze`, dazu Art der Beschäftigung, Arbeitszeitmodell, Art des
+  Praktikums, befristet, Rahmenvereinbarung: wie dort, aber ein Minijob zählt nur, wo er zusammengerechnet
+  wird, und eine im Voraus befristete kurzfristige Aushilfe gar nicht – für Hinweise an den Arbeitgeber
+  dieser Beschäftigung); `imUebergangsbereich` (dieselben Felder wie `geringfuegigEntlohnt`: eigenes Entgelt mit
   Einmalzahlungen und nur die Entgelte versicherungspflichtiger weiterer Beschäftigungen – ohne Beamtenbezüge,
   kurzfristige Beschäftigungen und den zuerst aufgenommenen Minijob neben einer Hauptbeschäftigung – im Monat
   über der Minijob-Grenze und höchstens 2.000 €); `andereBeschaeftigungAusbildung` (Auswahl-Spalte: eine

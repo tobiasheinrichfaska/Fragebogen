@@ -501,7 +501,11 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     expect(help).toContain('Gaststätten im Ausland');
     // Audit 2026-11-16, round 4: the same exceptions as the notice and the Kanzlei's hint.
     expect(help).toContain('Ausfall der TSE');
-    expect(help).toContain('unbarer Abrechnung');
+    expect(help).toContain('unbaren Abrechnung');
+    // On a TSE failure the bill still comes from the till, only without the safeguard.
+    expect(help).toContain('Bei einem Ausfall der TSE genügt die Rechnung aus der Kasse');
+    // Round 5: the exceptions follow the TSE, not the handwritten receipt.
+    expect(help.indexOf('Ausfall der TSE')).toBeGreaterThan(help.indexOf('(TSE) abgesichert'));
     expect(fields.find((f) => f.id === 'bewirtungHinweis')?.question).toContain(
       'Bewirtung in einer Gaststätte',
     );

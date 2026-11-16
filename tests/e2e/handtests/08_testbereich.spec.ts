@@ -156,7 +156,7 @@ test.describe('MT-85: the shared test page with the Fragebogen', () => {
     );
     expect(listed.filter((id) => id.startsWith('MT-'))).toEqual(CASES.map((c) => c.id));
     // The binding is complete: no warning on top of the page.
-    await expect(side(page).locator('.tr-kopf .tr-meldung.tr-fehler[data-meldung]')).toHaveCount(0);
+    await expect(side(page).locator('.tr-kopf .tr-meldung.tr-fehler')).toHaveCount(0);
     await expectQuiet(page, seen);
   });
 

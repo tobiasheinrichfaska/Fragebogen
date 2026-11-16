@@ -10,7 +10,8 @@ import { writeQuestionnairePdf, type PdfFonts } from '../../src/io/pdfWriter';
 import { buildStartPoint, parseStartPoint, type StartPoint } from '../../src/logic/startPoints';
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { keepForPdfa } from '../support/pdfaOut';
-import { note, QUESTIONNAIRE_ID } from '../support/sample';
+import { completeSofortmeldung, sofortmeldung } from '../support/sofortmeldungSession';
+import { beispielForm, newVersion, note, QUESTIONNAIRE_ID } from '../support/sample';
 
 const font = (name: string) =>
   new Uint8Array(readFileSync(new URL(`../../assets/fonts/${name}`, import.meta.url)));
@@ -236,6 +237,8 @@ describe('where a value goes on over the next page', () => {
     for (const [name, args] of cases) {
       const found = await pieces(await pdfWith(...args));
       const bold = found.find((piece) => piece.text === 'Unterschriften und Abschlüsse')?.font;
+      // Without the heading's font the check below would pass empty (audit 2026-11-16, round 5).
+      expect(bold, name).toBeDefined();
       const check = found.find((piece) => piece.text.startsWith('Prüfblatt'))?.page ?? Infinity;
       const pages = [...new Set(found.map((piece) => piece.page))].filter((page) => page < check);
       for (const page of pages) {
@@ -245,5 +248,66 @@ describe('where a value goes on over the next page', () => {
       }
     }
     expect(ends).toEqual([]);
+  }, 300_000);
+
+  // Audit 2026-11-16, round 5: a drawn signature with its system note and hash takes about 140 pt,
+  // only 110 were kept free, so its head or its note ended up alone. The Kanzlei name in the header
+  // moves the signature lines down line by line.
+  it('keeps every signature line with its picture, note and hash on one page', async () => {
+    const session = completeSofortmeldung();
+    const torn: string[] = [];
+    for (let lines = 0; lines <= 70; lines++) {
+      const written = await writeQuestionnairePdf(
+        {
+          questionnaire: session.questionnaire,
+          form: sofortmeldung,
+          origin: 'published',
+          config: { kanzleiName: Array.from({ length: lines + 1 }, () => 'Kanzlei').join('\n') },
+          created: CREATED,
+        },
+        FONTS,
+      );
+      const found = await pieces(written.bytes);
+      // The signature lines, before the Prüfblatt (its hashes are no signature's).
+      const check = found.find((piece) => piece.text.startsWith('Prüfblatt'))?.page ?? Infinity;
+      const before = found.filter((piece) => piece.page < check);
+      const heads = before.filter((piece) => /^\[\d+\] /.test(piece.text));
+      const hashes = before.filter((piece) => /^SHA-256( |$)/.test(piece.text));
+      expect(heads.length, `${lines} lines`).toBeGreaterThan(0);
+      heads.forEach((head, i) => {
+        if (hashes[i]?.page !== head.page) torn.push(`${lines} lines: ${head.text.slice(0, 30)}`);
+      });
+    }
+    expect(torn).toEqual([]);
+  }, 300_000);
+
+  // Audit 2026-11-16, round 5: the room kept under „Abweichende Unterschriftsdaten“ for its first
+  // footnote was in no test — without it the heading could end a page alone.
+  it('keeps „Abweichende Unterschriftsdaten“ with its first footnote', async () => {
+    const questionnaire = newVersion();
+    const alone: string[] = [];
+    let seen = 0;
+    for (let lines = 0; lines <= 70; lines++) {
+      const written = await writeQuestionnairePdf(
+        {
+          questionnaire,
+          form: beispielForm(),
+          origin: 'published',
+          config: { kanzleiName: Array.from({ length: lines + 1 }, () => 'Kanzlei').join('\n') },
+          created: CREATED,
+        },
+        FONTS,
+      );
+      const found = await pieces(written.bytes);
+      const heading = found.find((piece) => piece.text === 'Abweichende Unterschriftsdaten');
+      const first = found.find((piece) => /^\[\d+\] Wert geändert/.test(piece.text));
+      expect(heading, `${lines} lines`).toBeDefined();
+      expect(first, `${lines} lines`).toBeDefined();
+      if (heading?.page !== first?.page) alone.push(`${lines} lines`);
+      seen = Math.max(seen, heading?.page ?? 0);
+    }
+    // The sweep moved the heading over a page break at least once.
+    expect(seen).toBeGreaterThan(1);
+    expect(alone).toEqual([]);
   }, 300_000);
 });
