@@ -499,6 +499,9 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     );
     expect(kanzlei?.source).toContain('R 4.10 Abs. 8 EStR');
     expect(help).toContain('Gaststätten im Ausland');
+    // Audit 2026-11-16, round 4: the same exceptions as the notice and the Kanzlei's hint.
+    expect(help).toContain('Ausfall der TSE');
+    expect(help).toContain('unbarer Abrechnung');
     expect(fields.find((f) => f.id === 'bewirtungHinweis')?.question).toContain(
       'Bewirtung in einer Gaststätte',
     );

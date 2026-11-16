@@ -670,6 +670,36 @@ describe('a privately insured person in a further Minijob next to a main job', (
     expect(r.bgr?.detail.join(' ')).toContain('§ 6 Abs. 7 SGB V');
   });
 
+  // Audit 2026-11-16, round 4: the bounds of the new condition, checked by behaviour, not only by
+  // the catalogue: a short-term job and the statutorily insured are not asked.
+  it('does not ask a short-term helper or a statutorily insured person', () => {
+    const shown = (answers: Answers) =>
+      visibleFields(draft.definition, 'person', answers as Parameters<typeof visibleFields>[2]).map(
+        (field) => field.id,
+      );
+    expect(shown({ ...person, artLautVereinbarung: 'aushilfe' })).not.toContain('pkvBestand2002');
+    expect(shown({ ...person, krankenversicherung: 'gesetzlich' })).not.toContain('pkvBestand2002');
+    const field = draft.definition.sections
+      .flatMap((section) => section.fields)
+      .find((candidate) => candidate.id === 'pkvBestand2002');
+    expect(field?.showIf).toEqual({
+      all: [
+        { field: 'krankenversicherung', equals: 'privat' },
+        {
+          any: [
+            { not: { field: 'artLautVereinbarung', in: ['minijob', 'aushilfe'] } },
+            {
+              all: [
+                { field: 'artLautVereinbarung', equals: 'minijob' },
+                { field: 'weitereBeschaeftigung', equals: true },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
   it('still leaves the questions out for a Minijob alone', () => {
     const alone = { ...person, weitereBeschaeftigung: false };
     delete (alone as Record<string, unknown>).weitereJobs;
@@ -684,5 +714,81 @@ describe('a privately insured person in a further Minijob next to a main job', (
         (field) => field.id,
       ),
     ).toContain('pkvBestand2002');
+  });
+});
+
+// Audit 2026-11-16, round 4: a privately insured person whose main job lies under the JAEG and only
+// this Minijob lifts them above it was proposed „Über der JAEG: krankenversicherungsfrei“ without a
+// check. Privately insured next to a main job under the JAEG means an exemption (§ 8 SGB V) or the
+// freedom from 55 (§ 6 Abs. 3a SGB V) — then the Minijob is not added (§ 7 Abs. 1 Satz 2 SGB V).
+describe('a privately insured person lifted above the JAEG only by this Minijob', () => {
+  const lifted = (main: string, start: string, y2002?: string): Answers => ({
+    geburtsdatum: '1975-07-07',
+    status: 'arbeitnehmer',
+    grundsicherung: false,
+    elternzeitAnderswo: false,
+    bezugRente: false,
+    artLautVereinbarung: 'minijob',
+    weitereBeschaeftigung: true,
+    weitereJobs: [
+      {
+        rowId: 'r1',
+        jobArbeitgeber: 'Arbeitgeber A',
+        jobArt: 'svpflichtig',
+        jobSeit: '2020-01-01',
+        jobEntgeltMonat: main,
+      },
+      {
+        rowId: 'r2',
+        jobArbeitgeber: 'Arbeitgeber B',
+        jobArt: 'minijob',
+        jobSeit: `${start.slice(0, 4)}-01-01`,
+        jobEntgeltMonat: '200.00',
+        jobRvBefreit: 'nein',
+      },
+    ],
+    krankenversicherung: 'privat',
+    ...(y2002 === undefined ? {} : { pkvBestand2002: y2002 }),
+    rvBefreiungWunsch: 'nein',
+  });
+  const minijob = (start: string): Answers => ({
+    agBeschaeftigungsbeginn: start,
+    agEntgeltArt: 'monatsentgelt',
+    agMonatsentgelt: '300.00',
+    agUeberJaeg: false,
+    agBeschaeftigungsart: 'minijob',
+    agBefristet: false,
+  });
+
+  it.each([
+    ['5900.00', '2027-02-01', 'ja'],
+    ['6300.00', '2026-02-01', 'nein'],
+  ])(
+    'main job %s €, start %s: names the exemption it rests on and asks to check',
+    (main, start, y2002) => {
+      const r = assess(lifted(main, start, y2002), minijob(start), draft);
+      const kv = r.bgr?.detail.find((line) => line.startsWith('KV')) ?? '';
+      expect(kv).not.toContain('Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei');
+      expect(kv).toContain('§ 8 SGB V');
+      expect(kv).toContain('(prüfen)');
+    },
+  );
+
+  it('gives a Minijob employer no hint about a contribution subsidy or a Firmenzahler', () => {
+    let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, draft), draft, 'person'));
+    const answers = lifted('6200.00', '2027-02-01', 'ja');
+    for (let pass = 0; pass < 3; pass++) {
+      for (const [id, value] of Object.entries(answers)) {
+        const set = setValue(q, draft, 'person', id, value);
+        if (set.ok) q = set.questionnaire;
+      }
+    }
+    q = ok(startPart(q, draft, 'arbeitgeber'));
+    for (const [id, value] of Object.entries(minijob('2027-02-01'))) {
+      q = ok(setValue(q, draft, 'arbeitgeber', id, value));
+    }
+    const ids = checkHints(q, draft.definition).map((hint) => hint.id);
+    expect(ids).not.toContain('jaeg');
+    expect(ids).not.toContain('jaegNichtAngegeben');
   });
 });
