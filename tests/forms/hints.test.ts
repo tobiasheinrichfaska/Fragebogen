@@ -3,7 +3,7 @@
 import { join } from 'node:path';
 import { visibleFields } from '../../src/logic/form';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
-import { derive } from '../../src/logic/derivations';
+import { derive, describeRule } from '../../src/logic/derivations';
 import { checkHints, describeHint, HINT_TESTS } from '../../src/logic/hints';
 import type { FormDefinition, Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
@@ -1126,4 +1126,22 @@ describe('the postcode abroad (DEÜV Anlage 18)', () => {
     expect(run('Türkei', '34000 ABC')).toBeUndefined();
     expect(HINT_TESTS.plzAuslandFormat?.run([null, '1234'])).toBeUndefined();
   });
+});
+
+// Audit 2026-11-16: the catalogue named table columns by their ids („jobArt“, „ezBetrag“), since
+// the lookup knew only the top-level fields.
+it('names table columns by their table and label in the catalogue, never by their id', () => {
+  const columns = form.definition.sections
+    .flatMap((section) => section.fields)
+    .flatMap((field) => field.columns ?? [])
+    .map((column) => column.id);
+  const texts = [
+    ...(form.definition.checkHints ?? []).map((hint) => describeHint(hint, form.definition)),
+    ...(form.definition.derivations ?? [])
+      .flatMap((derivation) => derivation.rules ?? [])
+      .map((rule) => describeRule(rule, form.definition)),
+  ];
+  const ids = texts.flatMap((text) => columns.filter((id) => text.includes(`„${id}“`)));
+  expect([...new Set(ids)]).toEqual([]);
+  expect(texts.join(' ')).toContain('„Andere Beschäftigungen: Art“');
 });

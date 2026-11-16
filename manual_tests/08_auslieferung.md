@@ -38,9 +38,12 @@
 
 **Testbereich:** nein – nur Tobias, im privaten Repo Freigabe auf GitHub.
 
-**Voraussetzungen:** Ein Merge auf `main` dieses Repos, dessen Check „Tests“ grün ist. Seit dem
-15.11.2026 lädt nur noch Freigabe hoch (GitHub Actions); den Fragebogen lädt kein Werkzeug mehr per
-SFTP zu IONOS.
+**Voraussetzungen:** Ein Merge auf `main` dieses Repos, dessen Check „Tests“ grün ist, und ein
+Testerzugang für die Testzone. Seit dem 15.11.2026 lädt nur noch Freigabe hoch (GitHub Actions); den
+Fragebogen lädt kein Werkzeug mehr per SFTP zu IONOS. Ob Freigabe beim Bauen die privaten Dateien aus
+`Fragebogen-privat` einspielt, ist nicht dokumentiert; ohne sie entsteht ohne Warnung eine neutrale
+Fassung (ohne Zugangshinweis, Impressum, Datenschutz und Übergabe an Lohn und Gehalt). Die Schritte
+unten prüfen das bei jedem Ausrollen.
 
 **Schritte:**
 
@@ -53,12 +56,39 @@ SFTP zu IONOS.
    - **Danach:** Die Testzone zeigt den neuen Stand. _Nicht offensichtlich:_ Die Testzone hebt
      nichts im Browser auf (`Cache-Control: private, no-store`); Neuladen holt immer den Stand vom
      Server.
-3. Nur wenn die öffentliche App den Stand bekommen soll: in Freigabe den Lauf für die öffentliche
-   App des Fragebogens von Hand starten.
-   - **Danach:** Der Lauf ist grün.
-4. Die öffentliche Adresse neu laden.
-   - **Danach:** Der neue Stand erscheint sofort, ohne dass jemand den Zwischenspeicher des CDN
-     leeren muss.
+3. Auf der Testseite oben **„App vollständig zurücksetzen“** klicken.
+   - **Danach:** Die Rückfrage „App vollständig zurücksetzen?“.
+4. **„Zurücksetzen“** klicken.
+   - **Danach:** Die App zeigt „Bitte bestätigen“ mit dem Zugangshinweis der Kanzlei. Darunter
+     stehen „Impressum“ und „Datenschutz“. _Nicht offensichtlich:_ Fehlt eins davon, hat Freigabe
+     ohne die privaten Dateien gebaut – bitte melden.
+5. Den Zugangshinweis und „Antwort für die Zukunft merken“ ankreuzen.
+6. **„Weiter“** klicken.
+   - **Danach:** Die Startseite der App. Unten stehen „Impressum“, „Datenschutz“ und „Tester
+     einladen“.
+7. Auf der Testseite auf
+   [Kanzlei mit vollständigem Personalfragebogen öffnen](start:kanzlei-personalfragebogen-vollstaendig)
+   klicken.
+   - **Danach:** Die Rückfrage „Vorbereiteten Stand laden?“.
+8. **„Laden“** klicken.
+   - **Danach:** Die App zeigt die Kanzlei-Station mit einem eingelesenen Personalfragebogen.
+9. In der Kanzlei-Station nach unten scrollen.
+   - **Danach:** Der Abschnitt „Übergabe an DATEV Lohn und Gehalt“ steht da. _Nicht offensichtlich:_
+     Fehlt er, wurde ohne die Zuordnung aus `Fragebogen-privat` gebaut – bitte melden.
+10. Nur wenn die öffentliche App den Stand bekommen soll: in Freigabe den Lauf für die öffentliche
+    App des Fragebogens von Hand starten.
+    - **Danach:** Der Lauf ist grün.
+11. Die öffentliche Adresse in einem privaten Fenster öffnen.
+    - **Danach:** Der neue Stand erscheint sofort, ohne dass jemand den Zwischenspeicher des CDN
+      leeren muss. Die App zeigt „Bitte bestätigen“ mit dem Zugangshinweis; darunter stehen
+      „Impressum“ und „Datenschutz“. Fehlt eins davon: bitte melden.
+12. Den Zugangshinweis ankreuzen und **„Weiter“** klicken.
+    - **Danach:** Die Startseite der App; unten der Link „Testbereich (für Tester)“.
+13. **„Testbereich (für Tester)“** klicken.
+    - **Danach:** Der Browser fragt nach Benutzername und Passwort der Testzone. Eine Fehlerseite
+      (404) ist ein Fehler: bitte melden. _Nicht offensichtlich:_ Die Live-Datei vom 15.11.2026
+      führt noch auf `…/test/` und damit auf eine Fehlerseite; erst eine Live-Fassung mit der neuen
+      Adresse des Testbereichs führt in die Testzone.
 
 ## MT-83: Testzone nur mit Anmeldung
 
@@ -95,7 +125,8 @@ nicht mehr: Auch im Büro fragt die Testzone nach der Anmeldung.
 zweites, privates Fenster.
 
 **Voraussetzungen:** Sie sind in der Testzone angemeldet. Tester gibt es nur noch per Einladung;
-das frühere `npm run tester` mit Passwörtern für einen Ordner bei IONOS gilt nicht mehr.
+das frühere `npm run tester` mit Passwörtern für einen Ordner bei IONOS gilt nicht mehr. Für das
+Sperren: eine Cloud-Sitzung mit dem Repo Testumgebung und, wenn es eilt, Zugriff auf Freigabe.
 
 **Schritte:**
 
@@ -106,22 +137,38 @@ das frühere `npm run tester` mit Passwörtern für einen Ordner bei IONOS gilt 
 2. Den Link kopieren und in einem privaten Fenster öffnen.
    - **Danach:** „Als Tester registrieren“ mit Ihrem Namen als Einladendem. Der Browser fragt
      **nicht** nach der Anmeldung.
-3. Als Anmeldenamen `probe.fragebogen` eintragen, zweimal dasselbe Passwort mit mindestens 12
-   Zeichen eingeben und **„Registrieren“** klicken.
-   - **Danach:** Die Testseite des Fragebogens erscheint, ohne Anmeldung.
-4. Im privaten Fenster den Link aus Schritt 1 noch einmal öffnen.
+3. Als Anmeldenamen einen neuen Probenamen mit dem heutigen Datum eintragen, z. B.
+   `probe.fragebogen.1611` am 16.11.
+4. Zweimal dasselbe Passwort mit mindestens 12 Zeichen eingeben.
+5. **„Registrieren“** klicken.
+   - **Danach:** Die Testseite des Fragebogens erscheint, ohne Anmeldung. _Nicht offensichtlich:_
+     Kommt „Diesen Anmeldenamen gibt es schon. Bitte einen anderen wählen.“, war der Name schon
+     einmal vergeben: die Schritte 3 bis 5 mit einem anderen Namen wiederholen.
+6. Im privaten Fenster den Link aus Schritt 1 noch einmal öffnen.
    - **Danach:** „Dieser Link ist ungültig, abgelaufen oder schon benutzt. Bitten Sie um einen
      neuen.“
-5. Im ersten Fenster **„Zurück zur App“** klicken.
+7. Im ersten Fenster **„Zurück zur App“** klicken.
    - **Danach:** Die Testseite erscheint wieder; Ihre Testergebnisse sind noch da.
+8. Den Probenamen sperren lassen: in einer Cloud-Sitzung des Repos Testumgebung die Zeile
+   `gesperrt:<Probename>` in die Testerliste des Kanzlei-Kontos eintragen, die Skripte neu bauen
+   (`npm run bauen`) und auf `main` mergen lassen.
+   - **Danach:** Der Merge ist auf `main`, sein Check „Tests“ ist grün. _Nicht offensichtlich:_
+     Freigabe rollt die Sperre beim nächsten Lauf von „Testbereiche aktualisieren“ aus, spätestens 2
+     Stunden nach dem Merge.
+9. Soll die Sperre sofort gelten: in Freigabe „Login ausrollen“ für jeden Testbereich des
+   Kanzlei-Kontos starten.
+   - **Danach:** Der Lauf ist grün.
+10. Sobald die Sperre gilt: im privaten Fenster die Testzone neu laden (ist es inzwischen
+    geschlossen: ein neues privates Fenster öffnen und sich mit dem Probenamen anmelden).
+    - **Danach:** Der Browser fragt nach Benutzername und Passwort; mit dem Probenamen kommt man
+      nicht mehr hinein, auch nicht mit dem gemerkten Gerät.
 
 **Erwartet:**
 
 - _Nicht offensichtlich:_ Ein eingeladener Tester darf jeden Testbereich desselben bunny-Kontos
   testen, mit demselben Namen und Passwort.
-- Soll der Probename nicht bleiben, wird er in der Testerliste des Repos Testumgebung mit
-  `gesperrt:probe.fragebogen` gesperrt. Das gilt spätestens 2 Stunden nach dem Merge, sofort mit
-  „Login ausrollen“ in Freigabe.
+- Jeder Anmeldename geht je bunny-Konto nur einmal, auch nach einer Sperre. Deshalb bekommt jeder
+  Probelauf einen neuen Namen mit dem Datum; einen alten Probenamen gibt es nicht wieder.
 
 ## MT-85: Testseite am echten Handy und iPad
 

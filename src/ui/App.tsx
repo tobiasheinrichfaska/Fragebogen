@@ -7,7 +7,13 @@ import { APP_CONFIG } from '../config';
 import { BUNDLED_FORMS, DRAFT_PREVIEW } from '../io/bundledForms';
 import { InputTracker, newQuestionnaireId } from '../io/environment';
 import { handOut } from '../io/files';
-import { clearAccess, loadAccess, saveAccess } from '../io/accessStore';
+import {
+  accessConfirmedThisVisit,
+  clearAccess,
+  confirmAccessForVisit,
+  loadAccess,
+  saveAccess,
+} from '../io/accessStore';
 import { clearResume, loadResume, saveResume } from '../io/resumeStore';
 import { accessGateNeeded, accessToken } from '../logic/accessGate';
 import { AccessGate } from './AccessGate';
@@ -260,12 +266,14 @@ function Workspace({
   const [collected, setCollected] = useState<Uint8Array[]>([]);
   const { dialog: passwordDialog, ask: askPassword } = usePasswordDialog();
   // The access notice of the local configuration, asked once per visit unless remembered.
-  const [accessOpen, setAccessOpen] = useState(() =>
-    accessGateNeeded({
-      notice: APP_CONFIG.accessNotice,
-      protocol: location.protocol,
-      remembered: loadAccess(),
-    }),
+  const [accessOpen, setAccessOpen] = useState(
+    () =>
+      !accessConfirmedThisVisit() &&
+      accessGateNeeded({
+        notice: APP_CONFIG.accessNotice,
+        protocol: location.protocol,
+        remembered: loadAccess(),
+      }),
   );
   const [banner, setBanner] = useState<BannerMessage | undefined>(
     () => transferred?.message ?? startBanner(start, remembered, linked),
@@ -601,6 +609,7 @@ function Workspace({
           notice={notice}
           onConfirm={(remember) => {
             if (remember) saveAccess(accessToken(notice));
+            confirmAccessForVisit();
             setAccessOpen(false);
           }}
         />

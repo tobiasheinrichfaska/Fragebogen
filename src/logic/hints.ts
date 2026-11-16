@@ -210,6 +210,12 @@ function jaegFor(
   return { value: of('jaegJahr'), label: 'Jahresarbeitsentgeltgrenze', special: false };
 }
 
+/** Which JAEG the answers about 31.12.2002 and 31.12.2026 choose, for the catalogue (audit 2026-11-16). */
+const whichJaeg = (y2002: string, y2026: string | undefined) =>
+  y2026 === undefined
+    ? `die besondere, wenn „${y2002}“ Ja ist; ab 2027 bei anderer Antwort zwischen der Grenze nach § 6 Abs. 8 SGB V und der allgemeinen: prüfen`
+    : `die besondere, wenn „${y2002}“ Ja ist; ab 2027 die nach § 6 Abs. 8 SGB V, wenn „${y2026}“ Ja ist, und bei „Weiß ich nicht“ zwischen dieser und der allgemeinen: prüfen`;
+
 /** A label of `jaegFor` after „über der“ (audit 2026-11-15: the Minijob texts named no section). */
 const dative = (label: string) => label.replace(/^besondere /, 'besonderen ');
 
@@ -1082,8 +1088,8 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
   return {
     args: [...MINIJOB_ARGS, 'choice', 'choice'],
     optional: 1,
-    describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
-      `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze besteht${bisGrenze ? ' und die Minijobs zusammen die Geringfügigkeitsgrenze einhalten' : ''}`,
+    describe: ([fixed = '', expected = '', , , on = '', art = '', , , , , , y2002 = '', y2026]) =>
+      `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung über der Jahresarbeitsentgeltgrenze (${whichJaeg(y2002, y2026)}) besteht${bisGrenze ? ' und die Minijobs zusammen die Geringfügigkeitsgrenze einhalten' : ''}`,
     run: ([
       fixed,
       expected,
@@ -1118,11 +1124,18 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
       // A main job between the limit of § 6 Abs. 8 SGB V and the general one may be free as well.
       const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
-      const unknown =
-        jaeg === undefined ||
-        mains.some((row) => row.cents === undefined) ||
-        (bestand !== undefined && main > bestand && main <= jaeg);
+      const inBand = bestand !== undefined && jaeg !== undefined && main > bestand && main <= jaeg;
+      const unknown = jaeg === undefined || mains.some((row) => row.cents === undefined) || inBand;
       if (!unknown && main <= (jaeg ?? 0)) return { holds: false, detail: [] };
+      if (jaeg === undefined) {
+        return {
+          holds: true,
+          uncertain: true,
+          detail: [
+            `Hauptbeschäftigung ${euro(main)} im Jahr. Für ${year} sind die Rechengrößen in der App nicht hinterlegt – bitte selbst prüfen, ob sie über der Jahresarbeitsentgeltgrenze liegt und dieser weitere Minijob die Geringfügigkeitsgrenze einhält.`,
+          ],
+        };
+      }
       const limit = cents(RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0;
       const together =
         (payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0) +
@@ -1133,7 +1146,15 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
         holds: true,
         ...(unknown ? { uncertain: true } : {}),
         detail: [
-          `Hauptbeschäftigung ${euro(main)} im Jahr: über der ${dative(label)}, krankenversicherungsfrei – dieser weitere Minijob wird in der KV nicht mit ihr zusammengerechnet (Geringfügigkeits-Richtlinien, Beispiele 25 und 26).`,
+          ...(inBand && bestand !== undefined
+            ? [
+                `Hauptbeschäftigung ${euro(main)} im Jahr: über der Grenze nach § 6 Abs. 8 SGB V, nicht über der allgemeinen Jahresarbeitsentgeltgrenze von ${euro(jaeg)}.`,
+                BESTAND_2026_NOTE(bestand),
+                'Ist die Hauptbeschäftigung krankenversicherungsfrei, wird dieser weitere Minijob in der KV nicht mit ihr zusammengerechnet (Geringfügigkeits-Richtlinien, Beispiele 25 und 26).',
+              ]
+            : [
+                `Hauptbeschäftigung ${euro(main)} im Jahr: über der ${dative(label)}, krankenversicherungsfrei – dieser weitere Minijob wird in der KV nicht mit ihr zusammengerechnet (Geringfügigkeits-Richtlinien, Beispiele 25 und 26).`,
+              ]),
           within
             ? `Minijobs zusammen ${euro(together)} im Monat: innerhalb der Grenze – zusätzlich Meldung an die Minijob-Zentrale mit Personengruppe 101 und Beitragsgruppen 6000 (Pauschalbeitrag zur KV).`
             : `Minijobs zusammen ${euro(together)} im Monat: über der Grenze.`,
@@ -1152,8 +1173,8 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
 const weitererMinijobUeberJaeg: HintTest = {
   args: [...MINIJOB_ARGS, 'choice', 'choice'],
   optional: 1,
-  describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
-    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt, laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze besteht und erst dieser weitere Minijob die Grenze überschreitet`,
+  describe: ([fixed = '', expected = '', , , on = '', art = '', , , , , , y2002 = '', y2026]) =>
+    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt, laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze (${whichJaeg(y2002, y2026)}) besteht und erst dieser weitere Minijob die Grenze überschreitet`,
   run: ([
     fixed,
     expected,
@@ -1201,6 +1222,7 @@ const weitererMinijobUeberJaeg: HintTest = {
         : {}),
       detail: [
         `Hauptbeschäftigung ${euro(main)} und weitere Minijobs zusammen ${euro(total)} im Jahr: erst mit diesem Minijob über der ${dative(label)} von ${euro(jaeg)} – zunächst krankenversicherungspflichtig; die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten Jahr überschritten wird (Geringfügigkeits-Richtlinien B 2.2.2.8).`,
+        ...(bestand !== undefined && main > bestand ? [BESTAND_2026_NOTE(bestand)] : []),
       ],
     };
   },
@@ -1794,9 +1816,19 @@ function fromRoleHints(
 
 /** When a hint applies, in German (catalogue). */
 export function describeHint(hint: CheckHint, definition: FormDefinition): string {
-  const fields = fieldsById(definition);
+  // A test reads table columns too: they are named with their table (audit 2026-11-16).
+  const fields = new Map(fieldsById(definition));
+  for (const table of definition.sections.flatMap((section) => section.fields)) {
+    for (const column of table.columns ?? []) {
+      fields.set(column.id, { ...column, label: `${table.label}: ${column.label}` });
+    }
+  }
   const parts: string[] = [];
-  if (hint.when) parts.push(describeCondition(hint.when, fields));
+  if (hint.when) {
+    const when = describeCondition(hint.when, fields);
+    // „A oder B und <test>“ would read either way.
+    parts.push(hint.test && 'any' in hint.when ? `(${when})` : when);
+  }
   if (hint.test) {
     const labels = hint.test.args.map((id) => fields.get(id)?.label ?? id);
     parts.push(HINT_TESTS[hint.test.fn]?.describe(labels) ?? hint.test.fn);

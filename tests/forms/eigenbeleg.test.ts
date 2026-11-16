@@ -485,6 +485,12 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     expect(block?.text).toContain('im Ausland');
     const fields = form.definition.sections.flatMap((s) => s.fields);
     expect(fields.find((f) => f.id === 'bewirtungHinweis')?.help).toContain(conditional);
+    // Audit 2026-11-16: machine-made always (R 4.10 Abs. 8 EStR), the TSE only with such a till.
+    const help = fields.find((f) => f.id === 'bewirtungHinweis')?.help ?? '';
+    expect(help).toContain('maschinell erstellt und registriert');
+    expect(help).toContain('R 4.10 Abs. 8 EStR');
+    expect(help).not.toContain('genügt dann nicht');
+    expect(block?.text).toContain('Sie muss maschinell erstellt sein');
     for (const id of ['bewirtungGaststaette', 'bewirtungsbeleg']) {
       expect(form.definition.checkHints?.find((h) => h.id === id)?.message, id).toMatch(
         /elektronischen? Kasse/,

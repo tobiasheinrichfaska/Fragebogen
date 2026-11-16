@@ -544,6 +544,45 @@ describe('a further Minijob next to a main job between the JAEG limits of 2027',
     );
   });
 
+  // Audit 2026-11-16: in the band „Weiß ich nicht“ leaves open, the text called a main job of
+  // 81.600 € „über der Jahresarbeitsentgeltgrenze“ of 84.150 € without saying why it is open.
+  it('says why a main job between the two limits is open, not that it is above the JAEG', () => {
+    const open = free?.run(args('6800.00', 'nein', 'unbekannt'));
+    expect(open).toMatchObject({ holds: true, uncertain: true });
+    expect(open?.detail.join(' ')).toContain('am 31.12.2026');
+    expect(open?.detail.join(' ')).toContain('§ 6 Abs. 8 SGB V');
+    expect(open?.detail.join(' ')).not.toContain(
+      'über der Jahresarbeitsentgeltgrenze, krankenversicherungsfrei',
+    );
+    const lifted2026 = lifted?.run(args('6800.00', 'nein', 'unbekannt'));
+    expect(lifted2026?.detail.join(' ')).toContain('am 31.12.2026');
+  });
+
+  it('names the year whose values are missing', () => {
+    const later = [...args('6800.00', 'nein', 'unbekannt')];
+    later[4] = '2031-03-01';
+    const missing = free?.run(later);
+    expect(missing).toMatchObject({ holds: true, uncertain: true });
+    expect(missing?.detail.join(' ')).toContain('Für 2031');
+    expect(missing?.detail.join(' ')).not.toContain('krankenversicherungsfrei');
+  });
+
+  it('names the special limit for the 2002 group when this Minijob lifts the main job above it', () => {
+    expect(lifted?.run(args('5900.00', 'ja'))?.detail[0]).toContain(
+      'über der besonderen Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V) von 72.900,00 €',
+    );
+  });
+
+  it('names in the catalogue which limit the answers about 2002 and 2026 choose', () => {
+    const labels = Array.from({ length: 13 }, (_, i) => `F${i}`);
+    for (const test of [free, lifted]) {
+      const text = test?.describe(labels) ?? '';
+      expect(text).toContain('„F11“');
+      expect(text).toContain('„F12“');
+      expect(text).toContain('§ 6 Abs. 8 SGB V');
+    }
+  });
+
   it('names the special limit of § 6 Abs. 7 SGB V for the 2002 group', () => {
     expect(free?.run(args('6800.00', 'ja'))?.detail[0]).toContain(
       'über der besonderen Jahresarbeitsentgeltgrenze (§ 6 Abs. 7 SGB V), krankenversicherungsfrei',

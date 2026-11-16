@@ -4,6 +4,12 @@ Stand 14.11.2026 abends. Geschrieben von der Cloud-Sitzung „Fragebogen“ im A
 Arbeitsteilung, die hier steht, gilt ab jetzt; sie steht auch in `CLAUDE.md` („Division of work:
 cloud and Kanzlei PC“).
 
+> **Überholt seit dem Umzug zu bunny.net (15.11.2026):** Hochgeladen wird nur noch über das private
+> Repo Freigabe, nicht mehr per SFTP über Auslieferung; Tester kommen per Einladung der Testzone,
+> `.htaccess` und freigegebene IPs gibt es dort nicht. Was hier zum Hochladen und zum Server steht,
+> gilt nur noch für die alte Kopie bei IONOS. Den heutigen Stand nennen `CLAUDE.md` und
+> `deploy/README.md`.
+
 ## Das Ziel
 
 Bearbeitet wird nur noch in den Cloud-Sitzungen (claude.ai/code): Code, Formulare, Doku, Tests,

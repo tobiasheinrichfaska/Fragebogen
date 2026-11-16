@@ -8,8 +8,8 @@
 | Formular | austritt, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Ende des Arbeitsverhältnisses“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 16.11.2026 um 00:47 |
-| Definition (SHA-256) | 45438a71c0877addb99aaa371ab7db61c233dd9b05935c0c8b0de286dca066f6 |
+| Stand | zuletzt überarbeitet am 16.11.2026 um 01:32 |
+| Definition (SHA-256) | a7af7d0627416b4f7a83e6e3403785467162cda7dcc98324f7d52c1e15da200b |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht. |
 | Empfänger | Lohnabrechnende Stelle |
@@ -332,10 +332,10 @@ Alle übrigen Angaben sind unabhängig.
 - Kenntnisnahme durch: Arbeitgeber
 - Art: wird in der App gelesen und bestätigt
 - Stand: 03.11.2026
-- Nur wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Aufhebungsvertrag (Ende im Einvernehmen)“ gewählt ist
-- Warum: Die Anhörung des Betriebsrats gilt vor einer Kündigung durch den Arbeitgeber; ein von ihm veranlasster Aufhebungsvertrag zählt bei einer Massenentlassung mit.
+- Nur wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ oder „Aufhebungsvertrag (Ende im Einvernehmen)“ gewählt ist
+- Warum: Die Anhörung des Betriebsrats gilt vor einer Kündigung durch den Arbeitgeber; bei einer Massenentlassung zählen auch ein Aufhebungsvertrag und eine Kündigung der Person mit, die er veranlasst hat (§ 17 Abs. 1 Satz 2 KSchG).
 
-> Hat Ihr Betrieb einen Betriebsrat, ist er vor jeder Kündigung anzuhören; ohne Anhörung ist die Kündigung unwirksam (§ 102 Abs. 1 BetrVG). Wollen Sie innerhalb von 30 Tagen mehrere Beschäftigte entlassen, kann vorher eine Anzeige bei der Agentur für Arbeit nötig sein, in Betrieben mit mehr als 20 Beschäftigten (§ 17 Abs. 1 KSchG). Auszubildenden können Sie nach der Probezeit nur aus wichtigem Grund kündigen, schriftlich und mit Angabe der Gründe (§ 22 Abs. 2, 3 BBiG).
+> Hat Ihr Betrieb einen Betriebsrat, ist er vor jeder Kündigung durch Sie anzuhören; ohne Anhörung ist die Kündigung unwirksam (§ 102 Abs. 1 BetrVG). Wollen Sie innerhalb von 30 Kalendertagen mehrere Beschäftigte entlassen, kann vorher eine Anzeige bei der Agentur für Arbeit nötig sein, in Betrieben mit in der Regel mehr als 20 Beschäftigten (§ 17 Abs. 1 Satz 1 KSchG). Dabei zählen auch Aufhebungsverträge und Kündigungen der Beschäftigten mit, die Sie veranlasst haben (§ 17 Abs. 1 Satz 2 KSchG). Auszubildenden können Sie nach der Probezeit nur aus wichtigem Grund kündigen, schriftlich und mit Angabe der Gründe (§ 22 Abs. 2, 3 BBiG).
 >
 > Das ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.
 
@@ -354,10 +354,10 @@ Alle übrigen Angaben sind unabhängig.
 - Kenntnisnahme durch: Arbeitgeber
 - Art: wird in der App gelesen und bestätigt
 - Stand: 15.11.2026
-- Nur wenn nicht zutrifft, dass bei „Art des Endes“ „Tod der beschäftigten Person“ oder „Ende der Ausbildung ohne Weiterbeschäftigung“ gewählt ist
-- Warum: Die Meldepflicht als arbeitsuchend trifft jede Person, deren Arbeitsverhältnis endet, nicht aber nach einer betrieblichen Ausbildung und nicht beim Tod (§ 38 Abs. 1 SGB III).
+- Nur wenn bei „Art des Endes“ „Kündigung durch Sie als Arbeitgeber“ oder „Kündigung durch die beschäftigte Person“ oder „Aufhebungsvertrag (Ende im Einvernehmen)“ oder „Ende einer Befristung (das Datum ist erreicht oder der Zweck erfüllt)“ oder „Ende kraft Gesetzes oder Tarifvertrags, z. B. durch eine tarifliche Altersgrenze“ gewählt ist
+- Warum: Die Meldepflicht als arbeitsuchend trifft jede Person, deren Arbeitsverhältnis endet; nicht beim Tod, nicht am Ende einer betrieblichen Ausbildung und nicht, wenn das Arbeitsverhältnis gar nicht endet (Wechsel im Betrieb, Betriebsübergang; § 38 Abs. 1 SGB III).
 
-> Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III).
+> Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III). Für eine betriebliche Ausbildung gilt die Meldepflicht nicht (§ 38 Abs. 1 S. 4 SGB III).
 >
 > Das ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.
 

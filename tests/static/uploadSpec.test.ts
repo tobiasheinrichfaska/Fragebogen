@@ -1,7 +1,9 @@
 // Upload targets (Tobias 2026-11-01): the public app for everyone, the test folder from the Kanzlei's
-// IPs or with a tester login, the Kanzlei app from the Kanzlei's IPs only. Since 2026-11-06 the
-// private tool Auslieferung uploads them from deploy/upload.json; the payroll mapping is a marker
-// source there — any file containing it is refused outside the folders that allow it.
+// IPs or with a tester login, the Kanzlei app from the Kanzlei's IPs only. From 2026-11-06 to the
+// move to bunny.net (2026-11-15) the private tool Auslieferung uploaded them from deploy/upload.json;
+// the payroll mapping is a marker source there — any file containing it is refused outside the
+// folders that allow it. Since the move Freigabe uploads; whether it reads this list is not
+// documented (deploy/README.md), so the rules are still guarded here as data.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { WEB_APP_FILES } from '../../src/logic/webApp';
