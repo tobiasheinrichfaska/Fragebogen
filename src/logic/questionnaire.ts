@@ -21,6 +21,7 @@ import {
   signerName,
   triggerRoleOf,
   typedNameIsPlausible,
+  TYPED_NAME_MAX,
 } from './form';
 import type { RegisteredForm } from './formRegistry';
 import { SHA256_HEX } from './hash';
@@ -731,6 +732,9 @@ function signatureOf(input: SignatureInput): { seal: SealSignature; strokes?: st
   const name = normalizeText(input.name);
   if (!name.ok || !typedNameIsPlausible(name.value)) {
     return 'Bitte den vollständigen Namen eintippen.';
+  }
+  if ([...name.value].length > TYPED_NAME_MAX) {
+    return `Der Name ist zu lang: höchstens ${TYPED_NAME_MAX} Zeichen.`;
   }
   return { seal: { method: 'typed', typedName: name.value } };
 }

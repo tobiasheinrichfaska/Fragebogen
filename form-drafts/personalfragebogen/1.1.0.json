@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-16T04:52",
+  "revised": "2026-11-16T05:29",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -6899,7 +6899,7 @@
           "agRahmenvereinbarung"
         ]
       },
-      "message": "Das regelmäßige Jahresarbeitsentgelt – mit den Beschäftigungen, die mit dieser zusammengerechnet werden, und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers, bei mehreren Arbeitgebern anteilig. Ein Minijob zählt nur, wo er zusammengerechnet wird; eine im Voraus befristete kurzfristige Aushilfe zählt nicht.",
+      "message": "Das regelmäßige Jahresarbeitsentgelt – mit den Beschäftigungen, die mit dieser zusammengerechnet werden, und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers, bei mehreren Arbeitgebern anteilig. Ein Minijob zählt nur, wo er zusammengerechnet wird; hebt ein weiterer Minijob eine krankenversicherungspflichtige Hauptbeschäftigung erst über die Grenze, bleibt die Person bis zum Ende des Kalenderjahres versicherungspflichtig. Eine im Voraus befristete kurzfristige Aushilfe zählt nicht.",
       "source": "§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 7 Abs. 1, § 257 SGB V; Geringfügigkeits-Richtlinien B 2.2.2.8"
     },
     {
@@ -6931,7 +6931,7 @@
           "agRahmenvereinbarung"
         ]
       },
-      "message": "Laut den Verdienstangaben – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – liegt das regelmäßige Jahresarbeitsentgelt über der maßgeblichen Jahresarbeitsentgeltgrenze, der Arbeitgeber hat „nicht über der Grenze“ angegeben: klären; bei freiwilliger Versicherung Firmen- oder Selbstzahler erfragen.",
+      "message": "Laut den Verdienstangaben – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – liegt das regelmäßige Jahresarbeitsentgelt über der maßgeblichen Jahresarbeitsentgeltgrenze, der Arbeitgeber hat „nicht über der Grenze“ angegeben: klären; bei freiwilliger Versicherung Firmen- oder Selbstzahler erfragen (bei einem weiteren Minijob, der erst zusammengerechnet über der Grenze liegt, erst ab dem nächsten Kalenderjahr).",
       "source": "§ 6 Abs. 1 Nr. 1 SGB V"
     },
     {
@@ -9783,6 +9783,124 @@
           "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V), freiwillig gesetzlich versichert; Firmen- oder Selbstzahler fehlt beim Arbeitgeber – Firmenzahler angenommen, bei Selbstzahlern 0."
         },
         {
+          "value": "0",
+          "reason": "Weiterer Minijob neben einer Hauptbeschäftigung, privat oder anderweitig versichert und in den letzten fünf Jahren nicht gesetzlich versichert: Die Hauptbeschäftigung ist dann nicht krankenversicherungspflichtig (z. B. befreit nach § 8 SGB V oder ab 55 frei nach § 6 Abs. 3a SGB V); der Minijob wird nicht mit ihr zusammengerechnet (§ 7 Abs. 1 Satz 2 SGB V) und bleibt in der Krankenversicherung frei – am Bescheid der Hauptbeschäftigung prüfen.",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "gkvLetzte5Jahre",
+                "equals": "nein"
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Weiterer Minijob neben einer Hauptbeschäftigung, hauptberuflich selbständig: nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); der Minijob wird nicht mit der Hauptbeschäftigung zusammengerechnet (§ 7 Abs. 1 Satz 2 SGB V).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "status",
+                "equals": "selbstaendig"
+              },
+              {
+                "field": "selbstHauptberuf",
+                "equals": true
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
+            ]
+          },
+          "check": true
+        },
+        {
           "value": "1",
           "reason": "Weiterer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze, privat oder anderweitig versichert: Ist die Hauptbeschäftigung krankenversicherungspflichtig, wird dieser Minijob mit ihr zusammengerechnet und ist versicherungspflichtig (§ 7 Abs. 1 Satz 2 SGB V; Geringfügigkeits-Richtlinien B 2.2.2.8) – Krankenkasse wählen lassen. Privat versichert setzt dort aber meist eine Befreiung (§ 8 SGB V) oder die Versicherungsfreiheit ab 55 (§ 6 Abs. 3a SGB V) voraus; dann wird nicht zusammengerechnet und der Minijob bleibt in der Krankenversicherung frei (0) – am Bescheid der Hauptbeschäftigung prüfen.",
           "when": {
@@ -12024,59 +12142,6 @@
           "reason": "Werkstudent: Personengruppe 106 kennt in der PV nur 0 (DEÜV Anlage 16)."
         },
         {
-          "value": "1",
-          "reason": "Wie in der KV: Weiterer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze, privat oder anderweitig versichert: Ist die Hauptbeschäftigung krankenversicherungspflichtig, wird dieser Minijob mit ihr zusammengerechnet – mit der gesetzlichen Krankenversicherung auch pflegeversichert (§ 20 Abs. 1 SGB XI). Bei einer Befreiung (§ 8 SGB V) oder der Versicherungsfreiheit ab 55 (§ 6 Abs. 3a SGB V) in der Hauptbeschäftigung: 0 – am Bescheid prüfen.",
-          "when": {
-            "all": [
-              {
-                "any": [
-                  {
-                    "field": "agBeschaeftigungsart",
-                    "equals": "minijob"
-                  },
-                  {
-                    "all": [
-                      {
-                        "field": "agBeschaeftigungsart",
-                        "equals": "svpflichtig"
-                      },
-                      {
-                        "not": {
-                          "field": "agArbeitszeitmodell",
-                          "equals": "altersteilzeit"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "field": "krankenversicherung",
-                "in": ["privat", "anderweitig"]
-              }
-            ]
-          },
-          "test": {
-            "fn": "weitererMinijobNebenHauptbeschaeftigung",
-            "args": [
-              "agMonatsentgelt",
-              "agErwartetMonat",
-              "ezBetrag",
-              "ezAnspruch",
-              "agBeschaeftigungsbeginn",
-              "jobArt",
-              "jobEntgeltMonat",
-              "jobSeit",
-              "agBav",
-              "bavBeitrag",
-              "bavZuschuss",
-              "pkvBestand2002",
-              "pkvBestand2026"
-            ]
-          },
-          "check": true
-        },
-        {
           "value": "0",
           "reason": "Krankenversicherungsfrei (wie KV), privat oder anderweitig abgesichert: Beamte oder Pensionäre mit Anspruch auf Beihilfe: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 2, 6, Abs. 3 SGB V).",
           "when": {
@@ -12129,6 +12194,177 @@
                   }
                 ]
               }
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Wie in der KV: Weiterer Minijob neben einer Hauptbeschäftigung, privat oder anderweitig versichert und in den letzten fünf Jahren nicht gesetzlich versichert: Die Hauptbeschäftigung ist dann nicht krankenversicherungspflichtig (z. B. befreit nach § 8 SGB V oder ab 55 frei nach § 6 Abs. 3a SGB V); der Minijob wird nicht mit ihr zusammengerechnet (§ 7 Abs. 1 Satz 2 SGB V) und bleibt in der Krankenversicherung frei – am Bescheid der Hauptbeschäftigung prüfen. Keine soziale Pflegeversicherung aus dieser Beschäftigung (§ 20 Abs. 1 SGB XI).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "gkvLetzte5Jahre",
+                "equals": "nein"
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
+          "reason": "Wie in der KV: Weiterer Minijob neben einer Hauptbeschäftigung, hauptberuflich selbständig: nicht krankenversicherungspflichtig (§ 5 Abs. 5 SGB V); der Minijob wird nicht mit der Hauptbeschäftigung zusammengerechnet (§ 7 Abs. 1 Satz 2 SGB V). Keine soziale Pflegeversicherung aus dieser Beschäftigung (§ 20 Abs. 1 SGB XI).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              },
+              {
+                "field": "status",
+                "equals": "selbstaendig"
+              },
+              {
+                "field": "selbstHauptberuf",
+                "equals": true
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "1",
+          "reason": "Wie in der KV: Weiterer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze, privat oder anderweitig versichert: Ist die Hauptbeschäftigung krankenversicherungspflichtig, wird dieser Minijob mit ihr zusammengerechnet – mit der gesetzlichen Krankenversicherung auch pflegeversichert (§ 20 Abs. 1 SGB XI). Bei einer Befreiung (§ 8 SGB V) oder der Versicherungsfreiheit ab 55 (§ 6 Abs. 3a SGB V) in der Hauptbeschäftigung: 0 – am Bescheid prüfen.",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobNebenHauptbeschaeftigung",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
             ]
           },
           "check": true

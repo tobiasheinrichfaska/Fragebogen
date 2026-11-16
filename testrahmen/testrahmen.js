@@ -1,5 +1,5 @@
 // GENERATED from Testumgebung (testrahmen/) by `npm run rahmen` — do not edit here: change it
-// there and copy it again. Stand 61c19c6. Checked by pruefen.mjs against testrahmen.json.
+// there and copy it again. Stand 288cc85. Checked by pruefen.mjs against testrahmen.json.
 // Test reports without free text (Tobias 2026-11-15, docs/testbericht.md). Pure and import-free:
 // the build puts it into every script ahead of logik.ts, which answers the routes
 // (`POST /_zugang/bericht`, `/_zugang/berichte`).
@@ -987,7 +987,7 @@ function decodeRun(raw         )          {
 
 /** What the page says while the browser keeps nothing. */
 const UNSAVED_NOTICE =
-  'Dieser Browser speichert die Ergebnisse nicht (z. B. ein privates Fenster oder gesperrter Speicher). Sie gehen verloren, wenn die Seite neu lädt oder schließt: bitte vorher „Bericht senden“.';
+  'Dieser Browser speichert die Ergebnisse nicht (z. B. gesperrte Websitedaten). Sie gehen verloren, wenn die Seite neu lädt oder schließt: bitte vorher „Bericht senden“.';
 
 /** A question the page asks before it acts. */
                
@@ -1006,7 +1006,10 @@ const UNSAVED_NOTICE =
                        
                       
                                                     
-                                                                                                         
+     
+                                                                                                     
+                                                                          
+     
                     
                    
               
@@ -1197,21 +1200,25 @@ function stepChoice(id        , steps                   , run         )         
 
 /**
  * A result of an earlier build: shown as it was given, never changed here. Unsent, it waits for
- * „Bericht senden“; sent (or one that cannot go out), the test starts anew for the running build.
+ * „Bericht senden“; sent (or one that never goes out: a local test), the test starts anew for the
+ * running build.
  */
 function olderResult(id        , entry          )         {
   const build = `der Fassung ${entry.build?.version ?? ''} (Stand ${entry.build?.stand ?? ''})`;
   const steps = (entry.steps ?? []).map((s) => `Schritt ${s.nr}: ${REASONS[s.grund] ?? s.grund}`);
   const given = `Ergebnis ${build}: ${entry.result === undefined ? '' : OUTCOME_LABELS[entry.result]}${steps.length > 0 ? ` – ${steps.join(', ')}` : ''}.`;
   const stuck = entry.result === 'nicht bestanden' && steps.length === 0;
-  const note = entry.reported !== undefined
-    ? 'Es ist gesendet. Für die laufende Fassung bitte neu prüfen.'
-    : stuck
-      ? 'Es nennt keinen Schritt und lässt sich nicht mehr senden. Bitte zurücknehmen und für die laufende Fassung neu prüfen.'
-      : 'Es ist noch nicht gesendet: Bitte zuerst „Bericht senden“, danach den Test für die laufende Fassung neu prüfen.';
+  const local = !REPORT_ID.test(id);
+  const note = local
+    ? 'Lokale Tests gehen in keinen Bericht. Für die laufende Fassung bitte neu prüfen.'
+    : entry.reported !== undefined
+      ? 'Es ist gesendet. Für die laufende Fassung bitte neu prüfen.'
+      : stuck
+        ? 'Es nennt keinen Schritt und lässt sich nicht mehr senden. Bitte zurücknehmen und für die laufende Fassung neu prüfen.'
+        : 'Es ist noch nicht gesendet: Bitte zuerst „Bericht senden“, danach den Test für die laufende Fassung neu prüfen.';
   return [
     `<p class="tr-meldung tr-fehler">${esc(`${given} ${note}`)}</p>`,
-    entry.reported !== undefined
+    local || entry.reported !== undefined
       ? button('Für die laufende Fassung neu prüfen', 'zuruecknehmen', { 'data-id': id, 'data-fokus': 'neu-pruefen' })
       : button('Ergebnis zurücknehmen', 'zuruecknehmen', { 'data-id': id, 'data-fokus': 'zuruecknehmen' }),
   ].join('');
@@ -1468,12 +1475,13 @@ export function starteTestrahmen(ziel             , anbindung           , option
   let ansageText = '';
   /**
    * Says `text` through the live region; emptied first, so the same text is said again. A text still
-   * waiting is said with it (a message and the storage notice of the same change), not dropped.
+   * waiting is said with it once (a message and the storage notice of the same change), not dropped.
    */
   const announce = (text        ) => {
     ansage.textContent = '';
     if (ansageTimer !== undefined) win.clearTimeout(ansageTimer);
-    ansageText = ansageText === '' || ansageText.includes(text) ? (ansageText || text) : `${ansageText} ${text}`;
+    // The longer of the two wins when one holds the other, so nothing is said twice.
+    ansageText = text.includes(ansageText) ? text : ansageText.includes(text) ? ansageText : `${ansageText} ${text}`;
     ansageTimer = win.setTimeout(() => {
       ansage.textContent = ansageText;
       ansageText = '';
@@ -1481,11 +1489,14 @@ export function starteTestrahmen(ziel             , anbindung           , option
     }, 60);
   };
 
-  /** `open`: the test to store as open; a tab that only passes its clock on keeps the stored one. */
-  const save = (open = state.open) => {
+  /**
+   * `keep`: the test to store as open, also none; a tab that only passes its clock on keeps the stored
+   * one (an object, since a plain `undefined` argument would take the default: this tab's open test).
+   */
+  const save = (keep                               ) => {
     if (!store) return;
     try {
-      store.setItem(key, JSON.stringify({ run: state.run, open, hideDone: state.hideDone }));
+      store.setItem(key, JSON.stringify({ run: state.run, open: keep ? keep.open : state.open, hideDone: state.hideDone }));
       if (state.unsaved) state = { ...state, unsaved: false };
     } catch {
       // A full or blocked storage: the page goes on, the results stay for this visit, and it says so.
@@ -1700,7 +1711,7 @@ export function starteTestrahmen(ziel             , anbindung           , option
     state = { ...state, run, hideDone: saved.hideDone };
     if (ahead && state.open !== undefined) {
       state = { ...state, run: checkpoint(state.run, state.open, now()) };
-      save(saved.open);
+      save({ open: saved.open });
     }
   };
   const onStorage = (event              ) => {

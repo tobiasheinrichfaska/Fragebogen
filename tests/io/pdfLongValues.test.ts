@@ -11,7 +11,21 @@ import { buildStartPoint, parseStartPoint, type StartPoint } from '../../src/log
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { keepForPdfa } from '../support/pdfaOut';
 import { completeSofortmeldung, sofortmeldung } from '../support/sofortmeldungSession';
-import { beispielForm, newVersion, note, QUESTIONNAIRE_ID } from '../support/sample';
+import beispiel from '../fixtures/forms/beispiel/1.0.0.json';
+import { createQuestionnaire, sealPart, startPart } from '../../src/logic/questionnaire';
+import type { RegisteredForm } from '../../src/logic/formRegistry';
+import {
+  fill,
+  guardianForm,
+  minorWithGuardian,
+  NONCE_PERSON_V2,
+  note,
+  ok,
+  PERSON_VALUES,
+  personSealInput,
+  QUESTIONNAIRE_ID,
+  withEmployer,
+} from '../support/sample';
 
 const font = (name: string) =>
   new Uint8Array(readFileSync(new URL(`../../assets/fonts/${name}`, import.meta.url)));
@@ -253,45 +267,86 @@ describe('where a value goes on over the next page', () => {
   // Audit 2026-11-16, round 5: a drawn signature with its system note and hash takes about 140 pt,
   // only 110 were kept free, so its head or its note ended up alone. The Kanzlei name in the header
   // moves the signature lines down line by line.
-  it('keeps every signature line with its picture, note and hash on one page', async () => {
-    const session = completeSofortmeldung();
-    const torn: string[] = [];
-    for (let lines = 0; lines <= 70; lines++) {
-      const written = await writeQuestionnairePdf(
-        {
-          questionnaire: session.questionnaire,
-          form: sofortmeldung,
-          origin: 'published',
-          config: { kanzleiName: Array.from({ length: lines + 1 }, () => 'Kanzlei').join('\n') },
-          created: CREATED,
-        },
-        FONTS,
-      );
-      const found = await pieces(written.bytes);
-      // The signature lines, before the Prüfblatt (its hashes are no signature's).
-      const check = found.find((piece) => piece.text.startsWith('Prüfblatt'))?.page ?? Infinity;
-      const before = found.filter((piece) => piece.page < check);
-      const heads = before.filter((piece) => /^\[\d+\] /.test(piece.text));
-      const hashes = before.filter((piece) => /^SHA-256( |$)/.test(piece.text));
-      expect(heads.length, `${lines} lines`).toBeGreaterThan(0);
-      heads.forEach((head, i) => {
-        if (hashes[i]?.page !== head.page) torn.push(`${lines} lines: ${head.text.slice(0, 30)}`);
-      });
-    }
-    expect(torn).toEqual([]);
-  }, 300_000);
+  // Loop 6: also the heading with the first block, and a second drawn block (the guardian's) —
+  // in the Sofortmeldung the drawn block is the first, so the heading's rule hid the block's own.
+  it.each([
+    ['the Sofortmeldung', () => completeSofortmeldung().questionnaire, sofortmeldung],
+    ['a minor and the guardian, both drawn', minorWithGuardian, guardianForm()],
+  ] as const)(
+    'keeps every signature line with its picture, note and hash on one page: %s',
+    async (_label, questionnaireOf, form) => {
+      const questionnaire = questionnaireOf();
+      const torn: string[] = [];
+      for (let lines = 0; lines <= 70; lines++) {
+        const written = await writeQuestionnairePdf(
+          {
+            questionnaire,
+            form,
+            origin: 'published',
+            config: { kanzleiName: Array.from({ length: lines + 1 }, () => 'Kanzlei').join('\n') },
+            created: CREATED,
+          },
+          FONTS,
+        );
+        const found = await pieces(written.bytes);
+        // The signature lines, before the Prüfblatt (its hashes are no signature's).
+        const check = found.find((piece) => piece.text.startsWith('Prüfblatt'))?.page ?? Infinity;
+        const before = found.filter((piece) => piece.page < check);
+        const heads = before.filter((piece) => /^\[\d+\] /.test(piece.text));
+        const hashes = before.filter((piece) => /^SHA-256( |$)/.test(piece.text));
+        const heading = before.find((piece) => piece.text === 'Unterschriften und Abschlüsse');
+        expect(heads.length, `${lines} lines`).toBeGreaterThan(1);
+        if (heading?.page !== heads[0]?.page) torn.push(`${lines} lines: heading alone`);
+        heads.forEach((head, i) => {
+          if (hashes[i]?.page !== head.page) torn.push(`${lines} lines: ${head.text.slice(0, 30)}`);
+        });
+      }
+      expect(torn).toEqual([]);
+    },
+    300_000,
+  );
 
   // Audit 2026-11-16, round 5: the room kept under „Abweichende Unterschriftsdaten“ for its first
-  // footnote was in no test — without it the heading could end a page alone.
-  it('keeps „Abweichende Unterschriftsdaten“ with its first footnote', async () => {
-    const questionnaire = newVersion();
-    const alone: string[] = [];
-    let seen = 0;
+  // footnote was in no test. Loop 6: the whole footnote stays with it, not only its first line — a
+  // long role label makes the footnote four lines, so the sweep cannot step over the break.
+  it('keeps „Abweichende Unterschriftsdaten“ with its whole first footnote', async () => {
+    const raw = structuredClone(beispiel) as { roles: { id: string; label: string }[] };
+    const person = raw.roles.find((role) => role.id === 'person');
+    if (person)
+      person.label = `Beschäftigte Person ${'mit einer sehr langen Bezeichnung '.repeat(6)}`.trim();
+    const form: RegisteredForm = registeredFrom(raw);
+    let q = createQuestionnaire(QUESTIONNAIRE_ID, form);
+    q = ok(startPart(q, form, 'person'));
+    q = fill(q, 'person', PERSON_VALUES, form);
+    q = ok(
+      sealPart(
+        q,
+        form,
+        'person',
+        personSealInput({ signature: { method: 'typed', name: 'Erika Musterfrau' } }),
+      ),
+    );
+    q = withEmployer(q, form);
+    q = ok(startPart(q, form, 'person'));
+    q = fill(q, 'person', { bemerkungen: 'Korrigierte Bemerkung' }, form);
+    const questionnaire = ok(
+      sealPart(
+        q,
+        form,
+        'person',
+        personSealInput({
+          nonce: NONCE_PERSON_V2,
+          systemNote: note('2026-10-31T11:00:00.000+01:00', '2026-10-31T10:00:00.000Z', ['touch']),
+        }),
+      ),
+    );
+    const torn: string[] = [];
+    let crossed = false;
     for (let lines = 0; lines <= 70; lines++) {
       const written = await writeQuestionnairePdf(
         {
           questionnaire,
-          form: beispielForm(),
+          form,
           origin: 'published',
           config: { kanzleiName: Array.from({ length: lines + 1 }, () => 'Kanzlei').join('\n') },
           created: CREATED,
@@ -299,15 +354,18 @@ describe('where a value goes on over the next page', () => {
         FONTS,
       );
       const found = await pieces(written.bytes);
-      const heading = found.find((piece) => piece.text === 'Abweichende Unterschriftsdaten');
-      const first = found.find((piece) => /^\[\d+\] Wert geändert/.test(piece.text));
-      expect(heading, `${lines} lines`).toBeDefined();
-      expect(first, `${lines} lines`).toBeDefined();
-      if (heading?.page !== first?.page) alone.push(`${lines} lines`);
-      seen = Math.max(seen, heading?.page ?? 0);
+      const start = found.findIndex((piece) => piece.text === 'Abweichende Unterschriftsdaten');
+      const end = found.findIndex(
+        (piece, i) => i > start && /Unterschriftszeile \d+\.$/.test(piece.text),
+      );
+      expect(start, `${lines} lines`).toBeGreaterThanOrEqual(0);
+      expect(end - start, `${lines} lines: a footnote of several lines`).toBeGreaterThan(2);
+      const pages = new Set(found.slice(start, end + 1).map((piece) => piece.page));
+      if (pages.size > 1) torn.push(`${lines} lines`);
+      if ((found[start]?.page ?? 0) > 1) crossed = true;
     }
     // The sweep moved the heading over a page break at least once.
-    expect(seen).toBeGreaterThan(1);
-    expect(alone).toEqual([]);
+    expect(crossed).toBe(true);
+    expect(torn).toEqual([]);
   }, 300_000);
 });
