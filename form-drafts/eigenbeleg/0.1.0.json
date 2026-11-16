@@ -1,7 +1,7 @@
 {
   "id": "eigenbeleg",
   "version": "0.1.0",
-  "revised": "2026-11-16T01:32",
+  "revised": "2026-11-16T01:57",
   "title": "Eigenbeleg: Ausgabe ohne Originalbeleg, Bewirtungsbeleg, Entnahme, Einlage oder Geldtransit",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für Eigenbelege schreibt das Gesetz keine Form vor; nur die Angaben zu einer Bewirtung verlangt es schriftlich (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 2 EStG). Fehlt ein fremder Beleg, ist ein eigener zu erstellen (GoBD Rz. 61); er darf elektronisch entstehen. Die Angaben zu einer Bewirtung erkennt die Finanzverwaltung elektronisch an, wenn sie zeitnah erfasst und elektronisch unterschrieben oder genehmigt werden, die Zeitpunkte von Erstellung und Unterschrift aufgezeichnet sind, die Angaben nicht undokumentiert geändert werden können und der Beleg nach den GoBD mit Verfahrensdokumentation elektronisch aufbewahrt wird – bei einer Gaststätte zusammen mit deren Rechnung (BMF-Schreiben vom 19.11.2025 Rn. 19, 20, 22). Die Aufbewahrung und die Verfahrensdokumentation leistet der Betrieb, nicht diese App. Die App versiegelt die Angaben mit Zeitpunkt und Prüfsumme; eine einfache elektronische Signatur – gezeichnet oder als getippter Name – genügt (Art. 3 Nr. 10 eIDAS-Verordnung).",
@@ -307,11 +307,11 @@
           "role": "aussteller",
           "type": "choice",
           "label": "Hinweis zur Bewirtung",
-          "question": "Wichtig bei einer Bewirtung: Ohne die Rechnung der Gaststätte ist die Ausgabe nicht abziehbar.",
-          "help": "Für ein Essen oder Getränke mit Gästen in einem Restaurant, Café oder einer anderen Gaststätte verlangt das Gesetz deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 EStG). Sie muss maschinell erstellt und registriert sein; eine handschriftliche Quittung genügt nicht (R 4.10 Abs. 8 EStR). Nutzt die Gaststätte eine elektronische Kasse, muss die Rechnung aus dieser Kasse kommen und über deren zertifizierte technische Sicherheitseinrichtung (TSE) abgesichert sein – auf Papier oder digital. Ein selbst erstellter Beleg wie dieser ersetzt sie nicht – ohne sie ist die Ausgabe vollständig vom Abzug ausgeschlossen. Bitten Sie die Gaststätte deshalb zuerst um eine Zweitschrift der Rechnung. Eine Bewirtung in Ihrer eigenen Wohnung ist in der Regel privat und keine Betriebsausgabe. Sie können den Eigenbeleg trotzdem ausstellen; Ihre Kanzlei prüft ihn.",
+          "question": "Wichtig bei einer Bewirtung in einer Gaststätte: Ohne deren Rechnung ist die Ausgabe nicht abziehbar.",
+          "help": "Für ein Essen oder Getränke mit Gästen in einem Restaurant, Café oder einer anderen Gaststätte verlangt das Gesetz deren Rechnung (§ 4 Abs. 5 Satz 1 Nr. 2 EStG). Sie muss maschinell erstellt und registriert sein; eine handschriftliche Quittung genügt nicht (R 4.10 Abs. 8 EStR); Erleichterungen gelten nur für Gaststätten im Ausland. Nutzt die Gaststätte eine elektronische Kasse, muss die Rechnung aus dieser Kasse kommen und über deren zertifizierte technische Sicherheitseinrichtung (TSE) abgesichert sein – auf Papier oder digital. Ein selbst erstellter Beleg wie dieser ersetzt sie nicht – ohne sie ist die Ausgabe vollständig vom Abzug ausgeschlossen. Bitten Sie die Gaststätte deshalb zuerst um eine Zweitschrift der Rechnung. Eine Bewirtung in Ihrer eigenen Wohnung ist in der Regel privat und keine Betriebsausgabe. Sie können den Eigenbeleg trotzdem ausstellen; Ihre Kanzlei prüft ihn.",
           "required": true,
           "showIf": { "field": "artAusgabe", "equals": "bewirtung" },
-          "because": "Nur bei einer Bewirtung: Ohne die maschinell erstellte Rechnung der Gaststätte – bei einer elektronischen Kasse elektronisch aufgezeichnet und mit TSE abgesichert – ist die Ausgabe vollständig vom Abzug ausgeschlossen (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; R 4.10 Abs. 8 EStR; BMF-Schreiben vom 19.11.2025 Rn. 13), eine Bewirtung in der eigenen Wohnung ist in der Regel privat (R 4.10 Abs. 6 Satz 8 EStR).",
+          "because": "Nur bei einer Bewirtung: In einer Gaststätte ist die Ausgabe ohne deren maschinell erstellte Rechnung – bei einer elektronischen Kasse elektronisch aufgezeichnet und mit TSE abgesichert – vollständig vom Abzug ausgeschlossen (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; R 4.10 Abs. 8 EStR; BMF-Schreiben vom 19.11.2025 Rn. 13), eine Bewirtung in der eigenen Wohnung ist in der Regel privat (R 4.10 Abs. 6 Satz 8 EStR).",
           "purpose": "Nachweis, dass die ausstellende Person auf die Folgen hingewiesen wurde",
           "options": [{ "id": "verstanden", "label": "Verstanden" }]
         },
@@ -865,7 +865,7 @@
       "id": "bewirtungsbelegRechnung",
       "role": "aussteller",
       "title": "Die Rechnung der Gaststätte gehört dazu",
-      "text": "Ein Bewirtungsbeleg ergänzt die Rechnung der Gaststätte; er ersetzt sie nicht. Sie muss maschinell erstellt sein (R 4.10 Abs. 8 EStR). Nutzt die Gaststätte eine elektronische Kasse, muss die Rechnung aus dieser Kasse kommen und über deren zertifizierte technische Sicherheitseinrichtung (TSE) abgesichert sein – auf Papier oder digital (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; BMF-Schreiben vom 19.11.2025 Rn. 13). Fiel die TSE aus, sollte die Rechnung das erkennen lassen. Wurde erst nach der Bewirtung abgerechnet und unbar bezahlt, etwa bei einer geschlossenen Veranstaltung, gehört der Zahlungsbeleg zur Rechnung. Für Gaststätten im Ausland gelten Erleichterungen. Bewahren Sie Rechnung und Beleg zusammen auf und geben Sie die Rechnung mit der PDF dieses Belegs ab; dieser Fragebogen kann keine Dateien anhängen.",
+      "text": "Ein Bewirtungsbeleg ergänzt die Rechnung der Gaststätte; er ersetzt sie nicht. Sie muss maschinell erstellt und registriert sein (R 4.10 Abs. 8 EStR). Nutzt die Gaststätte eine elektronische Kasse, muss die Rechnung aus dieser Kasse kommen und über deren zertifizierte technische Sicherheitseinrichtung (TSE) abgesichert sein – auf Papier oder digital (§ 4 Abs. 5 Satz 1 Nr. 2 Satz 3 EStG; BMF-Schreiben vom 19.11.2025 Rn. 13). Fiel die TSE aus, sollte die Rechnung das erkennen lassen. Wurde erst nach der Bewirtung abgerechnet und unbar bezahlt, etwa bei einer geschlossenen Veranstaltung, gehört der Zahlungsbeleg zur Rechnung. Für Gaststätten im Ausland gelten Erleichterungen. Bewahren Sie Rechnung und Beleg zusammen auf und geben Sie die Rechnung mit der PDF dieses Belegs ab; dieser Fragebogen kann keine Dateien anhängen.",
       "asOf": "2026-11-15",
       "acknowledgement": "read",
       "showIf": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
@@ -1025,8 +1025,8 @@
     {
       "id": "bewirtungsbeleg",
       "when": { "field": "vorgangsart", "equals": "bewirtungsbeleg" },
-      "message": "Bewirtungsbeleg zur Rechnung der Gaststätte: die Rechnung prüfen (bei einer elektronischen Kasse maschinell erstellt und mit TSE abgesichert; anders bei einem Ausfall der TSE, bei späterer unbarer Abrechnung mit Zahlungsbeleg und im Ausland) und mit diesem Beleg zusammen aufbewahren, beide mit Verweis aufeinander (Rechnungsnummer); 70 % der angemessenen Aufwendungen als Betriebsausgabe, gesondert aufzeichnen.",
-      "source": "§ 4 Abs. 5 Satz 1 Nr. 2, Abs. 7 EStG; BMF-Schreiben vom 19.11.2025 Rn. 13, 20, 22"
+      "message": "Bewirtungsbeleg zur Rechnung der Gaststätte: die Rechnung prüfen (maschinell erstellt und registriert, bei einer elektronischen Kasse auch elektronisch aufgezeichnet und mit TSE abgesichert; anders bei einem Ausfall der TSE, bei späterer unbarer Abrechnung mit Zahlungsbeleg und im Ausland) und mit diesem Beleg zusammen aufbewahren, beide mit Verweis aufeinander (Rechnungsnummer); 70 % der angemessenen Aufwendungen als Betriebsausgabe, gesondert aufzeichnen.",
+      "source": "§ 4 Abs. 5 Satz 1 Nr. 2, Abs. 7 EStG; R 4.10 Abs. 8 EStR; BMF-Schreiben vom 19.11.2025 Rn. 13, 20, 22"
     },
     {
       "id": "bewirtungsbelegPrivat",

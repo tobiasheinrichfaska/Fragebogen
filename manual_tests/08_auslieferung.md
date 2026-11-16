@@ -36,7 +36,8 @@
 
 ## MT-82: Hochladen über Freigabe
 
-**Testbereich:** nein – nur Tobias, im privaten Repo Freigabe auf GitHub.
+**Testbereich:** nein – nur Tobias: die Schritte 1 und 11 im privaten Repo Freigabe auf GitHub, die
+Schritte 2 bis 10 in der Testzone, die übrigen in einem privaten Fenster.
 
 **Voraussetzungen:** Ein Merge auf `main` dieses Repos, dessen Check „Tests“ grün ist, und ein
 Testerzugang für die Testzone. Seit dem 15.11.2026 lädt nur noch Freigabe hoch (GitHub Actions); den
@@ -53,38 +54,42 @@ unten prüfen das bei jedem Ausrollen.
      offensichtlich:_ Nach dem Ausrollen prüft der Lauf selbst, dass die Testzone ohne Anmeldung mit
      401 antwortet.
 2. Die Testzone angemeldet öffnen und die geänderte Stelle ansehen.
-   - **Danach:** Die Testzone zeigt den neuen Stand. _Nicht offensichtlich:_ Die Testzone hebt
-     nichts im Browser auf (`Cache-Control: private, no-store`); Neuladen holt immer den Stand vom
-     Server.
+   - **Danach:** Die Testzone zeigt den neuen Stand. _Nicht offensichtlich:_ Solange das Gerät
+     online ist, lässt der Service Worker jede Anfrage durch, und das CDN hebt nichts auf; Neuladen
+     holt den Stand vom Server. Der Browser hebt aber eine Kopie der App für den Start ohne Netz
+     auf, dazu die Ergebnisse der Testseite und den gemerkten Zugangshinweis.
 3. Auf der Testseite oben **„App vollständig zurücksetzen“** klicken.
    - **Danach:** Die Rückfrage „App vollständig zurücksetzen?“.
 4. **„Zurücksetzen“** klicken.
    - **Danach:** Die App zeigt „Bitte bestätigen“ mit dem Zugangshinweis der Kanzlei. Darunter
      stehen „Impressum“ und „Datenschutz“. _Nicht offensichtlich:_ Fehlt eins davon, hat Freigabe
      ohne die privaten Dateien gebaut – bitte melden.
-5. Den Zugangshinweis und „Antwort für die Zukunft merken“ ankreuzen.
-6. **„Weiter“** klicken.
+5. Den Zugangshinweis ankreuzen.
+6. „Antwort für die Zukunft merken“ ankreuzen.
+7. **„Weiter“** klicken.
    - **Danach:** Die Startseite der App. Unten stehen „Impressum“, „Datenschutz“ und „Tester
      einladen“.
-7. Auf der Testseite auf
+8. Auf der Testseite auf
    [Kanzlei mit vollständigem Personalfragebogen öffnen](start:kanzlei-personalfragebogen-vollstaendig)
    klicken.
    - **Danach:** Die Rückfrage „Vorbereiteten Stand laden?“.
-8. **„Laden“** klicken.
+9. **„Laden“** klicken.
    - **Danach:** Die App zeigt die Kanzlei-Station mit einem eingelesenen Personalfragebogen.
-9. In der Kanzlei-Station nach unten scrollen.
-   - **Danach:** Der Abschnitt „Übergabe an DATEV Lohn und Gehalt“ steht da. _Nicht offensichtlich:_
-     Fehlt er, wurde ohne die Zuordnung aus `Fragebogen-privat` gebaut – bitte melden.
-10. Nur wenn die öffentliche App den Stand bekommen soll: in Freigabe den Lauf für die öffentliche
+10. In der Kanzlei-Station nach unten scrollen.
+    - **Danach:** Der Abschnitt „Übergabe an DATEV Lohn und Gehalt“ steht da. _Nicht
+      offensichtlich:_ Fehlt er, wurde ohne die Zuordnung aus `Fragebogen-privat` gebaut – bitte
+      melden.
+11. Nur wenn die öffentliche App den Stand bekommen soll: in Freigabe den Lauf für die öffentliche
     App des Fragebogens von Hand starten.
     - **Danach:** Der Lauf ist grün.
-11. Die öffentliche Adresse in einem privaten Fenster öffnen.
+12. Die öffentliche Adresse in einem privaten Fenster öffnen.
     - **Danach:** Der neue Stand erscheint sofort, ohne dass jemand den Zwischenspeicher des CDN
       leeren muss. Die App zeigt „Bitte bestätigen“ mit dem Zugangshinweis; darunter stehen
       „Impressum“ und „Datenschutz“. Fehlt eins davon: bitte melden.
-12. Den Zugangshinweis ankreuzen und **„Weiter“** klicken.
+13. Den Zugangshinweis ankreuzen.
+14. **„Weiter“** klicken.
     - **Danach:** Die Startseite der App; unten der Link „Testbereich (für Tester)“.
-13. **„Testbereich (für Tester)“** klicken.
+15. **„Testbereich (für Tester)“** klicken.
     - **Danach:** Der Browser fragt nach Benutzername und Passwort der Testzone. Eine Fehlerseite
       (404) ist ein Fehler: bitte melden. _Nicht offensichtlich:_ Die Live-Datei vom 15.11.2026
       führt noch auf `…/test/` und damit auf eine Fehlerseite; erst eine Live-Fassung mit der neuen

@@ -490,7 +490,18 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     expect(help).toContain('maschinell erstellt und registriert');
     expect(help).toContain('R 4.10 Abs. 8 EStR');
     expect(help).not.toContain('genügt dann nicht');
-    expect(block?.text).toContain('Sie muss maschinell erstellt sein');
+    expect(block?.text).toContain('Sie muss maschinell erstellt und registriert sein');
+    // Audit 2026-11-16, round 3: the Kanzlei's hint says the same, and the question speaks of a
+    // restaurant only (a meal in the firm needs no restaurant bill).
+    const kanzlei = form.definition.checkHints?.find((h) => h.id === 'bewirtungsbeleg');
+    expect(kanzlei?.message).toContain(
+      'maschinell erstellt und registriert, bei einer elektronischen Kasse',
+    );
+    expect(kanzlei?.source).toContain('R 4.10 Abs. 8 EStR');
+    expect(help).toContain('Gaststätten im Ausland');
+    expect(fields.find((f) => f.id === 'bewirtungHinweis')?.question).toContain(
+      'Bewirtung in einer Gaststätte',
+    );
     for (const id of ['bewirtungGaststaette', 'bewirtungsbeleg']) {
       expect(form.definition.checkHints?.find((h) => h.id === id)?.message, id).toMatch(
         /elektronischen? Kasse/,

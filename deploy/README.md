@@ -53,10 +53,12 @@ Cloud-Sitzung gehängt; Cloud-Sitzungen laden nichts hoch.
   ausdrückliches OK.
 - Die Live-Zone sendet `Cache-Control: max-age=0`: Eine neue Fassung ist sofort da, niemand muss den
   Zwischenspeicher des CDN leeren.
-- **Nicht dokumentiert** (weder hier noch in Testumgebung): welchen Build-Befehl Freigabe benutzt,
-  ob es dabei die privaten Dateien aus `Fragebogen-privat` (`config/kanzlei.local.json`,
-  `config/export.local.json`) einspielt und ob es `deploy/upload.json` anwendet. Die Tabelle oben
-  sagt, was online liegen soll, nicht, wie Freigabe es baut.
+- **Nicht festgehalten, was Freigabe tatsächlich baut:** Sein Auftrag in Testumgebung
+  (`docs/freigabe-auftrag.md`) verlangt für die Testzone nur „im Build-Modus der Testfassung, so wie
+  das Hochladen heute baut“ – beim Fragebogen `npm run build:test`. Er nennt keine privaten Dateien
+  aus `Fragebogen-privat` (`config/kanzlei.local.json`, `config/export.local.json`), keinen Befehl
+  für die öffentliche App und nichts zu `deploy/upload.json`. Die Tabelle oben sagt, was online
+  liegen soll, nicht, wie Freigabe es baut.
 - **Ohne die privaten Dateien baut `vite.config.ts` still neutral:** Es nimmt dann
   `config/kanzlei.example.json` und keine Zuordnung, ohne Warnung. Der App fehlen dann der
   Zugangshinweis, Impressum und Datenschutz, die Farben der Kanzlei, die Links „Wo finde ich das?“,
