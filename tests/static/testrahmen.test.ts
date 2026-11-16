@@ -5,7 +5,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-// @ts-expect-error -- a plain JavaScript module of the copy, without its own types
 import { pruefeKopie } from '../../testrahmen/pruefen.mjs';
 import { bindingProblems } from '../../testrahmen/testrahmen.js';
 import { REPORT_APP } from '../../src/ui/testbereich/report';

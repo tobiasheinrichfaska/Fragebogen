@@ -1,5 +1,5 @@
 // GENERATED from Testumgebung (testrahmen/) by `npm run rahmen` — do not edit here: change it
-// there and copy it again. Stand 76382af. Checked by pruefen.mjs against testrahmen.json.
+// there and copy it again. Stand 61c19c6. Checked by pruefen.mjs against testrahmen.json.
 // Test reports without free text (Tobias 2026-11-15, docs/testbericht.md). Pure and import-free:
 // the build puts it into every script ahead of logik.ts, which answers the routes
 // (`POST /_zugang/bericht`, `/_zugang/berichte`).
@@ -98,7 +98,7 @@ function checkSteps(raw         , where        )                                
     if (extra) return { message: extra };
     if (!isWhole(entry.nr, 1, 99)) return { message: `${at}nr muss eine ganze Zahl von 1 bis 99 sein.` };
     if (seen.has(entry.nr)) return { message: `${at}Schritt ${entry.nr} kommt doppelt vor.` };
-    if (typeof entry.grund !== 'string' || !Object.hasOwn(REASONS, entry.grund)) {
+    if (typeof entry.grund !== 'string' || !Object.prototype.hasOwnProperty.call(REASONS, entry.grund)) {
       return { message: `${at}grund muss einer von ${Object.keys(REASONS).join(', ')} sein.` };
     }
     seen.add(entry.nr);
@@ -210,7 +210,8 @@ function storedReportText(report        , tester        , seconds        , devic
     geraet: { browser: device.browser, system: device.system },
     tests: report.tests,
   };
-  return `${JSON.stringify(stored, null, 2)}\n`;
+  // Compact: a stored report is about as large as the one sent (at most 64 KB), not 2.6 times.
+  return `${JSON.stringify(stored)}\n`;
 }
 
 /** A stored report, checked again as strictly as on the way in; undefined for anything broken. */
@@ -238,7 +239,7 @@ function parseStoredReport(text                    , app        )               
                     
                          
                         
-                                    
+                                    
                                          
  
 
@@ -295,7 +296,7 @@ function summarize(reports                         )                   {
                                    
 
                     
-                                                                                          
+                                                                                          
                 
                   
  
@@ -307,7 +308,7 @@ function summarize(reports                         )                   {
  
 
                           
-                                                                             
+                                                                             
                
                  
                                                      
@@ -432,10 +433,13 @@ function parseManualTests(markdown        , source        )                 {
   const intro           = [];
   const cases                                                   = [];
   let inIntro = false;
+  // Another level-2 heading after the cases ends the last case: its text is no part of a test.
+  let inCase = false;
   for (const line of lines) {
     const start = CASE.exec(line);
     if (start) {
       cases.push({ id: start[1] ?? '', title: start[2]?.trim() ?? '', lines: [] });
+      inCase = true;
       continue;
     }
     if (line === heading) {
@@ -446,8 +450,11 @@ function parseManualTests(markdown        , source        )                 {
       inIntro = false;
       continue;
     }
-    if (line.startsWith('## ')) continue;
-    const current = cases[cases.length - 1];
+    if (line.startsWith('## ')) {
+      inCase = false;
+      continue;
+    }
+    const current = inCase ? cases[cases.length - 1] : undefined;
     if (current) current.lines.push(line);
     else if (inIntro) intro.push(line);
   }
@@ -462,7 +469,7 @@ function parseManualTests(markdown        , source        )                 {
 /** A test with the area of its file, as the page lists it. */
                                                 
                
-                                                                                                 
+                                                                                                 
                   
  
 
@@ -502,10 +509,15 @@ function catalogueOf(files                                            )         
                                                                        
                                                 
 
+/** The ids a start link can name: lower-case letters, digits and single hyphens. */
+const START_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const START_LINK = /^start:([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const REF = /\b((?:MT|L)-\d{2,3}(?:-\d{2})?[a-z]?)\b/g;
+// No lookbehind (Safari before 16.4 cannot parse it, and the whole page would fail): the character
+// before an _emphasis_ is captured instead and given back as text. Links come before emphasis, so
+// "[_text_](start:x)" stays a link.
 const INLINE =
-  /\*\*(.+?)\*\*|`([^`]+)`|(?<![A-Za-z0-9])_(.+?)_(?![A-Za-z0-9])|\[([^\]]+)\]\(([^)\s]+)\)|<kbd>([^<]+)<\/kbd>/g;
+  /\*\*(.+?)\*\*|`([^`]+)`|\[([^\]]+)\]\(([^)\s]+)\)|(^|[^A-Za-z0-9])_(.+?)_(?![A-Za-z0-9])|<kbd>([^<]+)<\/kbd>/g;
 
 function withRefs(text        )                {
   const tokens                = [];
@@ -527,9 +539,9 @@ function inlineMarkdown(text        )                {
   const tokens                = [];
   let at = 0;
   for (const match of text.matchAll(INLINE)) {
-    const index = match.index;
+    const [, strong, code, linkText, href, lead = '', em, kbd] = match;
+    const index = match.index + (em === undefined ? 0 : lead.length);
     if (index > at) tokens.push(...withRefs(text.slice(at, index)));
-    const [, strong, code, em, linkText, href, kbd] = match;
     if (kbd !== undefined) tokens.push({ kind: 'kbd', text: kbd });
     else if (strong !== undefined) tokens.push({ kind: 'strong', text: strong });
     else if (code !== undefined) tokens.push({ kind: 'code', text: code });
@@ -544,7 +556,7 @@ function inlineMarkdown(text        )                {
             : { kind: 'text', text: linkText.replace(/^`|`$/g, '') },
       );
     }
-    at = index + match[0].length;
+    at = match.index + match[0].length;
   }
   if (at < text.length) tokens.push(...withRefs(text.slice(at)));
   return tokens;
@@ -600,7 +612,7 @@ const OUTCOME_LABELS                                    = {
 const REASON_KEYS                    = Object.keys(REASONS);
 
                       
-                                                            
+                                                            
              
                 
  
@@ -611,13 +623,47 @@ const REASON_KEYS                    = Object.keys(REASONS);
                                                                                     
                     
                    
-                                                                          
+                                                                          
                        
                                                                
                    
                                                                                   
                     
+     
+                                                                                                   
+                                                                             
+     
+                
  
+
+/** Version and commit of a build of the app. */
+                 
+                  
+                
+ 
+
+/** Version and commit in the form a report needs. */
+const isBuild = (b         )             =>
+  typeof b === 'object' && b !== null &&
+  typeof (b         ).version === 'string' && /^\d{1,3}\.\d{1,3}\.\d{1,3}$/.test((b         ).version) &&
+  typeof (b         ).stand === 'string' && /^[0-9a-f]{7,40}$/.test((b         ).stand);
+
+const sameBuild = (a                   , b                   ) => a?.version === b?.version && a?.stand === b?.stand;
+
+/**
+ * The result was given on another build than `running`. It then changes only by `resetTest`: a new
+ * result or step would rewrite what the tester saw on that build (and, unsent, it would be lost).
+ */
+function fromOlderBuild(entry                      , running       )          {
+  return entry?.result !== undefined && isBuild(entry.build) && !sameBuild(entry.build, running);
+}
+
+/** Two entries say the same about a test: the same result, text, build, time and steps. */
+function sameEntry(a                      , b                      )          {
+  if (a === undefined || b === undefined) return a === b;
+  const steps = (e          ) => (e.steps ?? []).map((s) => `${s.nr}:${s.grund}`).join(',');
+  return a.result === b.result && a.version === b.version && a.seconds === b.seconds && sameBuild(a.build, b.build) && steps(a) === steps(b);
+}
 
                    
                                     
@@ -658,7 +704,10 @@ function openTest(run         , id        , now        )          {
   return withEntry(run, id, { ...entry, openedAt: now });
 }
 
-/** The test is left (another test, the overview, the page hidden): its clock pauses. */
+/**
+ * The test is left (another test, the overview, the page closed): its clock pauses. A page that is only
+ * hidden keeps the clock running (`checkpoint`): a test may need another app.
+ */
 function leaveTest(run         , id        , now        )          {
   const entry = run.entries[id];
   if (entry?.openedAt === undefined) return run;
@@ -672,24 +721,56 @@ function leaveTest(run         , id        , now        )          {
  * on — a page closed for good then loses only the time since.
  */
 function checkpoint(run         , id        , now        )          {
-  return run.entries[id]?.openedAt === undefined ? run : openTest(leaveTest(run, id, now), id, now);
+  const entry = run.entries[id];
+  if (entry?.openedAt === undefined) return run;
+  const left = leaveTest(run, id, now);
+  const stored = left.entries[id]            ;
+  // The clock goes on from the whole seconds stored: the part of a second is not lost.
+  const rest = Math.max(0, entry.seconds + Math.max(0, (now - entry.openedAt) / 1000) - stored.seconds);
+  return withEntry(left, id, { ...stored, openedAt: now - rest * 1000 });
 }
 
-/** A result ends the clock. „Bestanden“ drops the failed steps, „nicht bestanden“ keeps them. */
-function setResult(run         , id        , result         , now        , version         )          {
+/**
+ * What another tab's stored copy of a test holds beyond this tab's running clock, in seconds
+ * (negative: this tab measured more). Counted up to the 24 h cap, all a store can hold: two tabs at
+ * the cap are never ahead of each other, so neither keeps storing its clock.
+ */
+function storedBeyond(own          , theirs                      , now        )         {
+  const running = own.openedAt === undefined ? 0 : Math.max(0, (now - own.openedAt) / 1000);
+  return (theirs?.seconds ?? 0) - Math.min(MAX_SECONDS, own.seconds + running);
+}
+
+/**
+ * A result ends the clock. „Bestanden“ drops the failed steps, „nicht bestanden“ keeps them. A result
+ * of an earlier build stays as it is (`fromOlderBuild`).
+ */
+function setResult(run         , id        , result         , now        , version         , build        )          {
   const entry = entryOf(run, id);
+  // A build that does not know its version or commit takes no result: it could never be sent under it.
+  if (build !== undefined && !isBuild(build)) return run;
+  const given = isBuild(build) ? { version: build.version, stand: build.stand } : undefined;
+  if (given && fromOlderBuild(entry, given)) return run;
+  // The same result for the same text on the same build again changes nothing: a sent one is not
+  // sent twice.
+  if (entry.result === result && entry.version === version && sameBuild(entry.build, given)) return run;
   const rest           = { ...unreported(entry), seconds: elapsedSeconds(entry, now) };
   delete rest.openedAt;
   delete rest.version;
-  if (result === 'bestanden') delete rest.steps;
-  return withEntry(run, id, { ...rest, result, ...(version === undefined ? {} : { version }) });
+  delete rest.build;
+  // „Bestanden“ drops the failed steps; so does a rewritten text, whose numbers mean other steps.
+  if (result === 'bestanden' || entry.version !== version) delete rest.steps;
+  return withEntry(run, id, { ...rest, result, ...(version === undefined ? {} : { version }), ...(given ? { build: given } : {}) });
 }
 
-/** A step of a failed test with its reason; `undefined` takes it out again. */
-function setStep(run         , id        , nr        , grund                    )          {
+/**
+ * A step of a failed test with its reason; `undefined` takes it out again. With the running `build`,
+ * a result of an earlier build stays as it is.
+ */
+function setStep(run         , id        , nr        , grund                    , build        )          {
   const entry = run.entries[id];
   if (entry?.result !== 'nicht bestanden' || !Number.isInteger(nr) || nr < 1 || nr > MAX_STEP) return run;
-  if (grund !== undefined && !Object.hasOwn(REASONS, grund)) return run;
+  if (build && fromOlderBuild(entry, build)) return run;
+  if (grund !== undefined && !Object.prototype.hasOwnProperty.call(REASONS, grund)) return run;
   const others = (entry.steps ?? []).filter((step) => step.nr !== nr);
   const steps = (grund === undefined ? others : [...others, { nr, grund }]).sort((a, b) => a.nr - b.nr);
   const rest           = unreported(entry);
@@ -755,14 +836,22 @@ const MAX_REPORT_TESTS = 300;
                 
  
 
+/** One report to send, and the results it carries, to be marked once it arrived. */
+                         
+               
                  
-                                                                                                         
-                                   
+ 
+
+                                                                                          
 
 /**
- * The report to send: every result not sent yet, and every test of the catalogue without a result
- * as „nicht getestet“; results sent before stay out (they were counted). Refused while a failed
- * test names no step, when there is no new result, or when the login script would refuse it.
+ * The reports to send. The first is for the running build: every result given on it and not sent
+ * yet, and every other test of the catalogue as „nicht getestet“ (also a test whose result belongs to
+ * an earlier build). Then one report per earlier build with its unsent results only, also of tests
+ * the running build no longer has; a failed one without a step is left out (it cannot be completed
+ * any more). Results sent before stay out (they were counted). Refused while a failed test of the
+ * running build names no step, when there is no new result, or when the login script would refuse a
+ * report.
  */
 function reportPlan(run         , caseIds                   , build          )             {
   if (!isAppId(build.app)) {
@@ -771,32 +860,57 @@ function reportPlan(run         , caseIds                   , build          )  
   if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(build.version) || !/^[0-9a-f]{7,40}$/.test(build.stand)) {
     return { ok: false, problem: 'Diese Fassung der App kennt ihre Version oder ihren Stand nicht und kann keinen Bericht senden.' };
   }
+  const current        = { version: build.version, stand: build.stand };
   const ids = [...new Set(caseIds)].filter((id) => REPORT_ID.test(id)).slice(0, MAX_REPORT_TESTS);
-  const missing = missingSteps(run).filter((id) => ids.includes(id));
+  const onCurrent = (entry                      ) => entry?.result !== undefined && !fromOlderBuild(entry, current);
+  const missing = missingSteps(run).filter((id) => ids.includes(id) && onCurrent(run.entries[id]));
   if (missing.length > 0) {
-    return { ok: false, problem: `Bei „Nicht bestanden“ fehlt noch der Schritt mit dem Problem: ${missing.join(', ')}.` };
+    return {
+      ok: false,
+      problem: `Bei „Nicht bestanden“ fehlt noch der Schritt mit dem Problem: ${missing.join(', ')}. Bitte einen Schritt wählen oder das Ergebnis zurücknehmen.`,
+    };
   }
-  const tests            = [];
-  const sent           = [];
+  const resultOf = (id        , entry          ) => {
+    const sekunden = Math.min(MAX_SECONDS, entry.seconds);
+    return entry.result === 'bestanden'
+      ? { id, ergebnis: 'bestanden', sekunden }
+      : { id, ergebnis: 'nicht bestanden', sekunden, schritte: (entry.steps ?? []).map((s) => ({ nr: s.nr, grund: s.grund })) };
+  };
+  const currentGroup = { build: current, tests: []             , sent: []             };
   for (const id of ids) {
     const entry = run.entries[id];
-    if (entry?.result === undefined) {
-      tests.push({ id, ergebnis: 'nicht getestet' });
-      continue;
+    if (entry === undefined || !onCurrent(entry)) currentGroup.tests.push({ id, ergebnis: 'nicht getestet' });
+    else if (entry.reported === undefined) {
+      currentGroup.sent.push(id);
+      currentGroup.tests.push(resultOf(id, entry));
     }
-    if (entry.reported !== undefined) continue;
-    sent.push(id);
-    const sekunden = Math.min(MAX_SECONDS, entry.seconds);
-    tests.push(
-      entry.result === 'bestanden'
-        ? { id, ergebnis: 'bestanden', sekunden }
-        : { id, ergebnis: 'nicht bestanden', sekunden, schritte: (entry.steps ?? []).map((s) => ({ nr: s.nr, grund: s.grund })) },
-    );
   }
-  if (sent.length === 0) return { ok: false, problem: 'Es gibt kein neues Ergebnis zu senden.' };
-  const checked = checkReport({ format: 'testbericht/1', app: build.app, version: build.version, stand: build.stand, tests }, build.app);
-  if (!checked.ok) return { ok: false, problem: `Der Bericht passt nicht zum Testbereich: ${checked.message}` };
-  return { ok: true, body: checked.report, sent };
+  // Results of earlier builds, also of tests the running build no longer has: the catalogue's order
+  // first, then the rest by id.
+  const groups = new Map                                                            ();
+  const order = [...ids, ...Object.keys(run.entries).filter((id) => !ids.includes(id)).sort()];
+  for (const id of order) {
+    const entry = run.entries[id];
+    if (entry === undefined || entry.reported !== undefined || !REPORT_ID.test(id) || !fromOlderBuild(entry, current)) continue;
+    // A failed result without a step cannot go out any more; the page asks to take it back.
+    if (entry.result === 'nicht bestanden' && (entry.steps ?? []).length === 0) continue;
+    const older = entry.build         ;
+    const key = `${older.version} ${older.stand}`;
+    const group = groups.get(key) ?? { build: { version: older.version, stand: older.stand }, tests: [], sent: [] };
+    groups.set(key, group);
+    if (group.tests.length >= MAX_REPORT_TESTS) continue;
+    group.sent.push(id);
+    group.tests.push(resultOf(id, entry));
+  }
+  const reports                  = [];
+  for (const group of [currentGroup, ...groups.values()]) {
+    if (group.sent.length === 0) continue;
+    const checked = checkReport({ format: 'testbericht/1', app: build.app, version: group.build.version, stand: group.build.stand, tests: group.tests }, build.app);
+    if (!checked.ok) return { ok: false, problem: `Der Bericht passt nicht zum Testbereich: ${checked.message}` };
+    reports.push({ body: checked.report, sent: group.sent });
+  }
+  if (reports.length === 0) return { ok: false, problem: 'Es gibt kein neues Ergebnis zu senden.' };
+  return { ok: true, reports };
 }
 
 /** The report arrived: its results are marked and leave the next one until they change. */
@@ -812,7 +926,10 @@ function markReported(run         , ids                   , now        )        
 /** What the page says after sending, from the answer of the test area (zugang/src/logik.ts). */
 function sendOutcome(status        , text        )                                     {
   const said = text.replace(/\s+/g, ' ').trim().slice(0, 300);
-  if (status >= 200 && status < 300) return { sent: true, message: said || 'Bericht gespeichert.' };
+  // Only the login script's own answer counts as stored (201 „Bericht gespeichert.“); another 2xx
+  // came from something else and stored nothing.
+  if (status === 201) return { sent: true, message: said || 'Bericht gespeichert.' };
+  if (status >= 200 && status < 300) return { sent: false, message: `Der Testbereich antwortet unerwartet (Antwort ${status}); der Bericht ist nicht gespeichert. Bitte später noch einmal senden.` };
   if (status === 400) return { sent: false, message: `Der Testbereich hat den Bericht abgelehnt${said ? `: ${said}` : '.'}` };
   if (status === 401) return { sent: false, message: 'Bitte im Testbereich anmelden und den Bericht noch einmal senden.' };
   if (status === 404) return { sent: false, message: 'Dieser Testbereich nimmt noch keine Berichte an (Antwort 404).' };
@@ -842,7 +959,7 @@ function decodeRun(raw         )          {
           value.steps
             .filter((s)                               => isRecord(s))
             .filter((s) => typeof s.nr === 'number' && Number.isInteger(s.nr) && s.nr >= 1 && s.nr <= MAX_STEP)
-            .filter((s) => typeof s.grund === 'string' && Object.hasOwn(REASONS, s.grund))
+            .filter((s) => typeof s.grund === 'string' && Object.prototype.hasOwnProperty.call(REASONS, s.grund))
             .map((s) => [s.nr          , s.grund          ]         ),
         )]
           .sort(([a], [b]) => a - b)
@@ -857,6 +974,7 @@ function decodeRun(raw         )          {
       ...(steps.length > 0 ? { steps } : {}),
       ...(result && typeof value.version === 'string' && /^[0-9a-f]{12}$/.test(value.version) ? { version: value.version } : {}),
       ...(result && isMoment(value.reported) ? { reported: value.reported } : {}),
+      ...(result && isBuild(value.build) ? { build: { version: value.build.version, stand: value.build.stand } } : {}),
     };
     if (entry.result !== undefined || entry.seconds > 0) entries[id] = entry;
   }
@@ -866,6 +984,10 @@ function decodeRun(raw         )          {
 // The test page as HTML text from its state (docs/testrahmen.md). Pure: every text is escaped, the
 // markup has no inline script and no inline style (the apps' CSP forbids both), and every control
 // names its action in `data-aktion` for the page's one event listener (seite.ts).
+
+/** What the page says while the browser keeps nothing. */
+const UNSAVED_NOTICE =
+  'Dieser Browser speichert die Ergebnisse nicht (z. B. ein privates Fenster oder gesperrter Speicher). Sie gehen verloren, wenn die Seite neu lädt oder schließt: bitte vorher „Bericht senden“.';
 
 /** A question the page asks before it acts. */
                
@@ -884,6 +1006,8 @@ function decodeRun(raw         )          {
                        
                       
                                                     
+                                                                                                         
+                    
                    
               
  
@@ -892,6 +1016,8 @@ function decodeRun(raw         )          {
                     
                
                   
+                                                                                
+                
                                                         
                                                                                         
                               
@@ -930,7 +1056,7 @@ function inline(text        , ids                     )         {
             ? `<button type="button" class="tr-verweis"${attrs({ 'data-aktion': 'oeffnen', 'data-id': token.id })}>${esc(token.text)}</button>`
             : esc(token.text);
         case 'start':
-          return `<button type="button" class="tr-start"${attrs({ 'data-aktion': 'startpunkt', 'data-id': token.id })}>${esc(token.text)}</button>`;
+          return `<button type="button" class="tr-start"${attrs({ 'data-aktion': 'startpunkt', 'data-id': token.id, 'data-fokus': `start-${token.id}` })}>${esc(token.text)}</button>`;
         default:
           return esc(token.text);
       }
@@ -938,15 +1064,16 @@ function inline(text        , ids                     )         {
     .join('');
 }
 
-function blockHtml(block       , ids                     )         {
+/** `start`: the number of the first item, so an interrupted list of steps counts on like the report. */
+function blockHtml(block       , ids                     , start = 1)         {
   if (block.kind === 'text') return `<p>${inline(block.text, ids)}</p>`;
   if (block.kind === 'code') return `<pre><code>${esc(block.text)}</code></pre>`;
-  const tag = block.ordered ? 'ol' : 'ul';
+  const tag = block.ordered ? `ol${start > 1 ? ` start="${start}"` : ''}` : 'ul';
   const items = block.items.map((item, i) => {
     const notes = (block.notes?.[i] ?? []).map((note) => `<p class="tr-danach"><span>Danach:</span> ${inline(note, ids)}</p>`);
     return `<li>${inline(item, ids)}${notes.join('')}</li>`;
   });
-  return `<${tag}>${items.join('')}</${tag}>`;
+  return `<${tag}>${items.join('')}</${block.ordered ? 'ol' : 'ul'}>`;
 }
 
                                                                    
@@ -965,23 +1092,34 @@ const STATUS_LABELS                                   = {
   'nicht-bestanden': 'nicht bestanden',
 };
 
+/** Done on the running build: a result given on it. One of an earlier build is to be tested again. */
+const doneHere = (entry                      , running                                    )          =>
+  entry?.result !== undefined && !fromOlderBuild(entry, running);
+
 function header(state           , info          )         {
   const ids = state.catalogue.map((c) => c.id);
-  const totals = totalsOf(state.run, ids);
+  const totals = totalsOf(state.run, ids.filter((id) => !fromOlderBuild(state.run.entries[id], info)));
   const summary = `${totals.tested} von ${ids.length} getestet · ${totals.passed} bestanden · ${totals.failed} nicht bestanden`;
   return [
     '<header class="tr-kopf">',
     `<p class="tr-titel">Testbereich · ${esc(info.name)} <span>${esc(info.version)}</span></p>`,
     '<div class="tr-knoepfe">',
-    button('App neu starten', 'frage', { 'data-frage': 'neustart' }),
-    button('App vollständig zurücksetzen', 'frage', { 'data-frage': 'zuruecksetzen' }),
-    button(state.sending ? 'Wird gesendet …' : 'Bericht senden', 'frage', { 'data-frage': 'senden', disabled: state.sending ? 'disabled' : undefined }),
+    button('App neu starten', 'frage', { 'data-frage': 'neustart', 'data-fokus': 'frage-neustart' }),
+    button('App vollständig zurücksetzen', 'frage', { 'data-frage': 'zuruecksetzen', 'data-fokus': 'frage-zuruecksetzen' }),
+    button(state.sending ? 'Wird gesendet …' : 'Bericht senden', 'frage', {
+      'data-frage': 'senden',
+      'data-fokus': 'frage-senden',
+      'aria-disabled': state.sending ? 'true' : undefined,
+    }),
     `<a class="tr-einladen"${attrs({ href: info.inviteHref })}>Tester einladen</a>`,
     '</div>',
     `<p class="tr-stand">${esc(summary)}</p>`,
-    ...info.problems.map((problem) => `<p class="tr-meldung tr-fehler" role="alert">${esc(problem)}</p>`),
+    // No live roles here: the panel is drawn anew on every change, and a live region announces only
+    // what changes while it stands. The page speaks through one region of its own (seite.ts).
+    ...info.problems.map((problem) => `<p class="tr-meldung tr-fehler">${esc(problem)}</p>`),
+    state.unsaved ? `<p class="tr-meldung tr-fehler">${esc(UNSAVED_NOTICE)}</p>` : '',
     state.message
-      ? `<p class="tr-meldung tr-${state.message.kind}" role="status">${esc(state.message.text)}</p>`
+      ? `<p class="tr-meldung tr-${state.message.kind}" data-meldung="">${esc(state.message.text)}</p>`
       : '',
     '</header>',
   ].join('');
@@ -1004,7 +1142,7 @@ function questionHtml(question          , info          )         {
     `<p>${esc(texts.text)}</p>`,
     '<div class="tr-knoepfe">',
     button(texts.yes, 'ja', { class: 'tr-haupt', 'data-fokus': 'ja' }),
-    button('Abbrechen', 'nein'),
+    button('Abbrechen', 'nein', { 'data-fokus': 'nein' }),
     '</div>',
     '</section>',
   ].join('');
@@ -1014,15 +1152,16 @@ function overview(state           , info          )         {
   const areas = new Map                         ();
   for (const c of state.catalogue) areas.set(c.area, [...(areas.get(c.area) ?? []), c]);
   const sections = [...areas].map(([area, cases]) => {
-    const shown = cases.filter((c) => !state.hideDone || state.run.entries[c.id]?.result === undefined);
+    const shown = cases.filter((c) => !state.hideDone || !doneHere(state.run.entries[c.id], info));
     if (shown.length === 0) return '';
     const boxes = shown.map((c) => {
       const status = statusOf(state.run, c.id);
       const changed = changedSince(state.run.entries[c.id], c.version) ? ' · geändert' : '';
+      const older = fromOlderBuild(state.run.entries[c.id], info) ? ` · Fassung ${state.run.entries[c.id]?.build?.version ?? ''}` : '';
       const away = testAreaOf(c).offered ? '' : ' · nicht im Testbereich';
       return (
         `<li><button type="button" class="tr-test tr-${status}"${attrs({ 'data-aktion': 'oeffnen', 'data-id': c.id, 'data-fokus': `test-${c.id}` })}>` +
-        `<span class="tr-id">${esc(c.id)}</span> ${esc(c.title)}<span class="tr-status">${esc(STATUS_LABELS[status] + changed + away)}</span></button></li>`
+        `<span class="tr-id">${esc(c.id)}</span> ${esc(c.title)}<span class="tr-status">${esc(STATUS_LABELS[status] + changed + older + away)}</span></button></li>`
       );
     });
     return `<section class="tr-bereich"><h2>${esc(area)}</h2><ul class="tr-tests">${boxes.join('')}</ul></section>`;
@@ -1030,11 +1169,11 @@ function overview(state           , info          )         {
   const points = info.startpunkte.length === 0
     ? ''
     : `<section class="tr-bereich"><h2>Vorbereitete Stände</h2><ul class="tr-staende">${info.startpunkte
-        .map((p) => `<li>${esc(p.titel)} ${button('Laden', 'startpunkt', { 'data-id': p.id })}</li>`)
+        .map((p) => `<li>${esc(p.titel)} ${button('Laden', 'startpunkt', { 'data-id': p.id, 'data-fokus': `start-${p.id}` })}</li>`)
         .join('')}</ul></section>`;
   return [
     '<div class="tr-uebersicht">',
-    `<p class="tr-zeile"><label><input type="checkbox"${attrs({ 'data-aktion': 'erledigte', checked: state.hideDone ? 'checked' : undefined })}> Erledigte ausblenden</label></p>`,
+    `<p class="tr-zeile"><label><input type="checkbox"${attrs({ 'data-aktion': 'erledigte', 'data-fokus': 'erledigte', checked: state.hideDone ? 'checked' : undefined })}> Erledigte ausblenden</label></p>`,
     state.catalogue.length === 0 ? '<p>Diese App hat noch keine Handtests.</p>' : sections.join(''),
     points,
     '</div>',
@@ -1056,20 +1195,47 @@ function stepChoice(id        , steps                   , run         )         
   return `<section class="tr-schritte"><p class="tr-frage-titel">In welchen Schritten gab es ein Problem?</p><ol>${rows.join('')}</ol></section>`;
 }
 
-function testView(state           , testCase               )         {
+/**
+ * A result of an earlier build: shown as it was given, never changed here. Unsent, it waits for
+ * „Bericht senden“; sent (or one that cannot go out), the test starts anew for the running build.
+ */
+function olderResult(id        , entry          )         {
+  const build = `der Fassung ${entry.build?.version ?? ''} (Stand ${entry.build?.stand ?? ''})`;
+  const steps = (entry.steps ?? []).map((s) => `Schritt ${s.nr}: ${REASONS[s.grund] ?? s.grund}`);
+  const given = `Ergebnis ${build}: ${entry.result === undefined ? '' : OUTCOME_LABELS[entry.result]}${steps.length > 0 ? ` – ${steps.join(', ')}` : ''}.`;
+  const stuck = entry.result === 'nicht bestanden' && steps.length === 0;
+  const note = entry.reported !== undefined
+    ? 'Es ist gesendet. Für die laufende Fassung bitte neu prüfen.'
+    : stuck
+      ? 'Es nennt keinen Schritt und lässt sich nicht mehr senden. Bitte zurücknehmen und für die laufende Fassung neu prüfen.'
+      : 'Es ist noch nicht gesendet: Bitte zuerst „Bericht senden“, danach den Test für die laufende Fassung neu prüfen.';
+  return [
+    `<p class="tr-meldung tr-fehler">${esc(`${given} ${note}`)}</p>`,
+    entry.reported !== undefined
+      ? button('Für die laufende Fassung neu prüfen', 'zuruecknehmen', { 'data-id': id, 'data-fokus': 'neu-pruefen' })
+      : button('Ergebnis zurücknehmen', 'zuruecknehmen', { 'data-id': id, 'data-fokus': 'zuruecknehmen' }),
+  ].join('');
+}
+
+function testView(state           , testCase               , info          )         {
   const ids = new Set(state.catalogue.map((c) => c.id));
   const index = state.catalogue.findIndex((c) => c.id === testCase.id);
   const previous = state.catalogue[index - 1];
   const next = state.catalogue[index + 1];
   const entry = state.run.entries[testCase.id];
   const steps = stepsOf(testCase);
-  const seconds = elapsedSeconds(entry, state.now);
-  const clock = entry?.result !== undefined
-    ? `Gemessene Zeit: ${minutesOf(seconds)} Min.`
-    : `Die Uhr läuft: ${minutesOf(seconds)} Min.`;
-  const parts = testCase.parts.map((part) =>
-    (part.label ? `<h3>${esc(part.label)}</h3>` : '') + part.blocks.map((block) => blockHtml(block, ids)).join(''),
-  );
+  const clock = clockText(entry, state.now);
+  // The steps count on across every „Schritte“ part, like the numbers the report sends.
+  let stepNo = 1;
+  const parts = testCase.parts.map((part) => {
+    const blocks = part.blocks.map((block) => {
+      if (part.label !== STEPS_LABEL || block.kind !== 'list' || !block.ordered) return blockHtml(block, ids);
+      const html = blockHtml(block, ids, stepNo);
+      stepNo += block.items.length;
+      return html;
+    });
+    return (part.label ? `<h3>${esc(part.label)}</h3>` : '') + blocks.join('');
+  });
   const results = OUTCOMES.map((outcome) =>
     `<button type="button"${attrs({
       class: `tr-ergebnis tr-${outcome === 'bestanden' ? 'bestanden' : 'nicht-bestanden'}`,
@@ -1084,7 +1250,7 @@ function testView(state           , testCase               )         {
     '<article class="tr-einzeln">',
     '<nav class="tr-blaettern">',
     button('‹ Testübersicht', 'uebersicht', { 'data-fokus': 'uebersicht' }),
-    previous ? button('‹ Vorheriger', 'oeffnen', { 'data-id': previous.id }) : '',
+    previous ? button('‹ Vorheriger', 'oeffnen', { 'data-id': previous.id, 'data-fokus': 'vorheriger' }) : '',
     next ? button('Nächster ›', 'oeffnen', { 'data-id': next.id, 'data-fokus': 'naechster' }) : '',
     '</nav>',
     `<p class="tr-bereichsname">${esc(testCase.area)}</p>`,
@@ -1093,16 +1259,28 @@ function testView(state           , testCase               )         {
     parts.join(''),
     '<section class="tr-bewertung">',
     `<p class="tr-uhr">${esc(clock)}</p>`,
-    `<div class="tr-knoepfe">${results.join('')}</div>`,
-    entry?.result === 'nicht bestanden'
-      ? steps.length > 0
-        ? stepChoice(testCase.id, steps, state.run)
-        : '<p class="tr-meldung tr-fehler">Dieser Test hat keine nummerierten Schritte; „Nicht bestanden“ lässt sich so nicht senden.</p>'
-      : '',
-    entry?.result !== undefined ? button('Ergebnis zurücknehmen', 'zuruecknehmen', { 'data-id': testCase.id }) : '',
+    entry !== undefined && fromOlderBuild(entry, info)
+      ? olderResult(testCase.id, entry)
+      : !isBuild({ version: info.version, stand: info.stand })
+        ? '<p class="tr-meldung tr-fehler">Diese Fassung kennt ihre Version oder ihren Stand nicht. Ergebnisse lassen sich hier nicht geben, denn sie gingen sonst unter einer anderen Fassung hinaus.</p>'
+        : [
+          `<div class="tr-knoepfe">${results.join('')}</div>`,
+          entry?.result === 'nicht bestanden'
+            ? steps.length > 0
+              ? stepChoice(testCase.id, steps, state.run)
+              : '<p class="tr-meldung tr-fehler">Dieser Test hat keine nummerierten Schritte; „Nicht bestanden“ lässt sich so nicht senden.</p>'
+            : '',
+          entry?.result !== undefined ? button('Ergebnis zurücknehmen', 'zuruecknehmen', { 'data-id': testCase.id, 'data-fokus': 'zuruecknehmen' }) : '',
+        ].join(''),
     '</section>',
     '</article>',
   ].join('');
+}
+
+/** The clock line of a test: running while it is open without a result, else the measured time. */
+function clockText(entry                      , now        )         {
+  const minutes = minutesOf(elapsedSeconds(entry, now));
+  return entry?.result !== undefined ? `Gemessene Zeit: ${minutes} Min.` : `Die Uhr läuft: ${minutes} Min.`;
 }
 
 /** The whole test side for the state. */
@@ -1111,7 +1289,7 @@ function panelHtml(state           , info          )         {
   return [
     header(state, info),
     state.question ? questionHtml(state.question, info) : '',
-    open ? testView(state, open) : overview(state, info),
+    open ? testView(state, open, info) : overview(state, info),
   ].join('');
 }
 
@@ -1155,9 +1333,15 @@ function panelHtml(state           , info          )         {
                              
                                     
                             
-                                                                                      
+     
+                                                                                                       
+                                                     
+     
                   
  
+
+/** How much more than the store a tab must have measured before it stores its clock (adoptStored). */
+const AHEAD_SECONDS = 2;
 
 export const BERICHT_ADRESSE = '/_zugang/bericht';
 export const EINLADEN_ADRESSE = '/_zugang/einladen';
@@ -1174,6 +1358,8 @@ export function bindingProblems(anbindung           )           {
   const points = anbindung.startpunkte ?? [];
   if (points.length > 0 && typeof anbindung.laden !== 'function') problems.push('Die App nennt vorbereitete Stände, kann sie aber nicht laden.');
   if (new Set(points.map((p) => p.id)).size !== points.length) problems.push('Ein vorbereiteter Stand ist doppelt genannt.');
+  // A start link can only name such ids; any other would never load from the test text.
+  for (const p of points) if (!START_ID.test(p.id)) problems.push(`Der vorbereitete Stand „${p.id}“ hat keine gültige Kennung (nur Kleinbuchstaben, Ziffern und Bindestriche).`);
   return problems;
 }
 
@@ -1232,7 +1418,9 @@ export function starteTestrahmen(ziel             , anbindung           , option
   const info           = {
     name: anbindung.name,
     version: anbindung.version,
-    startpunkte: anbindung.startpunkte ?? [],
+    stand: anbindung.stand,
+    // Only start points with a valid id: one with a quote or a space would break the page's selectors.
+    startpunkte: (anbindung.startpunkte ?? []).filter((p) => START_ID.test(p.id)),
     problems: bindingProblems(anbindung),
     inviteHref: optionen.einladenAdresse ?? EINLADEN_ADRESSE,
   };
@@ -1246,6 +1434,7 @@ export function starteTestrahmen(ziel             , anbindung           , option
     tab: 'tests',
     sending: false,
     now: now(),
+    ...(store ? {} : { unsaved: true }),
   };
 
   // The frame: tabs (narrow screens only), the app, the test side.
@@ -1267,18 +1456,50 @@ export function starteTestrahmen(ziel             , anbindung           , option
   const feld = doc.createElement('aside');
   feld.className = 'tr-feld';
   feld.setAttribute('aria-label', 'Testbereich');
-  huelle.append(reiter, appBehaelter, feld);
+  // The one live region: it stays while the panel is drawn anew, so a screen reader announces
+  // each new message (a region inserted together with its text is often not read).
+  const ansage = doc.createElement('div');
+  ansage.className = 'tr-ansage';
+  ansage.setAttribute('role', 'status');
+  ansage.setAttribute('aria-live', 'polite');
+  huelle.append(reiter, appBehaelter, feld, ansage);
   ziel.append(huelle);
+  let ansageTimer                                           ;
+  let ansageText = '';
+  /**
+   * Says `text` through the live region; emptied first, so the same text is said again. A text still
+   * waiting is said with it (a message and the storage notice of the same change), not dropped.
+   */
+  const announce = (text        ) => {
+    ansage.textContent = '';
+    if (ansageTimer !== undefined) win.clearTimeout(ansageTimer);
+    ansageText = ansageText === '' || ansageText.includes(text) ? (ansageText || text) : `${ansageText} ${text}`;
+    ansageTimer = win.setTimeout(() => {
+      ansage.textContent = ansageText;
+      ansageText = '';
+      ansageTimer = undefined;
+    }, 60);
+  };
 
-  const save = () => {
+  /** `open`: the test to store as open; a tab that only passes its clock on keeps the stored one. */
+  const save = (open = state.open) => {
+    if (!store) return;
     try {
-      store?.setItem(key, JSON.stringify({ run: state.run, open: state.open, hideDone: state.hideDone }));
+      store.setItem(key, JSON.stringify({ run: state.run, open, hideDone: state.hideDone }));
+      if (state.unsaved) state = { ...state, unsaved: false };
     } catch {
-      // A full or blocked storage: the page goes on, the results stay for this visit.
+      // A full or blocked storage: the page goes on, the results stay for this visit, and it says so.
+      if (!state.unsaved) announce(UNSAVED_NOTICE);
+      state = { ...state, unsaved: true };
     }
   };
 
-  const render = (focus         , top = false) => {
+  /**
+   * `top`: the view starts at the top (a test opened). `reveal`: what the tester must see now — the
+   * question or the message this change brought, or the focused control. A plain re-render keeps the
+   * reader's place (focus without scrolling); a message shown before is not scrolled to again.
+   */
+  const render = (focus         , top = false, reveal                                    ) => {
     const active = doc.activeElement instanceof win.HTMLElement && feld.contains(doc.activeElement) ? doc.activeElement.dataset.fokus : undefined;
     state = { ...state, now: now() };
     feld.innerHTML = panelHtml(state, info);
@@ -1286,13 +1507,18 @@ export function starteTestrahmen(ziel             , anbindung           , option
     for (const b of reiter.querySelectorAll('button')) b.setAttribute('aria-pressed', b.dataset.wert === state.tab ? 'true' : 'false');
     if (top) feld.scrollTop = 0;
     const target = focus ?? active;
-    if (target) (feld.querySelector(`[data-fokus="${target}"]`)                      )?.focus();
+    const control = target ? (feld.querySelector(`[data-fokus="${target}"]`)                      ) : null;
+    control?.focus({ preventScroll: true });
+    const shown = reveal === 'frage' ? feld.querySelector('.tr-frage') : reveal === 'meldung' ? feld.querySelector('.tr-kopf [data-meldung]') : null;
+    if (reveal) (shown ?? control)?.scrollIntoView?.({ block: 'nearest' });
   };
 
   const change = (next                    , focus         , top = false) => {
+    if (next.message !== undefined) announce(next.message.text);
+    const reveal = next.question !== undefined ? 'frage' : next.message !== undefined ? 'meldung' : focus !== undefined && !top ? 'bedienung' : undefined;
     state = { ...state, ...next };
     save();
-    render(focus, top);
+    render(focus, top, reveal);
   };
 
   /** The open test's clock pauses (before the app restarts or the page goes). */
@@ -1303,43 +1529,78 @@ export function starteTestrahmen(ziel             , anbindung           , option
 
   const versionOf = (id        ) => catalogue.find((c) => c.id === id)?.version;
 
+  /** Where the focus goes back to after a question: the control that asked it. */
+  const askedBy = (question          ) => (question.kind === 'startpunkt' ? `start-${question.id}` : `frage-${question.kind}`);
+
   async function answer(question          )                {
-    change({ question: undefined });
+    change({ question: undefined }, askedBy(question));
     if (question.kind === 'senden') return sendReport();
     pause();
-    if (question.kind === 'neustart') await (anbindung.neuStarten ? anbindung.neuStarten() : win.location.reload());
-    else if (question.kind === 'zuruecksetzen') {
-      if (anbindung.zuruecksetzen) await anbindung.zuruecksetzen();
-      else {
-        await clearAppStorage(win, key);
-        win.location.reload();
-      }
-    } else if (anbindung.laden) await anbindung.laden(question.id);
-    // The app may restart in place: the open test's clock goes on.
-    if (state.open !== undefined) change({ run: openTest(state.run, state.open, now()) });
+    let failed = false;
+    try {
+      if (question.kind === 'neustart') await (anbindung.neuStarten ? anbindung.neuStarten() : win.location.reload());
+      else if (question.kind === 'zuruecksetzen') {
+        if (anbindung.zuruecksetzen) await anbindung.zuruecksetzen();
+        else {
+          await clearAppStorage(win, key);
+          win.location.reload();
+        }
+      } else if (anbindung.laden) await anbindung.laden(question.id);
+    } catch {
+      failed = true;
+    } finally {
+      // The app may restart in place, or fail to: either way the open test's clock goes on.
+      change({
+        run: state.open === undefined ? state.run : openTest(state.run, state.open, now()),
+        ...(failed ? { message: { kind: 'fehler'         , text: 'Die App konnte das nicht ausführen. Bitte die Seite neu laden und es noch einmal versuchen.' } } : {}),
+      }, askedBy(question));
+    }
   }
 
   async function sendReport()                {
     const plan = info.problems.length > 0
       ? { ok: false         , problem: info.problems.join(' ') }
       : reportPlan(state.run, catalogue.map((c) => c.id), anbindung);
-    if (!plan.ok) return change({ message: { kind: 'fehler', text: plan.problem } });
-    change({ sending: true, message: undefined });
-    try {
-      const response = await send(optionen.berichtAdresse ?? BERICHT_ADRESSE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(plan.body),
-        credentials: 'same-origin',
-      });
-      const outcome = sendOutcome(response.status, await response.text());
-      change({
-        sending: false,
-        run: outcome.sent ? markReported(state.run, plan.sent, now()) : state.run,
-        message: { kind: outcome.sent ? 'ok' : 'fehler', text: outcome.message },
-      });
-    } catch {
-      change({ sending: false, message: { kind: 'fehler', text: 'Keine Verbindung zum Testbereich. Bitte später noch einmal senden.' } });
+    if (!plan.ok) return change({ message: { kind: 'fehler', text: plan.problem } }, 'frage-senden');
+    // What each report carries, as planned: a result changed while the reports travel (also before
+    // its own report leaves) still belongs in the next one.
+    const planned = plan.reports.map((report) => report.sent.map((id) => [id, state.run.entries[id]]         ));
+    change({ sending: true, message: undefined }, 'frage-senden');
+    // One report per build; each that arrived marks its unchanged results.
+    let message = { kind: 'ok'                   , text: '' };
+    for (const [index, report] of plan.reports.entries()) {
+      const sentEntries = planned[index] ?? [];
+      let outcome                                    ;
+      try {
+        const response = await send(optionen.berichtAdresse ?? BERICHT_ADRESSE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(report.body),
+          credentials: 'same-origin',
+        });
+        outcome = sendOutcome(response.status, await response.text());
+      } catch {
+        outcome = { sent: false, message: 'Keine Verbindung zum Testbereich. Bitte später noch einmal senden.' };
+      }
+      if (!outcome.sent) {
+        message = { kind: 'fehler', text: outcome.message };
+        break;
+      }
+      const unchanged = sentEntries.filter(([id, sent]) => sameEntry(state.run.entries[id], sent)).map(([id]) => id);
+      state = { ...state, run: markReported(state.run, unchanged, now()) };
+      save();
+      message = { kind: 'ok', text: plan.reports.length > 1 ? `${outcome.message} (${plan.reports.length} Berichte, je Fassung einer)` : outcome.message };
+    }
+    // Back to the button only when the tester has not gone on elsewhere (e.g. into the app).
+    // Only while the focus is still on the button: anyone who went on (in the app or on the test side)
+    // keeps his place; the message stands on top without being scrolled to.
+    const stayed = doc.activeElement instanceof win.HTMLElement && doc.activeElement.dataset.fokus === 'frage-senden';
+    if (stayed) change({ sending: false, message }, 'frage-senden');
+    else {
+      announce(message.text);
+      state = { ...state, sending: false, message };
+      save();
+      render();
     }
   }
 
@@ -1350,8 +1611,12 @@ export function starteTestrahmen(ziel             , anbindung           , option
   };
 
   const onClick = (event       ) => {
+    // The second click of a double click acts on what the first one brought up (a question's „Ja“
+    // stands where its button was): only the first counts.
+    if (event instanceof win.MouseEvent && event.detail > 1) return;
     const control = (event.target                  )?.closest?.('[data-aktion]');
-    if (!(control instanceof win.HTMLElement) || !huelle.contains(control)) return;
+    // Only the test side and the tabs: the app's own markup never triggers the page.
+    if (!(control instanceof win.HTMLElement) || !(feld.contains(control) || reiter.contains(control))) return;
     if (control instanceof win.HTMLSelectElement || control instanceof win.HTMLInputElement) return;
     const { aktion, id, wert, frage } = control.dataset;
     switch (aktion) {
@@ -1359,28 +1624,32 @@ export function starteTestrahmen(ziel             , anbindung           , option
         if (id) openCase(id);
         break;
       case 'uebersicht':
-        change({ run: state.open === undefined ? state.run : leaveTest(state.run, state.open, now()), open: undefined }, state.open ? `test-${state.open}` : undefined, true);
+        // A test hidden as done cannot take the focus: the checkbox above the list does.
+        change({ run: state.open === undefined ? state.run : leaveTest(state.run, state.open, now()), open: undefined }, state.open === undefined ? undefined : state.hideDone && doneHere(state.run.entries[state.open], anbindung) ? 'erledigte' : `test-${state.open}`, true);
         break;
       case 'ergebnis':
         if (id && (wert === 'bestanden' || wert === 'nicht bestanden')) {
-          change({ run: setResult(state.run, id, wert           , now(), versionOf(id)), message: undefined }, `ergebnis-${wert}`);
+          change({ run: setResult(state.run, id, wert           , now(), versionOf(id), { version: anbindung.version, stand: anbindung.stand }), message: undefined }, `ergebnis-${wert}`);
         }
         break;
       case 'zuruecknehmen':
         if (id) change({ run: resetTest(state.run, id, now()), message: undefined }, 'ergebnis-bestanden');
         break;
+      // A question that loses the app's data starts on „Abbrechen“, so a double Enter wipes nothing.
       case 'frage':
-        if (frage === 'neustart' || frage === 'zuruecksetzen' || frage === 'senden') change({ question: { kind: frage }, message: undefined }, 'ja');
+        if (frage === 'senden' && state.sending) break;
+        if (frage === 'neustart' || frage === 'senden') change({ question: { kind: frage }, message: undefined }, 'ja');
+        else if (frage === 'zuruecksetzen') change({ question: { kind: frage }, message: undefined }, 'nein');
         break;
       case 'startpunkt':
-        if (id && info.startpunkte.some((p) => p.id === id)) change({ question: { kind: 'startpunkt', id }, message: undefined }, 'ja');
+        if (id && info.startpunkte.some((p) => p.id === id)) change({ question: { kind: 'startpunkt', id }, message: undefined }, 'nein');
         else if (id) change({ message: { kind: 'fehler', text: `Den vorbereiteten Stand „${id}“ kennt diese App nicht.` } });
         break;
       case 'ja':
         if (state.question) void answer(state.question);
         break;
       case 'nein':
-        change({ question: undefined });
+        if (state.question) change({ question: undefined }, askedBy(state.question));
         break;
       case 'reiter':
         if (wert === 'app' || wert === 'tests') change({ tab: wert });
@@ -1392,10 +1661,52 @@ export function starteTestrahmen(ziel             , anbindung           , option
     const control = event.target;
     if (control instanceof win.HTMLSelectElement && control.dataset.aktion === 'schritt') {
       const { id, nr } = control.dataset;
-      if (id && nr) change({ run: setStep(state.run, id, Number(nr), control.value === '' ? undefined : control.value), message: undefined }, `schritt-${nr}`);
+      if (id && nr) change({ run: setStep(state.run, id, Number(nr), control.value === '' ? undefined : control.value, { version: anbindung.version, stand: anbindung.stand }), message: undefined }, `schritt-${nr}`);
     } else if (control instanceof win.HTMLInputElement && control.dataset.aktion === 'erledigte') {
-      change({ hideDone: control.checked });
+      change({ hideDone: control.checked }, 'erledigte');
     }
+  };
+
+  const onKey = (event               ) => {
+    if (event.key === 'Escape' && state.question && event.target instanceof win.Node && feld.contains(event.target)) {
+      event.preventDefault();
+      change({ question: undefined }, askedBy(state.question));
+    }
+  };
+
+  /**
+   * Another tab of the test page stored its run (or this page comes back from the browser's
+   * back/forward cache): take it over, so neither tab overwrites the other. The test open here keeps
+   * its own running clock while it has no result there — the copy as read never holds a running
+   * clock (decodeRun stops it). Both clocks ran at the same time, so the time counts once: only what
+   * the other tab measured beyond this one is added (this clock then starts that much earlier).
+   */
+  const adoptStored = () => {
+    const saved = readSaved(store, key);
+    let run = saved.run;
+    let ahead = false;
+    if (state.open !== undefined) {
+      const own = state.run.entries[state.open];
+      const theirs = saved.run.entries[state.open];
+      if (own?.openedAt !== undefined && theirs?.result === undefined) {
+        const extra = storedBeyond(own, theirs, now());
+        run = { entries: { ...run.entries, [state.open]: extra > 0 ? { ...own, openedAt: own.openedAt - extra * 1000 } : own } };
+        // This tab measured clearly more than the store holds (two windows side by side, neither
+        // hidden): store it, so a result given in the other tab carries it. Above the 1 s the stored
+        // whole seconds may lose, so two tabs never keep answering each other.
+        ahead = extra < -AHEAD_SECONDS;
+      } else run = openTest(run, state.open, now());
+    }
+    state = { ...state, run, hideDone: saved.hideDone };
+    if (ahead && state.open !== undefined) {
+      state = { ...state, run: checkpoint(state.run, state.open, now()) };
+      save(saved.open);
+    }
+  };
+  const onStorage = (event              ) => {
+    if (event.key !== key) return;
+    adoptStored();
+    render();
   };
 
   const onVisibility = () => {
@@ -1406,32 +1717,48 @@ export function starteTestrahmen(ziel             , anbindung           , option
   };
   const onHide = () => pause();
   const onShow = (event                     ) => {
-    if (event.persisted && state.open !== undefined) change({ run: openTest(state.run, state.open, now()) });
+    // Back from the bfcache: another tab may have stored meanwhile, and its storage events come only
+    // after this one. Take its run over first (and start the open test's clock), then store.
+    if (!event.persisted) return;
+    adoptStored();
+    change({});
   };
 
   huelle.addEventListener('click', onClick);
-  huelle.addEventListener('change', onChange);
+  feld.addEventListener('change', onChange);
+  feld.addEventListener('keydown', onKey);
   doc.addEventListener('visibilitychange', onVisibility);
   win.addEventListener('pagehide', onHide);
   win.addEventListener('pageshow', onShow);
-  // The clock on the page moves while a test without a result is open.
+  win.addEventListener('storage', onStorage);
+  // The clock on the page moves while a test without a result is open. Only its text changes: a
+  // whole new page would lose the reader's place, the focus and a screen reader's position.
   const timer = win.setInterval(() => {
     const entry = state.open === undefined ? undefined : state.run.entries[state.open];
-    if (entry?.openedAt !== undefined && state.question === undefined) render();
+    const line = feld.querySelector('.tr-uhr');
+    if (entry?.openedAt !== undefined && line) line.textContent = clockText(entry, now());
   }, 15_000);
 
   save();
   render();
+  // What is wrong from the start is said once, not on every new drawing of the panel.
+  const atStart = [...info.problems, ...(state.unsaved ? [UNSAVED_NOTICE] : [])];
+  if (atStart.length > 0) announce(atStart.join(' '));
   return {
     appBehaelter,
     beenden() {
       win.clearInterval(timer);
+      if (ansageTimer !== undefined) win.clearTimeout(ansageTimer);
       huelle.removeEventListener('click', onClick);
-      huelle.removeEventListener('change', onChange);
+      feld.removeEventListener('change', onChange);
+      feld.removeEventListener('keydown', onKey);
       doc.removeEventListener('visibilitychange', onVisibility);
       win.removeEventListener('pagehide', onHide);
       win.removeEventListener('pageshow', onShow);
+      win.removeEventListener('storage', onStorage);
       pause();
+      // The app unmounts its own root in `appBehaelter` first; a restart then builds a fresh frame.
+      huelle.remove();
     },
   };
 }

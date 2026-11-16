@@ -84,7 +84,7 @@
   outline-offset: 2px;
 }
 
-.tr-feld button:disabled { opacity: 0.6; cursor: default; }
+.tr-feld button:disabled, .tr-feld button[aria-disabled="true"] { opacity: 0.6; cursor: default; }
 .tr-feld .tr-haupt { background: var(--tr-knopf); border-color: var(--tr-knopf); color: var(--tr-knopf-text); }
 
 .tr-kopf { border-bottom: 1px solid var(--tr-linie); padding-bottom: 8px; }
@@ -143,6 +143,39 @@
   .tr-huelle[data-reiter="tests"] .tr-app { display: none; }
 }
 
+/* The live region: read by screen readers, not shown. */
+.tr-ansage {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* High contrast (Windows): the system colours replace ours, so the chosen result and tab get the
+   highlight colours, and a control that waits looks greyed. */
+@media (forced-colors: active) {
+  .tr-feld button[aria-pressed="true"], .tr-reiter button[aria-pressed="true"],
+  .tr-feld .tr-ergebnis[aria-pressed="true"].tr-bestanden, .tr-feld .tr-ergebnis[aria-pressed="true"].tr-nicht-bestanden {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .tr-feld button[aria-disabled="true"] { color: GrayText; border-color: GrayText; }
+}
+
+/* Printed, the page is the app alone, at its full length. */
+@media print {
+  .tr-huelle { display: block; height: auto; }
+  .tr-reiter, .tr-feld { display: none !important; }
+  .tr-huelle .tr-app { display: block !important; overflow: visible; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tr-huelle * { scroll-behavior: auto; }
 }
+
+/* Long paths and names break inside the line instead of widening the side (inherited). */
+.tr-feld { overflow-wrap: break-word; }
