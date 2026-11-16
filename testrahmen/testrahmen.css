@@ -59,6 +59,12 @@
 .tr-feld h3 { font-size: 0.95rem; margin: 1rem 0 0.25rem; }
 .tr-feld p { margin: 0.4rem 0; }
 .tr-feld ol, .tr-feld ul { padding-left: 1.4rem; margin: 0.4rem 0; }
+/* Set here, not left to the browser: an app's reset (Tailwind's `ol, ul { list-style: none }`) would
+   hide the step numbers a report names. The lists of tests and start points keep none (.tr-tests). */
+.tr-feld ol { list-style: decimal; }
+.tr-feld ul { list-style: disc; }
+/* The step choice names each step itself („Schritt 3: …“): no second number in front. */
+.tr-feld .tr-schritte ol { list-style: none; padding-left: 0; }
 .tr-feld li { margin: 0.35rem 0; }
 .tr-feld code, .tr-feld kbd { font: 0.9em ui-monospace, Consolas, monospace; background: var(--tr-flaeche); border: 1px solid var(--tr-linie); border-radius: 4px; padding: 0 3px; }
 .tr-feld pre { overflow: auto; background: var(--tr-flaeche); border: 1px solid var(--tr-linie); border-radius: 6px; padding: 8px; }
