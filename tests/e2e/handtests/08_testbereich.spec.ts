@@ -156,7 +156,7 @@ test.describe('MT-85: the shared test page with the Fragebogen', () => {
     );
     expect(listed.filter((id) => id.startsWith('MT-'))).toEqual(CASES.map((c) => c.id));
     // The binding is complete: no warning on top of the page.
-    await expect(side(page).locator('.tr-meldung.tr-fehler[role="alert"]')).toHaveCount(0);
+    await expect(side(page).locator('.tr-kopf .tr-meldung.tr-fehler[data-meldung]')).toHaveCount(0);
     await expectQuiet(page, seen);
   });
 
@@ -332,7 +332,7 @@ test.describe('the report names this app and build', () => {
     await action(page, 'oeffnen', `.tr-test[data-id="${first.id}"]`).click();
     await action(page, 'ergebnis', '[data-wert="bestanden"]').click();
     await confirm(page, 'senden');
-    await expect(side(page).locator('.tr-meldung[role="status"]')).toContainText(
+    await expect(side(page).locator('.tr-kopf .tr-meldung[data-meldung]')).toContainText(
       'Bericht gespeichert.',
     );
 

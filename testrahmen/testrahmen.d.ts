@@ -37,7 +37,10 @@ export interface Optionen {
 export interface Testrahmen {
   /** The app mounts itself here. */
   appBehaelter: HTMLElement;
-  /** Stops the page (tests and hot reload): the clock pauses, the state is stored. */
+  /**
+   * Stops the page (tests and hot reload): the clock pauses, the state is stored, the frame leaves the
+   * page. Unmount the app from `appBehaelter` first.
+   */
   beenden(): void;
 }
 
