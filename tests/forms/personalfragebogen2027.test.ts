@@ -771,6 +771,10 @@ describe('a privately insured person lifted above the JAEG only by this Minijob'
       expect(kv).not.toContain('Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei');
       expect(kv).toContain('§ 8 SGB V');
       expect(kv).toContain('(prüfen)');
+      // The PV follows the KV (audit 2026-11-16, round 5: its rule was untested).
+      const pv = r.bgr?.detail.find((line) => line.startsWith('PV')) ?? '';
+      expect(pv).toContain('§ 8 SGB V');
+      expect(pv).toContain('(prüfen)');
     },
   );
 
