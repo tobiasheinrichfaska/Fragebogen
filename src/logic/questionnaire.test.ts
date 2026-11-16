@@ -14,6 +14,7 @@ import {
   twoRoles,
   withEmployer,
 } from '../../tests/support/sample';
+import { TYPED_NAME_MAX } from './form';
 import { parseFormDefinition } from './formDefinition';
 import { definitionHash, type RegisteredForm } from './formRegistry';
 import type { Questionnaire, Receipt, ReceivedPart } from './model';
@@ -206,6 +207,18 @@ describe('sealPart', () => {
     expect(part?.seal?.payload.receivedParts).toHaveLength(1);
   });
 
+  it('takes a typed name of exactly 100 characters', () => {
+    const name = `Erika ${'M'.repeat(94)}`;
+    expect([...name]).toHaveLength(TYPED_NAME_MAX);
+    const sealed = sealPart(
+      personDraft(),
+      form,
+      'person',
+      personSealInput({ signature: { method: 'typed', name } }),
+    );
+    expect(sealed.ok).toBe(true);
+  });
+
   it('stores a typed name normalised', () => {
     const q = ok(
       sealPart(
@@ -295,6 +308,18 @@ describe('sealPart', () => {
           form,
           'person',
           personSealInput({ signature: { method: 'typed', name: ' \u{200B} ' } }),
+        ),
+      'invalidSignature',
+    ],
+    [
+      // Audit 2026-11-16, loop 6: thousands of pasted characters made a block taller than a page.
+      'with a typed name of more than 100 characters',
+      () =>
+        sealPart(
+          personDraft(),
+          form,
+          'person',
+          personSealInput({ signature: { method: 'typed', name: `Erika ${'M'.repeat(95)}` } }),
         ),
       'invalidSignature',
     ],

@@ -471,12 +471,20 @@ export async function writeQuestionnairePdf(
   }
 
   if (footnotes.size > 0) {
-    layout.heading('Abweichende Unterschriftsdaten', 10, 8.5 * 1.35);
-    for (const line of provenance.lines.filter((l) => [...footnotes.values()].includes(l.number))) {
-      layout.text(
-        `[${line.number}] Wert geändert in Fassung ${line.version} (${line.roleLabel}), ${STATUS_TEXT[line.status]} am ${formatLocalDateTime(line.signedAtLocal)}; gedeckt durch Unterschriftszeile ${line.number}.`,
-        { size: 8.5 },
+    const notes = provenance.lines
+      .filter((l) => [...footnotes.values()].includes(l.number))
+      .map(
+        (line) =>
+          `[${line.number}] Wert geändert in Fassung ${line.version} (${line.roleLabel}), ${STATUS_TEXT[line.status]} am ${formatLocalDateTime(line.signedAtLocal)}; gedeckt durch Unterschriftszeile ${line.number}.`,
       );
+    // Each footnote stays whole, the first with the heading (audit 2026-11-16, loop 6: a footnote of
+    // two lines lost its second line to the next page).
+    const noteHeight = (text: string) =>
+      wrap(printable(text), fonts.sans, 8.5, A4[0] - 2 * MARGIN).length * 8.5 * 1.35;
+    layout.heading('Abweichende Unterschriftsdaten', 10, noteHeight(notes[0] ?? ''));
+    for (const text of notes) {
+      layout.ensure(noteHeight(text));
+      layout.text(text, { size: 8.5 });
     }
   }
 
@@ -553,8 +561,10 @@ export async function writeQuestionnairePdf(
   const usable = A4[1] - MARGIN - 8 - BOTTOM;
   layout.ensure(HEADING + Math.min(signature[0]?.height ?? 110, usable - HEADING));
   layout.heading('Unterschriften und Abschlüsse', 11);
-  for (const { line, head, noteText, path, typed, height } of signature) {
-    layout.ensure(Math.min(height, usable));
+  for (const [i, { line, head, noteText, path, typed, height }] of signature.entries()) {
+    // The first block shares its page with the heading (loop 6: a block taller than the rest of a
+    // fresh page left the heading alone on it).
+    layout.ensure(Math.min(height, usable - (i === 0 ? HEADING : 0)));
     layout.text(head, { font: fonts.bold, size: 9.5 });
     if (path) {
       const scale = 0.2;

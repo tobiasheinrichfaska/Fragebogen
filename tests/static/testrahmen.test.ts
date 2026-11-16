@@ -45,4 +45,13 @@ describe('the copy of the shared test page', () => {
       }),
     ).toEqual([]);
   });
+
+  // Audit 2026-11-16, loop 6: tests/e2e/handtests/08_testbereich.spec.ts expects no warning on top of
+  // the page by counting `.tr-kopf .tr-meldung.tr-fehler` — a count of 0 would pass empty if the
+  // frame named its warnings otherwise.
+  it('draws the binding problems on top with the classes the e2e test counts', () => {
+    const page = readFileSync('testrahmen/testrahmen.js', 'utf8');
+    expect(page).toContain('<header class="tr-kopf">');
+    expect(page).toMatch(/problems\.map\(\(problem\) => `<p class="tr-meldung tr-fehler">/);
+  });
 });

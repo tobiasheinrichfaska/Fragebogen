@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { deviceNow, newNonce, systemNoteFor, type InputTracker } from '../io/environment';
 import { SIGNATURE_POLICY_LABELS } from '../logic/catalogue';
-import { roleOf } from '../logic/form';
+import { roleOf, TYPED_NAME_MAX } from '../logic/form';
 import { seal, signingOverview, type OverviewSection, type Session } from '../logic/session';
 import { encodeStrokes, type Point } from '../logic/strokes';
 import { Banner, Card, type BannerMessage } from './common';
@@ -138,6 +138,7 @@ export function SignatureScreen({ session, tracker, onSealed, onBack }: Props) {
           Ihr vollständiger Name
           <input
             value={typed}
+            maxLength={TYPED_NAME_MAX}
             autoComplete="off"
             spellCheck={false}
             onChange={(e) => setTyped(e.target.value)}

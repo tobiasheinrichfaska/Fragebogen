@@ -55,6 +55,12 @@ export function typedNameIsPlausible(name: string): boolean {
   return (name.match(/\p{L}/gu) ?? []).length >= 2;
 }
 
+/**
+ * The longest typed signature taken at sealing, in characters (audit 2026-11-16, loop 6: thousands of
+ * pasted characters made a block taller than a page). Files sealed with a longer one stay readable.
+ */
+export const TYPED_NAME_MAX = 100;
+
 /** The signer's name: the role's name field if it has one, otherwise the typed signature. */
 export function signerName(
   role: RoleDefinition,

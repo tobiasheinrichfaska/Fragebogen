@@ -509,6 +509,14 @@ describe('Bewirtungsbeleg to an existing restaurant bill', () => {
     expect(fields.find((f) => f.id === 'bewirtungHinweis')?.question).toContain(
       'Bewirtung in einer Gaststätte',
     );
+    // Loop 6: the Kanzlei's hint for a missing bill and the condition's reason say the same as the
+    // notice (registriert, the exceptions to the TSE).
+    const gaststaette = form.definition.checkHints?.find((h) => h.id === 'bewirtungGaststaette');
+    expect(gaststaette?.message).toContain('maschinell erstellt und registriert');
+    expect(gaststaette?.message).toContain('anders bei einem Ausfall der TSE');
+    expect(fields.find((f) => f.id === 'bewirtungHinweis')?.because).toContain(
+      'maschinell erstellte und registrierte Rechnung',
+    );
     for (const id of ['bewirtungGaststaette', 'bewirtungsbeleg']) {
       expect(form.definition.checkHints?.find((h) => h.id === id)?.message, id).toMatch(
         /elektronischen? Kasse/,
