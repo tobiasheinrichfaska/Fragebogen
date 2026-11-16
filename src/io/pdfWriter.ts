@@ -157,8 +157,9 @@ export class Layout {
     this.y -= options.gap ?? 0;
   }
 
-  heading(text: string, size = 12): void {
-    this.ensure(size * 3);
+  /** A heading, kept on one page with the `keep` points that follow it (audit 2026-11-16). */
+  heading(text: string, size = 12, keep = 0): void {
+    this.ensure(size * 3 + keep);
     this.y -= size * 0.6;
     this.text(text, { font: this.fonts.bold, size, gap: size * 0.3 });
   }
@@ -470,7 +471,7 @@ export async function writeQuestionnairePdf(
   }
 
   if (footnotes.size > 0) {
-    layout.heading('Abweichende Unterschriftsdaten', 10);
+    layout.heading('Abweichende Unterschriftsdaten', 10, 8.5 * 1.35);
     for (const line of provenance.lines.filter((l) => [...footnotes.values()].includes(l.number))) {
       layout.text(
         `[${line.number}] Wert geändert in Fassung ${line.version} (${line.roleLabel}), ${STATUS_TEXT[line.status]} am ${formatLocalDateTime(line.signedAtLocal)}; gedeckt durch Unterschriftszeile ${line.number}.`,
@@ -481,7 +482,9 @@ export async function writeQuestionnairePdf(
 
   // --- Notices -----------------------------------------------------------------------------
   if (definition.infoBlocks.length > 0) {
-    layout.heading('Hinweise', 11);
+    // Title, its line about the confirmation and the first line of the text stay together.
+    const NOTICE_START = 9.5 * 1.35 + 2 * 8 * 1.35;
+    layout.heading('Hinweise', 11, NOTICE_START);
     for (const block of definition.infoBlocks) {
       const part = latestSealed(questionnaire, block.role);
       // A conditional notice only where it applied to the role's sealed answers; none of a role
@@ -503,6 +506,7 @@ export async function writeQuestionnairePdf(
         (a) => a.infoBlockId === block.id,
       );
       const role = definition.roles.find((r) => r.id === block.role)?.label ?? block.role;
+      layout.ensure(NOTICE_START);
       layout.text(block.title, { font: fonts.bold, size: 9.5 });
       layout.text(
         `${block.acknowledgement === 'paperHandout' ? 'Auf Papier ausgehändigt' : 'In der App gelesen'} – ` +

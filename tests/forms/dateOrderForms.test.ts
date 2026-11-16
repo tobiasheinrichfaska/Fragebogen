@@ -105,8 +105,12 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         }
         // The condition of an answer (an option has a label but no role), not of a field.
         const parent = this as { id?: unknown; label?: unknown; role?: unknown };
-        // Audit 2026-11-16: 31.12.2002 is asked in a Minijob next to another job too.
+        // Audit 2026-11-16: 31.12.2002 is asked in a Minijob next to another job too, the JAEG
+        // hints leave a Minijob out (tests/forms/personalfragebogen2027.test.ts pins both).
         if (parent.id === 'pkvBestand2002' && (key === 'showIf' || key === 'because')) {
+          return undefined;
+        }
+        if (['jaeg', 'jaegNichtAngegeben'].includes(String(parent.id)) && key === 'when') {
           return undefined;
         }
         if (key === 'showIf' && parent.label !== undefined && parent.role === undefined) {
@@ -122,6 +126,15 @@ describe('Personalfragebogen: the end of a fixed term', () => {
           return value.filter(
             (item: unknown) =>
               item !== BESTAND_2026 &&
+              // Audit 2026-11-16, round 4: a privately insured person lifted above the JAEG only
+              // by a further Minijob (KV and PV rule, pinned in personalfragebogen2027.test.ts).
+              !(
+                typeof item === 'object' &&
+                item !== null &&
+                String((item as { reason?: unknown }).reason).includes(
+                  'privat oder anderweitig versichert: Das setzt für die Hauptbeschäftigung',
+                )
+              ) &&
               !(typeof item === 'string' && item.startsWith(CUSTODY.note)) &&
               !(
                 typeof item === 'object' &&

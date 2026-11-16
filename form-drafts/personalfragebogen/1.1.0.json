@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-16T02:12",
+  "revised": "2026-11-16T03:13",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -6895,13 +6895,29 @@
         ]
       },
       "message": "Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.",
-      "source": "§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 257 SGB V"
+      "source": "§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 257 SGB V",
+      "when": {
+        "not": {
+          "field": "agBeschaeftigungsart",
+          "in": ["minijob", "kurzfristig"]
+        }
+      }
     },
     {
       "id": "jaegNichtAngegeben",
       "when": {
-        "field": "agUeberJaeg",
-        "equals": false
+        "all": [
+          {
+            "field": "agUeberJaeg",
+            "equals": false
+          },
+          {
+            "not": {
+              "field": "agBeschaeftigungsart",
+              "in": ["minijob", "kurzfristig"]
+            }
+          }
+        ]
       },
       "test": {
         "fn": "ueberMassgeblicheJahresarbeitsentgeltgrenze",
@@ -9774,6 +9790,59 @@
         },
         {
           "value": "0",
+          "reason": "Weiterer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze, erst mit ihm darüber, privat oder anderweitig versichert: Das setzt für die Hauptbeschäftigung eine Befreiung (§ 8 SGB V) oder die Versicherungsfreiheit ab 55 (§ 6 Abs. 3a SGB V) voraus; dann wird dieser Minijob in der Krankenversicherung nicht mit ihr zusammengerechnet (§ 7 Abs. 1 Satz 2 SGB V). Sonst wären die Hauptbeschäftigung und zunächst auch dieser Minijob krankenversicherungspflichtig (Geringfügigkeits-Richtlinien B 2.2.2.8).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobUeberJaeg",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
+            ]
+          },
+          "check": true
+        },
+        {
+          "value": "0",
           "reason": "Über der Jahresarbeitsentgeltgrenze: krankenversicherungsfrei (§ 6 Abs. 1 Nr. 1 SGB V); privat oder anderweitig versichert.",
           "when": {
             "field": "krankenversicherung",
@@ -11959,6 +12028,59 @@
           },
           "check": true,
           "reason": "Werkstudent: Personengruppe 106 kennt in der PV nur 0 (DEÜV Anlage 16)."
+        },
+        {
+          "value": "0",
+          "reason": "Wie in der KV: Weiterer Minijob neben einer Hauptbeschäftigung unter der Jahresarbeitsentgeltgrenze, erst mit ihm darüber, privat oder anderweitig versichert: Das setzt für die Hauptbeschäftigung eine Befreiung (§ 8 SGB V) oder die Versicherungsfreiheit ab 55 (§ 6 Abs. 3a SGB V) voraus; dann wird dieser Minijob in der Krankenversicherung nicht mit ihr zusammengerechnet (§ 7 Abs. 1 Satz 2 SGB V). Sonst wären die Hauptbeschäftigung und zunächst auch dieser Minijob krankenversicherungspflichtig (Geringfügigkeits-Richtlinien B 2.2.2.8).",
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "agBeschaeftigungsart",
+                    "equals": "minijob"
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "agBeschaeftigungsart",
+                        "equals": "svpflichtig"
+                      },
+                      {
+                        "not": {
+                          "field": "agArbeitszeitmodell",
+                          "equals": "altersteilzeit"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "field": "krankenversicherung",
+                "in": ["privat", "anderweitig"]
+              }
+            ]
+          },
+          "test": {
+            "fn": "weitererMinijobUeberJaeg",
+            "args": [
+              "agMonatsentgelt",
+              "agErwartetMonat",
+              "ezBetrag",
+              "ezAnspruch",
+              "agBeschaeftigungsbeginn",
+              "jobArt",
+              "jobEntgeltMonat",
+              "jobSeit",
+              "agBav",
+              "bavBeitrag",
+              "bavZuschuss",
+              "pkvBestand2002",
+              "pkvBestand2026"
+            ]
+          },
+          "check": true
         },
         {
           "value": "0",

@@ -25,7 +25,7 @@ const form = registeredFrom(readJson(join(DRAFTS_DIR, 'lohnmeldung', '0.1.0.json
 const START = join(__dirname, '..', '..', 'manual_tests', 'startpunkte');
 
 /** The signed Monatsmeldung of the start point with `people` people, and `text` as Besonderheiten. */
-async function pdfWith(people: number, text?: string, wageTypes?: string) {
+async function pdfWith(people: number, text?: string, wageTypes?: string, lastMonth = 0) {
   const parsed = parseStartPoint(
     readJson(join(START, 'monatsmeldung-november-unterschrieben.json')),
   );
@@ -46,6 +46,15 @@ async function pdfWith(people: number, text?: string, wageTypes?: string) {
   answers.monatWerte = [];
   if (text !== undefined) answers.besonderheiten = text;
   if (wageTypes !== undefined) answers.lohnarten = wageTypes;
+  if (lastMonth > 0) {
+    answers.fragVormonat = true;
+    answers.vormonatWerte = Array.from({ length: lastMonth }, (_, i) => ({
+      rowId: `r${i + 1}`,
+      vormonatPerson: 'Beispiel, Person 1',
+      vormonatLohnart: '1000 Stundenlohn',
+      vormonatWert: String(i + 1),
+    }));
+  }
   let n = 0;
   const built = buildStartPoint(point, form, {
     questionnaireId: QUESTIONNAIRE_ID,
@@ -67,15 +76,22 @@ async function pdfWith(people: number, text?: string, wageTypes?: string) {
   return written.bytes;
 }
 
-/** Every piece of text and its height on the page, page by page. */
-async function pieces(bytes: Uint8Array): Promise<{ page: number; y: number; text: string }[]> {
+interface Piece {
+  page: number;
+  y: number;
+  text: string;
+  font: string;
+}
+
+/** Every piece of text, its height on the page and its font, page by page. */
+async function pieces(bytes: Uint8Array): Promise<Piece[]> {
   const doc = await pdfjs.getDocument({ data: bytes.slice() }).promise;
-  const found: { page: number; y: number; text: string }[] = [];
+  const found: Piece[] = [];
   for (let page = 1; page <= doc.numPages; page++) {
     const content = await (await doc.getPage(page)).getTextContent();
     for (const item of content.items) {
       if ('str' in item && item.str.trim() !== '') {
-        found.push({ page, y: item.transform[5] ?? 0, text: item.str });
+        found.push({ page, y: item.transform[5] ?? 0, text: item.str, font: item.fontName });
       }
     }
   }
@@ -190,4 +206,44 @@ describe('where a value goes on over the next page', () => {
       );
     }
   }, 120_000);
+
+  // Audit 2026-11-16, round 4: the checks above missed a heading at the end of an otherwise full
+  // page. Headings and the titles of the notices are bold, the text under them is not: the last
+  // line of a page before the Prüfblatt is never bold.
+  it('never ends a page with a heading or the title of a notice', async () => {
+    const cases: [string, Parameters<typeof pdfWith>][] = [
+      ...Array.from({ length: 60 }, (_, i): [string, Parameters<typeof pdfWith>] => [
+        `${i + 1} lines`,
+        [2, Array.from({ length: i + 1 }, (_, n) => `Zeile ${n + 1}`).join('\n')],
+      ]),
+      ...Array.from({ length: 12 }, (_, i): [string, Parameters<typeof pdfWith>] => [
+        `${i + 1} people`,
+        [i + 1],
+      ]),
+      ...[5, 7].flatMap((count) =>
+        [1, 2].map((lastMonth): [string, Parameters<typeof pdfWith>] => [
+          `${count} lines, ${lastMonth} of last month`,
+          [
+            2,
+            Array.from({ length: count }, (_, n) => `Zeile ${n + 1}`).join('\n'),
+            undefined,
+            lastMonth,
+          ],
+        ]),
+      ),
+    ];
+    const ends: string[] = [];
+    for (const [name, args] of cases) {
+      const found = await pieces(await pdfWith(...args));
+      const bold = found.find((piece) => piece.text === 'Unterschriften und Abschlüsse')?.font;
+      const check = found.find((piece) => piece.text.startsWith('Prüfblatt'))?.page ?? Infinity;
+      const pages = [...new Set(found.map((piece) => piece.page))].filter((page) => page < check);
+      for (const page of pages) {
+        const body = found.filter((piece) => piece.page === page && piece.y !== 28);
+        const lowest = body.reduce((low, piece) => (piece.y < low.y ? piece : low));
+        if (lowest.font === bold) ends.push(`${name}: „${lowest.text}“ ends page ${page}`);
+      }
+    }
+    expect(ends).toEqual([]);
+  }, 300_000);
 });
