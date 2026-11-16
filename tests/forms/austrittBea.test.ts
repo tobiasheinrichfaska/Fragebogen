@@ -211,6 +211,8 @@ describe('the notices that fit the way the employment ends', () => {
         'hinweisArbeitsuche',
       ],
     ],
+    // Audit 2026-11-16: a Kündigung of the person the employer brought about counts for the
+    // Massenentlassung (§ 17 Abs. 1 Satz 2 KSchG).
     [
       'kuendigungPerson',
       [
@@ -218,6 +220,7 @@ describe('the notices that fit the way the employment ends', () => {
         'hinweisSchriftform',
         'hinweisZugang',
         'hinweisFristen',
+        'hinweisBetriebsrat',
         'hinweisFreistellungUrlaub',
         'hinweisArbeitsuche',
       ],
@@ -237,8 +240,30 @@ describe('the notices that fit the way the employment ends', () => {
     ['gesetzTarif', ['hinweisAblauf', 'hinweisFreistellungUrlaub', 'hinweisArbeitsuche']],
     ['ausbildungsende', ['hinweisAblauf', 'hinweisFreistellungUrlaub']],
     ['tod', ['hinweisAblauf', 'hinweisFreistellungUrlaub']],
+    // Audit 2026-11-16: no end at all (both excluded), and nothing chosen yet.
+    ['wechselIntern', ['hinweisAblauf', 'hinweisFreistellungUrlaub']],
+    ['betriebsuebergang', ['hinweisAblauf', 'hinweisFreistellungUrlaub']],
   ])('%s', (art, expected) => {
     expect(notices(art).sort()).toEqual([...expected].sort());
+  });
+
+  it('shows no notice of an end before the way it ends is chosen', () => {
+    const data = currentPart(draftWith({}), ROLE)?.data ?? {};
+    expect(
+      activeInfoBlocks(form.definition, ROLE, data)
+        .map((block) => block.id)
+        .sort(),
+    ).toEqual(['hinweisAblauf', 'hinweisFreistellungUrlaub']);
+  });
+
+  it('keeps the exception for a training in the job-seeker notice', () => {
+    const text = form.definition.infoBlocks.find((b) => b.id === 'hinweisArbeitsuche')?.text;
+    expect(text).toContain('§ 38 Abs. 1 S. 4 SGB III');
+  });
+
+  it('counts what the employer brought about for a Massenentlassung', () => {
+    const text = form.definition.infoBlocks.find((b) => b.id === 'hinweisBetriebsrat')?.text;
+    expect(text).toContain('§ 17 Abs. 1 Satz 2 KSchG');
   });
 });
 

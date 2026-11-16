@@ -190,7 +190,12 @@ test('a table takes as many rows as its form allows: 100 people in the Monatsmel
     'mitarbeitende',
   );
   await press(app, 'Mitarbeiter/in hinzufügen');
-  for (let n = 2; n <= 100; n++) await press(app, `Weitere Zeile: Mitarbeiter/in ${n}`);
+  for (let n = 2; n <= 100; n++) {
+    // Fails within seconds, not after the test's three minutes, when the button stops early.
+    const more = app.getByRole('button', { name: `Weitere Zeile: Mitarbeiter/in ${n}` });
+    await expect(more, `row ${n}`).toBeVisible({ timeout: 5_000 });
+    await more.click();
+  }
   await expect(app.locator('fieldset.table-row')).toHaveCount(100);
   await expect(app.getByRole('button', { name: /^Weitere Zeile/ })).toHaveCount(0);
   await expectQuiet(page, found);

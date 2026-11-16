@@ -35,7 +35,7 @@ import { describeInputTypes, displayValue } from '../logic/display';
 import { fileNameFor } from '../logic/fileNames';
 import { activeInfoBlocks } from '../logic/form';
 import { isTestVersion, registryOf, type RegisteredForm } from '../logic/formRegistry';
-import type { Questionnaire } from '../logic/model';
+import type { FieldDefinition, FieldValue, Questionnaire } from '../logic/model';
 import { signatureLayout } from '../logic/provenance';
 import { qrPayloads } from '../logic/qrParts';
 import { latestSealed } from '../logic/questionnaire';
@@ -369,54 +369,88 @@ export async function writeQuestionnairePdf(
   }
 
   const labelWidth = 200;
+  const valueWidth = A4[0] - 2 * MARGIN - labelWidth - 8;
+  const VALUE_LINE = 12.8;
+  const LABEL_LINE = 11.5;
+  // Audit 2026-11-16: a value taller than a page (a table of 30 people, a long text) ran off the
+  // bottom; it is drawn in pieces now, broken between its paragraphs (table rows, text lines) where
+  // one fits, and the label is repeated with „(Fortsetzung)“ on the next page.
+  const prepared = (field: FieldDefinition, value: FieldValue | undefined) => {
+    const note = footnotes.get(field.id);
+    const shown = `${displayValue(field, value)}${note === undefined ? '' : `  [${note}]`}`;
+    const lines = printable(shown)
+      .split('\n')
+      .flatMap((paragraph) =>
+        wrap(paragraph, fonts.sans, 9.5, valueWidth).map((line, i) => ({ line, starts: i === 0 })),
+      );
+    const label = (text: string) => wrap(printable(text), fonts.sans, 8.5, labelWidth - 6);
+    return { lines, label: label(field.label), goesOn: label(`${field.label} (Fortsetzung)`) };
+  };
+  /** Lines of a value that fit from the current height down to the bottom margin. */
+  const room = () => Math.floor((layout.y - BOTTOM - 4) / VALUE_LINE);
+  const freshRoom = Math.floor((A4[1] - MARGIN - 8 - BOTTOM - 4) / VALUE_LINE);
+  /** The lines up to the end of the paragraph that begins at `at`, and the label's own height. */
+  const firstNeed = (lines: { starts: boolean }[], at: number, labelLines: number) => {
+    let paragraph = 1;
+    while (at + paragraph < lines.length && !lines[at + paragraph]?.starts) paragraph++;
+    const label = Math.ceil((labelLines * LABEL_LINE) / VALUE_LINE);
+    return Math.min(Math.max(paragraph, label), freshRoom);
+  };
   for (const section of definition.sections) {
     const rows = section.fields.flatMap((field) => {
       const part = latestSealed(questionnaire, field.role);
       if (!part || !(field.id in part.data)) return [];
-      return [{ field, value: part.data[field.id] }];
+      return [{ field, ...prepared(field, part.data[field.id]) }];
     });
-    if (rows.length === 0) continue;
+    const [first] = rows;
+    if (!first) continue;
+    // The heading stays with the first piece of its first value.
+    layout.ensure(33 + firstNeed(first.lines, 0, first.label.length) * VALUE_LINE + 4);
     layout.heading(section.title, 11);
-    for (const { field, value } of rows) {
-      const note = footnotes.get(field.id);
-      const shown = `${displayValue(field, value)}${note === undefined ? '' : `  [${note}]`}`;
-      const valueLines = wrap(
-        printable(shown),
-        fonts.sans,
-        9.5,
-        A4[0] - 2 * MARGIN - labelWidth - 8,
-      );
-      const labelLines = wrap(printable(field.label), fonts.sans, 8.5, labelWidth - 6);
-      const height = Math.max(valueLines.length * 12.8, labelLines.length * 11.5) + 4;
-      layout.ensure(height);
-      if (field.role !== firstRole) {
-        layout.page.drawRectangle({
-          x: MARGIN - 4,
-          y: layout.y - height + 10,
-          width: A4[0] - 2 * MARGIN + 8,
-          height,
-          color: SHADE,
+    for (const { field, lines, label, goesOn } of rows) {
+      let at = 0;
+      do {
+        const labelLines = at === 0 ? label : goesOn;
+        if (room() < firstNeed(lines, at, labelLines.length)) layout.newPage();
+        let take = Math.min(lines.length - at, room());
+        if (at + take < lines.length) {
+          // Break before a paragraph that does not fit, unless one paragraph fills the page.
+          let cut = take;
+          while (cut > 0 && !lines[at + cut]?.starts) cut--;
+          if (cut > 0) take = cut;
+        }
+        const piece = lines.slice(at, at + take);
+        const height = Math.max(piece.length * VALUE_LINE, labelLines.length * LABEL_LINE) + 4;
+        if (field.role !== firstRole) {
+          layout.page.drawRectangle({
+            x: MARGIN - 4,
+            y: layout.y - height + 10,
+            width: A4[0] - 2 * MARGIN + 8,
+            height,
+            color: SHADE,
+          });
+        }
+        labelLines.forEach((line, i) => {
+          layout.page.drawText(line, {
+            x: MARGIN,
+            y: layout.y - i * LABEL_LINE,
+            size: 8.5,
+            font: fonts.sans,
+            color: MUTED,
+          });
         });
-      }
-      labelLines.forEach((line, i) => {
-        layout.page.drawText(line, {
-          x: MARGIN,
-          y: layout.y - i * 11.5,
-          size: 8.5,
-          font: fonts.sans,
-          color: MUTED,
+        piece.forEach(({ line }, i) => {
+          layout.page.drawText(line, {
+            x: MARGIN + labelWidth,
+            y: layout.y - i * VALUE_LINE,
+            size: 9.5,
+            font: fonts.sans,
+            color: INK,
+          });
         });
-      });
-      valueLines.forEach((line, i) => {
-        layout.page.drawText(line, {
-          x: MARGIN + labelWidth,
-          y: layout.y - i * 12.8,
-          size: 9.5,
-          font: fonts.sans,
-          color: INK,
-        });
-      });
-      layout.y -= height;
+        layout.y -= height;
+        at += take;
+      } while (at < lines.length);
     }
   }
 

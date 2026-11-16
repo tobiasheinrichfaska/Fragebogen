@@ -1,7 +1,7 @@
 {
   "id": "austritt",
   "version": "0.1.0",
-  "revised": "2026-11-16T00:47",
+  "revised": "2026-11-16T01:32",
   "title": "Austritt: Angaben zum Ende der Beschäftigung",
   "signaturePolicy": "electronic",
   "signatureBasis": "Für diese Mitteilung an die lohnabrechnende Stelle schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Sie zeigt, wer die Angaben gemacht hat. Die Kündigung selbst und ein Aufhebungsvertrag brauchen dagegen Papier mit eigenhändiger Unterschrift (§ 623 BGB); dafür genügt diese Unterschrift nicht.",
@@ -1551,14 +1551,14 @@
       "id": "hinweisBetriebsrat",
       "role": "arbeitgeber",
       "title": "Betriebsrat, Massenentlassung, Ausbildung",
-      "text": "Hat Ihr Betrieb einen Betriebsrat, ist er vor jeder Kündigung anzuhören; ohne Anhörung ist die Kündigung unwirksam (§ 102 Abs. 1 BetrVG). Wollen Sie innerhalb von 30 Tagen mehrere Beschäftigte entlassen, kann vorher eine Anzeige bei der Agentur für Arbeit nötig sein, in Betrieben mit mehr als 20 Beschäftigten (§ 17 Abs. 1 KSchG). Auszubildenden können Sie nach der Probezeit nur aus wichtigem Grund kündigen, schriftlich und mit Angabe der Gründe (§ 22 Abs. 2, 3 BBiG).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
+      "text": "Hat Ihr Betrieb einen Betriebsrat, ist er vor jeder Kündigung durch Sie anzuhören; ohne Anhörung ist die Kündigung unwirksam (§ 102 Abs. 1 BetrVG). Wollen Sie innerhalb von 30 Kalendertagen mehrere Beschäftigte entlassen, kann vorher eine Anzeige bei der Agentur für Arbeit nötig sein, in Betrieben mit in der Regel mehr als 20 Beschäftigten (§ 17 Abs. 1 Satz 1 KSchG). Dabei zählen auch Aufhebungsverträge und Kündigungen der Beschäftigten mit, die Sie veranlasst haben (§ 17 Abs. 1 Satz 2 KSchG). Auszubildenden können Sie nach der Probezeit nur aus wichtigem Grund kündigen, schriftlich und mit Angabe der Gründe (§ 22 Abs. 2, 3 BBiG).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-03",
       "acknowledgement": "read",
       "showIf": {
         "field": "agBeendigungsart",
-        "in": ["kuendigungArbeitgeber", "aufhebungsvertrag"]
+        "in": ["kuendigungArbeitgeber", "kuendigungPerson", "aufhebungsvertrag"]
       },
-      "because": "Die Anhörung des Betriebsrats gilt vor einer Kündigung durch den Arbeitgeber; ein von ihm veranlasster Aufhebungsvertrag zählt bei einer Massenentlassung mit."
+      "because": "Die Anhörung des Betriebsrats gilt vor einer Kündigung durch den Arbeitgeber; bei einer Massenentlassung zählen auch ein Aufhebungsvertrag und eine Kündigung der Person mit, die er veranlasst hat (§ 17 Abs. 1 Satz 2 KSchG)."
     },
     {
       "id": "hinweisFreistellungUrlaub",
@@ -1572,11 +1572,20 @@
       "id": "hinweisArbeitsuche",
       "role": "arbeitgeber",
       "title": "Hinweis an die beschäftigte Person",
-      "text": "Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
+      "text": "Weisen Sie die Person bitte früh darauf hin, dass sie sich bei der Agentur für Arbeit arbeitsuchend melden muss: spätestens drei Monate vor dem Ende, bei kürzerer Zeit innerhalb von drei Tagen, nachdem sie vom Ende erfahren hat – auch wenn sie gegen die Kündigung klagt. Geben Sie ihr dafür frei (§ 2 Abs. 2 S. 2 Nr. 3 SGB III). Meldet sie sich zu spät, kann eine Sperrzeit von einer Woche eintreten (§ 38 Abs. 1, § 159 Abs. 1 S. 2 Nr. 9, Abs. 6 SGB III). Für eine betriebliche Ausbildung gilt die Meldepflicht nicht (§ 38 Abs. 1 S. 4 SGB III).\n\nDas ist ein Hinweis, keine Rechtsberatung. Im Zweifel fragen Sie bitte eine Rechtsanwältin oder einen Rechtsanwalt.",
       "asOf": "2026-11-15",
       "acknowledgement": "read",
-      "showIf": { "not": { "field": "agBeendigungsart", "in": ["tod", "ausbildungsende"] } },
-      "because": "Die Meldepflicht als arbeitsuchend trifft jede Person, deren Arbeitsverhältnis endet, nicht aber nach einer betrieblichen Ausbildung und nicht beim Tod (§ 38 Abs. 1 SGB III)."
+      "showIf": {
+        "field": "agBeendigungsart",
+        "in": [
+          "kuendigungArbeitgeber",
+          "kuendigungPerson",
+          "aufhebungsvertrag",
+          "befristung",
+          "gesetzTarif"
+        ]
+      },
+      "because": "Die Meldepflicht als arbeitsuchend trifft jede Person, deren Arbeitsverhältnis endet; nicht beim Tod, nicht am Ende einer betrieblichen Ausbildung und nicht, wenn das Arbeitsverhältnis gar nicht endet (Wechsel im Betrieb, Betriebsübergang; § 38 Abs. 1 SGB III)."
     }
   ],
   "consistencyRules": [],

@@ -1,5 +1,5 @@
-// The test page of the test folder (former manual tests MT-85, MT-130, MT-133 of
-// manual_tests/08_auslieferung.md). Since 2026-11-15 it is the shared test page of Testumgebung
+// The test page of the test folder (manual test MT-85 of manual_tests/08_auslieferung.md; MT-130
+// and MT-133 went with the own test page on 2026-11-15). Since 2026-11-15 it is the shared test page of Testumgebung
 // (Tobias: „setze den Auftrag zum Testrahmen um“), a copy in testrahmen/: its own behaviour — clock,
 // results, steps, reasons, the report's check — is tested there. Here: how the Fragebogen binds it —
 // its manual tests, its start points, restart and reset of this app only, the report naming this
@@ -10,7 +10,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { devices, expect, test, type BrowserContext, type Page } from '@playwright/test';
-import { passAccessGate, rememberAccess, webAppFile } from '../guards';
+import { ACCESS_NOTICE, passAccessGate, rememberAccess, webAppFile } from '../guards';
 import { parseManualTests, testEnvironment } from '../../../src/logic/manualTests';
 import { APP, expectQuiet as expectQuietFile, openTestApp, TEST_APP } from '../app';
 
@@ -66,8 +66,13 @@ interface ReportEndpoint {
  * The test folder at its https address; anything else asked for is refused and noted. With
  * `reports` the login script's report address answers as given, one answer per report.
  */
-async function serve(context: BrowserContext, page: Page, reports?: ReportEndpoint): Promise<Seen> {
-  await rememberAccess(context);
+async function serve(
+  context: BrowserContext,
+  page: Page,
+  reports?: ReportEndpoint,
+  remember = true,
+): Promise<Seen> {
+  if (remember) await rememberAccess(context);
   const html = readFileSync(TEST_APP);
   const seen: Seen = { foreign: [], errors: [] };
   await context.route('**/*', (route) => {
@@ -237,6 +242,35 @@ test.describe('MT-85: the shared test page with the Fragebogen', () => {
     await expect(app(page).getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
     expect(await page.evaluate(() => location.hash)).toBe('');
     await expect(app(page)).not.toContainText('aus Ihrem Lesezeichen');
+    await expectQuiet(page, seen);
+  });
+
+  // Audit 2026-11-16: every start point mounts the app afresh, and the access notice was asked again
+  // each time unless „merken“ was ticked — although it is meant once per visit.
+  test('asks the access notice once per visit, not again for every start point', async ({
+    context,
+    page,
+  }) => {
+    test.skip(ACCESS_NOTICE === undefined, 'needs the access notice of config/kanzlei.local.json');
+    const notice = ACCESS_NOTICE ?? '';
+    const testCase = needed(START_CASE, 'that begins with a prepared questionnaire');
+    const env = testEnvironment(testCase);
+    const point = env.kind === 'start' ? POINTS.get(env.id) : undefined;
+    const seen = await serve(context, page, undefined, false);
+    await page.goto(PAGE_URL);
+    await expect(app(page).getByRole('checkbox', { name: notice })).toBeVisible();
+    await passAccessGate(app(page));
+    await expect(app(page).getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
+    await action(page, 'oeffnen', `.tr-test[data-id="${testCase.id}"]`).click();
+    await action(page, 'startpunkt', `[data-id="${point?.id ?? ''}"]`)
+      .first()
+      .click();
+    await action(page, 'ja').click();
+    await expect(app(page)).toContainText(`Vorbereitet: ${point?.title ?? ''}`);
+    await expect(app(page).getByRole('checkbox', { name: notice })).toHaveCount(0);
+    // A full reset forgets it: asked again.
+    await confirm(page, 'zuruecksetzen');
+    await expect(app(page).getByRole('checkbox', { name: notice })).toBeVisible();
     await expectQuiet(page, seen);
   });
 
