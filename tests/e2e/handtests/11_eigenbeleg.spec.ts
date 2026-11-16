@@ -71,7 +71,7 @@ test('MT-110: a donation is blocked, a business meal only warned', async ({ page
   await expect(banner).toHaveCount(0);
   await at(
     app,
-    'Wichtig bei einer Bewirtung: Ohne die Rechnung der Gaststätte ist die Ausgabe nicht abziehbar.',
+    'Wichtig bei einer Bewirtung in einer Gaststätte: Ohne deren Rechnung ist die Ausgabe nicht abziehbar.',
   );
   const help = app.locator('.question .help');
   await expect(help).toContainText(

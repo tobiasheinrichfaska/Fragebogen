@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-15T23:39",
+  "revised": "2026-11-16T02:12",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -2044,14 +2044,30 @@
                 "equals": "privat"
               },
               {
-                "not": {
-                  "field": "artLautVereinbarung",
-                  "in": ["minijob", "aushilfe"]
-                }
+                "any": [
+                  {
+                    "not": {
+                      "field": "artLautVereinbarung",
+                      "in": ["minijob", "aushilfe"]
+                    }
+                  },
+                  {
+                    "all": [
+                      {
+                        "field": "artLautVereinbarung",
+                        "equals": "minijob"
+                      },
+                      {
+                        "field": "weitereBeschaeftigung",
+                        "equals": true
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
-          "because": "Die niedrigere Jahresarbeitsentgeltgrenze gilt nur für Personen, die am 31.12.2002 privat versichert waren (§ 6 Abs. 7 SGB V). Im Minijob und in der kurzfristigen Aushilfe entfällt die Frage: Dort besteht keine Versicherungspflicht, und es gibt keinen Zuschuss.",
+          "because": "Die niedrigere Jahresarbeitsentgeltgrenze gilt nur für Personen, die am 31.12.2002 privat versichert waren (§ 6 Abs. 7 SGB V). In der kurzfristigen Aushilfe entfällt die Frage, im Minijob auch, außer neben einer anderen Beschäftigung: Ob ein weiterer Minijob in der Krankenversicherung mit der Hauptbeschäftigung zusammengerechnet wird, hängt davon ab, ob sie über dieser Grenze liegt (Geringfügigkeits-Richtlinien B 2.2.2.8).",
           "options": [
             {
               "id": "nein",

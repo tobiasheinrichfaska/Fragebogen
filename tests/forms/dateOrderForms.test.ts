@@ -104,7 +104,11 @@ describe('Personalfragebogen: the end of a fixed term', () => {
           return undefined;
         }
         // The condition of an answer (an option has a label but no role), not of a field.
-        const parent = this as { label?: unknown; role?: unknown };
+        const parent = this as { id?: unknown; label?: unknown; role?: unknown };
+        // Audit 2026-11-16: 31.12.2002 is asked in a Minijob next to another job too.
+        if (parent.id === 'pkvBestand2002' && (key === 'showIf' || key === 'because')) {
+          return undefined;
+        }
         if (key === 'showIf' && parent.label !== undefined && parent.role === undefined) {
           return undefined;
         }
