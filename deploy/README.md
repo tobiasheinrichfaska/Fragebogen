@@ -53,6 +53,21 @@ Cloud-Sitzung gehängt; Cloud-Sitzungen laden nichts hoch.
   ausdrückliches OK.
 - Die Live-Zone sendet `Cache-Control: max-age=0`: Eine neue Fassung ist sofort da, niemand muss den
   Zwischenspeicher des CDN leeren.
+- **Nicht dokumentiert** (weder hier noch in Testumgebung): welchen Build-Befehl Freigabe benutzt,
+  ob es dabei die privaten Dateien aus `Fragebogen-privat` (`config/kanzlei.local.json`,
+  `config/export.local.json`) einspielt und ob es `deploy/upload.json` anwendet. Die Tabelle oben
+  sagt, was online liegen soll, nicht, wie Freigabe es baut.
+- **Ohne die privaten Dateien baut `vite.config.ts` still neutral:** Es nimmt dann
+  `config/kanzlei.example.json` und keine Zuordnung, ohne Warnung. Der App fehlen dann der
+  Zugangshinweis, Impressum und Datenschutz, die Farben der Kanzlei, die Links „Wo finde ich das?“,
+  die App-Adresse in der PDF, der Link „Testbereich (für Tester)“ und in der Testzone die Übergabe an
+  Lohn und Gehalt. Die Live-Datei vom 15.11.2026 hat Zugangshinweis, Impressum, Datenschutz und
+  Farben, wurde also mit den privaten Dateien gebaut; wo, ist nicht festgehalten. MT-82 prüft das
+  nach jedem Ausrollen.
+- **Stand 16.11.2026:** Die Live-Datei trägt noch die alte `testAddress` (`test/`). `…/test/` gibt es
+  auf der Live-Zone nicht (404), der Link „Testbereich (für Tester)“ der öffentlichen App führt also
+  auf eine Fehlerseite, bis die nächste Live-Fassung mit der neuen `testAddress` gebaut ist. Eine
+  Weiterleitung alter Links per Edge Rule wirkt nicht oder ist nicht eingerichtet.
 - Handtest: MT-82 in [`manual_tests/08_auslieferung.md`](../manual_tests/08_auslieferung.md).
 
 ### Bis 15.11.2026: Upload-Werkzeug „Auslieferung“ (SFTP zu IONOS)
@@ -68,13 +83,24 @@ IONOS hoch (`npm run hochladen -- -Ziel <Ziel>`, `npm run tester`; davor ein eig
 | `mehrfachbearbeitung` | `mehrfachbearbeitung/` | Kanzlei-Fassung, nur IP-Adressen der Kanzlei – nie hochgeladen     |
 | `regeln`              | Subdomain              | nur `deploy/.htaccess`, ohne die App neu zu bauen oder hochzuladen |
 
-Für den Fragebogen wird dieser Weg nicht mehr benutzt. Die Regeln aus `deploy/upload.json` gelten
-weiter, und `tests/static/uploadSpec.test.ts` bewacht sie: welche gebauten Dateien zu jeder Fassung
-gehören, welche Pfade nie hochgehen (`dist-preview/`, `config/`, `import/`, `.tmp/`,
-`deploy/.local/`) und dass keine Datei mit der Zuordnung zum Lohnprogramm (den Masken aus
-`config/export.local.json`) in die öffentliche App kommt. Der Zugang des Werkzeugs (Server,
-Passwort, IP-Adressen) lag nur im Werkzeug auf dem Kanzlei-PC, nie in diesem Repo; das gitignorierte
-`deploy/.local/` hält die alte Testerliste (nur Hashes) und die damals erzeugten Zugriffsregeln.
+Für den Fragebogen wird dieser Weg nicht mehr benutzt. `deploy/upload.json` ist die Zielliste dieses
+früheren Werkzeugs. `tests/static/uploadSpec.test.ts` bewacht sie weiter als Daten: welche gebauten
+Dateien zu jeder Fassung gehören, welche Pfade nie hochgehen (`dist-preview/`, `config/`, `import/`,
+`.tmp/`, `deploy/.local/`) und dass die Zuordnung zum Lohnprogramm (die Masken aus
+`config/export.local.json`) nur in den geschützten Ordnern erlaubt ist. Abgewiesen hat solche
+Dateien das Werkzeug selbst, nicht der Test. Ob Freigabe die Liste liest, ist nicht dokumentiert.
+
+Dass die Zuordnung zum Lohnprogramm nicht in die öffentliche App kommt, leisten heute zwei Dinge:
+
+- **Der Build:** Nur `npm run build:kanzlei`, `npm run build:test` und `npm run build:preview`
+  bündeln sie (`__EXPORT_MAPPINGS__` in `vite.config.ts`); `npm run build` nie.
+- **Der e2e-Wächter** in `tests/e2e/flow.spec.ts` („the hosted build carries no mapping …“): Er
+  sucht in `dist/index.html` nach den Masken aus `config/export.local.json`. Ohne diese Datei hat er
+  nichts zu suchen; er greift also nur, wo die privaten Dateien liegen, nicht in der CI.
+
+Der Zugang des Werkzeugs (Server, Passwort, IP-Adressen) lag nur im Werkzeug auf dem Kanzlei-PC, nie
+in diesem Repo; das gitignorierte `deploy/.local/` hält die alte Testerliste (nur Hashes) und die
+damals erzeugten Zugriffsregeln.
 
 ## Tester der Testzone
 
