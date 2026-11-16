@@ -176,3 +176,188 @@ describe('the JAEG hint and the KV proposal agree', () => {
     expect(line).not.toContain('nicht zusammengerechnet');
   });
 });
+
+// Audit 2026-11-16, loop 6: the PV rule of round 5 said 1 where the KV said 0, it came before the
+// reasons the form knows (five years without statutory insurance, hauptberuflich selbständig), a
+// Minijob begun after this one counted from this job's start, and one-off payments were left out of
+// the Minijobs added together.
+describe('a further Minijob of a privately insured person: KV and PV agree (loop 6)', () => {
+  const digits = (answers: Answers, job: Answers) => {
+    const r = assess(answers, job, draft);
+    return {
+      kv: r.bgr?.value?.[0],
+      pv: r.bgr?.value?.[3],
+      kvLine: r.bgr?.detail.find((line) => line.startsWith('KV')) ?? '',
+    };
+  };
+  const minijob200: Job = { art: 'minijob', seit: '2026-01-01', monat: '200.00' };
+  const main3000: Job = { art: 'svpflichtig', seit: '2020-01-01', monat: '3000.00' };
+
+  it.each([
+    [
+      'GfR example 26 C, privately insured',
+      person([MAIN_7000, { art: 'minijob', seit: '2026-07-01', monat: '600.00' }], 'privat'),
+      employer('minijob', '2026-09-01', '500.00'),
+    ],
+    [
+      'a pensioner with Beihilfe',
+      {
+        ...person([main3000, minijob200], 'privat'),
+        status: 'ruhestand',
+        bezugPension: true,
+        pensionArt: 'alter',
+        beamtBeihilfe: true,
+      },
+      employer('minijob', '2026-03-01', '300.00'),
+    ],
+    [
+      'an exemption from the KV',
+      {
+        ...person([main3000, minijob200], 'privat'),
+        artLautVereinbarung: 'festeStelle',
+        kvBefreiung: 'ja',
+      },
+      employer('svpflichtig', '2026-03-01', '300.00', { agArbeitszeitmodell: 'gleitzeit' }),
+    ],
+    [
+      'a main job in the band of § 6 Abs. 8 SGB V (2027, answer unknown)',
+      {
+        ...person(
+          [
+            { art: 'svpflichtig', seit: '2020-01-01', monat: '6750.00' },
+            { art: 'minijob', seit: '2027-01-01', monat: '400.00' },
+          ],
+          'privat',
+        ),
+        pkvBestand2026: 'unbekannt',
+      },
+      employer('minijob', '2027-03-01', '300.00'),
+    ],
+  ])('%s: KV 0 and PV 0', (_label, answers, job) => {
+    const { kv, pv } = digits(answers, job);
+    expect(kv).toBe('0');
+    expect(pv).toBe('0');
+  });
+
+  it.each(['1965-02-02', '1985-02-02'])(
+    'not statutorily insured for five years (born %s): the main job is no KV job, so 0',
+    (geburtsdatum) => {
+      const { kv, pv, kvLine } = digits(
+        {
+          ...person([main3000, minijob200], 'privat'),
+          geburtsdatum,
+          artLautVereinbarung: 'festeStelle',
+          gkvLetzte5Jahre: 'nein',
+        },
+        employer('svpflichtig', '2026-03-01', '300.00', { agArbeitszeitmodell: 'gleitzeit' }),
+      );
+      expect([kv, pv]).toEqual(['0', '0']);
+      expect(kvLine).toContain('in den letzten fünf Jahren nicht gesetzlich versichert');
+      expect(kvLine).toContain('(prüfen)');
+    },
+  );
+
+  it('hauptberuflich selbständig: 0', () => {
+    const { kv, pv, kvLine } = digits(
+      {
+        ...person([main3000, minijob200], 'privat'),
+        status: 'selbstaendig',
+        selbstHauptberuf: true,
+      },
+      employer('minijob', '2026-03-01', '300.00'),
+    );
+    expect([kv, pv]).toEqual(['0', '0']);
+    expect(kvLine).toContain('§ 5 Abs. 5 SGB V');
+  });
+
+  it('the agreement test of round 5 holds on the digits too', () => {
+    const jobs: Job[] = [MAIN_6300, { art: 'minijob', seit: '2026-01-01', monat: '200.00' }];
+    const { kv, pv } = digits(person(jobs, 'privat'), employer('minijob', '2026-03-01', '300.00'));
+    expect([kv, pv]).toEqual(['1', '1']);
+  });
+});
+
+describe('the Minijobs added together (loop 6)', () => {
+  it('GfR example 26 B: a Minijob begun later counts only from its own start', () => {
+    const jobs: Job[] = [MAIN_7000, { art: 'minijob', seit: '2026-09-01', monat: '500.00' }];
+    const answers = person(jobs);
+    const job = employer('minijob', '2026-07-01', '600.00');
+    const line = jaegHints(answers, job).get('jaeg') ?? '';
+    expect(line).toContain('Ab 01.09.2026');
+    expect(line).toContain('Bis dahin bleibt diese Beschäftigung ein Minijob.');
+    // From its own start B is a Minijob with the KV flat rate (GfR example 25 B).
+    expect(assess(answers, job, draft).bgr?.value?.[0]).toBe('6');
+  });
+
+  it('a Christmas bonus counts in the yearly view: 300 € + 600 € a year is 350 € a month', () => {
+    const jobs: Job[] = [MAIN_7000, { art: 'minijob', seit: '2026-01-01', monat: '280.00' }];
+    const answers = person(jobs);
+    const job = employer('minijob', '2026-03-01', '300.00', {
+      agEinmalzahlungen: [
+        {
+          rowId: 'r1',
+          ezArt: 'weihnachtsgeld',
+          ezBetrag: '600.00',
+          ezMonat: '11',
+          ezAnspruch: true,
+        },
+      ],
+    });
+    // 630 € together, above the limit of 603 €: no Minijobs in the KV (GfR example 26 C).
+    expect(jaegHints(answers, job).get('jaeg')).toContain('630,00 €');
+    const { value } = assess(answers, job, draft).bgr ?? {};
+    expect(value?.[0]).toBe('0');
+    expect(value?.[3]).toBe('1');
+  });
+
+  it('a job in Altersteilzeit with Minijob pay is no Minijob: it counts', () => {
+    const line = jaegHints(
+      person([MAIN_7000]),
+      employer('svpflichtig', '2026-03-01', '500.00', { agArbeitszeitmodell: 'altersteilzeit' }),
+    ).get('jaeg');
+    expect(line).toContain('90.000,00 €');
+  });
+
+  it('own one-off payments make a job of 560 € no Minijob', () => {
+    const line = jaegHints(
+      person([MAIN_6000]),
+      employer('minijob', '2026-03-01', '560.00', {
+        agEinmalzahlungen: [
+          {
+            rowId: 'r1',
+            ezArt: 'weihnachtsgeld',
+            ezBetrag: '1000.00',
+            ezMonat: '11',
+            ezAnspruch: true,
+          },
+        ],
+      }),
+    ).get('jaeg');
+    expect(line).toContain('79.720,00 €');
+  });
+
+  it('a main job in the band of § 6 Abs. 8 SGB V names the answer about 31.12.2026', () => {
+    const jobs: Job[] = [
+      { art: 'svpflichtig', seit: '2020-01-01', monat: '6750.00' },
+      { art: 'minijob', seit: '2027-01-01', monat: '400.00' },
+    ];
+    const line =
+      jaegHints(
+        { ...person(jobs, 'privat'), pkvBestand2026: 'unbekannt' },
+        employer('minijob', '2027-03-01', '300.00'),
+      ).get('jaeg') ?? '';
+    // The band note of the detail, not the fixed message (which names § 6 Abs. 8 SGB V too).
+    expect(line).toContain('Hauptbeschäftigung 81.000,00 € im Jahr.');
+    expect(line).toContain('Traf das zu, ist die Person versicherungsfrei');
+  });
+
+  it('the texts say that a further Minijob gives freedom only from the next year', () => {
+    const hints = draft.definition.checkHints ?? [];
+    expect(hints.find((h) => h.id === 'jaeg')?.message).toContain(
+      'bleibt die Person bis zum Ende des Kalenderjahres versicherungspflichtig',
+    );
+    expect(hints.find((h) => h.id === 'jaegNichtAngegeben')?.message).toContain(
+      'erst ab dem nächsten Kalenderjahr',
+    );
+  });
+});

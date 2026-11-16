@@ -39,6 +39,13 @@ const UNDO_2027: [string, string][] = [
     '– bis die PDF erstellt oder der Fragebogen verworfen ist, höchstens 7 Tage.',
   ],
 ];
+// Rules of 1.1.0 for a further Minijob of a privately insured person next to a main job under the
+// JAEG (audit 2026-11-16, loops 4 to 6; pinned in personalfragebogen2027.test.ts and jaegHinweis.test.ts).
+const MINIJOB_1_1 = [
+  'privat oder anderweitig versichert: Ist die Hauptbeschäftigung krankenversicherungspflichtig',
+  'und in den letzten fünf Jahren nicht gesetzlich versichert: Die Hauptbeschäftigung',
+  'Weiterer Minijob neben einer Hauptbeschäftigung, hauptberuflich selbständig',
+];
 const austritt = registeredFrom(readJson(join(DRAFTS_DIR, 'austritt', '0.1.0.json')));
 
 function employer(form: RegisteredForm, values: Record<string, unknown>): Session {
@@ -131,8 +138,8 @@ describe('Personalfragebogen: the end of a fixed term', () => {
               !(
                 typeof item === 'object' &&
                 item !== null &&
-                String((item as { reason?: unknown }).reason).includes(
-                  'privat oder anderweitig versichert: Ist die Hauptbeschäftigung krankenversicherungspflichtig',
+                MINIJOB_1_1.some((marker) =>
+                  String((item as { reason?: unknown }).reason).includes(marker),
                 )
               ) &&
               !(typeof item === 'string' && item.startsWith(CUSTODY.note)) &&

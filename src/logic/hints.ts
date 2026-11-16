@@ -307,6 +307,26 @@ function payOf(
   return { cents: Math.max(0, gross - off.cents), uncertain: off.uncertain, notes: off.notes };
 }
 
+/**
+ * This job's regular monthly pay in the yearly view — twelve months plus the one-off payments with
+ * entitlement, divided by twelve (GfR B 2.2.1.1) — for adding it to the other Minijobs (audit
+ * 2026-11-16, loop 6: the monthly amount alone left a Christmas bonus out). 0 when not answered.
+ */
+function ownMonthlyInYearlyView(
+  fixed: FieldValue | undefined,
+  expected: FieldValue | undefined,
+  kind: FieldValue | undefined,
+  beitrag: FieldValue | undefined,
+  zuschuss: FieldValue | undefined,
+  on: FieldValue | undefined,
+  oneOff: FieldValue | undefined,
+  entitled: FieldValue | undefined,
+): number {
+  const monthly = payOf(fixed, expected, kind, beitrag, zuschuss, on).cents;
+  if (monthly === undefined) return 0;
+  return Math.round(yearlyPay(monthly, oneOff ?? null, entitled ?? null).yearly / 12);
+}
+
 /** An amount, or the first row of a table column. */
 const firstAmount = (pay: FieldValue | undefined) =>
   cents(Array.isArray(pay) ? (pay[0] ?? null) : (pay ?? null));
@@ -535,7 +555,17 @@ const geringfuegigEntlohnt: HintTest = {
         ],
       };
     }
-    const amount = payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0;
+    // The own pay in the yearly view, one-off payments included (GfR B 2.2.1.1; audit 2026-11-16).
+    const amount = ownMonthlyInYearlyView(
+      fixed,
+      expected,
+      kind,
+      beitrag,
+      zuschuss,
+      on,
+      oneOff,
+      entitled,
+    );
     const unknown = minijobs.some((row) => row.cents === undefined);
     const together = amount + minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
     const limit =
@@ -1138,7 +1168,7 @@ function weitererMinijobNebenJaegFrei(bisGrenze: boolean): HintTest {
       }
       const limit = cents(RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat ?? '0') ?? 0;
       const together =
-        (payOf(fixed, expected, kind, beitrag, zuschuss, on).cents ?? 0) +
+        ownMonthlyInYearlyView(fixed, expected, kind, beitrag, zuschuss, on, oneOff, entitled) +
         minijobs.reduce((sum, row) => sum + (row.cents ?? 0), 0);
       const within = together <= limit;
       if (bisGrenze && !within) return { holds: false, detail: [] };
@@ -1229,19 +1259,21 @@ const weitererMinijobUeberJaeg: HintTest = {
 };
 
 /**
- * A second or further Minijob next to a main job, whether or not it lifts the main job above the
- * JAEG (audit 2026-11-16): for a privately insured person the KV proposal must not change at the JAEG
- * (§ 7 Abs. 1 Satz 2 SGB V asks only whether the main job is subject to KV). A main job above the
- * JAEG is left to `weitererMinijobNebenJaegFreierHauptbeschaeftigung`, which comes first. Arguments
- * as `weitererMinijobUeberJaeg`.
+ * A second or further Minijob next to a main job not above the JAEG, whether or not it lifts the main
+ * job above it (audit 2026-11-16): for a privately insured person the KV proposal must not change at
+ * that point (§ 7 Abs. 1 Satz 2 SGB V asks only whether the main job is subject to KV). A main job
+ * above the JAEG, or between the limit of § 6 Abs. 8 SGB V and the general one, or a year without
+ * Rechengrößen, is left to `weitererMinijobNebenJaegFreierHauptbeschaeftigung` (loop 6: the PV rule
+ * fired there and said 1 where the KV said 0). Arguments as `weitererMinijobUeberJaeg`.
  */
 const weitererMinijobNebenHauptbeschaeftigung: HintTest = {
   args: [...MINIJOB_ARGS, 'choice', 'choice'],
-  describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
-    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung besteht`,
+  describe: ([fixed = '', expected = '', , , on = '', art = '', , , , , , y2002 = '', y2026]) =>
+    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung besteht, die nicht über der Jahresarbeitsentgeltgrenze (${whichJaeg(y2002, y2026)}) liegt`,
   run: (values) => {
     const [fixed, expected, oneOff, entitled, on, arts, pays, starts, kind, beitrag, zuschuss] =
       values;
+    const [y2002, y2026] = values.slice(11);
     const own = geringfuegigkeit(true).run(
       [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
         (value) => value ?? null,
@@ -1253,10 +1285,19 @@ const weitererMinijobNebenHauptbeschaeftigung: HintTest = {
     const minijobs = jobs.rows.filter((row) => row.art === 'minijob');
     const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
     if (!jobs.haupt || !earlier) return { holds: false, detail: [] };
+    const year = yearOf(on);
+    if (year === undefined) return { holds: false, detail: [] };
+    const { value: jaeg, special } = jaegFor(year, y2002, y2026);
+    const mains = jobs.rows.filter((row) => HAUPTBESCHAEFTIGUNG.has(row.art));
+    const main = mains.reduce((sum, row) => sum + (row.cents ?? 0), 0) * 12;
+    const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
+    if (jaeg === undefined || main > (bestand ?? jaeg)) return { holds: false, detail: [] };
     const lifted = weitererMinijobUeberJaeg.run(values);
     return {
       holds: true,
-      ...(minijobs.some((row) => row.seit === undefined) || lifted?.uncertain
+      ...(minijobs.some((row) => row.seit === undefined) ||
+      mains.some((row) => row.cents === undefined) ||
+      lifted?.uncertain
         ? { uncertain: true }
         : {}),
       detail:
@@ -1330,7 +1371,9 @@ const jaegDieserBeschaeftigung: HintTest = {
     );
     const start = typeof on === 'string' ? on : '';
     const sum = (rows: typeof minijobs) => rows.reduce((total, row) => total + (row.cents ?? 0), 0);
-    const together = mine + sum(minijobs);
+    // This job's regular monthly pay in the yearly view, one-off payments included (GfR B 2.2.1.1).
+    const ownMonthly = Math.round(own.yearly / 12);
+    const together = ownMonthly + sum(minijobs);
     const unknown =
       jobs.rows.some((row) => row.art === 'ausland') ||
       [...mains, ...minijobs].some((row) => row.cents === undefined) ||
@@ -1342,12 +1385,30 @@ const jaegDieserBeschaeftigung: HintTest = {
     // Next to a main job free in the KV, or without one: the Minijobs are added to each other.
     const addedToEachOther = (mainFree: boolean) => {
       if (together <= limit) return undefined;
-      const { yearly, facts } = yearlyPay(main + together, oneOff ?? null, entitled ?? null);
+      // A Minijob begun after this one adds up only from its own start (example 26: „Ab 01.09.“):
+      // until then this job stays a Minijob, as its proposal says.
+      let running =
+        ownMonthly + sum(minijobs.filter((row) => row.seit === undefined || row.seit <= start));
+      let from: string | undefined;
+      if (running <= limit) {
+        for (const row of minijobs.filter((r) => r.seit !== undefined && r.seit > start)) {
+          running += row.cents ?? 0;
+          if (running > limit) {
+            from = row.seit;
+            break;
+          }
+        }
+      }
+      const { yearly, facts } = yearlyPay(
+        main + mine + sum(minijobs),
+        oneOff ?? null,
+        entitled ?? null,
+      );
       return {
         holds: yearly > jaeg,
         detail: [
           `Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(jaeg)}.`,
-          `${minijobsTogether}: über der Geringfügigkeitsgrenze von ${euro(limit)}, in der Krankenversicherung keine Minijobs${mainFree ? ', die krankenversicherungsfreie Hauptbeschäftigung zählt mit' : ''}; über der Grenze zahlt jeder Arbeitgeber den Beitragszuschuss anteilig (§ 257 Abs. 1 Satz 3 SGB V; Geringfügigkeits-Richtlinien, Beispiel 26).`,
+          `${from === undefined ? '' : `Ab ${formatGermanDate(from as IsoDate)} (Beginn eines später aufgenommenen Minijobs): `}${minijobsTogether}: über der Geringfügigkeitsgrenze von ${euro(limit)}, in der Krankenversicherung keine Minijobs${mainFree ? ', die krankenversicherungsfreie Hauptbeschäftigung zählt mit' : ''}; über der Grenze zahlt jeder Arbeitgeber den Beitragszuschuss anteilig (§ 257 Abs. 1 Satz 3 SGB V; Geringfügigkeits-Richtlinien, Beispiel 26).${from === undefined ? '' : ' Bis dahin bleibt diese Beschäftigung ein Minijob.'}`,
           ...pay.notes,
         ],
       };
