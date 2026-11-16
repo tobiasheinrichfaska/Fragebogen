@@ -397,11 +397,19 @@ describe('the question about 31.12.2026 (§ 6 Abs. 8 SGB V)', () => {
       }
     };
     walk(draft.definition);
-    const optional = calls.filter((call) => (HINT_TESTS[call.fn]?.optional ?? 0) > 0);
-    expect(optional.length).toBeGreaterThanOrEqual(11);
-    for (const call of optional) {
+    // The tests that read the JAEG take the answer about 31.12.2026: as their last, optional
+    // argument, or — added for the draft only (audit 2026-11-16) — right after the JAEG arguments.
+    const LATER: Readonly<Record<string, number>> = {
+      ueberJahresarbeitsentgeltgrenzeDieserBeschaeftigung: 12,
+      weitererMinijobNebenHauptbeschaeftigung: 12,
+    };
+    const jaeg = calls.filter(
+      (call) => (HINT_TESTS[call.fn]?.optional ?? 0) > 0 || call.fn in LATER,
+    );
+    expect(jaeg.length).toBeGreaterThanOrEqual(13);
+    for (const call of jaeg) {
       expect(call.args, call.fn).toHaveLength(HINT_TESTS[call.fn]?.args.length ?? 0);
-      expect(call.args.at(-1), call.fn).toBe('pkvBestand2026');
+      expect(call.args.at(LATER[call.fn] ?? -1), call.fn).toBe('pkvBestand2026');
     }
   });
 
@@ -719,9 +727,12 @@ describe('a privately insured person in a further Minijob next to a main job', (
 
 // Audit 2026-11-16, round 4: a privately insured person whose main job lies under the JAEG and only
 // this Minijob lifts them above it was proposed „Über der JAEG: krankenversicherungsfrei“ without a
-// check. Privately insured next to a main job under the JAEG means an exemption (§ 8 SGB V) or the
-// freedom from 55 (§ 6 Abs. 3a SGB V) — then the Minijob is not added (§ 7 Abs. 1 Satz 2 SGB V).
-describe('a privately insured person lifted above the JAEG only by this Minijob', () => {
+// check. Round 5: the proposal then turned at the JAEG (0 above, 1 below), although § 7 Abs. 1 Satz 2
+// SGB V asks only whether the main job is subject to KV. Now one rule for both: added up, KV 1 with a
+// check that names the exemption (§ 8 SGB V) or the freedom from 55 (§ 6 Abs. 3a SGB V) that would
+// leave the Minijob free (0) — as the form treats a privately insured person without a known reason
+// everywhere else.
+describe('a privately insured person in a further Minijob next to a main job under the JAEG', () => {
   const lifted = (main: string, start: string, y2002?: string): Answers => ({
     geburtsdatum: '1975-07-07',
     status: 'arbeitnehmer',
@@ -775,8 +786,33 @@ describe('a privately insured person lifted above the JAEG only by this Minijob'
       const pv = r.bgr?.detail.find((line) => line.startsWith('PV')) ?? '';
       expect(pv).toContain('§ 8 SGB V');
       expect(pv).toContain('(prüfen)');
+      expect(r.bgr?.value?.[0]).toBe('1');
+      expect(r.bgr?.value?.[3]).toBe('1');
     },
   );
+
+  it('proposes the same under the JAEG and when this Minijob lifts the main job above it', () => {
+    const reasons = (main: string) => {
+      const r = assess(lifted(main, '2026-02-01', 'nein'), minijob('2026-02-01'), draft);
+      const reason = (branch: string) =>
+        (r.bgr?.detail.find((line) => line.startsWith(branch)) ?? '').split(' (prüfen)')[0] ?? '';
+      return {
+        kv: r.bgr?.value?.[0],
+        pv: r.bgr?.value?.[3],
+        kvLine: reason('KV'),
+        pvLine: reason('PV'),
+      };
+    };
+    const under = reasons('3000.00');
+    const lifted6300 = reasons('6300.00');
+    expect(under.kv).toBe('1');
+    expect(lifted6300.kv).toBe(under.kv);
+    expect(under.pv).toBe(under.kv);
+    expect(lifted6300.pv).toBe(under.kv);
+    expect(under.kvLine).toContain('Ist die Hauptbeschäftigung krankenversicherungspflichtig');
+    expect(lifted6300.kvLine.slice(0, 200)).toBe(under.kvLine.slice(0, 200));
+    expect(lifted6300.pvLine.slice(0, 200)).toBe(under.pvLine.slice(0, 200));
+  });
 
   it('gives a Minijob employer no hint about a contribution subsidy or a Firmenzahler', () => {
     let q = ok(startPart(createQuestionnaire(QUESTIONNAIRE_ID, draft), draft, 'person'));

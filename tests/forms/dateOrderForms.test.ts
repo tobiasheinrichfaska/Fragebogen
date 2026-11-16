@@ -29,11 +29,6 @@ const UNDO_2027: [string, string][] = [
     'Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € im Jahr 2026 und 633 € im Jahr 2027 und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn in den Jahren 2026 und 2027; maßgeblich sind jeweils die Werte des Jahres, in dem die Beschäftigung beginnt.',
     'Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn im Jahr 2026.',
   ],
-  [
-    'Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere; 2027 bei Personen, die am 31.12.2026 wegen ihres Verdiensts versicherungsfrei und privat versichert waren, die nach § 6 Abs. 8 SGB V): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.',
-    'Das regelmäßige Jahresarbeitsentgelt – mit weiteren Beschäftigungen und Einmalzahlungen mit Anspruch – übersteigt die maßgebliche Jahresarbeitsentgeltgrenze (bei am 31.12.2002 privat Versicherten die besondere): Versicherungsfreiheit in der Krankenversicherung prüfen; dann freiwillige oder private Versicherung mit Beitragszuschuss des Arbeitgebers. Die Summe enthält alle angegebenen weiteren Beschäftigungen; ein Minijob daneben zählt nicht mit – dann nachrechnen.',
-  ],
-  ['§ 6 Abs. 1 Nr. 1, Abs. 6 bis 8, § 257 SGB V', '§ 6 Abs. 1 Nr. 1, Abs. 6, 7, § 257 SGB V'],
   // Review of the drafts 2026-11-15 (X-2): the data also leave as a link; the memory ends with more.
   [
     'verlassen das Gerät nur als Datei oder als Link, die Sie selbst weitergeben.',
@@ -106,11 +101,15 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         // The condition of an answer (an option has a label but no role), not of a field.
         const parent = this as { id?: unknown; label?: unknown; role?: unknown };
         // Audit 2026-11-16: 31.12.2002 is asked in a Minijob next to another job too, the JAEG
-        // hints leave a Minijob out (tests/forms/personalfragebogen2027.test.ts pins both).
+        // hints count a Minijob only where it is added up (tests/forms/personalfragebogen2027.test.ts
+        // pins both).
         if (parent.id === 'pkvBestand2002' && (key === 'showIf' || key === 'because')) {
           return undefined;
         }
-        if (['jaeg', 'jaegNichtAngegeben'].includes(String(parent.id)) && key === 'when') {
+        if (
+          ['jaeg', 'jaegNichtAngegeben'].includes(String(parent.id)) &&
+          ['test', 'message', 'source'].includes(key)
+        ) {
           return undefined;
         }
         if (key === 'showIf' && parent.label !== undefined && parent.role === undefined) {
@@ -126,13 +125,14 @@ describe('Personalfragebogen: the end of a fixed term', () => {
           return value.filter(
             (item: unknown) =>
               item !== BESTAND_2026 &&
-              // Audit 2026-11-16, round 4: a privately insured person lifted above the JAEG only
-              // by a further Minijob (KV and PV rule, pinned in personalfragebogen2027.test.ts).
+              // Audit 2026-11-16, rounds 4 and 5: a privately insured person in a further Minijob
+              // next to a main job below the JAEG (KV and PV rule, pinned in
+              // personalfragebogen2027.test.ts).
               !(
                 typeof item === 'object' &&
                 item !== null &&
                 String((item as { reason?: unknown }).reason).includes(
-                  'privat oder anderweitig versichert: Das setzt für die Hauptbeschäftigung',
+                  'privat oder anderweitig versichert: Ist die Hauptbeschäftigung krankenversicherungspflichtig',
                 )
               ) &&
               !(typeof item === 'string' && item.startsWith(CUSTODY.note)) &&

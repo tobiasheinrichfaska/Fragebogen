@@ -11,7 +11,7 @@ import { buildStartPoint, parseStartPoint, type StartPoint } from '../../src/log
 import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { keepForPdfa } from '../support/pdfaOut';
 import { completeSofortmeldung, sofortmeldung } from '../support/sofortmeldungSession';
-import { note, QUESTIONNAIRE_ID } from '../support/sample';
+import { beispielForm, newVersion, note, QUESTIONNAIRE_ID } from '../support/sample';
 
 const font = (name: string) =>
   new Uint8Array(readFileSync(new URL(`../../assets/fonts/${name}`, import.meta.url)));
@@ -279,5 +279,35 @@ describe('where a value goes on over the next page', () => {
       });
     }
     expect(torn).toEqual([]);
+  }, 300_000);
+
+  // Audit 2026-11-16, round 5: the room kept under „Abweichende Unterschriftsdaten“ for its first
+  // footnote was in no test — without it the heading could end a page alone.
+  it('keeps „Abweichende Unterschriftsdaten“ with its first footnote', async () => {
+    const questionnaire = newVersion();
+    const alone: string[] = [];
+    let seen = 0;
+    for (let lines = 0; lines <= 70; lines++) {
+      const written = await writeQuestionnairePdf(
+        {
+          questionnaire,
+          form: beispielForm(),
+          origin: 'published',
+          config: { kanzleiName: Array.from({ length: lines + 1 }, () => 'Kanzlei').join('\n') },
+          created: CREATED,
+        },
+        FONTS,
+      );
+      const found = await pieces(written.bytes);
+      const heading = found.find((piece) => piece.text === 'Abweichende Unterschriftsdaten');
+      const first = found.find((piece) => /^\[\d+\] Wert geändert/.test(piece.text));
+      expect(heading, `${lines} lines`).toBeDefined();
+      expect(first, `${lines} lines`).toBeDefined();
+      if (heading?.page !== first?.page) alone.push(`${lines} lines`);
+      seen = Math.max(seen, heading?.page ?? 0);
+    }
+    // The sweep moved the heading over a page break at least once.
+    expect(seen).toBeGreaterThan(1);
+    expect(alone).toEqual([]);
   }, 300_000);
 });

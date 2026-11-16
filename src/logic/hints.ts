@@ -1228,6 +1228,173 @@ const weitererMinijobUeberJaeg: HintTest = {
   },
 };
 
+/**
+ * A second or further Minijob next to a main job, whether or not it lifts the main job above the
+ * JAEG (audit 2026-11-16): for a privately insured person the KV proposal must not change at the JAEG
+ * (§ 7 Abs. 1 Satz 2 SGB V asks only whether the main job is subject to KV). A main job above the
+ * JAEG is left to `weitererMinijobNebenJaegFreierHauptbeschaeftigung`, which comes first. Arguments
+ * as `weitererMinijobUeberJaeg`.
+ */
+const weitererMinijobNebenHauptbeschaeftigung: HintTest = {
+  args: [...MINIJOB_ARGS, 'choice', 'choice'],
+  describe: ([fixed = '', expected = '', , , on = '', art = '']) =>
+    `„${fixed}“ bzw. „${expected}“ höchstens bei der Geringfügigkeitsgrenze des Jahres von „${on}“ liegt und laut „${art}“ ein früherer Minijob neben einer Hauptbeschäftigung besteht`,
+  run: (values) => {
+    const [fixed, expected, oneOff, entitled, on, arts, pays, starts, kind, beitrag, zuschuss] =
+      values;
+    const own = geringfuegigkeit(true).run(
+      [fixed, expected, oneOff, entitled, on, kind, beitrag, zuschuss].map(
+        (value) => value ?? null,
+      ),
+    );
+    if (!own || !own.holds) return own;
+    const start = typeof on === 'string' ? on : '';
+    const jobs = otherJobs(arts ?? null, pays ?? null, starts ?? null);
+    const minijobs = jobs.rows.filter((row) => row.art === 'minijob');
+    const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
+    if (!jobs.haupt || !earlier) return { holds: false, detail: [] };
+    const lifted = weitererMinijobUeberJaeg.run(values);
+    return {
+      holds: true,
+      ...(minijobs.some((row) => row.seit === undefined) || lifted?.uncertain
+        ? { uncertain: true }
+        : {}),
+      detail:
+        lifted?.holds === true
+          ? lifted.detail
+          : [
+              'Neben der Hauptbeschäftigung begann ein anderer Minijob früher; dieser wird mit ihr zusammengerechnet, wenn sie krankenversicherungspflichtig ist (§ 7 Abs. 1 Satz 2 SGB V; Geringfügigkeits-Richtlinien B 2.2.2.8).',
+            ],
+    };
+  },
+};
+
+/** Kinds of this employment that are no Minijob whatever the pay (§ 7 Abs. 1 Satz 1 Nr. 1–3 SGB V). */
+const NIE_MINIJOB = new Set(['ausbildung', 'dualesStudium', 'freiwilligendienst', 'vorruhestand']);
+/** Prescribed internships: part of a training, not a Minijob (Rundschreiben Studenten Tz. B). */
+const PFLICHTPRAKTIKUM = new Set(['pflichtStudium', 'pflichtVorNach']);
+
+/**
+ * The JAEG as the employer of this job reads it (audit 2026-11-16): `massgeblicheJaeg` always adds
+ * this job's own pay — right for a main job, wrong where this job is a Minijob in the KV. A Minijob
+ * is free there (§ 7 Abs. 1 Satz 1 SGB V) and owes no Beitragszuschuss (§ 257 Abs. 1, 2 SGB V ask for
+ * freedom by the JAEG); it counts only where it is added up (Geringfügigkeits-Richtlinien B 2.2.2.8,
+ * examples 25–27): a further Minijob next to a main job subject to KV (first KV-pflichtig, freedom and
+ * subsidy only from the next year), or — next to a main job free in the KV or without one — when the
+ * Minijobs together exceed the limit (then none is a Minijob, each employer pays its share of the
+ * subsidy, § 257 Abs. 1 Satz 3). The first Minijob next to a main job subject to KV never counts. A
+ * short-term job fixed in advance is left out (free; whether it is one, the Personengruppe decides);
+ * one not fixed in advance is none (GfR B 2.3) and is read by its pay. Arguments: those of
+ * `massgeblicheJaeg`, then the employer's kind of employment, working-time model, kind of internship,
+ * fixed term and framework agreement.
+ */
+const jaegDieserBeschaeftigung: HintTest = {
+  args: [...massgeblicheJaeg.args, 'choice', 'choice', 'choice', 'boolean', 'boolean'],
+  describe: (labels) => {
+    const [art = '', modell = '', praktikum = '', befristet = '', rahmen = ''] = labels.slice(13);
+    return `${massgeblicheJaeg.describe(labels.slice(0, 13))}; ist diese Beschäftigung laut „${art}“, „${modell}“ und „${praktikum}“ ein Minijob, zählt sie nur, wo sie zusammengerechnet wird (ein weiterer Minijob neben einer krankenversicherungspflichtigen Hauptbeschäftigung, sonst wenn die Minijobs zusammen die Geringfügigkeitsgrenze übersteigen); eine kurzfristige Aushilfe, die laut „${befristet}“ und „${rahmen}“ im Voraus befristet ist, zählt nicht`;
+  },
+  run: (values) => {
+    const base = values.slice(0, 13);
+    const [, , others, oneOff, entitled, y2002, on, arts, starts, , , , y2026] = values;
+    const [fixed, expected, , , , , , , , kind, beitrag, zuschuss] = values;
+    const [art, modell, praktikumArt, befristet, rahmen] = values.slice(13);
+    if (art === 'kurzfristig' && !(befristet === false && rahmen !== true)) {
+      return { holds: false, detail: [] };
+    }
+    const pay = payOf(fixed, expected, kind, beitrag, zuschuss, on);
+    const mine = pay.cents;
+    const year = yearOf(on);
+    if (mine === undefined || year === undefined) return undefined;
+    const limitValue = RECHENGROESSEN[year]?.geringfuegigkeitsgrenzeMonat;
+    const { value: jaeg, label, special } = jaegFor(year, y2002, y2026);
+    const minijobKind =
+      !NIE_MINIJOB.has(typeof art === 'string' ? art : '') &&
+      modell !== 'altersteilzeit' &&
+      !(
+        art === 'praktikum' &&
+        PFLICHTPRAKTIKUM.has(typeof praktikumArt === 'string' ? praktikumArt : '')
+      );
+    if (limitValue === undefined || jaeg === undefined || !minijobKind) {
+      return massgeblicheJaeg.run(base);
+    }
+    const limit = cents(limitValue) ?? 0;
+    const own = yearlyPay(mine, oneOff ?? null, entitled ?? null);
+    if (own.yearly > limit * 12) return massgeblicheJaeg.run(base);
+
+    // This job is a Minijob on its own.
+    const jobs = otherJobs(arts ?? null, others ?? null, starts ?? null);
+    const mains = jobs.rows.filter((row) => HAUPTBESCHAEFTIGUNG.has(row.art));
+    const minijobs = [...jobs.rows.filter((row) => row.art === 'minijob')].sort((a, b) =>
+      (a.seit ?? '').localeCompare(b.seit ?? ''),
+    );
+    const start = typeof on === 'string' ? on : '';
+    const sum = (rows: typeof minijobs) => rows.reduce((total, row) => total + (row.cents ?? 0), 0);
+    const together = mine + sum(minijobs);
+    const unknown =
+      jobs.rows.some((row) => row.art === 'ausland') ||
+      [...mains, ...minijobs].some((row) => row.cents === undefined) ||
+      minijobs.some((row) => row.seit === undefined) ||
+      pay.uncertain;
+    const sure = unknown ? { uncertain: true } : {};
+    const minijobsTogether = `Die Minijobs zusammen ${euro(together)} im Monat`;
+    const main = sum(mains);
+    // Next to a main job free in the KV, or without one: the Minijobs are added to each other.
+    const addedToEachOther = (mainFree: boolean) => {
+      if (together <= limit) return undefined;
+      const { yearly, facts } = yearlyPay(main + together, oneOff ?? null, entitled ?? null);
+      return {
+        holds: yearly > jaeg,
+        detail: [
+          `Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(jaeg)}.`,
+          `${minijobsTogether}: über der Geringfügigkeitsgrenze von ${euro(limit)}, in der Krankenversicherung keine Minijobs${mainFree ? ', die krankenversicherungsfreie Hauptbeschäftigung zählt mit' : ''}; über der Grenze zahlt jeder Arbeitgeber den Beitragszuschuss anteilig (§ 257 Abs. 1 Satz 3 SGB V; Geringfügigkeits-Richtlinien, Beispiel 26).`,
+          ...pay.notes,
+        ],
+      };
+    };
+    if (mains.length === 0)
+      return { ...(addedToEachOther(false) ?? { holds: false, detail: [] }), ...sure };
+    const earlier = minijobs.some((row) => row.seit !== undefined && row.seit < start);
+    // Next to a main job subject to KV: a further Minijob is added to it (B 2.2.2.8, example 27).
+    const addedToMain = () => {
+      if (!earlier) return undefined;
+      const { yearly, facts } = yearlyPay(
+        main + sum(minijobs.slice(1)) + mine,
+        oneOff ?? null,
+        entitled ?? null,
+      );
+      return {
+        holds: yearly > jaeg,
+        detail: [
+          `Regelmäßiges Jahresarbeitsentgelt: ${facts}; ${label} ${year}: ${euro(jaeg)}.`,
+          `Weiterer Minijob neben einer krankenversicherungspflichtigen Hauptbeschäftigung: mit ihr zusammengerechnet, ohne den zuerst aufgenommenen Minijob; über der Grenze zunächst krankenversicherungspflichtig – die Pflicht endet mit Ablauf des Kalenderjahres, wenn die Grenze auch im nächsten überschritten wird, dann Beitragszuschuss anteilig (Geringfügigkeits-Richtlinien B 2.2.2.8, Beispiel 27; § 257 Abs. 1 Satz 3 SGB V).`,
+          ...pay.notes,
+        ],
+      };
+    };
+    const bestand = special ? undefined : jaegBestand2026(year, y2002, y2026);
+    const mainYearly = main * 12;
+    if (mainYearly > jaeg) {
+      return { ...(addedToEachOther(true) ?? { holds: false, detail: [] }), ...sure };
+    }
+    if (bestand !== undefined && mainYearly > bestand) {
+      // Free or subject to KV, as the answer about 31.12.2026 decides: hint if either reading holds.
+      const either = [addedToEachOther(true), addedToMain()].find((outcome) => outcome?.holds);
+      return either
+        ? {
+            holds: true,
+            uncertain: true,
+            detail: [
+              ...either.detail,
+              `Hauptbeschäftigung ${euro(mainYearly)} im Jahr. ${BESTAND_2026_NOTE(bestand)}`,
+            ],
+          }
+        : { holds: false, ...sure, detail: [] };
+    }
+    return { ...(addedToMain() ?? { holds: false, detail: [] }), ...sure };
+  },
+};
+
 /** Another job is a vocational training (Rundschreiben Übergangsbereich Tz. 4.3.6.1). */
 const andereBeschaeftigungAusbildung: HintTest = {
   args: ['choice'],
@@ -1366,6 +1533,7 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   geringfuegigNebenKurzfristigen,
   weitererMinijobNebenJaegFreierHauptbeschaeftigung: weitererMinijobNebenJaegFrei(false),
   weitererMinijobUeberJaeg,
+  weitererMinijobNebenHauptbeschaeftigung,
   weitererMinijobNebenJaegFreierHauptbeschaeftigungBisGrenze: weitererMinijobNebenJaegFrei(true),
   kurzfristigBefristetBisDreiMonate: kurzfristigkeit('werkstudent'),
   kurzfristigGegeben: kurzfristigkeit('gegeben'),
@@ -1377,6 +1545,7 @@ export const HINT_TESTS: Readonly<Record<string, HintTest>> = {
   ueberGeringfuegigkeitsgrenze: geringfuegigkeit(false),
   imUebergangsbereich: uebergangsbereich,
   ueberMassgeblicheJahresarbeitsentgeltgrenze: massgeblicheJaeg,
+  ueberJahresarbeitsentgeltgrenzeDieserBeschaeftigung: jaegDieserBeschaeftigung,
   // A list entry (e.g. a health insurer after a merger) that is not valid on the reference day.
   listeneintragNichtGueltig: {
     args: ['text', 'date'],
