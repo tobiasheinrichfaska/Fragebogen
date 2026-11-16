@@ -388,13 +388,28 @@ export async function writeQuestionnairePdf(
   };
   /** Lines of a value that fit from the current height down to the bottom margin. */
   const room = () => Math.floor((layout.y - BOTTOM - 4) / VALUE_LINE);
-  const freshRoom = Math.floor((A4[1] - MARGIN - 8 - BOTTOM - 4) / VALUE_LINE);
-  /** The lines up to the end of the paragraph that begins at `at`, and the label's own height. */
-  const firstNeed = (lines: { starts: boolean }[], at: number, labelLines: number) => {
+  // What a section heading takes (Layout.heading at size 11), and the lines left under it on a
+  // fresh page: a value taller than that is broken, a shorter one moves to the next page as a whole.
+  const HEADING = 11 * 0.6 + 11 * 1.35 + 11 * 0.3;
+  const longer = Math.floor((A4[1] - MARGIN - 8 - HEADING - BOTTOM - 4) / VALUE_LINE);
+  /** A piece of a value taller than a page starts where at least this many lines fit. */
+  const MIN_PIECE = 3;
+  /** The paragraph (table row, text line) that begins at `at`, in lines. */
+  const paragraphAt = (lines: { starts: boolean }[], at: number) => {
     let paragraph = 1;
     while (at + paragraph < lines.length && !lines[at + paragraph]?.starts) paragraph++;
+    return paragraph;
+  };
+  /**
+   * The lines the value needs from `at` on where it begins: all of them when it fits on a page,
+   * else its first paragraph (a paragraph taller than a page: a few lines), never less than its label.
+   */
+  const need = (lines: { starts: boolean }[], at: number, labelLines: number) => {
     const label = Math.ceil((labelLines * LABEL_LINE) / VALUE_LINE);
-    return Math.min(Math.max(paragraph, label), freshRoom);
+    const rest = lines.length - at;
+    if (Math.max(rest, label) <= longer) return Math.max(rest, label);
+    const paragraph = paragraphAt(lines, at);
+    return Math.max(paragraph <= longer ? paragraph : MIN_PIECE, label);
   };
   for (const section of definition.sections) {
     const rows = section.fields.flatMap((field) => {
@@ -404,14 +419,14 @@ export async function writeQuestionnairePdf(
     });
     const [first] = rows;
     if (!first) continue;
-    // The heading stays with the first piece of its first value.
-    layout.ensure(33 + firstNeed(first.lines, 0, first.label.length) * VALUE_LINE + 4);
+    // The heading stays with what its first value draws first (audit 2026-11-16, round 3).
+    layout.ensure(HEADING + need(first.lines, 0, first.label.length) * VALUE_LINE + 4);
     layout.heading(section.title, 11);
     for (const { field, lines, label, goesOn } of rows) {
       let at = 0;
       do {
         const labelLines = at === 0 ? label : goesOn;
-        if (room() < firstNeed(lines, at, labelLines.length)) layout.newPage();
+        if (room() < need(lines, at, labelLines.length)) layout.newPage();
         let take = Math.min(lines.length - at, room());
         if (at + take < lines.length) {
           // Break before a paragraph that does not fit, unless one paragraph fills the page.
@@ -499,6 +514,8 @@ export async function writeQuestionnairePdf(
   }
 
   // --- Signature lines -----------------------------------------------------------------------
+  // The heading stays with the first signature line, which wants 110 pt (audit 2026-11-16).
+  layout.ensure(HEADING + 110);
   layout.heading('Unterschriften und Abschlüsse', 11);
   for (const line of provenance.lines) {
     const part = questionnaire.parts[line.role]?.find(

@@ -619,3 +619,70 @@ describe('a start outside the validity names the version that fits, or that ther
     ).toBe(undefined);
   });
 });
+
+// Audit 2026-11-16, round 3: in a Minijob the questions about 31.12.2002 and 31.12.2026 were never
+// asked, so a privately insured person with a main job between the special and the general JAEG
+// got KV 1 for a further Minijob; GfR B 2.2.2.8 (examples 25, 26) adds no Minijob to a main job free
+// of the KV. Asked now when the Minijob stands next to another job.
+describe('a privately insured person in a further Minijob next to a main job', () => {
+  const person: Answers = {
+    geburtsdatum: '1975-07-07',
+    status: 'arbeitnehmer',
+    grundsicherung: false,
+    elternzeitAnderswo: false,
+    bezugRente: false,
+    artLautVereinbarung: 'minijob',
+    weitereBeschaeftigung: true,
+    weitereJobs: [
+      {
+        rowId: 'r1',
+        jobArbeitgeber: 'Arbeitgeber A',
+        jobArt: 'svpflichtig',
+        jobSeit: '2020-01-01',
+        jobEntgeltMonat: '6000.00',
+      },
+      {
+        rowId: 'r2',
+        jobArbeitgeber: 'Arbeitgeber B',
+        jobArt: 'minijob',
+        jobSeit: '2026-07-01',
+        jobEntgeltMonat: '200.00',
+        jobRvBefreit: 'nein',
+      },
+    ],
+    krankenversicherung: 'privat',
+    pkvBestand2002: 'ja',
+    rvBefreiungWunsch: 'nein',
+  };
+  const employer: Answers = {
+    agBeschaeftigungsbeginn: '2026-09-01',
+    agEntgeltArt: 'monatsentgelt',
+    agMonatsentgelt: '300.00',
+    agUeberJaeg: false,
+    agBeschaeftigungsart: 'minijob',
+    agBefristet: false,
+  };
+
+  it('asks about 31.12.2002 and keeps the further Minijob free of the KV', () => {
+    const r = assess(person, employer, draft);
+    expect(r.skipped).not.toContain('pkvBestand2002');
+    expect(shownValue(r.bgr)).toMatch(/^0/);
+    expect(r.bgr?.detail.join(' ')).toContain('§ 6 Abs. 7 SGB V');
+  });
+
+  it('still leaves the questions out for a Minijob alone', () => {
+    const alone = { ...person, weitereBeschaeftigung: false };
+    delete (alone as Record<string, unknown>).weitereJobs;
+    const ids = visibleFields(
+      draft.definition,
+      'person',
+      alone as Parameters<typeof visibleFields>[2],
+    ).map((field) => field.id);
+    expect(ids).not.toContain('pkvBestand2002');
+    expect(
+      visibleFields(draft.definition, 'person', person as Parameters<typeof visibleFields>[2]).map(
+        (field) => field.id,
+      ),
+    ).toContain('pkvBestand2002');
+  });
+});

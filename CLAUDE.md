@@ -923,6 +923,12 @@ Key design decisions (details in `docs/plan.md`):
   its subdomain, the hoster (IONOS, after the move bunny.net), the browser memory (an interrupted
   questionnaire up to 7 days, the remembered access notice), no cookies, answers never sent to a
   server. Art. 13 DSGVO likely asks for that; a section for the homepage can be drafted when wanted.
+- **A privately insured person in a further Minijob (audit 2026-11-16):** the published 1.0.0 does
+  not ask about 31.12.2002 in a Minijob, so a main job between the special and the general JAEG
+  (2026: 69.750 € to 77.400 €) counts as subject to KV and the further Minijob gets KV 1 (with
+  „prüfen“) where GfR B 2.2.2.8 leaves it free (examples 25, 26). The draft 1.1.0 asks it in a
+  Minijob next to another job. A prior KV exemption (`kvBefreiung`) is still not asked in a Minijob,
+  and the Minijob tests do not read it.
 - **Personalfragebogen 1.0.0 holds only for a Beschäftigungsbeginn in 2026 (2026-11-12):** for a
   start from 01.01.2027 the employer's part is refused („außerhalb der Gültigkeit“). The draft 1.1.0
   covers a start in 2026 and 2027 (Tobias 2026-11-14) — publish it before the first such hire.
