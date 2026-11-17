@@ -1451,6 +1451,10 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**Zuerst im nächsten Lauf prüfen (Tobias 2026-11-17):** In der Live-Version funktioniert ein
+Vorbelegungslink (Stammdaten-Link) im Personalfragebogen nicht. Noch nicht untersucht. Außerdem offen:
+Audit-Schleife 7 auf die Behebungen von #25 (der Prüfagent brach am Nutzungslimit ab).
+
 **Drafts after Tobias's answers to the review (cloud session, 2026-11-15 night; PR
 tobiasheinrichfaska/Fragebogen#16):** report `reports/2026-11-15_durchsicht-entwuerfe.md`, „Stand“.
 
