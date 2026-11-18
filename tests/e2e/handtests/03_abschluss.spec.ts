@@ -407,10 +407,9 @@ test("MT-25: the employer's master-data link starts the next questionnaire with 
   for (const personal of ['Musterfrau', 'Erika', '02.11.2026'])
     expect(fragment).not.toContain(personal);
 
-  // Opened like a bookmark: the plain build with only the fragment (a hash change alone would not
-  // reload the page).
+  // Opened like a bookmark: the plain build with only the fragment; a change of the fragment alone
+  // starts the app anew by itself (bug 2026-11-17; this test reloaded by hand before).
   await page.goto(pathToFileURL(TEST_APP).href + fragment);
-  await page.reload();
   await expect(app).toContainText(
     'Neuer Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ aus Ihrem Lesezeichen.',
   );
