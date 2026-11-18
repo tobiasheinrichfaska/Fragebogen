@@ -237,7 +237,8 @@ test.describe('MT-85: the shared test page with the Fragebogen', () => {
     const seen = await open(context, page, `?startpunkt=${point.id}`);
     await expect(app(page)).toContainText('aus Ihrem Lesezeichen.');
     expect(await page.evaluate(() => location.search)).toBe('');
-    expect(await page.evaluate(() => location.hash)).toBe(`#${point.link ?? ''}`);
+    // A link the app followed leaves the address bar (audit 2026-11-18), as a bookmark does.
+    expect(await page.evaluate(() => location.hash)).toBe('');
     await confirm(page, 'neustart');
     await expect(app(page).getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
     expect(await page.evaluate(() => location.hash)).toBe('');

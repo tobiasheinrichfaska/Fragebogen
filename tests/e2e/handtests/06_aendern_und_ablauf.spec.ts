@@ -1081,11 +1081,12 @@ test('MT-101: the link for next time keeps the other forms’ data; a link of an
   ]);
   expect([...params.keys()].filter((key) => !masterKeys.has(key))).toEqual([]);
 
-  // The link of another version, typed into the address bar and loaded again.
-  const address = page.url();
-  expect(address).toContain('#stammdaten=1&');
-  await page.goto(address.replace('#stammdaten=1&', '#stammdaten=2&'));
-  await page.reload();
+  // The link of another version, typed into the address bar of this tab: the app starts anew
+  // (a link the app followed has left the address bar, audit 2026-11-18).
+  expect(new URL(page.url()).hash).toBe('');
+  const other = fragmentOf(link);
+  expect(other).toContain('#stammdaten=1&');
+  await page.goto(page.url() + other.replace('#stammdaten=1&', '#stammdaten=2&'));
   await expect(
     note(
       app,
