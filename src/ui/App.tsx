@@ -280,9 +280,16 @@ function Workspace({
   );
 
   // The answers of a link stay out of the address bar once read: a reload does not read them again.
+  // A master-data link that was read goes too (audit 2026-11-18): the same link opened again in
+  // this tab then moves the fragment, and main.tsx starts anew. A link the app cannot follow (an
+  // error, a form it lacks) stays, so a reload shows its message again.
+  const readMasterData =
+    remembered.ok && remembered.data !== undefined && (remembered.form === undefined || !!linked);
   useEffect(() => {
-    if (transferred) history.replaceState(null, '', location.pathname + location.search);
-  }, [transferred]);
+    if (transferred || readMasterData) {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }, [transferred, readMasterData]);
 
   useEffect(() => {
     tracker.start();

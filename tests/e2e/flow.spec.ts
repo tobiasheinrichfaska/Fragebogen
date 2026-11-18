@@ -501,11 +501,11 @@ test('a master-data link made on the start page fills the next questionnaire', a
     /#stammdaten=1&formular=sofortmeldung&betriebsnummer=12345671&firma=Beispiel\+Bau\+GmbH$/,
   );
 
-  // Opened like a bookmark: a fresh load with the fragment. Only the fragment is used — a build
+  // Opened like a bookmark in the same tab: only the fragment moves, and the app starts anew by
+  // itself (bug 2026-11-17; this test reloaded by hand before). Only the fragment is used — a build
   // with an app address points the link to the hosted app, which this test must never load.
   const url = await link.inputValue();
   await page.goto(pathToFileURL(APP).href + url.slice(url.indexOf('#')));
-  await page.reload();
   await expect(page.locator('main')).toContainText(
     'Neuer Fragebogen „Personalfragebogen: Angaben für die Sofortmeldung“ aus Ihrem Lesezeichen.',
   );

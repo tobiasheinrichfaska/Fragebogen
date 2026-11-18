@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
+  APP,
   download,
   expectQuiet,
   formFields,
@@ -1080,11 +1081,12 @@ test('MT-101: the link for next time keeps the other forms’ data; a link of an
   ]);
   expect([...params.keys()].filter((key) => !masterKeys.has(key))).toEqual([]);
 
-  // The link of another version, typed into the address bar and loaded again.
-  const address = page.url();
-  expect(address).toContain('#stammdaten=1&');
-  await page.goto(address.replace('#stammdaten=1&', '#stammdaten=2&'));
-  await page.reload();
+  // The link of another version, typed into the address bar of this tab: the app starts anew
+  // (a link the app followed has left the address bar, audit 2026-11-18).
+  expect(new URL(page.url()).hash).toBe('');
+  const other = fragmentOf(link);
+  expect(other).toContain('#stammdaten=1&');
+  await page.goto(page.url() + other.replace('#stammdaten=1&', '#stammdaten=2&'));
   await expect(
     note(
       app,
@@ -1159,6 +1161,31 @@ test('MT-109: the public build names a form it lacks and shows the start page', 
     ),
   ).toHaveClass(/banner-warning/);
   await expect(app.getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
+  await expectClean(page, found);
+});
+
+test('a master-data link opened in a tab that already shows the app opens its questionnaire', async ({
+  page,
+}) => {
+  // Bug 2026-11-17: the browser only moved the fragment (Safari opens a mail link in the tab with
+  // the same address), and the app, which reads its links at the start, stayed on its start page.
+  const { found, app } = await openApp(page);
+  await expect(app.getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
+  await page.goto(
+    `${pathToFileURL(APP).href}#stammdaten=1&formular=personalfragebogen&firma=Beispiel+Bau+GmbH`,
+  );
+  await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  const firstId = await app.locator('header .muted').textContent();
+  await button(app, 'Ich bin: Arbeitgeber').click();
+  await expect(app.locator('.question input').first()).toHaveValue('Beispiel Bau GmbH');
+  // The same link once more (audit 2026-11-18: the next employee from the same mail): read links
+  // leave the address bar, so this moves the fragment again and starts a new questionnaire.
+  expect(new URL(page.url()).hash).toBe('');
+  await page.goto(
+    `${pathToFileURL(APP).href}#stammdaten=1&formular=personalfragebogen&firma=Beispiel+Bau+GmbH`,
+  );
+  await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  expect(await app.locator('header .muted').textContent()).not.toBe(firstId);
   await expectClean(page, found);
 });
 

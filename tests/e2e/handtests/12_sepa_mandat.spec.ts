@@ -226,7 +226,6 @@ test('MT-119: the Kanzlei makes a master-data link for the mandate', async ({
 
   // Opened like a bookmark; only the fragment, never the configured app address.
   await page.goto(pathToFileURL(APP).href + url.slice(url.indexOf('#')));
-  await page.reload();
   const main = page.locator('main');
   await expect(main).toContainText(
     'Neuer Fragebogen „SEPA-Basislastschriftmandat“ aus Ihrem Lesezeichen',
