@@ -1458,16 +1458,14 @@ same address); the app reads its links at the start and stayed on its start page
 or transfer link arriving that way loads the page anew (`src/logic/linkArrival.ts`, listener in
 `src/main.tsx`; e2e in `06_aendern_und_ablauf.spec.ts`, red before). The live file, its headers and a
 link opened fresh were checked and worked; whether Tobias's case was exactly this is not confirmed.
-A master-data link the app followed now also leaves the address bar (audit 2026-11-18), so the same
-mail link opened again in that tab (the next employee) starts a new questionnaire; a link with an
-error or a form the app lacks stays, so a reload shows its message again.
-Open from the final audit of 2026-11-18 (low, not fixed — Tobias: one round, then pause):
-(1) the link leaves the address bar while the access notice still covers the app, so a reload
-before confirming shows a plain start page; fix: strip only once `accessOpen` is false. (2) iOS
-Safari reloads without the beforeunload question; with an interrupted questionnaire in the browser,
-„Fortsetzen“ then replaces the link's new questionnaire and the link is gone (the mail link must be
-opened again) — the comment in `main.tsx` „the browser asks first“ is not true there. (3) A link
-with an error or a form the app lacks stays, so opening it again in that tab still changes nothing.
+A link the app read leaves the address bar (audit 2026-11-18; Tobias 2026-11-18: „1 und 2 sollten
+wir beheben, 3 sollte eine Meldung auslösen“), so the same mail link opened again in that tab (the
+next employee) starts a new questionnaire — also a link with an error or a form the app lacks, whose
+message then comes again. It waits while the access notice is open (a reload there still reads it)
+and while „Angefangener Fragebogen gefunden“ is offered; „Fortsetzen“ asks first when a link has just
+opened a questionnaire (iOS Safari reloads without the beforeunload question). Logic:
+`linkLeavesAddress` in `src/logic/linkArrival.ts`; e2e in `resume.spec.ts`, `14_zugang.spec.ts`
+(runs only with the local config) and MT-109, each red before.
 Audit loop 7 on #25 ran with this round: finding „§ 6 Abs. 3a without age“ refuted (privat + no GKV
 for five years next to a KV-pflichtig main job means an exemption; rule has „prüfen“).
 

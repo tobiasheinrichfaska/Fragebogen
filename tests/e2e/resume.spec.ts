@@ -105,6 +105,42 @@ test('a closed page offers the interrupted questionnaire and continues it', asyn
   expect(foreign).toEqual([]);
 });
 
+test('a link opened over an interrupted questionnaire is not lost by continuing it', async ({
+  page,
+}) => {
+  // Audit 2026-11-18: iOS Safari loads a link without asking, the offer then stood next to the
+  // link's new questionnaire, and „Fortsetzen“ replaced it with the link already gone.
+  const foreign = await serve(page);
+  await startEmployer(page);
+  await expect.poll(() => stored(page)).not.toBeNull();
+  const link = '#stammdaten=1&formular=personalfragebogen&firma=Link+Bau+GmbH';
+  await page.goto(`${ORIGIN}/${link}`);
+  await expect(page.getByRole('heading', { name: OFFER })).toBeVisible();
+  await expect(page.locator('main')).toContainText('aus Ihrem Lesezeichen.');
+  expect(await page.evaluate(() => location.hash)).toBe(link);
+
+  // „Fortsetzen“ asks first; declined, both stay.
+  const asked: string[] = [];
+  page.removeAllListeners('dialog');
+  page.once('dialog', (dialog) => {
+    asked.push(dialog.message());
+    void dialog.dismiss();
+  });
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  expect(asked.join()).toContain('Der neue Fragebogen aus dem gerade geöffneten Link');
+  await expect(page.getByRole('heading', { name: OFFER })).toBeVisible();
+  expect(await page.evaluate(() => location.hash)).toBe(link);
+
+  // Accepted: the interrupted one comes back, and the same link opened again starts its own.
+  page.on('dialog', (dialog) => void dialog.accept());
+  await page.getByRole('button', { name: 'Fortsetzen' }).click();
+  await expect(page.locator('main')).toContainText(
+    'Angefangener Fragebogen aus diesem Browser fortgesetzt.',
+  );
+  expect(await page.evaluate(() => location.hash)).toBe('');
+  expect(foreign).toEqual([]);
+});
+
 test('an answer given right before the page closes is kept', async ({ page }) => {
   // Regression 2026-11-04 (1 of 48 runs): the save waited 300 ms, a page closed earlier lost the
   // last answer. Now it is written at once when the page is hidden or closed.

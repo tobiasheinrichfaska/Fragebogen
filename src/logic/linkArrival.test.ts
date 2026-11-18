@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { linkNeedsStart } from './linkArrival';
+import { linkLeavesAddress, linkNeedsStart } from './linkArrival';
 
 describe('linkNeedsStart', () => {
   it('asks for a fresh start for a master-data link, with or without a form', () => {
@@ -24,5 +24,23 @@ describe('linkNeedsStart', () => {
     expect(linkNeedsStart('')).toBe(false);
     expect(linkNeedsStart('#')).toBe(false);
     expect(linkNeedsStart('#oben')).toBe(false);
+  });
+});
+
+describe('linkLeavesAddress', () => {
+  it('lets a read link go once nothing covers the app', () => {
+    expect(linkLeavesAddress({ link: true, accessOpen: false, offerOpen: false })).toBe(true);
+  });
+
+  it('keeps it while the access notice is open, so a reload there still reads it', () => {
+    expect(linkLeavesAddress({ link: true, accessOpen: true, offerOpen: false })).toBe(false);
+  });
+
+  it('keeps it while an interrupted questionnaire is offered', () => {
+    expect(linkLeavesAddress({ link: true, accessOpen: false, offerOpen: true })).toBe(false);
+  });
+
+  it('has nothing to do without a link', () => {
+    expect(linkLeavesAddress({ link: false, accessOpen: false, offerOpen: false })).toBe(false);
   });
 });

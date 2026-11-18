@@ -15,3 +15,18 @@ export function linkNeedsStart(hash: string): boolean {
   const master = parseMasterDataFragment(hash);
   return !master.ok || master.data !== undefined || parseTransferFragment(hash) !== undefined;
 }
+
+/**
+ * Whether a link the app read may leave the address bar now (audit 2026-11-18). It goes, so the same
+ * link opened again in this tab moves the fragment and starts the app anew — also a link with an
+ * error or a form the app lacks, whose message then comes again. It waits while the access notice
+ * covers the app (a reload there would lose it) and while an interrupted questionnaire of this
+ * browser is offered (choosing that one must not lose the link; iOS Safari reloads without asking).
+ */
+export function linkLeavesAddress(input: {
+  link: boolean;
+  accessOpen: boolean;
+  offerOpen: boolean;
+}): boolean {
+  return input.link && !input.accessOpen && !input.offerOpen;
+}
