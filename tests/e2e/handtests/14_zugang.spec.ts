@@ -77,6 +77,24 @@ test.describe('with the notice of the local configuration', () => {
     await expect(gate(page)).toBeVisible();
   });
 
+  test('a master-data link waits in the address bar until the notice is confirmed', async ({
+    page,
+  }) => {
+    // Audit 2026-11-18: the link left the address bar under the notice, so a reload before the
+    // tick showed a plain start page.
+    await serve(page);
+    const link = '#stammdaten=1&formular=personalfragebogen&firma=Beispiel+Bau+GmbH';
+    await page.goto(`${ORIGIN}/${link}`);
+    await expect(gate(page)).toBeVisible();
+    expect(await page.evaluate(() => location.hash)).toBe(link);
+    await page.reload();
+    await expect(gate(page)).toBeVisible();
+    await page.getByRole('checkbox', { name: notice }).check();
+    await page.getByRole('button', { name: 'Weiter', exact: true }).click();
+    await expect(page.locator('main')).toContainText('aus Ihrem Lesezeichen.');
+    expect(await page.evaluate(() => location.hash)).toBe('');
+  });
+
   test('a downloaded copy (file://) does not ask', async ({ page }) => {
     await page.goto(pathToFileURL(APP).href);
     await expect(start(page)).toBeVisible();

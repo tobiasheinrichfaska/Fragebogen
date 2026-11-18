@@ -70,6 +70,7 @@ import {
 import { ResumeOffer } from './ResumeOffer';
 import { masterDataRolesText } from '../logic/masterData';
 import { parseTransferFragment, transferOffer } from '../logic/transferLink';
+import { linkLeavesAddress } from '../logic/linkArrival';
 import { UnlockLinkScreen } from './UnlockLinkScreen';
 import { usePasswordDialog } from './usePasswordDialog';
 import { describeRevised } from '../logic/validity';
@@ -280,16 +281,16 @@ function Workspace({
   );
 
   // The answers of a link stay out of the address bar once read: a reload does not read them again.
-  // A master-data link that was read goes too (audit 2026-11-18): the same link opened again in
-  // this tab then moves the fragment, and main.tsx starts anew. A link the app cannot follow (an
-  // error, a form it lacks) stays, so a reload shows its message again.
-  const readMasterData =
-    remembered.ok && remembered.data !== undefined && (remembered.form === undefined || !!linked);
+  // A master-data link goes too, also one with an error or a form the app lacks (audit 2026-11-18):
+  // the same link opened again in this tab then moves the fragment, main.tsx starts anew, and its
+  // questionnaire or message comes again. Not while the access notice or an offer covers the app.
+  const linkRead = transferred !== undefined || !remembered.ok || remembered.data !== undefined;
+  const offerOpen = offer !== undefined;
   useEffect(() => {
-    if (transferred || readMasterData) {
+    if (linkLeavesAddress({ link: linkRead, accessOpen, offerOpen })) {
       history.replaceState(null, '', location.pathname + location.search);
     }
-  }, [transferred, readMasterData]);
+  }, [linkRead, accessOpen, offerOpen]);
 
   useEffect(() => {
     tracker.start();
@@ -555,6 +556,17 @@ function Workspace({
 
   const continueResumed = () => {
     if (!offer) return;
+    // A questionnaire a link has just opened would be replaced (audit 2026-11-18: iOS Safari loads
+    // a link without asking first); the link stays in the address bar until this is decided.
+    if (
+      session !== undefined &&
+      (linked !== undefined || received !== undefined) &&
+      !confirm(
+        'Den angefangenen Fragebogen fortsetzen?\n\nDer neue Fragebogen aus dem gerade geöffneten Link wird dann nicht angelegt. Sie können den Link danach erneut öffnen.',
+      )
+    ) {
+      return;
+    }
     const now = new Date().toISOString();
     const text = resumePackageText(offer, (hash) => registry.byHash(hash)?.definition);
     if (text === undefined) {

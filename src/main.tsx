@@ -14,7 +14,8 @@ for (const [name, value] of Object.entries(colorVariables(APP_CONFIG.colors))) {
 }
 
 // A link opened in a tab that already shows the app only moves the fragment; the app reads its
-// links at the start, so it starts anew (bug 2026-11-17). Unsaved changes: the browser asks first.
+// links at the start, so it starts anew (bug 2026-11-17). Unsaved changes: most browsers ask first;
+// iOS Safari does not, and there the hosted app's browser memory offers them again after the start.
 window.addEventListener('hashchange', () => {
   if (linkNeedsStart(location.hash)) location.reload();
 });

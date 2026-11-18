@@ -1152,15 +1152,21 @@ test('MT-109: the public build names a form it lacks and shows the start page', 
 }) => {
   const lacking = DRAFT_ONLY[0];
   if (lacking === undefined) throw new Error('no form exists only as a draft');
-  const { found, app } = await openApp(page, `#stammdaten=1&formular=${lacking}`);
-  await page.reload();
-  await expect(
-    note(
-      app,
-      `Ihr Lesezeichen soll einen neuen Fragebogen „${lacking}“ öffnen; diese Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.`,
-    ),
-  ).toHaveClass(/banner-warning/);
+  const lackingLink = `#stammdaten=1&formular=${lacking}`;
+  const { found, app } = await openApp(page, lackingLink);
+  const lackingNote = note(
+    app,
+    `Ihr Lesezeichen soll einen neuen Fragebogen „${lacking}“ öffnen; diese Fassung der App enthält ihn nicht. Bitte wählen Sie unten selbst.`,
+  );
+  await expect(lackingNote).toHaveClass(/banner-warning/);
   await expect(app.getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
+  // The message comes again when the same link is opened again in this tab (audit 2026-11-18): the
+  // link has left the address bar, so the fragment moves and the app starts anew.
+  expect(new URL(page.url()).hash).toBe('');
+  await app.getByRole('button', { name: 'Schließen' }).first().click();
+  await expect(lackingNote).toHaveCount(0);
+  await page.goto(pathToFileURL(APP).href + lackingLink);
+  await expect(lackingNote).toBeVisible();
   await expectClean(page, found);
 });
 
