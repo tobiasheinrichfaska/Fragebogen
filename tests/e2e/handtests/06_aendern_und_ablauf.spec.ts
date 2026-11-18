@@ -1174,8 +1174,17 @@ test('a master-data link opened in a tab that already shows the app opens its qu
     `${pathToFileURL(APP).href}#stammdaten=1&formular=personalfragebogen&firma=Beispiel+Bau+GmbH`,
   );
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  const firstId = await app.locator('header .muted').textContent();
   await button(app, 'Ich bin: Arbeitgeber').click();
   await expect(app.locator('.question input').first()).toHaveValue('Beispiel Bau GmbH');
+  // The same link once more (audit 2026-11-18: the next employee from the same mail): read links
+  // leave the address bar, so this moves the fragment again and starts a new questionnaire.
+  expect(new URL(page.url()).hash).toBe('');
+  await page.goto(
+    `${pathToFileURL(APP).href}#stammdaten=1&formular=personalfragebogen&firma=Beispiel+Bau+GmbH`,
+  );
+  await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  expect(await app.locator('header .muted').textContent()).not.toBe(firstId);
   await expectClean(page, found);
 });
 

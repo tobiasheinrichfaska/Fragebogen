@@ -1458,6 +1458,9 @@ same address); the app reads its links at the start and stayed on its start page
 or transfer link arriving that way loads the page anew (`src/logic/linkArrival.ts`, listener in
 `src/main.tsx`; e2e in `06_aendern_und_ablauf.spec.ts`, red before). The live file, its headers and a
 link opened fresh were checked and worked; whether Tobias's case was exactly this is not confirmed.
+A master-data link the app followed now also leaves the address bar (audit 2026-11-18), so the same
+mail link opened again in that tab (the next employee) starts a new questionnaire; a link with an
+error or a form the app lacks stays, so a reload shows its message again.
 
 **Drafts after Tobias's answers to the review (cloud session, 2026-11-15 night; PR
 tobiasheinrichfaska/Fragebogen#16):** report `reports/2026-11-15_durchsicht-entwuerfe.md`, „Stand“.
