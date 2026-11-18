@@ -5,12 +5,19 @@ import { TEST_AREA } from './ui/testbereich/catalogue';
 import { APP_CONFIG } from './config';
 import { colorVariables } from './logic/appConfig';
 import { offerInstallation } from './io/webApp';
+import { linkNeedsStart } from './logic/linkArrival';
 import './ui/styles.css';
 
 // The Kanzlei colours of this build (config "colors"), set through the CSSOM — allowed by the CSP.
 for (const [name, value] of Object.entries(colorVariables(APP_CONFIG.colors))) {
   document.documentElement.style.setProperty(name, value);
 }
+
+// A link opened in a tab that already shows the app only moves the fragment; the app reads its
+// links at the start, so it starts anew (bug 2026-11-17). Unsaved changes: the browser asks first.
+window.addEventListener('hashchange', () => {
+  if (linkNeedsStart(location.hash)) location.reload();
+});
 
 // The hosted builds can be installed and start offline (only at an https address).
 offerInstallation();

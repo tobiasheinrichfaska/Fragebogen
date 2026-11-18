@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
+  APP,
   download,
   expectQuiet,
   formFields,
@@ -1159,6 +1160,22 @@ test('MT-109: the public build names a form it lacks and shows the start page', 
     ),
   ).toHaveClass(/banner-warning/);
   await expect(app.getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
+  await expectClean(page, found);
+});
+
+test('a master-data link opened in a tab that already shows the app opens its questionnaire', async ({
+  page,
+}) => {
+  // Bug 2026-11-17: the browser only moved the fragment (Safari opens a mail link in the tab with
+  // the same address), and the app, which reads its links at the start, stayed on its start page.
+  const { found, app } = await openApp(page);
+  await expect(app.getByRole('heading', { name: 'Neuer Fragebogen' })).toBeVisible();
+  await page.goto(
+    `${pathToFileURL(APP).href}#stammdaten=1&formular=personalfragebogen&firma=Beispiel+Bau+GmbH`,
+  );
+  await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  await button(app, 'Ich bin: Arbeitgeber').click();
+  await expect(app.locator('.question input').first()).toHaveValue('Beispiel Bau GmbH');
   await expectClean(page, found);
 });
 
