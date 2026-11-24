@@ -260,6 +260,42 @@ describe('import file', () => {
     expect((other('türkisch').text ?? '').split('\r\n')).toContain('1001;17.05.1990;w;163;');
   });
 
+  it('takes a value only while its condition holds, else the next source of `first`', () => {
+    const withStart = (start: unknown): ExportMapping => {
+      const raw = structuredClone(mappingsRaw) as unknown as Record<string, unknown>[];
+      const employee = (raw[0] as Record<string, unknown>).employee as Record<string, unknown>;
+      employee.start = start;
+      const parsed = parseExportMappings(raw);
+      if (!parsed.ok) throw new Error(JSON.stringify(parsed.issues));
+      return parsed.mappings[0] as ExportMapping;
+    };
+    const conditional = withStart({
+      first: [
+        { const: '01.03.2019', when: { field: 'agPersonalnummer', answered: true } },
+        { field: 'agBeschaeftigungsbeginn', format: 'date' },
+      ],
+    });
+    expect(checkExportMapping(conditional, definition)).toEqual([]);
+    const startOf = (employer: Answers) =>
+      buildLugImport(questionnaire(PERSON, employer), definition, conditional, {
+        mandantennummer: '10001',
+        mode: 'vorhanden',
+      }).employee.start;
+    expect(startOf(EMPLOYER)).toBe('01.03.2019');
+    expect(startOf(withoutKey(EMPLOYER, 'agPersonalnummer'))).toBe('02.11.2026');
+
+    const unknown = withStart({ const: 'x', when: { field: 'gibtsNicht', equals: 'a' } });
+    expect(checkExportMapping(unknown, definition).map((i) => i.message)).toEqual([
+      'unknown field "gibtsNicht"',
+    ]);
+    const bad = structuredClone(mappingsRaw) as unknown as Record<string, unknown>[];
+    ((bad[0] as Record<string, unknown>).employee as Record<string, unknown>).start = {
+      const: 'x',
+      when: { field: 'agEntgeltArt', gleich: 'a' },
+    };
+    expect(parseExportMappings(bad).ok).toBe(false);
+  });
+
   it('leaves out records whose condition does not hold', () => {
     expect(result.text).not.toContain('Beispiel|Minijob');
   });
