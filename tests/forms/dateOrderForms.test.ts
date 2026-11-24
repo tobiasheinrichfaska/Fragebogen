@@ -110,6 +110,7 @@ describe('Personalfragebogen: the end of a fixed term', () => {
     // 2026-11-15 (Tobias: „ich folge deiner Empfehlung“): the question about 31.12.2026 and its
     // answer as the last argument of the JAEG tests (tests/forms/personalfragebogen2027.test.ts).
     const BESTAND_2026 = 'pkvBestand2026';
+    const CHANGE_LIMIT = 'Eine Änderung eines bestehenden Arbeitsverhältnisses';
     const text = JSON.stringify(pfb110.definition);
     for (const [now] of UNDO_2027) expect(text, now).toContain(now);
     const undone = UNDO_2027.reduce((all, [now, before]) => all.split(now).join(before), text);
@@ -137,6 +138,15 @@ describe('Personalfragebogen: the end of a fixed term', () => {
         ) {
           return undefined;
         }
+        // Change of an existing employment (Tobias 2026-11-24): the cause question, the field for
+        // what changes, the conditions of the earlier-employment pair and the limit sentence
+        // (tests/forms/aenderung.test.ts).
+        if (
+          ['agFrueherBeschaeftigt', 'agErsteintritt'].includes(String(parent.id)) &&
+          ['showIf', 'because', 'initial'].includes(key)
+        ) {
+          return undefined;
+        }
         if (key === 'showIf' && parent.label !== undefined && parent.role === undefined) {
           return undefined;
         }
@@ -150,6 +160,7 @@ describe('Personalfragebogen: the end of a fixed term', () => {
           return value.filter(
             (item: unknown) =>
               item !== BESTAND_2026 &&
+              !(typeof item === 'string' && item.startsWith(CHANGE_LIMIT)) &&
               // Audit 2026-11-16, rounds 4 and 5: a privately insured person in a further Minijob
               // next to a main job below the JAEG (KV and PV rule, pinned in
               // personalfragebogen2027.test.ts).
@@ -164,7 +175,9 @@ describe('Personalfragebogen: the end of a fixed term', () => {
               !(
                 typeof item === 'object' &&
                 item !== null &&
-                [...SECOND, BESTAND_2026].includes((item as { id?: string }).id ?? '')
+                [...SECOND, BESTAND_2026, 'agAnlass', 'agAenderungWas'].includes(
+                  (item as { id?: string }).id ?? '',
+                )
               ),
           );
         }

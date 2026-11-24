@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-24T12:41",
+  "revised": "2026-11-24T12:47",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -3253,12 +3253,33 @@
           "purpose": "Zuordnung in der Lohnabrechnung"
         },
         {
+          "id": "agAnlass",
+          "role": "arbeitgeber",
+          "type": "choice",
+          "label": "Anlass des Fragebogens",
+          "question": "Geht es um eine Neueinstellung oder um eine Änderung eines bestehenden Arbeitsverhältnisses?",
+          "help": "Bei einer Änderung (z. B. Arbeitszeit, Entgelt, Verlängerung einer Befristung, Wechsel vom Minijob in eine versicherungspflichtige Beschäftigung) füllen Sie den ganzen Fragebogen mit dem Stand aus, der ab dem Tag der Änderung gilt. Die Beurteilung der Sozialversicherung erfolgt dann wie bei einer neuen Beschäftigung, die am Tag der Änderung beginnt.",
+          "required": true,
+          "initial": "neueinstellung",
+          "purpose": "Beurteilung der Sozialversicherung ab dem Tag der Änderung (Abmeldung und Anmeldung bei einem Wechsel der Personengruppe oder der Beitragsgruppen, § 28a SGB IV, DEÜV); Zuordnung zum vorhandenen Mitarbeiter in der Lohnabrechnung",
+          "options": [
+            {
+              "id": "neueinstellung",
+              "label": "Neueinstellung"
+            },
+            {
+              "id": "aenderung",
+              "label": "Änderung eines bestehenden Arbeitsverhältnisses"
+            }
+          ]
+        },
+        {
           "id": "agBeschaeftigungsbeginn",
           "role": "arbeitgeber",
           "type": "date",
           "label": "Tag der Beschäftigungsaufnahme",
           "question": "An welchem Tag beginnt die Beschäftigung?",
-          "help": "Der erste Arbeitstag.",
+          "help": "Der erste Arbeitstag. Bei einer Änderung eines bestehenden Arbeitsverhältnisses: der Tag, ab dem die geänderten Angaben gelten.",
           "required": true,
           "purpose": "Anmeldung zur Sozialversicherung (§ 28a SGB IV); Beginn der Lohnabrechnung"
         },
@@ -3294,8 +3315,12 @@
           "label": "Früher schon beschäftigt",
           "question": "War die Person schon früher bei Ihnen beschäftigt?",
           "required": true,
-          "initial": false,
-          "purpose": "Ersteintrittsdatum: Betriebszugehörigkeit (z. B. Kündigungsfristen, § 622 BGB); Vorbeschäftigung bei sachgrundloser Befristung (§ 14 Abs. 2 S. 2 TzBfG)"
+          "purpose": "Ersteintrittsdatum: Betriebszugehörigkeit (z. B. Kündigungsfristen, § 622 BGB); Vorbeschäftigung bei sachgrundloser Befristung (§ 14 Abs. 2 S. 2 TzBfG)",
+          "showIf": {
+            "field": "agAnlass",
+            "equals": "neueinstellung"
+          },
+          "because": "Bei einer Änderung besteht das Arbeitsverhältnis schon; dann wird gleich nach dem ursprünglichen Beginn gefragt."
         },
         {
           "id": "agErsteintritt",
@@ -3306,13 +3331,38 @@
           "maxDate": "today",
           "label": "Ersteintrittsdatum",
           "question": "Wann war die Person zum ersten Mal bei Ihnen beschäftigt?",
+          "help": "Bei einer Änderung eines bestehenden Arbeitsverhältnisses: der ursprüngliche Beginn der Beschäftigung, nicht der Tag der Änderung.",
           "required": true,
           "showIf": {
-            "field": "agFrueherBeschaeftigt",
-            "equals": true
+            "any": [
+              {
+                "field": "agFrueherBeschaeftigt",
+                "equals": true
+              },
+              {
+                "field": "agAnlass",
+                "equals": "aenderung"
+              }
+            ]
           },
-          "because": "Nur bei einer früheren Beschäftigung weicht der erste Eintritt vom jetzigen Beginn ab; er zählt für die Betriebszugehörigkeit und schließt eine sachgrundlose Befristung grundsätzlich aus (§ 14 Abs. 2 S. 2 TzBfG).",
+          "because": "Bei einer früheren Beschäftigung oder bei einer Änderung eines bestehenden Arbeitsverhältnisses weicht der erste Eintritt vom jetzigen Beginn ab; er zählt für die Betriebszugehörigkeit und schließt eine sachgrundlose Befristung grundsätzlich aus (§ 14 Abs. 2 S. 2 TzBfG).",
           "purpose": "Betriebszugehörigkeit; Vorbeschäftigung bei Befristungen (§ 14 Abs. 2 S. 2 TzBfG)"
+        },
+        {
+          "id": "agAenderungWas",
+          "role": "arbeitgeber",
+          "type": "text",
+          "multiline": true,
+          "label": "Was ändert sich",
+          "question": "Was ändert sich?",
+          "help": "z. B. Arbeitszeit, Entgelt, Befristung verlängert, Wechsel vom Minijob in eine versicherungspflichtige Beschäftigung …",
+          "required": true,
+          "showIf": {
+            "field": "agAnlass",
+            "equals": "aenderung"
+          },
+          "because": "Nur bei einer Änderung eines bestehenden Arbeitsverhältnisses ist zu sagen, was sich ändert.",
+          "purpose": "Hinweis für die lohnabrechnende Stelle: Anlass der Änderung und ihr Umfang"
         },
         {
           "id": "agArbeitsortBundesland",
@@ -6992,6 +7042,7 @@
     "until": "2027-12-31"
   },
   "limits": [
+    "Eine Änderung eines bestehenden Arbeitsverhältnisses (z. B. Arbeitszeit, Entgelt, Befristung, Wechsel vom Minijob) füllt er als vollständigen Fragebogen mit dem Stand ab dem Tag der Änderung aus; die Sozialversicherung wird beurteilt wie bei einer neuen Beschäftigung ab diesem Tag. Der Mitarbeiter in der Lohnabrechnung bleibt derselbe: die Kanzlei wählt dort „vorhandenen ergänzen“.",
     "Der Fragebogen entscheidet nicht über Versicherungspflicht, Personengruppe und Beitragsgruppen. Er sammelt die Angaben und gibt Prüfhinweise; die Beurteilung trifft die lohnabrechnende Stelle.",
     "Sonderfälle (Heimarbeit, Werkstätten und Einrichtungen, Seefahrt, knappschaftliche Betriebe, mitarbeitende Familienangehörige und Nebenerwerbslandwirte in der Landwirtschaft, unständige Beschäftigung, Haushaltsscheck, FELEG, Vorstände von Aktiengesellschaften, Geistliche und Ordensangehörige, Beschäftigte mit beamtenrechtlicher Absicherung) schließt er über Vorfragen aus: Dann sind Abschließen und Weitergeben gesperrt.",
     "Die Werte dieser Fassung (z. B. die Minijob-Grenze von 603 € im Jahr 2026 und 633 € im Jahr 2027 und die Rechengrößen der Sozialversicherung) gelten für einen Beschäftigungsbeginn in den Jahren 2026 und 2027; maßgeblich sind jeweils die Werte des Jahres, in dem die Beschäftigung beginnt.",
