@@ -27,6 +27,7 @@ import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const FILE = join(__dirname, '..', '..', 'config', 'export.local.json');
 const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
+const draft110 = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
 const sofort = newestPublished('sofortmeldung');
 const sofortFrozen = registeredFrom(
   readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')),
@@ -202,6 +203,45 @@ describe.skipIf(!HAS_FILE)('local export mappings (config/export.local.json)', (
     expect(result.notes).toEqual([
       expect.stringContaining('Personengruppe 120 fehlt in der Werteliste'),
     ]);
+  });
+
+  it('keeps the entry dates in a change of an employment (draft 1.1.0, agAnlass = aenderung)', () => {
+    const lug110 = mappings.find((m) => mappingFor(m, draft110.definition)) as ExportMapping;
+    expect(lug110).toBeDefined();
+    const base = createQuestionnaire(QUESTIONNAIRE_ID, draft110);
+    const make = (employer: Answers) =>
+      filled(draft110, 'arbeitgeber', employer, filled(draft110, 'person', PERSON, base));
+    const run = (employer: Answers, mode: 'neu' | 'vorhanden') =>
+      buildLugImport(make(employer), draft110.definition, lug110, {
+        mandantennummer: '10001',
+        mode,
+        inputs: INPUTS,
+      });
+    const change = run(
+      {
+        ...EMPLOYER,
+        agAnlass: 'aenderung',
+        agErsteintritt: '01.03.2019',
+        agBeschaeftigungsbeginn: '01.01.2027',
+      },
+      'vorhanden',
+    );
+    expect(change.blocking).toEqual([]);
+    const dates = change.sheet.filter((row) => /^\d\d\.\d\d\.\d{4}$/.test(row.value));
+    expect(dates.length).toBeGreaterThan(0);
+    // Every date written is the original start: the change date never overwrites an entry date.
+    expect(dates.map((row) => row.value)).not.toContain('01.01.2027');
+    expect(change.sheet.some((row) => row.value === '01.03.2019')).toBe(true);
+    expect(change.sheet.some((row) => /abzurechn/i.test(row.field))).toBe(false);
+    expect(change.text ?? '').toContain('01.03.2019');
+    expect(change.text ?? '').not.toContain('01.01.2027');
+    // The valid-from months of the changed values are the change month.
+    expect(change.text ?? '').toContain(';01/2027;');
+
+    // A new hire (or an answer without agAnlass) keeps writing its start date.
+    const hire = run({ ...EMPLOYER, agFrueherBeschaeftigt: false }, 'neu');
+    expect(hire.sheet.some((row) => row.value === '02.11.2026')).toBe(true);
+    expect(hire.sheet.some((row) => /abzurechn/i.test(row.field))).toBe(true);
   });
 
   it('creates the employee from the Sofortmeldung, then completes it from the Personalfragebogen', () => {
