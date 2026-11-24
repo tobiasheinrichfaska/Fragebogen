@@ -3,11 +3,13 @@
 // nothing of the answers can be read from it. Fictitious data.
 import { inflateSync, strFromU8 } from 'fflate';
 import { decodePackage } from '../../src/logic/dataPackage';
-import { fromBase64Url } from '../../src/logic/dataPages';
+import { compressPackage, fromBase64Url } from '../../src/logic/dataPages';
 import { canonicalize } from '../../src/logic/jcs';
+import { passwordKeyText } from '../../src/logic/passwords';
 import {
   parseTransferFragment,
   TRANSFER_LINK_MAX_LENGTH,
+  TRANSFER_LOCK,
   transferFragment,
   transferPackageText,
   type LockedTransfer,
@@ -47,6 +49,42 @@ describe('lockTransfer / unlockTransfer', { timeout: 60_000 }, () => {
     if (!opened.ok) throw new Error(opened.issue);
     const decoded = decodePackage(JSON.parse(opened.text), registryOf([sofortmeldung]));
     expect(decoded.ok).toBe(true);
+  });
+
+  it('opens a protected link of the earlier, full version 2 (same cipher)', async () => {
+    const salt = crypto.getRandomValues(new Uint8Array(TRANSFER_LOCK.saltBytes));
+    const iv = crypto.getRandomValues(new Uint8Array(TRANSFER_LOCK.ivBytes));
+    const material = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(passwordKeyText(PASSWORD)),
+      'PBKDF2',
+      false,
+      ['deriveKey'],
+    );
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: TRANSFER_LOCK.iterations },
+      material,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt'],
+    );
+    const full = compressPackage(canonicalize(questionnaire)).slice();
+    const ciphertext = new Uint8Array(
+      await crypto.subtle.encrypt(
+        {
+          name: 'AES-GCM',
+          iv,
+          additionalData: new TextEncoder().encode(TRANSFER_LOCK.additionalData),
+          tagLength: TRANSFER_LOCK.tagBytes * 8,
+        },
+        key,
+        full,
+      ),
+    );
+    expect(await unlockTransfer({ salt, iv, ciphertext }, PASSWORD)).toEqual({
+      ok: true,
+      questionnaireText: canonicalize(questionnaire),
+    });
   });
 
   it('refuses a wrong password, also one that differs in a single character', async () => {
@@ -90,7 +128,7 @@ describe('lockTransfer / unlockTransfer', { timeout: 60_000 }, () => {
     for (const answer of [questionnaire.questionnaireId, 'Beispiel']) {
       expect(asText).not.toContain(answer);
     }
-    expect(fragment).toContain('weitergabe=2');
+    expect(fragment).toContain('weitergabe=4');
     // The open link: anyone who has it can read the answers back.
     const open = transferFragment(questionnaire);
     if (!open.ok) throw new Error(open.issue);

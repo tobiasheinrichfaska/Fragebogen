@@ -17,6 +17,8 @@ import {
   TRANSFER_LINK_MAX_LENGTH,
   TRANSFER_LINK_MESSAGES,
   TRANSFER_LOCK,
+  compactText,
+  expandText,
   parseTransferFragment,
   transferFragment,
   transferOffer,
@@ -41,7 +43,7 @@ describe('transferFragment / parseTransferFragment', () => {
   it('carries a sealed questionnaire and gives it back unchanged', () => {
     const signed = personSigned();
     const fragment = fragmentOf(signed);
-    expect(fragment).toMatch(/^#weitergabe=1&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
+    expect(fragment).toMatch(/^#weitergabe=3&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
     expect(parseTransferFragment(fragment)).toEqual({
       ok: true,
       kind: 'open',
@@ -122,7 +124,7 @@ describe('transferFragment / parseTransferFragment', () => {
   });
 
   it('refuses a link of another link version', () => {
-    expect(parseTransferFragment('#weitergabe=3&pruef=0&daten=x')).toEqual({
+    expect(parseTransferFragment('#weitergabe=5&pruef=0&daten=x')).toEqual({
       ok: false,
       issue: 'unknownVersion',
     });
@@ -134,6 +136,81 @@ describe('transferFragment / parseTransferFragment', () => {
       ok: false,
       issue: 'unknownVersion',
     });
+  });
+});
+
+describe('compact links, version 3 (2026-11-24)', () => {
+  const legacyFragment = (questionnaire: Questionnaire) => {
+    const text = canonicalize(questionnaire);
+    return `#${new URLSearchParams([
+      ['weitergabe', '1'],
+      ['pruef', sha256Hex(strToU8(text)).slice(0, 16)],
+      ['daten', toBase64Url(compressPackage(text))],
+    ]).toString()}`;
+  };
+
+  it('leaves out the field hashes and the reader puts them back exactly', () => {
+    const signed = personSigned();
+    expect(compactText(signed)).not.toContain('fieldHashes');
+    expect(canonicalize(signed)).toContain('fieldHashes');
+    expect(parseTransferFragment(fragmentOf(signed))).toEqual({
+      ok: true,
+      kind: 'open',
+      questionnaireText: canonicalize(signed),
+    });
+    expect(fragmentOf(signed).length).toBeLessThan(legacyFragment(signed).length);
+  });
+
+  it('keeps the hashes of a part whose hashes the reader could not rebuild', () => {
+    const signed = personSigned();
+    const copy = structuredClone(signed);
+    const part = Object.values(copy.parts)[0]?.[0];
+    const hashes = part?.seal?.payload.fieldHashes;
+    if (!hashes) throw new Error('no hashes');
+    const first = Object.keys(hashes)[0] ?? '';
+    hashes[first] = '0123456789abcdef';
+    expect(compactText(copy)).toContain('0123456789abcdef');
+    expect(expandText(compactText(copy))).toBe(canonicalize(copy));
+  });
+
+  it('refuses a changed answer: the rebuilt hashes no longer fit the content hash', () => {
+    const signed = personSigned();
+    const parsed = parseTransferFragment(fragmentOf(signed));
+    if (parsed?.ok !== true || parsed.kind !== 'open') throw new Error('not parsed');
+    const forged = JSON.parse(parsed.questionnaireText) as Questionnaire;
+    const part = Object.values(forged.parts)[0]?.[0];
+    if (!part) throw new Error('no part');
+    const id = Object.keys(part.data)[0] ?? '';
+    part.data[id] = 'anders';
+    const opened = transferPackageText(JSON.stringify(forged), carried);
+    if (!opened.ok) throw new Error(opened.issue);
+    const decoded = decodePackage(JSON.parse(opened.text), beispielRegistry());
+    if (!decoded.ok) throw new Error(JSON.stringify(decoded.issues));
+    expect(
+      verifyQuestionnaire(decoded.questionnaire, { registry: beispielRegistry() }).level,
+    ).not.toBe('ok');
+  });
+
+  it('still reads links of versions 1 and 2, unchanged', () => {
+    const signed = personSigned();
+    expect(parseTransferFragment(legacyFragment(signed))).toEqual({
+      ok: true,
+      kind: 'open',
+      questionnaireText: canonicalize(signed),
+    });
+    const locked = lockedTransferFragment({
+      salt: new Uint8Array(16).fill(1),
+      iv: new Uint8Array(12).fill(2),
+      ciphertext: new Uint8Array(40).fill(3),
+    });
+    if (!locked.ok) throw new Error(locked.issue);
+    const v2 = locked.fragment.replace('weitergabe=4', 'weitergabe=2');
+    const asV2 = parseTransferFragment(v2);
+    expect(asV2).toMatchObject({ ok: true, kind: 'locked' });
+  });
+
+  it('names a text that is no JSON damaged', () => {
+    expect(expandText('{nicht json')).toBeUndefined();
   });
 });
 
@@ -149,7 +226,7 @@ describe('a link protected by a password (Tobias 2026-11-06)', () => {
   it('carries salt, nonce and ciphertext and gives them back apart', () => {
     const made = lockedTransferFragment(locked);
     if (!made.ok) throw new Error(made.issue);
-    expect(made.fragment).toMatch(/^#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
+    expect(made.fragment).toMatch(/^#weitergabe=4&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
     expect(parseTransferFragment(made.fragment)).toEqual({ ok: true, kind: 'locked', locked });
   });
 
@@ -230,14 +307,15 @@ describe('transferOffer', () => {
     const offer = transferOffer(employerOnly().questionnaire, sofortmeldung, HOSTED);
     expect(offer.kind).toBe('link');
     if (offer.kind !== 'link') return;
-    expect(offer.url.startsWith(`${HOSTED}#weitergabe=1&`)).toBe(true);
+    expect(offer.url.startsWith(`${HOSTED}#weitergabe=3&`)).toBe(true);
     expect(offer.url.length - HOSTED.length).toBeLessThanOrEqual(TRANSFER_LINK_MAX_LENGTH);
   });
 
-  it('leaves the complete Sofortmeldung with its drawn signature to the PDF', () => {
-    expect(transferOffer(completeSofortmeldung().questionnaire, sofortmeldung, HOSTED)).toEqual({
-      kind: 'tooLong',
-    });
+  it('offers a link for the complete Sofortmeldung with its drawn signature (compact link, 2026-11-24)', () => {
+    const offer = transferOffer(completeSofortmeldung().questionnaire, sofortmeldung, HOSTED);
+    expect(offer.kind).toBe('link');
+    if (offer.kind !== 'link') return;
+    expect(offer.url.length - HOSTED.length).toBeLessThanOrEqual(TRANSFER_LINK_MAX_LENGTH);
   });
 
   it('offers nothing while something blocks passing on, as for the PDF', () => {
