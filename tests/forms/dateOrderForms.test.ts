@@ -77,6 +77,19 @@ describe('Personalfragebogen: the end of a fixed term', () => {
     expect(answer(employer(pfb110, FIXED_TERM), 'agBefristetBis', '30.04.2027').ok).toBe(true);
   });
 
+  const EARLIER = { agBeschaeftigungsbeginn: '01.11.2026', agBeschaeftigungsart: 'svpflichtig' };
+  it('1.1.0 takes the first entry as TTMMJJ and refuses one after the start of employment', () => {
+    const base = employer(pfb110, { ...EARLIER, agFrueherBeschaeftigt: true });
+    const typed = answer(base, 'agErsteintritt', '010319');
+    expect(typed.ok).toBe(true);
+    if (typed.ok) {
+      const values = JSON.stringify(typed.session.questionnaire);
+      expect(values).toContain('2019-03-01');
+    }
+    const late = answer(base, 'agErsteintritt', '02.11.2026');
+    expect(late.ok ? '' : late.message).toContain('Tag der Beschäftigungsaufnahme');
+  });
+
   it('1.0.0 stays as it was published: frozen, without the rule', () => {
     expect(answer(employer(pfb100, FIXED_TERM), 'agBefristetBis', '17.05.2026').ok).toBe(true);
   });
@@ -102,7 +115,12 @@ describe('Personalfragebogen: the end of a fixed term', () => {
     const undone = UNDO_2027.reduce((all, [now, before]) => all.split(now).join(before), text);
     const strip = (definition: unknown) =>
       JSON.stringify(definition, function (this: unknown, key, value: unknown) {
-        if (['version', 'revised', 'notBefore', 'notAfter', 'help', 'fromRole'].includes(key)) {
+        if (
+          ['version', 'revised', 'notBefore', 'notAfter', 'help', 'fromRole'].includes(key) ||
+          // Bounds of the first-entry date (typing aid TTMMJJ, order to the start of employment).
+          (['minDate', 'maxDate'].includes(key) &&
+            (this as { id?: unknown }).id === 'agErsteintritt')
+        ) {
           return undefined;
         }
         // The condition of an answer (an option has a label but no role), not of a field.

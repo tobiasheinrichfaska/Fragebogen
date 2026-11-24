@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-16T05:29",
+  "revised": "2026-11-24T12:41",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -3299,8 +3299,11 @@
         },
         {
           "id": "agErsteintritt",
+          "notAfter": "agBeschaeftigungsbeginn",
           "role": "arbeitgeber",
           "type": "date",
+          "minDate": "1876-01-01",
+          "maxDate": "today",
           "label": "Ersteintrittsdatum",
           "question": "Wann war die Person zum ersten Mal bei Ihnen beschäftigt?",
           "required": true,
