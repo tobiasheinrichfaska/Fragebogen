@@ -192,6 +192,7 @@ function resolverFor(
   };
 
   const resolve = (value: ExportValue): Resolved => {
+    if (value.when !== undefined && !applies(value.when)) return { empty: true };
     const found = source(value);
     if (!('text' in found)) return found;
     let text = found.text;

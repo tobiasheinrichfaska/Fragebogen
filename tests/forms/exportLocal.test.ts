@@ -233,6 +233,8 @@ describe.skipIf(!HAS_FILE)('local export mappings (config/export.local.json)', (
     expect(dates.map((row) => row.value)).not.toContain('01.01.2027');
     expect(change.sheet.some((row) => row.value === '01.03.2019')).toBe(true);
     expect(change.sheet.some((row) => /abzurechn/i.test(row.field))).toBe(false);
+    // The employee to compare shows the original start, not the change date.
+    expect(change.employee.start).toBe('01.03.2019');
     expect(change.text ?? '').toContain('01.03.2019');
     expect(change.text ?? '').not.toContain('01.01.2027');
     // The valid-from months of the changed values are the change month.
@@ -240,6 +242,7 @@ describe.skipIf(!HAS_FILE)('local export mappings (config/export.local.json)', (
 
     // A new hire (or an answer without agAnlass) keeps writing its start date.
     const hire = run({ ...EMPLOYER, agFrueherBeschaeftigt: false }, 'neu');
+    expect(hire.employee.start).toBe('02.11.2026');
     expect(hire.sheet.some((row) => row.value === '02.11.2026')).toBe(true);
     expect(hire.sheet.some((row) => /abzurechn/i.test(row.field))).toBe(true);
   });

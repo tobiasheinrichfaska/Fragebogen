@@ -30,6 +30,9 @@ export interface ExportValue {
   input?: string;
   /** The first of these sources that yields a value, e.g. the exact count behind "mehr als 3". */
   first?: ExportValue[];
+  /** The value counts only while this holds (over the questionnaire's answers); otherwise it is empty,
+   * so inside `first` the next source is tried, e.g. the original start of a change of employment. */
+  when?: Condition;
   /** Written as is, but with a note to check (keyed by the value before `map`). */
   notes?: Record<string, string>;
   /** Characters [start, end) of the value, e.g. one digit of the Beitragsgruppen. */
@@ -154,6 +157,7 @@ function decodeValue(d: Decoder, raw: unknown, path: string, depth = 0): ExportV
     'blank',
     'input',
     'first',
+    'when',
     'notes',
     'slice',
     'code',
@@ -180,6 +184,7 @@ function decodeValue(d: Decoder, raw: unknown, path: string, depth = 0): ExportV
       : depth >= MAX_FIRST_DEPTH
         ? d.report(`${path}.first`, 'nested too deeply')
         : d.array(o.first, `${path}.first`, (v, p) => decodeValue(d, v, p, depth + 1), 1);
+  const when = o.when === undefined ? undefined : decodeCondition(d, o.when, `${path}.when`, 0);
   const notes =
     o.notes === undefined
       ? undefined
@@ -214,6 +219,7 @@ function decodeValue(d: Decoder, raw: unknown, path: string, depth = 0): ExportV
     ...(blank === undefined ? {} : { blank }),
     ...(input === undefined ? {} : { input }),
     ...(first === undefined ? {} : { first }),
+    ...(when === undefined ? {} : { when }),
     ...(notes === undefined ? {} : { notes }),
     ...(slice === undefined ? {} : { slice: [slice[0] ?? 0, slice[1] ?? 0] as [number, number] }),
     ...(code === undefined ? {} : { code }),
@@ -465,6 +471,16 @@ function valueProblems(
   const report = (message: string) => issues.push({ path, message });
   if (value.input !== undefined && !inputs.has(value.input)) {
     report(`unknown input "${value.input}"`);
+  }
+  if (value.when) {
+    forEachLeaf(value.when, `${path}.when`, (leaf, leafPath) => {
+      const target = fields.get(leaf.field);
+      if (!target) issues.push({ path: leafPath, message: `unknown field "${leaf.field}"` });
+      else {
+        const problem = leafProblem(leaf, target);
+        if (problem) issues.push({ path: leafPath, message: problem.message });
+      }
+    });
   }
   (value.first ?? []).forEach((inner, i) => {
     issues.push(...valueProblems(inner, `${path}.first[${i}]`, fields, definition, inputs));
