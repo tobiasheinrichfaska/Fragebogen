@@ -576,7 +576,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="personalfragebogen-1.1.0">Personalfragebogen: Angaben für die Lohnabrechnung <span class="muted">1.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>5146ed0aef52b64a09344dd11794e1327d10cfc15e920f4ce3fedbec42186d1e</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>dbc0960624a7b835f50a1225c3442f1e246940daf5f02c419d58bebfe026b03a</code></p>
 <p class="meta">Ersetzt die ältere Fassung 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
@@ -608,7 +608,7 @@ wird aber nicht mit unterschrieben.</p>
 <div class="order"><h3>Reihenfolge der Stationen</h3><ul>
 <li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
 <li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
-<li>Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Art der Lohnsteuer“, „Sozialkassenverfahren“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt. Ist „Beschäftigte Person“ zuerst dran, wird „Art der Lohnsteuer“, „Sozialkassenverfahren“ dort gefragt.</li>
+<li>Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Familienname“, „Vornamen“, „Art der Lohnsteuer“, „Sozialkassenverfahren“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt. Ist „Beschäftigte Person“ zuerst dran, wird „Familienname“, „Vornamen“, „Art der Lohnsteuer“, „Sozialkassenverfahren“ dort gefragt.</li>
 <li>Empfohlen: Beschäftigte Person zuerst. Dann übernimmt der Fragebogen „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ in den Teil „Arbeitgeber“ und fragt dort nur, was dazu passt. Ist „Arbeitgeber“ zuerst dran, wird „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ dort gefragt.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
 <li>Zweite gesetzliche Vertretung kommt nur dazu, wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist.</li>
@@ -619,8 +619,8 @@ wird aber nicht mit unterschrieben.</p>
 <p>Zuerst die Hinweise: „Datenschutzhinweis“.</p>
 <h4>Persönliche Angaben</h4>
 <ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Arbeitgeber: „Familienname der beschäftigten Person“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Hat der Arbeitgeber den Namen schon angegeben, ist er hier zum Prüfen vorbelegt; Sie können ihn ändern.</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Arbeitgeber: „Vornamen der beschäftigten Person“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Hat der Arbeitgeber den Namen schon angegeben, ist er hier zum Prüfen vorbelegt; Sie können ihn ändern.</div></li>
 <li class="step level-0 decision"><span class="num">3</span> <span class="q">Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?</span><div class="meta">Titel, Vorsatzwort oder Namenszusatz · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4, Nr. 5, Nr. 6 ab.</div><div class="meta">Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.</div></li>
 <li class="step level-1"><span class="num">4</span> <span class="q">Welchen akademischen Grad oder Titel führen Sie im Namen?</span><div class="meta">Titel · Text · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
 <li class="step level-1"><span class="num">5</span> <span class="q">Wie lautet das Vorsatzwort Ihres Namens?</span><div class="meta">Vorsatzwort · Auswahl: aus der Liste „Vorsatzworte“ (188 Einträge; DEÜV-Rundschreiben, Anlage 6 (Stand 18.03.2026, mit den Schreibweisen vom 08.08.2007)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
@@ -960,7 +960,7 @@ wird aber nicht mit unterschrieben.</p>
 <p class="muted">Danach: Zusammenfassung mit „ändern“, dann Abschluss.</p>
 </section>
 <h2 id="sofortmeldung-1.1.0">Personalfragebogen: Angaben für die Sofortmeldung <span class="muted">1.1.0</span></h2>
-<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>103e87845abe910b9da3e31a4b274a4899d276be35ed067b80945857ed03741f</code></p>
+<p class="meta">Entwurf zur fachlichen Freigabe · Definition <code>107dcb7f15883a3f364963beb304cbe33f4f0377a2fea5df45ea9f370aede102</code></p>
 <p class="meta">Ersetzt die ältere Fassung 0.2.0 (eingefroren), 0.3.0 (eingefroren), 0.4.0 (eingefroren), 1.0.0 (eingefroren); deren Ablauf steht im Feldkatalog unter <code>docs/formulare/</code>.</p>
 <p><strong>Diese Fassung gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026.</strong></p>
 <div class="limits"><h3>Was dieser Fragebogen nicht abdeckt</h3><ul>
@@ -974,6 +974,7 @@ wird aber nicht mit unterschrieben.</p>
 <div class="order"><h3>Reihenfolge der Stationen</h3><ul>
 <li>Die Reihenfolge der Stationen ist frei: auf einem Gerät nacheinander („Wer füllt jetzt aus?“) oder über die PDF von Station zu Station.</li>
 <li>Beschäftigte Person und Arbeitgeber: Wer zuletzt abschließt, bestätigt die aktuelle Fassung des anderen Teils; erst dann sind beide verknüpft.</li>
+<li>Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Familienname“, „Vornamen“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt. Ist „Beschäftigte Person“ zuerst dran, wird „Familienname“, „Vornamen“ dort gefragt.</li>
 <li>Empfohlen: Beschäftigte Person zuerst. Dann übernimmt der Fragebogen „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ in den Teil „Arbeitgeber“ und fragt dort nur, was dazu passt. Ist „Arbeitgeber“ zuerst dran, wird „Familienname der beschäftigten Person“, „Vornamen der beschäftigten Person“ dort gefragt.</li>
 <li>Gesetzliche Vertretung kommt nur dazu, wenn die Person laut „Geburtsdatum“ am Tag ihrer Unterschrift unter 18 ist.</li>
 <li>Zweite gesetzliche Vertretung kommt nur dazu, wenn bei „Art der Unterschrift“ „Gemeinsam – der andere Elternteil unterschreibt ebenfalls“ gewählt ist.</li>
@@ -984,8 +985,8 @@ wird aber nicht mit unterschrieben.</p>
 <p>Zuerst die Hinweise: „Datenschutzhinweis“, „Hinweis: Ausweispapiere mitführen (§ 2a Schwarzarbeitsbekämpfungsgesetz)“.</p>
 <h4>Angaben der beschäftigten Person</h4>
 <ol class="flow">
-<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div></li>
-<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div></li>
+<li class="step level-0"><span class="num">1</span> <span class="q">Wie lautet Ihr Familienname?</span><div class="meta">Familienname · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Arbeitgeber: „Familienname der beschäftigten Person“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Hat der Arbeitgeber den Namen schon angegeben, ist er hier zum Prüfen vorbelegt; Sie können ihn ändern.</div></li>
+<li class="step level-0"><span class="num">2</span> <span class="q">Wie lauten Ihre Vornamen?</span><div class="meta">Vornamen · Text · Pflicht</div><div class="taken">Belegt die andere Station vor (Arbeitgeber: „Vornamen der beschäftigten Person“): Liegt ihr abgeschlossener Teil schon vor, steht die Angabe schon da; sie wird gefragt und bleibt änderbar.</div><div class="why">Warum: Hat der Arbeitgeber den Namen schon angegeben, ist er hier zum Prüfen vorbelegt; Sie können ihn ändern.</div></li>
 <li class="step level-0 decision"><span class="num">3</span> <span class="q">Gehört zu Ihrem Namen ein Titel, ein Vorsatzwort oder ein Namenszusatz?</span><div class="meta">Titel, Vorsatzwort oder Namenszusatz · Ja/Nein · Pflicht</div><div class="opens">Weiche: davon hängen Nr. 4, Nr. 5, Nr. 6 ab.</div><div class="meta">Zum Beispiel „Dr.“, „von“ oder „Freiherr“. Diese Teile stehen in den Meldungen zur Sozialversicherung in eigenen Feldern.</div></li>
 <li class="step level-1"><span class="num">4</span> <span class="q">Welchen akademischen Grad oder Titel führen Sie im Namen?</span><div class="meta">Titel · Text · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>
 <li class="step level-1"><span class="num">5</span> <span class="q">Wie lautet das Vorsatzwort Ihres Namens?</span><div class="meta">Vorsatzwort · Auswahl: aus der Liste „Vorsatzworte“ (188 Einträge; DEÜV-Rundschreiben, Anlage 6 (Stand 18.03.2026, mit den Schreibweisen vom 08.08.2007)) · optional</div><div class="when">Gefragt erst wenn „Titel, Vorsatzwort oder Namenszusatz“ mit „Ja“ beantwortet ist (hängt ab von Nr. 3).</div><div class="why">Warum: Nur wer einen Titel, ein Vorsatzwort oder einen Namenszusatz führt, wird danach gefragt; die Meldungen zur Sozialversicherung führen diese Teile in eigenen Feldern.</div></li>

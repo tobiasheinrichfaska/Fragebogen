@@ -1716,7 +1716,8 @@ const leafFields = (condition: Condition): FieldId[] => {
 };
 
 /**
- * fromRole: another role's top-level field of the same type, itself not taken from a third role;
+ * fromRole: another role's top-level field of the same type, itself not taken from a third role
+ * (two fields may propose each other, both `changeable`);
  * a choice offers every option of the other field (it may add its own, e.g. "Weiß ich nicht").
  */
 function fromRoleFields({ fields, report }: CheckContext): void {
@@ -1736,7 +1737,16 @@ function fromRoleFields({ fields, report }: CheckContext): void {
     if (source.field.role !== from.role) {
       report(`${at}.field`, `"${from.field}" belongs to role "${source.field.role}"`);
     }
-    if (source.field.fromRole) report(`${at}.field`, 'the other field is taken over itself');
+    // A mutual pair is fine when both only propose (changeable): whoever comes second is
+    // preselected from the first, nobody decides (Tobias 2026-11-24: the person's name).
+    const back = source.field.fromRole;
+    const mutual =
+      back !== undefined &&
+      back.field === field.id &&
+      back.role === field.role &&
+      back.changeable === true &&
+      from.changeable === true;
+    if (back && !mutual) report(`${at}.field`, 'the other field is taken over itself');
     if (source.field.type !== field.type) {
       report(`${at}.field`, `must have the type of "${from.field}" (${source.field.type})`);
     }

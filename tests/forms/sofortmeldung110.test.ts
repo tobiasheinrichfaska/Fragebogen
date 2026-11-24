@@ -170,7 +170,8 @@ describe('Sofortmeldung 1.1.0: texts', () => {
             .filter((f) => f.id !== 'agBranche' && f.id !== 'vertretungUnterschrift')
             .map((f) => {
               const rest = { ...f };
-              if (f.id === 'agFamilienname' || f.id === 'agVorname') {
+              // 2026-11-24: the person's names are preselected from the employer's, and back.
+              if (['agFamilienname', 'agVorname', 'familienname', 'vorname'].includes(f.id)) {
                 delete rest.fromRole;
                 delete rest.because;
               }

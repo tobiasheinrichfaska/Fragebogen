@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.1.0",
-  "revised": "2026-11-24T12:47",
+  "revised": "2026-11-24T13:08",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -67,7 +67,13 @@
           "question": "Wie lautet Ihr Familienname?",
           "help": "So, wie er in Ihrem Ausweis steht – ohne Titel wie „Dr.“ und ohne Vorsatzwort wie „von“; nach diesen fragen wir gleich gesondert.",
           "required": true,
-          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung"
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung",
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agFamilienname",
+            "changeable": true
+          },
+          "because": "Hat der Arbeitgeber den Namen schon angegeben, ist er hier zum Prüfen vorbelegt; Sie können ihn ändern."
         },
         {
           "id": "vorname",
@@ -79,7 +85,13 @@
           "question": "Wie lauten Ihre Vornamen?",
           "help": "Alle Vornamen, wie in Ihrem Ausweis.",
           "required": true,
-          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung"
+          "purpose": "Meldungen zur Sozialversicherung (§ 28a SGB IV); Stammdaten für die Lohnabrechnung",
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agVorname",
+            "changeable": true
+          },
+          "because": "Hat der Arbeitgeber den Namen schon angegeben, ist er hier zum Prüfen vorbelegt; Sie können ihn ändern."
         },
         {
           "id": "namensbestandteile",
