@@ -1999,6 +1999,15 @@ function fromRoleHints(
     const own = valueOf(field.id);
     const decided = valueOf(source.id);
     if (own === null) continue;
+    // Two fields proposing each other: only the role that came later followed the other (an open
+    // draft counts as the latest), so a difference is named once, at the one who changed it.
+    if (source.fromRole?.field === field.id && from.changeable === true) {
+      const cameAt = (role: string) => {
+        const part = currentPart(questionnaire, role);
+        return part?.seal ? part.seal.payload.systemNote.signedAtUtc : '\uffff';
+      };
+      if (cameAt(field.role) < cameAt(from.role)) continue;
+    }
     const ownRole = roleOf(definition, field.role)?.label ?? field.role;
     const fromRole = roleOf(definition, from.role)?.label ?? from.role;
     // The history is read from sealed versions only: the newest sealed one decides (hidden values

@@ -324,7 +324,7 @@ test('MT-120: the Kanzlei prepares the mandate and closes without a signature', 
   await press(app, 'Abschließen');
   await expect(app.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
   await requestLink(app);
-  await expect(app.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=1&/);
+  await expect(app.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=3&/);
   await expect(app.getByRole('button', { name: 'Kopieren' })).toBeVisible();
   await quiet();
 });
@@ -552,7 +552,7 @@ test('MT-124: the Kanzlei part passes on as a link instead of a PDF', async ({
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
   await requestLink(app);
   const field = app.getByLabel('Link zur Weitergabe');
-  await expect(field).toHaveValue(/^https:\/\/fragebogen\.test\/#weitergabe=1&/);
+  await expect(field).toHaveValue(/^https:\/\/fragebogen\.test\/#weitergabe=3&/);
   const link = await field.inputValue();
   expect(link.length).toBeGreaterThan(1000);
   const copied = await copy(
@@ -609,9 +609,18 @@ test('MT-124: the Kanzlei part passes on as a link instead of a PDF', async ({
   await there.quiet();
   await other.close();
 
-  // A questionnaire with many answers offers no link.
+  // The complete Sofortmeldung (compact link, about 1,600 characters) still fits in a link.
   await page.goto(`${ORIGIN}/?startpunkt=sofortmeldung-vollstaendig`);
   await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  await requestLink(app);
+  await expect(app.getByLabel('Link zur Weitergabe')).toHaveCount(1);
+  await expect(app).not.toContainText('Für einen Link sind es zu viele Angaben.');
+
+  // A questionnaire with many answers (the complete Personalfragebogen, about 2,500 characters)
+  // offers no link.
+  await page.goto(`${ORIGIN}/?startpunkt=personalfragebogen-vollstaendig`);
+  await expect(app.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  await requestLink(app);
   await expect(app).toContainText(
     'Für einen Link sind es zu viele Angaben. Bitte die PDF weitergeben.',
   );
@@ -954,7 +963,7 @@ test('MT-131: the Kanzlei part passes on as a link with a password', async ({
   const password = protection.getByLabel('Kennwort', { exact: true });
   await expect(password).toHaveValue(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
   const field = app.getByLabel('Link zur Weitergabe');
-  await expect(field).toHaveValue(/#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
+  await expect(field).toHaveValue(/#weitergabe=4&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
   const first = { password: await password.inputValue(), link: await field.inputValue() };
 
   // „ändern“ opens the question again; a new password makes a new link.
@@ -964,7 +973,7 @@ test('MT-131: the Kanzlei part passes on as a link with a password', async ({
   await ask.getByRole('button', { name: 'Mit diesem Kennwort weiter' }).click();
   await expect(password).not.toHaveValue(first.password);
   await expect(field).not.toHaveValue(first.link);
-  await expect(field).toHaveValue(/#weitergabe=2&/);
+  await expect(field).toHaveValue(/#weitergabe=4&/);
   const written = await password.inputValue();
   const link = await field.inputValue();
   const copied = await copy(

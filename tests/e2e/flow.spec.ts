@@ -327,7 +327,7 @@ test('the employer part passes on as a link and opens on another device (Tobias 
   await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
   await requestLink(page.locator('main'));
   const link = await page.getByLabel('Link zur Weitergabe').inputValue();
-  expect(link).toMatch(/^https:\/\/fragebogen\.test\/#weitergabe=1&pruef=[0-9a-f]{16}&daten=/);
+  expect(link).toMatch(/^https:\/\/fragebogen\.test\/#weitergabe=3&pruef=[0-9a-f]{16}&daten=/);
 
   const other = await browser.newContext();
   const device = await other.newPage();
@@ -370,7 +370,7 @@ test('a link passed on with a password opens only with it (Tobias 2026-11-06)', 
   const password = (await requestLink(page.locator('main'), 'Mit Kennwort schützen')) ?? '';
   expect(password).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
   const field = page.getByLabel('Link zur Weitergabe');
-  await expect(field).toHaveValue(/#weitergabe=2&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
+  await expect(field).toHaveValue(/#weitergabe=4&pruef=[0-9a-f]{16}&daten=[A-Za-z0-9_-]+$/);
   const link = await field.inputValue();
 
   const other = await browser.newContext();
@@ -433,7 +433,7 @@ test('the overview offers PDF and link right under the roles (test report 2026-1
   await expect(pdf).toBeEnabled();
   await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toBeVisible();
   await requestLink(page.locator('main'));
-  await expect(page.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=1&/);
+  await expect(page.getByLabel('Link zur Weitergabe')).toHaveValue(/#weitergabe=3&/);
   const top = async (locator: ReturnType<Page['locator']>) => (await locator.boundingBox())?.y ?? 0;
   expect(await top(pdf)).toBeLessThan(
     await top(page.getByRole('heading', { name: 'Gültigkeit und Grenzen' })),

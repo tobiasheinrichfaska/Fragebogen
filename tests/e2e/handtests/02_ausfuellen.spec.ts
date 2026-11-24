@@ -591,6 +591,11 @@ test('MT-18: an answer of the old file replaces a differing preselection', async
   await app.getByLabel('Ich habe den Hinweis gelesen.').check();
   expect(await tap(app, 'Weiter')).toMatch(/^Hinweis: Ausweispapiere mitführen/);
   await app.getByLabel('Ich habe diesen Hinweis auf Papier erhalten.').check();
+  // The names were taken over from the employer's part, so they are preselections (Part.preset)
+  // and do not travel in the old file: they are asked again in the new questionnaire.
+  expect(await tap(app, 'Weiter')).toBe('Wie lautet Ihr Familienname?');
+  await type(app, 'Musterfrau');
+  await type(app, 'Erika');
   expect(await tap(app, 'Zur nächsten fehlenden Angabe')).toBe('Wann sind Sie geboren?');
   expect(await tap(app, 'Zurück')).toBe('Wie lautet Ihr Geburtsname?');
   await expect(app.locator('.question input').first()).toHaveValue('Mustermann');

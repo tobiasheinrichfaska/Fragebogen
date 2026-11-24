@@ -267,8 +267,9 @@ const WAYS: Way[] = [
     name: 'a family name that differs between employer and person',
     employer: { agFamilienname: 'Mustermann' },
     shows: ['Mustermann', 'Musterfrau'],
-    // The employer's name differs from the one the person's part proposes (fromRole, 2026-11-13).
-    hints: ['fromRole:agFamilienname'],
+    // The person corrected the name the employer's part proposed (fromRole both ways, 2026-11-24:
+    // named once, at the field of the role that came later).
+    hints: ['fromRole:familienname'],
     contradictions: [
       'Der Familienname weicht zwischen den Angaben der beschäftigten Person und des Arbeitgebers ab.',
     ],

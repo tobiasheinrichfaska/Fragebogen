@@ -7,6 +7,15 @@
 // answer, so — like the PDF — it goes to the next station only. With a password (Tobias
 // 2026-11-06: "das sollte beim Weitergeben als Link eine Option sein") the same deflated text is
 // encrypted (version 2); the cipher itself runs in src/io/transferLock.ts.
+//
+// Link versions (the `weitergabe` parameter):
+//   1  open, full questionnaire            2  protected, full questionnaire   (still read, no longer written)
+//   3  open, compact                       4  protected, compact              (written since 2026-11-24)
+// Compact = the questionnaire without `seal.payload.fieldHashes` of every part whose hashes are
+// exactly `fieldHashesOf(nonce, data)` (a part with other hashes keeps them — mixed is fine). The
+// reader rebuilds them wherever they are missing, before anything else looks at the text, so
+// `contentHash` still catches a changed answer; `pruef` (open) and the AES-GCM tag (protected)
+// cover what is transmitted. The cipher, key and additional data of 4 equal those of 2.
 import { strToU8 } from 'fflate';
 import { PACKAGE_FORMAT, PACKAGE_FORMAT_VERSION } from './dataPackage';
 import {
@@ -19,13 +28,17 @@ import {
 import type { RegisteredForm } from './formRegistry';
 import { sha256Hex } from './hash';
 import { canonicalize } from './jcs';
-import type { FormDefinition, Questionnaire } from './model';
+import type { FormDefinition, Questionnaire, SealPayload } from './model';
 import { transmissionBlockers } from './requirements';
+import { fieldHashesOf } from './seal';
 
 const MARKER = 'weitergabe';
-export const TRANSFER_LINK_VERSION = '1';
-/** A link protected by a password; an app without it calls the link one of another version. */
-export const TRANSFER_LINK_LOCKED_VERSION = '2';
+/** Open link, compact (written). Version 1 (full) is still read. */
+export const TRANSFER_LINK_VERSION = '3';
+/** A link protected by a password, compact (written); version 2 (full) is still read. */
+export const TRANSFER_LINK_LOCKED_VERSION = '4';
+const OPEN_VERSIONS: readonly string[] = ['1', '3'];
+const LOCKED_VERSIONS: readonly string[] = ['2', '4'];
 /**
  * Longest fragment offered, as for master-data links: mail programs and messengers pass it on in
  * one piece. The Kanzlei part of the SEPA-Mandat needs about 1,200 characters.
@@ -81,9 +94,78 @@ export interface LockedTransfer {
   ciphertext: Uint8Array<ArrayBuffer>;
 }
 
-/** What a protected link encrypts: the deflated questionnaire, as `daten` of an open link. */
+/**
+ * The text a compact link carries: the questionnaire without the field hashes of every part that
+ * the reader can rebuild (`fieldHashesOf(nonce, data)`); a part with other hashes keeps them.
+ */
+export function compactText(questionnaire: Questionnaire): string {
+  const parts = Object.fromEntries(
+    Object.entries(questionnaire.parts).map(([role, versions]) => [
+      role,
+      versions.map((part) => {
+        const payload = part.seal?.payload;
+        if (part.seal === undefined || payload === undefined) return part;
+        const rebuilt = fieldHashesOf(payload.nonce, part.data);
+        if (canonicalize(rebuilt) !== canonicalize(payload.fieldHashes)) return part;
+        const rest: Partial<SealPayload> = { ...payload };
+        delete rest.fieldHashes;
+        return { ...part, seal: { ...part.seal, payload: rest } };
+      }),
+    ]),
+  );
+  return canonicalize({ ...questionnaire, parts });
+}
+
+/**
+ * Puts back the field hashes a compact text left out (a part whose seal payload has none, from its
+ * nonce and data). Text that is not a questionnaire is returned unchanged for the later checks;
+ * the result is untrusted like any link text — the seal check compares it with `contentHash`.
+ */
+export function expandText(text: string): string | undefined {
+  let value: unknown;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+  const parts = (value as { parts?: unknown } | null)?.parts;
+  if (typeof parts !== 'object' || parts === null || Array.isArray(parts)) return text;
+  let changed = false;
+  for (const versions of Object.values(parts)) {
+    if (!Array.isArray(versions)) continue;
+    for (const part of versions as unknown[]) {
+      const p = part as { data?: unknown; seal?: { payload?: Record<string, unknown> } } | null;
+      const payload = p?.seal?.payload;
+      if (
+        typeof payload !== 'object' ||
+        payload === null ||
+        'fieldHashes' in payload ||
+        typeof payload.nonce !== 'string' ||
+        typeof p?.data !== 'object' ||
+        p.data === null ||
+        Array.isArray(p.data)
+      ) {
+        continue;
+      }
+      try {
+        payload.fieldHashes = fieldHashesOf(payload.nonce, p.data as Record<string, never>);
+        changed = true;
+      } catch {
+        return undefined;
+      }
+    }
+  }
+  if (!changed) return text;
+  try {
+    return canonicalize(value);
+  } catch {
+    return undefined;
+  }
+}
+
+/** What a protected link encrypts: the deflated compact questionnaire, as `daten` of an open link. */
 export function transferPlaintext(questionnaire: Questionnaire): Uint8Array<ArrayBuffer> {
-  return compressPackage(canonicalize(questionnaire)).slice();
+  return compressPackage(compactText(questionnaire)).slice();
 }
 
 export type TransferLinkResult =
@@ -91,7 +173,7 @@ export type TransferLinkResult =
 
 /** The fragment (with "#") that carries the questionnaire; refused when it would be too long. */
 export function transferFragment(questionnaire: Questionnaire): TransferLinkResult {
-  const text = canonicalize(questionnaire);
+  const text = compactText(questionnaire);
   const params = new URLSearchParams([
     [MARKER, TRANSFER_LINK_VERSION],
     ['pruef', sha256Hex(strToU8(text)).slice(0, DIGEST_LENGTH)],
@@ -137,7 +219,8 @@ export function parseTransferFragment(hash: string): ParsedTransferLink | undefi
   const version = versions[0];
   if (
     versions.length > 1 ||
-    (version !== TRANSFER_LINK_VERSION && version !== TRANSFER_LINK_LOCKED_VERSION)
+    version === undefined ||
+    (!OPEN_VERSIONS.includes(version) && !LOCKED_VERSIONS.includes(version))
   ) {
     return { ok: false, issue: 'unknownVersion' };
   }
@@ -152,7 +235,7 @@ export function parseTransferFragment(hash: string): ParsedTransferLink | undefi
   }
   const bytes = fromBase64Url(data[0] ?? '');
   if (!bytes) return { ok: false, issue: 'damaged' };
-  if (version === TRANSFER_LINK_LOCKED_VERSION) {
+  if (LOCKED_VERSIONS.includes(version)) {
     const { saltBytes, ivBytes, tagBytes } = TRANSFER_LOCK;
     if (
       bytes.length <= saltBytes + ivBytes + tagBytes ||
@@ -167,9 +250,10 @@ export function parseTransferFragment(hash: string): ParsedTransferLink | undefi
     return { ok: true, kind: 'locked', locked: { salt, iv, ciphertext } };
   }
   const inflated = inflatePackage(bytes, { sha256Prefix: digest[0] ?? '' });
-  return inflated.ok
-    ? { ok: true, kind: 'open', questionnaireText: inflated.text }
-    : { ok: false, issue: 'damaged' };
+  const text = inflated.ok ? expandText(inflated.text) : undefined;
+  return text === undefined
+    ? { ok: false, issue: 'damaged' }
+    : { ok: true, kind: 'open', questionnaireText: text };
 }
 
 /** The questionnaire text of a decrypted link; the tag has already proved the bytes. */
@@ -177,9 +261,10 @@ export function unlockedText(
   plaintext: Uint8Array,
 ): { ok: true; questionnaireText: string } | { ok: false; issue: 'damaged' } {
   const inflated = inflatePackage(plaintext, { sha256Prefix: '' });
-  return inflated.ok
-    ? { ok: true, questionnaireText: inflated.text }
-    : { ok: false, issue: 'damaged' };
+  const text = inflated.ok ? expandText(inflated.text) : undefined;
+  return text === undefined
+    ? { ok: false, issue: 'damaged' }
+    : { ok: true, questionnaireText: text };
 }
 
 /**
