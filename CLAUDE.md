@@ -1583,13 +1583,18 @@ link opened fresh were checked and worked; whether Tobias's case was exactly thi
 A master-data link the app followed now also leaves the address bar (audit 2026-11-18), so the same
 mail link opened again in that tab (the next employee) starts a new questionnaire; a link with an
 error or a form the app lacks stays, so a reload shows its message again.
-Open from the final audit of 2026-11-18 (low, not fixed — Tobias: one round, then pause):
-(1) the link leaves the address bar while the access notice still covers the app, so a reload
-before confirming shows a plain start page; fix: strip only once `accessOpen` is false. (2) iOS
-Safari reloads without the beforeunload question; with an interrupted questionnaire in the browser,
-„Fortsetzen“ then replaces the link's new questionnaire and the link is gone (the mail link must be
-opened again) — the comment in `main.tsx` „the browser asks first“ is not true there. (3) A link
-with an error or a form the app lacks stays, so opening it again in that tab still changes nothing.
+Three points from the final audit of 2026-11-18 done (cloud session, 2026-11-26; rule
+`linkMayLeaveAddressBar` in `src/logic/linkArrival.ts`, e2e in `resume.spec.ts` and
+`handtests/14_zugang.spec.ts`, red before): (1) the link stays in the address bar while the access
+notice covers the app, so a reload before confirming still finds it. (2) It also stays while the
+offer of an interrupted questionnaire is open (iOS Safari reloads without the beforeunload
+question); a reload shows offer and link again, and it leaves with „Fortsetzen“ or „Löschen“ — the
+choice of „Fortsetzen“ replaces the link's new questionnaire deliberately, so then the link is
+spent. The comment in `main.tsx` says where the browser asks and where it does not. (3) A link with
+an error or a form the app lacks now leaves the address bar too (its message is shown once), so
+opening it again in that tab moves the fragment and starts anew; the price: a reload after the
+error shows a plain start page (MT-109 no longer reloads). Chosen over keeping it, because a
+retried mail link matters more than a repeated error message.
 Audit loop 7 on #25 ran with this round: finding „§ 6 Abs. 3a without age“ refuted (privat + no GKV
 for five years next to a KV-pflichtig main job means an exemption; rule has „prüfen“).
 

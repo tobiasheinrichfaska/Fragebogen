@@ -1153,7 +1153,8 @@ test('MT-109: the public build names a form it lacks and shows the start page', 
   const lacking = DRAFT_ONLY[0];
   if (lacking === undefined) throw new Error('no form exists only as a draft');
   const { found, app } = await openApp(page, `#stammdaten=1&formular=${lacking}`);
-  await page.reload();
+  // The message is shown once; the link then leaves the address bar (audit 2026-11-18), so the same
+  // link opened again in this tab starts anew.
   await expect(
     note(
       app,

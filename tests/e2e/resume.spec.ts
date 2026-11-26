@@ -242,3 +242,13 @@ for (const answer of ['Fortsetzen', 'Löschen'] as const) {
     await expect.poll(() => fragment(page)).toBe('');
   });
 }
+
+test('a link with an error leaves the address bar, so the same link opened again starts anew', async ({
+  page,
+}) => {
+  await serve(page);
+  await page.goto(`${ORIGIN}/`);
+  await page.goto(`${ORIGIN}/#stammdaten=2&firma=X`);
+  await expect(page.locator('main')).toContainText('Stammdaten-Link:');
+  await expect.poll(() => fragment(page)).toBe('');
+});
