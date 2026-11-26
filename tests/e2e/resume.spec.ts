@@ -218,3 +218,27 @@ test.describe('the test folder keeps its own browser memory', () => {
     expect(foreign).toEqual([]);
   });
 });
+
+// Audit 2026-11-18: a master-data link stays in the address bar until the offer of the interrupted
+// questionnaire is answered (iOS Safari reloads without asking), and a link the app cannot follow
+// leaves it too, so the same link opened again moves the fragment and starts anew.
+const LINK = '#stammdaten=1&formular=sofortmeldung&firma=Beispiel+Bau+GmbH';
+const fragment = (page: Page) => page.evaluate(() => location.hash);
+
+for (const answer of ['Fortsetzen', 'Löschen'] as const) {
+  test(`a master-data link stays in the address bar until the offer is answered (${answer})`, async ({
+    page,
+  }) => {
+    await serve(page);
+    await startEmployer(page);
+    await expect.poll(() => stored(page)).not.toBeNull();
+    await page.goto(`${ORIGIN}/${LINK}`);
+    await expect(page.getByRole('heading', { name: OFFER })).toBeVisible();
+    expect(await fragment(page)).toBe(LINK);
+    await page.reload();
+    await expect(page.getByRole('heading', { name: OFFER })).toBeVisible();
+    expect(await fragment(page)).toBe(LINK);
+    await page.getByRole('button', { name: answer, exact: true }).click();
+    await expect.poll(() => fragment(page)).toBe('');
+  });
+}
