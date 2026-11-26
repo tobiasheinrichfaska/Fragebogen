@@ -53,5 +53,10 @@
     "id": "personalfragebogen",
     "version": "1.1.0",
     "definitionHash": "dbc0960624a7b835f50a1225c3442f1e246940daf5f02c419d58bebfe026b03a"
+  },
+  {
+    "id": "personalfragebogen",
+    "version": "1.2.0",
+    "definitionHash": "cfbfff5cbc5271c514984439f2faf558fcc125f3f7d47924fdb97f9c66b45e0e"
   }
 ]

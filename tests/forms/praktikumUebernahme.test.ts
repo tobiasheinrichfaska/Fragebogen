@@ -1,4 +1,4 @@
-// Personalfragebogen draft 1.2.0 (Tobias 2026-11-26: „Praktikumsart beim AN übernehmen, wenn AG
+// Personalfragebogen 1.2.0, published 2026-11-26 (Tobias 2026-11-26: „Praktikumsart beim AN übernehmen, wenn AG
 // angegeben“): the employer names the kind of internship (five kinds), the person is asked only
 // whether it is prescribed (pflicht / freiwillig / weiß nicht). With the employer's part sealed the
 // person's answer is taken over through a translation (`fromRole.map`) and not asked; without it
@@ -17,10 +17,10 @@ import {
   setValue,
   startPart,
 } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.2.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.2.0.json')));
 const { definition } = form;
 const at = { local: '2026-11-26T10:00:00.000+01:00', utc: '2026-11-26T09:00:00.000Z' };
 

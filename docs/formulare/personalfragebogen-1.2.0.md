@@ -6,7 +6,7 @@
 | Angabe | Wert |
 | --- | --- |
 | Formular | personalfragebogen, Version 1.2.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
+| Status | Veröffentlicht und eingefroren |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ vom 01.01.2026 bis 31.12.2027 |
 | Stand | zuletzt überarbeitet am 26.11.2026 um 14:10 |
 | Definition (SHA-256) | cfbfff5cbc5271c514984439f2faf558fcc125f3f7d47924fdb97f9c66b45e0e |

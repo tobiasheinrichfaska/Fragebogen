@@ -1,4 +1,4 @@
-// Personalfragebogen draft 1.2.0 (Tobias 2026-11-26: „ergänze ein Auswahlfeld für die konkrete
+// Personalfragebogen 1.2.0, published 2026-11-26 (Tobias 2026-11-26: „ergänze ein Auswahlfeld für die konkrete
 // Sozialkasse“): after „Ja“ to the Sozialkassenverfahren the employer names its Kassen, several at
 // once, from the BMAS Merkblatt über Beitragsverpflichtungen zu tariflichen Sozialkassenverfahren
 // (Stand Mai 2026); „Eine andere Sozialkasse“ asks its name. The choice travels in the master-data
@@ -28,7 +28,7 @@ import {
 import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.2.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.2.0.json')));
 const { definition } = form;
 const fieldOf = (id: string): FieldDefinition => {
   const found = definition.sections.flatMap((s) => s.fields).find((f) => f.id === id);
