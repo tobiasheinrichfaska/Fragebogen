@@ -65,7 +65,10 @@ function keptOf(catalog: MasterDataCatalog, record: MasterData | undefined): Mas
 const issueText = (issue: string, bounds?: IssueBounds) =>
   issue in ISSUE_MESSAGES ? issueMessage(issue as IssueCode, bounds) : 'Diese Angabe ist ungültig.';
 
-const isEmpty = (raw: unknown) => raw === null || (typeof raw === 'string' && raw.trim() === '');
+const isEmpty = (raw: unknown) =>
+  raw === null ||
+  (typeof raw === 'string' && raw.trim() === '') ||
+  (Array.isArray(raw) && raw.length === 0);
 
 /** The select's value while nothing is chosen; no form id can be "#". */
 const NOT_CHOSEN = '#';

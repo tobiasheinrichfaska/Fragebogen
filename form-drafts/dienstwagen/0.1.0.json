@@ -1,7 +1,7 @@
 {
   "id": "dienstwagen",
   "version": "0.1.0",
-  "revised": "2026-11-16T00:47",
+  "revised": "2026-11-26T13:57",
   "title": "Dienstwagen: Überlassung",
   "signaturePolicy": "electronic",
   "recipient": {
@@ -45,7 +45,13 @@
           "maxLength": 30,
           "label": "Familienname der beschäftigten Person",
           "required": true,
-          "purpose": "Zuordnung; Abgleich mit der Angabe der Person"
+          "purpose": "Zuordnung; Abgleich mit der Angabe der Person",
+          "fromRole": {
+            "role": "person",
+            "field": "familienname",
+            "changeable": true
+          },
+          "because": "Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt."
         },
         {
           "id": "agVorname",
@@ -54,7 +60,13 @@
           "maxLength": 30,
           "label": "Vornamen der beschäftigten Person",
           "required": true,
-          "purpose": "Zuordnung; Abgleich mit der Angabe der Person"
+          "purpose": "Zuordnung; Abgleich mit der Angabe der Person",
+          "fromRole": {
+            "role": "person",
+            "field": "vorname",
+            "changeable": true
+          },
+          "because": "Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt."
         },
         {
           "id": "agPersonalnummer",

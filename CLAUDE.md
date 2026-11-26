@@ -406,7 +406,8 @@ Key design decisions (details in `docs/plan.md`):
   **Storage = bookmark link (Tobias 2026-10-29, option C):** `masterDataLink.ts` writes the keys
   into the URL fragment (`#stammdaten=1&betriebsnummer=…&firma=…`), the employer bookmarks it
   (or the Kanzlei sends one per Mandant). The browser stores nothing, so "store nothing" holds
-  without exception. Master data are single values only (definition rule).
+  without exception. Master data are single values only (definition rule); a multiple choice
+  counts as one: it travels as its option ids joined by commas (Tobias 2026-11-26).
 - **Master-data link screen and late filling (Tobias 2026-11-03):** "Stammdaten-Link erstellen oder
   ändern" (start page, fold-out in the Kanzlei station) lists every key of the app's forms once — no
   extra role (a role is a sealed station of one questionnaire) and no dry run through all questions
@@ -1459,6 +1460,27 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 ---
 
 ## Status / next step
+
+**Sozialkassen and the check of fields asked twice (cloud session, 2026-11-26):** Tobias: „ergänze
+ein Auswahlfeld für die konkrete Sozialkasse“, „prüfe alle doppelt erfasbaren Felder auf eine
+Wertweitergabe“, „Mehrfachauswahl passt in einen Link, indem alle Werte aufgezählt werden“.
+
+- Draft Personalfragebogen 1.2.0 = 1.1.0 plus `agSozialkassen` (multiple choice of the 17 Kassen
+  of the BMAS „Merkblatt über Beitragsverpflichtungen zu tariflichen Sozialkassenverfahren“, Stand
+  Mai 2026, and „Eine andere Sozialkasse“ with `agSozialkasseAndere`), asked after „Ja“ to
+  `agSozialkasse`; link keys `sozialkassen`, `sozialkasseAndere`. The person part is unchanged (its
+  follow-ups still ask the Arbeitnehmernummer and the time in the branch). The local LuG mapping
+  got a 1.2.0 entry, a copy of 1.1.0 (the Kassen are not exported).
+- A multiple choice may be master data: `linkValue` joins its option ids with
+  `MASTER_DATA_LIST_SEPARATOR` (`,`), `storedValue` splits them; an unknown id refuses the value
+  like a wrong choice.
+- Fields asked of two roles (consistency rules, equal labels): every pair carries `fromRole` except
+  the Dienstwagen draft's employer names (now proposed from the person, both ways like the
+  Personalfragebogen) and the Personalfragebogen's `praktikumArt` (person: pflicht / freiwillig /
+  unbekannt) vs `agPraktikumArt` (employer: five kinds) — not the same options, so no proposal;
+  open. Birth name and birth date are asked of the person only; from the Sofortmeldung they come
+  over by „Angaben aus einer anderen Datei übernehmen“ (every person field, only `agBranche`
+  has no field in the Personalfragebogen). Tests `tests/forms/sozialkassen.test.ts`.
 
 **Zwischenstand als Link (cloud session, 2026-11-26; Tobias: „Weitergabe soll auch unversiegelt
 möglich sein, um z.B. einen Zwischenstand zu speichern“):** `transferOffer` no longer answers

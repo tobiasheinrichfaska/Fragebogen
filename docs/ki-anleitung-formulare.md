@@ -307,7 +307,7 @@ steht er vorn. `because` ist mit `showIf` Pflicht und nur mit ihm erlaubt.
 - `optionsFrom` nur bei `choice`, nie zusammen mit `options`, nur bekannte Listen.
 - `{feldId}` in Fragen, Hilfen und `suggestedText` nur für frühere Felder derselben Rolle; `suggestedText` nur bei `text` und `date` (dort nur `"today"`), nicht in Tabellenspalten, nicht mit `masterData`.
 - `prefills` nur ohne Unterschrift und ohne `requiredIf`; mindestens eine andere Rolle füllt aus.
-- `masterData` und die Schlüssel in `masterDataCases` je Formular eindeutig, nur einzelne Werte, nie beides an einem Feld; derselbe Schlüssel bedeutet in allen Formularen dasselbe (Typ, Optionen, Format). Ein bedingtes Feld wird gefüllt, sobald seine Frage erscheint.
+- `masterData` und die Schlüssel in `masterDataCases` je Formular eindeutig, nur einzelne Werte (eine Mehrfachauswahl reist als ihre Antwort-IDs mit Komma, z. B. `sokaBau,ukbBayern`; keine Tabellen, Kalender oder Dateien), nie beides an einem Feld; derselbe Schlüssel bedeutet in allen Formularen dasselbe (Typ, Optionen, Format). Ein bedingtes Feld wird gefüllt, sobald seine Frage erscheint.
 - `because` nur bei Feldern mit Bedingung oder `fromRole` und bei bedingten Rollen.
 
 ## Beispiel

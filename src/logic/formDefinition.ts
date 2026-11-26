@@ -1484,11 +1484,15 @@ const QUICK_ANSWER_TYPES: readonly FieldType[] = [
   'month',
 ];
 
-/** Field types a bookmark link can carry: one string, or yes/no as "ja"/"nein" (masterData.ts). */
+/**
+ * Field types a bookmark link can carry: one string, yes/no as "ja"/"nein", a multiple choice as
+ * its option ids joined by commas (masterData.ts, 2026-11-26).
+ */
 const MASTER_DATA_TYPES: readonly FieldType[] = [
   'text',
   'date',
   'choice',
+  'multiChoice',
   'boolean',
   'iban',
   'taxId',

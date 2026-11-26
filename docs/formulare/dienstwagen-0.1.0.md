@@ -8,8 +8,8 @@
 | Formular | dienstwagen, Version 0.1.0 |
 | Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
 | Gültigkeit | gilt für „Überlassen ab“ ab 01.01.2026 |
-| Stand | zuletzt überarbeitet am 16.11.2026 um 00:47 |
-| Definition (SHA-256) | 6fb7a8126846e8c09029e8a4c3eb4d3517362d66288fcd855624b819bbdc1e20 |
+| Stand | zuletzt überarbeitet am 26.11.2026 um 13:57 |
+| Definition (SHA-256) | 58a1596256ca8399e3c3262f6de1927f54f1741b521609b68ec9c7cdc572fbe1 |
 | Unterschrift | Einfache elektronische Unterschrift in der App genügt |
 | Warum die Unterschrift in der App genügt | Für diese Angaben schreibt das Gesetz keine Form vor. Deshalb genügt eine einfache elektronische Signatur – gezeichnet oder als getippter Name (Art. 3 Nr. 10 eIDAS-Verordnung). Nur einen Verzicht auf die Nutzung erklärt die Person auf Papier, weil die Finanzverwaltung ihn „schriftlich“ verlangt (BMF-Schreiben vom 03.03.2022 Rz. 20). |
 | Empfänger | Lohnabrechnende Stelle |
@@ -28,8 +28,8 @@
 | Feld | Zuständig | Art | Eingabe möglich | Pflicht | Zweck |
 | --- | --- | --- | --- | --- | --- |
 | Firma des Arbeitgebers (agFirma)<br>Hilfe: So, wie sie auf dem Briefkopf steht. | Arbeitgeber | Text; Stammdatum „firma“, kann im Stammdaten-Link gemerkt werden | immer | Pflicht | Zuordnung |
-| Familienname der beschäftigten Person (agFamilienname) | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
-| Vornamen der beschäftigten Person (agVorname) | Arbeitgeber | Text, höchstens 30 Zeichen | immer | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
+| Familienname der beschäftigten Person (agFamilienname) | Arbeitgeber | Text, höchstens 30 Zeichen | immer<br>Belegt Beschäftigte Person vor („Familienname“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
+| Vornamen der beschäftigten Person (agVorname) | Arbeitgeber | Text, höchstens 30 Zeichen | immer<br>Belegt Beschäftigte Person vor („Vornamen“): liegt dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar<br>Warum: Steht schon im abgeschlossenen Teil der beschäftigten Person; hier zum Prüfen vorbelegt. | Pflicht | Zuordnung; Abgleich mit der Angabe der Person |
 | Personalnummer (agPersonalnummer)<br>Hilfe: Nur wenn schon vergeben. | Arbeitgeber | Text | immer | optional | Zuordnung in der Lohnabrechnung |
 
 ### 2. Fahrzeug
