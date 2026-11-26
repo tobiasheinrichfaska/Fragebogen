@@ -1461,6 +1461,76 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 
 ## Status / next step
 
+**START HERE — hand-over of the cloud session of 2026-11-26 (Tobias asked for it because he could no
+longer read the chat; everything below this block is older history).** Tobias writes German; answer
+short and plain.
+
+_State of `main` (after PRs #31 and #32, CI green in three engines):_
+
+- **Published forms in `forms/`** (hashes in `published.json`; every older version stays registered for
+  questionnaires under way): Sofortmeldung 1.0.0 and **1.1.0**, Personalfragebogen 1.0.0, **1.1.0**
+  and **1.2.0**, SEPA-Mandat 1.0.0 / 1.1.0 / 1.2.0, Steuerfreigabe 1.0.0 (the Zustimmung).
+  Drafts left in `form-drafts/`: Steuerfreigabe 1.1.0 (waits for Tobias's review), Austritt,
+  Dienstwagen, Eigenbeleg, Lohnmeldung (all 0.1.0).
+- **The live app and the published forms are NOT yet online with this state.** Freigabe (private repo,
+  never attached to a cloud session) rolls the test zone out from `main` by itself every two hours
+  once the check „Tests“ is green; the public app only when Tobias starts it there. A cloud session
+  never uploads. Tell him so after any change that is meant for the clients.
+- **What this session built** (details in the entries below and in the PR texts of #31, #32,
+  Fragebogen-privat#7):
+  1. Personalfragebogen / Sofortmeldung 1.1.0 published (names proposed both ways between employer
+     and person, 2027 validity, date order, sector, guardian rules).
+  2. „Zwischenstand als Link“: an unsealed questionnaire can be passed on as a link (`transferOffer`
+     `interim`), the PDF stays blocked. A Personalfragebogen part rarely fits the 2,000 characters —
+     then the app points to „Zwischenstand speichern“; the real length was not measured.
+  3. Personalfragebogen 1.2.0: `agSozialkassen` (multiple choice of the 17 Kassen of the BMAS Merkblatt,
+     Stand Mai 2026) + `agSozialkasseAndere`; the person's `praktikumArt` is taken over from the
+     employer's `agPraktikumArt` through a translation (`fromRole.map`, `takenOverValue`).
+  4. A multiple choice may be master data: link value = option ids joined by commas
+     (`sozialkassen=sokaBau,ukbBayern`). Covered by unit tests; the link-screen input for it
+     (`MasterDataLinkForm`) was **not** clicked through in a browser.
+  5. Check of every field asked of two roles: all pairs now carry `fromRole`; the Dienstwagen draft got
+     the names both ways. Birth name and birth date are asked of the person only (from the
+     Sofortmeldung they come over by „Angaben aus einer anderen Datei übernehmen“).
+- **Private repo** `Fragebogen-privat` (merged, #7): `config/export.local.json` has an entry for
+  Personalfragebogen 1.2.0 (copy of 1.1.0; the Sozialkassen are not exported to LuG). A new published
+  version of a mapped form needs such an entry, or `exportLocal.test.ts` fails.
+
+_Open points, for Tobias to decide or for the next session:_
+
+- **Rechengrößen 2027** (`src/logic/data/rechengroessen.ts`) still rest on the government draft of the
+  SVBezGrV 2027; Personalfragebogen 1.1.0 / 1.2.0 are already published. Compare when the BGBl is out;
+  a difference needs a new version (the published ones are frozen). BBG PV 2027: 6.075 € (law in
+  force) or 6.375 € (Pflegeneuordnungsgesetz).
+- Steuerfreigabe 1.1.0 draft: publish after his review.
+- Sozialkassen: only the employer is asked which Kassen; the person still answers only the yes/no and
+  the follow-ups (Arbeitnehmernummer, time in the branch). Whether that is enough is untested by him.
+- Not built / not decided: see „Known Limitations“ (e.g. Austritt, Dienstwagen, Eigenbeleg and
+  Lohnmeldung drafts await review).
+
+_How to work here (this container):_
+
+- Attach `tobiasheinrichfaska/Fragebogen-privat` with `add_repo`, clone it, copy `config/*.local.json`
+  and `tests/fixtures/sv-vorgaben-lokal/` into the checkout (gitignored, never commit) — otherwise
+  the local tests skip, which is not a pass. Push access to this repo needs `add_repo` with `push`.
+- Fast checks: `npm run typecheck`, `npm run lint`, `npm run format:check`, `npx vitest run`
+  (5953 tests). Run them without a pipe that hides the exit code (the CI lint failed once because
+  of that). `npm run catalogue` regenerates the catalogues and `docs/ablaufplan.html` after any form
+  change and stamps `revised` on drafts.
+- Browser tests: the Playwright projects look for `chromium_headless_shell-1228`, the container has
+  `-1243`; a temporary config with `launchOptions.executablePath =
+/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`
+  runs the Chromium specs (about 3 minutes; never commit that config). Firefox and WebKit only run in
+  the CI. MT-35 (photographed QR codes) failed once in a full run and was green alone and again later —
+  the known raster gap, not a regression.
+- Publishing a draft = `git mv form-drafts/<id>/<v>.json forms/<id>/<v>.json`, add `{id, version,
+definitionHash}` to `forms/published.json` (the test `publishedForms.test.ts` names the hash), change
+  `DRAFTS_DIR` to `FORMS_DIR` in the tests that read it, `npm run catalogue`, update this file.
+- GitHub: the MCP tools (`mcp__github__*`) have to be loaded with ToolSearch; PRs are opened without
+  asking, merged once the CI is green (his standing rule of 2026-11-14), the branch of the session is
+  `claude/charming-tesla-qcqxi5` (restart it from `main` after a merge). A PR needs a subscription
+  (`subscribe_pr_activity`) so CI results arrive.
+
 **Sozialkassen and the check of fields asked twice (cloud session, 2026-11-26):** Tobias: „ergänze
 ein Auswahlfeld für die konkrete Sozialkasse“, „prüfe alle doppelt erfasbaren Felder auf eine
 Wertweitergabe“, „Mehrfachauswahl passt in einen Link, indem alle Werte aufgezählt werden“.
@@ -2075,4 +2145,4 @@ for now, long term as Kanzlei-signed forms loaded at runtime (signature in the e
 forms are finished together first (good patterns); `docs/ki-anleitung-formulare.md` lets any AI
 draft or adapt forms.
 
-_Last updated: 2026-11-15 (the shared test page of Testumgebung in the test build; SEPA-Mandat 1.2.0 published; custody alone / with consent / together)_
+_Last updated: 2026-11-26 (Personalfragebogen 1.1.0 / 1.2.0 and Sofortmeldung 1.1.0 published; Zwischenstand als Link; Sozialkassen; hand-over block at the top of „Status / next step“)_
