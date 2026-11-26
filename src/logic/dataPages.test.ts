@@ -75,6 +75,15 @@ describe('encodeDataLines / decodeDataLines', () => {
     });
   });
 
+  it('names only a few missing lines when the header claims a huge count', () => {
+    const header = `FRAGEBOGEN-DATEN 1 ID ${ID} ZEILEN 999999 BYTES 100`;
+    const result = decodeDataLines([header, `SHA256 ${'0'.repeat(64)}`]);
+    expect(result).toMatchObject({ ok: false, issue: 'badLines' });
+    if (result.ok) return;
+    expect(result.detail.length).toBeLessThanOrEqual(11);
+    expect(result.detail.at(-1)).toBe('… und 999989 weitere');
+  });
+
   it.each<[string, (lines: string[]) => string[], string]>([
     ['no data pages at all', () => ['Personalfragebogen', 'Seite 1 von 2'], 'notFound'],
     [

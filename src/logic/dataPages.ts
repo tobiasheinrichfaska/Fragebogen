@@ -172,6 +172,7 @@ export type DecodedDataLines =
 
 const HEADER = /^FRAGEBOGEN-DATEN (\d+) ID ([0-9a-f-]{36}) ZEILEN (\d{1,6}) BYTES (\d{1,9})$/;
 const DIGEST = /^SHA256 ([0-9a-f]{64})$/;
+const MAX_PROBLEMS_NAMED = 10;
 const LINE = /^(\d{4,6}) ([A-Za-z0-9_-]{1,96}) ([0-9a-f]{4})$/;
 
 /** Reads the data block from text lines in any order; whitespace inside a line is collapsed. */
@@ -199,11 +200,22 @@ export function decodeDataLines(textLines: readonly string[]): DecodedDataLines 
     else damaged.add(number);
   }
   const problems: string[] = [];
+  let problemCount = 0;
   for (let n = 1; n <= total; n++) {
     if (chunks.has(n)) continue;
-    problems.push(damaged.has(n) ? `Zeile ${n} beschädigt` : `Zeile ${n} fehlt`);
+    problemCount++;
+    // The header may claim up to 999,999 lines: name only the first few (a hostile file must not
+    // flood the screen with list items).
+    if (problems.length < MAX_PROBLEMS_NAMED) {
+      problems.push(damaged.has(n) ? `Zeile ${n} beschädigt` : `Zeile ${n} fehlt`);
+    }
   }
-  if (problems.length > 0) return { ok: false, issue: 'badLines', detail: problems };
+  if (problemCount > 0) {
+    if (problemCount > problems.length) {
+      problems.push(`… und ${problemCount - problems.length} weitere`);
+    }
+    return { ok: false, issue: 'badLines', detail: problems };
+  }
 
   let encoded = '';
   for (let n = 1; n <= total; n++) encoded += chunks.get(n) ?? '';

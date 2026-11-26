@@ -1465,6 +1465,12 @@ as `__APP_VERSION__`. Workflow: bump `package.json` → `chore: bump version to 
 longer read the chat; everything below this block is older history).** Tobias writes German; answer
 short and plain.
 
+**Audit 2026-11-26 (Lauf 2):** behoben: `decodeDataLines` nennt höchstens 10 fehlende oder beschädigte
+Zeilen und hängt „… und n weitere“ an (`src/logic/dataPages.ts`, Regressionstest in `dataPages.test.ts`,
+rot auf dem alten Code). Widerlegt: die Prüfhinweise `schreibenNachZugang`, `zugangNachEnde`,
+`freistellungNachEnde` des Austritt-Entwurfs können auslösen; die Behauptung, die Datumsreihenfolge
+verhindere das immer, stimmte nicht. Offen: nichts.
+
 _State of `main` (after PRs #31 and #32, CI green in three engines):_
 
 - **Published forms in `forms/`** (hashes in `published.json`; every older version stays registered for
