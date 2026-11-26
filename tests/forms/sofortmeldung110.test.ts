@@ -9,10 +9,10 @@ import { masterDataFragment, parseMasterDataFragment } from '../../src/logic/mas
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, sealPart, setValue, startPart } from '../../src/logic/questionnaire';
 import { transmissionBlockers } from '../../src/logic/requirements';
-import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, ok, QUESTIONNAIRE_ID } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '1.1.0.json')));
 const previous = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '1.0.0.json')));
 const { definition } = form;
 const at = { local: '2026-11-04T10:00:00.000+01:00', utc: '2026-11-04T09:00:00.000Z' };

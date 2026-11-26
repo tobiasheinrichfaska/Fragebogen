@@ -13,10 +13,10 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
-const sofort = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')));
+const sofort = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '1.1.0.json')));
 const personal = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 
 const must = (result: SessionResult): Session => {

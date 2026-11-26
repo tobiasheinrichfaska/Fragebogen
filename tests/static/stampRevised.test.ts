@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { localStamp, needsStamp, stamped } from '../../deploy/stampRevised';
 import { parseFormDefinition } from '../../src/logic/formDefinition';
 import { describeRevised } from '../../src/logic/validity';
-import { definitionFiles, DRAFTS_DIR, readJson } from '../support/formFiles';
+import { definitionFiles, DRAFTS_DIR, FORMS_DIR, readJson } from '../support/formFiles';
 
 const DRAFT = '{\n  "id": "beispiel",\n  "version": "0.1.0",\n  "title": "Beispiel"\n}\n';
 
@@ -59,7 +59,7 @@ describe('revised in the definitions', () => {
   it.each(['2026-11-04', '2026-11-04T24:00', '2026-02-30T10:00', '04.11.2026 17:20'])(
     'refuses "%s"',
     (revised) => {
-      const draft = readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')) as object;
+      const draft = readJson(join(FORMS_DIR, 'sofortmeldung', '1.1.0.json')) as object;
       expect(parseFormDefinition({ ...draft, revised }).ok).toBe(false);
     },
   );

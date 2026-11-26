@@ -9,11 +9,11 @@ import { join } from 'node:path';
 import { checkHints, hintLine } from '../../src/logic/hints';
 import type { Questionnaire } from '../../src/logic/model';
 import { createQuestionnaire, setValue, startPart } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 import { assess, type Answers } from '../support/svCase';
 
-const draft = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
+const draft = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json')));
 
 /** Sets the answers of a role in passes, so a follow-up may come before what opens it. */
 function filled(q: Questionnaire, role: string, answers: Answers): Questionnaire {

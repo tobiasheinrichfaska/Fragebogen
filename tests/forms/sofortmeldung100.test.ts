@@ -17,11 +17,17 @@ const read = (dir: string, id: string, version: string) =>
   registeredFrom(readJson(join(dir, id, `${version}.json`))).definition;
 
 describe('Sofortmeldung 1.0.0 (production)', () => {
-  it('is the newest version, no test version, and the content of 0.4.0', () => {
+  it('is no test version and the content of 0.4.0', () => {
+    const production = read(FORMS_DIR, 'sofortmeldung', '1.0.0');
+    expect(isTestVersion(production.version)).toBe(false);
+    expect({ ...production, version: '0.4.0' }).toEqual(read(FORMS_DIR, 'sofortmeldung', '0.4.0'));
+  });
+
+  // 1.1.0 is published since 2026-11-26 (Tobias: „ja, beide 1.1.0 veröffentlichen“).
+  it('is followed by the production version 1.1.0', () => {
     const newest = newestPublished('sofortmeldung').definition;
-    expect(newest.version).toBe('1.0.0');
+    expect(newest.version).toBe('1.1.0');
     expect(isTestVersion(newest.version)).toBe(false);
-    expect({ ...newest, version: '0.4.0' }).toEqual(read(FORMS_DIR, 'sofortmeldung', '0.4.0'));
   });
 });
 

@@ -5,9 +5,9 @@ import { parseFormDefinition } from '../../src/logic/formDefinition';
 import type { PartData } from '../../src/logic/form';
 import type { FieldDefinition } from '../../src/logic/model';
 import { availableOptions } from '../../src/logic/optionConditions';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 
-const raw = readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json'));
+const raw = readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json'));
 const { definition } = registeredFrom(raw);
 const field = definition.sections
   .flatMap((s) => s.fields)

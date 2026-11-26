@@ -10,12 +10,12 @@ import {
   setValue,
   startPart,
 } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { outsideValidity } from '../../src/logic/validity';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 import { assess, shownValue, type Answers } from '../support/svCase';
 
-const draft = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
+const draft = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json')));
 const fields = draft.definition.sections.flatMap((section) => section.fields);
 const field = (id: string) => fields.find((f) => f.id === id);
 
