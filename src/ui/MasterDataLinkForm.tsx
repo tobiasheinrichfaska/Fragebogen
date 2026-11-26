@@ -29,7 +29,7 @@ import {
 import type { FieldValue } from '../logic/model';
 import { Banner, type BannerMessage } from './common';
 import { FieldInput } from './FieldInput';
-import { isTextLike } from './fieldKinds';
+import { hasChoice, isTextLike } from './fieldKinds';
 import { MasterDataLink } from './MasterDataLink';
 
 interface Props {
@@ -316,7 +316,7 @@ function EntryInput({
 }) {
   const id = `master-${entry.key}`;
   const textLike = isTextLike(entry.field);
-  const chosen = !textLike && raw !== null;
+  const chosen = hasChoice(textLike, raw);
   return (
     <div className="master-entry">
       <p id={`${id}-label`} className="master-question">
