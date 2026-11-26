@@ -354,6 +354,37 @@ test('the employer part passes on as a link and opens on another device (Tobias 
   expect(foreignThere).toEqual([]);
 });
 
+test('an unsealed part passes on as a Zwischenstand link and is continued elsewhere (Tobias 2026-11-26)', async ({
+  page,
+  browser,
+}) => {
+  const foreign = await serveHosted(page);
+  await page.goto(`${ORIGIN}/`);
+  await press(page, 'Personalfragebogen: Angaben für die Sofortmeldung');
+  await press(page, 'Ich bin: Arbeitgeber');
+  await answerUntilSummary(page);
+  await press(page, 'Unterbrechen – zur Übersicht (Angaben bleiben erhalten)');
+  await expect(page.getByRole('button', { name: 'PDF erstellen' })).toBeDisabled();
+  await expect(page.getByRole('heading', { name: 'Als Link weitergeben' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Zwischenstand als Link' })).toBeVisible();
+  await requestLink(page.locator('main'));
+  const link = await page.getByLabel('Link zum Zwischenstand').inputValue();
+  expect(link).toMatch(/^https:\/\/fragebogen\.test\/#weitergabe=3&pruef=[0-9a-f]{16}&daten=/);
+
+  const other = await browser.newContext();
+  const device = await other.newPage();
+  const foreignThere = await serveHosted(device);
+  await device.goto(link);
+  await expect(device.getByRole('heading', { name: 'Wer füllt jetzt aus?' })).toBeVisible();
+  await press(device, 'Weitermachen');
+  // Every answer came along: the summary lets the draft be closed on this device.
+  await press(device, 'Zur Zusammenfassung – alle Angaben ansehen und ändern');
+  await expect(device.getByRole('button', { name: 'Weiter zum Abschluss' })).toBeVisible();
+  await other.close();
+  expect(foreign).toEqual([]);
+  expect(foreignThere).toEqual([]);
+});
+
 test('a link passed on with a password opens only with it (Tobias 2026-11-06)', async ({
   page,
   browser,

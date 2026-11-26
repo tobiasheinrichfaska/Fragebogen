@@ -23,7 +23,7 @@ import {
   type Session,
   type SessionResult,
 } from '../../src/logic/session';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import {
   NONCE_EMPLOYER,
   NONCE_GUARDIAN,
@@ -33,7 +33,7 @@ import {
   note,
 } from '../support/sample';
 
-const form = registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')));
+const form = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '1.1.0.json')));
 const registry = registryOf([form]);
 
 const font = (name: string) =>

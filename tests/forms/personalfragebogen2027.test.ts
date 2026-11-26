@@ -26,7 +26,7 @@ import {
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 import { actual, assess, shownValue, type Answers } from '../support/svCase';
 
-const draft = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
+const draft = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json')));
 const published = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
 
 const allDefinitions = (): FormDefinition[] =>

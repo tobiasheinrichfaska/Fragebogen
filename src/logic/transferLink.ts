@@ -74,6 +74,10 @@ export const TRANSFER_LINK_MESSAGES: Readonly<Record<TransferLinkIssue, string>>
     'Dieser Browser kann den geschützten Link nicht öffnen. Bitte einen aktuellen Browser verwenden oder um die PDF bitten.',
 };
 
+/** A Zwischenstand too long for a link: the interim file holds any size. */
+export const TRANSFER_LINK_INTERIM_TOO_LONG =
+  'Für einen Link sind es zu viele Angaben. Bitte „Zwischenstand speichern“ verwenden.';
+
 /**
  * Key derivation and cipher of a protected link, fixed by its version so a link can never ask for
  * weaker ones: PBKDF2-HMAC-SHA-256 with 600,000 iterations (OWASP Password Storage Cheat Sheet),
@@ -304,25 +308,37 @@ export function transferPackageText(
 }
 
 export type TransferOffer =
-  | { kind: 'link'; url: string; base: string; questionnaire: Questionnaire }
-  | { kind: 'tooLong' }
-  | { kind: 'noAddress' }
-  | { kind: 'blocked' };
+  | {
+      kind: 'link';
+      url: string;
+      base: string;
+      questionnaire: Questionnaire;
+      /**
+       * Something still blocks passing on (an open draft, a missing signature …): the link is a
+       * Zwischenstand like the interim file (Tobias 2026-11-26: „Weitergabe soll auch unversiegelt
+       * möglich sein, um z.B. einen Zwischenstand zu speichern“). The PDF stays blocked.
+       */
+      interim: boolean;
+    }
+  | { kind: 'tooLong'; interim: boolean }
+  | { kind: 'noAddress' };
 
 /**
- * What the done screen offers besides the PDF: a link when the questionnaire may be passed on
- * (nothing blocks it, as for the PDF), fits, and `base` is an address another device can open —
- * a page opened from a file on this computer has none unless the app address is configured.
+ * What the overview and the done screen offer besides the PDF: a link when the questionnaire fits
+ * and `base` is an address another device can open — a page opened from a file on this computer
+ * has none unless the app address is configured. While something blocks passing on, as for the
+ * PDF, the link is offered as a Zwischenstand (`interim`): it carries the drafts as they are and
+ * opens like the interim file.
  */
 export function transferOffer(
   questionnaire: Questionnaire,
   form: RegisteredForm,
   base: string,
 ): TransferOffer {
-  if (transmissionBlockers(questionnaire, form).length > 0) return { kind: 'blocked' };
+  const interim = transmissionBlockers(questionnaire, form).length > 0;
   if (!/^https?:/.test(base)) return { kind: 'noAddress' };
   const made = transferFragment(questionnaire);
   return made.ok
-    ? { kind: 'link', url: `${base}${made.fragment}`, base, questionnaire }
-    : { kind: 'tooLong' };
+    ? { kind: 'link', url: `${base}${made.fragment}`, base, questionnaire, interim }
+    : { kind: 'tooLong', interim };
 }

@@ -19,15 +19,15 @@ import {
   DRAFTS_DIR,
   FIXTURE_FORMS_DIR,
   FORMS_DIR,
+  newestPublished,
   readJson,
   registeredFrom,
-  newestPublished,
 } from '../support/formFiles';
 import { ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const FILE = join(__dirname, '..', '..', 'config', 'export.local.json');
 const form = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
-const draft110 = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
+const draft110 = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json')));
 const sofort = newestPublished('sofortmeldung');
 const sofortFrozen = registeredFrom(
   readJson(join(FIXTURE_FORMS_DIR, 'sofortmeldung', '0.1.0.json')),

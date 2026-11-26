@@ -75,7 +75,7 @@ describe('SEPA-Mandat 1.2.0', () => {
 });
 
 describe('Personalfragebogen 1.1.0: texts', () => {
-  const pfb = load(DRAFTS_DIR, 'personalfragebogen', '1.1.0').definition;
+  const pfb = load(FORMS_DIR, 'personalfragebogen', '1.1.0').definition;
 
   it('B4: further pay asks only for what was not asked above', () => {
     const text = help(pfb, 'agWeitereBezuege');

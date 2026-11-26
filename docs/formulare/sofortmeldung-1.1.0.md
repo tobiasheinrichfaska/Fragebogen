@@ -6,7 +6,7 @@
 | Angabe | Wert |
 | --- | --- |
 | Formular | sofortmeldung, Version 1.1.0 |
-| Status | Entwurf zur fachlichen Freigabe, noch nicht veröffentlicht |
+| Status | Veröffentlicht und eingefroren |
 | Gültigkeit | gilt für „Tag der Beschäftigungsaufnahme“ ab 01.01.2026 |
 | Stand | zuletzt überarbeitet am 24.11.2026 um 13:08 |
 | Definition (SHA-256) | 107dcb7f15883a3f364963beb304cbe33f4f0377a2fea5df45ea9f370aede102 |

@@ -7,7 +7,7 @@ import { fieldStates, fieldsById } from '../../src/logic/form';
 import { checkFormDefinition } from '../../src/logic/formDefinition';
 import type { FieldValue, FormDefinition } from '../../src/logic/model';
 import { optionsOf, REFERENCE_LISTS, REFERENCE_SETS } from '../../src/logic/options';
-import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 
 const SET = 'staatenOhnePostleitzahl2026';
 const definitionOf = (dir: string, folder: string, version: string) =>
@@ -78,7 +78,7 @@ describe('the condition inSet', () => {
 
 describe.each([
   ['sepa-mandat', '1.1.0', 'kontoinhaber', FORMS_DIR],
-  ['sofortmeldung', '1.1.0', 'person', DRAFTS_DIR],
+  ['sofortmeldung', '1.1.0', 'person', FORMS_DIR],
   ['personalfragebogen', '1.0.0', 'person', FORMS_DIR],
 ])('the foreign postcode in %s %s', (folder, version, role, dir) => {
   const definition = definitionOf(dir, folder, version);

@@ -16,7 +16,7 @@ import {
   setValue,
   startPart,
 } from '../../src/logic/questionnaire';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 import { note, ok, QUESTIONNAIRE_ID } from '../support/sample';
 
 const PFB_EMPLOYER = {
@@ -63,7 +63,7 @@ const CASES = [
 describe.each(CASES)(
   "%s 1.1.0: the person's name is preselected from the employer",
   (id, values) => {
-    const form = registeredFrom(readJson(join(DRAFTS_DIR, id, '1.1.0.json')));
+    const form = registeredFrom(readJson(join(FORMS_DIR, id, '1.1.0.json')));
     const { definition } = form;
     const at = { local: '2026-11-24T10:00:00.000+01:00', utc: '2026-11-24T09:00:00.000Z' };
 
@@ -148,9 +148,7 @@ describe.each(CASES)(
 );
 
 describe('definition rule: two fields may propose each other, nothing else may chain', () => {
-  const draft = registeredFrom(
-    readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')),
-  ).definition;
+  const draft = registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '1.1.0.json'))).definition;
   const problems = (change: (fields: Map<string, FieldDefinition>) => void) => {
     const definition = structuredClone(draft);
     change(new Map(definition.sections.flatMap((s) => s.fields).map((f) => [f.id, f])));

@@ -9,7 +9,7 @@ import { DRAFTS_DIR, FORMS_DIR, readJson, registeredFrom } from '../support/form
 import { QUESTIONNAIRE_ID } from '../support/sample';
 
 const pfb100 = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.0.0.json')));
-const pfb110 = registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json')));
+const pfb110 = registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json')));
 
 // The extension to a start in 2027 (Tobias 2026-11-14): exactly these texts of 1.1.0 (as they stand
 // in its JSON text), each with its wording in 1.0.0.

@@ -8,14 +8,14 @@ import type { RegisteredForm } from '../../src/logic/formRegistry';
 import { evaluateCondition } from '../../src/logic/conditions';
 import { visibility } from '../../src/logic/form';
 import type { RoleDefinition } from '../../src/logic/model';
-import { DRAFTS_DIR, readJson, registeredFrom } from '../support/formFiles';
+import { FORMS_DIR, readJson, registeredFrom } from '../support/formFiles';
 
 const DRAFTS: readonly [string, RegisteredForm][] = [
   [
     'personalfragebogen',
-    registeredFrom(readJson(join(DRAFTS_DIR, 'personalfragebogen', '1.1.0.json'))),
+    registeredFrom(readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json'))),
   ],
-  ['sofortmeldung', registeredFrom(readJson(join(DRAFTS_DIR, 'sofortmeldung', '1.1.0.json')))],
+  ['sofortmeldung', registeredFrom(readJson(join(FORMS_DIR, 'sofortmeldung', '1.1.0.json')))],
 ];
 
 const CONFIRMATION =
