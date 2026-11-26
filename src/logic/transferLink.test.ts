@@ -14,6 +14,7 @@ import type { Questionnaire } from './model';
 import { enterRole } from './session';
 import {
   lockedTransferFragment,
+  TRANSFER_LINK_INTERIM_TOO_LONG,
   TRANSFER_LINK_MAX_LENGTH,
   TRANSFER_LINK_MESSAGES,
   TRANSFER_LOCK,
@@ -26,6 +27,7 @@ import {
   transferPlaintext,
   unlockedText,
 } from './transferLink';
+import { registryOf } from './formRegistry';
 import { verifyQuestionnaire } from './verify';
 
 const form = beispielForm();
@@ -318,12 +320,45 @@ describe('transferOffer', () => {
     expect(offer.url.length - HOSTED.length).toBeLessThanOrEqual(TRANSFER_LINK_MAX_LENGTH);
   });
 
-  it('offers nothing while something blocks passing on, as for the PDF', () => {
+  it('offers a sealed questionnaire as a link to pass on, not as a Zwischenstand', () => {
+    const offer = transferOffer(employerOnly().questionnaire, sofortmeldung, HOSTED);
+    expect(offer).toMatchObject({ kind: 'link', interim: false });
+  });
+
+  // Tobias 2026-11-26: „Weitergabe soll auch unversiegelt möglich sein, um z.B. einen Zwischenstand
+  // zu speichern“ — before, an open draft offered no link at all.
+  it('offers a Zwischenstand while a draft is open, as the interim file does', () => {
     const entered = enterRole(employerOnly(), 'person');
     if (!entered.ok) throw new Error(entered.message);
-    expect(transferOffer(entered.session.questionnaire, sofortmeldung, HOSTED)).toEqual({
-      kind: 'blocked',
-    });
+    const draft = entered.session.questionnaire;
+    expect(draft.parts.person?.at(-1)?.status).toBe('draft');
+    const offer = transferOffer(draft, sofortmeldung, HOSTED);
+    expect(offer).toMatchObject({ kind: 'link', interim: true });
+    if (offer.kind !== 'link') return;
+    expect(offer.url.length - HOSTED.length).toBeLessThanOrEqual(TRANSFER_LINK_MAX_LENGTH);
+
+    const parsed = parseTransferFragment(offer.url.slice(HOSTED.length));
+    if (parsed?.ok !== true || parsed.kind !== 'open') throw new Error('not parsed');
+    expect(parsed.questionnaireText).toBe(canonicalize(draft));
+    const carriedForm = (hash: string) =>
+      hash === sofortmeldung.definitionHash ? sofortmeldung.definition : undefined;
+    const opened = transferPackageText(parsed.questionnaireText, carriedForm);
+    if (!opened.ok) throw new Error(opened.issue);
+    const decoded = decodePackage(JSON.parse(opened.text), registryOf([sofortmeldung]));
+    if (!decoded.ok) throw new Error(JSON.stringify(decoded.issues));
+    expect(decoded.questionnaire).toEqual(draft);
+  });
+
+  it('keeps a protected Zwischenstand the same text as an open one', () => {
+    const entered = enterRole(employerOnly(), 'person');
+    if (!entered.ok) throw new Error(entered.message);
+    const draft = entered.session.questionnaire;
+    const unlocked = unlockedText(transferPlaintext(draft));
+    expect(unlocked).toEqual({ ok: true, questionnaireText: canonicalize(draft) });
+  });
+
+  it('says a Zwischenstand too long for a link goes into the interim file', () => {
+    expect(TRANSFER_LINK_INTERIM_TOO_LONG).toContain('Zwischenstand speichern');
   });
 
   it('needs an address another device can open, not a file on this computer', () => {

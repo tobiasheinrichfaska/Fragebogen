@@ -1,10 +1,12 @@
-// "Als Link weitergeben" (Tobias 2026-11-05) — on the done screen and, since the test report of
+// "Als Link weitergeben" (Tobias 2026-11-05; while something still blocks passing on, since 2026-11-26
+// „Zwischenstand als Link“) — on the done screen and, since the test report of
 // 2026-11-06, in the overview, so a closed part can be passed on later too. With the screen's
 // password (asked when the link is requested, useProtection.tsx — 2026-11-13) the link is encrypted.
 import type { ProtectionChoice } from './useProtection';
 import { useEffect, useState } from 'react';
 import { lockAvailable, lockTransfer } from '../io/transferLock';
 import {
+  TRANSFER_LINK_INTERIM_TOO_LONG,
   TRANSFER_LINK_MESSAGES,
   type TransferLinkResult,
   type TransferOffer,
@@ -44,17 +46,26 @@ export function TransferLinkSection({
   }, [questionnaire, password, available]);
 
   if (transfer.kind === 'tooLong') {
-    return <p className="muted">{TRANSFER_LINK_MESSAGES.tooLong}</p>;
+    return (
+      <p className="muted">
+        {transfer.interim ? TRANSFER_LINK_INTERIM_TOO_LONG : TRANSFER_LINK_MESSAGES.tooLong}
+      </p>
+    );
   }
   if (transfer.kind !== 'link') return null;
   const made = locked?.password === password ? locked : undefined;
+  const tooLong = transfer.interim
+    ? TRANSFER_LINK_INTERIM_TOO_LONG
+    : TRANSFER_LINK_MESSAGES.tooLong;
+  // Tobias 2026-11-26: a Zwischenstand may go on as a link too, sealed or not.
+  const label = transfer.interim ? 'Link zum Zwischenstand' : 'Link zur Weitergabe';
   return (
     <div className="summary-section">
-      <h3>Als Link weitergeben</h3>
+      <h3>{transfer.interim ? 'Zwischenstand als Link' : 'Als Link weitergeben'}</h3>
       <p className="muted">
-        Statt der PDF genügt dieser Link: Wer ihn öffnet, bekommt den Fragebogen mit allen
-        bisherigen Teilen, geprüft wie eine eingelesene PDF. Er enthält alle Angaben – schicken Sie
-        ihn nur an die Person, die als Nächstes ausfüllt.
+        {transfer.interim
+          ? 'Noch ist nicht alles abgeschlossen. Mit diesem Link machen Sie oder eine andere Person an diesem Stand weiter – später oder auf einem anderen Gerät, wie mit einem gespeicherten Zwischenstand. Er enthält alle bisherigen Angaben, auch die noch nicht abgeschlossenen – schicken Sie ihn nur an Personen, die weiter ausfüllen sollen. Abgeschlossen und unterschrieben ist damit noch nichts.'
+          : 'Statt der PDF genügt dieser Link: Wer ihn öffnet, bekommt den Fragebogen mit allen bisherigen Teilen, geprüft wie eine eingelesene PDF. Er enthält alle Angaben – schicken Sie ihn nur an die Person, die als Nächstes ausfüllt.'}
         {password !== undefined &&
           ' Geschützt mit dem Kennwort oben: Öffnen kann ihn nur, wer auch das Kennwort hat.'}
       </p>
@@ -65,7 +76,7 @@ export function TransferLinkSection({
           </button>
         </p>
       ) : password === undefined ? (
-        <MasterDataLink url={transfer.url} label="Link zur Weitergabe" onCopied={onLinkCopied} />
+        <MasterDataLink url={transfer.url} label={label} onCopied={onLinkCopied} />
       ) : !available || (made !== undefined && 'failed' in made) ? (
         <p className="error-text">{TRANSFER_LINK_MESSAGES.lockUnavailable}</p>
       ) : made === undefined ? (
@@ -73,11 +84,11 @@ export function TransferLinkSection({
       ) : made.result.ok ? (
         <MasterDataLink
           url={`${transfer.base}${made.result.fragment}`}
-          label="Link zur Weitergabe"
+          label={label}
           onCopied={onLinkCopied}
         />
       ) : (
-        <p className="muted">{TRANSFER_LINK_MESSAGES.tooLong}</p>
+        <p className="muted">{tooLong}</p>
       )}
     </div>
   );
