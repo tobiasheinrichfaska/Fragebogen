@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { linkNeedsStart } from './linkArrival';
+import { linkMayLeaveAddressBar, linkNeedsStart } from './linkArrival';
 
 describe('linkNeedsStart', () => {
   it('asks for a fresh start for a master-data link, with or without a form', () => {
@@ -24,5 +24,41 @@ describe('linkNeedsStart', () => {
     expect(linkNeedsStart('')).toBe(false);
     expect(linkNeedsStart('#')).toBe(false);
     expect(linkNeedsStart('#oben')).toBe(false);
+  });
+});
+
+describe('linkMayLeaveAddressBar', () => {
+  const link = '#stammdaten=1&formular=personalfragebogen&firma=Beispiel+GmbH';
+
+  it('keeps the link while the access notice covers the app', () => {
+    expect(linkMayLeaveAddressBar({ hash: link, accessOpen: true, offerOpen: false })).toBe(false);
+  });
+
+  it('keeps the link while the offer of an interrupted questionnaire is open', () => {
+    expect(linkMayLeaveAddressBar({ hash: link, accessOpen: false, offerOpen: true })).toBe(false);
+    expect(
+      linkMayLeaveAddressBar({
+        hash: '#weitergabe=1&pruef=a&daten=b',
+        accessOpen: false,
+        offerOpen: true,
+      }),
+    ).toBe(false);
+  });
+
+  it('takes a link once both are answered, also one with an error', () => {
+    expect(linkMayLeaveAddressBar({ hash: link, accessOpen: false, offerOpen: false })).toBe(true);
+    expect(
+      linkMayLeaveAddressBar({
+        hash: '#stammdaten=2&firma=X',
+        accessOpen: false,
+        offerOpen: false,
+      }),
+    ).toBe(true);
+  });
+
+  it('leaves a fragment that is no link alone', () => {
+    expect(linkMayLeaveAddressBar({ hash: '#oben', accessOpen: false, offerOpen: false })).toBe(
+      false,
+    );
   });
 });
