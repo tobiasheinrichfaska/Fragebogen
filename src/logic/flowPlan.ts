@@ -8,6 +8,7 @@ import { describeFieldRules, fieldsById, fieldsOfRole } from './form';
 import type { RegisteredForm } from './formRegistry';
 import { describeHint } from './hints';
 import { REFERENCE_LISTS } from './options';
+import { translationText } from './catalogue';
 import { describeValidity } from './validity';
 import type { Condition, FieldDefinition, FieldId, FormDefinition, RoleDefinition } from './model';
 
@@ -198,7 +199,13 @@ function stationOf(definition: FormDefinition, role: RoleDefinition): FlowStatio
       dependsOn: numbered([...leaves(field.showIf), ...leaves(field.requiredIf)]),
       ...(field.because === undefined ? {} : { because: field.because }),
       ...(field.fromRole && source
-        ? { fromRole: `${roleLabel(definition, field.fromRole.role)}: „${source.label}“` }
+        ? {
+            fromRole:
+              `${roleLabel(definition, field.fromRole.role)}: „${source.label}“` +
+              (field.fromRole.map === undefined
+                ? ''
+                : ` (übersetzt: ${translationText(field, source, field.fromRole.map)})`),
+          }
         : {}),
       ...(field.fromRole?.changeable === true ? { proposed: true } : {}),
       opens: numbered([...(dependencies.get(field.id)?.enables ?? []), ...requiredBy(field.id)]),

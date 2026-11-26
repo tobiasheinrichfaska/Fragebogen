@@ -95,15 +95,31 @@ export function masterDataKeyFor(
 }
 
 const fits = (key: MasterDataKey, value: FieldValue) =>
-  key.options === undefined || (typeof value === 'string' && key.options.includes(value));
+  key.options === undefined ||
+  (typeof value === 'string' && key.options.includes(value)) ||
+  (Array.isArray(value) && value.every((v) => typeof v === 'string' && key.options?.includes(v)));
 
-/** A stored answer as it travels in the link (yes/no as "ja"/"nein"). */
+/**
+ * Separator of a multiple choice in the link (Tobias 2026-11-26: „Mehrfachauswahl passt in einen
+ * Link, indem alle Werte aufgezählt werden“): the chosen option ids, e.g. „sokaBau,ukbBayern“.
+ * Option ids never hold a comma (ID pattern), so the list reads back unambiguously.
+ */
+export const MASTER_DATA_LIST_SEPARATOR = ',';
+
+/**
+ * A stored answer as it travels in the link: yes/no as "ja"/"nein", a multiple choice as its
+ * option ids joined by commas.
+ */
 export function linkValue(value: FieldValue): FieldValue {
+  if (Array.isArray(value)) return value.join(MASTER_DATA_LIST_SEPARATOR);
   return typeof value === 'boolean' ? (value ? MASTER_DATA_YES : MASTER_DATA_NO) : value;
 }
 
 /** A link value as the field stores it (setValue still checks it). */
 export function storedValue(field: { type: string }, value: unknown): unknown {
+  if (field.type === 'multiChoice') {
+    return typeof value === 'string' ? value.split(MASTER_DATA_LIST_SEPARATOR) : value;
+  }
   if (field.type !== 'boolean') return value;
   return value === MASTER_DATA_YES ? true : value === MASTER_DATA_NO ? false : value;
 }

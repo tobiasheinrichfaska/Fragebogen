@@ -235,3 +235,17 @@ export function describeFieldRules(
     requirement = `Pflicht, wenn ${describeCondition(field.requiredIf, fields)}`;
   return { input, requirement };
 }
+
+/**
+ * The value a field takes over from another role (`fromRole`): the other role's answer, translated
+ * by `map` where the field names one (an answer the map does not name gives nothing).
+ */
+export function takenOverValue(
+  fromRole: NonNullable<FieldDefinition['fromRole']>,
+  value: FieldValue | undefined,
+): FieldValue | undefined {
+  if (fromRole.map === undefined || value === undefined || value === null) return value;
+  return typeof value === 'string' && Object.hasOwn(fromRole.map, value)
+    ? (fromRole.map[value] ?? null)
+    : null;
+}

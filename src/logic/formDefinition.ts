@@ -640,14 +640,39 @@ function decodeFromRole(
   fieldPath: string,
 ): FieldDefinition['fromRole'] | undefined {
   const path = `${fieldPath}.fromRole`;
-  const o = d.object(raw, path, ['role', 'field', 'changeable']);
+  const o = d.object(raw, path, ['role', 'field', 'changeable', 'map']);
   if (!o) return undefined;
   const role = d.string(o.role, `${path}.role`, ID);
   const field = d.string(o.field, `${path}.field`, ID);
   const changeable =
     o.changeable === undefined ? undefined : d.boolean(o.changeable, `${path}.changeable`);
+  const map = o.map === undefined ? undefined : decodeOptionMap(d, o.map, `${path}.map`);
   if (role === undefined || field === undefined) return undefined;
-  return { role, field, ...(changeable === undefined ? {} : { changeable }) };
+  return {
+    role,
+    field,
+    ...(changeable === undefined ? {} : { changeable }),
+    ...(map === undefined ? {} : { map }),
+  };
+}
+
+/** `fromRole.map`: the other field's option id → an own option id. */
+function decodeOptionMap(
+  d: Decoder,
+  raw: unknown,
+  path: string,
+): Record<string, string> | undefined {
+  if (!isPlainObject(raw)) {
+    d.report(path, 'must be an object');
+    return undefined;
+  }
+  const map: Record<string, string> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    if (!OPTION_ID.test(key)) d.report(`${path}.${key}`, 'not an option id');
+    const target = d.string(value, `${path}.${key}`, OPTION_ID);
+    if (target !== undefined) map[key] = target;
+  }
+  return map;
 }
 
 function decodeOption(d: Decoder, raw: unknown, path: string): ChoiceOption | undefined {
@@ -1484,11 +1509,15 @@ const QUICK_ANSWER_TYPES: readonly FieldType[] = [
   'month',
 ];
 
-/** Field types a bookmark link can carry: one string, or yes/no as "ja"/"nein" (masterData.ts). */
+/**
+ * Field types a bookmark link can carry: one string, yes/no as "ja"/"nein", a multiple choice as
+ * its option ids joined by commas (masterData.ts, 2026-11-26).
+ */
 const MASTER_DATA_TYPES: readonly FieldType[] = [
   'text',
   'date',
   'choice',
+  'multiChoice',
   'boolean',
   'iban',
   'taxId',
@@ -1718,7 +1747,8 @@ const leafFields = (condition: Condition): FieldId[] => {
 /**
  * fromRole: another role's top-level field of the same type, itself not taken from a third role
  * (two fields may propose each other, both `changeable`);
- * a choice offers every option of the other field (it may add its own, e.g. "Weiß ich nicht").
+ * a choice offers every option of the other field (it may add its own, e.g. "Weiß ich nicht"),
+ * or `map` translates every one of them into an own option.
  */
 function fromRoleFields({ fields, report }: CheckContext): void {
   for (const { field, path } of fields.values()) {
@@ -1754,9 +1784,26 @@ function fromRoleFields({ fields, report }: CheckContext): void {
     if (field.initial !== undefined)
       report(`${path}.initial`, 'a taken-over field has no preselection');
     const own = new Set(optionsOf(field).map((option) => option.id));
-    for (const option of optionsOf(source.field)) {
-      if (!own.has(option.id))
-        report(`${path}.options`, `option "${option.id}" of the other field is missing`);
+    const theirs = optionsOf(source.field).map((option) => option.id);
+    if (from.map !== undefined) {
+      // A translation (2026-11-26): every answer of the other field to one own option.
+      if (field.type !== 'choice') report(`${at}.map`, 'only a choice can translate answers');
+      if (back !== undefined)
+        report(`${at}.map`, 'two fields proposing each other translate nothing');
+      for (const option of theirs) {
+        if (!Object.hasOwn(from.map, option))
+          report(`${at}.map`, `answer "${option}" of the other field is not translated`);
+      }
+      for (const [key, target] of Object.entries(from.map)) {
+        if (!theirs.includes(key))
+          report(`${at}.map.${key}`, `"${key}" is no answer of the other field`);
+        if (!own.has(target)) report(`${at}.map.${key}`, `"${target}" is no option of this field`);
+      }
+    } else {
+      for (const option of theirs) {
+        if (!own.has(option))
+          report(`${path}.options`, `option "${option}" of the other field is missing`);
+      }
     }
   }
 }

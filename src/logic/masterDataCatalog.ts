@@ -5,7 +5,7 @@
 import { evaluateCondition } from './conditions';
 import { fieldsById, ownerOfField } from './form';
 import type { RegisteredForm } from './formRegistry';
-import { masterDataKeysOf, storedValue, type MasterData } from './masterData';
+import { linkValue, masterDataKeysOf, storedValue, type MasterData } from './masterData';
 import type { Condition, FieldDefinition, FieldId, FieldValue, FormDefinition } from './model';
 import { normalizeFieldValue } from './normalize';
 import { optionsOf } from './options';
@@ -114,10 +114,7 @@ export function masterDataInput(
   const result = normalizeFieldValue(entry.field, raw);
   if (!result.ok) return { ok: false, issue: result.issue };
   const value = result.value;
-  return {
-    ok: true,
-    value: typeof value === 'boolean' ? (value ? 'ja' : 'nein') : value,
-  };
+  return { ok: true, value: linkValue(value) };
 }
 
 /** The catalogue's entries in order. */

@@ -242,6 +242,9 @@ function fieldRows(definition: FormDefinition, field: FieldDefinition, prefix = 
               'dessen abgeschlossener Teil vor, steht die Angabe schon da, wird gefragt und bleibt änderbar'
             : `Legt ${roleLabel(definition, field.fromRole.role)} fest („${source.label}“): liegt dessen ` +
               'abgeschlossener Teil vor, wird die Angabe übernommen und nicht gefragt',
+          ...(field.fromRole.map === undefined
+            ? []
+            : [`Übersetzt: ${translationText(field, source, field.fromRole.map)}`]),
         ]
       : []),
     ...(field.because === undefined ? [] : [`Warum: ${field.because}`]),
@@ -495,4 +498,17 @@ export function formCatalogue(form: RegisteredForm, status: CatalogueStatus): st
   );
   lines.push('', '## Rechtliche Hinweise', '', ...list(definition.legalNotes), '');
   return lines.join('\n');
+}
+
+/** A `fromRole.map` in words: „Pflichtpraktikum während des Studiums“ → „Ja, …“; … */
+export function translationText(
+  field: FieldDefinition,
+  source: FieldDefinition,
+  map: Readonly<Record<string, string>>,
+): string {
+  const label = (of: FieldDefinition, id: string) =>
+    optionsOf(of).find((option) => option.id === id)?.label ?? id;
+  return Object.entries(map)
+    .map(([from, to]) => `„${label(source, from)}“ → „${label(field, to)}“`)
+    .join('; ');
 }

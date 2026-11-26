@@ -5,7 +5,7 @@
 import { describeCondition, evaluateCondition, forEachLeaf } from './conditions';
 import { ageOn, dayNumber, formatGermanDate, isIsoDate, MONTH_NAMES } from './dates';
 import { displayValue } from './display';
-import { fieldsById, ownerOfField, roleOf, visibility } from './form';
+import { fieldsById, ownerOfField, roleOf, takenOverValue, visibility } from './form';
 import { canonicalize } from './jcs';
 import {
   berufsmaessigNachVorbeschaeftigungen,
@@ -2014,8 +2014,10 @@ function fromRoleHints(
     // are dropped at sealing), an open draft of a new one does not count yet (loop 3 of the audit).
     const sealed = (questionnaire.parts[from.role] ?? []).filter((part) => part.seal);
     const newest = sealed.at(-1);
-    const decidedSealed = newest ? (newest.data[from.field] ?? null) : undefined;
-    const earlier = sealed.slice(0, -1).map((part) => part.data[from.field] ?? null);
+    // With a translation (`map`) the own answer is compared with the translated one.
+    const translated = (value: FieldValue | undefined) => takenOverValue(from, value) ?? null;
+    const decidedSealed = newest ? translated(newest.data[from.field]) : undefined;
+    const earlier = sealed.slice(0, -1).map((part) => translated(part.data[from.field]));
     const heldEarlier = earlier.some((value) => value !== null && same(value, own));
     const hint = { role: field.role, fields: [field.id], detail: [] };
     if (from.changeable !== true && decidedSealed === null && heldEarlier) {
@@ -2030,11 +2032,18 @@ function fromRoleHints(
     // What the other role decided or proposes: its newest sealed version, as taken over
     // (fromOtherRoles); without one its current part. A draft of its next version does not count
     // (loop 4 of the audit: it hid the hint and made the Kanzlei's read „geändert“).
-    const decidedNow = decidedSealed === undefined ? decided : decidedSealed;
+    const decidedNow = decidedSealed === undefined ? translated(decided) : decidedSealed;
     if (decidedNow === null) continue;
     if (same(own, decidedNow)) continue;
-    if (source.type === 'choice' && !optionsOf(source).some((option) => option.id === own))
-      continue;
+    // An own extra answer such as „Weiß ich nicht.“ contradicts nothing.
+    const comparable =
+      from.map === undefined
+        ? optionsOf(source).some((option) => option.id === own)
+        : Object.values(from.map).includes(own as string);
+    if (source.type === 'choice' && !comparable) continue;
+    // Shown as the other role answered it: its own option, not the translation.
+    const decidedRaw =
+      from.map === undefined ? decidedNow : newest ? (newest.data[from.field] ?? null) : decided;
     // A proposal the role was free to change is news for the other role, not a contradiction —
     // unless the role still holds what the other role proposed before.
     const newProposal = from.changeable === true && heldEarlier;
@@ -2045,9 +2054,9 @@ function fromRoleHints(
       message:
         from.changeable === true
           ? newProposal
-            ? `Im Teil „${fromRole}“ steht für „${field.label}“ jetzt der Vorschlag „${displayValue(source, decidedNow)}“; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
-            : `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decidedNow)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
-          : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decidedNow)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
+            ? `Im Teil „${fromRole}“ steht für „${field.label}“ jetzt der Vorschlag „${displayValue(source, decidedRaw)}“; im Teil „${ownRole}“ steht noch der frühere Vorschlag „${displayValue(field, own)}“ – bitte prüfen.`
+            : `„${field.label}“ geändert: ${fromRole} hatte „${displayValue(source, decidedRaw)}“ vorbelegt, im Teil „${ownRole}“ steht jetzt „${displayValue(field, own)}“.`
+          : `„${field.label}“ weicht ab: ${fromRole} gibt „${displayValue(source, decidedRaw)}“ an, im Teil „${ownRole}“ steht „${displayValue(field, own)}“. Davon hängen Fragen an „${ownRole}“ ab; bitte klären und gegebenenfalls neu unterschreiben lassen.`,
     });
   }
   return results;

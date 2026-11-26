@@ -926,10 +926,11 @@ describe('preselection, master data and linked parts', () => {
       'only always available',
     ],
     [
-      'a multiple-choice field as master data',
+      // A multiple choice travels as a comma list since 2026-11-26; a calendar still cannot.
+      'a calendar field as master data',
       (d) => {
         const field = fieldAt(d, 0, 4);
-        field.type = 'multiChoice';
+        field.type = 'calendar';
         field.masterData = 'art';
       },
       '$.sections[0].fields[4].masterData',
