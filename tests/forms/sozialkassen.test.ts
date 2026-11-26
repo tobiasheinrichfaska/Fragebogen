@@ -90,7 +90,7 @@ describe('Personalfragebogen 1.2.0: which Sozialkassen', () => {
     expect(value(s, 'agSozialkasseAndere')).toBe('Beispielkasse');
   });
 
-  it('differs from the published 1.1.0 only by the two new questions', () => {
+  it('differs from the published 1.1.0 only by the two new questions and the internship', () => {
     const published = registeredFrom(
       readJson(join(FORMS_DIR, 'personalfragebogen', '1.1.0.json')),
     ).definition;
@@ -100,7 +100,10 @@ describe('Personalfragebogen 1.2.0: which Sozialkassen', () => {
       revised: '',
       sections: d.sections.map((s) => ({
         ...s,
-        fields: s.fields.filter((f) => !['agSozialkassen', 'agSozialkasseAndere'].includes(f.id)),
+        fields: s.fields
+          .filter((f) => !['agSozialkassen', 'agSozialkasseAndere'].includes(f.id))
+          // taken over from the employer since 1.2.0 (praktikumUebernahme.test.ts)
+          .map((f) => (f.id === 'praktikumArt' ? { ...f, fromRole: undefined, because: '' } : f)),
       })),
     });
     expect(strip(definition)).toEqual(strip(published));

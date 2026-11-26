@@ -571,7 +571,7 @@ test('MT-52: the flow plan lists each station’s questions in interview order, 
   const order = below('.order');
   await expect(order.locator('h3')).toHaveText('Reihenfolge der Stationen');
   await expect(order).toContainText(
-    'Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Familienname“, „Vornamen“, „Art der Lohnsteuer“, „Sozialkassenverfahren“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt.',
+    'Empfohlen: Arbeitgeber zuerst. Dann übernimmt der Fragebogen „Familienname“, „Vornamen“, „Pflichtpraktikum“, „Art der Lohnsteuer“, „Sozialkassenverfahren“ in den Teil „Beschäftigte Person“ und fragt dort nur, was dazu passt.',
   );
 
   const station = page.locator(`section[id="${id}-person"]`);

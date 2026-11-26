@@ -204,8 +204,16 @@ export interface FieldDefinition {
    * option of the other field. `changeable`: only proposed — copied into the never answered field
    * when the role is entered, asked with it and free to change (e.g. the account data the Kanzlei
    * prefills); a changed value is a check hint for the other role, not a contradiction.
+   * `map` (choice fields, 2026-11-26): translates the other role's answer into an own option where
+   * the two ask the same at a different grain (the employer's kind of internship → „vorgeschrieben?“);
+   * it names every option of the other field, and then the options need not match.
    */
-  fromRole?: { role: RoleId; field: FieldId; changeable?: boolean };
+  fromRole?: {
+    role: RoleId;
+    field: FieldId;
+    changeable?: boolean;
+    map?: Readonly<Record<string, string>>;
+  };
   /** Columns of a repeat group (table); v1: same role as the table, no conditions. */
   columns?: FieldDefinition[];
   /** Tables only: what one row is called on screen, e.g. "Kind" → "Kind 1", "Kind 2". */

@@ -17,6 +17,7 @@ import {
   ownerOfField,
   roleOf,
   sealableData,
+  takenOverValue,
   visibility,
   signerName,
   triggerRoleOf,
@@ -397,7 +398,8 @@ export function fixedByOtherRoles(
   for (const field of fieldsOfRole(definition, role)) {
     if (!field.fromRole || field.fromRole.changeable === true) continue;
     const { role: from, field: source } = field.fromRole;
-    const value = latestSealed(questionnaire, from)?.data[source] ?? null;
+    const value =
+      takenOverValue(field.fromRole, latestSealed(questionnaire, from)?.data[source]) ?? null;
     if (value !== null) found.set(field.id, { value, from });
   }
   return found;
@@ -428,7 +430,10 @@ export function adoptFromOtherRoles(
   for (const field of fieldsOfRole(form.definition, role)) {
     if (!field.fromRole) continue;
     const { id } = field;
-    const source = latestSealed(questionnaire, field.fromRole.role)?.data[field.fromRole.field];
+    const source = takenOverValue(
+      field.fromRole,
+      latestSealed(questionnaire, field.fromRole.role)?.data[field.fromRole.field],
+    );
     const before = data[id];
     const copy = preset[id] === 'otherRole';
     if (source === undefined || source === null) {

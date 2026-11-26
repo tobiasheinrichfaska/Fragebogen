@@ -1,7 +1,7 @@
 {
   "id": "personalfragebogen",
   "version": "1.2.0",
-  "revised": "2026-11-26T14:00",
+  "revised": "2026-11-26T14:10",
   "title": "Personalfragebogen: Angaben für die Lohnabrechnung",
   "signaturePolicy": "electronic",
   "roles": [
@@ -1532,7 +1532,7 @@
             "field": "artLautVereinbarung",
             "equals": "praktikum"
           },
-          "because": "Nur bei einem Praktikum kommt es darauf an, ob es vorgeschrieben ist: Pflichtpraktika sind versicherungsfrei und vom Mindestlohn ausgenommen (§ 22 MiLoG).",
+          "because": "Nur bei einem Praktikum kommt es darauf an, ob es vorgeschrieben ist: Pflichtpraktika sind versicherungsfrei und vom Mindestlohn ausgenommen (§ 22 MiLoG). Welche Art von Praktikum es ist, gibt der Arbeitgeber an; liegt sein abgeschlossener Teil vor, wird daraus übernommen, ob es vorgeschrieben ist, und nicht mehr gefragt.",
           "options": [
             {
               "id": "pflicht",
@@ -1546,7 +1546,18 @@
               "id": "unbekannt",
               "label": "Weiß ich nicht."
             }
-          ]
+          ],
+          "fromRole": {
+            "role": "arbeitgeber",
+            "field": "agPraktikumArt",
+            "map": {
+              "pflichtStudium": "pflicht",
+              "pflichtVorNach": "pflicht",
+              "orientierung": "freiwillig",
+              "begleitend": "freiwillig",
+              "freiwillig": "freiwillig"
+            }
+          }
         },
         {
           "id": "taeglichHoechstStunden",

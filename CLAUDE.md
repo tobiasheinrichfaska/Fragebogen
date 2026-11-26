@@ -1477,8 +1477,12 @@ Wertweitergabe“, „Mehrfachauswahl passt in einen Link, indem alle Werte aufg
 - Fields asked of two roles (consistency rules, equal labels): every pair carries `fromRole` except
   the Dienstwagen draft's employer names (now proposed from the person, both ways like the
   Personalfragebogen) and the Personalfragebogen's `praktikumArt` (person: pflicht / freiwillig /
-  unbekannt) vs `agPraktikumArt` (employer: five kinds) — not the same options, so no proposal;
-  open. Birth name and birth date are asked of the person only; from the Sofortmeldung they come
+  unbekannt) vs `agPraktikumArt` (employer: five kinds): taken over since the same day (Tobias:
+  „Praktikumsart beim AN übernehmen, wenn AG angegeben“) through a translation, `fromRole.map`
+  (`takenOverValue` in form.ts; adoption, fixed value and the difference hint use it, the hint
+  names the employer's kind; catalogue and flow plan print the translation). Fixed, like the
+  Sozialkasse: with the employer's part sealed the person is not asked. Tests
+  `tests/forms/praktikumUebernahme.test.ts`. Birth name and birth date are asked of the person only; from the Sofortmeldung they come
   over by „Angaben aus einer anderen Datei übernehmen“ (every person field, only `agBranche`
   has no field in the Personalfragebogen). Tests `tests/forms/sozialkassen.test.ts`.
 
