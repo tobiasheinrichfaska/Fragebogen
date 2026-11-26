@@ -67,6 +67,7 @@ import {
   openAnyFile,
   type OpenResult,
 } from './pdfActions';
+import { linkMayLeaveAddressBar } from '../logic/linkArrival';
 import { ResumeOffer } from './ResumeOffer';
 import { masterDataRolesText } from '../logic/masterData';
 import { parseTransferFragment, transferOffer } from '../logic/transferLink';
@@ -281,15 +282,18 @@ function Workspace({
 
   // The answers of a link stay out of the address bar once read: a reload does not read them again.
   // A master-data link that was read goes too (audit 2026-11-18): the same link opened again in
-  // this tab then moves the fragment, and main.tsx starts anew. A link the app cannot follow (an
-  // error, a form it lacks) stays, so a reload shows its message again.
-  const readMasterData =
-    remembered.ok && remembered.data !== undefined && (remembered.form === undefined || !!linked);
+  // this tab then moves the fragment, and main.tsx starts anew; so does a link the app could not
+  // follow (an error, a form it lacks) — its message was shown once. Not before the access notice
+  // is confirmed and the offer of an interrupted questionnaire is answered (`linkMayLeaveAddressBar`):
+  // until then a reload must still find the link.
+  const linkMayLeave = linkMayLeaveAddressBar({
+    hash: location.hash,
+    accessOpen: accessOpen && APP_CONFIG.accessNotice !== undefined,
+    offerOpen: offer !== undefined,
+  });
   useEffect(() => {
-    if (transferred || readMasterData) {
-      history.replaceState(null, '', location.pathname + location.search);
-    }
-  }, [transferred, readMasterData]);
+    if (linkMayLeave) history.replaceState(null, '', location.pathname + location.search);
+  }, [linkMayLeave]);
 
   useEffect(() => {
     tracker.start();

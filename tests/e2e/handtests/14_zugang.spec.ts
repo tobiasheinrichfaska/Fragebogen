@@ -91,3 +91,21 @@ test('without a configured notice the hosted app opens at once', async ({ page }
   await expect(start(page)).toBeVisible();
   await expect(gate(page)).toHaveCount(0);
 });
+
+test.describe('a master-data link and the access notice (audit 2026-11-18)', () => {
+  test.skip(ACCESS_NOTICE === undefined, 'no access notice configured (public repo)');
+  const notice = ACCESS_NOTICE ?? '';
+
+  test('the link stays in the address bar until the notice is confirmed', async ({ page }) => {
+    await serve(page);
+    const link = '#stammdaten=1&formular=sofortmeldung&firma=Beispiel+Bau+GmbH';
+    await page.goto(`${ORIGIN}/${link}`);
+    await expect(gate(page)).toBeVisible();
+    expect(await page.evaluate(() => location.hash)).toBe(link);
+    await page.reload();
+    await page.getByRole('checkbox', { name: notice }).check();
+    await page.getByRole('button', { name: 'Weiter', exact: true }).click();
+    await expect(page.locator('main')).toContainText('Neuer Fragebogen „');
+    await expect.poll(() => page.evaluate(() => location.hash)).toBe('');
+  });
+});

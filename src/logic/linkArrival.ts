@@ -15,3 +15,20 @@ export function linkNeedsStart(hash: string): boolean {
   const master = parseMasterDataFragment(hash);
   return !master.ok || master.data !== undefined || parseTransferFragment(hash) !== undefined;
 }
+
+/**
+ * Whether the app may take a link it has read out of the address bar (audit 2026-11-18). Only once
+ * nothing can still replace what the link opened or hide it: while the access notice covers the app
+ * a reload would otherwise show a plain start page, and while the offer of an interrupted
+ * questionnaire is open (iOS Safari reloads without asking) „Fortsetzen“ replaces the link's new
+ * questionnaire — the link stays, so a reload shows both again. A link the app could not follow
+ * (an error, a form it lacks) leaves as well, so the same link opened again in that tab moves the
+ * fragment and starts anew; its message is shown once.
+ */
+export function linkMayLeaveAddressBar(state: {
+  hash: string;
+  accessOpen: boolean;
+  offerOpen: boolean;
+}): boolean {
+  return linkNeedsStart(state.hash) && !state.accessOpen && !state.offerOpen;
+}

@@ -14,7 +14,9 @@ for (const [name, value] of Object.entries(colorVariables(APP_CONFIG.colors))) {
 }
 
 // A link opened in a tab that already shows the app only moves the fragment; the app reads its
-// links at the start, so it starts anew (bug 2026-11-17). Unsaved changes: the browser asks first.
+// links at the start, so it starts anew (bug 2026-11-17). Where the browser asks before leaving
+// (unsaved changes), it asks first; iOS Safari does not ask — there the link stays in the address
+// bar until the offer of an interrupted questionnaire is answered (`linkMayLeaveAddressBar`).
 window.addEventListener('hashchange', () => {
   if (linkNeedsStart(location.hash)) location.reload();
 });
