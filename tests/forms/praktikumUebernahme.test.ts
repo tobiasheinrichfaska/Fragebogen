@@ -154,7 +154,7 @@ describe('definition rules for a translation (fromRole.map)', () => {
   });
 
   it('refuses an answer of the other field left untranslated', () => {
-    const { begleitend: _, ...rest } = FULL;
+    const rest = Object.fromEntries(Object.entries(FULL).filter(([key]) => key !== 'begleitend'));
     expect(issues(withMap(rest)).join('\n')).toContain('answer "begleitend" of the other field');
   });
 
