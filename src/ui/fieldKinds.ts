@@ -30,3 +30,8 @@ export const INPUT_MODE: Partial<Record<FieldType, 'numeric' | 'decimal' | 'text
 export function isTextLike(field: FieldDefinition): boolean {
   return TEXT_LIKE.has(field.type) || field.optionsFrom !== undefined;
 }
+
+/** Whether a buttons-chosen answer exists, so "Auswahl aufheben" has something to take back. */
+export function hasChoice(textLike: boolean, raw: unknown): boolean {
+  return !textLike && raw !== null && !(Array.isArray(raw) && raw.length === 0);
+}
